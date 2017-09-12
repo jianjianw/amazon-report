@@ -1,6 +1,12 @@
 package com.nhsoft;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.dangdang.ddframe.rdb.sharding.api.ShardingDataSourceFactory;
+import com.dangdang.ddframe.rdb.sharding.api.rule.DataSourceRule;
+import com.dangdang.ddframe.rdb.sharding.api.rule.ShardingRule;
+import com.dangdang.ddframe.rdb.sharding.api.rule.TableRule;
+import com.dangdang.ddframe.rdb.sharding.api.strategy.table.TableShardingStrategy;
+import com.nhsoft.report.sharding.AlipayLogTableShardingAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
@@ -13,6 +19,8 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
+import javax.sql.DataSource;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +72,27 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		sessionFactory.setPhysicalNamingStrategy(new SpringPhysicalNamingStrategy());
 		return sessionFactory;
 		
+	}
+
+	@Bean(name = "shardingSessionFactory")
+	public LocalSessionFactoryBean shardingSessionFactory(){
+		logger.info("开始初始化shardingSessionFactory");
+		DataSourceRule dataSourceRule = new DataSourceRule(customDataSources, "ama");
+		TableRule orderTableRule = TableRule.builder("alipay_log")
+				.actualTables(Arrays.asList("alipay_log", "alipay_log_history"))
+				.dataSourceRule(dataSourceRule)
+				.build();
+		ShardingRule shardingRule = ShardingRule.builder()
+				.dataSourceRule(dataSourceRule)
+				.tableRules(Arrays.asList(orderTableRule))
+				.tableShardingStrategy(new TableShardingStrategy("alipay_log_start", new AlipayLogTableShardingAlgorithm())).build();
+		DataSource dataSource = ShardingDataSourceFactory.createDataSource(shardingRule);
+		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setDataSource(dataSource);
+		sessionFactory.getHibernateProperties().putAll(hibernateProperties);
+		sessionFactory.setPackagesToScan("com.nhsoft.report.model");
+		sessionFactory.setPhysicalNamingStrategy(new SpringPhysicalNamingStrategy());
+		return sessionFactory;
 	}
 	
 	public DruidDataSource buildDruidDataSource(Map<String, Object> dsMap) {

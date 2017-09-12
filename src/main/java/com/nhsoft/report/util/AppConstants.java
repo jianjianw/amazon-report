@@ -37,4 +37,6 @@ public class AppConstants {
 	public static final int STATE_AUDIT_CODE = 2;
 	public static final int STATE_INIT_AUDIT_CODE = STATE_INIT_CODE | STATE_AUDIT_CODE;
 
+	public static final String S_Prefix_WD = "WD";//在线订单
+
 }
