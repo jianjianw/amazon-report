@@ -6,7 +6,9 @@ import com.dangdang.ddframe.rdb.sharding.api.rule.DataSourceRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.ShardingRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.TableRule;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.table.TableShardingStrategy;
+import com.dangdang.ddframe.rdb.sharding.jdbc.core.datasource.ShardingDataSource;
 import com.nhsoft.report.sharding.AlipayLogTableShardingAlgorithm;
+import com.nhsoft.report.sharding.ShardingDateSourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
@@ -77,16 +79,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 	@Bean(name = "shardingSessionFactory")
 	public LocalSessionFactoryBean shardingSessionFactory(){
 		logger.info("开始初始化shardingSessionFactory");
-		DataSourceRule dataSourceRule = new DataSourceRule(customDataSources, "ama");
-		TableRule orderTableRule = TableRule.builder("alipay_log")
-				.actualTables(Arrays.asList("alipay_log", "alipay_log_history"))
-				.dataSourceRule(dataSourceRule)
-				.build();
-		ShardingRule shardingRule = ShardingRule.builder()
-				.dataSourceRule(dataSourceRule)
-				.tableRules(Arrays.asList(orderTableRule))
-				.tableShardingStrategy(new TableShardingStrategy("alipay_log_start", new AlipayLogTableShardingAlgorithm())).build();
-		DataSource dataSource = ShardingDataSourceFactory.createDataSource(shardingRule);
+		DataSource dataSource = ShardingDateSourceConfig.getDateSource(customDataSources);
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource);
 		sessionFactory.getHibernateProperties().putAll(hibernateProperties);
