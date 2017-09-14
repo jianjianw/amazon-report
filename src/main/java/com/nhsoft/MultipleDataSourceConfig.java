@@ -1,26 +1,26 @@
 package com.nhsoft;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.dangdang.ddframe.rdb.sharding.api.ShardingDataSourceFactory;
-import com.dangdang.ddframe.rdb.sharding.api.rule.DataSourceRule;
-import com.dangdang.ddframe.rdb.sharding.api.rule.ShardingRule;
-import com.dangdang.ddframe.rdb.sharding.api.rule.TableRule;
-import com.dangdang.ddframe.rdb.sharding.api.strategy.table.TableShardingStrategy;
-import com.dangdang.ddframe.rdb.sharding.jdbc.core.datasource.ShardingDataSource;
-import com.nhsoft.report.sharding.AlipayLogTableShardingAlgorithm;
+
+import com.dangdang.ddframe.rdb.sharding.spring.datasource.SpringShardingDataSource;
 import com.nhsoft.report.sharding.ShardingDateSourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,11 +30,21 @@ import java.util.Map;
  * Created by yangqin on 2017/8/26.
  */
 @Configuration
+@ImportResource({"classpath:sharding-jdbc.xml"})
 public class MultipleDataSourceConfig implements EnvironmentAware {
 	private static final Logger logger = LoggerFactory.getLogger(MultipleDataSourceConfig.class);
 	
 	private Map customDataSources = new HashMap<String, DruidDataSource>();
 	private Map hibernateProperties = new HashMap();
+
+	/*@Resource(name="shardingDataSource")
+	private DataSource shardingDataSource;*/
+
+	@Autowired
+	@Qualifier("shardingDataSource")
+	private DataSource shardingDataSource;
+
+
 	
 	public static class MultipleDataSource extends AbstractRoutingDataSource {
 		
@@ -53,22 +63,29 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 			DruidDataSource ds = buildDruidDataSource(dsMap);
 			customDataSources.put(dsPrefix, ds);
 			logger.info("完成初始化数据源" + dsPrefix);
+
 		}
 		
 		propertyResolver = new RelaxedPropertyResolver(environment, "hibernate.");
 		hibernateProperties = propertyResolver.getSubProperties("");
 		
 	}
-	
-	@Bean(name = "sessionFactory")
-	public LocalSessionFactoryBean sessionFactory(){
+
+	@Bean(name = "multipleDataSource")
+	public MultipleDataSource multipleDataSource(){
 		logger.info("开始初始化sessionFactory");
 		MultipleDataSource multipleDataSource = new MultipleDataSource();
 		multipleDataSource.setTargetDataSources(customDataSources);
 		multipleDataSource.setDefaultTargetDataSource(customDataSources.get("ama"));
 		multipleDataSource.afterPropertiesSet();
+		return multipleDataSource;
+	}
+
+	@Bean(name = "sessionFactory")
+	public LocalSessionFactoryBean sessionFactory(){
+
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(multipleDataSource);
+		sessionFactory.setDataSource(multipleDataSource());
 		sessionFactory.getHibernateProperties().putAll(hibernateProperties);
 		sessionFactory.setPackagesToScan("com.nhsoft.report.model");
 		sessionFactory.setPhysicalNamingStrategy(new SpringPhysicalNamingStrategy());
@@ -76,7 +93,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		
 	}
 
-	@Bean(name = "shardingSessionFactory")
+	/*@Bean(name = "shardingSessionFactory")
 	public LocalSessionFactoryBean shardingSessionFactory(){
 		logger.info("开始初始化shardingSessionFactory");
 		DataSource dataSource = ShardingDateSourceConfig.getDateSource(customDataSources);
@@ -86,7 +103,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		sessionFactory.setPackagesToScan("com.nhsoft.report.model");
 		sessionFactory.setPhysicalNamingStrategy(new SpringPhysicalNamingStrategy());
 		return sessionFactory;
-	}
+	}*/
 	
 	public DruidDataSource buildDruidDataSource(Map<String, Object> dsMap) {
 		

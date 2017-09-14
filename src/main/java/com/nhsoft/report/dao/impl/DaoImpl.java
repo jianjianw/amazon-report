@@ -19,12 +19,4 @@ public class DaoImpl {
 		return sessionFactory.getCurrentSession();
 	}
 
-	@Resource(name="shardingSessionFactory")
-	private SessionFactory shardingSessionFactory;
-
-	public Session currentShardingSession(){
-
-		return shardingSessionFactory.getCurrentSession();
-
-	}
 }

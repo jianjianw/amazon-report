@@ -19,10 +19,8 @@ import java.util.List;
 @Repository
 public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 
-
-
 	private Criteria createByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery){
-		Criteria criteria = currentShardingSession().createCriteria(AlipayLog.class, "a")
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
 				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
 		if(StringUtils.isNotEmpty(logQuery.getLogItem())){
 			criteria.add(Restrictions.like("a.alipayLogOrderNo", logQuery.getLogItem(), MatchMode.ANYWHERE));
@@ -75,7 +73,7 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 
 	@Override
 	public AlipayLog readLast(String systemBookCode, Integer branchNum, String orderNo, String alipayLogType) {
-		Criteria criteria = currentShardingSession().createCriteria(AlipayLog.class, "a")
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
 				.add(Restrictions.eq("a.alipayLogOrderNo", orderNo))
 				.add(Restrictions.in("a.alipayLogType", alipayLogType.split(",")));
 		criteria.addOrder(Order.desc("a.alipayLogStart"));
@@ -88,7 +86,7 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 	@Override
 	public List<Object[]> findBranchSummaryPayFail(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo, boolean isDeposit, String alipayLogTypes) {
-		Criteria criteria = currentShardingSession().createCriteria(AlipayLog.class, "a")
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
 				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("a.alipayLogTradeState", false));
 		if(branchNums != null && branchNums.size() > 0){
@@ -121,7 +119,7 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 	@Override
 	public List<Object[]> findBranchSummaryRePay(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo, String alipayLogTypes) {
-		Criteria criteria = currentShardingSession().createCriteria(AlipayLog.class, "a")
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
 				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
 				.add(Restrictions.isNotNull("a.alipayLogBuyerId"));
 		if(branchNums != null && branchNums.size() > 0){
@@ -149,7 +147,7 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 	@Override
 	public List<AlipayDetailDTO> findAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 													  Date dateTo, String orderNoPres, String alipayLogTypes) {
-		Criteria criteria = currentShardingSession().createCriteria(AlipayLog.class, "a")
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
 				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("a.alipayLogTradeState", true))
 				.add(Restrictions.eq("a.alipayLogTradeValid", true))
@@ -235,7 +233,7 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 	@Override
 	public List<AlipayDetailDTO> findCancelAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums,
 			Date dateFrom, Date dateTo, String orderNoPres, String alipayLogTypes) {
-		Criteria criteria = currentShardingSession().createCriteria(AlipayLog.class, "a")
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
 				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("a.alipayLogTradeState", true))
 				.add(Restrictions.eq("a.alipayLogTradeValid", false))
@@ -324,7 +322,7 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 
 	@Override
 	public List<Object[]> findDepositSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String alipayLogTypes) {
-		Criteria criteria = currentShardingSession().createCriteria(AlipayLog.class, "a")
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
 				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("a.alipayLogTradeState", true))
 				.add(Restrictions.eq("a.alipayLogTradeValid", true))

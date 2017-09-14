@@ -607,7 +607,7 @@ public class Branch implements java.io.Serializable {
 	 * 
 	 * @return
 	 */
-	@JsonIgnore
+/*	@JsonIgnore
 	public boolean isJoinBranch() {
 		if (!id.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)
 				&& StringUtils.equals(branchType, AppConstants.BRANCH_TYPE_JOIN)) {
@@ -615,7 +615,7 @@ public class Branch implements java.io.Serializable {
 		} else {
 			return false;
 		}
-	}
+	}*/
 	
 	/**
 	 * 判断是否配送中心
