@@ -1,7 +1,7 @@
 package com.nhsoft.report.service;
 
-import com.nhsoft.pos3.server.dto.*;
-import com.nhsoft.pos3.shared.queryBuilder.*;
+import com.nhsoft.report.dto.*;
+import com.nhsoft.report.shared.queryBuilder.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -25,7 +25,7 @@ public interface Report2Service {
 	 * @return
 	 */
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranch(String systemBookCode,
-                                                                                  List<Integer> branchNums, Date dateFrom, Date dateTo);
+	                                                                              List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 * 按分店、收银员汇总缴款明细

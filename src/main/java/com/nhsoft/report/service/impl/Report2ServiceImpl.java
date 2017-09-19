@@ -1,26 +1,31 @@
 package com.nhsoft.report.service.impl;
 
-import com.nhsoft.pos3.server.dto.*;
-import com.nhsoft.pos3.server.model.*;
-import com.nhsoft.pos3.server.param.PosItemTypeParam;
-import com.nhsoft.pos3.server.service.CardBillService;
-import com.nhsoft.pos3.server.service.Report2Service;
-import com.nhsoft.pos3.server.service.impl.dao.BranchRegionDao;
-import com.nhsoft.pos3.server.service.impl.dao.PosItemGradeDao;
-import com.nhsoft.pos3.server.util.AppUtil;
-import com.nhsoft.pos3.server.util.DateUtil;
-import com.nhsoft.pos3.shared.AppConstants;
-import com.nhsoft.pos3.shared.queryBuilder.*;
-import org.apache.commons.lang.StringUtils;
+import com.nhsoft.report.dao.BranchRegionDao;
+import com.nhsoft.report.dao.PosItemGradeDao;
+import com.nhsoft.report.dto.*;
+import com.nhsoft.report.model.*;
+import com.nhsoft.report.param.PosItemTypeParam;
+import com.nhsoft.report.service.CardBillService;
+import com.nhsoft.report.service.Report2Service;
+import com.nhsoft.report.shared.AppConstants;
+import com.nhsoft.report.shared.queryBuilder.*;
+import com.nhsoft.report.util.AppUtil;
+import com.nhsoft.report.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
 
+@Service
 public class Report2ServiceImpl extends ReportServiceImpl implements Report2Service {
 	
+	@Autowired
 	private BranchRegionDao branchRegionDao;
+	@Autowired
 	private CardBillService cardBillService;
+	@Autowired
 	private PosItemGradeDao posItemGradeDao;
 
 	public void setPosItemGradeDao(PosItemGradeDao posItemGradeDao) {
@@ -67,7 +72,7 @@ public class Report2ServiceImpl extends ReportServiceImpl implements Report2Serv
 
 	@Override
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranch(String systemBookCode,
-			List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	                                                                              List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		
 		List<PosReceiveDiffMoneySumDTO> list = reportDao.findPosReceiveDiffMoneySumDTOsByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
@@ -461,7 +466,7 @@ public class Report2ServiceImpl extends ReportServiceImpl implements Report2Serv
 
 	@Override
 	public List<CardQtySumDTO> findCardQtySumDatasByBranch(String systemBookCode, List<Integer> branchNums,
-			Date dateFrom, Date dateTo) {
+	                                                       Date dateFrom, Date dateTo) {
 		List<CardQtySumDTO> cardQtySumDTOs = reportDao.findCardQtySumDatasByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		
