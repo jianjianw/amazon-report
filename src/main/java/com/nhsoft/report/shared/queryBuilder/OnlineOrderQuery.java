@@ -1,6 +1,7 @@
 package com.nhsoft.report.shared.queryBuilder;
 
-import com.nhsoft.pos3.shared.State;
+
+import com.nhsoft.report.shared.State;
 
 import java.math.BigDecimal;
 import java.util.Date;
