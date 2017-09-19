@@ -189,8 +189,7 @@ public interface PosClientService {
 	 * @param param
 	 * @return
 	 */
-	public int countByPosClientCustomGroup(String systemBookCode, List<Integer> branchNums,
-                                           PosClientCustomGroupParam param);
+	public int countByPosClientCustomGroup(String systemBookCode, List<Integer> branchNums, PosClientCustomGroupParam param);
 
 	/**
 	 * 根据批发客户群组查询
@@ -199,8 +198,7 @@ public interface PosClientService {
 	 * @param param
 	 * @return
 	 */
-	public List<PosClient> findByPosClientCustomGroup(String systemBookCode, List<Integer> branchNums,
-                                                      PosClientCustomGroupParam param);
+	public List<PosClient> findByPosClientCustomGroup(String systemBookCode, List<Integer> branchNums,PosClientCustomGroupParam param);
 	
 	/**
 	 * 按主键查询

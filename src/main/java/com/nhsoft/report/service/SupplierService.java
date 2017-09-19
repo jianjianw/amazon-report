@@ -46,4 +46,12 @@ public interface SupplierService {
 	 */
 	public List<Supplier> findAll(String systemBookCode);
 
+
+	/**
+	 * 从缓存中读取
+	 * @param systemBookCode
+	 * @return
+	 */
+	public List<Supplier> findInCache(String systemBookCode);
+
 }
