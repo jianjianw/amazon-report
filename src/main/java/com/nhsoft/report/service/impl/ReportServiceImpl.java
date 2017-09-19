@@ -7,6 +7,7 @@ import com.nhsoft.report.dao.impl.WebLogDao;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.dto.LogQuery;
 import com.nhsoft.report.model.*;
+import com.nhsoft.report.param.AdjustmentReason;
 import com.nhsoft.report.param.CardUserType;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.*;
@@ -14,9 +15,7 @@ import com.nhsoft.report.shared.AppConstants;
 import com.nhsoft.report.shared.queryBuilder.*;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.Cacheable;
+import org.apache.commons.codec.binary.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -84,7 +83,7 @@ public class ReportServiceImpl implements ReportService {
 	private BranchItemRecoredDao branchItemRecoredDao;
 	private ItemExtendAttributeDao itemExtendAttributeDao;
 	private CardUserLogDao cardUserLogDao;
-	private PosOrderRemoteService posOrderRemoteService;
+	//private PosOrderRemoteService posOrderRemoteService;
 	private PosItemDao posItemDao;
 
 	public void setPosItemDao(PosItemDao posItemDao) {
@@ -107,9 +106,6 @@ public class ReportServiceImpl implements ReportService {
 		this.systemBookService = systemBookService;
 	}
 
-	public void setPosOrderRemoteService(PosOrderRemoteService posOrderRemoteService) {
-		this.posOrderRemoteService = posOrderRemoteService;
-	}
 
 	public void setCardUserRegisterDao(CardUserRegisterDao cardUserRegisterDao) {
 		this.cardUserRegisterDao = cardUserRegisterDao;

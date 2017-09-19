@@ -22,7 +22,16 @@ public interface WholesaleReturnDao {
 
 	public List<Object[]> findItemSupplierDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-
+	/**
+	 * 按商品和日期汇总 数量 销售金额 成本
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findItemDateSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 
 
 

@@ -18,4 +18,16 @@ public interface TransferInOrderDao {
 	 */
 	public List<Object[]> findProfitGroupByItem(String systemBookCode, List<Integer> transferBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodeList, List<Integer> itemNums);
 
+
+	/**
+	 * 按商品和天汇总金额和毛利
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param itemNums
+	 * @return
+	 */
+	public List<Object[]> findMoneyByItemDate(String systemBookCode, List<Integer> transferBranchNums, List<Integer> branchNums,
+											  Date dateFrom, Date dateTo, List<Integer> itemNums);
 }
