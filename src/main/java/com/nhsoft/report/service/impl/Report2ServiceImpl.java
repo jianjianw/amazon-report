@@ -11,6 +11,7 @@ import com.nhsoft.report.shared.AppConstants;
 import com.nhsoft.report.shared.queryBuilder.*;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
