@@ -1,28 +1,12 @@
 package com.nhsoft.report.dao;
 
 
-import com.nhsoft.report.dto.ShipOrderDTO;
-import com.nhsoft.report.shared.queryBuilder.OrderQueryCondition;
-import com.nhsoft.report.shared.queryBuilder.ShipRecordingQuery;
-
 import java.util.Date;
 import java.util.List;
 
 public interface ShipOrderDao {
 	
 
-	
-	/**
-	 * 按天汇总运费金额
-	 * @param systemBookCode
-	 * @param branchNum 发货分店号
-	 * @param branchNums 收货分店列表
-	 * @param dateFrom 审核时间起
-	 * @param dateTo 审核时间至
-	 * @return
-	 */
-	public List<Object[]> findDateSummary(String systemBookCode, Integer branchNum,
-                                          List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 * 按门店汇总运费金额
@@ -87,17 +71,7 @@ public interface ShipOrderDao {
 	public List<Object[]> findLineSummary(String systemBookCode, Integer branchNum,
                                           List<Integer> transferLineNums, Date dateFrom, Date dateTo);
 
-	/**
-	 * 按线路汇总调出数量、金额
-	 * @param systemBookCode
-	 * @param branchNum
-	 * @param transferLineNums
-	 * @param dateFrom
-	 * @param dateTo
-	 * @return
-	 */
-	public List<Object[]> findLineOutSummary(String systemBookCode, Integer branchNum, List<Integer> transferLineNums,
-                                             Date dateFrom, Date dateTo);
+
 
 	/**
 	 * 按线路汇总发车趟次 无发车金额的不算
@@ -112,16 +86,6 @@ public interface ShipOrderDao {
                                         Date dateFrom, Date dateTo);
 
 
-	/**
-	 * 查询shipOrder部分字段
-	 * @param systemBookCode
-	 * @param branchNum
-	 * @param branchNums
-	 * @param dateFrom
-	 * @param dateTo
-	 * @return
-	 */
-	public List<ShipOrderDTO> findShipOrderDTOs(String systemBookCode, Integer branchNum,
-												List<Integer> branchNums, Date dateFrom, Date dateTo);
+
 
 }

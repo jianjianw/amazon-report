@@ -16,14 +16,6 @@ public interface SystemBookDao {
      * @return
      */
     public List<SystemBook> findAllActiveBooks();
-    
-    /**
-     * 更新帐套
-     * @param systemBook
-     */
-    public void update(SystemBook systemBook);
-
-	public void save(SystemBook systemBook);
 	
 	/**
 	 * 根据上级帐套号查询

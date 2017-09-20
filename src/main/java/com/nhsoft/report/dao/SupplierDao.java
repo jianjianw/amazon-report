@@ -17,4 +17,5 @@ public interface SupplierDao {
                                List<Integer> branchNums, String supplierCategory, String queryName, Boolean isCenterShared, Boolean isEnable, List<Integer> itemNums);
 
 
+
 }

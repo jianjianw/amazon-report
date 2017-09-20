@@ -12,12 +12,6 @@ public interface TransferLineDao {
 
 	public List<TransferLine> find(String systemBookCode);
 
-	public void saveOrUpdate(TransferLine transferLine);
-
-	public Integer readNumByCode(String systemBookCode, Integer branchNum, String transferLineCode);
-
-	public void delete(TransferLine transferLine);
-
 	public List<TransferLineDetail> findDetails(String systemBookCode);
 
 	/**
@@ -28,11 +22,4 @@ public interface TransferLineDao {
 	 */
 	public List<TransferLine> findByBranch(String systemBookCode, Integer branchNum);
 
-	/**
-	 * 根据分店获取线路主键
-	 * @param systemBookCode
-	 * @param branchNum
-	 * @return
-	 */
-	public Integer getNum(String systemBookCode, Integer branchNum);
 }

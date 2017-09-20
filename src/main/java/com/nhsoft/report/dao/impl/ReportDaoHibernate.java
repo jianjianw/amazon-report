@@ -18,10 +18,11 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.*;
-
+@Repository
 public class ReportDaoHibernate extends HibernateDaoSupport implements ReportDao {
 
 	@Override
