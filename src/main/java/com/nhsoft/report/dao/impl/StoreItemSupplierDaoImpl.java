@@ -115,4 +115,24 @@ public class StoreItemSupplierDaoImpl extends DaoImpl implements StoreItemSuppli
 		query.addEntity(StoreItemSupplier.class);
 		return query.list();
 	}
+
+
+	@Override
+	public List<StoreItemSupplier> findDefaults(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select * from store_item_supplier with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(itemNums != null && itemNums.size() > 0){
+			sb.append("and item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		sb.append("and store_item_supplier_default = 1 ");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.addEntity(StoreItemSupplier.class);
+		query.setString("systemBookCode", systemBookCode);
+
+		return query.list();
+	}
 }

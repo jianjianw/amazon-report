@@ -19,5 +19,13 @@ public interface StoreItemSupplierDao {
 
 	public List<StoreItemSupplier> find(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums, List<Integer> supplierNums);
 
+	/**
+	 * 查询主供应商
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param itemNums
+	 * @return
+	 */
+	public List<StoreItemSupplier> findDefaults(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
 
 }

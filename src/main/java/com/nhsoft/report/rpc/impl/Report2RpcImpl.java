@@ -70,6 +70,7 @@ public class Report2RpcImpl implements Report2Rpc {
 	private PolicyPromotionService policyPromotionService;
 	@Autowired
 	private PolicyPresentService policyPresentService;
+
 	private StoreItemSupplierService storeItemSupplierService;
 	
 	@Override
