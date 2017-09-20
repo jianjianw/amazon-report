@@ -15,7 +15,6 @@ import org.hibernate.Query;
 import org.hibernate.criterion.*;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
-import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
