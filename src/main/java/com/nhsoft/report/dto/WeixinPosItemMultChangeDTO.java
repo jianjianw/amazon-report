@@ -1,6 +1,8 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.shared.queryBuilder.WeixinPosItemQuery;
+
+
+import com.nhsoft.report.shared.queryBuilder.WeixinPosItemQuery;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

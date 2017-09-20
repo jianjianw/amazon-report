@@ -1,8 +1,8 @@
 package com.nhsoft.report.model;
 
 
-import com.nhsoft.report.shared.AppConstants;
 import com.nhsoft.report.shared.State;
+import com.nhsoft.report.util.AppConstants;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

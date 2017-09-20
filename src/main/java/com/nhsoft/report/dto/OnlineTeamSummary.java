@@ -1,6 +1,7 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.model.OnlineTeam;
+
+import com.nhsoft.report.model.OnlineTeam;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,6 +1,7 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.model.ItemExtendAttribute;
+
+import com.nhsoft.report.model.ItemExtendAttribute;
 
 import java.math.BigDecimal;
 import java.util.List;

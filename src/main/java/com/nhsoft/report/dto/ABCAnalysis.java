@@ -1,6 +1,7 @@
 package com.nhsoft.report.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nhsoft.report.model.PosItem;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

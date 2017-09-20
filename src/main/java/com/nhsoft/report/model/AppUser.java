@@ -1,12 +1,6 @@
 package com.nhsoft.report.model;
 
-import com.nhsoft.pos3.server.dto.AppUserToDoDTO;
-import com.nhsoft.pos3.server.param.*;
-import com.nhsoft.pos3.shared.AppConstants;
-import com.nhsoft.pos3.shared.LemengPrivilegeConstants;
-import com.nhsoft.pos3.shared.PrivilegeConstants;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
+import com.nhsoft.report.dto.AppUserToDoDTO;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;

@@ -1,6 +1,8 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.param.ReportKey;
+
+
+import com.nhsoft.report.param.ReportKey;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

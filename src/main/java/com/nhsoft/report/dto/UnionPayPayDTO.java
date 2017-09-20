@@ -1,7 +1,6 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.unionpay.request.PayParam;
-import com.nhsoft.unionpay.response.PayResponse;
+
 
 public class UnionPayPayDTO {
 

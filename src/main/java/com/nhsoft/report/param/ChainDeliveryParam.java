@@ -1,6 +1,6 @@
 package com.nhsoft.report.param;
 
-import com.nhsoft.report.shared.AppConstants;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import org.apache.commons.lang3.BooleanUtils;
 import org.dom4j.Document;

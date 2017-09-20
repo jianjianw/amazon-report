@@ -2,6 +2,7 @@ package com.nhsoft.report.service;
 
 
 import com.nhsoft.report.model.PosClient;
+import com.nhsoft.report.param.PosClientCustomGroupParam;
 import com.nhsoft.report.param.PosClientParam;
 import com.nhsoft.report.shared.queryBuilder.ClientQuery;
 

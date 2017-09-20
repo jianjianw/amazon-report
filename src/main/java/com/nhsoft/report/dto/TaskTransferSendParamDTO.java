@@ -1,6 +1,7 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.model.AppUser;
+
+import com.nhsoft.report.model.AppUser;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
