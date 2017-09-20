@@ -1,6 +1,7 @@
 package com.nhsoft.report.rpc.impl;
 
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.*;
 import com.nhsoft.report.param.AdjustmentReason;
@@ -15,87 +16,45 @@ import com.nhsoft.report.util.DateUtil;
 import com.nhsoft.report.util.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.*;
 
+@Service
 public class ReportRpcImpl implements ReportRpc {
 
+	@Autowired
 	private ReceiveOrderService receiveOrderService;
+	@Autowired
 	private ReturnOrderService returnOrderService;
+	@Autowired
 	private PosOrderService posOrderService;
+	@Autowired
 	private BranchService branchService;
+	@Autowired
 	private PosItemService posItemService;
+	@Autowired
 	private ReportService reportService;
+	@Autowired
 	private SupplierService supplierService;
+	@Autowired
 	private InventoryService inventoryService;
+	@Autowired
 	private TransferOutOrderService transferOutOrderService;
+	@Autowired
 	private TransferInOrderService transferInOrderService;
+	@Autowired
 	private WholesaleOrderService wholesaleOrderService;
+	@Autowired
 	private WholesaleReturnService wholesaleReturnService;
+	@Autowired
 	private AdjustmentOrderService adjustmentOrderService;
+	@Autowired
 	private StorehouseService storehouseService;
+	@Autowired
 	private BookResourceRpc bookResourceRpc;
-
-	public void setReportService(ReportService reportService) {
-		this.reportService = reportService;
-	}
-
-	public void setBranchService(BranchService branchService) {
-		this.branchService = branchService;
-	}
-
-	public void setPosItemService(PosItemService posItemService) {
-		this.posItemService = posItemService;
-	}
-
-	public void setReceiveOrderService(ReceiveOrderService receiveOrderService) {
-		this.receiveOrderService = receiveOrderService;
-	}
-
-	public void setPosOrderService(PosOrderService posOrderService) {
-		this.posOrderService = posOrderService;
-	}
-
-	public void setSupplierService(SupplierService supplierService) {
-		this.supplierService = supplierService;
-	}
-
-	public void setInventoryService(InventoryService inventoryService) {
-		this.inventoryService = inventoryService;
-	}
-
-	public void setWholesaleReturnService(WholesaleReturnService wholesaleReturnService) {
-		this.wholesaleReturnService = wholesaleReturnService;
-	}
-
-	public void setWholesaleOrderService(WholesaleOrderService wholesaleOrderService) {
-		this.wholesaleOrderService = wholesaleOrderService;
-	}
-
-	public void setTransferInOrderService(TransferInOrderService transferInOrderService) {
-		this.transferInOrderService = transferInOrderService;
-	}
-
-	public void setTransferOutOrderService(TransferOutOrderService transferOutOrderService) {
-		this.transferOutOrderService = transferOutOrderService;
-	}
-
-	public void setAdjustmentOrderService(AdjustmentOrderService adjustmentOrderService) {
-		this.adjustmentOrderService = adjustmentOrderService;
-	}
-	public void setStorehouseService(StorehouseService storehouseService) {
-		this.storehouseService = storehouseService;
-	}
-
-	public void setReturnOrderService(ReturnOrderService returnOrderService) {
-		this.returnOrderService = returnOrderService;
-	}
-
-	public void setBookResourceRpc(BookResourceRpc bookResourceRpc) {
-		this.bookResourceRpc = bookResourceRpc;
-	}
-
+	
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
 		String systemBookCode = saleAnalysisQueryData.getSystemBookCode();

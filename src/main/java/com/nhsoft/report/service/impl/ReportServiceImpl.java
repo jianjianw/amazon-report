@@ -2,20 +2,20 @@ package com.nhsoft.report.service.impl;
 
 
 import com.nhsoft.report.dao.*;
-import com.nhsoft.report.dao.impl.TransferInOrderDao;
-import com.nhsoft.report.dao.impl.WebLogDao;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.dto.LogQuery;
 import com.nhsoft.report.model.*;
 import com.nhsoft.report.param.AdjustmentReason;
 import com.nhsoft.report.param.CardUserType;
+import com.nhsoft.report.param.ChainDeliveryParam;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.*;
-import com.nhsoft.report.shared.AppConstants;
 import com.nhsoft.report.shared.queryBuilder.*;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
-import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -4856,7 +4856,7 @@ public class ReportServiceImpl implements ReportService {
 		if (inventoryExceptQuery.getMultiple() == null) {
 			inventoryExceptQuery.setMultiple(BigDecimal.ONE);
 		}
-		if (StringUtils.isEmpty(inventoryExceptQuery.getCompare())) {
+		if (StringUtils.is(inventoryExceptQuery.getCompare())) {
 			inventoryExceptQuery.setCompare("<=");
 		}
 		// 进价大于配送价

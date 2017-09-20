@@ -1,4 +1,4 @@
-package com.nhsoft.report.dao.impl;
+package com.nhsoft.report.dao;
 
 import java.util.Date;
 import java.util.List;

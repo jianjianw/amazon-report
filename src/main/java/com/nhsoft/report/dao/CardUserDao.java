@@ -8,9 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface CardUserDao {
-
-	public CardUser read(Integer cardUserNum);
-
+	
 
 	public List<CardUser> findByCardUserQuery(CardUserQuery cardUserQuery, int offset, int limit);
 

@@ -1,34 +1,64 @@
 package com.nhsoft.report.rpc.impl;
 
 
+import com.alibaba.dubbo.config.annotation.Service;
+import com.nhsoft.report.dto.*;
+import com.nhsoft.report.model.*;
 import com.nhsoft.report.rpc.Report2Rpc;
 import com.nhsoft.report.service.*;
+import com.nhsoft.report.shared.queryBuilder.*;
+import com.nhsoft.report.util.AppConstants;
+import com.nhsoft.report.util.AppUtil;
+import com.nhsoft.report.util.DateUtil;
+import com.nhsoft.report.util.ReportUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.*;
 
+@Service
 public class Report2RpcImpl implements Report2Rpc {
-
+	
+	@Autowired
 	private Report2Service report2Service;
+	@Autowired
 	private PosOrderService posOrderService;
+	@Autowired
 	private ReceiveOrderService receiveOrderService;
+	@Autowired
 	private PosItemService posItemService;
+	@Autowired
 	private TransferOutOrderService transferOutOrderService;
+	@Autowired
 	private TransferInOrderService transferInOrderService;
+	@Autowired
 	private StorehouseService storehouseService;
+	@Autowired
 	private BranchService branchService;
+	@Autowired
 	private CardUserService cardUserService;
+	@Autowired
 	private CardDepositService cardDepositService;
+	@Autowired
 	private CardConsumeService cardConsumeService;
-	private ItemSaleGoalsService itemSaleGoalsService;
+	@Autowired
 	private BranchTransferGoalsService branchTransferGoalsService;
+	@Autowired
 	private OtherInoutService otherInoutService;
+	@Autowired
 	private PosItemGradeService posItemGradeService;
+	@Autowired
 	private EmployeeService employeeService;
+	@Autowired
 	private ReportService reportService;
+	@Autowired
 	private SupplierService supplierService;
+	@Autowired
 	private InventoryService inventoryService;
+	@Autowired
 	private StoreMatrixService storeMatrixService;
+	@Autowired
 	private PosItemLogService posItemLogService;
 	private ItemVersionService itemVersionService;
 
@@ -38,114 +68,6 @@ public class Report2RpcImpl implements Report2Rpc {
 	private PolicyPresentService policyPresentService;
 	private StoreItemSupplierService storeItemSupplierService;
 	
-	public void setItemVersionService(ItemVersionService itemVersionService) {
-		this.itemVersionService = itemVersionService;
-	}
-	
-	public void setEmployeeService(EmployeeService employeeService) {
-		this.employeeService = employeeService;
-	}
-
-	public void setOtherInoutService(OtherInoutService otherInoutService) {
-		this.otherInoutService = otherInoutService;
-	}
-
-	public void setPolicyPromotionQuantityService(PolicyPromotionQuantityService policyPromotionQuantityService) {
-		this.policyPromotionQuantityService = policyPromotionQuantityService;
-	}
-
-	public void setPolicyPromotionMoneyService(PolicyPromotionMoneyService policyPromotionMoneyService) {
-		this.policyPromotionMoneyService = policyPromotionMoneyService;
-	}
-
-	public void setPolicyPromotionService(PolicyPromotionService policyPromotionService) {
-		this.policyPromotionService = policyPromotionService;
-	}
-
-	public void setPolicyPresentService(PolicyPresentService policyPresentService) {
-		this.policyPresentService = policyPresentService;
-	}
-
-	public void setReport2Service(Report2Service report2Service) {
-		this.report2Service = report2Service;
-	}
-
-	public void setReceiveOrderService(ReceiveOrderService receiveOrderService) {
-		this.receiveOrderService = receiveOrderService;
-	}
-
-	public void setPosOrderService(PosOrderService posOrderService) {
-		this.posOrderService = posOrderService;
-	}
-
-	public void setPosItemService(PosItemService posItemService) {
-		this.posItemService = posItemService;
-	}
-
-	public void setStorehouseService(StorehouseService storehouseService) {
-		this.storehouseService = storehouseService;
-	}
-
-	public void setTransferInOrderService(TransferInOrderService transferInOrderService) {
-		this.transferInOrderService = transferInOrderService;
-	}
-
-	public void setTransferOutOrderService(TransferOutOrderService transferOutOrderService) {
-		this.transferOutOrderService = transferOutOrderService;
-	}
-
-	public void setBranchService(BranchService branchService) {
-		this.branchService = branchService;
-	}
-
-	public void setBranchTransferGoalsService(BranchTransferGoalsService branchTransferGoalsService) {
-		this.branchTransferGoalsService = branchTransferGoalsService;
-	}
-
-	public void setItemSaleGoalsService(ItemSaleGoalsService itemSaleGoalsService) {
-		this.itemSaleGoalsService = itemSaleGoalsService;
-	}
-
-	public void setCardConsumeService(CardConsumeService cardConsumeService) {
-		this.cardConsumeService = cardConsumeService;
-	}
-
-	public void setCardDepositService(CardDepositService cardDepositService) {
-		this.cardDepositService = cardDepositService;
-	}
-
-	public void setCardUserService(CardUserService cardUserService) {
-		this.cardUserService = cardUserService;
-	}
-
-	public void setPosItemGradeService(PosItemGradeService posItemGradeService) {
-		this.posItemGradeService = posItemGradeService;
-	}
-
-	public void setReportService(ReportService reportService) {
-		this.reportService = reportService;
-	}
-
-	public void setStoreItemSupplierService(StoreItemSupplierService storeItemSupplierService) {
-		this.storeItemSupplierService = storeItemSupplierService;
-	}
-
-	public void setSupplierService(SupplierService supplierService) {
-		this.supplierService = supplierService;
-	}
-
-	public void setInventoryService(InventoryService inventoryService) {
-		this.inventoryService = inventoryService;
-	}
-
-	public void setStoreMatrixService(StoreMatrixService storeMatrixService) {
-		this.storeMatrixService = storeMatrixService;
-	}
-
-	public void setPosItemLogService(PosItemLogService posItemLogService) {
-		this.posItemLogService = posItemLogService;
-	}
-
 	@Override
 	public List<TransferPolicyDTO> findTransferPolicyDTOs(PolicyPosItemQuery policyPosItemQuery) {
 		return report2Service.findTransferPolicyDTOs(policyPosItemQuery);
@@ -699,7 +621,7 @@ public class Report2RpcImpl implements Report2Rpc {
 		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(new ArrayList<Integer>(itemNums));
 		List<PosItemGrade> posItemGrades = new ArrayList<PosItemGrade>();
 		if(itemGradeNums.size() > 0) {
-			posItemGrades = posItemGradeService.find(new ArrayList<Integer>(itemGradeNums));
+			posItemGrades = posItemGradeService.findByIds(new ArrayList<Integer>(itemGradeNums));
 		}
 		for(int i = policyPosItems.size() - 1;i >= 0;i--){
 			PolicyPosItem data = policyPosItems.get(i);

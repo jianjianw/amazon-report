@@ -1,12 +1,10 @@
 package com.nhsoft.report.service.impl;
 
-import com.nhsoft.report.dao.impl.TransferInOrderDao;
+import com.nhsoft.report.dao.TransferInOrderDao;
 import com.nhsoft.report.service.TransferInOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 public class TransferInOrderServiceImpl implements TransferInOrderService {

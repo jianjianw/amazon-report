@@ -1,14 +1,14 @@
-package com.nhsoft.report.dao;
-
-
+package com.nhsoft.report.service;
 
 import com.nhsoft.report.model.StoreMatrix;
 
 import java.util.List;
 
-public interface StoreMatrixDao {
-
+/**
+ * Created by yangqin on 2017/9/20.
+ */
+public interface StoreMatrixService {
+	
 	public List<StoreMatrix> findByBranch(String systemBookCode, Integer branchNum, List<Integer> itemNums);
 	
-	public List<StoreMatrix> find(String systemBookCode, Integer itemNum);
 }
