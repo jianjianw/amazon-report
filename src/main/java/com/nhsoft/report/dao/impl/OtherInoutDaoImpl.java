@@ -49,6 +49,7 @@ public class OtherInoutDaoImpl extends  DaoImpl implements OtherInoutDao {
 			criteria.add(Restrictions.in("o.clientFid", clientFids));
 		}
 		if (dateFrom != null) {
+
 			criteria.add(Restrictions.ge("o.otherInoutAuditTime", DateUtil.getMinOfDate(dateFrom)));
 		}
 		if (dateTo != null) {
