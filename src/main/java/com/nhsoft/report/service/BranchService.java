@@ -9,13 +9,24 @@ import java.util.List;
  *
  */
 public interface BranchService {
+
+
+
+
+	/**
+	 * 从缓存中读取分店
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @return
+	 */
+	public Branch readInCache(String systemBookCode, Integer branchNum);
+
 	/**
 	 * 从缓存中读取分店
 	 * @param systemBookCode 帐套号
 	 * @return
 	 */
 	public List<Branch> findInCache(String systemBookCode);
-
 
 	/**
 	 * 查询启用的配送中心分店

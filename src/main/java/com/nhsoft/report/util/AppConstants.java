@@ -19,6 +19,9 @@ public class AppConstants {
 	public static final String PAYMENT_POINT_CONSUME = "积分消费";
 	public static final String PAYMENT_UNIONPAY = "银联支付";
 	public static final String PAYMENT_DEPOSIT_POINT = "积分"; //积分转储值付款方式
+
+
+	public static final int CACHE_LIVE_DAY = 60 * 60 * 24; //缓存有效时间一天
 	
 	/**
 	 * 单据明细类型
@@ -133,4 +136,19 @@ public class AppConstants {
 	public static final String BUSINESS_DATE_SOME_YEAR = "年";
 	public static final String BUSINESS_DATE_SOME_WEEK = "周";
 
+	/** 缓存名称 */
+	public static final String CACHE_NAME_BRANCH = "CACHE_BRANCH:";
+
+
+
+	/**
+	 * memcached缓存前缀
+	 */
+
+	public static final String MEMCACHED_PRE_BRANCH_UPDATE_TIME = "AMA_BRANCH_UPDATE_TIME"; //分店缓存清空时间
+
+	/**
+	 * 报损原因类型
+	 */
+	public static final String ADJUSTMENT_REASON_TYPE_LOSS = "报损";
 }

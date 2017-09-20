@@ -3,13 +3,11 @@ package com.nhsoft.report.service.impl;
 import com.nhsoft.report.dao.BranchDao;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.service.BranchService;
-import com.nhsoft.report.shared.AppConstants;
+
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.BaseManager;
 import com.nhsoft.report.util.MemCacheUtil;
 import net.sf.ehcache.Element;
-import org.hibernate.stat.QueryStatistics;
-import org.hibernate.stat.Statistics;
-import org.springframework.beans.BeanUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,8 +21,6 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	public void setBranchDao(BranchDao branchDao) {
 		this.branchDao = branchDao;
 	}
-
-
 
 
 	@Override
@@ -61,6 +57,18 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 		return branchs;
 
 
+	}
+
+	@Override
+	public Branch readInCache(String systemBookCode, Integer branchNum) {
+		List<Branch> branchs = findInCache(systemBookCode);
+		for(int i = 0;i < branchs.size();i++){
+			Branch branch = branchs.get(i);
+			if(branch.getId().getBranchNum().equals(branchNum)){
+				return branch;
+			}
+		}
+		return branchDao.readWithNolock(systemBookCode, branchNum);
 	}
 
 

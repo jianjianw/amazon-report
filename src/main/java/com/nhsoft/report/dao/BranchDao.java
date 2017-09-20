@@ -17,4 +17,7 @@ public interface BranchDao {
 	public List<Branch> findActivedRdc(String systemBookCode);
 
 
+	public Branch readWithNolock(String systemBookCode, Integer branchNum);
+
+
 }

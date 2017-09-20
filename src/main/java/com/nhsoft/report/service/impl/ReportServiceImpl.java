@@ -1582,7 +1582,7 @@ public class ReportServiceImpl implements ReportService {
 				} else {
 					state = state.concat(",淘汰");
 				}
-			}
+			}/////
 			if (posItem.getItemStatus() != null && posItem.getItemStatus().equals(AppConstants.ITEM_STATUS_SLEEP)) {
 				if (state.isEmpty()) {
 					state = state.concat("休眠");
@@ -1656,7 +1656,7 @@ public class ReportServiceImpl implements ReportService {
 						null, branch);
 				data.setInventoryQty((BigDecimal) objects[0]);
 			}
-		}
+		}////
 
 		if (list.size() > 0) {
 			list.get(0).setaLevelCount(aCount);
@@ -2930,7 +2930,7 @@ public class ReportServiceImpl implements ReportService {
 				}
 
 			}
-
+			////
 			objects = transferInOrderDao.findMoneyByItemAndMonth(systemBookCode, transferBranchNums, dateFrom, dateTo,
 					itemNums);
 			for (int i = 0; i < objects.size(); i++) {
@@ -2979,7 +2979,6 @@ public class ReportServiceImpl implements ReportService {
 				xyData.setContent(xyData.getContent().add(money));
 
 			}
-
 			objects = wholesaleReturnDao.findMoneyByItemAndMonth(systemBookCode, branchNum, dateFrom, dateTo, itemNums,
 					null);
 			for (int i = 0; i < objects.size(); i++) {
@@ -5971,7 +5970,7 @@ public class ReportServiceImpl implements ReportService {
 					salerCommission.getRank().set(rank, data + count);
 				}
 			}
-		}
+		}/////
 		if (salerCommissions.size() > 0) {
 			List<Branch> branchs = branchService.findInCache(systemBookCode);
 			for (int i = 0; i < salerCommissions.size(); i++) {
