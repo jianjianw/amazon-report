@@ -117,5 +117,20 @@ public class AppConstants {
 	public static final String C_ITEM_COST_MODE_FIFO = "先进先出法";
 	public static final String C_ITEM_COST_MODE_MANUAL = "手工指定";
 	public static final String C_ITEM_COST_MODE_CENTER_MANUAL = "中心手工指定";//中心手工指定 门店加权平均
+	
+	/**
+	 * 商品状态
+	 */
+	public static final int ITEM_STATUS_NORMAL = 0; //正常
+	public static final int ITEM_STATUS_SLEEP = 1; //休眠
+	
+	
+	/**
+	 * 查询时间类型
+	 */
+	public static final String BUSINESS_DATE_SOME_DATE = "日";
+	public static final String BUSINESS_DATE_SOME_MONTH = "月";
+	public static final String BUSINESS_DATE_SOME_YEAR = "年";
+	public static final String BUSINESS_DATE_SOME_WEEK = "周";
 
 }
