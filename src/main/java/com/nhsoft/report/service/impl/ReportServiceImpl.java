@@ -16,320 +16,138 @@ import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 public class ReportServiceImpl implements ReportService {
 
-
+	@Autowired
 	public ReportDao reportDao;
+	@Autowired
 	public BookResourceService bookResourceService;
+	@Autowired
 	private SupplierDao supplierDao;
+	@Autowired
 	public PosItemService posItemService;
+	@Autowired
 	private PosOrderDao posOrderDao;
+	@Autowired
 	public TransferOutOrderDao transferOutOrderDao;
+	@Autowired
 	private WholesaleOrderDao wholesaleOrderDao;
+	@Autowired
 	private InventoryDao inventoryDao;
+	@Autowired
 	private BranchTransferGoalsDao branchTransferGoalsDao;
+	@Autowired
 	private ReturnOrderDao returnOrderDao;
+	@Autowired
 	public ReceiveOrderDao receiveOrderDao;
+	@Autowired
 	private PosItemLogDao posItemLogDao;
+	@Autowired
 	private PosClientService posClientService;
+	@Autowired
 	private WholesaleReturnDao wholesaleReturnDao;
+	@Autowired
 	private StoreItemSupplierDao storeItemSupplierDao;
+	@Autowired
 	private PosMachineDao posMachineDao;
+	@Autowired
 	public BranchService branchService;
+	@Autowired
 	private PurchaseOrderDao purchaseOrderDao;
+	@Autowired
 	private RequestOrderDao requestOrderDao;
+	@Autowired
 	public TransferInOrderDao transferInOrderDao;
+	@Autowired
 	private SettlementDao settlementDao;
+	@Autowired
 	private PreSettlementDao preSettlementDao;
+	@Autowired
 	public InnerSettlementDao innerSettlementDao;
+	@Autowired
 	public InnerPreSettlementDao innerPreSettlementDao;
+	@Autowired
 	private ClientSettlementDao clientSettlementDao;
+	@Autowired
 	private ClientPreSettlementDao clientPreSettlementDao;
+	@Autowired
 	public CardUserDao cardUserDao;
+	@Autowired
 	private WholesaleBookDao wholesaleBookDao;
+	@Autowired
 	private PolicyPresentDao policyPresentDao;
+	@Autowired
 	private PolicyPromotionMoneyDao policyPromotionMoneyDao;
+	@Autowired
 	private PolicyPromotionQuantityDao policyPromotionQuantityDao;
+	@Autowired
 	private PolicyPromotionDao policyPromotionDao;
+	@Autowired
 	private MarketActionDao marketActionDao;
+	@Autowired
 	private WebLogDao webLogDao;
+	@Autowired
 	public CardSettlementDao cardSettlementDao;
+	@Autowired
 	private CheckOrderDao checkOrderDao;
+	@Autowired
 	private AssembleSplitDao assembleSplitDao;
+	@Autowired
 	private AllocationOrderDao allocationOrderDao;
+	@Autowired
 	private AdjustmentOrderDao adjustmentOrderDao;
-	private SmsSendDao smsSendDao;///
+	@Autowired
+	private SmsSendDao smsSendDao;
+	@Autowired
 	private MessageBoardDao messageBoardDao;
+	@Autowired
 	public OnlineOrderDao onlineOrderDao;
+	@Autowired
 	public CardConsumeDao cardConsumeDao;
+	@Autowired
 	private StoreMatrixDao storeMatrixDao;
+	@Autowired
 	public CardDepositDao cardDepositDao;
+	@Autowired
 	private SystemBookDao systemBookDao;
+	@Autowired
 	private InventoryCollectDao inventoryCollectDao;
+	@Autowired
 	private AlipayLogDao alipayLogDao;
+	@Autowired
 	private PosItemGradeDao posItemGradeDao;
+	@Autowired
 	private PolicyDiscountDao policyDiscountDao;
+	@Autowired
 	private ShiftTableDao shiftTableDao;
+	@Autowired
 	private SupplierService supplierService;
+	@Autowired
 	private TransferLineDao transferLineDao;
+	@Autowired
 	private ShipOrderDao shipOrderDao;
+	@Autowired
 	public OtherInoutDao otherInoutDao;
+	@Autowired
 	private CardUserRegisterDao cardUserRegisterDao;
+	@Autowired
 	public SystemBookService systemBookService;
+	@Autowired
 	private BranchItemRecoredDao branchItemRecoredDao;
+	@Autowired
 	private ItemExtendAttributeDao itemExtendAttributeDao;
+	@Autowired
 	private CardUserLogDao cardUserLogDao;
+
 	//private PosOrderRemoteService posOrderRemoteService;
+	@Autowired
 	private PosItemDao posItemDao;
 
-	public void setPosItemDao(PosItemDao posItemDao) {
-		this.posItemDao = posItemDao;
-	}
-
-	public void setCardUserLogDao(CardUserLogDao cardUserLogDao) {
-		this.cardUserLogDao = cardUserLogDao;
-	}
-
-	public void setItemExtendAttributeDao(ItemExtendAttributeDao itemExtendAttributeDao) {
-		this.itemExtendAttributeDao = itemExtendAttributeDao;
-	}
-
-	public void setBranchItemRecoredDao(BranchItemRecoredDao branchItemRecoredDao) {
-		this.branchItemRecoredDao = branchItemRecoredDao;
-	}
-
-	public void setSystemBookService(SystemBookService systemBookService) {
-		this.systemBookService = systemBookService;
-	}
-
-
-	public void setCardUserRegisterDao(CardUserRegisterDao cardUserRegisterDao) {
-		this.cardUserRegisterDao = cardUserRegisterDao;
-	}
-
-	public void setTransferLineDao(TransferLineDao transferLineDao) {
-		this.transferLineDao = transferLineDao;
-	}
-
-	public void setOtherInoutDao(OtherInoutDao otherInoutDao) {
-		this.otherInoutDao = otherInoutDao;
-	}
-
-	public void setShipOrderDao(ShipOrderDao shipOrderDao) {
-		this.shipOrderDao = shipOrderDao;
-	}
-
-	public void setSupplierService(SupplierService supplierService) {
-		this.supplierService = supplierService;
-	}
-
-	public void setShiftTableDao(ShiftTableDao shiftTableDao) {
-		this.shiftTableDao = shiftTableDao;
-	}
-
-	public void setPolicyDiscountDao(PolicyDiscountDao policyDiscountDao) {
-		this.policyDiscountDao = policyDiscountDao;
-	}
-
-	public void setPosItemGradeDao(PosItemGradeDao posItemGradeDao) {
-		this.posItemGradeDao = posItemGradeDao;
-	}
-
-	public void setAlipayLogDao(AlipayLogDao alipayLogDao) {
-		this.alipayLogDao = alipayLogDao;
-	}
-
-	public void setInventoryCollectDao(InventoryCollectDao inventoryCollectDao) {
-		this.inventoryCollectDao = inventoryCollectDao;
-	}
-
-	public void setSystemBookDao(SystemBookDao systemBookDao) {
-		this.systemBookDao = systemBookDao;
-	}
-
-	public void setCardDepositDao(CardDepositDao cardDepositDao) {
-		this.cardDepositDao = cardDepositDao;
-	}
-
-	public void setStoreMatrixDao(StoreMatrixDao storeMatrixDao) {
-		this.storeMatrixDao = storeMatrixDao;
-	}
-
-	public void setCardConsumeDao(CardConsumeDao cardConsumeDao) {
-		this.cardConsumeDao = cardConsumeDao;
-	}
-
-	public void setOnlineOrderDao(OnlineOrderDao onlineOrderDao) {
-		this.onlineOrderDao = onlineOrderDao;
-	}
-
-	public void setMessageBoardDao(MessageBoardDao messageBoardDao) {
-		this.messageBoardDao = messageBoardDao;
-	}
-
-	public void setPurchaseOrderDao(PurchaseOrderDao purchaseOrderDao) {
-		this.purchaseOrderDao = purchaseOrderDao;
-	}
-
-	public void setRequestOrderDao(RequestOrderDao requestOrderDao) {
-		this.requestOrderDao = requestOrderDao;
-	}
-
-	public void setTransferInOrderDao(TransferInOrderDao transferInOrderDao) {
-		this.transferInOrderDao = transferInOrderDao;
-	}
-
-	public void setSettlementDao(SettlementDao settlementDao) {
-		this.settlementDao = settlementDao;
-	}
-
-	public void setPreSettlementDao(PreSettlementDao preSettlementDao) {
-		this.preSettlementDao = preSettlementDao;
-	}
-
-	public void setInnerSettlementDao(InnerSettlementDao innerSettlementDao) {
-		this.innerSettlementDao = innerSettlementDao;
-	}
-
-	public void setInnerPreSettlementDao(InnerPreSettlementDao innerPreSettlementDao) {
-		this.innerPreSettlementDao = innerPreSettlementDao;
-	}
-
-	public void setClientSettlementDao(ClientSettlementDao clientSettlementDao) {
-		this.clientSettlementDao = clientSettlementDao;
-	}
-
-	public void setClientPreSettlementDao(ClientPreSettlementDao clientPreSettlementDao) {
-		this.clientPreSettlementDao = clientPreSettlementDao;
-	}
-
-	public void setCardUserDao(CardUserDao cardUserDao) {
-		this.cardUserDao = cardUserDao;
-	}
-
-	public void setWholesaleBookDao(WholesaleBookDao wholesaleBookDao) {
-		this.wholesaleBookDao = wholesaleBookDao;
-	}
-
-	public void setPolicyPresentDao(PolicyPresentDao policyPresentDao) {
-		this.policyPresentDao = policyPresentDao;
-	}
-
-	public void setPolicyPromotionMoneyDao(PolicyPromotionMoneyDao policyPromotionMoneyDao) {
-		this.policyPromotionMoneyDao = policyPromotionMoneyDao;
-	}
-
-	public void setPolicyPromotionQuantityDao(PolicyPromotionQuantityDao policyPromotionQuantityDao) {
-		this.policyPromotionQuantityDao = policyPromotionQuantityDao;
-	}
-
-	public void setPolicyPromotionDao(PolicyPromotionDao policyPromotionDao) {
-		this.policyPromotionDao = policyPromotionDao;
-	}
-
-	public void setMarketActionDao(MarketActionDao marketActionDao) {
-		this.marketActionDao = marketActionDao;
-	}
-
-	public void setWebLogDao(WebLogDao webLogDao) {
-		this.webLogDao = webLogDao;
-	}
-
-	public void setCardSettlementDao(CardSettlementDao cardSettlementDao) {
-		this.cardSettlementDao = cardSettlementDao;
-	}
-
-	public void setCheckOrderDao(CheckOrderDao checkOrderDao) {
-		this.checkOrderDao = checkOrderDao;
-	}
-
-	public void setAssembleSplitDao(AssembleSplitDao assembleSplitDao) {
-		this.assembleSplitDao = assembleSplitDao;
-	}
-
-	public void setAllocationOrderDao(AllocationOrderDao allocationOrderDao) {
-		this.allocationOrderDao = allocationOrderDao;
-	}
-
-	public void setAdjustmentOrderDao(AdjustmentOrderDao adjustmentOrderDao) {
-		this.adjustmentOrderDao = adjustmentOrderDao;
-	}
-
-	public void setSmsSendDao(SmsSendDao smsSendDao) {
-		this.smsSendDao = smsSendDao;
-	}
-
-	public void setPosMachineDao(PosMachineDao posMachineDao) {
-		this.posMachineDao = posMachineDao;
-	}
-
-	public void setBranchService(BranchService branchService) {
-		this.branchService = branchService;
-	}
-
-	public void setWholesaleReturnDao(WholesaleReturnDao wholesaleReturnDao) {
-		this.wholesaleReturnDao = wholesaleReturnDao;
-	}
-
-	public void setPosClientService(PosClientService posClientService) {
-		this.posClientService = posClientService;
-	}
-
-	public void setPosItemLogDao(PosItemLogDao posItemLogDao) {
-		this.posItemLogDao = posItemLogDao;
-	}
-
-	public void setReturnOrderDao(ReturnOrderDao returnOrderDao) {
-		this.returnOrderDao = returnOrderDao;
-	}
-
-	public void setReceiveOrderDao(ReceiveOrderDao receiveOrderDao) {
-		this.receiveOrderDao = receiveOrderDao;
-	}
-
-	public void setBranchTransferGoalsDao(BranchTransferGoalsDao branchTransferGoalsDao) {
-		this.branchTransferGoalsDao = branchTransferGoalsDao;
-	}
-
-	public void setInventoryDao(InventoryDao inventoryDao) {
-		this.inventoryDao = inventoryDao;
-	}
-
-	public void setSupplierDao(SupplierDao supplierDao) {
-		this.supplierDao = supplierDao;
-	}
-
-	public void setPosItemService(PosItemService posItemService) {
-		this.posItemService = posItemService;
-	}
-
-	public void setPosOrderDao(PosOrderDao posOrderDao) {
-		this.posOrderDao = posOrderDao;
-	}
-
-	public void setTransferOutOrderDao(TransferOutOrderDao transferOutOrderDao) {
-		this.transferOutOrderDao = transferOutOrderDao;
-	}
-
-	public void setWholesaleOrderDao(WholesaleOrderDao wholesaleOrderDao) {
-		this.wholesaleOrderDao = wholesaleOrderDao;
-	}
-
-	public void setBookResourceService(BookResourceService bookResourceService) {
-		this.bookResourceService = bookResourceService;
-	}
-
-	public void setReportDao(ReportDao reportDao) {
-		this.reportDao = reportDao;
-	}
-
-	public void setStoreItemSupplierDao(StoreItemSupplierDao storeItemSupplierDao) {
-		this.storeItemSupplierDao = storeItemSupplierDao;
-	}
 
 	@Override
 	public List<Object[]> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
