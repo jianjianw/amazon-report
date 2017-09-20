@@ -1,24 +1,24 @@
 package com.nhsoft.report.dao.impl;
 
+
 import com.nhsoft.report.dao.BranchTransferGoalsDao;
 import com.nhsoft.report.model.BranchTransferGoals;
-import com.nhsoft.report.shared.AppConstants;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.Date;
 import java.util.List;
-
-/**
- * Created by yangqin on 2017/9/20.
- */
 @Repository
 public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransferGoalsDao {
+
 	@Override
-	public List<BranchTransferGoals> find(String systemBookCode, Integer branchNum) {
+	public List<BranchTransferGoals> find(String systemBookCode,
+										  Integer branchNum) {
 		Criteria criteria = currentSession().createCriteria(BranchTransferGoals.class, "g")
 				.add(Restrictions.eq("g.id.systemBookCode", systemBookCode));
 		if(branchNum != null){
@@ -26,9 +26,12 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 		}
 		return criteria.list();
 	}
-	
+
+
+
 	@Override
-	public List<BranchTransferGoals> findByDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
+	public List<BranchTransferGoals> findByDate(String systemBookCode,
+												List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
 		Criteria criteria = currentSession().createCriteria(BranchTransferGoals.class, "g")
 				.add(Restrictions.eq("g.id.systemBookCode", systemBookCode));
 		if(branchNums != null && branchNums.size() != 0){
@@ -68,7 +71,8 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 		}
 		return criteria.list();
 	}
-	
+
+
 	@Override
 	public List<Object[]> findSummaryByDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
 		Criteria criteria = currentSession().createCriteria(BranchTransferGoals.class, "g")
@@ -117,4 +121,6 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 		);
 		return criteria.list();
 	}
+
+
 }

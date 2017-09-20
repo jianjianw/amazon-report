@@ -13,12 +13,12 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
-import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-
-public class AllocationOrderDaoImpl extends HibernateDaoSupport implements AllocationOrderDao {
+@Repository
+public class AllocationOrderDaoImpl extends DaoImpl implements AllocationOrderDao {
 
 	@Override
 	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {

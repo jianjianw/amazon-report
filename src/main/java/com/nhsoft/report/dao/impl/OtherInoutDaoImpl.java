@@ -13,6 +13,7 @@ import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class OtherInoutDaoImpl extends  DaoImpl implements OtherInoutDao {
 		if (dateTo != null) {
 			criteria.add(Restrictions.le("o.otherInoutAuditTime", DateUtil.getMaxOfDate(dateTo)));
 		}
+		Type
 		criteria.setProjection(Projections
 				.projectionList()
 				.add(Projections.groupProperty("o.clientFid"))

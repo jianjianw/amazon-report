@@ -1,7 +1,7 @@
 package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.CardUserLogDao;
-import com.nhsoft.report.shared.AppConstants;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;

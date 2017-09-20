@@ -1,18 +1,16 @@
 package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.AdjustmentOrderDao;
-import com.nhsoft.report.model.AdjustmentOrder;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Query;
-
-import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-
-public class AdjustmentOrderDaoImpl extends HibernateDaoSupport implements AdjustmentOrderDao{
+@Repository
+public class AdjustmentOrderDaoImpl extends DaoImpl implements AdjustmentOrderDao{
 
 
 	@Override

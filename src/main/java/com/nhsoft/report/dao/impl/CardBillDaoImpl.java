@@ -1,7 +1,7 @@
 package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.CardBillDao;
-import com.nhsoft.report.shared.AppConstants;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Query;
