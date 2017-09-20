@@ -33,17 +33,9 @@ public interface SystemBookService {
      */
     public List<SystemBook> findAllActiveBooks();
     
-    /**
-     * 更新帐套
-     * @param systemBook
-     */
-    public void update(SystemBook systemBook);
 
-    /**
-     * 保存
-     * @param systemBook
-     */
-	public void save(SystemBook systemBook);
+
+
 	
 	/**
 	 * 从缓存中读单个
@@ -58,18 +50,9 @@ public interface SystemBookService {
 	 */
 	public List<SystemBook> findAllInCache();
 	
-	/**
-	 * 微商城续费
-	 * @param systemBookCode
-	 */
-	public void addWShopExpiration(String systemBookCode, int year);
+
 	
-	/**
-	 * 修改乐盟帐套名称
-	 * @param systemBookCode
-	 * @param systemBookName
-	 */
-	public void updateLementBookName(String systemBookCode, String systemBookName);
+
 	
 	/**
 	 * 根据上级帐套号查询
@@ -78,10 +61,5 @@ public interface SystemBookService {
 	 */
 	public List<SystemBook> findByParent(String systemBookCode);
 	
-	/**
-	 * 更新连锁标记
-	 * @param systemBookCode
-	 * @param checkCode
-	 */
-	public void updateChainActived(String systemBookCode, String checkCode);
+
 }

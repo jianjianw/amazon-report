@@ -1,13 +1,13 @@
 package com.nhsoft.report.dao.impl;
 
-import com.nhsoft.pos3.server.dto.*;
-import com.nhsoft.pos3.server.model.*;
-import com.nhsoft.pos3.server.service.impl.dao.ReportDao;
-import com.nhsoft.pos3.server.util.AppUtil;
-import com.nhsoft.pos3.server.util.DateUtil;
-import com.nhsoft.pos3.shared.AppConstants;
-import com.nhsoft.pos3.shared.queryBuilder.*;
-import org.apache.commons.lang.StringUtils;
+import com.nhsoft.report.dao.ReportDao;
+import com.nhsoft.report.dto.*;
+import com.nhsoft.report.model.*;
+import com.nhsoft.report.shared.queryBuilder.*;
+import com.nhsoft.report.util.AppConstants;
+import com.nhsoft.report.util.AppUtil;
+import com.nhsoft.report.util.DateUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
@@ -92,7 +92,7 @@ public class ReportDaoHibernate extends HibernateDaoSupport implements ReportDao
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums,
-			Date dateFrom, Date dateTo) {
+																   Date dateFrom, Date dateTo) {
 		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>();
 
 		StringBuffer sb = new StringBuffer();
@@ -2872,7 +2872,7 @@ public class ReportDaoHibernate extends HibernateDaoSupport implements ReportDao
 	
 	@Override
 	public List<SalerCommissionBrand> findSalerCommissionBrands(String systemBookCode, Date dtFrom, Date dtTo,
-			List<Integer> branchNums, List<String> salerNums) {
+																List<Integer> branchNums, List<String> salerNums) {
 			
 		StringBuffer sb = new StringBuffer();
 		sb.append("select p.order_sold_by, p.branch_num, item.item_brand, ");
@@ -2946,7 +2946,7 @@ public class ReportDaoHibernate extends HibernateDaoSupport implements ReportDao
 	
 	@Override
 	public List<SalerCommission> findSalerCommissions(String systemBookCode, Date dtFrom, Date dtTo,
-			List<Integer> branchNums, List<String> salerNums) {
+													  List<Integer> branchNums, List<String> salerNums) {
 		
 		List<SalerCommission> list = new ArrayList<SalerCommission>();		
 		StringBuffer sb = new StringBuffer(); 
