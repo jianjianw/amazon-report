@@ -1,6 +1,7 @@
 package com.nhsoft.report.service;
 
 import com.nhsoft.report.param.AdjustmentReason;
+import com.nhsoft.report.param.CardUserType;
 import com.nhsoft.report.param.PosItemTypeParam;
 
 import java.util.List;
@@ -34,6 +35,21 @@ public interface BookResourceService {
 	 * @return
 	 */
 	public List<PosItemTypeParam> findPosItemTypeParams(String systemBookCode) ;
+
+
+	/**
+	 * 缓存中查询消费卡类型
+	 * @param systemBookCode
+	 * @return
+	 */
+	public List<CardUserType> findCardUserTypesInCache(String systemBookCode);
+
+	/**
+	 * 查询消费卡类型
+	 * @param systemBookCode
+	 * @return
+	 */
+	public List<CardUserType> findCardUserTypes(String systemBookCode);
 
 
 }

@@ -22,6 +22,10 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 		this.branchDao = branchDao;
 	}
 
+	@Override
+	public List<Branch> findAll(String systemBookCode) {
+		return branchDao.findAll(systemBookCode);
+	}
 
 	@Override
 	public List<Branch> findInCache(String systemBookCode) {
@@ -75,6 +79,11 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	@Override
 	public List<Branch> findActivedRdc(String systemBookCode) {
 		return branchDao.findActivedRdc(systemBookCode);
+	}
+
+	@Override
+	public List<Branch> findAllActived(String systemBookCode) {
+		return branchDao.findAllActived(systemBookCode);
 	}
 
 

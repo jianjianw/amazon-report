@@ -4,6 +4,7 @@ package com.nhsoft.report.service.impl;
 import com.nhsoft.report.dao.BookResourceDao;
 import com.nhsoft.report.model.BookResource;
 import com.nhsoft.report.param.AdjustmentReason;
+import com.nhsoft.report.param.CardUserType;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.BookResourceService;
 import com.nhsoft.report.shared.AppConstants;
@@ -64,4 +65,42 @@ public class BookResourceServiceImpl extends BaseManager implements BookResource
 		return params;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CardUserType> findCardUserTypesInCache(String systemBookCode) {
+
+		if(RedisUtil.isRedisValid()){
+			String key = AppConstants.REDIS_PRE_BOOK_RESOURCE + AppConstants.CARD_CATEGORY + systemBookCode;
+			Object object = RedisUtil.get(key);
+			if(object == null){
+				List<CardUserType> cardUserTypes = findCardUserTypes(systemBookCode);
+				RedisUtil.put(key, cardUserTypes, AppConstants.REDIS_CACHE_LIVE_SECOND);
+				return cardUserTypes;
+			} else {
+				return (List<CardUserType>) object;
+			}
+
+		} else {
+
+			Element element = getElementFromCache(AppConstants.CARD_CATEGORY + systemBookCode);
+			if(element == null){
+				List<CardUserType> cardUserTypes = findCardUserTypes(systemBookCode);
+				element = new Element(AppConstants.CARD_CATEGORY + systemBookCode, cardUserTypes);
+				element.setEternal(true);
+				putElementToCache(element);
+			}
+			return (List<CardUserType>) element.getObjectValue();
+		}
+
+	}
+
+	@Override
+	public List<CardUserType> findCardUserTypes(String systemBookCode) {
+		BookResource bookResource = bookResourceDao.read(systemBookCode, AppConstants.CARD_CATEGORY);
+		if(bookResource == null){
+			return new ArrayList<CardUserType>();
+		}
+		List<CardUserType> params = CardUserType.readFromXml(bookResource.getBookResourceParam());
+		return params;
+	}
 }

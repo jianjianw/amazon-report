@@ -1,7 +1,6 @@
 package com.nhsoft.report.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nhsoft.report.shared.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.BooleanUtils;

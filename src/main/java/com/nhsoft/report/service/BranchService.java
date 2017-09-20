@@ -12,7 +12,12 @@ public interface BranchService {
 
 
 
-
+	/**
+	 * 查询分店
+	 * @param systemBookCode 帐套号
+	 * @return
+	 */
+	public List<Branch> findAll(String systemBookCode);
 	/**
 	 * 从缓存中读取分店
 	 * @param systemBookCode
@@ -34,4 +39,11 @@ public interface BranchService {
 	 * @return
 	 */
 	public List<Branch> findActivedRdc(String systemBookCode);
+
+	/**
+	 * 查询所有启用分店
+	 * @param systemBookCode 帐套号
+	 * @return
+	 */
+	public List<Branch> findAllActived(String systemBookCode);
 }

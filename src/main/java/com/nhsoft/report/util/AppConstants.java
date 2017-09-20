@@ -22,6 +22,7 @@ public class AppConstants {
 
 
 	public static final int CACHE_LIVE_DAY = 60 * 60 * 24; //缓存有效时间一天
+	public static final String INIT_TIME = "1899-12-30 00:00:00";
 	
 	/**
 	 * 单据明细类型
@@ -151,4 +152,20 @@ public class AppConstants {
 	 * 报损原因类型
 	 */
 	public static final String ADJUSTMENT_REASON_TYPE_LOSS = "报损";
+
+
+	//首页柱状图查询依据
+	public static final String BUSINESS_TREND_PAYMENT = "按营业额";
+	public static final String BUSINESS_TREND_DEPOSIT = "按储值额";
+
+
+	//首页柱状图和销售额分析查询时间格式
+	public static final String BUSINESS_DATE_YEAR = "按年";
+	public static final String BUSINESS_DATE_DAY = "按日";
+
+	//单据明细状态
+	public static final int POS_ORDER_DETAIL_STATE_SALE = 1;
+	public static final int POS_ORDER_DETAIL_STATE_REMOVE = 8;
+	public static final int POS_ORDER_DETAIL_STATE_CANCEL = 4;
+	public static final int POS_ORDER_DETAIL_STATE_PRESENT = 2;
 }

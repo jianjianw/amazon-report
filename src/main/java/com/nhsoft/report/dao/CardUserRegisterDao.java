@@ -16,4 +16,6 @@ public interface CardUserRegisterDao {
 	 */
 	public List<Object[]> findBranchDeliverCount(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
+	public List<Object[]> findSalerSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> salerNames);
+
 }

@@ -12229,7 +12229,7 @@ public class ReportServiceImpl implements ReportService {
 			dto.setItemOutQty(dto.getItemOutQty().add(amount));
 			dto.setItemOutMoney(dto.getItemOutMoney().add(money));
 
-			LnItemDetailDTO detailDTO = new LnItemDetailDTO();
+			LnItemSummaryDTO.LnItemDetailDTO detailDTO = new LnItemSummaryDTO.LnItemDetailDTO();
 			detailDTO.setBillNo((String) object[0]);
 			detailDTO.setBillType(AppConstants.POS_ITEM_LOG_OUT_ORDER);
 			// 调出单 调入单 批发销售 批发退货显示的数据要取相反数
@@ -12241,10 +12241,10 @@ public class ReportServiceImpl implements ReportService {
 			dto.getLnItemDetailDTOs().add(detailDTO);
 		}
 
-		Comparator<LnItemDetailDTO> comparator = new Comparator<LnItemSummaryDTO.LnItemDetailDTO>() {
+		Comparator<LnItemSummaryDTO.LnItemDetailDTO> comparator = new Comparator<LnItemSummaryDTO.LnItemDetailDTO>() {
 
 			@Override
-			public int compare(LnItemDetailDTO o1, LnItemDetailDTO o2) {
+			public int compare(LnItemSummaryDTO.LnItemDetailDTO o1, LnItemSummaryDTO.LnItemDetailDTO o2) {
 				return o1.getDate().compareTo(o2.getDate());
 			}
 
@@ -12264,7 +12264,7 @@ public class ReportServiceImpl implements ReportService {
 					.add(dto.getItemInventoryMoney()));
 			
 			for(int j = 0;j < dto.getLnItemDetailDTOs().size();j++){
-				LnItemDetailDTO detailDTO = dto.getLnItemDetailDTOs().get(j);
+				LnItemSummaryDTO.LnItemDetailDTO detailDTO = dto.getLnItemDetailDTOs().get(j);
 				
 				if(StringUtils.isNotEmpty(detailDTO.getBillMemo())){
 					if(detailDTO.getBillType().equals(AppConstants.POS_ITEM_LOG_OUT_ORDER) 

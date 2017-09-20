@@ -1,8 +1,9 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.model.ItemMatrix;
-import com.nhsoft.pos3.server.model.PosItem;
-import com.nhsoft.pos3.server.model.Supplier;
+
+import com.nhsoft.report.model.ItemMatrix;
+import com.nhsoft.report.model.PosItem;
+import com.nhsoft.report.model.Supplier;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

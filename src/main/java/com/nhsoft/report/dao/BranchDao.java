@@ -19,5 +19,7 @@ public interface BranchDao {
 
 	public Branch readWithNolock(String systemBookCode, Integer branchNum);
 
+	public List<Branch> findAllActived(String systemBookCode);
+
 
 }
