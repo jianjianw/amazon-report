@@ -5,11 +5,12 @@ import com.nhsoft.report.dao.StoreItemSupplierDao;
 import com.nhsoft.report.model.StoreItemSupplier;
 import com.nhsoft.report.service.StoreItemSupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
 import java.util.List;
 
-
+@Service
 public class StoreItemSupplierServiceImpl implements StoreItemSupplierService {
 
 	@Autowired

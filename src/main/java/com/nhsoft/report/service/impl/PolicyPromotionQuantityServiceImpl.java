@@ -7,10 +7,11 @@ import com.nhsoft.report.service.PolicyPromotionQuantityService;
 import com.nhsoft.report.shared.queryBuilder.PolicyPosItemQuery;
 import com.nhsoft.report.util.BaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-
+@Service
 public class PolicyPromotionQuantityServiceImpl extends BaseManager implements PolicyPromotionQuantityService {
 	@Autowired
 	private PolicyPromotionQuantityDao policyPromotionQuantityDao;

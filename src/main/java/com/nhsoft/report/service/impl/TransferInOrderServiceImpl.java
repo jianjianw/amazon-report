@@ -4,12 +4,14 @@ import com.nhsoft.report.dao.TransferInOrderDao;
 import com.nhsoft.report.service.TransferInOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
-
+@Service
 public class TransferInOrderServiceImpl implements TransferInOrderService {
 	private static final Logger logger = LoggerFactory.getLogger(TransferInOrderServiceImpl.class);
-
+	@Autowired
 	private TransferInOrderDao transferInOrderDao;
 
 	@Override

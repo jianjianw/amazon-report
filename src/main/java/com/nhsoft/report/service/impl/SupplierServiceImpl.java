@@ -6,13 +6,15 @@ import com.nhsoft.report.model.Supplier;
 import com.nhsoft.report.service.SupplierService;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.BaseManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-
+@Service
 @SuppressWarnings("unchecked")
 public class SupplierServiceImpl extends BaseManager implements SupplierService {
-
+	@Autowired
 	private SupplierDao supplierDao;
 	private Gson gson;
 	public SupplierServiceImpl() {

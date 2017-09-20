@@ -2,11 +2,13 @@ package com.nhsoft.report.service.impl;
 
 import com.nhsoft.report.dao.AdjustmentOrderDao;
 import com.nhsoft.report.service.AdjustmentOrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
-
+@Service
 public class AdjustmentOrderServiceImpl implements AdjustmentOrderService {
-
+	@Autowired
 	private AdjustmentOrderDao adjustmentOrderDao;
 
 	@Override

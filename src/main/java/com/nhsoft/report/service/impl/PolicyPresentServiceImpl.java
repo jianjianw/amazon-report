@@ -6,9 +6,10 @@ import com.nhsoft.report.dto.PolicyPosItem;
 import com.nhsoft.report.service.PolicyPresentService;
 import com.nhsoft.report.shared.queryBuilder.PolicyPosItemQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class PolicyPresentServiceImpl implements PolicyPresentService {
 	@Autowired
 	private PolicyPresentDao policyPresentDao;

@@ -4,11 +4,15 @@ import com.nhsoft.report.dao.ReturnOrderDao;
 import com.nhsoft.report.service.ReturnOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.*;
+@Service
 public class ReturnOrderServiceImpl implements ReturnOrderService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReturnOrderServiceImpl.class);
+	@Autowired
 	private ReturnOrderDao returnOrderDao;
 
 	public ReturnOrderDao getReturnOrderDao() {

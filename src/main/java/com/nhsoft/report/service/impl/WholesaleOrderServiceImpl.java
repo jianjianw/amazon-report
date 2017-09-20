@@ -4,14 +4,16 @@ import com.nhsoft.report.dao.WholesaleOrderDao;
 import com.nhsoft.report.service.WholesaleOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
 import java.util.*;
-
+@Service
 public class WholesaleOrderServiceImpl implements WholesaleOrderService {
 
 	private static final Logger logger = LoggerFactory.getLogger(WholesaleOrderServiceImpl.class);
-
+	@Autowired
 	private WholesaleOrderDao wholesaleOrderDao;
 
 	@Override

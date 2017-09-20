@@ -7,14 +7,16 @@ import com.nhsoft.report.service.SystemBookService;
 
 import com.nhsoft.report.util.*;
 import net.sf.ehcache.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
+@Service
 public class SystemBookServiceImpl extends BaseManager implements SystemBookService {
-    
+    @Autowired
     private SystemBookDao systemBookDao;
 
     public void setSystemBookDao(SystemBookDao systemBookDao) {

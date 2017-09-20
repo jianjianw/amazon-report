@@ -3,11 +3,13 @@ package com.nhsoft.report.service.impl;
 
 import com.nhsoft.report.dao.InventoryDao;
 import com.nhsoft.report.service.InventoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
-
+@Service
 public class InventoryServiceImpl implements InventoryService {
-
+	@Autowired
 	private InventoryDao inventoryDao;
 
 	@Override

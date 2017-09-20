@@ -11,12 +11,14 @@ import com.nhsoft.report.shared.AppConstants;
 import com.nhsoft.report.util.BaseManager;
 import com.nhsoft.report.util.RedisUtil;
 import net.sf.ehcache.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class BookResourceServiceImpl extends BaseManager implements BookResourceService {
-
+	@Autowired
 	private BookResourceDao bookResourceDao;
 
 	@Override

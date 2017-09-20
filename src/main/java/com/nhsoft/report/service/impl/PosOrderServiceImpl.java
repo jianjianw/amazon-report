@@ -5,19 +5,17 @@ import com.nhsoft.report.dto.ItemQueryDTO;
 import com.nhsoft.report.service.PosOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-
+@Service
 public class PosOrderServiceImpl implements PosOrderService {
 	private static final Logger logger = LoggerFactory.getLogger(PosOrderServiceImpl.class);
-
+	@Autowired
 	private PosOrderDao posOrderDao;
 
-
-	public void setPosOrderDao(PosOrderDao posOrderDao) {
-		this.posOrderDao = posOrderDao;
-	}
 
 
 	@Override

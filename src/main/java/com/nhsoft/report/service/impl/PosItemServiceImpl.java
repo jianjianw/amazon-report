@@ -15,18 +15,23 @@ import com.nhsoft.report.util.MemCacheUtil;
 import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
+@Service
 @SuppressWarnings("unchecked")
 public class PosItemServiceImpl extends BaseManager implements PosItemService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PosItemServiceImpl.class);
+	@Autowired
 	private PosItemDao posItemDao;
+	@Autowired
 	private StoreMatrixDao storeMatrixDao;
+	@Autowired
 	private PosItemGradeDao posItemGradeDao;
 	private ConcurrentMap<String, String> concurrentMap = new ConcurrentHashMap<String, String>();
 	private ConcurrentMap<String, Date> cacheDateMap = new ConcurrentHashMap<String, Date>();

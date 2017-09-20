@@ -8,19 +8,18 @@ import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.BaseManager;
 import com.nhsoft.report.util.MemCacheUtil;
 import net.sf.ehcache.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
+@Service
 @SuppressWarnings("unchecked")
 public class BranchServiceImpl extends BaseManager implements BranchService {
-
+	@Autowired
 	private BranchDao branchDao;
 	private ConcurrentMap<String, Date> cacheDateMap = new ConcurrentHashMap<String, Date>();
-	public void setBranchDao(BranchDao branchDao) {
-		this.branchDao = branchDao;
-	}
 
 	@Override
 	public List<Branch> findAll(String systemBookCode) {

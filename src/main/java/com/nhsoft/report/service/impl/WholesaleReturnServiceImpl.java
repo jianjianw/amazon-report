@@ -2,11 +2,13 @@ package com.nhsoft.report.service.impl;
 
 import com.nhsoft.report.dao.WholesaleReturnDao;
 import com.nhsoft.report.service.WholesaleReturnService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
-
+@Service
 public class WholesaleReturnServiceImpl implements WholesaleReturnService {
-
+	@Autowired
 	private WholesaleReturnDao wholesaleReturnDao;
 
 	@Override
