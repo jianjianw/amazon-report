@@ -2,7 +2,9 @@ package com.nhsoft.report.dao.impl;
 
 
 import com.nhsoft.report.dao.PolicyPromotionMoneyDao;
+import com.nhsoft.report.dto.PolicyPosItem;
 import com.nhsoft.report.model.PolicyPromotionMoney;
+import com.nhsoft.report.shared.queryBuilder.PolicyPosItemQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Criteria;
@@ -48,4 +50,103 @@ public class PolicyPromotionMoneyDaoImpl extends DaoImpl implements PolicyPromot
 		}
 		return criteria;
 	}
+
+
+	@Override
+	public List<PolicyPosItem> findPolicyPosItems(PolicyPosItemQuery posItemQuery) {
+		Date dateFrom = DateUtil.getMinOfDate(posItemQuery.getDtFrom());
+		Date dateTo = DateUtil.getMaxOfDate(posItemQuery.getDtTo());
+		Criteria criteria = currentSession().createCriteria(PolicyPromotionMoney.class, "p")
+				.createAlias("p.policyPromotionMoneyDetails", "detail")
+				.add(Restrictions.eq("p.systemBookCode", posItemQuery.getSystemBookCode()))
+				.add(Restrictions.eq("p.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.le("p.promotionMoneyDateFrom", dateTo))
+				.add(Restrictions.ge("p.promotionMoneyDateTo", dateFrom));
+
+		if(posItemQuery.getItemNums() != null && posItemQuery.getItemNums().size() > 0){
+			criteria.add(Restrictions.in("detail.itemNum", posItemQuery.getItemNums()));
+		}
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.property("detail.itemNum"))
+				.add(Projections.property("p.promotionMoneyAppliedBranch"))
+				.add(Projections.property("p.promotionMoneyDateFrom"))
+				.add(Projections.property("p.promotionMoneyDateTo"))
+				.add(Projections.property("p.promotionMoneyTimeFrom"))
+				.add(Projections.property("p.promotionMoneyTimeTo"))
+				.add(Projections.property("p.promotionMoneyNo"))
+				.add(Projections.property("p.promotionMoneyCreator"))
+				.add(Projections.property("p.promotionMoneyAuditor"))
+				.add(Projections.property("detail.promotionMoneyDetailAmountLimit"))
+				.add(Projections.property("detail.promotionMoneyDetailSpecialPrice"))
+				.add(Projections.property("p.promotionMoneyMonActived"))
+				.add(Projections.property("p.promotionMoneyTuesActived"))
+				.add(Projections.property("p.promotionMoneyWedActived"))
+				.add(Projections.property("p.promotionMoneyThursActived"))
+				.add(Projections.property("p.promotionMoneyFridayActived"))
+				.add(Projections.property("p.promotionMoneySatActived"))
+				.add(Projections.property("p.promotionMoneySunActived"))
+				.add(Projections.property("p.promotionMoneyCardOnly"))
+
+
+		);
+		List<PolicyPosItem> list = new ArrayList<PolicyPosItem>();
+		List<Object[]> objects = criteria.list();
+		for(int i = 0;i < objects.size();i++){
+			PolicyPosItem policyPosItem = new PolicyPosItem();
+			Object[] object = objects.get(i);
+			policyPosItem.setItemNum((Integer)object[0]);
+			policyPosItem.setPolicyAppliedBranch((String)object[1]);
+			policyPosItem.setDateFrom((Date)object[2]);
+			policyPosItem.setDateTo((Date)object[3]);
+			policyPosItem.setTimeFrom((Date)object[4]);
+			policyPosItem.setTimeTo((Date)object[5]);
+			policyPosItem.setPolicyNo((String)object[6]);
+			policyPosItem.setPolicyCreator((String)object[7]);
+			policyPosItem.setPolicyAuditor((String)object[8]);
+			policyPosItem.setPolicyType(AppConstants.POLICY_PROMOTION_MONEY);
+			policyPosItem.setBillLimmit((BigDecimal)object[9]);
+			policyPosItem.setPolicyPrice((BigDecimal)object[10]);
+			String value = "";
+			if((Boolean)object[11]){
+				value = value+"*";
+			}else{
+				value = value+" ";
+			}
+			if((Boolean)object[12]){
+				value = value+"*";
+			}else{
+				value = value+" ";
+			}
+			if((Boolean)object[13]){
+				value = value+"*";
+			}else{
+				value = value+" ";
+			}
+			if((Boolean)object[14]){
+				value = value+"*";
+			}else{
+				value = value+" ";
+			}
+			if((Boolean)object[15]){
+				value = value+"*";
+			}else{
+				value = value+" ";
+			}
+			if((Boolean)object[16]){
+				value = value+"*";
+			}else{
+				value = value+" ";
+			}
+			if((Boolean)object[17]){
+				value = value+"*";
+			}else{
+				value = value+" ";
+			}
+			policyPosItem.setEffectiveDate(value);
+			policyPosItem.setCardOnly(object[18] == null?false:(Boolean)object[18]);
+			list.add(policyPosItem);
+		}
+		return list;
+	}
+
 }

@@ -1,21 +1,24 @@
-package com.nhsoft.report.dao;
+package com.nhsoft.report.service;
+
+
 
 
 import com.nhsoft.report.dto.PolicyPosItem;
 import com.nhsoft.report.shared.queryBuilder.PolicyPosItemQuery;
 
-import java.util.Date;
 import java.util.List;
 
-public interface PolicyPresentDao {
-
-	
-	public int count(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
-
+/**
+ * 超量特价单
+ * @author nhsoft
+ *
+ */
+public interface PolicyPromotionQuantityService {
 	/**
 	 * 商品促销查询
 	 * @param posItemQuery
 	 * @return
 	 */
 	public List<PolicyPosItem> findPolicyPosItems(PolicyPosItemQuery posItemQuery);
+
 }

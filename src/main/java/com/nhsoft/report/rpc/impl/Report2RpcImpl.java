@@ -60,11 +60,15 @@ public class Report2RpcImpl implements Report2Rpc {
 	private StoreMatrixService storeMatrixService;
 	@Autowired
 	private PosItemLogService posItemLogService;
+	@Autowired
 	private ItemVersionService itemVersionService;
-
+	@Autowired
 	private PolicyPromotionQuantityService policyPromotionQuantityService;
+	@Autowired
 	private PolicyPromotionMoneyService policyPromotionMoneyService;
+	@Autowired
 	private PolicyPromotionService policyPromotionService;
+	@Autowired
 	private PolicyPresentService policyPresentService;
 	private StoreItemSupplierService storeItemSupplierService;
 	

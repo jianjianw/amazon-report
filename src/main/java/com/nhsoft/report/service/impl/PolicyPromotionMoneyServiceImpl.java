@@ -1,0 +1,20 @@
+package com.nhsoft.report.service.impl;
+
+
+import com.nhsoft.report.dao.PolicyPromotionMoneyDao;
+import com.nhsoft.report.dto.PolicyPosItem;
+import com.nhsoft.report.service.PolicyPromotionMoneyService;
+import com.nhsoft.report.shared.queryBuilder.PolicyPosItemQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+public class PolicyPromotionMoneyServiceImpl implements PolicyPromotionMoneyService {
+	@Autowired
+	private PolicyPromotionMoneyDao policyPromotionMoneyDao;
+
+	@Override
+	public List<PolicyPosItem> findPolicyPosItems(PolicyPosItemQuery posItemQuery) {
+		return policyPromotionMoneyDao.findPolicyPosItems(posItemQuery);
+	}
+}
