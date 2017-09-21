@@ -85,5 +85,17 @@ public interface CardDepositDao {
 	 * @return
 	 */
 	public List<Object[]> findSalerSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> salerNames);
-	
+
+
+	/**
+	 * 根据分店、营业日 、支付方式汇总金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param cardUserCardType
+	 * @return
+	 */
+	public List<Object[]> findBranchBizdayPaymentTypeSum(String systemBookCode, List<Integer> branchNums,
+														 Date dateFrom, Date dateTo, Integer cardUserCardType);
 }

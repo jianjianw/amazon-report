@@ -26,4 +26,11 @@ public interface OnlineOrderDao {
 	 */
 	public List<OnlineOrderSaleAnalysisDTO> findOnlineOrderSaleAnalysisByItem(OnlineOrderQuery onlineOrderQuery);
 
+	/**
+	 * 按门店、商品汇总在线订单数据
+	 * @param onlineOrderQuery
+	 * @return
+	 */
+	public List<OnlineOrderSaleAnalysisDTO> findOnlineOrderSaleAnalysisByBranchItem(OnlineOrderQuery onlineOrderQuery);
+
 }

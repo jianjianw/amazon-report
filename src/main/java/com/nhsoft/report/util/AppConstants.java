@@ -164,6 +164,7 @@ public class AppConstants {
 	 * 首页柱状图和销售额分析查询时间格式
 	 */
 	public static final String BUSINESS_DATE_YEAR = "按年";
+	public static final String BUSINESS_DATE_MONTH = "按月";
 	public static final String BUSINESS_DATE_DAY = "按日";
 	
 	/**

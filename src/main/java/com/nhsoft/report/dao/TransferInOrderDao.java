@@ -2,6 +2,7 @@ package com.nhsoft.report.dao;
 
 import com.nhsoft.report.shared.queryBuilder.TransferProfitQuery;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -77,5 +78,10 @@ public interface TransferInOrderDao {
 	 * @return
 	 */
 	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+
+
+	public BigDecimal findBalance(String systemBookCode,
+								  Integer centerBranchNum, Integer branchNum, Date dtFrom, Date dtTo);
+
 
 }

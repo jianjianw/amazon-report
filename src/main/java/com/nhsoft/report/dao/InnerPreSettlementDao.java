@@ -2,6 +2,7 @@ package com.nhsoft.report.dao;
 
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -16,5 +17,14 @@ public interface InnerPreSettlementDao {
 	 * @return
 	 */
 	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+
+	/**
+	 * 未结算金额
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param centerBranchNum
+	 * @return
+	 */
+	public BigDecimal readBranchUnPaidMoney(String systemBookCode, Integer branchNum, Integer centerBranchNum);
 
 }

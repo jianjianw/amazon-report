@@ -7,6 +7,21 @@ import java.util.Date;
 import java.util.List;
 
 public interface CardConsumeDao {
+
+
+
+	/**
+	 * 根据分店、营业日汇总金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param cardUserCardType
+	 * @return
+	 */
+	public List<Object[]> findBranchBizdaySum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+											  Date dateTo, Integer cardUserCardType);
+
 	/**
 	 * 按门店汇总消费金额
 	 * @param systemBookCode

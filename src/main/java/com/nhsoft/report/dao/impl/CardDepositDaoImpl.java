@@ -275,4 +275,31 @@ public class CardDepositDaoImpl extends  DaoImpl implements CardDepositDao{
 		}
 		return query.list();
 	}
+
+	@Override
+	public List<Object[]> findBranchBizdayPaymentTypeSum(String systemBookCode, List<Integer> branchNums,
+														 Date dateFrom, Date dateTo, Integer cardUserCardType) {
+		Criteria criteria = currentSession().createCriteria(CardDeposit.class, "c")
+				.add(Restrictions.eq("c.systemBookCode", systemBookCode));
+		if(branchNums != null && branchNums.size() > 0){
+			criteria.add(Restrictions.in("c.branchNum", branchNums));
+		}
+		if(dateFrom != null){
+			criteria.add(Restrictions.ge("c.shiftTableBizday", DateUtil.getDateShortStr(dateFrom)));
+		}
+		if(dateTo != null){
+			criteria.add(Restrictions.le("c.shiftTableBizday", DateUtil.getDateShortStr(dateTo)));
+		}
+		if(cardUserCardType != null){
+			criteria.add(Restrictions.eq("c.depositCardType", cardUserCardType));
+		}
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.groupProperty("c.branchNum"))
+				.add(Projections.groupProperty("c.shiftTableBizday"))
+				.add(Projections.groupProperty("c.depositPaymentTypeName"))
+				.add(Projections.sum("c.depositCash"))
+				.add(Projections.sum("c.depositMoney"))
+		);
+		return criteria.list();
+	}
 }

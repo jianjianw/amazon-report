@@ -22,6 +22,33 @@ import java.util.List;
  */
 @Repository
 public class CardConsumeDaoImpl extends  DaoImpl implements CardConsumeDao {
+
+
+
+	@Override
+	public List<Object[]> findBranchBizdaySum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+											  Date dateTo, Integer cardUserCardType) {
+		Criteria criteria = currentSession().createCriteria(CardConsume.class, "c")
+				.add(Restrictions.eq("c.systemBookCode", systemBookCode));
+		if(branchNums != null && branchNums.size() != 0){
+			criteria.add(Restrictions.in("c.branchNum", branchNums));
+		}
+		if(dateFrom != null){
+			criteria.add(Restrictions.ge("c.shiftTableBizday", DateUtil.getDateShortStr(dateFrom)));
+		}
+		if(dateTo != null){
+			criteria.add(Restrictions.le("c.shiftTableBizday", DateUtil.getDateShortStr(dateTo)));
+		}
+		if(cardUserCardType != null){
+			criteria.add(Restrictions.eq("c.consumeCardType", cardUserCardType));
+		}
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.groupProperty("c.branchNum"))
+				.add(Projections.groupProperty("c.shiftTableBizday"))
+				.add(Projections.sum("c.consumeMoney"))
+		);
+		return criteria.list();
+	}
 	
 	@Override
 	public List<Object[]> findBranchSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {

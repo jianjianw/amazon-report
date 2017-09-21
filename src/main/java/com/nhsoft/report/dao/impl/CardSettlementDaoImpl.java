@@ -7,6 +7,7 @@ import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Criteria;
 
+import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -14,6 +15,7 @@ import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 @Repository
@@ -35,4 +37,23 @@ public class CardSettlementDaoImpl extends DaoImpl implements CardSettlementDao 
 		return ((Long)criteria.uniqueResult()).intValue();
 	}
 
+
+	@Override
+	public BigDecimal readBranchUnPaidMoney(String systemBookCode,
+											Integer branchNum, Integer centerBranchNum) {
+		String hql = " select sum(cardSettlementMoney - cardSettlementPaidMoney - cardSettlementDiscountMoney) from CardSettlement" +
+				" where systemBookCode = :systemBookCode and state.stateCode = :stateCode " +
+				" and branchNum = :centerBranch and toBranchNum = :branchNum " +
+				" and abs(cardSettlementMoney - cardSettlementPaidMoney - cardSettlementDiscountMoney) > 0.01";
+		Query query = currentSession().createQuery(hql);
+		query.setString("systemBookCode", systemBookCode);
+		query.setInteger("branchNum", branchNum);
+		query.setInteger("stateCode", AppConstants.STATE_INIT_AUDIT_CODE);
+		query.setInteger("centerBranch",centerBranchNum);
+		Object object = query.uniqueResult();
+		if(object != null){
+			return (BigDecimal)object;
+		}
+		return BigDecimal.ZERO;
+	}
 }

@@ -14,4 +14,14 @@ public interface CardSettlementDao {
 	 * @return
 	 */
 	public Integer countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+
+	/**
+	 * 门店未结算金额
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param centerBranchNum
+	 * @return
+	 */
+	public BigDecimal readBranchUnPaidMoney(String systemBookCode,
+											Integer branchNum, Integer centerBranchNum);
 }

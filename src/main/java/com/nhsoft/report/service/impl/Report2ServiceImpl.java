@@ -120,7 +120,7 @@ public class Report2ServiceImpl extends ReportServiceImpl implements Report2Serv
 		}	
 		return list;
 	}
-
+	////
 	@Override
 	public BigDecimal getBranchBalanceMoney(String systemBookCode, Integer centerBranchNum, Integer branchNum) {
 		BigDecimal outMoney = transferOutOrderDao.findBalance(systemBookCode, centerBranchNum, branchNum, null, null);
@@ -778,7 +778,7 @@ public class Report2ServiceImpl extends ReportServiceImpl implements Report2Serv
 		List<Object[]> cardConsumeObjects = cardConsumeDao.findBranchBizdaySum(systemBookCode, branchNums, dateFrom, dateTo,
 				cardUserCardType);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-
+////
 		for (int i = 0; i < cardSendObjects.size(); i++) {
 			Object[] sendObject = cardSendObjects.get(i);
 			CardReportDTO cardReportDTO = new CardReportDTO();

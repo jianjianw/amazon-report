@@ -17,6 +17,7 @@ import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 @Repository
@@ -227,5 +228,32 @@ public class TransferInOrderDaoImpl extends DaoImpl implements TransferInOrderDa
 		}
 		criteria.setProjection(Projections.rowCount());
 		return ((Long)criteria.uniqueResult()).intValue();
+	}
+
+	@Override
+	public BigDecimal findBalance(String systemBookCode, Integer centerBranchNum, Integer branchNum,
+								  Date dtFrom, Date dtTo) {
+		Criteria criteria = currentSession().createCriteria(TransferInOrder.class, "t")
+				.add(Restrictions.eq("t.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("t.branchNum", branchNum))
+				.add(Restrictions.eq("t.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE));
+		if(centerBranchNum != null){
+			criteria.add(Restrictions.eq("t.inBranchNum", centerBranchNum));
+		}
+		if(dtFrom != null){
+			criteria.add(Restrictions.ge("t.inOrderAuditTime", DateUtil.getMinOfDate(dtFrom)));
+		}
+		if(dtTo != null){
+			criteria.add(Restrictions.le("t.inOrderAuditTime", DateUtil.getMaxOfDate(dtTo)));
+		}
+		criteria.setProjection(Projections.sqlProjection("sum(in_order_due_money - in_order_discount_money - in_order_paid_money) as balance",
+				new String[]{"balance"}, new Type[]{StandardBasicTypes.BIG_DECIMAL}));
+		List<Object[]> objects = criteria.list();
+		if(objects != null && objects.size() > 0){
+			Object object = objects.get(0);
+			return object == null? BigDecimal.ZERO:(BigDecimal)object;
+		}
+
+		return BigDecimal.ZERO;
 	}
 }
