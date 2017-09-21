@@ -10,9 +10,7 @@ import java.util.List;
 public interface PosMachineDao {
 
 	public List<PosMachine> findByBranchs(String systemBookCode, List<Integer> branchNums, String queryField);
-	
 
-	public PosMachine read(PosMachineId id);
 
 	
 }

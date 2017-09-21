@@ -2,6 +2,7 @@ package com.nhsoft.report.dao;
 
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -18,4 +19,16 @@ public interface OtherInoutDao {
 	public List<Object[]> findPosBranchFlagKindSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 	                                                   Date dateTo);
 	public List<Object[]> findClientsMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> clientFids);
+
+	/**
+	 * type0 查分店 1查供应商  2查客户
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param innerBranchNum
+	 * @param supplierNum
+	 * @param clientFid
+	 * @param type
+	 * @return
+	 */
+	public BigDecimal getUnPaidMoney(String systemBookCode, Integer branchNum, Integer innerBranchNum, Integer supplierNum, String clientFid, int type);
 }

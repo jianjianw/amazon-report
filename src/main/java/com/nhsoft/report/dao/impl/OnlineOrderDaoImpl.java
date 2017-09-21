@@ -212,4 +212,30 @@ public class OnlineOrderDaoImpl extends  DaoImpl implements OnlineOrderDao{
 		}
 		return list;
 	}
+
+	@Override
+	public List<OnlineOrderSaleAnalysisDTO> findOnlineOrderSaleAnalysisByBranchItem(OnlineOrderQuery onlineOrderQuery) {
+		onlineOrderQuery.setQueryDetails(true);
+		StringBuffer sb = new StringBuffer();
+		sb.append("select o.branch_num, detail.item_num, sum(detail.online_order_detail_qty) as amount,");
+		sb.append("sum(detail.online_order_detail_total_money - detail.online_order_detail_discount_money) as money ");
+		sb.append(createByOnlineOrderQuerySQL(onlineOrderQuery));
+		sb.append("and detail.item_num is not null and detail.online_order_detail_state_code = 1 ");
+		sb.append("group by o.branch_num, detail.item_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		List<OnlineOrderSaleAnalysisDTO> list = new ArrayList<OnlineOrderSaleAnalysisDTO>();
+		List<Object[]> objects = query.list();
+		Object[] object = null;
+		for(int i = 0;i < objects.size();i++){
+			object = objects.get(i);
+
+			OnlineOrderSaleAnalysisDTO dto = new OnlineOrderSaleAnalysisDTO();
+			dto.setBranchNum((Integer) object[0]);
+			dto.setItemNum((Integer) object[1]);
+			dto.setSaleQty((BigDecimal) object[2]);
+			dto.setSaleMoney((BigDecimal) object[3]);
+			list.add(dto);
+		}
+		return list;
+	}
 }

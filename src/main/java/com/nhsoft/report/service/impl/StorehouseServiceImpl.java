@@ -19,4 +19,10 @@ public class StorehouseServiceImpl implements StorehouseService {
 		return storehouseDao.findByBranchs(systemBookCode, branchNums);
 	}
 
+	@Override
+	public List<Storehouse> findByBranch(String systemBookCode,
+										 Integer branchNum) {
+		return storehouseDao.findByBranch(systemBookCode, branchNum);
+	}
+
 }

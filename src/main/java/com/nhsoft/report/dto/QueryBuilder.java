@@ -16,4 +16,6 @@ public abstract  class QueryBuilder implements Serializable {
         this.systemBookCode = systemBookCode;
     }
 
+    public abstract boolean checkQueryBuild();
+
 }

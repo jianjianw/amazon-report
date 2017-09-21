@@ -4,12 +4,12 @@ package com.nhsoft.report.dao.impl;
 import com.nhsoft.report.dao.MessageBoardDao;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Query;
-import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 
-
-public class MessageBoardDaoImpl extends HibernateDaoSupport implements MessageBoardDao {
+@Repository
+public class MessageBoardDaoImpl extends DaoImpl implements MessageBoardDao {
 	@Override
 	public Integer countByDate(String systemBookCode, Date dateFrom, Date dateTo) {
 		String hql = "select count(m.messageBoardId) from MessageBoard as m "

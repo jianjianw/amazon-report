@@ -2,9 +2,11 @@ package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.StoreMatrixDao;
 import com.nhsoft.report.model.StoreMatrix;
+import com.nhsoft.report.model.StoreMatrixDetail;
 import com.nhsoft.report.util.AppUtil;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -40,6 +42,30 @@ public class StoreMatrixDaoImpl extends  DaoImpl implements StoreMatrixDao {
 		Criteria criteria = currentSession().createCriteria(StoreMatrix.class , "s")
 				.add(Restrictions.eq("s.id.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("s.id.itemNum", itemNum));
+		return criteria.list();
+	}
+
+	@Override
+	public List<Object[]> findItemSaleCeaseFlag(String systemBookCode, Integer branchNum) {
+		Criteria criteria = currentSession().createCriteria(StoreMatrix.class , "s")
+				.add(Restrictions.eq("s.id.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("s.id.branchNum", branchNum))
+				.add(Restrictions.eq("s.storeMatrixSaleEnabled", true));
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.property("s.id.itemNum"))
+				.add(Projections.property("s.storeMatrixSaleCeaseFlag"))
+		);
+		return criteria.list();
+	}
+
+	@Override
+	public List<StoreMatrixDetail> findDetails(String systemBookCode, Integer branchNum, List<Integer> itemNums) {
+		Criteria criteria = currentSession().createCriteria(StoreMatrixDetail.class, "detail")
+				.add(Restrictions.eq("detail.id.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("detail.id.branchNum", branchNum));
+		if(itemNums != null && itemNums.size() > 0){
+			criteria.add(Restrictions.in("detail.id.itemNum", itemNums));
+		}
 		return criteria.list();
 	}
 }

@@ -8,8 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface ReceiveOrderDao{
-	
-	public ReceiveOrder read(String fid);
+
 
 
 	/**

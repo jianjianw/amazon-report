@@ -7,6 +7,15 @@ import java.util.List;
 
 public interface WholesaleReturnDao {
 
+	/**
+	 * 按商品主键汇总 数量、 金额、成本
+	 * @param systemBookCode
+	 * @param branchNums 分店列表
+	 * @param dateFrom 审核时间起
+	 * @param dateTo 审核时间止
+	 * @return
+	 */
+	public List<Object[]> findItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	public List<Object[]> findItemSum(String systemBookCode, Integer branchNum, List<String> cleintFids, Date dateFrom, Date dateTo,
 									  List<Integer> itemNums, List<String> categoryCodes, List<Integer> regionNums);
@@ -102,4 +111,14 @@ public interface WholesaleReturnDao {
 	 * @return
 	 */
 	public List<Object[]> findDueMoney(String systemBookCode, Integer branchNum, List<String> clientFid, Date dateFrom, Date dateTo);
+
+	/**
+	 * 按门店统计单据数
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateTo
+	 * @param dateFrom
+	 * @return
+	 */
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 }

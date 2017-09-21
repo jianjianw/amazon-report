@@ -21,10 +21,6 @@ import java.util.List;
 public class RequestOrderDaoImpl extends DaoImpl implements RequestOrderDao {
 
 
-	@Override
-	public RequestOrder read(String requestOrderFid) {
-		return (RequestOrder) getHibernateTemplate().get(RequestOrder.class, requestOrderFid);
-	}
 
 
 	@Override

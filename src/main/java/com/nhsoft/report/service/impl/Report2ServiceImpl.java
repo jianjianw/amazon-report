@@ -7,8 +7,8 @@ import com.nhsoft.report.model.*;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.CardBillService;
 import com.nhsoft.report.service.Report2Service;
-import com.nhsoft.report.shared.AppConstants;
 import com.nhsoft.report.shared.queryBuilder.*;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -120,7 +120,7 @@ public class Report2ServiceImpl extends ReportServiceImpl implements Report2Serv
 		}	
 		return list;
 	}
-
+	////
 	@Override
 	public BigDecimal getBranchBalanceMoney(String systemBookCode, Integer centerBranchNum, Integer branchNum) {
 		BigDecimal outMoney = transferOutOrderDao.findBalance(systemBookCode, centerBranchNum, branchNum, null, null);
@@ -778,7 +778,7 @@ public class Report2ServiceImpl extends ReportServiceImpl implements Report2Serv
 		List<Object[]> cardConsumeObjects = cardConsumeDao.findBranchBizdaySum(systemBookCode, branchNums, dateFrom, dateTo,
 				cardUserCardType);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-
+////
 		for (int i = 0; i < cardSendObjects.size(); i++) {
 			Object[] sendObject = cardSendObjects.get(i);
 			CardReportDTO cardReportDTO = new CardReportDTO();

@@ -1,14 +1,11 @@
 package com.nhsoft.report.util;
 
-import com.alibaba.dubbo.common.utils.StringUtils;
 import com.google.gson.*;
 
-import com.nhsoft.report.model.Branch;
-import com.nhsoft.report.model.ItemMatrix;
-import com.nhsoft.report.model.PosItem;
-import com.nhsoft.report.model.Supplier;
+import com.nhsoft.report.model.*;
 import com.nhsoft.report.param.PosItemTypeParam;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

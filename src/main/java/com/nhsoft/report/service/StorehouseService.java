@@ -20,4 +20,13 @@ public interface StorehouseService {
 	 */
 	public List<Storehouse> findByBranchs(String systemBookCode, List<Integer> branchNums);
 
+
+	/**
+	 * 查询分店仓库
+	 * @param systemBookCode
+	 * @param branchNum 分店号
+	 * @return
+	 */
+	public List<Storehouse> findByBranch(String systemBookCode, Integer branchNum);
+
 }

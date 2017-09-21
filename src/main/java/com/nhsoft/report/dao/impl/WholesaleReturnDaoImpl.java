@@ -21,7 +21,39 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class WholesaleReturnDaoHibernate extends DaoImpl implements WholesaleReturnDao {
+public class WholesaleReturnDaoImpl extends DaoImpl implements WholesaleReturnDao {
+
+
+	@Override
+	public List<Object[]> findItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select detail.itemNum, sum(detail.returnDetailQty), sum(detail.returnDetailMoney), sum(detail.returnDetailCost * detail.returnDetailQty) ");
+		sb.append("from WholesaleReturn as w inner join w.wholesaleReturnDetails as detail ");
+		sb.append("where w.systemBookCode = :systemBookCode and w.state.stateCode = 3 ");
+
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and w.branchNum in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateFrom != null){
+			sb.append("and w.wholesaleReturnAuditTime >= :dateFrom ");
+		}
+		if(dateTo != null){
+			sb.append("and w.wholesaleReturnAuditTime <= :dateTo ");
+		}
+		sb.append("group by detail.itemNum ");
+		Query query = currentSession().createQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if(dateFrom != null){
+			query.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		}
+		if(dateTo != null){
+			query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		}
+		query.setLockOptions(LockOptions.READ);
+
+		return query.list();
+	}
+
 	@Override
 	public List<Object[]> findItemSum(String systemBookCode, Integer branchNum,
 									  List<String> clientFids, Date dateFrom, Date dateTo,
@@ -909,5 +941,21 @@ public class WholesaleReturnDaoHibernate extends DaoImpl implements WholesaleRet
 		return query.list();
 	}
 
+	@Override
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+		Criteria criteria = currentSession().createCriteria(WholesaleReturn.class, "w")
+				.add(Restrictions.eq("w.systemBookCode", systemBookCode));
+		if(branchNum != null && !branchNum.equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+			criteria.add(Restrictions.eq("w.branchNum", branchNum));
+		}
+		if(dateFrom != null){
+			criteria.add(Restrictions.ge("w.wholesaleReturnCreateTime", DateUtil.getMinOfDate(dateFrom)));
+		}
+		if(dateTo != null){
+			criteria.add(Restrictions.le("w.wholesaleReturnCreateTime", DateUtil.getMaxOfDate(dateTo)));
+		}
+		criteria.setProjection(Projections.rowCount());
+		return ((Long)criteria.uniqueResult()).intValue();
+	}
 
 }

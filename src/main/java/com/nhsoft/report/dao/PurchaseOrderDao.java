@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface PurchaseOrderDao {
 
-	public PurchaseOrder read(String fid);
+
 
 	/**
 	 * 未收货的商品数量 (在订量)

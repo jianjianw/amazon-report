@@ -12,9 +12,11 @@ import java.util.Date;
 import java.util.List;
 
 public interface TransferOutOrderDao{
-	
-	public TransferOutOrder read(String outOrderFid);
 
+
+	public List<Object[]> findMoneyByBizday(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<Object[]> findUnTransferedItems(String systemBookCode, Integer outBranchNum, List<Integer> branchNums, List<Integer> storehouseNums);
 
 	public BigDecimal findBalance(String systemBookCode, Integer centerBranchNum,
                                   Integer branchNum, Date dtFrom, Date dtTo);
@@ -250,4 +252,5 @@ public interface TransferOutOrderDao{
 
 	public List<Object[]> findBranchItemMatrixSummary(String systemBookCode, Integer centerBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
 }

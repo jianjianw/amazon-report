@@ -1,6 +1,8 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.model.WeixinPosItem;
+
+
+import com.nhsoft.report.model.WeixinPosItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;

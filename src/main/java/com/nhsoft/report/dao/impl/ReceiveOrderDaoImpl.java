@@ -15,18 +15,14 @@ import org.hibernate.SQLQuery;
 import org.hibernate.criterion.*;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+@Repository
 public class ReceiveOrderDaoImpl extends DaoImpl implements ReceiveOrderDao {
 
-
-	@Override
-	public ReceiveOrder read(String fid) {
-		return (ReceiveOrder) getHibernateTemplate().get(ReceiveOrder.class, fid);
-	}
 
 
 	@Override

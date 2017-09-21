@@ -14,6 +14,7 @@ import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -66,5 +67,44 @@ public class OtherInoutDaoImpl extends  DaoImpl implements OtherInoutDao {
 				.add(Projections.sum("o.otherInoutDueMoney"))
 		);
 		return criteria.list();
+	}
+
+	@Override
+	public BigDecimal getUnPaidMoney(String systemBookCode, Integer branchNum, Integer innerBranchNum,
+									 Integer supplierNum, String clientFid, int type) {
+		Criteria criteria = currentSession()
+				.createCriteria(OtherInout.class, "o")
+				.add(Restrictions.eq("o.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions
+						.sqlRestriction("abs(other_inout_due_money - other_inout_paid_money - other_inout_discount_money) > 0.01"))
+				.add(Restrictions.eq("o.systemBookCode", systemBookCode));
+		if (branchNum != null) {
+			criteria.add(Restrictions.eq("o.branchNum", branchNum));
+
+		}
+		if (type == 0) {
+			criteria.add(Restrictions.isNotNull("o.innerBranchNum"));
+		} else if (type == 1) {
+			criteria.add(Restrictions.isNotNull("o.supplierNum"));
+		} else if (type == 2) {
+			criteria.add(Restrictions.isNotNull("o.clientFid"));
+		}
+		if (innerBranchNum != null) {
+			criteria.add(Restrictions.eq("o.innerBranchNum", innerBranchNum));
+		}
+		if (supplierNum != null) {
+			criteria.add(Restrictions.eq("o.supplierNum", supplierNum));
+		}
+		if (clientFid != null) {
+			criteria.add(Restrictions.eq("o.clientFid", clientFid));
+		}
+		criteria.setProjection(Projections.sqlProjection(
+				"sum(other_inout_due_money - other_inout_paid_money - other_inout_discount_money) as unPaid",
+				new String[] { "unPaid" }, new Type[] { StandardBasicTypes.BIG_DECIMAL }));
+		Object object = criteria.uniqueResult();
+		if (object != null) {
+			return (BigDecimal) object;
+		}
+		return BigDecimal.ZERO;
 	}
 }

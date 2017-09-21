@@ -21,6 +21,15 @@ import java.util.List;
 public interface PosItemService {
 
 	/**
+	 * 查询成分商品
+	 * @param itemNum 商品主键
+	 * @return
+	 */
+	public List<PosItemKit> findPosItemKits(Integer itemNum);
+
+	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit);
+
+	/**
 	 * 按类别查询商品主键
 	 * @param systemBookCode
 	 * @param categoryCodes 多个类别用逗号隔开

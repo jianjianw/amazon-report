@@ -30,9 +30,5 @@ public class PosMachineDaoImpl extends DaoImpl implements PosMachineDao {
 	}
 
 
-	@Override
-	public PosMachine read(PosMachineId id) {
-		return getHibernateTemplate().get(PosMachine.class, id);
-	}
 
 }

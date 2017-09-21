@@ -15,7 +15,6 @@ import java.util.List;
 public interface WholesaleOrderDao {
 
 
-	public WholesaleOrder read(String fid);
 
 	/**
 	 * 按商品汇总销售数量 销售金额 成本金额

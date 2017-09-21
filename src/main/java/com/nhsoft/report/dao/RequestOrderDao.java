@@ -17,8 +17,7 @@ import java.util.List;
 public interface RequestOrderDao {
 	
 
-	
-	public RequestOrder read(String requestOrderFid);
+
 
 	/**
 	 * 向中心要货未调出的商品数量 按商品和多特性汇总

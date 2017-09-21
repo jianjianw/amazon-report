@@ -37,7 +37,31 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 	private ConcurrentMap<String, Date> cacheDateMap = new ConcurrentHashMap<String, Date>();
 
 
+	@Override
+	public List<PosItemKit> findPosItemKits(Integer itemNum) {
+		List<PosItemKit> posItemKits = posItemDao.findPosItemKits(itemNum);
+		for (int i = 0; i < posItemKits.size(); i++) {
+			PosItemKit posItemKit = posItemKits.get(i);
 
+			PosItem posItem = posItemKit.getPosItem();
+			if (posItem != null) {
+				posItem.setItemBars(posItemDao.findItemBars(posItem.getItemNum()));
+
+				if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_MATRIX) {
+					posItem.setItemMatrixs(posItemDao.findItemMatrixs(posItem.getItemNum()));
+
+				} else {
+					posItem.setItemMatrixs(new ArrayList<ItemMatrix>());
+				}
+			}
+		}
+		return posItemKits;
+	}
+
+	@Override
+	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit) {
+		return posItemDao.findItemNumsByPosItemQuery(posItemQuery, offset, limit);
+	}
 
 	@Override
 	public List<Integer> findItemNums(String systemBookCode, String categoryCodes) {

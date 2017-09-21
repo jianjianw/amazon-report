@@ -13,7 +13,16 @@ import java.util.List;
 
 public interface PosOrderDao {
 
-	public PosOrder read(String orderNo);
+	public List<Object[]> findSummaryByBizday(CardReportQuery cardReportQuery);
+
+	public List<Object[]> findCustomReportByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 根据门店汇总 单据数 单据总额 折扣总额 积分总额
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public List<Object[]> findSummaryByBranch(CardReportQuery cardReportQuery);
 
 	/**
 	 * 按商品、多特性编码汇总销售数量 销售金额 成本金额
@@ -285,5 +294,16 @@ public interface PosOrderDao {
 	public List<Object[]> findItemSum(ItemQueryDTO itemQueryDTO);
 
 	public List<Object[]> findBranchItemSum(ItemQueryDTO itemQueryDTO);
+
+
+	/**
+	 * 按门店统计单据数
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @return
+	 */
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+
+	public List<Object[]> findCustomReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
 
 }

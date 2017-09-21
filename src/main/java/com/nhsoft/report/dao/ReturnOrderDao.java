@@ -12,8 +12,7 @@ import java.util.List;
 
 public interface ReturnOrderDao {
 
-	
-	public ReturnOrder read(String fid);
+
 
 	/**
 	 * 根据供应商查询明细

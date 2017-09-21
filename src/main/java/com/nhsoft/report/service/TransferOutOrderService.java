@@ -10,6 +10,11 @@ import java.util.List;
  */
 public interface TransferOutOrderService {
 
+
+	public List<Object[]> findMoneyByBizday(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<Object[]> findUnTransferedItems(String systemBookCode, Integer outBranchNum, List<Integer> branchNums, List<Integer> storehouseNums);
+
 	/**
 	 * 按商品、多特性编码汇总基本数量，调出金额，成本金额
 	 * @param systemBookCode
@@ -36,4 +41,5 @@ public interface TransferOutOrderService {
 	public List<Object[]> findBranchItemMatrixSummary(String systemBookCode, Integer centerBranchNum, List<Integer> branchNums,
 													  Date dateFrom, Date dateTo, List<Integer> itemNums);
 
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
 }

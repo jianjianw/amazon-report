@@ -26,12 +26,6 @@ public class ReturnOrderDaoImpl extends DaoImpl implements
 
 
 	@Override
-	public ReturnOrder read(String fid) {
-		return (ReturnOrder) getHibernateTemplate().get(ReturnOrder.class, fid);
-	}
-
-
-	@Override
 	public List<Object[]> findDetailBySupplierNum(String systemBookCode,
 												  List<Integer> branchNums, Integer supplierNum, Date dateFrom, Date dateTo,
 												  List<Integer> selectItemNums) {

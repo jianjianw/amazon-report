@@ -13,6 +13,8 @@ public interface PosItemDao {
 
 	public PosItem read(Integer itemNum);
 
+	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit);
+
 	/**
 	 * 按类别查询商品主键
 	 * @param systemBookCode
@@ -101,5 +103,6 @@ public interface PosItemDao {
 	public List<PosItemKit> findPosItemKitsWithPosItem(List<Integer> itemNums);
 
 	public List<PosItem> findByPosItemQuery(PosItemQuery posItemQuery, String sortField, String sortName, int first, int count);
+
 
 }

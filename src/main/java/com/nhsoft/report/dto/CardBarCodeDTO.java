@@ -1,6 +1,6 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.util.DateUtil;
+import com.nhsoft.report.util.DateUtil;
 
 import java.io.Serializable;
 import java.util.Calendar;

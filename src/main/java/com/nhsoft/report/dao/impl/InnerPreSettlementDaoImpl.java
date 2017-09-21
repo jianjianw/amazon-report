@@ -12,6 +12,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 @Repository
 public class InnerPreSettlementDaoImpl extends DaoImpl implements InnerPreSettlementDao {
@@ -30,5 +31,27 @@ public class InnerPreSettlementDaoImpl extends DaoImpl implements InnerPreSettle
 		}
 		criteria.setProjection(Projections.rowCount());
 		return ((Long)criteria.uniqueResult()).intValue();
+	}
+
+
+	@Override
+	public BigDecimal readBranchUnPaidMoney(String systemBookCode,
+											Integer branchNum, Integer centerBranchNum) {
+		Criteria criteria = currentSession().createCriteria(InnerPreSettlement.class, "t")
+				.add(Restrictions.eq("t.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("t.centerBranchNum", centerBranchNum))
+				.add(Restrictions.eq("t.state.stateCode",AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.eq("t.branchNum", branchNum));
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.sum("t.preSettlementPaid"))
+				.add(Projections.sum("t.preSettlementMoney")));
+		Object[] object = (Object[]) criteria.uniqueResult();
+		if(object != null){
+			BigDecimal paid = object[0] == null?BigDecimal.ZERO:(BigDecimal)object[0];
+			BigDecimal money = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
+			BigDecimal total = paid.subtract(money);
+			return total;
+		}
+		return BigDecimal.ZERO;
 	}
 }

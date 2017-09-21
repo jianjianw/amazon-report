@@ -1,7 +1,7 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.util.DateUtil;
-import org.apache.commons.lang.BooleanUtils;
+import com.nhsoft.report.util.DateUtil;
+import org.apache.commons.lang3.BooleanUtils;
 import org.dom4j.Element;
 
 import java.io.Serializable;

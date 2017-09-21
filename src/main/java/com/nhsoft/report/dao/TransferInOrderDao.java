@@ -2,10 +2,25 @@ package com.nhsoft.report.dao;
 
 import com.nhsoft.report.shared.queryBuilder.TransferProfitQuery;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 public interface TransferInOrderDao {
+
+
+	/**
+	 * 按商品主键汇总基本数量 金额 常用数量
+	 * @param systemBookCode
+	 * @param inBranchNum
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param itemNums
+	 * @return
+	 */
+	public List<Object[]> findItemSummary(String systemBookCode, Integer inBranchNum, List<Integer> branchNums,
+										  Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 	/**
 	 * 商品汇总调入金额、毛利、数量
@@ -67,4 +82,22 @@ public interface TransferInOrderDao {
 	 */
 	public List<Object[]> findBranchSumByDateType(String systemBookCode, Integer inBranchNum,
 												  List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
+
+	/**
+	 * 按门店统计单据数
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateTo
+	 * @param dateFrom
+	 * @return
+	 */
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+
+
+	public BigDecimal findBalance(String systemBookCode,
+								  Integer centerBranchNum, Integer branchNum, Date dtFrom, Date dtTo);
+
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<Object[]> findMoneyByBizday(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
 }
