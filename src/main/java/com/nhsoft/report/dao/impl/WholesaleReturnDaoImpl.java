@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class WholesaleReturnDaoHibernate extends DaoImpl implements WholesaleReturnDao {
+public class WholesaleReturnDaoImpl extends DaoImpl implements WholesaleReturnDao {
 	@Override
 	public List<Object[]> findItemSum(String systemBookCode, Integer branchNum,
 									  List<String> clientFids, Date dateFrom, Date dateTo,
@@ -909,5 +909,21 @@ public class WholesaleReturnDaoHibernate extends DaoImpl implements WholesaleRet
 		return query.list();
 	}
 
+	@Override
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+		Criteria criteria = currentSession().createCriteria(WholesaleReturn.class, "w")
+				.add(Restrictions.eq("w.systemBookCode", systemBookCode));
+		if(branchNum != null && !branchNum.equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+			criteria.add(Restrictions.eq("w.branchNum", branchNum));
+		}
+		if(dateFrom != null){
+			criteria.add(Restrictions.ge("w.wholesaleReturnCreateTime", DateUtil.getMinOfDate(dateFrom)));
+		}
+		if(dateTo != null){
+			criteria.add(Restrictions.le("w.wholesaleReturnCreateTime", DateUtil.getMaxOfDate(dateTo)));
+		}
+		criteria.setProjection(Projections.rowCount());
+		return ((Long)criteria.uniqueResult()).intValue();
+	}
 
 }

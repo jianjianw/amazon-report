@@ -15,11 +15,6 @@ import java.util.List;
 @Repository
 @SuppressWarnings("deprecation")
 public class TransferLineDaoImpl extends DaoImpl implements TransferLineDao {
-	@Override
-	public TransferLine read(Integer transferLineNum) {
-		return getHibernateTemplate().get(TransferLine.class, transferLineNum);
-	}
-
 
 	@Override
 	public List<TransferLine> find(String systemBookCode) {

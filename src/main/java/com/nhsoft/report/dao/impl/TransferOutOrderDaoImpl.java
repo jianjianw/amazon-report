@@ -26,11 +26,6 @@ import java.util.List;
 @Repository
 public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrderDao {
 
-	@Override
-	public TransferOutOrder read(String outOrderFid) {
-		return (TransferOutOrder) getHibernateTemplate().get(TransferOutOrder.class, outOrderFid);
-	}
-
 
 	@Override
 	public BigDecimal findBalance(String systemBookCode, Integer centerBranchNum, Integer branchNum, Date dtFrom, Date dtTo) {

@@ -1474,7 +1474,7 @@ public class ReportServiceImpl implements ReportService {
 						null, branch);
 				data.setInventoryQty((BigDecimal) objects[0]);
 			}
-		}////
+		}
 
 		if (list.size() > 0) {
 			list.get(0).setaLevelCount(aCount);
@@ -2748,7 +2748,6 @@ public class ReportServiceImpl implements ReportService {
 				}
 
 			}
-			////
 			objects = transferInOrderDao.findMoneyByItemAndMonth(systemBookCode, transferBranchNums, dateFrom, dateTo,
 					itemNums);
 			for (int i = 0; i < objects.size(); i++) {
@@ -7353,7 +7352,7 @@ public class ReportServiceImpl implements ReportService {
 			bookSummaryReport.setTransferOutCount(transferOutOrderDao.countByBranch(systemBookCode, null, dateFrom,
 					dateTo));
 		}
-
+		////
 		if (StringUtils.isEmpty(module) || module.contains(AppConstants.C_AMA_MODULE_WHOLESALE)) {
 			bookSummaryReport.setWholesaleOrderCount(wholesaleOrderDao.countByBranch(systemBookCode, null, dateFrom,
 					dateTo));

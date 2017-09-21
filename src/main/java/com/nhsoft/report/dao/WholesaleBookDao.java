@@ -21,8 +21,6 @@ public interface WholesaleBookDao {
 	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> regionNums);
 
 
-	public WholesaleBook read(String fid);
-
 
 	/**
 	 * 按商品汇总数量 金额

@@ -1,7 +1,7 @@
 package com.nhsoft.report.model;
 
 
-import com.nhsoft.report.shared.AppConstants;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
 
 import java.math.BigDecimal;

@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface TransferLineDao {
 
-	public TransferLine read(Integer transferLineNum);
 
 	public List<TransferLine> find(String systemBookCode);
 

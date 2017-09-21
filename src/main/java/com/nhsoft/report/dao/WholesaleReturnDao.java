@@ -102,4 +102,14 @@ public interface WholesaleReturnDao {
 	 * @return
 	 */
 	public List<Object[]> findDueMoney(String systemBookCode, Integer branchNum, List<String> clientFid, Date dateFrom, Date dateTo);
+
+	/**
+	 * 按门店统计单据数
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateTo
+	 * @param dateFrom
+	 * @return
+	 */
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 }

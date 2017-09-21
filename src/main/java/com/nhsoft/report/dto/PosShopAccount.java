@@ -1,6 +1,7 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.shared.AppConstants;
+
+import com.nhsoft.report.util.AppConstants;
 
 import java.io.Serializable;
 

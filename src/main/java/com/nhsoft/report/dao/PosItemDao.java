@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface PosItemDao {
 
-	public PosItem read(Integer itemNum);
 
 	/**
 	 * 按类别查询商品主键
@@ -101,5 +100,6 @@ public interface PosItemDao {
 	public List<PosItemKit> findPosItemKitsWithPosItem(List<Integer> itemNums);
 
 	public List<PosItem> findByPosItemQuery(PosItemQuery posItemQuery, String sortField, String sortName, int first, int count);
+
 
 }

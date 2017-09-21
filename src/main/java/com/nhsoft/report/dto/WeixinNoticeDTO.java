@@ -1,9 +1,9 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.model.CardConsume;
-import com.nhsoft.pos3.server.model.CardDeposit;
-import com.nhsoft.pos3.server.model.WeixinCardType;
-import com.nhsoft.pos3.shared.AppConstants;
+
+import com.nhsoft.report.model.CardConsume;
+import com.nhsoft.report.model.CardDeposit;
+import com.nhsoft.report.util.AppConstants;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

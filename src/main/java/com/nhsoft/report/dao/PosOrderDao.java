@@ -13,7 +13,6 @@ import java.util.List;
 
 public interface PosOrderDao {
 
-	public PosOrder read(String orderNo);
 
 	/**
 	 * 按商品、多特性编码汇总销售数量 销售金额 成本金额
@@ -285,5 +284,14 @@ public interface PosOrderDao {
 	public List<Object[]> findItemSum(ItemQueryDTO itemQueryDTO);
 
 	public List<Object[]> findBranchItemSum(ItemQueryDTO itemQueryDTO);
+
+
+	/**
+	 * 按门店统计单据数
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @return
+	 */
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 
 }

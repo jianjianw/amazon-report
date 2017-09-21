@@ -41,11 +41,6 @@ public class WholesaleBookDaoImpl extends DaoImpl implements WholesaleBookDao {
 	}
 
 
-	@Override
-	public WholesaleBook read(String fid) {
-		return (WholesaleBook)getHibernateTemplate().get(WholesaleBook.class, fid, LockMode.UPGRADE);
-	}
-
 
 
 	@Override

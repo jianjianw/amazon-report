@@ -1,6 +1,8 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.model.Branch;
+
+
+import com.nhsoft.report.model.Branch;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

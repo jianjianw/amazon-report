@@ -12,8 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface TransferOutOrderDao{
-	
-	public TransferOutOrder read(String outOrderFid);
+
 
 
 	public BigDecimal findBalance(String systemBookCode, Integer centerBranchNum,

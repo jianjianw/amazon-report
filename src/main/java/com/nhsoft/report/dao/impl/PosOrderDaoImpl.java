@@ -244,10 +244,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return ((Long) criteria.uniqueResult()).intValue();
 	}
 
-	@Override
-	public PosOrder read(String orderNo) {
-		return (PosOrder) getHibernateTemplate().get(PosOrder.class, orderNo);
-	}
 
 
 	@Override
@@ -1165,5 +1161,24 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		criteria.add(Restrictions.in("p.orderStateCode", AppUtil.getNormalPosOrderState()));
 		return criteria;
+	}
+
+
+	@Override
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+		Criteria criteria = currentSession().createCriteria(PosOrder.class, "p").add(
+				Restrictions.eq("p.systemBookCode", systemBookCode));
+		if (branchNum != null && !branchNum.equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)) {
+			criteria.add(Restrictions.eq("p.branchNum", branchNum));
+		}
+		if (dateFrom != null) {
+			criteria.add(Restrictions.ge("p.shiftTableBizday", DateUtil.getDateShortStr(dateFrom)));
+
+		}
+		if (dateTo != null) {
+			criteria.add(Restrictions.le("p.shiftTableBizday", DateUtil.getDateShortStr(dateTo)));
+		}
+		criteria.setProjection(Projections.rowCount());
+		return ((Long) criteria.uniqueResult()).intValue();
 	}
 }

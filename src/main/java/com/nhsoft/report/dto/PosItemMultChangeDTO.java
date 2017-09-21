@@ -1,7 +1,9 @@
 package com.nhsoft.report.dto;
 
-import com.nhsoft.pos3.server.model.SaleCommission;
-import com.nhsoft.pos3.shared.queryBuilder.PosItemQuery;
+
+
+import com.nhsoft.report.model.SaleCommission;
+import com.nhsoft.report.shared.queryBuilder.PosItemQuery;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

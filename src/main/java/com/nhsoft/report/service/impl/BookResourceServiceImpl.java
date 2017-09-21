@@ -7,7 +7,7 @@ import com.nhsoft.report.param.AdjustmentReason;
 import com.nhsoft.report.param.CardUserType;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.BookResourceService;
-import com.nhsoft.report.shared.AppConstants;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.BaseManager;
 import com.nhsoft.report.util.RedisUtil;
 import net.sf.ehcache.Element;

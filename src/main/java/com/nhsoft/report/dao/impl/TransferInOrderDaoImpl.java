@@ -212,4 +212,20 @@ public class TransferInOrderDaoImpl extends DaoImpl implements TransferInOrderDa
 		return criteria;
 	}
 
+	@Override
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+		Criteria criteria = currentSession().createCriteria(TransferInOrder.class, "t")
+				.add(Restrictions.eq("t.systemBookCode", systemBookCode));
+		if(branchNum != null && !branchNum.equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+			criteria.add(Restrictions.eq("t.inBranchNum", branchNum));
+		}
+		if(dateFrom != null){
+			criteria.add(Restrictions.ge("t.inOrderCreateTime", DateUtil.getMinOfDate(dateFrom)));
+		}
+		if(dateTo != null){
+			criteria.add(Restrictions.le("t.inOrderCreateTime", DateUtil.getMaxOfDate(dateTo)));
+		}
+		criteria.setProjection(Projections.rowCount());
+		return ((Long)criteria.uniqueResult()).intValue();
+	}
 }

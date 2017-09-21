@@ -1,10 +1,7 @@
 package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.PosItemDao;
-import com.nhsoft.report.model.ItemMatrix;
-import com.nhsoft.report.model.PosItem;
-import com.nhsoft.report.model.PosItemKit;
-import com.nhsoft.report.model.PosItemKitId;
+import com.nhsoft.report.model.*;
 import com.nhsoft.report.shared.ServiceBizException;
 import com.nhsoft.report.shared.queryBuilder.PosItemQuery;
 import com.nhsoft.report.util.AppConstants;
@@ -14,24 +11,19 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
-import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.*;
 
+
+@Repository
 @SuppressWarnings("deprecation")
 public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 
 
 
-	@Override
-	public PosItem read(Integer itemNum) {
-		if (itemNum == null) {
-			return null;
-		}
-		return (PosItem) getHibernateTemplate().get(PosItem.class, itemNum);
-	}
 
 	@Override
 	public List<Integer> findItemNums(String systemBookCode, String categoryCodes) {
@@ -643,5 +635,30 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 			sb.append("and (" + orString + ") ");
 		}
 		return sb.toString();
+	}
+
+
+	@Override
+	public List<ItemBar> findItemBars(String systemBookCode) {
+		String sql = "select * from item_bar with(nolock) where system_book_code = '" + systemBookCode + "' order by item_num asc";
+		SQLQuery query = currentSession().createSQLQuery(sql);
+		query.addEntity(ItemBar.class);
+		return query.list();
+	}
+
+	@Override
+	public List<ItemBar> findItemBars(List<Integer> itemNums) {
+		String sql = "select * from item_bar with(nolock) where item_num in " + AppUtil.getIntegerParmeList(itemNums) + "order by item_num asc";
+		SQLQuery query = currentSession().createSQLQuery(sql);
+		query.addEntity(ItemBar.class);
+		return query.list();
+	}
+
+	@Override
+	public List<ItemBar> findItemBars(Integer itemNum) {
+		String sql = "select * from item_bar with(nolock) where item_num = " + itemNum;
+		SQLQuery query = currentSession().createSQLQuery(sql);
+		query.addEntity(ItemBar.class);
+		return query.list();
 	}
 }

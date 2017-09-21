@@ -67,4 +67,15 @@ public interface TransferInOrderDao {
 	 */
 	public List<Object[]> findBranchSumByDateType(String systemBookCode, Integer inBranchNum,
 												  List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
+
+	/**
+	 * 按门店统计单据数
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateTo
+	 * @param dateFrom
+	 * @return
+	 */
+	public int countByBranch(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+
 }
