@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.nhsoft.report.dao.SupplierDao;
 import com.nhsoft.report.model.Supplier;
 import com.nhsoft.report.service.SupplierService;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.BaseManager;
+import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.List;
 @Service
 @SuppressWarnings("unchecked")
 public class SupplierServiceImpl extends BaseManager implements SupplierService {
+
 	@Autowired
 	private SupplierDao supplierDao;
 	private Gson gson;
@@ -39,4 +42,21 @@ public class SupplierServiceImpl extends BaseManager implements SupplierService 
 		return supplierDao.findAll(systemBookCode);
 	}
 
+	@Override
+	public List<Supplier> findInCache(String systemBookCode) {
+
+
+		String key = AppConstants.CACHE_NAME_SUPPLIER + systemBookCode;
+		Element element = getElementFromCache(key);
+		if (element == null) {
+			List<Supplier> suppliers = supplierDao.findAll(systemBookCode);
+			element = new Element(AppConstants.CACHE_NAME_SUPPLIER + systemBookCode, suppliers);
+			element.setTimeToLive(AppConstants.CACHE_LIVE_SECOND);
+			putElementToCache(element);
+		}
+
+		List<Supplier> suppliers = (List<Supplier>) element.getObjectValue();
+		return suppliers;
+
+	}
 }

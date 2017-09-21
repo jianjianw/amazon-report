@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface PosItemDao {
 
+	public PosItem read(Integer itemNum);
+
 	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit);
 
 	/**

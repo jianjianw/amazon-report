@@ -3,6 +3,7 @@ package com.nhsoft.report.dao.impl;
 
 
 import com.nhsoft.report.dao.AssembleSplitDao;
+import com.nhsoft.report.model.AssembleSplit;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Criteria;

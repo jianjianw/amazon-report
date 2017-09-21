@@ -8,6 +8,20 @@ import java.util.List;
 
 public interface TransferInOrderDao {
 
+
+	/**
+	 * 按商品主键汇总基本数量 金额 常用数量
+	 * @param systemBookCode
+	 * @param inBranchNum
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param itemNums
+	 * @return
+	 */
+	public List<Object[]> findItemSummary(String systemBookCode, Integer inBranchNum, List<Integer> branchNums,
+										  Date dateFrom, Date dateTo, List<Integer> itemNums);
+
 	/**
 	 * 商品汇总调入金额、毛利、数量
 	 * @param systemBookCode

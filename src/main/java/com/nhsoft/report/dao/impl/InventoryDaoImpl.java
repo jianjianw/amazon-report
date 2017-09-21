@@ -7,6 +7,7 @@ import com.nhsoft.report.model.InventoryLnDetail;
 import com.nhsoft.report.model.PosItem;
 import com.nhsoft.report.model.Storehouse;
 import com.nhsoft.report.util.AppUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.hibernate.type.StandardBasicTypes;

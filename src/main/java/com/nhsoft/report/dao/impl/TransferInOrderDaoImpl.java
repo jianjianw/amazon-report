@@ -24,6 +24,46 @@ import java.util.List;
 @Repository
 public class TransferInOrderDaoImpl extends DaoImpl implements TransferInOrderDao {
 
+
+	@Override
+	public List<Object[]> findItemSummary(String systemBookCode, Integer inBranchNum, List<Integer> branchNums,
+										  Date dateFrom, Date dateTo, List<Integer> itemNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select detail.item_num, sum(detail.in_order_detail_qty) as qty, sum(detail.in_order_detail_sale_subtotal) as money, ");
+		sb.append("sum(detail.in_order_detail_use_qty) as useQty ");
+		sb.append("from in_order_detail as detail with(nolock) inner join transfer_in_order as r with(nolock) on detail.in_order_fid = r.in_order_fid ");
+		sb.append("where r.system_book_code = :systemBookCode ");
+		if(inBranchNum != null){
+			sb.append("and r.in_branch_num = :inBranchNum ");
+		}
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and r.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateFrom != null){
+			sb.append("and r.in_order_audit_time >= :dateFrom ");
+		}
+		if(dateTo != null){
+			sb.append("and r.in_order_audit_time <= :dateTo ");
+		}
+		if(itemNums != null && itemNums.size() > 0){
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		sb.append("and r.in_order_state_code = 3 ");
+		sb.append("group by detail.item_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if(inBranchNum != null){
+			query.setInteger("inBranchNum", inBranchNum);
+		}
+		if(dateFrom != null){
+			query.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		}
+		if(dateTo != null){
+			query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		}
+		return query.list();
+	}
+
 	@Override
 	public List<Object[]> findProfitGroupByItem(String systemBookCode,
 												List<Integer> transferBranchNums, List<Integer> branchNums, Date dateFrom,

@@ -27,11 +27,6 @@ import java.util.Date;
 import java.util.List;
 @Repository
 public class WholesaleOrderDaoImpl extends DaoImpl implements WholesaleOrderDao {
-	@Override
-	public WholesaleOrder read(String fid) {
-		return (WholesaleOrder)getHibernateTemplate().get(WholesaleOrder.class, fid);
-	}
-
 
 	@Override
 	public List<Object[]> findItemSum(String systemBookCode, Integer branchNum,

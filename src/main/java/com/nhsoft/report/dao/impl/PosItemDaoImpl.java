@@ -22,6 +22,13 @@ import java.util.*;
 @SuppressWarnings("deprecation")
 public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 
+	@Override
+	public PosItem read(Integer itemNum) {
+		if (itemNum == null) {
+			return null;
+		}
+		return (PosItem) currentSession().get(PosItem.class, itemNum);
+	}
 
 	@Override
 	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit) {

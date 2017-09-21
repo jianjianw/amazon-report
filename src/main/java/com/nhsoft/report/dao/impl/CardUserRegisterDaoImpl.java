@@ -16,8 +16,44 @@ import java.util.List;
  */
 @Repository
 public class CardUserRegisterDaoImpl extends  DaoImpl implements CardUserRegisterDao {
-	
-	
+
+	@Override
+	public List<Object[]> findSalerSummary(String systemBookCode,
+										   List<Integer> branchNums, Date dateFrom, Date dateTo,
+										   List<String> salerNames) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select card_user_register_seller, branch_num, count(card_user_register_fid) from card_user_register with(nolock) ");
+		sb.append("where system_book_code=:systemBookCode ");
+		if(branchNums != null && branchNums.size() != 0){
+			sb.append("and branch_num in :branchNums ");
+		}
+		if(dateFrom != null){
+			sb.append("and shift_table_bizday >= :dateFrom ");
+		}
+		if(dateTo != null){
+			sb.append("and shift_table_bizday <= :dateTo ");
+		}
+		if(salerNames != null && salerNames.size() != 0){
+			sb.append("and card_user_register_seller in :salerNames ");
+		}
+		sb.append("and card_user_register_type = '" + AppConstants.REGISTER_TYPE_DELIVER + "' ");
+		sb.append("group by card_user_register_seller, branch_num");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if(branchNums != null && branchNums.size() != 0){
+			query.setParameterList("branchNums", branchNums);
+		}
+		if(dateFrom != null){
+			query.setString("dateFrom", DateUtil.getDateShortStr(dateFrom));
+		}
+		if(dateTo != null){
+			query.setString("dateTo", DateUtil.getDateShortStr(dateTo));
+		}
+		if(salerNames != null && salerNames.size() != 0){
+			query.setParameterList("salerNames", salerNames);
+		}
+		return query.list();
+	}
 	@Override
 	public List<Object[]> findBranchDeliverCount(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		List<String> types = new ArrayList<String>();

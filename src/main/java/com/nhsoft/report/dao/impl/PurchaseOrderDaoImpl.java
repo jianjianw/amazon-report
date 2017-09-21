@@ -1,18 +1,18 @@
 package com.nhsoft.report.dao.impl;
 
 
-import com.nhsoft.report.dao.Dao;
+
 import com.nhsoft.report.dao.PurchaseOrderDao;
 import com.nhsoft.report.model.PurchaseOrder;
 import com.nhsoft.report.model.PurchaseOrderDetail;
 import com.nhsoft.report.util.AppConstants;
+import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.*;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
-import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
 import java.util.Calendar;
@@ -22,11 +22,6 @@ import java.util.List;
 public class PurchaseOrderDaoImpl extends DaoImpl implements PurchaseOrderDao {
 
 
-
-	@Override
-	public PurchaseOrder read(String fid) {
-		return (PurchaseOrder)getHibernateTemplate().get(PurchaseOrder.class, fid);
-	}
 
 
 	//不统计直配采购单在订量
