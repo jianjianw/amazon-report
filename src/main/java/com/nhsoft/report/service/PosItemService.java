@@ -20,6 +20,12 @@ import java.util.List;
  */
 public interface PosItemService {
 
+	/**
+	 * 查询成分商品
+	 * @param itemNum 商品主键
+	 * @return
+	 */
+	public List<PosItemKit> findPosItemKits(Integer itemNum);
 
 	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit);
 
