@@ -152,20 +152,75 @@ public class AppConstants {
 	 * 报损原因类型
 	 */
 	public static final String ADJUSTMENT_REASON_TYPE_LOSS = "报损";
-
-
-	//首页柱状图查询依据
+	
+	
+	/**
+	 * 首页柱状图查询依据
+	 */
 	public static final String BUSINESS_TREND_PAYMENT = "按营业额";
 	public static final String BUSINESS_TREND_DEPOSIT = "按储值额";
-
-
-	//首页柱状图和销售额分析查询时间格式
+	
+	/**
+	 * 首页柱状图和销售额分析查询时间格式
+	 */
 	public static final String BUSINESS_DATE_YEAR = "按年";
 	public static final String BUSINESS_DATE_DAY = "按日";
-
-	//单据明细状态
+	
+	/**
+	 * 单据明细状态
+	 */
 	public static final int POS_ORDER_DETAIL_STATE_SALE = 1;
 	public static final int POS_ORDER_DETAIL_STATE_REMOVE = 8;
 	public static final int POS_ORDER_DETAIL_STATE_CANCEL = 4;
 	public static final int POS_ORDER_DETAIL_STATE_PRESENT = 2;
+	
+	/**
+	 * 查询商品类型
+	 */
+	public static final String ITEM_TYPE_PURCHASE = "采购";
+	public static final String ITEM_TYPE_INVENTORY = "库存";
+	public static final String ITEM_TYPE_WHOLESALE = "批发";
+	public static final String ITEM_TYPE_CHAIN = "连锁";
+	public static final String ITEM_TYPE_ONLINE = "网店";
+	public static final String ITEM_TYPE_SALE = "销售";
+	
+	
+	/**
+	 * 商品类型
+	 */
+	public static final int C_ITEM_TYPE_STANDARD = 1; //标准
+	public static final String C_ITEM_TYPE_STANDARD_NAME = "标准"; //标准
+	public static final int C_ITEM_TYPE_MATRIX = 2;//含多特性
+	public static final String C_ITEM_TYPE_MATRIX_NAME = "含多特性";//含多特性
+	public static final int C_ITEM_TYPE_SERIALIZED = 3;//标识码
+	public static final String C_ITEM_TYPE_SERIALIZED_NAME = "标识码";//标识码
+	public static final int C_ITEM_TYPE_KIT = 4;//组合商品
+	public static final String C_ITEM_TYPE_KIT_NAME = "组合商品";//组合商品
+	public static final int C_ITEM_TYPE_NON_STOCK = 5;//非库存商品
+	public static final String C_ITEM_TYPE_NON_STOCK_NAME = "非库存商品";//非库存商品
+	public static final int C_ITEM_TYPE_ASSEMBLE = 6;//制单组合
+	public static final String C_ITEM_TYPE_ASSEMBLE_NAME = "制单组合";//制单组合
+	public static final int C_ITEM_TYPE_SPLIT = 7;//制单拆分
+	public static final String C_ITEM_TYPE_SPLIT_NAME = "制单拆分";//制单拆分
+	public static final int C_ITEM_TYPE_CUSTOMER_KIT = 8;//自定义组合
+	public static final String C_ITEM_TYPE_CUSTOMER_KIT_NAME = "自定义组合";//自定义组合
+	public static final int C_ITEM_TYPE_ELEMENT = 9;
+	public static final String C_ITEM_TYPE_ELEMENT_NAME = "成分商品"; //'ELEMENT';
+	public static final int C_ITEM_TYPE_GRADE = 10;
+	public static final String C_ITEM_TYPE_GRADE_NAME = "分级商品";
+	public static final int C_ITEM_TYPE_MATERIAL = 11;
+	public static final String C_ITEM_TYPE_MATERIAL_NAME = "原料商品";
+	
+	/**
+	 * 超量特价类型
+	 *
+	 */
+	public static final String PROMOTION_QUANTITY_CATEGORY_TRANSFER = "配送超量特价";
+	public static final String PROMOTION_QUANTITY_CATEGORY_WHOLESALE = "批发超量特价";
+	
+	/**
+	 * 促销特价类型
+	 */
+	public static final String POLICY_PROMOTION_CATEGORY_WHOLESALE = "批发促销特价";
+	public static final String POLICY_PROMOTION_CATEGORY_PURCHASE = "采购促销特价";
 }
