@@ -1,6 +1,7 @@
 package com.nhsoft.report.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.BooleanUtils;
@@ -2144,7 +2145,7 @@ public class PosItem implements java.io.Serializable {
 	}
 	
 	public String getItemCostMode(Branch branch, Integer branchNum){
-		if(itemCostMode.trim().equals(AppConstants.C_ITEM_COST_MODE_CENTER_MANUAL)){		
+		if(itemCostMode.trim().equals(AppConstants.C_ITEM_COST_MODE_CENTER_MANUAL)){
 			
 			if(branchNum.equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)
 					|| (branch != null && branch.getBranchRdc())){

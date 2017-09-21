@@ -3,8 +3,8 @@ package com.nhsoft.report.dao;
 
 
 import com.nhsoft.report.dto.AlipayDetailDTO;
-import com.nhsoft.report.dto.LogQuery;
 import com.nhsoft.report.model.AlipayLog;
+import com.nhsoft.report.shared.queryBuilder.LogQuery;
 
 import java.util.Date;
 import java.util.List;

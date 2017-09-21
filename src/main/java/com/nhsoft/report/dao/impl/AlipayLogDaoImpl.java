@@ -2,8 +2,8 @@ package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.AlipayLogDao;
 import com.nhsoft.report.dto.AlipayDetailDTO;
-import com.nhsoft.report.dto.LogQuery;
 import com.nhsoft.report.model.AlipayLog;
+import com.nhsoft.report.shared.queryBuilder.LogQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;

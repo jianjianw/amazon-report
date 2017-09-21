@@ -1,6 +1,9 @@
 package com.nhsoft.report.dto;
 
 
+import com.nhsoft.report.util.AppConstants;
+import com.nhsoft.report.util.AppUtil;
+
 import java.io.Serializable;
 
 public class WeixinCardRevokeDTO implements Serializable {

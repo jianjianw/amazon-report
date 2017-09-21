@@ -1,9 +1,7 @@
 package com.nhsoft;
 
 import com.google.gson.Gson;
-import com.nhsoft.report.dto.LogQuery;
 import com.nhsoft.report.model.AlipayLog;
-import com.nhsoft.report.rpc.ReportRpc;
 import com.nhsoft.report.service.AlipayLogService;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.ServiceDeskUtil;
@@ -26,21 +24,20 @@ import java.util.List;
 public class Test {
 	
 	
-	@Autowired
-	private ReportRpc reportRpc;
+	/*@Autowired
+	private ReportRpc reportRpc;*/
 	private Gson gson = AppUtil.toBuilderGson();
 
 	@Autowired
 	private AlipayLogService alipayLogService;
 
-	@Autowired
-	private
+
 	
 	@RequestMapping("/query/{systemBookCode}/{sql}")
 	public @ResponseBody String query(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("sql") String sql){
 		
-		return gson.toJson(reportRpc.excuteSql(systemBookCode, sql));
-		
+		//return gson.toJson(reportRpc.excuteSql(systemBookCode, sql));
+		return null;
 	}
 	
 	@RequestMapping("/clear/{systemBookCode}")

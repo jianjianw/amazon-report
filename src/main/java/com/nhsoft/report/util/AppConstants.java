@@ -396,6 +396,12 @@ public class AppConstants {
 
 
 	/**
+	 * MNS_COMMAND
+	 */
+	public static String MESSAGE_COMMAND_WEIXIN_CARD_REVOKE = "AMA_WEIXIN_CARD_REVOKE";
+	public static String MESSAGE_COMMAND_WEIXIN_CARD_UPDATE = "AMA_WEIXIN_CARD_UPDATE";
+
+	/**
 	 * 订单来源条件
 	 */
 	public static final String POS_ORDER_SALE_TYPE_WCHAT = "微商城";
@@ -433,7 +439,35 @@ public class AppConstants {
 	public static final String S_Prefix_WO = "WO";//批发销售单
 
 
+	/**
+	 * 微信网店类型
+	 */
+	public static final String WEIXIN_BRANCH_TYPE_KDT="口袋通";
+	public static final String WEIXIN_BRANCH_TYPE_YOUZAN="有赞";
 
+
+
+	public 	static final String ROUND_TYPE_HALF = "四舍五入";
+	public 	static final String ROUND_TYPE_OFF = "舍零";
+	public 	static final String ROUND_TYPE_TO = "舍入";
+
+	public 	static final String MONEY_SCALE_TYPE_YUAN = "元";
+	public 	static final String MONEY_SCALE_TYPE_JIAO = "角";
+	public 	static final String MONEY_SCALE_TYPE_FEN = "分";
+
+
+	/**
+	 * wholesale_book_sale_state
+	 */
+	public static final String WHOLESALE_BOOK_SALE_STATE_FINISH = "发货完成";
+	public static final String WHOLESALE_BOOK_SALE_STATE_PART = "部分发货";
+
+
+	//结算周期
+	public static final String SETTLE_TYPE_TEMP = "临时指定";
+	public static final String SETTLE_TYPE_FIXED_DATE = "指定帐期";
+	public static final String SETTLE_TYPE_FIXED_DAY = "指定日期";
+	public static final String SETTLE_TYPE_FIXED_NOW = "货到付款";
 
 
 

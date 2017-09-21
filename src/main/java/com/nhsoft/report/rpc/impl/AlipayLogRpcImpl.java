@@ -2,9 +2,9 @@ package com.nhsoft.report.rpc.impl;
 
 import com.nhsoft.report.annotation.ApiSpring;
 import com.nhsoft.report.dto.AlipayLogDTO;
-import com.nhsoft.report.dto.LogQuery;
 import com.nhsoft.report.rpc.AlipayLogRpc;
 import com.nhsoft.report.service.AlipayLogService;
+import com.nhsoft.report.shared.queryBuilder.LogQuery;
 import com.nhsoft.report.util.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

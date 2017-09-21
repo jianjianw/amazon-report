@@ -1,7 +1,7 @@
 package com.nhsoft.report.rpc;
 
 import com.nhsoft.report.dto.AlipayLogDTO;
-import com.nhsoft.report.dto.LogQuery;
+import com.nhsoft.report.shared.queryBuilder.LogQuery;
 
 import java.util.List;
 

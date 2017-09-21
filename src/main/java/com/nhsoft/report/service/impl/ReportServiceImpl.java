@@ -3,7 +3,6 @@ package com.nhsoft.report.service.impl;
 
 import com.nhsoft.report.dao.*;
 import com.nhsoft.report.dto.*;
-import com.nhsoft.report.dto.LogQuery;
 import com.nhsoft.report.model.*;
 import com.nhsoft.report.param.AdjustmentReason;
 import com.nhsoft.report.param.CardUserType;
@@ -11,6 +10,7 @@ import com.nhsoft.report.param.ChainDeliveryParam;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.*;
 import com.nhsoft.report.shared.queryBuilder.*;
+import com.nhsoft.report.shared.queryBuilder.LogQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
@@ -7415,7 +7415,6 @@ public class ReportServiceImpl implements ReportService {
 					.count(systemBookCode, null, dateFrom, dateTo, null, null, null));
 		}
 		bookSummaryReport.setRewardCount(cardConsumeDao.countReward(systemBookCode, null, dateFrom, dateTo));
-
 		LogQuery logQuery = new LogQuery();
 		logQuery.setDateFrom(dateFrom);
 		logQuery.setDateTo(dateTo);
