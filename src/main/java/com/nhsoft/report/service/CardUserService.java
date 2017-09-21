@@ -7,6 +7,8 @@ import java.util.List;
  * Created by yangqin on 2017/9/19.
  */
 public interface CardUserService {
+
+	public List<Object[]> findCardCountByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 	
 	/**
 	 * 查询时间段内发卡量

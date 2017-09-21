@@ -7,6 +7,7 @@ import com.nhsoft.report.model.Payment;
 import com.nhsoft.report.model.PosItem;
 import com.nhsoft.report.model.PosOrder;
 import com.nhsoft.report.model.PosOrderDetail;
+import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
@@ -23,7 +24,103 @@ import java.util.List;
 @Repository
 public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
+	@Override
+	public List<Object[]> findSummaryByBizday(CardReportQuery cardReportQuery) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select p.shift_table_bizday, count(p.order_no) as amount, sum(p.order_payment_money) as paymentMoney, ");
+		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgr, ");
+		sb.append("sum(p.order_coupon_total_money) as couponMoney ");
+		sb.append(createByCardReportQuery(cardReportQuery));
+		sb.append("group by p.shift_table_bizday ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
 
+	@Override
+	public List<Object[]> findCustomReportByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select shift_table_bizday, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, sum(order_gross_profit) as profit, count(order_no) as amount, sum(order_detail_item_count) as itemAmount, ");
+		sb.append("sum(case when order_detail_item_count > 0 then 1 when order_detail_item_count is null then 1 else 0 end) as validOrderNo ");
+		sb.append("from pos_order with(nolock) where system_book_code = '" + systemBookCode +"' and order_state_code in (5, 7) ");
+		if(branchNums != null) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if(dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by shift_table_bizday");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findSummaryByBranch(CardReportQuery cardReportQuery) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select p.branch_num, count(p.order_no) as amount, sum(p.order_payment_money) as paymentMoney, ");
+		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgr, ");
+		sb.append("sum(p.order_coupon_total_money) as couponMoney ");
+		sb.append(createByCardReportQuery(cardReportQuery));
+		sb.append("group by p.branch_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+	private String createByCardReportQuery(CardReportQuery cardReportQuery) {
+
+		StringBuffer sb = new StringBuffer();
+		if (cardReportQuery.isQueryDetail()) {
+			sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
+		} else if (cardReportQuery.isQueryPayment()) {
+			sb.append("from payment as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
+		} else {
+			sb.append("from pos_order as p with(nolock) ");
+		}
+		sb.append("where p.system_book_code = '" + cardReportQuery.getSystemBookCode() + "' ");
+		if (cardReportQuery.getBranchNum() != null) {
+			sb.append("and p.branch_num = " + cardReportQuery.getBranchNum() + " ");
+		}
+		if (cardReportQuery.getBranchNums() != null && cardReportQuery.getBranchNums().size() > 0) {
+			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(cardReportQuery.getBranchNums()));
+		}
+		if (cardReportQuery.getOperateBranch() != null) {
+			sb.append("and p.branch_num = " + cardReportQuery.getOperateBranch() + " ");
+		}
+
+		sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(cardReportQuery.getDateFrom()) + "' ");
+		sb.append("and '" + DateUtil.getDateShortStr(cardReportQuery.getDateTo()) + "' ");
+		sb.append("and p.order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
+		if (StringUtils.isNotEmpty(cardReportQuery.getCardPrintNum())) {
+			sb.append("and p.order_printed_num = '" + AppUtil.filterDangerousQuery(cardReportQuery.getCardPrintNum())
+					+ "' ");
+		}
+		if (StringUtils.isNotEmpty(cardReportQuery.getCardTypeName())) {
+			sb.append("and p.order_card_type_desc = '"
+					+ AppUtil.filterDangerousQuery(cardReportQuery.getCardTypeName()) + "' ");
+		}
+		sb.append("and p.order_card_user_num > 0 ");
+
+		if (StringUtils.isNotEmpty(cardReportQuery.getCompareType())) {
+			String compareType = cardReportQuery.getCompareType();
+			if (compareType.equals(">=")) {
+				sb.append("and p.order_payment_money >= " + cardReportQuery.getCompareValue() + " ");
+			} else if (compareType.equals(">")) {
+				sb.append("and p.order_payment_money > " + cardReportQuery.getCompareValue() + " ");
+
+			} else if (compareType.equals("<")) {
+				sb.append("and p.order_payment_money < " + cardReportQuery.getCompareValue() + " ");
+
+			} else if (compareType.equals("<=")) {
+				sb.append("and p.order_payment_money <= " + cardReportQuery.getCompareValue() + " ");
+
+			} else {
+
+				sb.append("and p.order_payment_money = " + cardReportQuery.getCompareValue() + " ");
+			}
+		}
+		return sb.toString();
+	}
 	@Override
 	public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 												Date dateTo, List<Integer> itemNums, boolean queryKit) {
@@ -1180,5 +1277,25 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		criteria.setProjection(Projections.rowCount());
 		return ((Long) criteria.uniqueResult()).intValue();
+	}
+
+	@Override
+	public List<Object[]> findCustomReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, sum(order_gross_profit) as profit, count(order_no) as amount, sum(order_detail_item_count) as itemAmount, ");
+		sb.append("sum(case when order_detail_item_count > 0 then 1 when order_detail_item_count is null then 1 else 0 end) as validOrderNo ");
+		sb.append("from pos_order with(nolock) where system_book_code = '" + systemBookCode +"' and order_state_code in (5, 7) ");
+		if(branchNums != null) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if(dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by branch_num");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
 	}
 }

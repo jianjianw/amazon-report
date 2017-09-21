@@ -26,7 +26,42 @@ import java.util.List;
 @Repository
 public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrderDao {
 
+	@Override
+	public List<Object[]> findMoneyByBizday(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select convert(varchar(12) , out_order_audit_time, 112), sum(out_order_total_money) as totalMoney from transfer_out_order with(nolock) where system_book_code = '" + systemBookCode
+				+ "' and out_order_state_code = 3 ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (centerBranchNums != null && centerBranchNums.size() > 0) {
+			sb.append("and out_branch_num in " + AppUtil.getIntegerParmeList(centerBranchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and out_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and out_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
+		}
+		sb.append("group by convert(varchar(12) , out_order_audit_time, 112)");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
 
+	@Override
+	public List<Object[]> findUnTransferedItems(String systemBookCode, Integer outBranchNum, List<Integer> branchNums, List<Integer> storehouseNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num from out_order_detail as d with(nolock)  ");
+		sb.append("where d,item_num = i.item_num and exists(select 1 from transfer_out_order as t with(nolock)  ");
+		sb.append("where t.system_book_code = '" + systemBookCode + "' ");
+		sb.append("and t.out_branch_num = " + outBranchNum + " ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and t.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and t.out_order_state_code = 3) group by branch_num ");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
 	@Override
 	public BigDecimal findBalance(String systemBookCode, Integer centerBranchNum, Integer branchNum, Date dtFrom, Date dtTo) {
 		Criteria criteria = currentSession().createCriteria(TransferOutOrder.class, "t").add(Restrictions.eq("t.systemBookCode", systemBookCode)).add(Restrictions.eq("t.branchNum", branchNum))
@@ -755,4 +790,26 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		}
 		return query.list();
 	}
+
+	@Override
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, sum(out_order_total_money) as totalMoney from transfer_out_order with(nolock) where system_book_code = '" + systemBookCode + "' and out_order_state_code = 3 ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (centerBranchNums != null && centerBranchNums.size() > 0) {
+			sb.append("and out_branch_num in " + AppUtil.getIntegerParmeList(centerBranchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and out_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and out_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
+		}
+		sb.append("group by branch_num");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
 }

@@ -12,9 +12,16 @@ import java.util.*;
 @Service
 public class TransferOutOrderServiceImpl extends BaseManager implements TransferOutOrderService {
 
+
+
 	private static Logger logger = LoggerFactory.getLogger(TransferOutOrderServiceImpl.class);
 	@Autowired
 	private TransferOutOrderDao transferOutOrderDao;
+
+	@Override
+	public List<Object[]> findMoneyByBizday(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return transferOutOrderDao.findMoneyByBizday(systemBookCode, centerBranchNums, branchNums, dateFrom, dateTo);
+	}
 
 	@Override
 	public List<Object[]> findProfitGroupByItem(String systemBookCode, List<Integer> transferBranchNums,
@@ -29,4 +36,13 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 		return transferOutOrderDao.findBranchItemMatrixSummary(systemBookCode, centerBranchNum, branchNums, dateFrom, dateTo, itemNums);
 	}
 
+	@Override
+	public List<Object[]> findUnTransferedItems(String systemBookCode, Integer outBranchNum, List<Integer> branchNums, List<Integer> storehouseNums) {
+		return transferOutOrderDao.findUnTransferedItems(systemBookCode, outBranchNum, branchNums, storehouseNums);
+	}
+
+	@Override
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return transferOutOrderDao.findMoneyByBranch(systemBookCode, centerBranchNums, branchNums, dateFrom, dateTo);
+	}
 }

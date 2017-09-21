@@ -2,6 +2,8 @@ package com.nhsoft.report.service;
 
 
 import com.nhsoft.report.dto.ItemQueryDTO;
+import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +14,16 @@ import java.util.List;
  */
 public interface PosOrderService {
 
+	public List<Object[]> findCustomReportByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<Object[]> findSummaryByBizday(CardReportQuery cardReportQuery);
+
+	/**
+	 * 根据门店汇总 单据数 单据总额 折扣总额 积分总额
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public List<Object[]> findSummaryByBranch(CardReportQuery cardReportQuery);
 
 	/**
 	 * 按商品主键汇总销售数量 销售金额 毛利金额
@@ -142,5 +154,6 @@ public interface PosOrderService {
 													  Date dateTo, List<String> categoryCodes, boolean queryKit);
 
 
+	public List<Object[]> findCustomReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
 }
 

@@ -3,6 +3,7 @@ package com.nhsoft.report.service.impl;
 import com.nhsoft.report.dao.PosOrderDao;
 import com.nhsoft.report.dto.ItemQueryDTO;
 import com.nhsoft.report.service.PosOrderService;
+import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,21 @@ public class PosOrderServiceImpl implements PosOrderService {
 	private PosOrderDao posOrderDao;
 
 
+	@Override
+	public List<Object[]> findCustomReportByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findCustomReportByBizday(systemBookCode, branchNums, dateFrom, dateTo);
+	}
+
+
+	@Override
+	public List<Object[]> findSummaryByBizday(CardReportQuery cardReportQuery) {
+		return posOrderDao.findSummaryByBizday(cardReportQuery);
+	}
+
+	@Override
+	public List<Object[]> findSummaryByBranch(CardReportQuery cardReportQuery) {
+		return posOrderDao.findSummaryByBranch(cardReportQuery);
+	}
 
 	@Override
 	public List<Object[]> findBranchDetailSum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
@@ -80,6 +96,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 	public List<Object[]> findItemSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
 									  List<Integer> itemNums, boolean queryKit) {
 		return posOrderDao.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, itemNums, queryKit);
+	}
+
+	@Override
+	public List<Object[]> findCustomReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
+		return posOrderDao.findCustomReportByBranch(systemBookCode, branchNums, dateFrom, dateTo, dateType);
 	}
 }
 

@@ -23,7 +23,16 @@ import java.util.*;
 public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 
 
-
+	@Override
+	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit) {
+		String sql = "select p.item_num " + createByPosItemQueryString(posItemQuery)+ " order by p.item_code ";
+		SQLQuery query = currentSession().createSQLQuery(sql);
+		if(posItemQuery.isPaging()) {
+			query.setFirstResult(offset);
+			query.setMaxResults(limit);
+		}
+		return query.list();
+	}
 
 	@Override
 	public List<Integer> findItemNums(String systemBookCode, String categoryCodes) {

@@ -15,6 +15,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.criterion.*;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -255,5 +256,47 @@ public class TransferInOrderDaoImpl extends DaoImpl implements TransferInOrderDa
 		}
 
 		return BigDecimal.ZERO;
+	}
+
+	@Override
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, sum(in_order_total_money) as totalMoney from transfer_in_order with(nolock) where system_book_code = '"+ systemBookCode + "' and in_order_state_code = 3 ");
+		if(branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(centerBranchNums != null && centerBranchNums.size() > 0) {
+			sb.append("and in_branch_num in " + AppUtil.getIntegerParmeList(centerBranchNums));
+		}
+		if(dateFrom != null) {
+			sb.append("and in_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
+		}
+		if(dateTo != null) {
+			sb.append("and in_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
+		}
+		sb.append("group by branch_num");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findMoneyByBizday(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select convert(varchar(12) , in_order_audit_time, 112), sum(in_order_total_money) as totalMoney from transfer_in_order with(nolock) where system_book_code = '"+ systemBookCode + "' and in_order_state_code = 3 ");
+		if(branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(centerBranchNums != null && centerBranchNums.size() > 0) {
+			sb.append("and in_branch_num in " + AppUtil.getIntegerParmeList(centerBranchNums));
+		}
+		if(dateFrom != null) {
+			sb.append("and in_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
+		}
+		if(dateTo != null) {
+			sb.append("and in_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
+		}
+		sb.append("group by convert(varchar(12) , in_order_audit_time, 112)");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
 	}
 }

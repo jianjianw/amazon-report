@@ -22,4 +22,8 @@ public interface TransferInOrderService {
 	 * @return
 	 */
 	public List<Object[]> findProfitGroupByItem(String systemBookCode, List<Integer> inBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodeList, List<Integer> itemNums);
+
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<Object[]> findMoneyByBizday(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
 }

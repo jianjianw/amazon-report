@@ -16,6 +16,11 @@ public class CardUserServiceImpl implements CardUserService{
 	
 	@Autowired
 	private CardUserDao cardUserDao;
+
+	@Override
+	public List<Object[]> findCardCountByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return cardUserDao.findCardCountByBizday(systemBookCode, branchNums, dateFrom, dateTo, null);
+	}
 	@Override
 	public List<Object[]> findCardCount(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {
 		return cardUserDao.findCardCount(systemBookCode, branchNums, dateFrom, dateTo, cardUserCardType);

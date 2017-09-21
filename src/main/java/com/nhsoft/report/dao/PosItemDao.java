@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface PosItemDao {
 
+	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit);
 
 	/**
 	 * 按类别查询商品主键

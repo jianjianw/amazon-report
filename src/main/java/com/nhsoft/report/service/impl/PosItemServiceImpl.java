@@ -40,6 +40,11 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 
 
 	@Override
+	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit) {
+		return posItemDao.findItemNumsByPosItemQuery(posItemQuery, offset, limit);
+	}
+
+	@Override
 	public List<Integer> findItemNums(String systemBookCode, String categoryCodes) {
 		return posItemDao.findItemNums(systemBookCode, categoryCodes);
 	}

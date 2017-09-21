@@ -21,5 +21,12 @@ public class TransferInOrderServiceImpl implements TransferInOrderService {
 				dateTo, categoryCodeList, itemNums);
 	}
 
-
+	@Override
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return transferInOrderDao.findMoneyByBranch(systemBookCode, centerBranchNums, branchNums, dateFrom, dateTo);
+	}
+	@Override
+	public List<Object[]> findMoneyByBizday(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return transferInOrderDao.findMoneyByBizday(systemBookCode, centerBranchNums, branchNums, dateFrom, dateTo);
+	}
 }

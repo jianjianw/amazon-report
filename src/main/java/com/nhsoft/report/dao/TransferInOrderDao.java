@@ -83,5 +83,7 @@ public interface TransferInOrderDao {
 	public BigDecimal findBalance(String systemBookCode,
 								  Integer centerBranchNum, Integer branchNum, Date dtFrom, Date dtTo);
 
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
+	public List<Object[]> findMoneyByBizday(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo);
 }
