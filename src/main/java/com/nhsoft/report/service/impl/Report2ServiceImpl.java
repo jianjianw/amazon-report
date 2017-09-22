@@ -1,12 +1,10 @@
 package com.nhsoft.report.service.impl;
 
-import com.nhsoft.report.dao.BranchRegionDao;
-import com.nhsoft.report.dao.PosItemGradeDao;
+import com.nhsoft.report.dao.*;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.*;
 import com.nhsoft.report.param.PosItemTypeParam;
-import com.nhsoft.report.service.CardBillService;
-import com.nhsoft.report.service.Report2Service;
+import com.nhsoft.report.service.*;
 import com.nhsoft.report.shared.queryBuilder.*;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
@@ -20,8 +18,45 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Service
-public class Report2ServiceImpl extends ReportServiceImpl implements Report2Service {
-	
+public class Report2ServiceImpl implements Report2Service {
+
+
+	@Autowired
+	public ReportDao reportDao;
+	@Autowired
+	public BookResourceService bookResourceService;
+	@Autowired
+	public PosItemService posItemService;
+	@Autowired
+	public TransferOutOrderDao transferOutOrderDao;
+	@Autowired
+	public ReceiveOrderDao receiveOrderDao;
+	@Autowired
+	public BranchService branchService;
+	@Autowired
+	public TransferInOrderDao transferInOrderDao;
+	@Autowired
+	public InnerSettlementDao innerSettlementDao;
+	@Autowired
+	public InnerPreSettlementDao innerPreSettlementDao;
+	@Autowired
+	public CardUserDao cardUserDao;
+	@Autowired
+	public CardSettlementDao cardSettlementDao;
+	@Autowired
+	public OnlineOrderDao onlineOrderDao;
+	@Autowired
+	public CardConsumeDao cardConsumeDao;
+	@Autowired
+	public CardDepositDao cardDepositDao;
+	@Autowired
+	public OtherInoutDao otherInoutDao;
+	@Autowired
+	public SystemBookService systemBookService;
+
+
+
+
 	@Autowired
 	private BranchRegionDao branchRegionDao;
 	@Autowired
@@ -29,17 +64,6 @@ public class Report2ServiceImpl extends ReportServiceImpl implements Report2Serv
 	@Autowired
 	private PosItemGradeDao posItemGradeDao;
 
-	public void setPosItemGradeDao(PosItemGradeDao posItemGradeDao) {
-		this.posItemGradeDao = posItemGradeDao;
-	}
-
-	public void setCardBillService(CardBillService cardBillService) {
-		this.cardBillService = cardBillService;
-	}
-
-	public void setBranchRegionDao(BranchRegionDao branchRegionDao) {
-		this.branchRegionDao = branchRegionDao;
-	}
 	
 	@Override
 	public List<TransferPolicyDTO> findTransferPolicyDTOs(PolicyPosItemQuery policyPosItemQuery) {

@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.*;
 @Repository
-public class ReportDaoImpl extends HibernateDaoSupport implements ReportDao {
+public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 	@Override
 	public List<Object[]> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember) {

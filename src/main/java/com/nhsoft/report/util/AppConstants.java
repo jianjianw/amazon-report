@@ -410,11 +410,6 @@ public class AppConstants {
 	public static final String BRANCH_TYPE_DIRECT = "直营";
 
 
-	//促销特价类型
-	public static final String POLICY_PROMOTION_SUPPLIER = "供应商返利"; //1
-	public static final String POLICY_PROMOTION_CENTER = "总部返利";		 //2
-
-
 	/**
 	 * 团购类型  若增加类型  请搜索常量 相关报表需要修改
 	 */
@@ -468,6 +463,29 @@ public class AppConstants {
 	public static final String SETTLE_TYPE_FIXED_DATE = "指定帐期";
 	public static final String SETTLE_TYPE_FIXED_DAY = "指定日期";
 	public static final String SETTLE_TYPE_FIXED_NOW = "货到付款";
+
+
+	/**
+	 * purchase_order_receive_state
+	 */
+	public static final String PURCHASE_ORDER_RECEIVE_STATE_FINISH = "收货完成";
+	public static final String PURCHASE_ORDER_RECEIVE_STATE_PART = "部分收货";
+
+
+	//促销特价类型
+	public static final String POLICY_PROMOTION_SUPPLIER = "供应商返利"; //1
+	public static final String POLICY_PROMOTION_CENTER = "总部返利";		 //2
+	public static final int POLICY_PROMOTION_SUPPLIER_CODE = 1;
+	public static final int POLICY_PROMOTION_CENTER_CODE = 2;
+
+
+	public static final String UNOUT_DAYS = "未进货天数";
+
+
+	/**
+	 * 营销活动类型
+	 */
+	public static final String MARKET_ACTION_TYPE_PAYMENT = "支付方式";
 
 
 

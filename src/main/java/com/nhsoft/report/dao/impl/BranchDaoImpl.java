@@ -4,20 +4,16 @@ package com.nhsoft.report.dao.impl;
 import com.nhsoft.report.dao.BranchDao;
 import com.nhsoft.report.model.Branch;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.stat.Statistics;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
-import java.util.Calendar;
-import java.util.Date;
+
 import java.util.List;
 @Repository
-public class BranchDaoImpl extends HibernateDaoSupport implements BranchDao {
+public class BranchDaoImpl extends DaoImpl implements BranchDao {
 
 	@Override
 	public List<Branch> findAll(String systemBookCode) {

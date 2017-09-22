@@ -1,6 +1,10 @@
 package com.nhsoft.report.service.impl;
 
 
+import com.nhsoft.amazon.server.dto.OrderQueryDTO;
+import com.nhsoft.amazon.server.dto.OrderDetailReportDTO;
+import com.nhsoft.amazon.server.dto.OrderReportDTO;
+import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.report.dao.*;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.*;
@@ -10,17 +14,18 @@ import com.nhsoft.report.param.ChainDeliveryParam;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.*;
 import com.nhsoft.report.shared.queryBuilder.*;
-import com.nhsoft.report.shared.queryBuilder.LogQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
-
+@Service
 public class ReportServiceImpl implements ReportService {
 
 	@Autowired
@@ -143,8 +148,8 @@ public class ReportServiceImpl implements ReportService {
 	private ItemExtendAttributeDao itemExtendAttributeDao;
 	@Autowired
 	private CardUserLogDao cardUserLogDao;
-
-	//private PosOrderRemoteService posOrderRemoteService;
+	@Autowired
+	private PosOrderRemoteService posOrderRemoteService;
 	@Autowired
 	private PosItemDao posItemDao;
 
@@ -4672,7 +4677,7 @@ public class ReportServiceImpl implements ReportService {
 		if (inventoryExceptQuery.getMultiple() == null) {
 			inventoryExceptQuery.setMultiple(BigDecimal.ONE);
 		}
-		if (StringUtils.is(inventoryExceptQuery.getCompare())) {
+		if (StringUtils.isEmpty(inventoryExceptQuery.getCompare())) {
 			inventoryExceptQuery.setCompare("<=");
 		}
 		// 进价大于配送价
@@ -6504,7 +6509,7 @@ public class ReportServiceImpl implements ReportService {
 				orderQueryDTO.setDateTo(dateTo);
 				orderQueryDTO.setQueryKit(saleAnalysisQueryData.getIsQueryCF());
 				orderQueryDTO.setItemNums(saleAnalysisQueryData.getPosItemNums());
-				
+
 				List<OrderDetailReportDTO> list = posOrderRemoteService.findItemStateSummaryDetail(orderQueryDTO);
 				List<Object[]> returnList = new ArrayList<Object[]>();
 
@@ -11997,7 +12002,7 @@ public class ReportServiceImpl implements ReportService {
 				continue;
 			}
 
-			LnItemDetailDTO detailDTO = new LnItemDetailDTO();
+			LnItemSummaryDTO.LnItemDetailDTO detailDTO = new LnItemSummaryDTO.LnItemDetailDTO();
 			detailDTO.setBillNo(posItemLog.getPosItemLogBillNo());
 			detailDTO.setBillType(posItemLog.getPosItemLogSummary());
 			// 调出单 调入单 批发销售 批发退货显示的数据要取相反数

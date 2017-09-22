@@ -3,6 +3,7 @@ package com.nhsoft;
 import com.google.gson.Gson;
 import com.nhsoft.report.model.AlipayLog;
 import com.nhsoft.report.service.AlipayLogService;
+import com.nhsoft.report.shared.queryBuilder.LogQuery;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.ServiceDeskUtil;
 import org.springframework.beans.factory.annotation.Autowired;

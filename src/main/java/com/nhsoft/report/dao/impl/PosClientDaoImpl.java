@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class PosClientDaoImpl extends HibernateDaoSupport implements PosClientDao {
+public class PosClientDaoImpl extends DaoImpl implements PosClientDao {
 	@Override
 	public List<PosClient> findAll(String systemBookCode, Integer branchNum) {
 		Criteria criteria = currentSession().createCriteria(PosClient.class, "p").add(

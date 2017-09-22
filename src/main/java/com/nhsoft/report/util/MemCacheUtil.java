@@ -10,7 +10,7 @@ public class MemCacheUtil {
 	private static final Logger logger = LoggerFactory.getLogger(MemCacheUtil.class);
 
 	private static MemcachedClient memcachedClient;
-	private static net.rubyeye.xmemcached.MemcachedClient xmemcachedClient;
+	private static MemcachedClient xmemcachedClient;
 	private static boolean memcachedValid;
 
 	public void setMemcachedClient(MemcachedClient memcachedClient) {
@@ -25,7 +25,7 @@ public class MemCacheUtil {
 		return memcachedValid;
 	}
 	
-	public void setXmemcachedClient(net.rubyeye.xmemcached.MemcachedClient xmemcachedClient) {
+	public void setXmemcachedClient(MemcachedClient xmemcachedClient) {
 		MemCacheUtil.xmemcachedClient = xmemcachedClient;
 	}
 	

@@ -8,9 +8,11 @@ import com.dangdang.ddframe.rdb.sharding.api.rule.TableRule;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.database.DatabaseShardingStrategy;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.database.NoneDatabaseShardingAlgorithm;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.table.TableShardingStrategy;
+import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.report.sharding.AlipayLogTableShardingAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.EnvironmentAware;
@@ -20,6 +22,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -35,6 +38,9 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 	
 	private Map customDataSources = new HashMap<String, DruidDataSource>();
 	private Map hibernateProperties = new HashMap();
+
+	@Value("${dpc.url}")
+	private String DPC_URL;
 	
 	public static class MultipleDataSource extends AbstractRoutingDataSource {
 		
@@ -153,8 +159,15 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		return sessionFactory;
 		
 	}
-	
-	
+
+	@Bean
+	public HttpInvokerProxyFactoryBean posOrderRemoteService() {
+		HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
+		httpInvokerProxyFactoryBean.setServiceUrl(DPC_URL+"/posOrderRemoteService");
+		httpInvokerProxyFactoryBean.setServiceInterface(PosOrderRemoteService.class);
+		return httpInvokerProxyFactoryBean;
+	}
+
 	@Bean
 	public HibernateTransactionManager transactionManager() {
 		HibernateTransactionManager transactionManager =
