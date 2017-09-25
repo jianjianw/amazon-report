@@ -29,10 +29,11 @@ public class APIMonthReport {
 	public @ResponseBody List<MonthReportDTO> findMonthReports(@RequestHeader("systemBookCode") String systemBookCode, @RequestHeader("branchNums") String branchNumStrs,
 			@RequestHeader("countType") int countType, @RequestHeader("year") int year) {
 		
-		List<Integer> branchNums = new ArrayList<Integer>();
+		branchNumStrs = branchNumStrs.substring(1, branchNumStrs.length() - 1);
 		String[] array = branchNumStrs.split(",");
+		List<Integer> branchNums = new ArrayList<Integer>();
 		for(int i = 0;i < array.length;i++){
-			branchNums.add(Integer.parseInt(array[i]));
+			branchNums.add(Integer.parseInt(array[i].trim()));
 		}
 		
 		Date dateFrom = DateUtil.getDateStr(year + "0101");

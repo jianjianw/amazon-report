@@ -7,6 +7,7 @@ import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -21,6 +22,7 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 
 @Configuration
+@ImportResource({"classpath:config.xml"})
 public class InitConfig {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InitConfig.class);
@@ -71,7 +73,7 @@ public class InitConfig {
 		EhCacheManagerFactoryBean bean = new EhCacheManagerFactoryBean();
 		bean.setShared(true);
 		
-		Resource resource = new ClassPathResource("classpath:ehcache.xml");
+		Resource resource = new ClassPathResource("ehcache.xml");
 		bean.setConfigLocation(resource);
 		return bean;
 	}
