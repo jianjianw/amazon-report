@@ -20,17 +20,17 @@ public class SystemBookDaoImpl extends DaoImpl implements SystemBookDao {
 	@Override
 	public List<SystemBook> findAll() {
 
-		String sql = "select * from system_book with(nolock) ordere by system_book_code asc";
+		String sql = "select * from system_book with(nolock) order by system_book_code asc";
 		SQLQuery query = currentSession().createSQLQuery(sql);
 		query.addEntity(SystemBook.class);
 		return query.list();
 	}
-
+	
 
 	@Override
 	public List<SystemBook> findAllActiveBooks() {
 
-		String sql = "select * from system_book with(nolock) where book_actived = 1 ordere by system_book_code asc";
+		String sql = "select * from system_book with(nolock) where book_actived = 1 order by system_book_code asc";
 		SQLQuery query = currentSession().createSQLQuery(sql);
 		query.addEntity(SystemBook.class);
 		return query.list();

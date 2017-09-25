@@ -4,11 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 
+@Entity
 public class SystemBook implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8604474107038799163L;
+	@Id
 	private String systemBookCode;
 	private String bookName;
 	private String bookKey;
@@ -17,8 +22,6 @@ public class SystemBook implements java.io.Serializable {
 	private String bookMerchantId;
 	private String bookMerchantName;
 	private Boolean bookMerchantActived;
-	private Boolean bookEnableWholesaler; // 批发功能
-	private Boolean bookEnableDealer; // 经销商在线订货功能
 	private String bookScopeId;
 	private Boolean bookMerchantDpcDisabled;//是否禁用大中心同步
 	private Date bookWshopExpiration;
@@ -29,7 +32,12 @@ public class SystemBook implements java.io.Serializable {
 	private Boolean bookChainActived;
 	
 	//临时属性
+	@Transient
 	private Boolean fromLicenseRegist = false; //是否从通过证书注册导入
+	@Transient
+	private Boolean bookEnableWholesaler; // 批发功能
+	@Transient
+	private Boolean bookEnableDealer; // 经销商在线订货功能
 
 	public Boolean getFromLicenseRegist() {
 		return fromLicenseRegist;
