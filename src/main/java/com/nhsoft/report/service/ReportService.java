@@ -52,7 +52,6 @@ public interface ReportService {
 
 	/**
 	 *  营业收款统计  根据分店、营业日汇总
-	 * @param loadConfig
 	 * @param systemBookCode
 	 * @param branchNums
 	 * @param dateFrom

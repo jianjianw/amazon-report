@@ -13,11 +13,13 @@ import com.nhsoft.report.util.DateUtil;
 import com.nhsoft.report.util.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 @Service
+@Component
 public class Report2RpcImpl implements Report2Rpc {
 	
 	@Autowired

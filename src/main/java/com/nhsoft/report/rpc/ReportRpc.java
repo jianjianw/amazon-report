@@ -13,6 +13,7 @@ import java.util.List;
 
 public interface ReportRpc {
 	
+	
 	/**
 	 * 按分店汇总销售毛利 毛利= 本店收货- 本店销售
 	 * @param saleAnalysisQueryData
@@ -116,7 +117,7 @@ public interface ReportRpc {
 	 * @param type 0营业额 1日均客单量2客单价3会员日均客单量4会员客单价5毛利6平均毛利率
 	 * @return
 	 */
-	public List<Object[]> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
+	public List<BranchMonthReport> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
 
 	/**
 	 *  营业收款统计  根据分店汇总

@@ -17,11 +17,13 @@ import com.nhsoft.report.util.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 @Service
+@Component
 public class ReportRpcImpl implements ReportRpc {
 
 	@Autowired
@@ -1673,8 +1675,28 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
-		return reportService.findMonthWholes(systemBookCode,branchNums,dateFrom,dateTo,type);
+	public List<BranchMonthReport> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
+		
+		List<Object[]> objects = reportService.findMonthWholes(systemBookCode,branchNums,dateFrom,dateTo,type);
+		List<BranchMonthReport> list = new ArrayList<BranchMonthReport>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		
+		Object[] object;
+		for(int i = 0;i < objects.size();i++){
+			object = objects.get(i);
+			BranchMonthReport branchMonthReport = new BranchMonthReport();
+			branchMonthReport.setBranchNum((Integer) object[0]);
+			branchMonthReport.setMonth((String) object[1]);
+			branchMonthReport.setBizMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+			branchMonthReport.setOrderCount(object[3] == null?0:(Integer) object[3]);
+			branchMonthReport.setProfit(object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4]);
+			branchMonthReport.setBizdayCount(object[5] == null?0:(Integer) object[5]);
+			list.add(branchMonthReport);
+			
+		}
+		return list;
 	}
 
 	@Override
