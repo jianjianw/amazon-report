@@ -1,0 +1,14 @@
+<ehcache >
+	<diskStore path="java.io.tmpdir" />
+	<defaultCache maxElementsInMemory="100000" eternal="false"
+		timeToIdleSeconds="300" timeToLiveSeconds="600" overflowToDisk="true"
+		memoryStoreEvictionPolicy="FIFO" statistics="false" />
+
+	<cache name="weixinPosItem" maxElementsInMemory="50000"
+		maxElementsOnDisk="1000" eternal="true" overflowToDisk="true"
+		diskSpoolBufferSizeMB="20" memoryStoreEvictionPolicy="LFU" />
+
+	<cache name="serviceCache" maxElementsInMemory="50000" eternal="false"
+		overflowToDisk="true" diskSpoolBufferSizeMB="20" timeToLiveSeconds="60"
+		memoryStoreEvictionPolicy="LFU" />
+</ehcache>

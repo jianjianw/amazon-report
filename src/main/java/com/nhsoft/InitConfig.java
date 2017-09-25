@@ -3,8 +3,12 @@ package com.nhsoft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.ehcache.EhCacheFactoryBean;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -60,6 +64,24 @@ public class InitConfig {
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setValueSerializer(new MyJackson2JsonRedisSerializer());
 		return redisTemplate;
+	}
+	
+	@Bean
+	public EhCacheManagerFactoryBean cacheManager() {
+		EhCacheManagerFactoryBean bean = new EhCacheManagerFactoryBean();
+		bean.setShared(true);
+		
+		Resource resource = new ClassPathResource("classpath:ehcache.xml");
+		bean.setConfigLocation(resource);
+		return bean;
+	}
+	
+	@Bean
+	public EhCacheFactoryBean shareDictionaryDataCache() {
+		EhCacheFactoryBean bean = new EhCacheFactoryBean();
+		bean.setCacheManager(cacheManager().getObject());
+		bean.setCacheName("com.pos3.application.SHARE_DICTIONARY_DATA");
+		return bean;
 	}
 	
 	

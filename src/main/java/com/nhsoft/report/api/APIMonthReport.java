@@ -26,7 +26,7 @@ public class APIMonthReport {
 	private BranchService branchService;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/findMonthReports")
-	public @ResponseBody List<MonthReportDTO> listStoreMainJson(@RequestHeader("systemBookCode") String systemBookCode, @RequestHeader("branchNums") String branchNumStrs,
+	public @ResponseBody List<MonthReportDTO> findMonthReports(@RequestHeader("systemBookCode") String systemBookCode, @RequestHeader("branchNums") String branchNumStrs,
 			@RequestHeader("countType") int countType, @RequestHeader("year") int year) {
 		
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -75,7 +75,6 @@ public class APIMonthReport {
 			dto.setAverage(dto.getSummary().divide(BigDecimal.valueOf(12), 4, BigDecimal.ROUND_HALF_UP));
 		}
 		return dtos;
-		
 		
 		
 	}
