@@ -27,30 +27,9 @@
     </aop:config>
     <tx:advice id="txAdvice" transaction-manager="transactionManager" >
         <tx:attributes>
-            <tx:method name="find*" read-only="true" propagation="SUPPORTS"
-                       timeout="180" />
-            <tx:method name="count*" read-only="true" propagation="SUPPORTS"
-                       timeout="180" />
-            <tx:method name="sum*" read-only="true" propagation="SUPPORTS"
-                       timeout="180" />
-            <tx:method name="read*" read-only="true" propagation="REQUIRED"
-                       isolation="READ_UNCOMMITTED" timeout="240" />
-            <tx:method name="get*" read-only="true" propagation="REQUIRED"
-                       isolation="READ_UNCOMMITTED" timeout="120" />
-            <tx:method name="check*" read-only="true" propagation="REQUIRED"
-                       isolation="READ_UNCOMMITTED" timeout="240" />
-            <tx:method name="audit" read-only="false" propagation="REQUIRED"
-                       isolation="DEFAULT" timeout="240" />
-            <tx:method name="save*" read-only="false" propagation="REQUIRED"
-                       isolation="DEFAULT" timeout="240" />
-            <tx:method name="batch*" read-only="false" propagation="REQUIRED"
-                       isolation="DEFAULT" timeout="3600" />
-            <tx:method name="pay" read-only="false" propagation="REQUIRED"
-                       isolation="DEFAULT" timeout="10" />
-            <tx:method name="excute*" read-only="false" propagation="REQUIRED"
-                       isolation="DEFAULT" timeout="4800" />
-            <tx:method name="*" read-only="false" propagation="REQUIRED"
-                       isolation="DEFAULT" />
+
+            <tx:method name="*" read-only="true" propagation="SUPPORTS"
+                       isolation="READ_UNCOMMITTED" />
 
         </tx:attributes>
     </tx:advice>

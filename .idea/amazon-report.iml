@@ -132,5 +132,10 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-context-support:4.3.10.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: net.spy:spymemcached:2.12.3" level="project" />
     <orderEntry type="library" name="Maven: com.nhsoft:amazon-datacenter:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.dianping.cat:cat-client:1.5.6" level="project" />
+    <orderEntry type="library" name="Maven: com.dianping.cat:cat:1.5.6" level="project" />
+    <orderEntry type="library" name="Maven: org.unidal.framework:foundation-service:3.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-container-default:3.0.4" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-all:4.0.24.Final" level="project" />
   </component>
 </module>
