@@ -1,7 +1,9 @@
 package com.nhsoft;
 
 import com.google.gson.Gson;
+import com.nhsoft.report.dto.AlipayLogDTO;
 import com.nhsoft.report.model.AlipayLog;
+import com.nhsoft.report.rpc.AlipayLogRpc;
 import com.nhsoft.report.service.AlipayLogService;
 import com.nhsoft.report.shared.queryBuilder.LogQuery;
 import com.nhsoft.report.util.AppUtil;
@@ -31,6 +33,9 @@ public class Test {
 
 	@Autowired
 	private AlipayLogService alipayLogService;
+	@Autowired
+	private AlipayLogRpc alipayLogRpc;
+
 
 
 	
@@ -48,7 +53,7 @@ public class Test {
 		
 	}
 	@RequestMapping("/test/{systemBookCode}")
-	public  @ResponseBody List<AlipayLog> testAlipay(@PathVariable("systemBookCode") String systemBookCode){
+	public  @ResponseBody List<AlipayLogDTO> testAlipay(@PathVariable("systemBookCode") String systemBookCode){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date dateFrom=null;
 		Date dateTo = null;
@@ -64,8 +69,9 @@ public class Test {
 		logQuery.setDateTo(dateTo);
 		int offset=0;
 		int limit = 10;
-		List<AlipayLog> byLogQuery = alipayLogService.findByLogQuery(systemBookCode, branchNum, logQuery, offset, limit);
-		return byLogQuery;
+		//List<AlipayLog> list = alipayLogService.findByLogQuery(systemBookCode, branchNum, logQuery, offset, limit);
+		List<AlipayLogDTO> list = alipayLogRpc.findByLogQuery(systemBookCode, branchNum, logQuery, offset, limit);
+		return list;
 
 	}
 }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-
 @Service
 @Component
 public class AlipayLogRpcImpl implements AlipayLogRpc {
