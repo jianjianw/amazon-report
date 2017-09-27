@@ -2139,8 +2139,25 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findSummaryGroupByItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, boolean kitFlag) {
-		return reportService.findSummaryGroupByItem(systemBookCode,branchNums,dateFrom,dateTo,itemNums,kitFlag);
+	public List<GroupByItemSummary> findSummaryGroupByItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, boolean kitFlag) {
+		List<Object[]> objects = reportService.findSummaryGroupByItem(systemBookCode, branchNums, dateFrom, dateTo, itemNums, kitFlag);
+		List<GroupByItemSummary> list = new ArrayList<GroupByItemSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			GroupByItemSummary groupByItemSummary = new GroupByItemSummary();
+			groupByItemSummary.setItemNum((Integer) object[0]);
+			groupByItemSummary.setMatrixNum((Integer) object[1]);
+			groupByItemSummary.setGrossProfit((BigDecimal) object[2]);
+			groupByItemSummary.setAmount((BigDecimal) object[3]);
+			groupByItemSummary.setPaymentMoney((BigDecimal) object[4]);
+			groupByItemSummary.setCost((BigDecimal) object[5]);
+			groupByItemSummary.setAssistAmount((BigDecimal) object[6]);
+			list.add(groupByItemSummary);
+		}
+		return list;
 	}
 
 	@Override

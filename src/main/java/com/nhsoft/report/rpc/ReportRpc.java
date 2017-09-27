@@ -826,7 +826,7 @@ public interface ReportRpc {
 	 * @param kitFlag 是否按成分商品查询
 	 * @return
 	 */
-	List<Object[]> findSummaryGroupByItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, boolean kitFlag);
+	List<GroupByItemSummary> findSummaryGroupByItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, boolean kitFlag);
 
 	/**
 	 * 按商品汇总销量 （中心销量 = 调出 + 批发   门店销量 = 前台销售 + 批发） 
