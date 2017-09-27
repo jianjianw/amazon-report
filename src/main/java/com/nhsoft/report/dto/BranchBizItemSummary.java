@@ -3,7 +3,7 @@ package com.nhsoft.report.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class BranchBizByItemSummary implements Serializable {
+public class BranchBizItemSummary implements Serializable {
 
     private int branchNum;
     private String bizday;

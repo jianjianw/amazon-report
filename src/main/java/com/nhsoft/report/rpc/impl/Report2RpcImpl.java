@@ -111,32 +111,32 @@ public class Report2RpcImpl implements Report2Rpc {
 	}
 
 	@Override
-	public List<BranchBizByItemSummary> findProfitAnalysisByBranchDayItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
+	public List<BranchBizItemSummary> findProfitAnalysisByBranchDayItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
 		List<Object[]> objects = report2Service.findProfitAnalysisByBranchDayItem(profitAnalysisQueryData);
-		List<BranchBizByItemSummary> list = new ArrayList<BranchBizByItemSummary>();
+		List<BranchBizItemSummary> list = new ArrayList<BranchBizItemSummary>();
 		if(objects.isEmpty()){
 			return list;
 		}
 		for(int i = 0;i<objects.size();i++){
 			Object[] object = objects.get(i);
-			BranchBizByItemSummary branchBizByItemSummary = new BranchBizByItemSummary();
-			branchBizByItemSummary.setBranchNum((Integer)object[0]);
-			branchBizByItemSummary.setBizday((String)object[1]);
-			branchBizByItemSummary.setItemNum((Integer)object[2]);
+			BranchBizItemSummary branchBizItemSummary = new BranchBizItemSummary();
+			branchBizItemSummary.setBranchNum((Integer)object[0]);
+			branchBizItemSummary.setBizday((String)object[1]);
+			branchBizItemSummary.setItemNum((Integer)object[2]);
 			if(object[3] instanceof BigDecimal){
-				branchBizByItemSummary.setGrossProfit(object[3] == null ? BigDecimal.ZERO : (BigDecimal)object[3]);
+				branchBizItemSummary.setGrossProfit(object[3] == null ? BigDecimal.ZERO : (BigDecimal)object[3]);
 			}
 			if(object[4] instanceof BigDecimal){
-				branchBizByItemSummary.setAmount(object[4] == null ? BigDecimal.ZERO : (BigDecimal)object[4]);
+				branchBizItemSummary.setAmount(object[4] == null ? BigDecimal.ZERO : (BigDecimal)object[4]);
 			}
 			if(object[5] instanceof BigDecimal){
-				branchBizByItemSummary.setPaymentMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal)object[5]);
+				branchBizItemSummary.setPaymentMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal)object[5]);
 			}
 			if(object[6] instanceof BigDecimal){
-				branchBizByItemSummary.setCost(object[6] == null ? BigDecimal.ZERO : (BigDecimal)object[6]);
+				branchBizItemSummary.setCost(object[6] == null ? BigDecimal.ZERO : (BigDecimal)object[6]);
 			}
-			list.add(branchBizByItemSummary);
+			list.add(branchBizItemSummary);
 
 		}
 		return list;

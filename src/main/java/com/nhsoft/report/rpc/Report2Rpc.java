@@ -72,7 +72,7 @@ public interface Report2Rpc {
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
-	public List<BranchBizByItemSummary> findProfitAnalysisByBranchDayItem(ProfitAnalysisQueryData profitAnalysisQueryData);
+	public List<BranchBizItemSummary> findProfitAnalysisByBranchDayItem(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 	/**
 	 * 按班次汇总缴款明细
