@@ -2626,5 +2626,10 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<LnItemSummaryDTO> findLnItemSummaryDTOs(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, Integer itemNum, String itemLotNumber, String itemUnit) {
 		return reportService.findLnItemSummaryDTOs(systemBookCode,branchNum,dateFrom,dateTo,itemNum,itemLotNumber,itemUnit);
 	}
-
+	
+	@Override
+	public Object excuteSql(String systemBookCode, String sql) {
+		return reportService.excuteSql(systemBookCode, sql);
+	}
+	
 }

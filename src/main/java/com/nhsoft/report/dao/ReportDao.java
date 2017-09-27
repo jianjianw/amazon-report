@@ -10,7 +10,10 @@ import java.util.Date;
 import java.util.List;
 
 public interface ReportDao {
-
+	
+	public Object excuteSql(String systemBookCode, String sql);
+	
+	
 	/**
 	 * 日销售报表
 	 * @param systemBookCode

@@ -152,8 +152,13 @@ public class ReportServiceImpl implements ReportService {
 	private PosOrderRemoteService posOrderRemoteService;
 	@Autowired
 	private PosItemDao posItemDao;
-
-
+	
+	
+	@Override
+	public Object excuteSql(String systemBookCode, String sql) {
+		return reportDao.excuteSql(systemBookCode, sql);
+	}
+	
 	@Override
 	public List<Object[]> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
 

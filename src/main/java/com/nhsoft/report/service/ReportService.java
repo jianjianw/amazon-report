@@ -16,7 +16,10 @@ import java.util.List;
  *
  */
 public interface ReportService {
-
+	
+	public Object excuteSql(String systemBookCode, String sql);
+	
+	
 	/**
 	 * 日销售报表 按分店、营业日汇总营业额
 	 * @param systemBookCode
@@ -1300,6 +1303,8 @@ public interface ReportService {
 	public List<LnItemSummaryDTO> findLnItemSummaryDTOs(String systemBookCode,
                                                         Integer branchNum, Date dateFrom, Date dateTo, Integer itemNum,
                                                         String itemLotNumber, String itemUnit);
+	
+	
 
 
 }
