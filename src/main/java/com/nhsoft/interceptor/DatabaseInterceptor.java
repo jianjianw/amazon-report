@@ -36,13 +36,16 @@ public class DatabaseInterceptor {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DatabaseInterceptor.class);
 	
-	// 定义切点Pointcut
-	@Pointcut("execution(* com.nhsoft.report.service.*.*(..))")
+//	@Pointcut("execution(* com.nhsoft.report.service.*.*(..))")
+//	public void service() {
+//	}
+	
+	@Pointcut("execution(* com.nhsoft.report.rpc.*.*(..))")
 	public void rpc() {
 	}
 	
 	@Before("rpc()")
-	public void before(JoinPoint jp){
+	public void doBefore(JoinPoint jp){
 		
 		Object[] objects = jp.getArgs();
 		if(objects.length == 0){
@@ -141,37 +144,37 @@ public class DatabaseInterceptor {
 	}
 	
 	@Around("rpc()")
-	public void around(ProceedingJoinPoint jp)throws Throwable{
-		
+	public Object around(ProceedingJoinPoint jp)throws Throwable{
+
 		String name = jp.getTarget().getClass().getName() + "." + jp.getSignature().getName();
 		Long begin = System.currentTimeMillis();
 
 		Transaction t = Cat.newTransaction("RPC", name);
 		Integer size = null;
 		try {
-			jp.proceed();
 			Object object = jp.proceed(jp.getArgs());
 			if (object instanceof List) {
 				size = ((List) object).size();
 			}
 			t.setStatus(Transaction.SUCCESS);
+			return object;
 		}catch (ServiceBizException | APIException e) {
 			t.setStatus(Transaction.SUCCESS);
 			throw  e;
 		} catch (Throwable throwable) {
 			t.setStatus(Transaction.SUCCESS);
 			t.setStatus(throwable);
-			
+			throw throwable;
 		} finally {
 			Long end = System.currentTimeMillis();
 			int diff = (int) ((end - begin) / 1000);
 			if(diff > 10){
 				Cat.logEvent("SLOW RPC", name, Event.SUCCESS, createCondition(jp));
-				
+
 			}
 			if(size != null && size > 10000){
 				Cat.logEvent("BIG RPC", name, Event.SUCCESS, createCondition(jp));
-				
+
 			}
 			t.complete();
 		}

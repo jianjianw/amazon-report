@@ -27,7 +27,8 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	@Override
 	public Object excuteSql(String systemBookCode, String sql) {
 		Query query = currentSession().createSQLQuery(sql);
-		return query.list();
+		Object object = query.list();
+		return object;
 	}
 	
 	@Override
