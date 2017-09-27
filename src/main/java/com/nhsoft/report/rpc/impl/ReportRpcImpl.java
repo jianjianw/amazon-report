@@ -1670,8 +1670,26 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
-		return reportService.findDayWholes(systemBookCode,branchNums,dateFrom,dateTo,type);
+	public List<BranchMonthReport> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
+		List<Object[]> objects = reportService.findDayWholes(systemBookCode,branchNums,dateFrom,dateTo,type);
+		List<BranchMonthReport> list = new ArrayList<BranchMonthReport>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		
+		Object[] object;
+		for(int i = 0;i < objects.size();i++){
+			object = objects.get(i);
+			BranchMonthReport branchMonthReport = new BranchMonthReport();
+			branchMonthReport.setBranchNum((Integer) object[0]);
+			branchMonthReport.setMonth((String) object[1]);
+			branchMonthReport.setBizMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+			branchMonthReport.setOrderCount(object[3] == null?0:(Integer) object[3]);
+			branchMonthReport.setProfit(object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4]);
+			list.add(branchMonthReport);
+			
+		}
+		return list;
 	}
 
 	@Override
@@ -1815,16 +1833,6 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public Object[] readWholesaleSummary(WholesaleProfitQuery queryData) {
-		return reportService.readWholesaleSummary(queryData);
-	}
-
-	@Override
-	public Object[] readWholesaleOrderAndReturnSummary(WholesaleProfitQuery queryData) {
-		return reportService.readWholesaleOrderAndReturnSummary(queryData);
-	}
-
-	@Override
 	public List<ToPicking> findToPicking(ShipGoodsQuery queryData) {
 		return reportService.findToPicking(queryData);
 	}
@@ -1850,8 +1858,28 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findBizAndMoney(String systemBookCode, Integer branchNum, String queryBy, String dateType, Date dateFrom, Date dateTo) {
-		return reportService.findBizAndMoney(systemBookCode,branchNum,queryBy,dateType,dateFrom,dateTo);
+	public List<BranchBizSummary> findBizAndMoney(String systemBookCode, Integer branchNum, String queryBy, String dateType, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findBizAndMoney(systemBookCode,branchNum,queryBy,dateType,dateFrom,dateTo);
+		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		Object[] object = null;
+		for(int i = 0;i < objects.size();i++){
+			object = objects.get(i);
+			BranchBizSummary branchBizSummary = new BranchBizSummary();
+			branchBizSummary.setBranchNum((Integer) object[0]);
+			branchBizSummary.setBiz((String)object[1]);
+			if(object[2] instanceof  BigDecimal){
+				branchBizSummary.setMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+			
+			} else if(object[2] instanceof  Integer){
+				branchBizSummary.setCount(object[2] == null?0:(Integer) object[2]);
+				
+			}
+			list.add(branchBizSummary);
+		}
+		return list;
 	}
 
 	@Override
@@ -1885,8 +1913,14 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findProfitAnalysisDays(ProfitAnalysisQueryData profitAnalysisQueryData) {
-		return reportService.findProfitAnalysisDays(profitAnalysisQueryData);
+	public List<BranchBizSummary> findProfitAnalysisDays(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		List<Object[]> objects = reportService.findProfitAnalysisDays(profitAnalysisQueryData);
+		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		
+		return list;
 	}
 
 	@Override

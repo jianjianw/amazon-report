@@ -25,11 +25,11 @@ public class DatabaseInterceptor {
 	
 	// 定义切点Pointcut
 	@Pointcut("execution(* com.nhsoft.report.service.*.*(..))")
-	public void before() {
+	public void rpc() {
 	}
 	
-	@Before("before()")
-	public void interceptor(JoinPoint jp){
+	@Before("rpc()")
+	public void before(JoinPoint jp){
 		
 		Object[] objects = jp.getArgs();
 		if(objects.length == 0){
@@ -51,6 +51,25 @@ public class DatabaseInterceptor {
 		
 		logger.info(String.format("systemBookCode = %s database = %s", systemBookCode, DynamicDataSourceContextHolder.getDataSourceType()));
 	}
+	
+	//@Around("rpc()")
+//	public void around(ProceedingJoinPoint jp){
+//
+//		String pageName = "";
+//		String serverIp = "";
+//		String method="";
+//		Transaction t = Cat.newTransaction("URL", pageName);
+//		try {
+//			Cat.logEvent("URL.Server",serverIp, Event.SUCCESS,"ip="+serverIp+"&...");
+//			Cat.logEvent("SQL.Method",method);
+//			jp.proceed();
+//			t.setStatus(Transaction.SUCCESS);
+//		} catch (Throwable throwable) {
+//			t.setStatus(throwable);
+//		} finally {
+//			t.complete();
+//		}
+//	}
 	
 	
 }

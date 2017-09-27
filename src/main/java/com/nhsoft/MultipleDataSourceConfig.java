@@ -52,6 +52,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 	
 	@Override
 	public void setEnvironment(Environment environment) {
+		
 		RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(environment, "custom.datasource.");
 		String dsPrefixs = propertyResolver.getProperty("names");
 		for (String dsPrefix : dsPrefixs.split(",")) {// 多个数据源

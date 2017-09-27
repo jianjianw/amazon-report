@@ -106,7 +106,7 @@ public interface ReportRpc {
 	 * @param type type 0营业额 1客单量2客单价3会员客单量4会员客单价5毛利6平均毛利率
 	 * @return
 	 */
-	public List<Object[]> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
+	public List<BranchMonthReport> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
 
 	/**
 	 * 月销售报表 按分店、营业月汇总营业额
@@ -307,20 +307,6 @@ public interface ReportRpc {
 	public List<WholesaleProfitByPosItemDetail> findWholesaleProfitByPosItemDetail(WholesaleProfitQuery queryData);
 
 	/**
-	 * 查询批发金额、批发毛利 销售金额、销售毛利 批发数量 总合计
-	 * @param queryData
-	 * @return
-	 */
-	public Object[] readWholesaleSummary(WholesaleProfitQuery queryData);
-
-	/**
-	 * 查询批发销售单、退货单的 数量 金额 毛利 成本 总合计
-	 * @param queryData
-	 * @return
-	 */
-	public Object[] readWholesaleOrderAndReturnSummary(WholesaleProfitQuery queryData);
-
-	/**
 	 * 查询待配货单据 调出单+批发销售单
 	 * @param queryData
 	 * @return
@@ -365,7 +351,7 @@ public interface ReportRpc {
 	 * @param dateTo 时间止
 	 * @return
 	 */
-	public List<Object[]> findBizAndMoney(String systemBookCode, Integer branchNum, String queryBy, String dateType, Date dateFrom, Date dateTo);
+	public List<BranchBizSummary> findBizAndMoney(String systemBookCode, Integer branchNum, String queryBy, String dateType, Date dateFrom, Date dateTo);
 
 	/**
 	 * 查询库存积压
@@ -414,7 +400,7 @@ public interface ReportRpc {
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
-	public List<Object[]> findProfitAnalysisDays(ProfitAnalysisQueryData profitAnalysisQueryData);
+	public List<BranchBizSummary> findProfitAnalysisDays(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 	/**
 	 * 毛利分析 客户毛利汇总
