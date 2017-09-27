@@ -2742,7 +2742,9 @@ public class ReportRpcImpl implements ReportRpc {
 	
 	@Override
 	public Object excuteSql(String systemBookCode, String sql) {
-		return reportService.excuteSql(systemBookCode, sql);
+		Object object = reportService.excuteSql(systemBookCode, sql);
+		
+		return object;
 	}
 	
 }

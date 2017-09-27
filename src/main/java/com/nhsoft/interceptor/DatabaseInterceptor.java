@@ -1,17 +1,11 @@
 package com.nhsoft.interceptor;
 
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Event;
-import com.dianping.cat.message.Transaction;
 import com.nhsoft.DynamicDataSourceContextHolder;
-import com.nhsoft.report.dto.APIException;
 import com.nhsoft.report.dto.SystemBookProxy;
-import com.nhsoft.report.shared.ServiceBizException;
 import com.nhsoft.report.util.DateUtil;
 import com.nhsoft.report.util.ServiceDeskUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -36,13 +30,16 @@ public class DatabaseInterceptor {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DatabaseInterceptor.class);
 	
-	// 定义切点Pointcut
-	@Pointcut("execution(* com.nhsoft.report.service.*.*(..))")
+//	@Pointcut("execution(* com.nhsoft.report.service.*.*(..))")
+//	public void service() {
+//	}
+	
+	@Pointcut("execution(* com.nhsoft.report.rpc.*.*(..))")
 	public void rpc() {
 	}
 	
 	@Before("rpc()")
-	public void before(JoinPoint jp){
+	public void doBefore(JoinPoint jp){
 		
 		Object[] objects = jp.getArgs();
 		if(objects.length == 0){
@@ -140,42 +137,42 @@ public class DatabaseInterceptor {
 		}
 	}
 	
-	@Around("rpc()")
-	public void around(ProceedingJoinPoint jp)throws Throwable{
-		
-		String name = jp.getTarget().getClass().getName() + "." + jp.getSignature().getName();
-		Long begin = System.currentTimeMillis();
-
-		Transaction t = Cat.newTransaction("RPC", name);
-		Integer size = null;
-		try {
-			jp.proceed();
-			Object object = jp.proceed(jp.getArgs());
-			if (object instanceof List) {
-				size = ((List) object).size();
-			}
-			t.setStatus(Transaction.SUCCESS);
-		}catch (ServiceBizException | APIException e) {
-			t.setStatus(Transaction.SUCCESS);
-			throw  e;
-		} catch (Throwable throwable) {
-			t.setStatus(Transaction.SUCCESS);
-			t.setStatus(throwable);
-			
-		} finally {
-			Long end = System.currentTimeMillis();
-			int diff = (int) ((end - begin) / 1000);
-			if(diff > 10){
-				Cat.logEvent("SLOW RPC", name, Event.SUCCESS, createCondition(jp));
-				
-			}
-			if(size != null && size > 10000){
-				Cat.logEvent("BIG RPC", name, Event.SUCCESS, createCondition(jp));
-				
-			}
-			t.complete();
-		}
-	}
+//	@Around("rpc()")
+//	public Object around(ProceedingJoinPoint jp)throws Throwable{
+//
+//		String name = jp.getTarget().getClass().getName() + "." + jp.getSignature().getName();
+//		Long begin = System.currentTimeMillis();
+//
+//		Transaction t = Cat.newTransaction("RPC", name);
+//		Integer size = null;
+//		try {
+//			Object object = jp.proceed(jp.getArgs());
+//			if (object instanceof List) {
+//				size = ((List) object).size();
+//			}
+//			t.setStatus(Transaction.SUCCESS);
+//			return object;
+//		}catch (ServiceBizException | APIException e) {
+//			t.setStatus(Transaction.SUCCESS);
+//			throw  e;
+//		} catch (Throwable throwable) {
+//			t.setStatus(Transaction.SUCCESS);
+//			t.setStatus(throwable);
+//			throw throwable;
+//		} finally {
+//			Long end = System.currentTimeMillis();
+//			int diff = (int) ((end - begin) / 1000);
+//			if(diff > 10){
+//				Cat.logEvent("SLOW RPC", name, Event.SUCCESS, createCondition(jp));
+//
+//			}
+//			if(size != null && size > 10000){
+//				Cat.logEvent("BIG RPC", name, Event.SUCCESS, createCondition(jp));
+//
+//			}
+//			t.complete();
+//		}
+//	}
 	
 	
 }
