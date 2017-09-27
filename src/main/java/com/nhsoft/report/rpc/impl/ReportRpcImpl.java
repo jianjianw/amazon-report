@@ -2209,8 +2209,20 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData) {
-		return reportService.findProfitAnalysisBranchs(profitAnalysisQueryData);
+	public List<BranchSummary> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData) {
+        List<Object[]> objects = reportService.findProfitAnalysisBranchs(profitAnalysisQueryData);
+        List<BranchSummary> list = new ArrayList<BranchSummary>();
+        for(int i = 0; i<objects.size();i++){
+            Object[] object = objects.get(i);
+            BranchSummary branchSummary = new BranchSummary();
+            branchSummary.setBranchNum((Integer) object[0]);
+            branchSummary.setProfit((BigDecimal) object[1]);
+            branchSummary.setPaymentMoney((BigDecimal) object[2]);
+            branchSummary.setCost((BigDecimal) object[3]);
+            list.add(branchSummary);
+        }
+
+        return list;
 	}
 
 	@Override
@@ -2528,9 +2540,23 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData) {
-		return reportService.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
-	}
+	public List<BranchBizSaleSummary> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData) {
+        List<Object[]> objects = reportService.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
+            List<BranchBizSaleSummary> list = new ArrayList<BranchBizSaleSummary>();
+            for(int i = 0; i<objects.size();i++){/////
+                Object[] object = objects.get(i);
+                BranchBizSaleSummary branchBizSaleSummary = new BranchBizSaleSummary();
+                branchBizSaleSummary.setBranchNum((Integer) object[0]);
+                branchBizSaleSummary.setBizday((String) object[1]);
+                branchBizSaleSummary.setStateCode((int)object[2]);
+                branchBizSaleSummary.setAmount((BigDecimal) object[3]);
+                branchBizSaleSummary.setPaymentMoney((BigDecimal) object[4]);
+                branchBizSaleSummary.setAssistAmount((BigDecimal) object[5]);
+                branchBizSaleSummary.setItemNumAmount((Integer) object[6]);
+                list.add(branchBizSaleSummary);
+            }
+            return list;
+    }
 
 	@Override
 	public List<CardReportDTO> findCardReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {
@@ -2588,8 +2614,28 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findCustomerAnalysisBranch(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
-		return reportService.findCustomerAnalysisBranch(systemBookCode,dtFrom,dtTo,branchNums,saleType);
+	public List<BranchBizCustomerSummary> findCustomerAnalysisBranch(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
+		List<Object[]> objects = reportService.findCustomerAnalysisBranch(systemBookCode, dtFrom, dtTo, branchNums, saleType);
+		List<BranchBizCustomerSummary> list = new ArrayList<BranchBizCustomerSummary>();
+		if(objects.isEmpty()){////
+			return list;
+		}
+		for(int i = 0; i<objects.size();i++){
+			Object[] object = objects.get(i);
+			BranchBizCustomerSummary branchBizCustomerSummary = new BranchBizCustomerSummary();
+			branchBizCustomerSummary.setBranchNum((Integer) object[0]);
+			branchBizCustomerSummary.setPaymentMoney((BigDecimal) object[1]);
+			branchBizCustomerSummary.setOrderNoCount((Integer) object[2]);
+			branchBizCustomerSummary.setConponMoney((BigDecimal) object[3]);
+			branchBizCustomerSummary.setMgrDiscount((BigDecimal) object[4]);
+			branchBizCustomerSummary.setGrossProfit((BigDecimal) object[5]);
+			branchBizCustomerSummary.setItemCount((Integer)object[6]);
+			branchBizCustomerSummary.setUserAmount((Integer) object[7]);
+			branchBizCustomerSummary.setUserMoney((BigDecimal) object[8]);
+			branchBizCustomerSummary.setValidOrderNo((Integer) object[9]);
+			list.add(branchBizCustomerSummary);
+		}
+		return list;
 	}
 
 	@Override

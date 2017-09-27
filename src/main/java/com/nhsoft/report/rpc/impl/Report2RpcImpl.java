@@ -111,8 +111,35 @@ public class Report2RpcImpl implements Report2Rpc {
 	}
 
 	@Override
-	public List<Object[]> findProfitAnalysisByBranchDayItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
-		return report2Service.findProfitAnalysisByBranchDayItem(profitAnalysisQueryData);
+	public List<BranchBizItemSummary> findProfitAnalysisByBranchDayItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+		List<Object[]> objects = report2Service.findProfitAnalysisByBranchDayItem(profitAnalysisQueryData);
+		List<BranchBizItemSummary> list = new ArrayList<BranchBizItemSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0;i<objects.size();i++){
+			Object[] object = objects.get(i);
+			BranchBizItemSummary branchBizItemSummary = new BranchBizItemSummary();
+			branchBizItemSummary.setBranchNum((Integer)object[0]);
+			branchBizItemSummary.setBizday((String)object[1]);
+			branchBizItemSummary.setItemNum((Integer)object[2]);
+			if(object[3] instanceof BigDecimal){
+				branchBizItemSummary.setGrossProfit(object[3] == null ? BigDecimal.ZERO : (BigDecimal)object[3]);
+			}
+			if(object[4] instanceof BigDecimal){
+				branchBizItemSummary.setAmount(object[4] == null ? BigDecimal.ZERO : (BigDecimal)object[4]);
+			}
+			if(object[5] instanceof BigDecimal){
+				branchBizItemSummary.setPaymentMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal)object[5]);
+			}
+			if(object[6] instanceof BigDecimal){
+				branchBizItemSummary.setCost(object[6] == null ? BigDecimal.ZERO : (BigDecimal)object[6]);
+			}
+			list.add(branchBizItemSummary);
+
+		}
+		return list;
 	}
 
 	@Override
