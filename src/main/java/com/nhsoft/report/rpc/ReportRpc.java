@@ -984,7 +984,7 @@ public interface ReportRpc {
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
-	List<Object[]> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData);
+	List<BranchSummary> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 	/**
 	 * 按分店对比客单量 金额 客单价
@@ -1107,7 +1107,7 @@ public interface ReportRpc {
 	 * @param saleAnalysisQueryData
 	 * @return
 	 */
-	List<Object[]> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData);
+	List<BranchBizSaleSummary> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData);
 
 	/**
 	 * 根据分店汇总卡数据
