@@ -851,7 +851,7 @@ public interface ReportRpc {
 	 * @param itemNums 商品主键列表
 	 * @return
 	 */
-	List<Object[]> findWholesaleOrderLostByClientAndItem(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<String> clientFids, List<Integer> itemNums);
+	List<WholesaleOrderLostSummary> findWholesaleOrderLostByClientAndItem(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<String> clientFids, List<Integer> itemNums);
 
 	/**
 	 * 查询批发客户分析 滞销商品
@@ -903,7 +903,7 @@ public interface ReportRpc {
 	 * @param dateTo 时间止
 	 * @return
 	 */
-	List<Object[]> findBranchSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	List<BranchSaleQtySummary> findBranchSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 * 按门店 商品汇总销量 （中心销量 = 调出 + 批发   门店销量 = 前台销售 + 批发） 
@@ -914,7 +914,7 @@ public interface ReportRpc {
 	 * @param itemNums 商品主键列表
 	 * @return
 	 */
-	List<Object[]> findBranchItemSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
+	List<BranchItemSummary> findBranchItemSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 	/**
 	 * 分店客单分析
@@ -1228,7 +1228,7 @@ public interface ReportRpc {
 	 * @param saleType
 	 * @return
 	 */
-	List<BranchBizCustomerSummary> findCustomerAnalysisBranch(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
+	List<BranchCustomerSummary> findCustomerAnalysisBranch(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
 
 	List<ShipOrderBranchDTO> findShipOrderBranch(String systemBookCode, Integer outBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo, Date itemDateFrom, Date itemDateTo, List<String> categoryCodes, List<Integer> exceptItemNums, BigDecimal minMoney);
 

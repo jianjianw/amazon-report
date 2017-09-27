@@ -46,4 +46,9 @@ public interface BranchService {
 	 * @return
 	 */
 	public List<Branch> findAllActived(String systemBookCode);
+
+	/**
+	 *	按分店查询
+	 *
+	 * */
 }

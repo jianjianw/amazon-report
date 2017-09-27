@@ -4,7 +4,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class BranchBizCustomerSummary implements Serializable {
+public class BranchCustomerSummary implements Serializable {
 
     private Integer branchNum;
     private BigDecimal paymentMoney;

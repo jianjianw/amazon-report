@@ -2149,8 +2149,24 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findWholesaleOrderLostByClientAndItem(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<String> clientFids, List<Integer> itemNums) {
-		return reportService.findWholesaleOrderLostByClientAndItem(systemBookCode,branchNum,dateFrom,dateTo,clientFids,itemNums);
+	public List<WholesaleOrderLostSummary> findWholesaleOrderLostByClientAndItem(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<String> clientFids, List<Integer> itemNums) {
+
+		List<Object[]> objects = reportService.findWholesaleOrderLostByClientAndItem(systemBookCode, branchNum, dateFrom, dateTo, clientFids, itemNums);
+		List<WholesaleOrderLostSummary> list = new ArrayList<WholesaleOrderLostSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0; i<objects.size(); i++){
+			Object[] object = objects.get(i);
+			WholesaleOrderLostSummary wholesaleOrderLostSummary = new WholesaleOrderLostSummary();
+			wholesaleOrderLostSummary.setClientFid((String) object[0]);
+			wholesaleOrderLostSummary.setItemNum((Integer) object[1]);
+			wholesaleOrderLostSummary.setFidCount((Integer) object[2]);
+			wholesaleOrderLostSummary.setMaxAuditTime((Date) object[3]);
+			list.add(wholesaleOrderLostSummary);
+		}
+		return list;
+
 	}
 
 	@Override
@@ -2169,13 +2185,41 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findBranchSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportService.findBranchSaleQty(systemBookCode,branchNums,dateFrom,dateTo);
+	public List<BranchSaleQtySummary> findBranchSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findBranchSaleQty(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BranchSaleQtySummary> list = new ArrayList<BranchSaleQtySummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0 ;i<objects.size(); i++){
+			Object[] object = objects.get(i);
+			BranchSaleQtySummary branchSaleQtySummary = new BranchSaleQtySummary();
+			branchSaleQtySummary.setBranchNum((Integer) object[0]);
+			branchSaleQtySummary.setPaymentMoney((BigDecimal) object[1]);
+			branchSaleQtySummary.setAmount((BigDecimal) object[2]);
+			list.add(branchSaleQtySummary);
+		}
+		return list;
 	}
 
 	@Override
-	public List<Object[]> findBranchItemSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums) {
-		return reportService.findBranchItemSaleQty(systemBookCode,branchNums,dateFrom,dateTo,itemNums);
+	public List<BranchItemSummary> findBranchItemSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+		List<Object[]> objects = reportService.findBranchItemSaleQty(systemBookCode, branchNums, dateFrom, dateTo, itemNums);
+		List<BranchItemSummary> list = new ArrayList<BranchItemSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0 ;i<objects.size();i++){
+			Object[] object = objects.get(i);
+			BranchItemSummary branchItemSummary = new BranchItemSummary();
+			branchItemSummary.setBranchNum((Integer) object[0]);
+			branchItemSummary.setItemNum((Integer) object[1]);
+			branchItemSummary.setMatrixNum((Integer) object[2]);
+			branchItemSummary.setPaymentMoney((BigDecimal) object[3]);
+			branchItemSummary.setAmount((BigDecimal) object[4]);
+			list.add(branchItemSummary);
+		}
+		return null;
 	}
 
 	@Override
@@ -2212,6 +2256,9 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<BranchSummary> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData) {
         List<Object[]> objects = reportService.findProfitAnalysisBranchs(profitAnalysisQueryData);
         List<BranchSummary> list = new ArrayList<BranchSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
         for(int i = 0; i<objects.size();i++){
             Object[] object = objects.get(i);
             BranchSummary branchSummary = new BranchSummary();
@@ -2543,7 +2590,10 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<BranchBizSaleSummary> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData) {
         List<Object[]> objects = reportService.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
             List<BranchBizSaleSummary> list = new ArrayList<BranchBizSaleSummary>();
-            for(int i = 0; i<objects.size();i++){/////
+			if(objects.isEmpty()){
+				return list;
+			}
+            for(int i = 0; i<objects.size();i++){
                 Object[] object = objects.get(i);
                 BranchBizSaleSummary branchBizSaleSummary = new BranchBizSaleSummary();
                 branchBizSaleSummary.setBranchNum((Integer) object[0]);
@@ -2614,26 +2664,26 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<BranchBizCustomerSummary> findCustomerAnalysisBranch(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
+	public List<BranchCustomerSummary> findCustomerAnalysisBranch(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
 		List<Object[]> objects = reportService.findCustomerAnalysisBranch(systemBookCode, dtFrom, dtTo, branchNums, saleType);
-		List<BranchBizCustomerSummary> list = new ArrayList<BranchBizCustomerSummary>();
-		if(objects.isEmpty()){////
+		List<BranchCustomerSummary> list = new ArrayList<BranchCustomerSummary>();
+		if(objects.isEmpty()){
 			return list;
 		}
 		for(int i = 0; i<objects.size();i++){
 			Object[] object = objects.get(i);
-			BranchBizCustomerSummary branchBizCustomerSummary = new BranchBizCustomerSummary();
-			branchBizCustomerSummary.setBranchNum((Integer) object[0]);
-			branchBizCustomerSummary.setPaymentMoney((BigDecimal) object[1]);
-			branchBizCustomerSummary.setOrderNoCount((Integer) object[2]);
-			branchBizCustomerSummary.setConponMoney((BigDecimal) object[3]);
-			branchBizCustomerSummary.setMgrDiscount((BigDecimal) object[4]);
-			branchBizCustomerSummary.setGrossProfit((BigDecimal) object[5]);
-			branchBizCustomerSummary.setItemCount((Integer)object[6]);
-			branchBizCustomerSummary.setUserAmount((Integer) object[7]);
-			branchBizCustomerSummary.setUserMoney((BigDecimal) object[8]);
-			branchBizCustomerSummary.setValidOrderNo((Integer) object[9]);
-			list.add(branchBizCustomerSummary);
+			BranchCustomerSummary branchCustomerSummary = new BranchCustomerSummary();
+			branchCustomerSummary.setBranchNum((Integer) object[0]);
+			branchCustomerSummary.setPaymentMoney((BigDecimal) object[1]);
+			branchCustomerSummary.setOrderNoCount((Integer) object[2]);
+			branchCustomerSummary.setConponMoney((BigDecimal) object[3]);
+			branchCustomerSummary.setMgrDiscount((BigDecimal) object[4]);
+			branchCustomerSummary.setGrossProfit((BigDecimal) object[5]);
+			branchCustomerSummary.setItemCount((Integer)object[6]);
+			branchCustomerSummary.setUserAmount((Integer) object[7]);
+			branchCustomerSummary.setUserMoney((BigDecimal) object[8]);
+			branchCustomerSummary.setValidOrderNo((Integer) object[9]);
+			list.add(branchCustomerSummary);
 		}
 		return list;
 	}
