@@ -2589,7 +2589,9 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<Object[]> findCustomerAnalysisBranch(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
-		return reportService.findCustomerAnalysisBranch(systemBookCode,dtFrom,dtTo,branchNums,saleType);
+		List<Object[]> objects = reportService.findCustomerAnalysisBranch(systemBookCode, dtFrom, dtTo, branchNums, saleType);
+
+		return null;
 	}
 
 	@Override
