@@ -1288,4 +1288,6 @@ public interface ReportRpc {
 	 * @return
 	 */
 	List<LnItemSummaryDTO> findLnItemSummaryDTOs(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, Integer itemNum, String itemLotNumber, String itemUnit);
+	
+	public Object excuteSql(String systemBookCode, String sql);
 }

@@ -17,14 +17,19 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
-import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.*;
 @Repository
 public class ReportDaoImpl extends DaoImpl implements ReportDao {
-
+	
+	@Override
+	public Object excuteSql(String systemBookCode, String sql) {
+		Query query = currentSession().createSQLQuery(sql);
+		return query.list();
+	}
+	
 	@Override
 	public List<Object[]> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember) {
 		StringBuffer sb = new StringBuffer();
