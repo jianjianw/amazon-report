@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -102,13 +99,21 @@ public class Branch implements java.io.Serializable {
 	private String branchType;
 	private String branchModule;
 	private Boolean branchActived;
+	private Boolean branchMatrixPriceActived;
 	
 	public Branch(){
 		
 	}
 	
-
-
+	
+	public Boolean getBranchMatrixPriceActived() {
+		return branchMatrixPriceActived;
+	}
+	
+	public void setBranchMatrixPriceActived(Boolean branchMatrixPriceActived) {
+		this.branchMatrixPriceActived = branchMatrixPriceActived;
+	}
+	
 	public Branch(String systemBookCode, Integer branchNum){
 		setId(new BranchId(systemBookCode, branchNum));
 	}
