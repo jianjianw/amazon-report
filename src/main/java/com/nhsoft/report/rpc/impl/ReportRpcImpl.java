@@ -2283,20 +2283,20 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<BranchSummary> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData) {
+	public List<BranchProfitSummary> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData) {
         List<Object[]> objects = reportService.findProfitAnalysisBranchs(profitAnalysisQueryData);
-        List<BranchSummary> list = new ArrayList<BranchSummary>();
+        List<BranchProfitSummary> list = new ArrayList<BranchProfitSummary>();
 		if(objects.isEmpty()){
 			return list;
 		}
         for(int i = 0; i<objects.size();i++){
             Object[] object = objects.get(i);
-            BranchSummary branchSummary = new BranchSummary();
-            branchSummary.setBranchNum((Integer) object[0]);
-            branchSummary.setProfit((BigDecimal) object[1]);
-            branchSummary.setPaymentMoney((BigDecimal) object[2]);
-            branchSummary.setCost((BigDecimal) object[3]);
-            list.add(branchSummary);
+            BranchProfitSummary branchProfitSummary = new BranchProfitSummary();
+            branchProfitSummary.setBranchNum((Integer) object[0]);
+            branchProfitSummary.setProfit((BigDecimal) object[1]);
+            branchProfitSummary.setPaymentMoney((BigDecimal) object[2]);
+            branchProfitSummary.setCost((BigDecimal) object[3]);
+            list.add(branchProfitSummary);
         }
 
         return list;
@@ -2759,5 +2759,30 @@ public class ReportRpcImpl implements ReportRpc {
 		
 		return object;
 	}
-	
+
+	@Override
+	public List<BranchMonthReport> findMoneyByBranch(String systemBookCode, Integer branchNum, String queryBy, String dateType, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findBizAndMoney(systemBookCode,branchNum,queryBy,dateType,dateFrom,dateTo);
+		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>();
+		if(objects.isEmpty()){
+			return null;
+		}
+		Object[] object = null;
+		for(int i = 0;i < objects.size();i++){
+			object = objects.get(i);
+			BranchBizSummary branchBizSummary = new BranchBizSummary();
+			branchBizSummary.setBranchNum((Integer) object[0]);
+			branchBizSummary.setBiz((String)object[1]);
+			if(object[2] instanceof  BigDecimal){
+				branchBizSummary.setMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+
+			} else if(object[2] instanceof  Integer){
+				branchBizSummary.setCount(object[2] == null?0:(Integer) object[2]);
+
+			}
+			list.add(branchBizSummary);
+		}
+		return list;
+	}
+
 }

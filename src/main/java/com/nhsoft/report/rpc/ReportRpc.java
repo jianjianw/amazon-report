@@ -984,7 +984,7 @@ public interface ReportRpc {
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
-	List<BranchSummary> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData);
+	List<BranchProfitSummary> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 	/**
 	 * 按分店对比客单量 金额 客单价
@@ -1290,4 +1290,12 @@ public interface ReportRpc {
 	List<LnItemSummaryDTO> findLnItemSummaryDTOs(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, Integer itemNum, String itemLotNumber, String itemUnit);
 	
 	public Object excuteSql(String systemBookCode, String sql);
+
+	/**
+	 * 按门店查找营业额
+	 *
+	 *
+	 */
+	public List<BranchMonthReport> findMoneyByBranch(String systemBookCode, Integer branchNum, String queryBy, String dateType,Date dateFrom, Date dateTo);
+
 }
