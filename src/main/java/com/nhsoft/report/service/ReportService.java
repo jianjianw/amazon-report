@@ -1307,13 +1307,13 @@ public interface ReportService {
 	/**
 	 * 按分店查询营业额
 	 * @param systemBookCode
-	 * @param branchNums 分店号
-	 * @param queryBy 统计类型 按营业额 or 按储值额 or 按发卡量
-	 * @param dateFrom 时间起
-	 * @param dateTo 时间止
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo);
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
 
 	/**
 	 * 按分店查询卡存款
@@ -1323,4 +1323,13 @@ public interface ReportService {
 	 * @param dateTo 时间止
 	 * */
 	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 按分店查询卡消费
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * */
+	public List<Object[]> findConsumeByBranch(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo);
 }

@@ -2767,8 +2767,8 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<BranchMoneyReport> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo) {
-		List<Object[]> objects = reportService.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateTo);
+	public List<BranchMoneyReport> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
+		List<Object[]> objects = reportService.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateTo,isMember);
 		List<BranchMoneyReport> list = new ArrayList<BranchMoneyReport>();
 		if(objects.isEmpty()){
 			return list;
@@ -2799,6 +2799,23 @@ public class ReportRpcImpl implements ReportRpc {
 			branchDepositReport.setBranchNum((Integer) object[0]);
 			branchDepositReport.setDeposit((BigDecimal) object[1]);
 			list.add(branchDepositReport);
+		}
+		return list;
+	}
+
+	@Override
+	public List<BranchConsumeReport> findConsumeByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findConsumeByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BranchConsumeReport> list = new ArrayList<BranchConsumeReport>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			BranchConsumeReport branchConsumeReport = new BranchConsumeReport();
+			branchConsumeReport.setBranchNum((Integer)object[0]);
+			branchConsumeReport.setConsume((BigDecimal) object[1]);
+			list.add(branchConsumeReport);
 		}
 		return list;
 	}
