@@ -12136,6 +12136,7 @@ public class ReportServiceImpl implements ReportService {
 		return list;
 	}
 
+
 	@Override
 	public List<PurchaseOrderCollect> findPurchaseBranchCategory(PurchaseOrderCollectQuery purchaseOrderCollectQuery) {
 		String systemBookCode = purchaseOrderCollectQuery.getSystemBookCode();
@@ -12421,6 +12422,22 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return list;
 	}
+	@Override
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo) {
 
+
+		List<Object[]> objects = null;
+		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
+			objects = reportDao.findMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo, false);
+		}
+
+		return objects;
+	}
+
+	@Override
+	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportDao.findDepositByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		return objects;
+	}
 
 }

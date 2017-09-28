@@ -2761,28 +2761,47 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<BranchMonthReport> findMoneyByBranch(String systemBookCode, Integer branchNum, String queryBy, String dateType, Date dateFrom, Date dateTo) {
-		List<Object[]> objects = reportService.findBizAndMoney(systemBookCode,branchNum,queryBy,dateType,dateFrom,dateTo);
-		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>();
+	public List<Branch> findAll(String systemBookCode) {
+		List<Branch> list = branchService.findAll(systemBookCode);
+		return list;
+	}
+
+	@Override
+	public List<BranchMoneyReport> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateTo);
+		List<BranchMoneyReport> list = new ArrayList<BranchMoneyReport>();
 		if(objects.isEmpty()){
-			return null;
+			return list;
 		}
-		Object[] object = null;
-		for(int i = 0;i < objects.size();i++){
-			object = objects.get(i);
-			BranchBizSummary branchBizSummary = new BranchBizSummary();
-			branchBizSummary.setBranchNum((Integer) object[0]);
-			branchBizSummary.setBiz((String)object[1]);
-			if(object[2] instanceof  BigDecimal){
-				branchBizSummary.setMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			BranchMoneyReport branchMoneyReport = new BranchMoneyReport();
+			branchMoneyReport.setBranchNum((Integer) object[0]);
+			branchMoneyReport.setBizMoney((BigDecimal) object[1]);
+			branchMoneyReport.setOrderCount((Integer) object[2]);
+			branchMoneyReport.setProfit((BigDecimal) object[3]);
+			list.add(branchMoneyReport);
 
-			} else if(object[2] instanceof  Integer){
-				branchBizSummary.setCount(object[2] == null?0:(Integer) object[2]);
-
-			}
-			list.add(branchBizSummary);
 		}
 		return list;
 	}
+
+	@Override
+	public List<BranchDepositReport> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findDepositByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BranchDepositReport> list = new ArrayList<BranchDepositReport>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			BranchDepositReport branchDepositReport = new BranchDepositReport();
+			branchDepositReport.setBranchNum((Integer) object[0]);
+			branchDepositReport.setDeposit((BigDecimal) object[1]);
+			list.add(branchDepositReport);
+		}
+		return list;
+	}
+
 
 }

@@ -1303,8 +1303,24 @@ public interface ReportService {
 	public List<LnItemSummaryDTO> findLnItemSummaryDTOs(String systemBookCode,
                                                         Integer branchNum, Date dateFrom, Date dateTo, Integer itemNum,
                                                         String itemLotNumber, String itemUnit);
-	
-	
 
+	/**
+	 * 按分店查询营业额
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param queryBy 统计类型 按营业额 or 按储值额 or 按发卡量
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * @return
+	 */
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo);
 
+	/**
+	 * 按分店查询卡存款
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * */
+	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 }

@@ -7824,4 +7824,53 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		return query.list();
 	}
 
+	@Override
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
+		sb.append("count(order_no) as count, sum(order_gross_profit) as profit ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code in (5, 7)  ");
+		if(isMember){
+			sb.append("and order_card_user_num > 0 ");
+		}
+		sb.append("group by branch_num order by branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+
+	}
+
+	@Override
+	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, sum(deposit_money) as money ");
+		sb.append("form card_deposit with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code in (5, 7)  ");
+		sb.append("group by branch_num order by branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
 }

@@ -849,4 +849,23 @@ public interface ReportDao {
 
 	public List<Object[]> findCustomerAnalysisBranchItem(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, List<Integer> itemNums);
 
+	/**
+	 * 按分店查询营业额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isMember 是否会员
+	 * @return
+	 */
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
+
+	/**
+	 * 按分店查询卡存款
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * */
+	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 }

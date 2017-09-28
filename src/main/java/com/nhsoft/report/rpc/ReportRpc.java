@@ -2,6 +2,7 @@ package com.nhsoft.report.rpc;
 
 
 import com.nhsoft.report.dto.*;
+import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.CustomReport;
 import com.nhsoft.report.model.PosItem;
 import com.nhsoft.report.param.ChainDeliveryParam;
@@ -1292,10 +1293,30 @@ public interface ReportRpc {
 	public Object excuteSql(String systemBookCode, String sql);
 
 	/**
-	 * 按门店查找营业额
-	 *
-	 *
+	 * 查询分店
+	 * @param systemBookCode 帐套号
+	 * @return
 	 */
-	public List<BranchMonthReport> findMoneyByBranch(String systemBookCode, Integer branchNum, String queryBy, String dateType,Date dateFrom, Date dateTo);
+	public List<Branch> findAll(String systemBookCode);
+	/**
+	 * 按分店查询营业额
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param queryBy 统计类型 按营业额 or 按储值额 or 按发卡量
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * @return
+	 */
+	public List<BranchMoneyReport> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo);
+
+	/**
+	 * 按分店查询卡存款
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * */
+	public List<BranchDepositReport> findDepositByBranch(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo);
+
 
 }
