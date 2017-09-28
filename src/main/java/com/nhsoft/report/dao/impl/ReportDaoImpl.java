@@ -4529,7 +4529,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 	@Override
 	public List<Object[]> findPosGroupByHour(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sb = new StringBuffer();/////
 		sb.append("select datepart(hh,p.order_time), sum(p.order_payment_money + p.order_coupon_total_money - p.order_mgr_discount_money) as money, count(order_no) as amount ");
 		sb.append("from pos_order as p with(nolock) where p.system_book_code = '" + systemBookCode + "' ");
 		if (branchNum.equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)) {

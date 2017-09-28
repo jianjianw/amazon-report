@@ -1302,6 +1302,7 @@ public interface ReportRpc {
 	 * 按分店查询营业额
 	 * @param systemBookCode
 	 * @param branchNums
+	 * @param queryBy 统计类型 按营业额(AppConstants.BUSINESS_TREND_PAYMENT) or 按储值额 or 按发卡量
 	 * @param dateFrom
 	 * @param dateTo
 	 * @param isMember 是否会员

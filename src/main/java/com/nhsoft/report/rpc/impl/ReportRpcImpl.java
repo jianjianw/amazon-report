@@ -2135,7 +2135,8 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<Object[]> findPosGroupByHour(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
-		return reportService.findPosGroupByHour(systemBookCode,branchNum,dateFrom,dateTo);
+		List<Object[]> objects = reportService.findPosGroupByHour(systemBookCode, branchNum, dateFrom, dateTo);
+		return null;
 	}
 
 	@Override
