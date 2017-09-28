@@ -2,6 +2,7 @@ package com.nhsoft.report.service.impl;
 
 import com.nhsoft.report.dao.BranchDao;
 import com.nhsoft.report.model.Branch;
+import com.nhsoft.report.model.BranchRegion;
 import com.nhsoft.report.service.BranchService;
 
 import com.nhsoft.report.util.AppConstants;
@@ -83,6 +84,11 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	@Override
 	public List<Branch> findAllActived(String systemBookCode) {
 		return branchDao.findAllActived(systemBookCode);
+	}
+
+	@Override
+	public List<BranchRegion> findBranchRegion(String systemBookCode) {
+		return branchDao.findBranchRegion(systemBookCode);
 	}
 
 

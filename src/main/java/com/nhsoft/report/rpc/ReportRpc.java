@@ -3,6 +3,7 @@ package com.nhsoft.report.rpc;
 
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
+import com.nhsoft.report.model.BranchRegion;
 import com.nhsoft.report.model.CustomReport;
 import com.nhsoft.report.model.PosItem;
 import com.nhsoft.report.param.ChainDeliveryParam;
@@ -815,7 +816,7 @@ public interface ReportRpc {
 	 * @param dateTo 营业日止
 	 * @return
 	 */
-	List<Object[]> findPosGroupByHour(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+	List<PosGroupHourSummary> findPosGroupByHour(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 
 	/**
 	 * 按商品汇总POS销售毛利 数量 金额 成本
@@ -1327,6 +1328,13 @@ public interface ReportRpc {
 	 * @param dateTo 时间止
 	 * */
 	public List<BranchConsumeReport> findConsumeByBranch(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo);
+
+	/*
+	 *	查询分店区域
+	 * @param systemBookCode 帐套号
+	 * @return
+	 * */
+	public List<BranchRegion> findBranchRegion(String systemBookCode);
 
 
 }

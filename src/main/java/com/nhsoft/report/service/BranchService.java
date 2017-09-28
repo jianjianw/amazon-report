@@ -1,6 +1,8 @@
 package com.nhsoft.report.service;
 
 import com.nhsoft.report.model.Branch;
+import com.nhsoft.report.model.BranchRegion;
+
 import java.util.List;
 
 /**
@@ -47,8 +49,13 @@ public interface BranchService {
 	 */
 	public List<Branch> findAllActived(String systemBookCode);
 
-	/**
-	 *	按分店查询
-	 *
+	/*
+	 *	查询分店区域
+	 * @param systemBookCode 帐套号
+	 * @return
 	 * */
+	public List<BranchRegion> findBranchRegion(String systemBookCode);
+
+
+
 }

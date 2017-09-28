@@ -2,6 +2,7 @@ package com.nhsoft.report.dao;
 
 
 import com.nhsoft.report.model.Branch;
+import com.nhsoft.report.model.BranchRegion;
 
 import java.util.List;
 
@@ -20,6 +21,13 @@ public interface BranchDao {
 	public Branch readWithNolock(String systemBookCode, Integer branchNum);
 
 	public List<Branch> findAllActived(String systemBookCode);
+
+	/*
+	 *	查询分店区域
+	 * @param systemBookCode 帐套号
+	 * @return
+	 * */
+	public List<BranchRegion> findBranchRegion(String systemBookCode);
 
 
 }

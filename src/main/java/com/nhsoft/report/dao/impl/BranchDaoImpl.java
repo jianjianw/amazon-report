@@ -3,6 +3,7 @@ package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.BranchDao;
 import com.nhsoft.report.model.Branch;
+import com.nhsoft.report.model.BranchRegion;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Order;
@@ -49,5 +50,13 @@ public class BranchDaoImpl extends DaoImpl implements BranchDao {
 				.add(Restrictions.eq("b.id.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("b.branchActived", true)).addOrder(Order.asc("b.id.branchNum"));
 		return criteria.list();
+	}
+
+	@Override
+	public List<BranchRegion> findBranchRegion(String systemBookCode) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select * from branch_region where system_book_code = '"+systemBookCode+ "'");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
 	}
 }
