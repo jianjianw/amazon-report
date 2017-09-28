@@ -2161,8 +2161,21 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findItemSaleQty(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, boolean includePos, boolean includeTranferOut, boolean includeWholesale) {
-		return reportService.findItemSaleQty(systemBookCode,branchNum,dateFrom,dateTo,includePos,includeTranferOut,includeWholesale);
+	public List<ItemSaleQtySummary> findItemSaleQty(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, boolean includePos, boolean includeTranferOut, boolean includeWholesale) {
+		List<Object[]> objects = reportService.findItemSaleQty(systemBookCode, branchNum, dateFrom, dateTo, includePos, includeTranferOut, includeWholesale);
+		List<ItemSaleQtySummary> list = new ArrayList<ItemSaleQtySummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			ItemSaleQtySummary itemSaleQtySummary  = new ItemSaleQtySummary();
+			itemSaleQtySummary.setItemNum((Integer) object[0]);
+			itemSaleQtySummary.setMatrixNum((Integer) object[1]);
+			itemSaleQtySummary.setAmount((BigDecimal) object[2]);
+			list.add(itemSaleQtySummary);
+		}
+		return list;
 	}
 
 	@Override

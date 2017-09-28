@@ -839,7 +839,7 @@ public interface ReportRpc {
 	 * @param includeWholesale 是否包含批发销售
 	 * @return
 	 */
-	List<Object[]> findItemSaleQty(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, boolean includePos, boolean includeTranferOut, boolean includeWholesale);
+	List<ItemSaleQtySummary> findItemSaleQty(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, boolean includePos, boolean includeTranferOut, boolean includeWholesale);
 
 	/**
 	 * 按客户商品汇总缺货信息
