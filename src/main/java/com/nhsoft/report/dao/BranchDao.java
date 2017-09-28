@@ -29,5 +29,7 @@ public interface BranchDao {
 	 * */
 	public List<BranchRegion> findBranchRegion(String systemBookCode);
 
+	public List<Branch> findBranchByBranchRegionNum(String systemBookCode, Integer branchRegionNum);
+
 
 }

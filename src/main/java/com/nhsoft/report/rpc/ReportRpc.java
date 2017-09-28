@@ -806,7 +806,7 @@ public interface ReportRpc {
 	 * @param dateTo 营业日止
 	 * @return
 	 */
-	List<Object[]> findPosGroupByHourAndBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+	List<PosGroupHourAndBranchRegionTypeSummary> findPosGroupByHourAndBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 
 	/**
 	 * 按小时汇总客单量 和金额
@@ -1335,6 +1335,14 @@ public interface ReportRpc {
 	 * @return
 	 * */
 	public List<BranchRegion> findBranchRegion(String systemBookCode);
+
+	/**
+	 * 按照区域查询分店
+	 * @param systemBookCode 帐套号
+	 * @param  branchRegionNum   分店区域号
+	 * @return
+	 * */
+	public List<Branch> findBranchByBranchRegionNum(String systemBookCode,Integer branchRegionNum);
 
 
 }

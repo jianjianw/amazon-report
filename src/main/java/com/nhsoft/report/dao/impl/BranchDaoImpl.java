@@ -59,4 +59,12 @@ public class BranchDaoImpl extends DaoImpl implements BranchDao {
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		return sqlQuery.list();
 	}
+
+	@Override
+	public List<Branch> findBranchByBranchRegionNum(String systemBookCode, Integer branchRegionNum) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select * from branch where system_book_code = '"+systemBookCode+ "' and branch_region_num = "+branchRegionNum);
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+	}
 }

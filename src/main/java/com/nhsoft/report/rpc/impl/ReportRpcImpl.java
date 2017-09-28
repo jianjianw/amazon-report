@@ -2129,9 +2129,21 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findPosGroupByHourAndBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
-		reportService.findPosGroupByHourAndBranchRegionType(systemBookCode, branchNum, dateFrom, dateTo);
-		return null;
+	public List<PosGroupHourAndBranchRegionTypeSummary> findPosGroupByHourAndBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findPosGroupByHourAndBranchRegionType(systemBookCode, branchNum, dateFrom, dateTo);
+		List<PosGroupHourAndBranchRegionTypeSummary> list = new ArrayList<PosGroupHourAndBranchRegionTypeSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size(); i++) {
+			Object[] object = objects.get(i);
+			PosGroupHourAndBranchRegionTypeSummary posGroupHourAndBranchRegionTypeSummary = new PosGroupHourAndBranchRegionTypeSummary();
+			posGroupHourAndBranchRegionTypeSummary.setOrderTimeChar((int)object[0]);
+			posGroupHourAndBranchRegionTypeSummary.setMoney((BigDecimal) object[1]);
+			posGroupHourAndBranchRegionTypeSummary.setAmount((Integer) object[2]);
+			list.add(posGroupHourAndBranchRegionTypeSummary);
+		}
+		return list;
 	}
 
 	@Override
@@ -2836,8 +2848,12 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BranchRegion> findBranchRegion(String systemBookCode) {
-
 		return  branchService.findBranchRegion(systemBookCode);
+	}
+
+	@Override
+	public List<Branch> findBranchByBranchRegionNum(String systemBookCode, Integer branchRegionNum) {
+		return branchService.findBranchByBranchRegionNum(systemBookCode, branchRegionNum);
 	}
 
 
