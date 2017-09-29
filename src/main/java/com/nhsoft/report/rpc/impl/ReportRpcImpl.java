@@ -2060,14 +2060,27 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<Object[]> findWholesaleReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType) {
-		return reportService.findWholesaleReturnCountAndMoneyByDate(systemBookCode,branchNum,clientFid,dateFrom,dateTo,dateType);
+		return reportService.findWholesaleReturnCountAndMoneyByDate(systemBookCode, branchNum, clientFid, dateFrom, dateTo, dateType);
 	}
 
 	@Override
-	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
+	public List<PosOrderMoneyByBizDaySummary> findPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
 
+		List<Object[]> objects = reportService.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
+		List<PosOrderMoneyByBizDaySummary> list = new ArrayList<PosOrderMoneyByBizDaySummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			PosOrderMoneyByBizDaySummary posOrderMoneyByBizDaySummary = new PosOrderMoneyByBizDaySummary();
+			posOrderMoneyByBizDaySummary.setBizday((String) object[0]);
+			posOrderMoneyByBizDaySummary.setMoney((BigDecimal) object[1]);
+			posOrderMoneyByBizDaySummary.setAmount((Integer) object[2]);
+			list.add(posOrderMoneyByBizDaySummary);
+		}
 
-		return null;
+		return list;
 	}
 
 	@Override

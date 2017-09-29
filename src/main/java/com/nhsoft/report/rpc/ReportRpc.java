@@ -679,7 +679,7 @@ public interface ReportRpc {
 	 * @param dateType  日期类型 按年或 按月
 	 * @return
 	 */
-	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
+	public List<PosOrderMoneyByBizDaySummary> findPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
 
 	/**
 	 * 按时间类型查询收货单数量和金额
