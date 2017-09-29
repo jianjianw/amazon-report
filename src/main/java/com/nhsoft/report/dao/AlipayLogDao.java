@@ -15,9 +15,6 @@ public interface AlipayLogDao {
 	public int countByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery);
 	
 	public List<AlipayLog> findByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery, int offset, int limit);
-
-	public AlipayLog readLast(String systemBookCode, Integer branchNum, String orderNo, String alipayLogType);
-
 	
 	/**
 	 * 按分店汇总支付失败金额、次数

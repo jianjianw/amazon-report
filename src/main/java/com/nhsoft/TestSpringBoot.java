@@ -22,6 +22,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TestSpringBoot {
+
     @Autowired
     private ReportRpc reportRpc;
 
@@ -37,12 +38,12 @@ public class TestSpringBoot {
          * @param dateTo 时间止
          * @return
          */
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dateFrom = null;
         Date dateTo = null;
         try {
-            dateFrom = sdf.parse("2017-02-10 00:20:41");
-            dateTo = sdf.parse("2017-02-11 00:21:15");
+            dateFrom = sdf.parse("2017-02-10");
+            dateTo = sdf.parse("2017-02-11");
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -52,7 +53,9 @@ public class TestSpringBoot {
         branchNums.add(99);
         String queryBy = AppConstants.BUSINESS_TREND_PAYMENT;
 
-        List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, null,false);
+        List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateFrom,false);
+
+        int size = moneyByBranch.size();
         System.out.println();
     }
 

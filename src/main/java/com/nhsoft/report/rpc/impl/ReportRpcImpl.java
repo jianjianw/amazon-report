@@ -2120,12 +2120,30 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public Object[] findInventoryUnsale(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
-		return reportService.findInventoryUnsale(systemBookCode,branchNum,dateFrom,dateTo);
+
+		Object[] object = reportService.findInventoryUnsale(systemBookCode, branchNum, dateFrom, dateTo);
+
+		return null;
 	}
 
 	@Override
-	public List<Object[]> findPosGroupByBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
-		return reportService.findPosGroupByBranchRegionType(systemBookCode,branchNum,dateFrom,dateTo);
+	public List<PosGroupBranchRegionTypeSummary> findPosGroupByBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+
+		List<Object[]> objects = reportService.findPosGroupByBranchRegionType(systemBookCode, branchNum, dateFrom, dateTo);
+		List<PosGroupBranchRegionTypeSummary> list = new ArrayList<PosGroupBranchRegionTypeSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			PosGroupBranchRegionTypeSummary posGroupBranchRegionTypeSummary = new PosGroupBranchRegionTypeSummary();
+			posGroupBranchRegionTypeSummary.setRegionType((String) object[0]);
+			posGroupBranchRegionTypeSummary.setMoney((BigDecimal) object[0]);
+			posGroupBranchRegionTypeSummary.setAmount((Integer) object[0]);
+			list.add(posGroupBranchRegionTypeSummary);
+		}
+
+		return list;
 	}
 
 	@Override

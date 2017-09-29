@@ -57,6 +57,7 @@ public class BranchDaoImpl extends DaoImpl implements BranchDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select * from branch_region where system_book_code = '"+systemBookCode+ "'");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.addEntity(BranchRegion.class);
 		return sqlQuery.list();
 	}
 
@@ -65,6 +66,7 @@ public class BranchDaoImpl extends DaoImpl implements BranchDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select * from branch where system_book_code = '"+systemBookCode+ "' and branch_region_num = "+branchRegionNum);
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.addEntity(Branch.class);
 		return sqlQuery.list();
 	}
 }

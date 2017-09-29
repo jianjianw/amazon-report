@@ -65,26 +65,16 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 			}
 
 		}
-		//后分页
-		if(logQuery.isPaging()){
-			sb.append("offset "+offset+" rows fetch next "+limit+" rows only" );
-		}
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+
+		if(logQuery.isPaging()){
+			sqlQuery.setFirstResult(offset);
+			sqlQuery.setMaxResults(limit);
+		}
+		sqlQuery.addEntity(AlipayLog.class);
 		return sqlQuery.list();
 
 	}
-
-	@Override
-	public AlipayLog readLast(String systemBookCode, Integer branchNum, String orderNo, String alipayLogType) {
-		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
-				.add(Restrictions.eq("a.alipayLogOrderNo", orderNo))
-				.add(Restrictions.in("a.alipayLogType", alipayLogType.split(",")));
-		criteria.addOrder(Order.desc("a.alipayLogStart"));
-		criteria.setMaxResults(1);
-		return (AlipayLog) criteria.uniqueResult();
-	}
-
-
 
 	@Override
 	public List<Object[]> findBranchSummaryPayFail(String systemBookCode, List<Integer> branchNums, Date dateFrom,
