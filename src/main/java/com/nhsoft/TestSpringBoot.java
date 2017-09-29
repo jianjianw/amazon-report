@@ -107,13 +107,13 @@ public class TestSpringBoot {
     @Test
     public void testRegion(){
 
-        List<BranchRegion> branchRegion = reportRpc.findBranchRegion("4344");
+        List<BranchRegion> branchRegion = reportRpc.findBranchRegion("4020");
         System.out.println();
     }
 
     @Test
     public void testRegionBranch(){
-        List<Branch> branchByBranchRegionNum = reportRpc.findBranchByBranchRegionNum("99999", 999990003);
+        List<Branch> branchByBranchRegionNum = reportRpc.findBranchByBranchRegionNum("4020", 402000002);
         System.out.println();
     }
 
