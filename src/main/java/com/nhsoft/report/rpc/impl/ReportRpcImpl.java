@@ -2054,8 +2054,22 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findWholesaleOrderCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType) {
-		return reportService.findWholesaleOrderCountAndMoneyByDate(systemBookCode,branchNum,clientFid,dateFrom,dateTo,dateType);
+	public List<WholesaleOrderCountAndMoneySummary> findWholesaleOrderCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType) {
+
+		List<Object[]> objects = reportService.findWholesaleOrderCountAndMoneyByDate(systemBookCode, branchNum, clientFid, dateFrom, dateTo, dateType);
+		List<WholesaleOrderCountAndMoneySummary> list = new ArrayList<WholesaleOrderCountAndMoneySummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0;i < objects.size(); i++){
+			Object[] object = objects.get(i);
+			WholesaleOrderCountAndMoneySummary wholesaleOrderCountAndMoneySummary = new WholesaleOrderCountAndMoneySummary();
+			wholesaleOrderCountAndMoneySummary.setAuditTime((String) object[0]);
+			wholesaleOrderCountAndMoneySummary.setAmount((Integer) object[1]);
+			wholesaleOrderCountAndMoneySummary.setMoney((BigDecimal) object[2]);
+			list.add(wholesaleOrderCountAndMoneySummary);
+		}
+		return list;
 	}
 
 	@Override

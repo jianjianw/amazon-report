@@ -656,7 +656,7 @@ public interface ReportRpc {
 	 * @param dateType 日期类型 按年或 按月
 	 * @return
 	 */
-	public List<Object[]> findWholesaleOrderCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType);
+	public List<WholesaleOrderCountAndMoneySummary> findWholesaleOrderCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType);
 
 	/**
 	 * 按时间类型查询批发退货单数量和金额
