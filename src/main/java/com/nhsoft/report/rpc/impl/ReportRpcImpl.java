@@ -2029,8 +2029,22 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return reportService.findItemRebates(policyAllowPriftQuery);
+	public List<ItemRebatesSummary> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery) {
+
+		List<Object[]> objects = reportService.findItemRebates(policyAllowPriftQuery);
+		List<ItemRebatesSummary> list = new ArrayList<ItemRebatesSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			ItemRebatesSummary itemRebatesSummary = new ItemRebatesSummary();
+			itemRebatesSummary.setMoney((BigDecimal) object[0]);
+			itemRebatesSummary.setDiscount((BigDecimal) object[1]);
+			itemRebatesSummary.setAmount((BigDecimal)object[2]);
+			list.add(itemRebatesSummary);
+		}
+		return list;
 	}
 
 	@Override

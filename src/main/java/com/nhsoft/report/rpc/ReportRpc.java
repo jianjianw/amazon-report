@@ -606,7 +606,7 @@ public interface ReportRpc {
 	 * @param policyAllowPriftQuery
 	 * @return
 	 */
-	public List<Object[]> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery);
+	public List<ItemRebatesSummary> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery);
 
 	/**
 	 * 返利分析 明细
