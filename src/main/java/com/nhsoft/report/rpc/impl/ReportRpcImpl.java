@@ -2089,8 +2089,22 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findCardConsumeAnalysisDetails(CardConsuemAnalysisQuery cardConsuemAnalysisQuery) {
-		return reportService.findCardConsumeAnalysisDetails(cardConsuemAnalysisQuery);
+	public List<CardConsumeDetailSummary> findCardConsumeAnalysisDetails(CardConsuemAnalysisQuery cardConsuemAnalysisQuery) {
+
+		List<Object[]> objects = reportService.findCardConsumeAnalysisDetails(cardConsuemAnalysisQuery);
+		List<CardConsumeDetailSummary> list = new ArrayList<CardConsumeDetailSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			CardConsumeDetailSummary cardConsumeDetailSummary = new CardConsumeDetailSummary();
+			cardConsumeDetailSummary.setCardUserNum((Integer) object[0]);
+			cardConsumeDetailSummary.setCardUserPrintedNum((Integer) object[0]);
+			cardConsumeDetailSummary.setCardUserCustdName((String) object[0]);
+			cardConsumeDetailSummary.setPaymentMoney((BigDecimal) object[0]);
+		}
+		return list;
 	}
 
 	@Override

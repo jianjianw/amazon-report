@@ -729,7 +729,7 @@ public interface ReportRpc {
 	 * @param cardConsuemAnalysisQuery
 	 * @return
 	 */
-	public List<Object[]> findCardConsumeAnalysisDetails(CardConsuemAnalysisQuery cardConsuemAnalysisQuery);
+	public List<CardConsumeDetailSummary> findCardConsumeAnalysisDetails(CardConsuemAnalysisQuery cardConsuemAnalysisQuery);
 
 	/**
 	 * 计算帐套汇总数据
