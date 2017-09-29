@@ -2034,13 +2034,39 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return reportService.findRebatesDetail(policyAllowPriftQuery);
+	public List<RebatesDetailSummary> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery) {
+
+		List<Object[]> objects = reportService.findRebatesDetail(policyAllowPriftQuery);
+		List<RebatesDetailSummary> list = new ArrayList<RebatesDetailSummary>();
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			RebatesDetailSummary rebatesDetailSummary = new RebatesDetailSummary();
+			rebatesDetailSummary.setOrderDetailBranchNum((Integer) object[0]);
+			rebatesDetailSummary.setOrderDetailBizday((String) object[1]);
+			rebatesDetailSummary.setOrderNo((String) object[2]);
+			rebatesDetailSummary.setItemNum((Integer) object[3]);
+			rebatesDetailSummary.setOrderDetailStdPrice((BigDecimal) object[4]);
+			rebatesDetailSummary.setOrderDetailPrice((BigDecimal) object[5]);
+			rebatesDetailSummary.setOrderDetailAmount((BigDecimal) object[6]);
+			rebatesDetailSummary.setOrderDetailPaymentMoney((BigDecimal) object[7]);
+			rebatesDetailSummary.setOrderDetailDiscount((BigDecimal) object[8]);
+			rebatesDetailSummary.setOrderDetailPromotionType((int) object[9]);
+			rebatesDetailSummary.setOrderDetailStateCode((int) object[10]);
+			list.add(rebatesDetailSummary);
+		}
+
+		return list;
 	}
 
 	@Override
-	public Object[] findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return reportService.findRebatesSum(policyAllowPriftQuery);
+	public RebatesSumSummary findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery) {
+
+		Object[] object = reportService.findRebatesSum(policyAllowPriftQuery);
+		RebatesSumSummary rebatesSumSummary = new RebatesSumSummary();
+		rebatesSumSummary.setMoney((BigDecimal) object[0]);
+		rebatesSumSummary.setDiscount((BigDecimal) object[1]);
+		rebatesSumSummary.setAmount((BigDecimal) object[2]);
+		return rebatesSumSummary;
 	}
 
 	@Override

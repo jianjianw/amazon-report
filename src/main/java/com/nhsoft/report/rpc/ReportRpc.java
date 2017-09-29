@@ -613,14 +613,14 @@ public interface ReportRpc {
 	 * @param policyAllowPriftQuery
 	 * @return
 	 */
-	public List<Object[]> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery);
+	public List<RebatesDetailSummary> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery);
 
 	/**
 	 * 返利分析总合计
 	 * @param policyAllowPriftQuery
 	 * @return
 	 */
-	public Object[] findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery);
+	public RebatesSumSummary findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery);
 
 	/**
 	 * 按时间类型查询调出单数量和金额

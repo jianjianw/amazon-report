@@ -114,6 +114,12 @@ public class TestSpringBoot {
     @Test
     public void testRegionBranch(){
         List<Branch> branchByBranchRegionNum = reportRpc.findBranchByBranchRegionNum("4020", 402000002);
+
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i<branchByBranchRegionNum.size(); i++){
+            Integer branchNum = branchByBranchRegionNum.get(i).getId().getBranchNum();
+            list.add(branchNum);
+        }
         System.out.println();
     }
 
