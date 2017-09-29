@@ -59,7 +59,7 @@ public class APIOperation {
 			for(int j = 1; j < branchList2.size(); j++) {
 				branchNumList2.add(branchList2.get(j).getId().getBranchNum());
 			}
-			System.out.println(branchNumList2+"++++++++++++++++");    
+			System.out.println(branchNumList2+"++++++++++++++++");              
 			
 			//根据区域号拼数据
 			for(int i = 0; i < branchRegionNumList.size(); i++) {
