@@ -48,41 +48,64 @@ public class APIOperation {
 			}
 			//根据帐套号得到所有区域
 			List<BranchRegion> branchRegionList = reportRpc.findBranchRegion(systemBookCode);
-			
-			//根据帐套号得到分店号
-			List[] branchNumList = new ArrayList[branchRegionList.size()];
+			List<Integer> branchRegionNumList = new ArrayList<Integer>();
 			for(int i = 0; i < branchRegionList.size(); i++) {
-				branchNumList[i] = reportRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionList.get(i).getBranchRegionNum());
+				branchRegionNumList.add(branchRegionList.get(i).getBranchRegionNum());
+			}
+			
+			
+			List<Branch> branchList2 = reportRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionNumList.get(0));
+			List<Integer> branchNumList2 = new ArrayList<Integer>();
+			for(int j = 1; j < branchList2.size(); j++) {
+				branchNumList2.add(branchList2.get(j).getId().getBranchNum());
+			}
+			System.out.println(branchNumList2+"++++++++++++++++");
+			
+			//根据区域号拼数据
+			for(int i = 0; i < branchRegionNumList.size(); i++) {
+				List<Branch> branchList = reportRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionNumList.get(0));
+				List<Integer> branchNumList = new ArrayList<Integer>();
+				for(int j = 1; j < branchList.size(); j++) {
+					branchNumList.add(branchList.get(j).getId().getBranchNum());
+				}
+				System.out.println(branchNumList+"++++++++++++++++");
 			}
 			
 			
 			
-			
-			
+			//List<Integer>[] branchNumList = new ArrayList[branchRegionNumList.size()];
+			/*for(int i = 0; i < branchList.length; i++) {
+				for(int j = 0; j < branchList[i].size(); j++) {
+					branchNumList[i].add(branchList[i].get(j).getId().getBranchNum());
+				}
+				System.out.println(branchNumList[i]);
+			}*/
 			
 			
 			
 			
 			
 			/*
-			//每个区域查询一组分店号
-			List<Branch> branchNumsList = null;
+			List<Integer> branchRegionNumList = new ArrayList<Integer>();
+			for(int i = 0; i < branchRegionList.size(); i++) {
+				branchRegionNumList.add(branchRegionNumList.get(i));
+			}
+			System.out.println(branchRegionNumList);
+			//根据区域得到分店
+			List<Branch> branchList = new ArrayList<Branch>();
 			for(int i = 0; i < branchRegionNumList.size(); i++) {
-				branchNumsList = new ArrayList<Branch>();
-				branchNumsList = reportRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionNumList.get(i));
+				
 			}*/
 			
 			
-			//List<Branch> branchList = new ArrayList<Branch>();
-			
-			//for(int i = 0; i < branchList.size(); i++) {
-				//branchNumsList.add(branchList.get(i).getId().getBranchNum());
-			//}
-			//按分店得到营业额
-			//List<BranchMoneyReport> branchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumsList, AppConstants.BUSINESS_TREND_PAYMENT, dateFromAndTo, dateFromAndTo, false);
 			
 			
 			
+			
+			
+			
+			
+	
 			
 			
 			
