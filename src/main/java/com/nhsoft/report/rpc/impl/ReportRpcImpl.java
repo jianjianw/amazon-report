@@ -2049,8 +2049,22 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findReturnCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
-		return reportService.findReturnCountAndMoneyByDate(systemBookCode,outBranchNum,branchNum,dateFrom,dateTo,dateType);
+	public List<ReturnCountAndMoneySummary> findReturnCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
+
+		List<Object[]> objects = reportService.findReturnCountAndMoneyByDate(systemBookCode, outBranchNum, branchNum, dateFrom, dateTo, dateType);
+		List<ReturnCountAndMoneySummary> list = new ArrayList<ReturnCountAndMoneySummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0; i < objects.size(); i++){
+			Object[] object = objects.get(i);
+			ReturnCountAndMoneySummary returnCountAndMoneySummary = new ReturnCountAndMoneySummary();
+			returnCountAndMoneySummary.setAuditTime((String) object[0]);
+			returnCountAndMoneySummary.setAmount((Integer) object[1]);
+			returnCountAndMoneySummary.setMoney((BigDecimal) object[2]);
+			list.add(returnCountAndMoneySummary);
+		}
+		return list;
 	}
 
 	@Override
