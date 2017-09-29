@@ -2044,8 +2044,22 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findOutOrderCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
-		return reportService.findOutOrderCountAndMoneyByDate(systemBookCode,outBranchNum,branchNum,dateFrom,dateTo,dateType);
+	public List<OutOrderCountAndMoneySummary> findOutOrderCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
+
+		List<Object[]> objects = reportService.findOutOrderCountAndMoneyByDate(systemBookCode, outBranchNum, branchNum, dateFrom, dateTo, dateType);
+		List<OutOrderCountAndMoneySummary> list = new ArrayList<OutOrderCountAndMoneySummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0; i<objects.size();i++){
+			Object[] object = objects.get(i);
+			OutOrderCountAndMoneySummary outOrderCountAndMoneySummary = new OutOrderCountAndMoneySummary();
+			outOrderCountAndMoneySummary.setAuditTime((String) object[0]);
+			outOrderCountAndMoneySummary.setAmount((Integer) object[1]);
+			outOrderCountAndMoneySummary.setMoney((BigDecimal) object[2]);
+			list.add(outOrderCountAndMoneySummary);
+		}
+		return list;
 	}
 
 	@Override
