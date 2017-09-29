@@ -28,10 +28,5 @@ public class AlipayLogRpcImpl implements AlipayLogRpc {
 		return CopyUtil.toList(alipayLogService.findByLogQuery(systemBookCode, branchNum, logQuery, offset, limit), AlipayLogDTO.class);
 	}
 
-	@Override
-	public AlipayLogDTO readLast(String systemBookCode, Integer branchNum, String orderNo, String alipayLogType) {
-		return CopyUtil.to(alipayLogService.readLast(systemBookCode, branchNum, orderNo, alipayLogType), AlipayLogDTO.class);
-	}
-
 
 }

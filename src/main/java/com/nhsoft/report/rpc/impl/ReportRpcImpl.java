@@ -2119,11 +2119,15 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public Object[] findInventoryUnsale(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+	public InventoryUnsaleSummary findInventoryUnsale(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
 
 		Object[] object = reportService.findInventoryUnsale(systemBookCode, branchNum, dateFrom, dateTo);
-
-		return null;
+		InventoryUnsaleSummary inventoryUnsaleSummary = new InventoryUnsaleSummary();
+		inventoryUnsaleSummary.setInventoryAmount((BigDecimal) object[0]);
+		inventoryUnsaleSummary.setInventoryMoney((BigDecimal) object[1]);
+		inventoryUnsaleSummary.setUnSaleAmount((BigDecimal) object[2]);
+		inventoryUnsaleSummary.setUnSaleMoney((BigDecimal) object[3]);
+		return inventoryUnsaleSummary;
 	}
 
 	@Override

@@ -1,17 +1,45 @@
 package com.nhsoft.report.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class InventoryUnsaleSummary implements Serializable {
 
-    /**
-     *
-     * obj[0] = inventoryAmount;
-     obj[1] = inventoryMoney;
-     obj[2] = unSaleAmount;
-     obj[3] = unSaleMoney;
-     * */
 
+    private BigDecimal inventoryAmount;
+    private BigDecimal inventoryMoney;
+    private BigDecimal unSaleAmount;
+    private BigDecimal unSaleMoney;
 
+    public BigDecimal getInventoryAmount() {
+        return inventoryAmount;
+    }
 
+    public void setInventoryAmount(BigDecimal inventoryAmount) {
+        this.inventoryAmount = inventoryAmount;
+    }
+
+    public BigDecimal getInventoryMoney() {
+        return inventoryMoney;
+    }
+
+    public void setInventoryMoney(BigDecimal inventoryMoney) {
+        this.inventoryMoney = inventoryMoney;
+    }
+
+    public BigDecimal getUnSaleAmount() {
+        return unSaleAmount;
+    }
+
+    public void setUnSaleAmount(BigDecimal unSaleAmount) {
+        this.unSaleAmount = unSaleAmount;
+    }
+
+    public BigDecimal getUnSaleMoney() {
+        return unSaleMoney;
+    }
+
+    public void setUnSaleMoney(BigDecimal unSaleMoney) {
+        this.unSaleMoney = unSaleMoney;
+    }
 }

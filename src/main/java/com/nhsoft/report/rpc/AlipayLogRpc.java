@@ -12,15 +12,6 @@ public interface AlipayLogRpc {
 
 	public List<AlipayLogDTO> findByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery, int offset, int limit);
 
-	/**
-	 * 查询上一条记录
-	 * @param systemBookCode 帐套号
-	 * @param branchNum  分店号
-	 * @param orderNo   单据号
-	 * @param alipayLogType  支付类型
-	 * @return
-	 */
-	public AlipayLogDTO readLast(String systemBookCode, Integer branchNum, String orderNo, String alipayLogType);
 
 
 }

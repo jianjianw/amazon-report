@@ -32,11 +32,6 @@ public class AlipayLogServiceImpl implements AlipayLogService {
 		return alipayLogDao.findByLogQuery(systemBookCode, branchNum, logQuery, offset, limit);
 	}
 
-	@Override
-	public AlipayLog readLast(String systemBookCode, Integer branchNum, String orderNo, String alipayLogType) {
-		return alipayLogDao.readLast(systemBookCode, branchNum, orderNo, alipayLogType);
-	}
-
 	
 
 

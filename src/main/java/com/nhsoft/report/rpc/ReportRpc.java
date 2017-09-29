@@ -786,7 +786,7 @@ public interface ReportRpc {
 	 * @param dateTo 时间止
 	 * @return
 	 */
-	Object[] findInventoryUnsale(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+	InventoryUnsaleSummary findInventoryUnsale(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 
 	/**
 	 * 按门店类型汇总 前台销售金额 客单量
