@@ -2079,8 +2079,23 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findPurchaseCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
-		return reportService.findPurchaseCountAndMoneyByDate(systemBookCode,branchNum,supplierNum,dateFrom,dateTo,dateType);
+	public List<PurchaseCountMoneyByDateSummary> findPurchaseCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
+
+		List<Object[]> objects = reportService.findPurchaseCountAndMoneyByDate(systemBookCode, branchNum, supplierNum, dateFrom, dateTo, dateType);
+		List<PurchaseCountMoneyByDateSummary> list = new ArrayList<PurchaseCountMoneyByDateSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			PurchaseCountMoneyByDateSummary purchaseCountMoneyByDateSummary = new PurchaseCountMoneyByDateSummary();
+			purchaseCountMoneyByDateSummary.setAuditTime((String) object[0]);
+			purchaseCountMoneyByDateSummary.setAmount((Integer) object[1]);
+			purchaseCountMoneyByDateSummary.setMoney((BigDecimal) object[2]);
+			list.add(purchaseCountMoneyByDateSummary);
+		}
+
+		return list;
 	}
 
 	@Override
@@ -2100,9 +2115,10 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = objects.get(i);
 			CardConsumeDetailSummary cardConsumeDetailSummary = new CardConsumeDetailSummary();
 			cardConsumeDetailSummary.setCardUserNum((Integer) object[0]);
-			cardConsumeDetailSummary.setCardUserPrintedNum((Integer) object[0]);
-			cardConsumeDetailSummary.setCardUserCustdName((String) object[0]);
-			cardConsumeDetailSummary.setPaymentMoney((BigDecimal) object[0]);
+			cardConsumeDetailSummary.setCardUserPrintedNum((Integer) object[1]);
+			cardConsumeDetailSummary.setCardUserCustdName((String) object[2]);
+			cardConsumeDetailSummary.setPaymentMoney((BigDecimal) object[3]);
+			list.add(cardConsumeDetailSummary);
 		}
 		return list;
 	}

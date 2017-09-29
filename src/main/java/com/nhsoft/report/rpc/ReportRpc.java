@@ -715,7 +715,7 @@ public interface ReportRpc {
 	 * @param dateType 日期类型 按年或 按月
 	 * @return
 	 */
-	public List<Object[]> findPurchaseCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType);
+	public List<PurchaseCountMoneyByDateSummary> findPurchaseCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType);
 
 	/**
 	 * 会员消费总额分析
