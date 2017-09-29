@@ -668,7 +668,7 @@ public interface ReportRpc {
 	 * @param dateType 日期类型 按年或 按月
 	 * @return
 	 */
-	public List<Object[]> findWholesaleReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType);
+	public List<WholesaleReturnCountAndMoneySummary> findWholesaleReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType);
 
 	/**
 	 * 按营业日或营业月汇总前台销售金额
@@ -691,7 +691,7 @@ public interface ReportRpc {
 	 * @param dateType 日期类型 按年或 按月
 	 * @return
 	 */
-	public List<PurchaseReceiveCountMoneyByDateSummary> findPurchaseReceiveCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType);
+	public List<PurchaseReceiveCountMoneySummary> findPurchaseReceiveCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType);
 
 	/**
 	 * 按时间类型查询采购退货单数量和金额
@@ -703,7 +703,7 @@ public interface ReportRpc {
 	 * @param dateType 日期类型 按年或 按月
 	 * @return
 	 */
-	public List<PurchaseReturnCountMoneyByDateSummary> findPurchaseReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType);
+	public List<PurchaseReturnCountMoneySummary> findPurchaseReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType);
 
 	/**
 	 * 按时间类型查询采购单数量和金额
@@ -715,7 +715,7 @@ public interface ReportRpc {
 	 * @param dateType 日期类型 按年或 按月
 	 * @return
 	 */
-	public List<PurchaseCountMoneyByDateSummary> findPurchaseCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType);
+	public List<PurchaseCountMoneySummary> findPurchaseCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType);
 
 	/**
 	 * 会员消费总额分析

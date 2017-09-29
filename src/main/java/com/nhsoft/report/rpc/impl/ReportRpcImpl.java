@@ -2059,8 +2059,22 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findWholesaleReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType) {
-		return reportService.findWholesaleReturnCountAndMoneyByDate(systemBookCode, branchNum, clientFid, dateFrom, dateTo, dateType);
+	public List<WholesaleReturnCountAndMoneySummary> findWholesaleReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType) {
+
+		List<Object[]> objects = reportService.findWholesaleReturnCountAndMoneyByDate(systemBookCode, branchNum, clientFid, dateFrom, dateTo, dateType);
+		List<WholesaleReturnCountAndMoneySummary> list = new ArrayList<WholesaleReturnCountAndMoneySummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			WholesaleReturnCountAndMoneySummary wholesaleReturnCountAndMoneySummary = new WholesaleReturnCountAndMoneySummary();
+			wholesaleReturnCountAndMoneySummary.setAuditTime((String) object[0]);
+			wholesaleReturnCountAndMoneySummary.setAmount((Integer) object[1]);
+			wholesaleReturnCountAndMoneySummary.setMoney((BigDecimal) object[2]);
+			list.add(wholesaleReturnCountAndMoneySummary);
+		}
+		return list;
 	}
 
 	@Override
@@ -2084,58 +2098,58 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<PurchaseReceiveCountMoneyByDateSummary> findPurchaseReceiveCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
+	public List<PurchaseReceiveCountMoneySummary> findPurchaseReceiveCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
 		List<Object[]> objects = reportService.findPurchaseReceiveCountAndMoneyByDate(systemBookCode, branchNum, supplierNum, dateFrom, dateTo, dateType);
-		List<PurchaseReceiveCountMoneyByDateSummary> list = new ArrayList<PurchaseReceiveCountMoneyByDateSummary>();
+		List<PurchaseReceiveCountMoneySummary> list = new ArrayList<PurchaseReceiveCountMoneySummary>();
 		if(objects.isEmpty()){
 			return list;
 		}
 		for(int i = 0; i<objects.size();i++){
 			Object[] object = objects.get(i);
-			PurchaseReceiveCountMoneyByDateSummary purchaseReceiveCountMoneyByDateSummary = new PurchaseReceiveCountMoneyByDateSummary();
-			purchaseReceiveCountMoneyByDateSummary.setAuditTime((String) object[0]);
-			purchaseReceiveCountMoneyByDateSummary.setAmount((Integer) object[1]);
-			purchaseReceiveCountMoneyByDateSummary.setMoney((BigDecimal) object[2]);
-			list.add(purchaseReceiveCountMoneyByDateSummary);
+			PurchaseReceiveCountMoneySummary purchaseReceiveCountMoneySummary = new PurchaseReceiveCountMoneySummary();
+			purchaseReceiveCountMoneySummary.setAuditTime((String) object[0]);
+			purchaseReceiveCountMoneySummary.setAmount((Integer) object[1]);
+			purchaseReceiveCountMoneySummary.setMoney((BigDecimal) object[2]);
+			list.add(purchaseReceiveCountMoneySummary);
 		}
 		return list;
 	}
 
 	@Override
-	public List<PurchaseReturnCountMoneyByDateSummary> findPurchaseReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
+	public List<PurchaseReturnCountMoneySummary> findPurchaseReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
 
 		List<Object[]> objects = reportService.findPurchaseReturnCountAndMoneyByDate(systemBookCode, branchNum, supplierNum, dateFrom, dateTo, dateType);
-		List<PurchaseReturnCountMoneyByDateSummary> list = new ArrayList<PurchaseReturnCountMoneyByDateSummary>();
+		List<PurchaseReturnCountMoneySummary> list = new ArrayList<PurchaseReturnCountMoneySummary>();
 		if(objects.isEmpty()){
 			return list;
 		}
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
-			PurchaseReturnCountMoneyByDateSummary purchaseReturnCountMoneyByDateSummary = new PurchaseReturnCountMoneyByDateSummary();
-			purchaseReturnCountMoneyByDateSummary.setAuditTime((String) object[0]);
-			purchaseReturnCountMoneyByDateSummary.setAmount((Integer) object[1]);
-			purchaseReturnCountMoneyByDateSummary.setMoney((BigDecimal) object[2]);
-			list.add(purchaseReturnCountMoneyByDateSummary);
+			PurchaseReturnCountMoneySummary purchaseReturnCountMoneySummary = new PurchaseReturnCountMoneySummary();
+			purchaseReturnCountMoneySummary.setAuditTime((String) object[0]);
+			purchaseReturnCountMoneySummary.setAmount((Integer) object[1]);
+			purchaseReturnCountMoneySummary.setMoney((BigDecimal) object[2]);
+			list.add(purchaseReturnCountMoneySummary);
 
 		}
 		return list;
 	}
 
 	@Override
-	public List<PurchaseCountMoneyByDateSummary> findPurchaseCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
+	public List<PurchaseCountMoneySummary> findPurchaseCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
 
 		List<Object[]> objects = reportService.findPurchaseCountAndMoneyByDate(systemBookCode, branchNum, supplierNum, dateFrom, dateTo, dateType);
-		List<PurchaseCountMoneyByDateSummary> list = new ArrayList<PurchaseCountMoneyByDateSummary>();
+		List<PurchaseCountMoneySummary> list = new ArrayList<PurchaseCountMoneySummary>();
 		if(objects.isEmpty()){
 			return list;
 		}
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
-			PurchaseCountMoneyByDateSummary purchaseCountMoneyByDateSummary = new PurchaseCountMoneyByDateSummary();
-			purchaseCountMoneyByDateSummary.setAuditTime((String) object[0]);
-			purchaseCountMoneyByDateSummary.setAmount((Integer) object[1]);
-			purchaseCountMoneyByDateSummary.setMoney((BigDecimal) object[2]);
-			list.add(purchaseCountMoneyByDateSummary);
+			PurchaseCountMoneySummary purchaseCountMoneySummary = new PurchaseCountMoneySummary();
+			purchaseCountMoneySummary.setAuditTime((String) object[0]);
+			purchaseCountMoneySummary.setAmount((Integer) object[1]);
+			purchaseCountMoneySummary.setMoney((BigDecimal) object[2]);
+			list.add(purchaseCountMoneySummary);
 		}
 
 		return list;

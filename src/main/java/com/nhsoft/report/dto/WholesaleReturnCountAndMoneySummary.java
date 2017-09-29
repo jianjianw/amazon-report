@@ -1,9 +1,10 @@
 package com.nhsoft.report.dto;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PurchaseReturnCountMoneyByDateSummary implements Serializable {
+public class WholesaleReturnCountAndMoneySummary implements Serializable {
 
     private String auditTime;
     private Integer amount;

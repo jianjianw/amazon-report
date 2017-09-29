@@ -3,7 +3,7 @@ package com.nhsoft.report.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PurchaseReceiveCountMoneyByDateSummary implements Serializable {
+public class PurchaseReceiveCountMoneySummary implements Serializable {
 
     private String auditTime;
     private Integer amount;
