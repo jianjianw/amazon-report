@@ -27,7 +27,7 @@ public class TestSpringBoot {
     private ReportRpc reportRpc;
 
     @Test
-    public void testRpcMoney(){
+    public void testRpcMoney() {
         /**
          * /**
          * 按分店查询营业额
@@ -49,13 +49,53 @@ public class TestSpringBoot {
             e.printStackTrace();
         }
         String systemBookCode = "11001";
-        List<Integer> branchNums = new ArrayList<Integer>();
-        branchNums.add(99);
         String queryBy = AppConstants.BUSINESS_TREND_PAYMENT;
+        List<Branch> all = reportRpc.findAll(systemBookCode);
+        List<Integer> branchNum = new ArrayList<Integer>();
+        for (Branch b : all) {
+            branchNum.add(b.getId().getBranchNum());
+        }
+        List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNum, queryBy, dateFrom, dateTo, false);
 
-        List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateFrom,false);
+        System.out.println();
+    }
 
-        int size = moneyByBranch.size();
+
+
+    @Test
+    public void testRpcMoney1(){
+        /**
+         * /**
+         * 按分店查询营业额
+         * @param systemBookCode
+         * @param branchNums 分店号
+         * @param queryBy 统计类型 按营业额 or 按储值额 or 按发卡量
+         * @param dateFrom 时间起
+         * @param dateTo 时间止
+         * @return
+         */
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateFrom = null;
+        Date dateTo = null;
+        try {
+            dateFrom = sdf.parse("2017-02-10");
+            dateTo = sdf.parse("2017-02-11");
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String systemBookCode = "11001";
+        String queryBy = AppConstants.BUSINESS_TREND_PAYMENT;
+        //按照账套号查询分店
+        List<Branch> all = reportRpc.findAll(systemBookCode);
+        //按照账套号，查询所有区域
+        List<BranchRegion> branchRegion = reportRpc.findBranchRegion(systemBookCode);
+
+        //按照区域号查询所有分店
+        List<Branch> branchByBranchRegionNum = reportRpc.findBranchByBranchRegionNum(systemBookCode, 402000002);
+
+        List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, null, queryBy, dateFrom, dateTo,false);
+
         System.out.println();
     }
 

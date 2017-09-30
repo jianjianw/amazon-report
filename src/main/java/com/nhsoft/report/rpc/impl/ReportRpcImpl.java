@@ -2005,7 +2005,11 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<Object[]> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData queryData) {
-		return reportService.findSaleAnalysisByCategoryBranchs(queryData);
+
+		List<Object[]> objects = reportService.findSaleAnalysisByCategoryBranchs(queryData);
+
+
+		return null;
 	}
 
 	@Override
