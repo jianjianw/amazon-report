@@ -1949,12 +1949,14 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public Object[] findSalerSummary(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, List<String> salerNames) {
+	public SalerSummary findSalerSummary(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, List<String> salerNames) {
 
 		Object[] object = reportService.findSalerSummary(systemBookCode, dateFrom, dateTo, branchNums, salerNames);
-
-
-		return null;
+		SalerSummary salerSummary = new SalerSummary();
+		salerSummary.setAmount((BigDecimal) object[0]);
+		salerSummary.setMoney((BigDecimal) object[1]);
+		salerSummary.setCommission((BigDecimal) object[2]);
+		return salerSummary;
 	}
 
 	@Override

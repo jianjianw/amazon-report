@@ -460,7 +460,7 @@ public interface ReportRpc {
 	 * @param salerNames 销售员名称列表
 	 * @return
 	 */
-	public Object[] findSalerSummary(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, List<String> salerNames);
+	public SalerSummary findSalerSummary(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, List<String> salerNames);
 
 	/**
 	 * 销售员提成明细
