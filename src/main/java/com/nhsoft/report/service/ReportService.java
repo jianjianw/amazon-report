@@ -1308,12 +1308,24 @@ public interface ReportService {
 	 * 按分店查询营业额
 	 * @param systemBookCode
 	 * @param branchNums
+	 * @param queryBy
 	 * @param dateFrom
 	 * @param dateTo
 	 * @param isMember 是否会员
 	 * @return
 	 */
 	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
+
+	/**
+	 * 按区域查询营业额
+	 * @param systemBookCode
+	 * @param queryBy
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isMember 是否会员
+	 * @return
+	 */
+	public List<Object[]> findMoneyByRegion(String systemBookCode,String queryBy,Date dateFrom, Date dateTo, boolean isMember);
 
 	/**
 	 * 按分店查询卡存款

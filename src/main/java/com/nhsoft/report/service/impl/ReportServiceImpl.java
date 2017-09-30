@@ -12435,7 +12435,16 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findMoneyByRegion(String systemBookCode, String queryBy,Date dateFrom, Date dateTo, boolean isMember) {
+		List<Object[]> objects = null;
+		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
+			objects = reportDao.findMoneyByRegion(systemBookCode,dateFrom, dateTo, isMember);
+		}
+		return objects;
+	}
+
+	@Override
+	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo ) {
 		List<Object[]> objects = reportDao.findDepositByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		return objects;
 	}

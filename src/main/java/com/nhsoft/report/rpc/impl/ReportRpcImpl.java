@@ -3044,6 +3044,26 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	public List<RegionMoneyReport> findMoneyByRegion(String systemBookCode, String queryBy, Date dateFrom, Date dateTo, boolean isMember) {
+		List<Object[]> objects = reportService.findMoneyByRegion(systemBookCode,queryBy, dateFrom, dateTo,isMember);
+		List<RegionMoneyReport> list = new ArrayList<RegionMoneyReport>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			RegionMoneyReport regionMoneyReport = new RegionMoneyReport();
+			regionMoneyReport.setBranchRegionNum((Integer) object[0]);
+			regionMoneyReport.setBizMoney((BigDecimal) object[1]);
+			regionMoneyReport.setOrderCount((Integer) object[2]);
+			regionMoneyReport.setProfit((BigDecimal) object[3]);
+			list.add(regionMoneyReport);
+
+		}
+		return list;
+	}
+
+	@Override
 	public List<BranchDepositReport> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		List<Object[]> objects = reportService.findDepositByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		List<BranchDepositReport> list = new ArrayList<BranchDepositReport>();
