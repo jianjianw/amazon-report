@@ -1,5 +1,6 @@
 package com.nhsoft.report.api;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,76 +47,64 @@ public class APIOperation {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			//根据帐套号得到所有区域
+			//根据帐套号得到所有区域号和区域名称
 			List<BranchRegion> branchRegionList = reportRpc.findBranchRegion(systemBookCode);
+			String[] branchRegionName = new String[branchRegionList.size()];
 			List<Integer> branchRegionNumList = new ArrayList<Integer>();
 			for(int i = 0; i < branchRegionList.size(); i++) {
 				branchRegionNumList.add(branchRegionList.get(i).getBranchRegionNum());
+				branchRegionName[i] = branchRegionList.get(i).getBranchRegionName();
 			}
+			//根据区域号分类拼数据
+			OperationDTO dto = null;
+			List<OperationDTO> listDTO = new ArrayList<OperationDTO>();
 			
-			
-			List<Branch> branchList2 = reportRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionNumList.get(0));
-			List<Integer> branchNumList2 = new ArrayList<Integer>();
-			for(int j = 1; j < branchList2.size(); j++) {
-				branchNumList2.add(branchList2.get(j).getId().getBranchNum());
-			}
-			System.out.println(branchNumList2+"++++++++++++++++");              
-			
-			//根据区域号拼数据
+			List<Branch> branchList = null;
+			List<Integer> branchNumList = null;
+			List<BranchMoneyReport> branchMoneyReportList = null;           //非会员的查询结果
+			List<BranchMoneyReport> memeberBranchMoneyReportList = null;    //会员的查询结果
 			for(int i = 0; i < branchRegionNumList.size(); i++) {
-				List<Branch> branchList = reportRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionNumList.get(0));
-				List<Integer> branchNumList = new ArrayList<Integer>();
-				for(int j = 1; j < branchList.size(); j++) {
+				branchList = reportRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionNumList.get(i));
+				branchNumList = new ArrayList<Integer>();
+				for(int j = 0; j < branchList.size(); j++) {
 					branchNumList.add(branchList.get(j).getId().getBranchNum());
 				}
-				System.out.println(branchNumList+"++++++++++++++++");
-			}
-			
-			
-			
-			//List<Integer>[] branchNumList = new ArrayList[branchRegionNumList.size()];
-			/*for(int i = 0; i < branchList.length; i++) {
-				for(int j = 0; j < branchList[i].size(); j++) {
-					branchNumList[i].add(branchList[i].get(j).getId().getBranchNum());
+				branchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFromAndTo, new Date("2017-02-12"), false);
+				memeberBranchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFromAndTo, dateFromAndTo, true);
+				BigDecimal bizMoney = new BigDecimal("0");  //营业额
+				BigDecimal orderCount = new BigDecimal("0");//客单量
+				BigDecimal profit = new BigDecimal("0");    //毛利
+				BigDecimal memberBizMoney = new BigDecimal("0");  //会员营业额
+				BigDecimal memberOrderCount = new BigDecimal("0");//会员客单量
+				BigDecimal memberProfit = new BigDecimal("0");    //会员毛利
+				for(int j = 0; j < branchMoneyReportList.size(); j++) {
+					bizMoney = bizMoney.add(branchMoneyReportList.get(j).getBizMoney());
+					orderCount = orderCount.add(new BigDecimal(branchMoneyReportList.get(j).getOrderCount()));
+					profit = profit.add(branchMoneyReportList.get(j).getProfit());
+					memberBizMoney = memberBizMoney.add(memeberBranchMoneyReportList.get(j).getBizMoney());
+					memberOrderCount = memberOrderCount.add(new BigDecimal(memeberBranchMoneyReportList.get(j).getOrderCount()));
+					memberProfit = memberProfit.add(memeberBranchMoneyReportList.get(j).getProfit());
 				}
-				System.out.println(branchNumList[i]);
-			}*/
-			
-			
-			
-			
-			
-			/*
-			List<Integer> branchRegionNumList = new ArrayList<Integer>();
-			for(int i = 0; i < branchRegionList.size(); i++) {
-				branchRegionNumList.add(branchRegionNumList.get(i));
-			}
-			System.out.println(branchRegionNumList);
-			//根据区域得到分店
-			List<Branch> branchList = new ArrayList<Branch>();
-			for(int i = 0; i < branchRegionNumList.size(); i++) {
+				dto = new OperationDTO();
+				dto.setArea(branchRegionName[i]);
+				dto.setRevenue(bizMoney);
+				if(bizMoney.compareTo(new BigDecimal("0.00")) == 0) {
+					dto.setMemeberRevenueOccupy(new BigDecimal("0"));
+				} else {
+					dto.setMemeberRevenueOccupy(memberBizMoney.divide(bizMoney));
+				}
+				dto.setAveBillNums(orderCount);
+				dto.setMemberBillNums(memberOrderCount);
+				//dto.setBill(bizMoney.divide(orderCount));
+				//dto.setMemberBill(memberBizMoney.divide(memberProfit));
+				dto.setGrossProfit(profit);
 				
-			}*/
+				listDTO.add(dto);
+			}
+			return listDTO;
+		
 			
 			
-			
-			
-			
-			
-			
-			
-			
-	
-			
-			
-			
-			
-			
-			
-			OperationDTO dto = new OperationDTO();
-			List<OperationDTO> list = new ArrayList<OperationDTO>();
-			list.add(dto);
-			return list;
 			
 		} else {
 			/*String branchNumStrs = branchNums.substring(1, branchNums.length() - 1);
