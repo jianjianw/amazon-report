@@ -578,14 +578,14 @@ public interface ReportRpc {
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData);
+	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData);
 
 	/**
 	 * 销售分析 -- 品牌汇总
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData);
+	public List<SaleByBrandSummary> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData);
 
 	/**
 	 * 查询批发毛利 按商品类别汇总
@@ -606,21 +606,21 @@ public interface ReportRpc {
 	 * @param policyAllowPriftQuery
 	 * @return
 	 */
-	public List<Object[]> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery);
+	public List<ItemRebatesSummary> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery);
 
 	/**
 	 * 返利分析 明细
 	 * @param policyAllowPriftQuery
 	 * @return
 	 */
-	public List<Object[]> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery);
+	public List<RebatesDetailSummary> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery);
 
 	/**
 	 * 返利分析总合计
 	 * @param policyAllowPriftQuery
 	 * @return
 	 */
-	public Object[] findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery);
+	public RebatesSumSummary findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery);
 
 	/**
 	 * 按时间类型查询调出单数量和金额
@@ -632,7 +632,7 @@ public interface ReportRpc {
 	 * @param dateType 日期类型 按年或 按月
 	 * @return
 	 */
-	public List<Object[]> findOutOrderCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType);
+	public List<OutOrderCountAndMoneySummary> findOutOrderCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType);
 
 	/**
 	 * 按时间类型查询调入单数量和金额

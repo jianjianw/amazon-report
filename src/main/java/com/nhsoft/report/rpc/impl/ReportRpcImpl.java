@@ -2009,13 +2009,49 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData) {
-		return reportService.findSaleAnalysisByDepartments(queryData);
+	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData) {
+
+		List<Object[]> objects = reportService.findSaleAnalysisByDepartments(queryData);
+		List<SaleByDepartmentSummary> list = new ArrayList<SaleByDepartmentSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0; i<objects.size(); i++){
+			Object[] object = objects.get(i);
+			SaleByDepartmentSummary saleByDepartmentSummary = new SaleByDepartmentSummary();
+			saleByDepartmentSummary.setItemNum((Integer) object[0]);
+			saleByDepartmentSummary.setStateCode((int)object[1]);
+			saleByDepartmentSummary.setAmount((BigDecimal) object[2]);
+			saleByDepartmentSummary.setPaymentMoney((BigDecimal) object[3]);
+			saleByDepartmentSummary.setAssistAmount((BigDecimal) object[4]);
+			saleByDepartmentSummary.setItemCount((Integer) object[5]);
+			saleByDepartmentSummary.setDiscount((BigDecimal) object[6]);
+			list.add(saleByDepartmentSummary);
+		}
+		return list;
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData) {
-		return reportService.findSaleAnalysisByBrands(queryData);
+	public List<SaleByBrandSummary> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData) {
+
+		List<Object[]> objects = reportService.findSaleAnalysisByBrands(queryData);
+		List<SaleByBrandSummary> list = new ArrayList<SaleByBrandSummary>();
+		if(objects.isEmpty()) {
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			SaleByBrandSummary saleByBrandSummary = new SaleByBrandSummary();
+			saleByBrandSummary.setItemNum((Integer) object[0]);
+			saleByBrandSummary.setStateCode((int)object[1]);
+			saleByBrandSummary.setAmount((BigDecimal) object[2]);
+			saleByBrandSummary.setPaymentMoney((BigDecimal) object[3]);
+			saleByBrandSummary.setAssistAmount((BigDecimal) object[4]);
+			saleByBrandSummary.setItemCount((Integer) object[5]);
+			saleByBrandSummary.setDiscount((BigDecimal) object[6]);
+			list.add(saleByBrandSummary);
+		}
+		return list;
 	}
 
 	@Override
@@ -2029,23 +2065,77 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return reportService.findItemRebates(policyAllowPriftQuery);
+	public List<ItemRebatesSummary> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery) {
+
+		List<Object[]> objects = reportService.findItemRebates(policyAllowPriftQuery);
+		List<ItemRebatesSummary> list = new ArrayList<ItemRebatesSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			ItemRebatesSummary itemRebatesSummary = new ItemRebatesSummary();
+			itemRebatesSummary.setMoney((BigDecimal) object[0]);
+			itemRebatesSummary.setDiscount((BigDecimal) object[1]);
+			itemRebatesSummary.setAmount((BigDecimal)object[2]);
+			list.add(itemRebatesSummary);
+		}
+		return list;
 	}
 
 	@Override
-	public List<Object[]> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return reportService.findRebatesDetail(policyAllowPriftQuery);
+	public List<RebatesDetailSummary> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery) {
+
+		List<Object[]> objects = reportService.findRebatesDetail(policyAllowPriftQuery);
+		List<RebatesDetailSummary> list = new ArrayList<RebatesDetailSummary>();
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			RebatesDetailSummary rebatesDetailSummary = new RebatesDetailSummary();
+			rebatesDetailSummary.setOrderDetailBranchNum((Integer) object[0]);
+			rebatesDetailSummary.setOrderDetailBizday((String) object[1]);
+			rebatesDetailSummary.setOrderNo((String) object[2]);
+			rebatesDetailSummary.setItemNum((Integer) object[3]);
+			rebatesDetailSummary.setOrderDetailStdPrice((BigDecimal) object[4]);
+			rebatesDetailSummary.setOrderDetailPrice((BigDecimal) object[5]);
+			rebatesDetailSummary.setOrderDetailAmount((BigDecimal) object[6]);
+			rebatesDetailSummary.setOrderDetailPaymentMoney((BigDecimal) object[7]);
+			rebatesDetailSummary.setOrderDetailDiscount((BigDecimal) object[8]);
+			rebatesDetailSummary.setOrderDetailPromotionType((int) object[9]);
+			rebatesDetailSummary.setOrderDetailStateCode((int) object[10]);
+			list.add(rebatesDetailSummary);
+		}
+
+		return list;
 	}
 
 	@Override
-	public Object[] findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return reportService.findRebatesSum(policyAllowPriftQuery);
+	public RebatesSumSummary findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery) {
+
+		Object[] object = reportService.findRebatesSum(policyAllowPriftQuery);
+		RebatesSumSummary rebatesSumSummary = new RebatesSumSummary();
+		rebatesSumSummary.setMoney((BigDecimal) object[0]);
+		rebatesSumSummary.setDiscount((BigDecimal) object[1]);
+		rebatesSumSummary.setAmount((BigDecimal) object[2]);
+		return rebatesSumSummary;
 	}
 
 	@Override
-	public List<Object[]> findOutOrderCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
-		return reportService.findOutOrderCountAndMoneyByDate(systemBookCode,outBranchNum,branchNum,dateFrom,dateTo,dateType);
+	public List<OutOrderCountAndMoneySummary> findOutOrderCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
+
+		List<Object[]> objects = reportService.findOutOrderCountAndMoneyByDate(systemBookCode, outBranchNum, branchNum, dateFrom, dateTo, dateType);
+		List<OutOrderCountAndMoneySummary> list = new ArrayList<OutOrderCountAndMoneySummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0; i<objects.size();i++){
+			Object[] object = objects.get(i);
+			OutOrderCountAndMoneySummary outOrderCountAndMoneySummary = new OutOrderCountAndMoneySummary();
+			outOrderCountAndMoneySummary.setAuditTime((String) object[0]);
+			outOrderCountAndMoneySummary.setAmount((Integer) object[1]);
+			outOrderCountAndMoneySummary.setMoney((BigDecimal) object[2]);
+			list.add(outOrderCountAndMoneySummary);
+		}
+		return list;
 	}
 
 	@Override
