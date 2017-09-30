@@ -1312,16 +1312,6 @@ public interface ReportRpc {
 	public List<BranchMoneyReport> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember);
 
 	/**
-	 * 按区域查询营业额
-	 * @param systemBookCode
-	 * @param queryBy
-	 * @param dateFrom
-	 * @param dateTo
-	 * @param isMember 是否会员
-	 * @return
-	 */
-	public List<RegionMoneyReport> findMoneyByRegion(String systemBookCode,String queryBy,Date dateFrom, Date dateTo, boolean isMember);
-	/**
 	 * 按分店查询卡存款
 	 * @param systemBookCode
 	 * @param branchNums 分店号
@@ -1338,6 +1328,17 @@ public interface ReportRpc {
 	 * @param dateTo 时间止
 	 * */
 	public List<BranchConsumeReport> findConsumeByBranch(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo);
+
+	/**
+	 * 按区域查询营业额
+	 * @param systemBookCode
+	 * @param queryBy
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isMember 是否会员
+	 * @return
+	 */
+	public List<RegionMoneyReport> findMoneyByRegion(String systemBookCode,String queryBy,Date dateFrom, Date dateTo, boolean isMember);
 
 	/*
 	 *	查询分店区域

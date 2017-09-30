@@ -7852,29 +7852,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 	}
 
-	@Override
-	public List<Object[]> findMoneyByRegion(String systemBookCode, Date dateFrom, Date dateTo, boolean isMember) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select b.branch_region_num, sum(p.order_payment_money + p.order_coupon_total_money - p.order_mgr_discount_money) as money, ");
-		sb.append("count(p.order_no) as count, sum(p.order_gross_profit) as profit ");
-		sb.append("from pos_order p with(nolock) INNER JOIN branch b with(nolock) ON p.system_book_code = b.system_book_code ");
-		sb.append("where system_book_code = :systemBookCode ");
-		if (dateFrom != null) {
-			sb.append("and p.order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and p.order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("and p.order_state_code in (5, 7)  ");
-		if(isMember){
-			sb.append("and p.order_card_user_num > 0 ");
-		}
-		sb.append("group by b.branch_region_num order by b.branch_region_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", systemBookCode);
-		//List list = sqlQuery.list();
-		return sqlQuery.list();
-	}
 
 	@Override
 	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
@@ -7917,6 +7894,30 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		List list = sqlQuery.list();
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findMoneyByRegion(String systemBookCode, Date dateFrom, Date dateTo, boolean isMember) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select b.branch_region_num, sum(p.order_payment_money + p.order_coupon_total_money - p.order_mgr_discount_money) as money, ");
+		sb.append("count(p.order_no) as count, sum(p.order_gross_profit) as profit ");
+		sb.append("from pos_order p with(nolock) INNER JOIN branch b with(nolock) ON p.system_book_code = b.system_book_code ");
+		sb.append("where p.system_book_code = :systemBookCode ");
+		if (dateFrom != null) {
+			sb.append("and p.order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and p.order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and p.order_state_code in (5, 7)  ");
+		if(isMember){
+			sb.append("and p.order_card_user_num > 0 ");
+		}
+		sb.append("group by b.branch_region_num order by b.branch_region_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		//List list = sqlQuery.list();
 		return sqlQuery.list();
 	}
 
