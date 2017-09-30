@@ -564,14 +564,14 @@ public interface ReportRpc {
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByCategorys(SaleAnalysisQueryData queryData);
+	public List<SaleByCategorySummary> findSaleAnalysisByCategorys(SaleAnalysisQueryData queryData);
 
 	/**
 	 * 销售分析 -- 类别-分店汇总
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData queryData);
+	public List<SaleByCategoryBranchSummary> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData queryData);
 
 	/**
 	 * 销售分析 -- 部门汇总
