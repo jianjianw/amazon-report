@@ -1919,18 +1919,64 @@ public class ReportRpcImpl implements ReportRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
-		
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			BranchBizSummary branchBizSummary = new BranchBizSummary();
+			branchBizSummary.setBranchNum((Integer) object[0]);
+			branchBizSummary.setBiz((String) object[1]);
+			branchBizSummary.setProfit((BigDecimal) object[2]);
+			branchBizSummary.setMoney((BigDecimal) object[3]);
+			branchBizSummary.setCost((BigDecimal) object[4]);
+			list.add(branchBizSummary);
+		}
 		return list;
 	}
 
 	@Override
-	public List<Object[]> findProfitAnalysisByClientAndItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
-		return reportService.findProfitAnalysisByClientAndItem(profitAnalysisQueryData);
+	public List<ProfitByClientAndItemSummary> findProfitAnalysisByClientAndItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+		List<Object[]> objects = reportService.findProfitAnalysisByClientAndItem(profitAnalysisQueryData);
+		List<ProfitByClientAndItemSummary> list = new ArrayList<ProfitByClientAndItemSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			ProfitByClientAndItemSummary profitByClientAndItemSummary = new ProfitByClientAndItemSummary();
+			profitByClientAndItemSummary.setClientFid((String) object[0]);
+			profitByClientAndItemSummary.setItemNum((Integer) object[1]);
+			profitByClientAndItemSummary.setMatrixNum((int)object[2]);
+			profitByClientAndItemSummary.setProfit((BigDecimal) object[3]);
+			profitByClientAndItemSummary.setAmount((BigDecimal) object[4]);
+			profitByClientAndItemSummary.setMoney((BigDecimal) object[5]);
+			profitByClientAndItemSummary.setCost((BigDecimal) object[6]);
+			list.add(profitByClientAndItemSummary);
+		}
+		return list;
 	}
 
 	@Override
-	public List<Object[]> findProfitAnalysisByBranchAndItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
-		return reportService.findProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
+	public List<ProfitByBranchAndItemSummary> findProfitAnalysisByBranchAndItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+
+		List<Object[]> objects = reportService.findProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
+		List<ProfitByBranchAndItemSummary> list = new ArrayList<ProfitByBranchAndItemSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();
+			profitByBranchAndItemSummary.setBranchNum((Integer) object[0]);
+			profitByBranchAndItemSummary.setItemNum((Integer) object[1]);
+			profitByBranchAndItemSummary.setMatrixNum((int)object[2]);
+			profitByBranchAndItemSummary.setProfit((BigDecimal) object[3]);
+			profitByBranchAndItemSummary.setAmount((BigDecimal) object[4]);
+			profitByBranchAndItemSummary.setMoney((BigDecimal) object[5]);
+			profitByBranchAndItemSummary.setCost((BigDecimal) object[6]);
+			list.add(profitByBranchAndItemSummary);
+		}
+		return list;
 	}
 
 	@Override
