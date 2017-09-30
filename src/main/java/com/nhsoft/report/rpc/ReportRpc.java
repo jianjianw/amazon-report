@@ -543,7 +543,7 @@ public interface ReportRpc {
 	 * @param branchType  门店类型 加盟或直营
 	 * @return
 	 */
-	public Object[] sumCustomerAnalysis(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String branchType);
+	public CustomerSummary sumCustomerAnalysis(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String branchType);
 
 	/**
 	 * 销售分析 -- 商品汇总
@@ -557,7 +557,7 @@ public interface ReportRpc {
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByBranchs(SaleAnalysisQueryData queryData);
+	public List<SaleByBranchSummary> findSaleAnalysisByBranchs(SaleAnalysisQueryData queryData);
 
 	/**
 	 * 销售分析 -- 类别汇总

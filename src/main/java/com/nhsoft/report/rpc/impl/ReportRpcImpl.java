@@ -1950,7 +1950,11 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public Object[] findSalerSummary(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, List<String> salerNames) {
-		return reportService.findSalerSummary(systemBookCode,dateFrom,dateTo,branchNums,salerNames);
+
+		Object[] object = reportService.findSalerSummary(systemBookCode, dateFrom, dateTo, branchNums, salerNames);
+
+
+		return null;
 	}
 
 	@Override
@@ -1984,8 +1988,15 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public Object[] sumCustomerAnalysis(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String branchType) {
-		return reportService.sumCustomerAnalysis(systemBookCode,dtFrom,dtTo,branchNums,branchType);
+	public CustomerSummary sumCustomerAnalysis(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String branchType) {
+
+		Object[] object = reportService.sumCustomerAnalysis(systemBookCode, dtFrom, dtTo, branchNums, branchType);
+		CustomerSummary customerSummary = new CustomerSummary();
+		customerSummary.setMoney((BigDecimal) object[0]);
+		customerSummary.setOrderNo((Integer) object[1]);
+		customerSummary.setProfit((BigDecimal) object[2]);
+		customerSummary.setShiftCount((Integer) object[3]);
+		return customerSummary;
 	}
 
 	@Override
@@ -1994,8 +2005,26 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisByBranchs(SaleAnalysisQueryData queryData) {
-		return reportService.findSaleAnalysisByBranchs(queryData);
+	public List<SaleByBranchSummary> findSaleAnalysisByBranchs(SaleAnalysisQueryData queryData) {
+
+		List<Object[]> objects = reportService.findSaleAnalysisByBranchs(queryData);
+		List<SaleByBranchSummary> list = new ArrayList<SaleByBranchSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			SaleByBranchSummary saleByBranchSummary = new SaleByBranchSummary();
+			saleByBranchSummary.setBranchNum((Integer) object[0]);
+			saleByBranchSummary.setStateCode((int)object[1]);
+			saleByBranchSummary.setAmount((BigDecimal)object[2]);
+			saleByBranchSummary.setMoney((BigDecimal) object[3]);
+			saleByBranchSummary.setAssistAmount((BigDecimal) object[4]);
+			saleByBranchSummary.setItemNum((Integer) object[5]);
+			list.add(saleByBranchSummary)
+
+		}
+		return list;
 	}
 
 	@Override
