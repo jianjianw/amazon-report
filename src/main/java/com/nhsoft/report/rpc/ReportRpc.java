@@ -1338,7 +1338,7 @@ public interface ReportRpc {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<RegionMoneyReport> findMoneyByRegion(String systemBookCode,String queryBy,Date dateFrom, Date dateTo, boolean isMember);
+	public List<RegionMoneyReport> findMoneyByRegion(String systemBookCode,List<Integer> regionNums,String queryBy,Date dateFrom, Date dateTo, boolean isMember);
 
 	/*
 	 *	查询分店区域

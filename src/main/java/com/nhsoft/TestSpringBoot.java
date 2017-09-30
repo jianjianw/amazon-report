@@ -112,8 +112,8 @@ public class TestSpringBoot {
             Integer branchNum = b.getId().getBranchNum();
             branchNums.add(branchNum);
         }
-        List<Object[]> branchSum = cardDepositService.findBranchSum(systemBookCode, branchNums, dateFrom, dateTo);
-       // List<BranchDepositReport> depositByBranch = reportRpc.findDepositByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        //List<Object[]> branchSum = cardDepositService.findBranchSum(systemBookCode, branchNums, dateFrom, dateTo);
+        List<BranchDepositReport> depositByBranch = reportRpc.findDepositByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         System.out.println();
     }
 

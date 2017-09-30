@@ -1344,5 +1344,5 @@ public interface ReportService {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findMoneyByRegion(String systemBookCode,String queryBy,Date dateFrom, Date dateTo, boolean isMember);
+	public List<Object[]> findMoneyByRegion(String systemBookCode,List<Integer> regionNums,String queryBy,Date dateFrom, Date dateTo, boolean isMember);
 }
