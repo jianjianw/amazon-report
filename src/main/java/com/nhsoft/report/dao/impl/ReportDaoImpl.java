@@ -7847,7 +7847,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		//List list = sqlQuery.list();
 		return sqlQuery.list();
 
 	}
@@ -7871,7 +7870,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		List list = sqlQuery.list();
 		return sqlQuery.list();
 	}
 
@@ -7893,7 +7891,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		List list = sqlQuery.list();
 		return sqlQuery.list();
 	}
 
@@ -7917,8 +7914,8 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("group by b.branch_region_num order by b.branch_region_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		//List list = sqlQuery.list();
 		return sqlQuery.list();
 	}
+
 
 }
