@@ -80,7 +80,13 @@ public class TestSpringBoot {
         }
         String systemBookCode = "4344";
         String queryBy = AppConstants.BUSINESS_TREND_PAYMENT;
-        List<RegionMoneyReport> moneyByRegion = reportRpc.findMoneyByRegion(systemBookCode, queryBy, dateFrom, dateTo, false);
+        List<BranchRegion> branchRegion = reportRpc.findBranchRegion(systemBookCode);
+        List<Integer> list = new ArrayList<>();
+        for (BranchRegion b :  branchRegion){
+            Integer branchRegionNum = b.getBranchRegionNum();
+            list.add(branchRegionNum);
+        }
+        List<RegionMoneyReport> moneyByRegion = reportRpc.findMoneyByRegion(systemBookCode, list,queryBy, dateFrom, dateTo, false);
         System.out.println();
 
     }
