@@ -578,14 +578,14 @@ public interface ReportRpc {
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData);
+	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData);
 
 	/**
 	 * 销售分析 -- 品牌汇总
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData);
+	public List<SaleByBrandSummary> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData);
 
 	/**
 	 * 查询批发毛利 按商品类别汇总

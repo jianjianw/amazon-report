@@ -2009,13 +2009,49 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData) {
-		return reportService.findSaleAnalysisByDepartments(queryData);
+	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData) {
+
+		List<Object[]> objects = reportService.findSaleAnalysisByDepartments(queryData);
+		List<SaleByDepartmentSummary> list = new ArrayList<SaleByDepartmentSummary>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0; i<objects.size(); i++){
+			Object[] object = objects.get(i);
+			SaleByDepartmentSummary saleByDepartmentSummary = new SaleByDepartmentSummary();
+			saleByDepartmentSummary.setItemNum((Integer) object[0]);
+			saleByDepartmentSummary.setStateCode((int)object[1]);
+			saleByDepartmentSummary.setAmount((BigDecimal) object[2]);
+			saleByDepartmentSummary.setPaymentMoney((BigDecimal) object[3]);
+			saleByDepartmentSummary.setAssistAmount((BigDecimal) object[4]);
+			saleByDepartmentSummary.setItemCount((Integer) object[5]);
+			saleByDepartmentSummary.setDiscount((BigDecimal) object[6]);
+			list.add(saleByDepartmentSummary);
+		}
+		return list;
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData) {
-		return reportService.findSaleAnalysisByBrands(queryData);
+	public List<SaleByBrandSummary> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData) {
+
+		List<Object[]> objects = reportService.findSaleAnalysisByBrands(queryData);
+		List<SaleByBrandSummary> list = new ArrayList<SaleByBrandSummary>();
+		if(objects.isEmpty()) {
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			SaleByBrandSummary saleByBrandSummary = new SaleByBrandSummary();
+			saleByBrandSummary.setItemNum((Integer) object[0]);
+			saleByBrandSummary.setStateCode((int)object[1]);
+			saleByBrandSummary.setAmount((BigDecimal) object[2]);
+			saleByBrandSummary.setPaymentMoney((BigDecimal) object[3]);
+			saleByBrandSummary.setAssistAmount((BigDecimal) object[4]);
+			saleByBrandSummary.setItemCount((Integer) object[5]);
+			saleByBrandSummary.setDiscount((BigDecimal) object[6]);
+			list.add(saleByBrandSummary);
+		}
+		return list;
 	}
 
 	@Override
