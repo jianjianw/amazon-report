@@ -3,6 +3,7 @@ package com.nhsoft;
 import com.nhsoft.report.dto.BranchConsumeReport;
 import com.nhsoft.report.dto.BranchDepositReport;
 import com.nhsoft.report.dto.BranchMoneyReport;
+import com.nhsoft.report.dto.RegionMoneyReport;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.BranchRegion;
 import com.nhsoft.report.rpc.ReportRpc;
@@ -66,7 +67,25 @@ public class TestSpringBoot {
         System.out.println();
     }
 
+    @Test
+    public void testRegion1(){
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateFrom = null;
+        Date dateTo = null;
+        try {
+            dateFrom = sdf.parse("2017-02-10");
+            dateTo = sdf.parse("2017-02-11");
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String systemBookCode = "4344";
+        String queryBy = AppConstants.BUSINESS_TREND_PAYMENT;
+        List<RegionMoneyReport> moneyByRegion = reportRpc.findMoneyByRegion(systemBookCode, queryBy, dateFrom, dateTo, false);
+        System.out.println();
+
+    }
 
     @Test
     public void testRpcMoney1(){

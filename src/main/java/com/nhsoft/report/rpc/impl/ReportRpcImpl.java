@@ -2023,8 +2023,7 @@ public class ReportRpcImpl implements ReportRpc {
 			saleByBranchSummary.setMoney((BigDecimal) object[3]);
 			saleByBranchSummary.setAssistAmount((BigDecimal) object[4]);
 			saleByBranchSummary.setItemNum((Integer) object[5]);
-			list.add(saleByBranchSummary)
-
+			list.add(saleByBranchSummary);
 		}
 		return list;
 	}
