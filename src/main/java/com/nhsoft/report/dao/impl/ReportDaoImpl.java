@@ -7918,7 +7918,28 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 	@Override
 	public List<Object[]> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return null;
+		StringBuffer sb = new StringBuffer();
+		sb.append("select house.branch_num,sum(ckdetail.check_order_detail_cost) as money ");
+		sb.append("from check_order_detail ckdetail WITH (nolock) ");
+		sb.append("INNER JOIN check_order ckorder WITH (nolock) ON ckdetail.check_order_fid = ckorder.check_order_fid ");
+		sb.append("INNER JOIN branch_storehouse house WITH (nolock) ON ckorder.storehouse_num = house.storehouse_num ");
+		sb.append("where ckorder.system_book_code = :systemBookCode ");
+		sb.append("and ckdetail.check_order_detail_stock_amount > ckdetail.check_order_detail_qty ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and house.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and ckorder.check_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and ckorder.check_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+
+		sb.append("GROUP BY house.branch_num ");
+		sb.append("ORDER BY house.branch_num ASC");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
 	}
 
 	@Override
@@ -7945,7 +7966,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	@Override
 	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num,count(card_user_num) ");
+		sb.append("select card_user_enroll_shop,count(card_user_num) ");
 		sb.append("from card_user ");
 		sb.append("where system_book_code = :systemBookCode ");
 		if(branchNums != null && branchNums.size()>0){
@@ -7957,7 +7978,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (dateTo != null) {
 			sb.append("and card_user_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
-		sb.append("group by branch_num order by branch_num asc");
+		sb.append("group by card_user_enroll_shop order by card_user_enroll_shop asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		List list = sqlQuery.list();
