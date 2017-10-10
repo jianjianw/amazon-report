@@ -12448,10 +12448,10 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<Object[]> findMoneyByRegion(String systemBookCode, String queryBy,Date dateFrom, Date dateTo, boolean isMember) {
+	public List<Object[]> findMoneyByRegion(String systemBookCode,List<Integer> regionNums,String queryBy,Date dateFrom, Date dateTo, boolean isMember) {
 		List<Object[]> objects = null;
 		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
-			objects = reportDao.findMoneyByRegion(systemBookCode,dateFrom, dateTo, isMember);
+			objects = reportDao.findMoneyByRegion(systemBookCode,regionNums,dateFrom, dateTo, isMember);
 		}
 		return objects;
 	}

@@ -887,5 +887,5 @@ public interface ReportDao {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findMoneyByRegion(String systemBookCode,Date dateFrom, Date dateTo, boolean isMember);
+	public List<Object[]> findMoneyByRegion(String systemBookCode,List<Integer> regionNums,Date dateFrom, Date dateTo, boolean isMember);
 }

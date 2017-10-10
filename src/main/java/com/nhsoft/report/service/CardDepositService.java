@@ -27,6 +27,8 @@ public interface CardDepositService {
 	 * @return
 	 */
 	public List<Object[]> findSumByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
-	
+
+
+
 	
 }

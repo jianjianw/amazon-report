@@ -3188,8 +3188,8 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<RegionMoneyReport> findMoneyByRegion(String systemBookCode, String queryBy, Date dateFrom, Date dateTo, boolean isMember) {
-		List<Object[]> objects = reportService.findMoneyByRegion(systemBookCode,queryBy, dateFrom, dateTo,isMember);
+	public List<RegionMoneyReport> findMoneyByRegion(String systemBookCode,List<Integer> regionNums, String queryBy, Date dateFrom, Date dateTo, boolean isMember) {
+		List<Object[]> objects = reportService.findMoneyByRegion(systemBookCode,regionNums,queryBy, dateFrom, dateTo,isMember);
 		List<RegionMoneyReport> list = new ArrayList<RegionMoneyReport>();
 		if(objects.isEmpty()){
 			return list;

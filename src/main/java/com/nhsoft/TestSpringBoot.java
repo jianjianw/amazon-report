@@ -7,6 +7,7 @@ import com.nhsoft.report.dto.RegionMoneyReport;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.BranchRegion;
 import com.nhsoft.report.rpc.ReportRpc;
+import com.nhsoft.report.service.CardDepositService;
 import com.nhsoft.report.util.AppConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,8 @@ public class TestSpringBoot {
 
     @Autowired
     private ReportRpc reportRpc;
+    @Autowired
+    private CardDepositService cardDepositService;
 
     @Test
     public void testRpcMoney() {
@@ -58,11 +61,6 @@ public class TestSpringBoot {
         }
         List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNum, queryBy, dateFrom, dateTo, false);
 
-       /* for (int i = 0; i <moneyByBranch.size() ; i++) {
-            BranchMoneyReport branchMoneyReport = moneyByBranch.get(i);
-            branchMoneyReport.getBranchNum();
-        }*/
-
 
         System.out.println();
     }
@@ -82,7 +80,13 @@ public class TestSpringBoot {
         }
         String systemBookCode = "4344";
         String queryBy = AppConstants.BUSINESS_TREND_PAYMENT;
-        List<RegionMoneyReport> moneyByRegion = reportRpc.findMoneyByRegion(systemBookCode, queryBy, dateFrom, dateTo, false);
+        List<BranchRegion> branchRegion = reportRpc.findBranchRegion(systemBookCode);
+        List<Integer> list = new ArrayList<>();
+        for (BranchRegion b :  branchRegion){
+            Integer branchRegionNum = b.getBranchRegionNum();
+            list.add(branchRegionNum);
+        }
+        List<RegionMoneyReport> moneyByRegion = reportRpc.findMoneyByRegion(systemBookCode, list,queryBy, dateFrom, dateTo, false);
         System.out.println();
 
     }
@@ -102,15 +106,20 @@ public class TestSpringBoot {
         Date dateTo = null;
         try {
             dateFrom = sdf.parse("2013-06-19 09:50:56");
-            dateTo = sdf.parse("2017-02-15 00:21:15");
+            dateTo = sdf.parse("2013-06-20 09:50:56");
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
         String systemBookCode = "4020";
+        List<Branch> all = reportRpc.findAll(systemBookCode);
         List<Integer> branchNums = new ArrayList<Integer>();
-        branchNums.add(1);
-        List<BranchDepositReport> depositByBranch = reportRpc.findDepositByBranch(systemBookCode, branchNums, dateFrom, null);
+        for (Branch b : all) {
+            Integer branchNum = b.getId().getBranchNum();
+            branchNums.add(branchNum);
+        }
+        //List<Object[]> branchSum = cardDepositService.findBranchSum(systemBookCode, branchNums, dateFrom, dateTo);
+        List<BranchDepositReport> depositByBranch = reportRpc.findDepositByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         System.out.println();
     }
 
@@ -127,9 +136,8 @@ public class TestSpringBoot {
             e.printStackTrace();
         }
         String systemBookCode = "4020";
-        List<Integer> branchNums = new ArrayList<Integer>();
-        branchNums.add(1);
-        List<BranchConsumeReport> consumeByBranch = reportRpc.findConsumeByBranch(systemBookCode, branchNums, dateFrom, null);
+
+        List<BranchConsumeReport> consumeByBranch = reportRpc.findConsumeByBranch(systemBookCode, null, dateFrom, null);
         System.out.println();
     }
 

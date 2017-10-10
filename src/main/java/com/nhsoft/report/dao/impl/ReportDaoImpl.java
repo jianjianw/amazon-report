@@ -7847,7 +7847,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		//List list = sqlQuery.list();
 		return sqlQuery.list();
 
 	}
@@ -7871,12 +7870,11 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		List list = sqlQuery.list();
 		return sqlQuery.list();
 	}
 
 	@Override
-	public List<Object[]> findConsumeByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findConsumeByBranch(String systemBookCode,List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, sum(consume_money) as money ");
 		sb.append("from card_consume with(nolock) ");
@@ -7893,17 +7891,19 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		List list = sqlQuery.list();
 		return sqlQuery.list();
 	}
 
 	@Override
-	public List<Object[]> findMoneyByRegion(String systemBookCode, Date dateFrom, Date dateTo, boolean isMember) {
+	public List<Object[]> findMoneyByRegion(String systemBookCode, List<Integer> regionNums,Date dateFrom, Date dateTo, boolean isMember) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select b.branch_region_num, sum(p.order_payment_money + p.order_coupon_total_money - p.order_mgr_discount_money) as money, ");
 		sb.append("count(p.order_no) as count, sum(p.order_gross_profit) as profit ");
 		sb.append("from pos_order p with(nolock) INNER JOIN branch b with(nolock) ON p.system_book_code = b.system_book_code ");
 		sb.append("where p.system_book_code = :systemBookCode ");
+		if(regionNums != null && regionNums.size()>0){
+			sb.append("and b.branch_region_num in " + AppUtil.getIntegerParmeList(regionNums));
+		}
 		if (dateFrom != null) {
 			sb.append("and p.order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
 		}
@@ -7917,8 +7917,8 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("group by b.branch_region_num order by b.branch_region_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		//List list = sqlQuery.list();
 		return sqlQuery.list();
 	}
+
 
 }
