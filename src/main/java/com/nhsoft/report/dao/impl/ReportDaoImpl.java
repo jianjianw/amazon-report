@@ -7949,7 +7949,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("from card_user ");
 		sb.append("where system_book_code = :systemBookCode ");
 		if(branchNums != null && branchNums.size()>0){
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+			sb.append("and card_user_enroll_shop in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if (dateFrom != null) {
 			sb.append("and card_user_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
