@@ -7935,6 +7935,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		sb.append("group by system_book_code ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
 	}
 

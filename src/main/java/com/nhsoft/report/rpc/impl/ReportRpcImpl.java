@@ -3211,7 +3211,6 @@ public class ReportRpcImpl implements ReportRpc {
 			lossMoneyReport.setMoney((BigDecimal) object[1]);
 			list.add(lossMoneyReport);
 		}
-
 		return list;
 	}
 

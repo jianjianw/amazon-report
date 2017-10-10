@@ -1,14 +1,12 @@
 package com.nhsoft;
 
-import com.nhsoft.report.dto.BranchConsumeReport;
-import com.nhsoft.report.dto.BranchDepositReport;
-import com.nhsoft.report.dto.BranchMoneyReport;
-import com.nhsoft.report.dto.RegionMoneyReport;
+import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.BranchRegion;
 import com.nhsoft.report.rpc.ReportRpc;
 import com.nhsoft.report.service.CardDepositService;
 import com.nhsoft.report.util.AppConstants;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,31 +63,7 @@ public class TestSpringBoot {
         System.out.println();
     }
 
-    @Test
-    public void testRegion1(){
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateFrom = null;
-        Date dateTo = null;
-        try {
-            dateFrom = sdf.parse("2017-02-10");
-            dateTo = sdf.parse("2017-02-11");
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        String systemBookCode = "4344";
-        String queryBy = AppConstants.BUSINESS_TREND_PAYMENT;
-        List<BranchRegion> branchRegion = reportRpc.findBranchRegion(systemBookCode);
-        List<Integer> list = new ArrayList<>();
-        for (BranchRegion b :  branchRegion){
-            Integer branchRegionNum = b.getBranchRegionNum();
-            list.add(branchRegionNum);
-        }
-        List<RegionMoneyReport> moneyByRegion = reportRpc.findMoneyByRegion(systemBookCode, list,queryBy, dateFrom, dateTo, false);
-        System.out.println();
-
-    }
 
 
     @Test
@@ -157,6 +131,26 @@ public class TestSpringBoot {
             Integer branchNum = branchByBranchRegionNum.get(i).getId().getBranchNum();
             list.add(branchNum);
         }
+        System.out.println();
+    }
+
+    Date dateFrom = null;
+    Date dateTo = null;
+    @Before
+    public void date(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        try {
+            dateFrom = sdf.parse("2013-06-19 09:50:56");
+            dateTo = sdf.parse("2017-02-15 00:21:15");
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void testLossMoney(){
+        List<LossMoneyReport> lossMoneyByBranch = reportRpc.findLossMoneyByBranch("4020", dateFrom, dateTo);
         System.out.println();
     }
 
