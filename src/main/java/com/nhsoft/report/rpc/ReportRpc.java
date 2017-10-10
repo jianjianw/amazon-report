@@ -1361,6 +1361,8 @@ public interface ReportRpc {
 	  * @param dateTo 时间止
 	  * */
 
+	 public List findCheckMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
+
 
 
 

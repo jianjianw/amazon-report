@@ -7927,6 +7927,9 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("from adjustment_order a with(nolock) INNER JOIN branch_storehouse b with(nolock) on a.system_book_code = b.system_book_code ");
 		sb.append("where a.system_book_code = :systemBookCode ");
 		sb.append("and adjustment_order_direction = '出库' ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
 		if (dateFrom != null) {
 			sb.append("and adjustment_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
 		}
