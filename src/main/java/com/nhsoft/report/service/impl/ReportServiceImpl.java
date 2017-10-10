@@ -12448,18 +12448,18 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<Object[]> findMoneyByRegion(String systemBookCode,List<Integer> regionNums,String queryBy,Date dateFrom, Date dateTo, boolean isMember) {
-		List<Object[]> objects = null;
-		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
-			objects = reportDao.findMoneyByRegion(systemBookCode,regionNums,dateFrom, dateTo, isMember);
-		}
-		return objects;
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
+		return reportDao.findLossMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
+	public List<Object[]> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return null;
+	}
 
-		return reportDao.findLossMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	@Override
+	public List<Object[]> findDifferenceMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return reportDao.findDifferenceMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 }

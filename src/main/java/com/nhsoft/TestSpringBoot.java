@@ -134,21 +134,28 @@ public class TestSpringBoot {
         System.out.println();
     }
 
+
+
+
+
+
+
     Date dateFrom = null;
     Date dateTo = null;
     List<Integer> branchNums = null;
+    String systemBookCode = "4020";
     @Before
     public void date(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         try {
-            dateFrom = sdf.parse("2013-06-19 09:50:56");
+            dateFrom = sdf.parse("2017-01-19 09:50:56");
             dateTo = sdf.parse("2017-02-15 00:21:15");
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String systemBookCode = "4020";
+
         List<Branch> all = reportRpc.findAll(systemBookCode);
         branchNums = new ArrayList<Integer>();
         for (Branch b : all) {
@@ -158,7 +165,13 @@ public class TestSpringBoot {
     }
     @Test
     public void testLossMoney(){
-        List<LossMoneyReport> lossMoneyByBranch = reportRpc.findLossMoneyByBranch("4020", branchNums,dateFrom, dateTo);
+        List<LossMoneyReport> lossMoneyByBranch = reportRpc.findLossMoneyByBranch(systemBookCode, branchNums,dateFrom, dateTo);
+        System.out.println();
+    }
+
+    @Test
+    public void testDiffMoney(){
+        List<DifferenceMoney> differenceMoneyByBranch = reportRpc.findDifferenceMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         System.out.println();
     }
 

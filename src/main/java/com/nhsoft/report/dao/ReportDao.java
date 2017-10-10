@@ -880,14 +880,13 @@ public interface ReportDao {
 	public List<Object[]> findConsumeByBranch(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo);
 
 	/**
-	 * 按区域查询营业额
+	 * 按分店查询报损金额
 	 * @param systemBookCode
-	 * @param dateFrom
-	 * @param dateTo
-	 * @param isMember 是否会员
-	 * @return
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
 	 */
-	public List<Object[]> findMoneyByRegion(String systemBookCode,List<Integer> regionNums,Date dateFrom, Date dateTo, boolean isMember);
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
 
 	/**
 	 * 按分店查询报损金额
@@ -896,6 +895,15 @@ public interface ReportDao {
 	 * @param dateFrom 时间起
 	 * @param dateTo 时间止
 	 */
-	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
+	public List<Object[]> findCheckMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
+
+	/**
+	 * 按分店查询配销差额
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * */
+	public List<Object[]> findDifferenceMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
 
 }

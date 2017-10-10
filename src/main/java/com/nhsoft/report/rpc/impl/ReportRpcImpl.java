@@ -3215,8 +3215,25 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<CheckMoney> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return null;
+	}
+
+	@Override
+	public List<DifferenceMoney> findDifferenceMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findDifferenceMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<DifferenceMoney> list = new ArrayList<DifferenceMoney>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			DifferenceMoney differenceMoney = new DifferenceMoney();
+			differenceMoney.setBranchNum((Integer) object[0]);
+			differenceMoney.setMoney((BigDecimal) object[1]);
+			list.add(differenceMoney);
+		}
+		return list;
 	}
 
 

@@ -7895,40 +7895,14 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
-	public List<Object[]> findMoneyByRegion(String systemBookCode, List<Integer> regionNums,Date dateFrom, Date dateTo, boolean isMember) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select b.branch_region_num, sum(p.order_payment_money + p.order_coupon_total_money - p.order_mgr_discount_money) as money, ");
-		sb.append("count(p.order_no) as count, sum(p.order_gross_profit) as profit ");
-		sb.append("from pos_order p with(nolock) INNER JOIN branch b with(nolock) ON p.system_book_code = b.system_book_code ");
-		sb.append("where p.system_book_code = :systemBookCode ");
-		if(regionNums != null && regionNums.size()>0){
-			sb.append("and b.branch_region_num in " + AppUtil.getIntegerParmeList(regionNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and p.order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and p.order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("and p.order_state_code in (5, 7)  ");
-		if(isMember){
-			sb.append("and p.order_card_user_num > 0 ");
-		}
-		sb.append("group by b.branch_region_num order by b.branch_region_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", systemBookCode);
-		return sqlQuery.list();
-	}
-
-	@Override
 	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select b.branch_num,sum(a.adjustment_order_money) ");
-		sb.append("from adjustment_order a with(nolock) INNER JOIN branch_storehouse b with(nolock) on a.system_book_code = b.system_book_code ");
+		sb.append("from adjustment_order a with(nolock) INNER JOIN branch_storehouse b with(nolock) on a.storehouse_num = b.storehouse_num ");
 		sb.append("where a.system_book_code = :systemBookCode ");
 		sb.append("and adjustment_order_direction = '出库' ");
 		if(branchNums != null && branchNums.size()>0){
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+			sb.append("and b.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if (dateFrom != null) {
 			sb.append("and adjustment_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
@@ -7937,6 +7911,32 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			sb.append("and adjustment_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
 		sb.append("group by b.branch_num");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return null;
+	}
+
+	@Override
+	public List<Object[]> findDifferenceMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select tout.branch_num,sum(tout.out_order_total_money - tin.in_order_total_money) ");
+		sb.append("from transfer_out_order tout with(nolock) INNER JOIN transfer_in_order tin with(nolock) on tout.out_order_fid = tin.out_order_fid ");
+		sb.append("where tout.system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and tout.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and tout.out_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and tout.out_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by tout.branch_num");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();

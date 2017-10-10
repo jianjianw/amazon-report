@@ -1354,14 +1354,33 @@ public interface ReportRpc {
 	 public List<LossMoneyReport> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
 
 	 /**
-	  * 按分店查询盘损金额
+	  * 按分店查询盘损金额-------------------------这个实现还没写
 	  * @param systemBookCode
 	  * @param branchNums 分店号
 	  * @param dateFrom 时间起
 	  * @param dateTo 时间止
 	  * */
+	 public List<CheckMoney> findCheckMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
 
-	 public List findCheckMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
+	/**
+	 * 按分店查询配销差额
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * */
+	public List<DifferenceMoney> findDifferenceMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
+
+	/**
+	 * 按分店查询新增会员数
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * */
+	public List<DifferenceMoney> findByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
+
+
 
 
 
