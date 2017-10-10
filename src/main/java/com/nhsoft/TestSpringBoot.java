@@ -181,5 +181,11 @@ public class TestSpringBoot {
         System.out.println();
     }
 
+    @Test
+    public void testCheckMoney(){
+        List<CheckMoney> checkMoneyByBranch = reportRpc.findCheckMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        System.out.println();
+    }
+
 
 }

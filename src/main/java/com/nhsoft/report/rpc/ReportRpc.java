@@ -1354,7 +1354,7 @@ public interface ReportRpc {
 	 public List<LossMoneyReport> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
 
 	 /**
-	  * 按分店查询盘损金额-------------------------这个实现还没写
+	  * 按分店查询盘损金额
 	  * @param systemBookCode
 	  * @param branchNums 分店号
 	  * @param dateFrom 时间起

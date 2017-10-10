@@ -12454,7 +12454,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<Object[]> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return null;
+		return reportDao.findCheckMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override

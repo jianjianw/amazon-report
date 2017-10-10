@@ -15,6 +15,7 @@ import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import com.nhsoft.report.util.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.zookeeper.Op;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -3216,7 +3217,20 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<CheckMoney> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return null;
+
+		List<Object[]> objects = reportService.findCheckMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<CheckMoney> list = new ArrayList<CheckMoney>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			CheckMoney checkMoney = new CheckMoney();
+			checkMoney.setBranchNum((Integer) object[0]);
+			checkMoney.setMoney((BigDecimal) object[1]);
+			list.add(checkMoney);
+		}
+		return list;
 	}
 
 	@Override
