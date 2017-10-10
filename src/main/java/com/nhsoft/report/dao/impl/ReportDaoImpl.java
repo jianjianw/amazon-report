@@ -7920,5 +7920,15 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		return sqlQuery.list();
 	}
 
+	@Override
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select * ");
+		sb.append("from adjustment_order ");
+		sb.append("where system_book_code = :systemBookCode ");
+		sb.append("and adjustment_order_direction ")
+		return null;
+	}
+
 
 }

@@ -3188,26 +3188,6 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<RegionMoneyReport> findMoneyByRegion(String systemBookCode,List<Integer> regionNums, String queryBy, Date dateFrom, Date dateTo, boolean isMember) {
-		List<Object[]> objects = reportService.findMoneyByRegion(systemBookCode,regionNums,queryBy, dateFrom, dateTo,isMember);
-		List<RegionMoneyReport> list = new ArrayList<RegionMoneyReport>();
-		if(objects.isEmpty()){
-			return list;
-		}
-		for (int i = 0; i <objects.size() ; i++) {
-			Object[] object = objects.get(i);
-			RegionMoneyReport regionMoneyReport = new RegionMoneyReport();
-			regionMoneyReport.setBranchRegionNum((Integer) object[0]);
-			regionMoneyReport.setBizMoney((BigDecimal) object[1]);
-			regionMoneyReport.setOrderCount((Integer) object[2]);
-			regionMoneyReport.setProfit((BigDecimal) object[3]);
-			list.add(regionMoneyReport);
-
-		}
-		return list;
-	}
-
-	@Override
 	public List<BranchRegion> findBranchRegion(String systemBookCode) {
 		return  branchService.findBranchRegion(systemBookCode);
 	}
@@ -3215,6 +3195,11 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<Branch> findBranchByBranchRegionNum(String systemBookCode, Integer branchRegionNum) {
 		return branchService.findBranchByBranchRegionNum(systemBookCode, branchRegionNum);
+	}
+
+	@Override
+	public List<LossMoneyReport> findLossMoneyByBranch(String systemBookCode) {
+		return null;
 	}
 
 

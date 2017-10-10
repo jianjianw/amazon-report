@@ -1345,4 +1345,12 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<Object[]> findMoneyByRegion(String systemBookCode,List<Integer> regionNums,String queryBy,Date dateFrom, Date dateTo, boolean isMember);
+
+	/**
+	 * 按分店查询报损金额
+	 * @param systemBookCode
+	 * @rerurn
+	 */
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode);
+
 }

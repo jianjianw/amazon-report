@@ -12456,4 +12456,9 @@ public class ReportServiceImpl implements ReportService {
 		return objects;
 	}
 
+	@Override
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode) {
+		return null;
+	}
+
 }

@@ -1329,17 +1329,6 @@ public interface ReportRpc {
 	 * */
 	public List<BranchConsumeReport> findConsumeByBranch(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo);
 
-	/**
-	 * 按区域查询营业额
-	 * @param systemBookCode
-	 * @param queryBy
-	 * @param dateFrom
-	 * @param dateTo
-	 * @param isMember 是否会员
-	 * @return
-	 */
-	public List<RegionMoneyReport> findMoneyByRegion(String systemBookCode,List<Integer> regionNums,String queryBy,Date dateFrom, Date dateTo, boolean isMember);
-
 	/*
 	 *	查询分店区域
 	 * @param systemBookCode 帐套号
@@ -1354,6 +1343,15 @@ public interface ReportRpc {
 	 * @return
 	 * */
 	public List<Branch> findBranchByBranchRegionNum(String systemBookCode,Integer branchRegionNum);
+
+	/**
+	 * 按分店查询报损金额
+	 * @param systemBookCode
+	 * @rerurn
+	 */
+	 public List<LossMoneyReport> findLossMoneyByBranch(String systemBookCode);
+
+
 
 
 }
