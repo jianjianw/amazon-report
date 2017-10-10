@@ -3214,5 +3214,10 @@ public class ReportRpcImpl implements ReportRpc {
 		return list;
 	}
 
+	@Override
+	public List findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return null;
+	}
+
 
 }
