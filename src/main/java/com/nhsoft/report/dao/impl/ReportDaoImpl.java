@@ -7926,7 +7926,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("select * ");
 		sb.append("from adjustment_order ");
 		sb.append("where system_book_code = :systemBookCode ");
-		sb.append("and adjustment_order_direction ")
+		sb.append("and adjustment_order_direction ");
 		return null;
 	}
 
