@@ -7921,13 +7921,21 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
-	public List<Object[]> findLossMoneyByBranch(String systemBookCode) {
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode,Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select * ");
+		sb.append("select system_book_code,sum(adjustment_order_money) ");
 		sb.append("from adjustment_order ");
 		sb.append("where system_book_code = :systemBookCode ");
-		sb.append("and adjustment_order_direction ");
-		return null;
+		sb.append("and adjustment_order_direction = '出库' ");
+		if (dateFrom != null) {
+			sb.append("and adjustment_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and adjustment_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by system_book_code ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
 	}
 
 

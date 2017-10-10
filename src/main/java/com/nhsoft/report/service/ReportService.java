@@ -1349,8 +1349,10 @@ public interface ReportService {
 	/**
 	 * 按分店查询报损金额
 	 * @param systemBookCode
-	 * @rerurn
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
 	 */
-	public List<Object[]> findLossMoneyByBranch(String systemBookCode);
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode,Date dateFrom, Date dateTo);
+
 
 }
