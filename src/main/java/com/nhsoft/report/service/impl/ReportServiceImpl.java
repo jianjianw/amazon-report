@@ -12457,9 +12457,9 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<Object[]> findLossMoneyByBranch(String systemBookCode,Date dateFrom, Date dateTo) {
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
 
-		return reportDao.findLossMoneyByBranch(systemBookCode,dateFrom,dateTo);
+		return reportDao.findLossMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 }

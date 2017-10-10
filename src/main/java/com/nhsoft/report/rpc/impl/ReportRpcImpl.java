@@ -3198,8 +3198,8 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<LossMoneyReport> findLossMoneyByBranch(String systemBookCode,Date dateFrom, Date dateTo) {
-		List<Object[]> objects = reportService.findLossMoneyByBranch(systemBookCode, dateFrom, dateTo);
+	public List<LossMoneyReport> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findLossMoneyByBranch(systemBookCode,branchNums,dateFrom, dateTo);
 		List<LossMoneyReport> list = new ArrayList<LossMoneyReport>();
 		if(objects.isEmpty()){
 			return list;
@@ -3207,7 +3207,7 @@ public class ReportRpcImpl implements ReportRpc {
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
 			LossMoneyReport lossMoneyReport = new LossMoneyReport();
-			lossMoneyReport.setSystemBookCode((String) object[0]);
+			lossMoneyReport.setBranchNum((Integer) object[0]);
 			lossMoneyReport.setMoney((BigDecimal) object[1]);
 			list.add(lossMoneyReport);
 		}

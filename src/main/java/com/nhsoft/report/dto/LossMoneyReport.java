@@ -5,15 +5,15 @@ import java.math.BigDecimal;
 
 public class LossMoneyReport implements Serializable {
 
-    private String systemBookCode;
+    private Integer branchNum;
     private BigDecimal money;//报损金额
 
-    public String getSystemBookCode() {
-        return systemBookCode;
+    public Integer getBranchNum() {
+        return branchNum;
     }
 
-    public void setSystemBookCode(String systemBookCode) {
-        this.systemBookCode = systemBookCode;
+    public void setBranchNum(Integer branchNum) {
+        this.branchNum = branchNum;
     }
 
     public BigDecimal getMoney() {

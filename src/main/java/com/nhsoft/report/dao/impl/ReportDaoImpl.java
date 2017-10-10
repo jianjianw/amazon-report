@@ -7921,11 +7921,11 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
-	public List<Object[]> findLossMoneyByBranch(String systemBookCode,Date dateFrom, Date dateTo) {
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select system_book_code,sum(adjustment_order_money) ");
-		sb.append("from adjustment_order ");
-		sb.append("where system_book_code = :systemBookCode ");
+		sb.append("select b.branch_num,sum(a.adjustment_order_money) ");
+		sb.append("from adjustment_order a with(nolock) INNER JOIN branch_storehouse b with(nolock) on a.system_book_code = b.system_book_code ");
+		sb.append("where a.system_book_code = :systemBookCode ");
 		sb.append("and adjustment_order_direction = '出库' ");
 		if (dateFrom != null) {
 			sb.append("and adjustment_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
@@ -7933,7 +7933,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (dateTo != null) {
 			sb.append("and adjustment_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
-		sb.append("group by system_book_code ");
+		sb.append("group by b.branch_num");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();

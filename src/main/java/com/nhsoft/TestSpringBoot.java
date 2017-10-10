@@ -150,7 +150,7 @@ public class TestSpringBoot {
     }
     @Test
     public void testLossMoney(){
-        List<LossMoneyReport> lossMoneyByBranch = reportRpc.findLossMoneyByBranch("4020", dateFrom, dateTo);
+        List<LossMoneyReport> lossMoneyByBranch = reportRpc.findLossMoneyByBranch("4020", null,dateFrom, dateTo);
         System.out.println();
     }
 
