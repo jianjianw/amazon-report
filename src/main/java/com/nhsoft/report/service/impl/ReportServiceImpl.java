@@ -12462,4 +12462,9 @@ public class ReportServiceImpl implements ReportService {
 		return reportDao.findDifferenceMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
+	@Override
+	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return reportDao.findCardUserCountByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
 }

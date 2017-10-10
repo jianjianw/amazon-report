@@ -3236,5 +3236,22 @@ public class ReportRpcImpl implements ReportRpc {
 		return list;
 	}
 
+	@Override
+	public List<CardUserCount> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = reportService.findCardUserCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<CardUserCount> list = new ArrayList<CardUserCount>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			CardUserCount cardUserCount = new CardUserCount();
+			cardUserCount.setBranchNum((Integer) object[0]);
+			cardUserCount.setCount((Integer) object[1]);
+			list.add(cardUserCount);
+		}
+		return list;
+	}
+
 
 }

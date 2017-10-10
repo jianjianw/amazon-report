@@ -7942,5 +7942,28 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		return sqlQuery.list();
 	}
 
+	@Override
+	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num,count(card_user_num) ");
+		sb.append("from card_user ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and card_user_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and card_user_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by branch_num order by branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		List list = sqlQuery.list();
+		return list;
+
+	}
+
 
 }

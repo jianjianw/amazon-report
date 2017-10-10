@@ -175,5 +175,11 @@ public class TestSpringBoot {
         System.out.println();
     }
 
+    @Test
+    public void testCardUserCount(){
+        List<CardUserCount> cardUserCountByBranch = reportRpc.findCardUserCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        System.out.println();
+    }
+
 
 }

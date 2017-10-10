@@ -1378,7 +1378,8 @@ public interface ReportRpc {
 	 * @param dateFrom 时间起
 	 * @param dateTo 时间止
 	 * */
-	public List<DifferenceMoney> findByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
+	public List<CardUserCount> findCardUserCountByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
+
 
 
 
