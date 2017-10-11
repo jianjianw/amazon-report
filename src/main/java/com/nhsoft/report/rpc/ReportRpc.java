@@ -1391,6 +1391,14 @@ public interface ReportRpc {
 	 */
 	 public List<SaleMoneyGoals> findSaleMoneyGoalsByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo,String dateType);
 
+	 /**
+	  * 安分店查询坪效
+	  * @param systemBookCode
+	  * @param branchNums 分店号
+	  * @param dateFrom 时间起
+	  * @param dateTo 时间止
+	  * */
+
 
 
 
