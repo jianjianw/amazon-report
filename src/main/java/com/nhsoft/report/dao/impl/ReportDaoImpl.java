@@ -7910,7 +7910,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (dateTo != null) {
 			sb.append("and adjustment_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
-		sb.append("group by b.branch_num");
+		sb.append("group by b.branch_num order by b.branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
@@ -7936,7 +7936,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 
 		sb.append("GROUP BY house.branch_num ");
-		sb.append("ORDER BY house.branch_num ASC");
+		sb.append("ORDER BY house.branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode",systemBookCode);
 		return sqlQuery.list();
@@ -7957,7 +7957,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (dateTo != null) {
 			sb.append("and tout.out_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
-		sb.append("group by tout.branch_num");
+		sb.append("group by tout.branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
@@ -8024,7 +8024,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 		}
 
-		sb.append("group by branch_num order by branch_num");
+		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode",systemBookCode);
 		return sqlQuery.list();
