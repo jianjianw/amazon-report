@@ -18,6 +18,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -8025,6 +8026,45 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 
 		sb.append("group by branch_num order by branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findBranchArea(String systemBookCode, List<Integer> branchNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num,sum(branch_area) ");
+		sb.append("from branch ");
+		sb.append("where system_book_code = :systemBookCode ");
+		sb.append("group by branch_num order by branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("select b.branch_num, ");
+		sb.append("sum(case when a.adjustment_order_cause = '试吃' then a.adjustment_order_money END) tryEat, ");
+		sb.append("sum(case when a.adjustment_order_cause = '去皮' then a.adjustment_order_money END) faly, ");
+		sb.append("sum(case when a.adjustment_order_cause = '报损' then a.adjustment_order_money END) loss, ");
+		sb.append("sum(case when a.adjustment_order_cause = '其他' then a.adjustment_order_money END) other ");
+		sb.append("from adjustment_order a inner join branch_storehouse b on a.storehouse_num = b.storehouse_num ");
+		sb.append("where a.system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and b.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and a.adjustment_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and a.adjustment_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by b.branch_num order by b.branch_num asc");
+
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode",systemBookCode);
 		return sqlQuery.list();

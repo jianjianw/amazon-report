@@ -3284,5 +3284,43 @@ public class ReportRpcImpl implements ReportRpc {
 		return list;
 	}
 
+	@Override
+	public List<BranchArea> findBranchArea(String systemBookCode, List<Integer> branchNums) {
+		List<Object[]> objects = reportService.findBranchArea(systemBookCode, branchNums);
+		List<BranchArea> list = new ArrayList<BranchArea>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			BranchArea branchArea = new BranchArea();
+			branchArea.setBranchNum((Integer) object[0]);
+			branchArea.setArea((BigDecimal) object[1]);
+			list.add(branchArea);
+		}
+		return list;
+	}
+
+	@Override
+	public List<AdjustmentCauseMoney> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+		List<Object[]> objects = reportService.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<AdjustmentCauseMoney> list = new ArrayList<AdjustmentCauseMoney>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			AdjustmentCauseMoney adjustmentCauseMoney = new AdjustmentCauseMoney();
+			adjustmentCauseMoney.setBranchNum((Integer) object[0]);
+			adjustmentCauseMoney.setTryEat((BigDecimal) object[1]);
+			adjustmentCauseMoney.setLoss((BigDecimal) object[2]);
+			adjustmentCauseMoney.setLoss((BigDecimal) object[3]);
+			adjustmentCauseMoney.setOther((BigDecimal) object[4]);
+			list.add(adjustmentCauseMoney);
+		}
+		return list;
+	}
+
 
 }

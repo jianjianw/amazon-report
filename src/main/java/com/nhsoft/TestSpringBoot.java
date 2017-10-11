@@ -193,5 +193,17 @@ public class TestSpringBoot {
         System.out.println();
     }
 
+    @Test
+    public void testBranchArea(){
+        List<BranchArea> branchArea = reportRpc.findBranchArea(systemBookCode, branchNums);
+        System.out.println();
+    }
+
+    @Test
+    public void testCauseMoney(){
+        List<AdjustmentCauseMoney> adjustmentCauseMoneyByBranch = reportRpc.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        System.out.println();
+    }
+
 
 }

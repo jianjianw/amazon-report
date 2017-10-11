@@ -924,4 +924,21 @@ public interface ReportDao {
 	 */
 	public List<Object[]> findSaleMoneyGoalsByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo,String dateType);
 
+	/**
+	 * 查询分店面积
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 */
+
+	 public List<Object[]> findBranchArea(String systemBookCode,List<Integer> branchNums);
+
+	/**
+	 *按分店查询损耗金额		试吃，去皮，报损，其它
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * */
+	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
 }

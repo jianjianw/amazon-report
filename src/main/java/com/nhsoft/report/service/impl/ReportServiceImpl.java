@@ -12472,4 +12472,14 @@ public class ReportServiceImpl implements ReportService {
 		return reportDao.findSaleMoneyGoalsByBranch(systemBookCode,branchNums,dateFrom,dateTo,dateType);
 	}
 
+	@Override
+	public List<Object[]> findBranchArea(String systemBookCode, List<Integer> branchNums) {
+		return reportDao.findBranchArea(systemBookCode,branchNums);
+	}
+
+	@Override
+	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return reportDao.findAdjustmentCauseMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
 }
