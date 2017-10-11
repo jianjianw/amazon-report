@@ -149,7 +149,7 @@ public class TestSpringBoot {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         try {
-            dateFrom = sdf.parse("2017-01-19 09:50:56");
+            dateFrom = sdf.parse("2016-01-19 09:50:56");
             dateTo = sdf.parse("2017-02-15 00:21:15");
 
         } catch (ParseException e) {
@@ -184,6 +184,12 @@ public class TestSpringBoot {
     @Test
     public void testCheckMoney(){
         List<CheckMoney> checkMoneyByBranch = reportRpc.findCheckMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        System.out.println();
+    }
+
+    @Test
+    public void testSaleMoney(){
+        List<SaleMoneyGoals> saleMoneyGoalsByBranch = reportRpc.findSaleMoneyGoalsByBranch(systemBookCode, branchNums, dateFrom, dateTo,AppConstants.BUSINESS_DATE_SOME_MONTH);
         System.out.println();
     }
 

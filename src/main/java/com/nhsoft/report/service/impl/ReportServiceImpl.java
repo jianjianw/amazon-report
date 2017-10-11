@@ -12467,4 +12467,9 @@ public class ReportServiceImpl implements ReportService {
 		return reportDao.findCardUserCountByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
+	@Override
+	public List<Object[]> findSaleMoneyGoalsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,String dateType) {
+		return reportDao.findSaleMoneyGoalsByBranch(systemBookCode,branchNums,dateFrom,dateTo,dateType);
+	}
+
 }

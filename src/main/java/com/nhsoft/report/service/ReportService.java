@@ -1371,6 +1371,16 @@ public interface ReportService {
 	 * */
 	public List<Object[]> findCardUserCountByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
 
+	/**
+	 * 按分店查询营业额目标
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * @param dateType 时间类型
+	 */
+	public List<Object[]> findSaleMoneyGoalsByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo,String dateType);
+
 
 
 

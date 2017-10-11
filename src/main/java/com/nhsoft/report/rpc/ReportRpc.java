@@ -8,6 +8,7 @@ import com.nhsoft.report.model.CustomReport;
 import com.nhsoft.report.model.PosItem;
 import com.nhsoft.report.param.ChainDeliveryParam;
 import com.nhsoft.report.shared.queryBuilder.*;
+import com.nhsoft.report.util.AppConstants;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -1380,6 +1381,15 @@ public interface ReportRpc {
 	 * */
 	public List<CardUserCount> findCardUserCountByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
 
+	/**
+	 * 按分店查询营业额目标
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 * @param dateType 时间类型  年 AppConstants.BUSINESS_DATE_SOME_MONTH ，月，周，日
+	 */
+	 public List<SaleMoneyGoals> findSaleMoneyGoalsByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo,String dateType);
 
 
 
