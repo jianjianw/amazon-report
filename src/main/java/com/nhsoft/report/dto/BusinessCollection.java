@@ -17,6 +17,7 @@ public class BusinessCollection implements Serializable {
 	private Integer shiftTableNum; // 交班编号
 	private String shiftTableBizday; // 营业日
 	private String posMachineName; // pos终端名称 十六进制字符串 对应的PosMachineData 中的 id
+	private String shiftTableTerminalId;
 	private BigDecimal unPaidMoney = BigDecimal.ZERO;  //未扣款金额
 	private BigDecimal rePaidMoney = BigDecimal.ZERO;	//补扣金额
 	private BigDecimal signInMoney = BigDecimal.ZERO;//签收金额
@@ -53,7 +54,15 @@ public class BusinessCollection implements Serializable {
 	private BigDecimal allDiscountMoney = BigDecimal.ZERO;//总折扣
 	//营业收款报表（班次）使用
 	private String casher;//收银员
-
+	
+	public String getShiftTableTerminalId() {
+		return shiftTableTerminalId;
+	}
+	
+	public void setShiftTableTerminalId(String shiftTableTerminalId) {
+		this.shiftTableTerminalId = shiftTableTerminalId;
+	}
+	
 	public BigDecimal getCardChangeInMoney() {
 		return cardChangeInMoney;
 	}

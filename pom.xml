@@ -152,6 +152,12 @@
 			<version>2.5.2</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.nhsoft</groupId>
+			<artifactId>amazon-phone</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 
 
         <dependency>

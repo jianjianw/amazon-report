@@ -382,6 +382,13 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<Object[]> findProfitAnalysisByBranchAndItem(ProfitAnalysisQueryData profitAnalysisQueryData);
+	
+	/**
+	 * 毛利分析 商品毛利汇总
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object[]> findProfitAnalysisByItem(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 	/**
 	 * 销售员提成 按品牌汇总

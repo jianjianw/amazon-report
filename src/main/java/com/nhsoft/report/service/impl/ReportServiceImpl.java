@@ -5751,7 +5751,12 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return objects;
 	}
-
+	
+	@Override
+	public List<Object[]> findProfitAnalysisByItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		return reportDao.findProfitAnalysisByItem(profitAnalysisQueryData);
+	}
+	
 	@Override
 	public List<SalerCommissionBrand> findSalerCommissionBrands(String systemBookCode, Date dtFrom, Date dtTo,
 			List<Integer> branchNums, List<String> salerNums) {
@@ -10562,24 +10567,24 @@ public class ReportServiceImpl implements ReportService {
 			}
 
 		}
-		if (!inventoryAnalysisQuery.isFindCount()) {
-			Date dateFrom = DateUtil.addDay(now, -inventoryAnalysisQuery.getLastDays());
-			List<Object[]> objects = findItemSaleQty(systemBookCode, branchNum, dateFrom, yesterday,
-					inventoryAnalysisQuery.isFindSale(), inventoryAnalysisQuery.isFindOut(),
-					inventoryAnalysisQuery.isFindWhole());
-			for (int i = 0; i < objects.size(); i++) {
-				Object[] object = objects.get(i);
-				Integer itemNum = (Integer) object[0];
-				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
-				BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+		Date dateFrom = DateUtil.addDay(now, -inventoryAnalysisQuery.getLastDays());
+		List<Object[]> objects = findItemSaleQty(systemBookCode, branchNum, dateFrom, yesterday,
+				inventoryAnalysisQuery.isFindSale(), inventoryAnalysisQuery.isFindOut(),
+				inventoryAnalysisQuery.isFindWhole());
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer itemNum = (Integer) object[0];
+			Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+			BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
 
-				InventoryAnalysisDTO data = InventoryAnalysisDTO.get(list, itemNum, itemMatrixNum);
-				if (data != null) {
+			InventoryAnalysisDTO data = InventoryAnalysisDTO.get(list, itemNum, itemMatrixNum);
+			if (data != null) {
 
-					data.set("saleQty", amount);
-				}
+				data.set("saleQty", amount);
 			}
+		}
 
+		if (!inventoryAnalysisQuery.isFindCount()) {
 			if (inventoryAnalysisQuery.isFindAdjustOut()) {
 
 				objects = adjustmentOrderDao.findItemSummary(systemBookCode, branchNums, dateFrom, yesterday, null,

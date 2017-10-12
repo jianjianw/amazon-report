@@ -339,11 +339,6 @@ public class AppConstants {
 	public static final int CARD_INIT_REVOKE_CODE= 9;//初始化|回收
 
 
-	//card_user_log_type
-	public static final String CARD_USER_LOG_TYPE_REVOKE = "卡回收";
-	public static final String CARD_USER_LOG_TYPE_CHANGE_STORGE = "修改卡介质";
-
-
 	/**
 	 * 初始化卡回收
 	 */
@@ -486,6 +481,45 @@ public class AppConstants {
 	 * 营销活动类型
 	 */
 	public static final String MARKET_ACTION_TYPE_PAYMENT = "支付方式";
+	
+	/**
+	 * card_user_log_type
+	 */
+	public static final String CARD_USER_LOG_TYPE_LOCK = "锁定|解锁";
+	public static final String CARD_USER_LOG_TYPE_CONSUME = "消费修复";
+	public static final String CARD_USER_LOG_TYPE_DEPOSIT = "存款修复";
+	public static final String CARD_USER_LOG_TYPE_POINT = "积分修复";
+	public static final String CARD_USER_LOG_TYPE_CARD = "卡类型修改";
+	public static final String CARD_USER_LOG_TYPE_RECAL_DATE = "异常重新计算时间";
+	public static final String CARD_USER_LOG_TYPE_REVOKE = "卡回收";
+	public static final String CARD_USER_LOG_TYPE_CHANGE_STORGE = "修改卡介质";
+	public static final String CARD_USER_LOG_TYPE_INIT = "卡初始化";
+	public static final String CARD_USER_LOG_INIT_PASSWORD = "清空密码";
+	
+	/**
+	 * client_point_type
+	 */
+	public static final String C_CLIENT_POINT_POS = "POS消费";
+	public static final String C_CLIENT_POINT_CHANGE = "积分兑换";
+	public static final String C_CLIENT_POINT_CONSUME = "卡消费";
+	public static final String C_CLIENT_POINT_DEPOSIT = "卡存款";
+	public static final String C_CLIENT_POINT_TO_DEPOSIT = "积分转储值";
+	public static final String C_CLIENT_POINT_SUMMARY = "积分归档";
+	public static final String C_CLIENT_POINT_DELETE = "积分清除";
+	public static final String C_CLIENT_POINT_ORI = "老会员转卡";
+	public static final String C_CLIENT_POINT_ADMIN_ADJUST = "管理员调整";
+	
+	/**
+	 * 自定义群体类型
+	 */
+	public static final String GROUP_CUSTOMER_TYPE_CARD = "会员群体";
+	public static final String GROUP_CUSTOMER_TYPE_POS_CLIENT = "批发客户群体";
+	
+	/**
+	 * 群体类型
+	 */
+	public static final String GROUP_CUSTOMER_PROPERTY_DEFAULT = "默认";
+	public static final String GROUP_CUSTOMER_PROPERTY_CUSTOM = "自定义";
 
 
 
