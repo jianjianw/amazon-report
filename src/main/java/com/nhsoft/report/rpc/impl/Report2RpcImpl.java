@@ -73,8 +73,11 @@ public class Report2RpcImpl implements Report2Rpc {
 	private PolicyPromotionService policyPromotionService;
 	@Autowired
 	private PolicyPresentService policyPresentService;
-
+	@Autowired
 	private StoreItemSupplierService storeItemSupplierService;
+	@Autowired
+	private MobileAppV2Service mobileAppV2Service;
+
 	
 	@Override
 	public List<TransferPolicyDTO> findTransferPolicyDTOs(PolicyPosItemQuery policyPosItemQuery) {
