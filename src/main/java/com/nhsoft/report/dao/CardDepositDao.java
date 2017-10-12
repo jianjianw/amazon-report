@@ -3,6 +3,7 @@ package com.nhsoft.report.dao;
 
 import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -98,4 +99,48 @@ public interface CardDepositDao {
 	 */
 	public List<Object[]> findBranchBizdayPaymentTypeSum(String systemBookCode, List<Integer> branchNums,
 														 Date dateFrom, Date dateTo, Integer cardUserCardType);
+
+	/**
+	 * 查询存款方式统计现金
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public BigDecimal getCashMoney(String systemBookCode,
+								   List<Integer> branchNums, Date dateFrom, Date dateTo, String type);
+
+	/**
+	 * 按支付方式汇总金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findMoneyByType(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 按营业日汇总金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param dateType
+	 * @return
+	 */
+	public List<Object[]> findDateSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+										  Date dateTo, String dateType);
+
+	/**
+	 * 按门店汇总存款现金收入
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findCashGroupByBranch(String systemBookCode,
+												List<Integer> branchNums, Date dateFrom, Date dateTo, String type);
 }

@@ -39,4 +39,22 @@ public class GroupCustomerDaoImpl  extends  DaoImpl implements GroupCustomerDao 
 				.add(Restrictions.eq("g.groupCustomerProperty", AppConstants.GROUP_CUSTOMER_PROPERTY_DEFAULT));
 		return criteria.list();
 	}
+
+	@Override
+	public List<GroupCustomer> findBybranch(String systemBookCode,
+											Integer branchNum, String groupCustomerType) {
+		Criteria criteria = currentSession().createCriteria(GroupCustomer.class, "g")
+				.add(Restrictions.eq("g.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("g.branchNum", branchNum));
+
+		if(groupCustomerType == null || groupCustomerType.equals(AppConstants.GROUP_CUSTOMER_TYPE_CARD)){
+			criteria.add(Restrictions.disjunction()
+					.add(Restrictions.eq("g.groupCustomerType", AppConstants.GROUP_CUSTOMER_TYPE_CARD))
+					.add(Restrictions.isNull("g.groupCustomerType")));
+
+		} else {
+			criteria.add(Restrictions.eq("g.groupCustomerType", AppConstants.GROUP_CUSTOMER_TYPE_POS_CLIENT));
+		}
+		return criteria.list();
+	}
 }

@@ -107,4 +107,45 @@ public class OtherInoutDaoImpl extends  DaoImpl implements OtherInoutDao {
 		}
 		return BigDecimal.ZERO;
 	}
+
+	@Override
+	public BigDecimal getCashMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		String sql = "select sum(other_inout_money) as cash " + " from other_inout with(nolock) where system_book_code = '"
+				+ systemBookCode + "'  " + " and branch_num in " + AppUtil.getIntegerParmeList(branchNums)
+				+ " and other_inout_state_code = 3" + " and other_inout_payment_type = '现金' "
+				+ " and other_inout_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and '"
+				+ DateUtil.getDateShortStr(dateTo) + "' ";
+		Query query = currentSession().createSQLQuery(sql);
+		Object object = query.uniqueResult();
+		return object == null ? BigDecimal.ZERO : (BigDecimal) object;
+	}
+
+	private Criteria createByCash(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		Criteria criteria = currentSession().createCriteria(OtherInout.class, "o")
+				.add(Restrictions.eq("o.otherInoutPaymentType", AppConstants.PAYMENT_CASH))
+				.add(Restrictions.eq("o.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.eq("o.systemBookCode", systemBookCode));
+		if (branchNums != null && branchNums.size() > 0) {
+			criteria.add(Restrictions.in("o.branchNum", branchNums));
+		}
+		if (dateFrom != null) {
+			criteria.add(Restrictions.ge("o.otherInoutBizday", DateUtil.getDateShortStr(dateFrom)));
+
+		}
+		if (dateTo != null) {
+			criteria.add(Restrictions.le("o.otherInoutBizday", DateUtil.getDateShortStr(dateTo)));
+		}
+		return criteria;
+	}
+
+
+	@Override
+	public List<Object[]> findCashGroupByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+												Date dateTo) {
+		Criteria criteria = createByCash(systemBookCode, branchNums, dateFrom, dateTo);
+		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("o.branchNum"))
+				.add(Projections.sum("o.otherInoutMoney")));
+		return criteria.list();
+	}
+
 }

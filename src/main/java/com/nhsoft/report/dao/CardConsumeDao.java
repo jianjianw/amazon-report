@@ -111,4 +111,16 @@ public interface CardConsumeDao {
 	 * @return
 	 */
 	public List<Object[]> findSalerSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> salerNames);
+
+	/**
+	 * 按营业日汇总消费金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param dateType
+	 * @return
+	 */
+	public List<Object[]> findDateSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+										  Date dateTo, String dateType);
 }

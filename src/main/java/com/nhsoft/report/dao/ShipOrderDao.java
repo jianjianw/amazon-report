@@ -1,6 +1,8 @@
 package com.nhsoft.report.dao;
 
 
+import com.nhsoft.report.dto.ShipOrderDTO;
+
 import java.util.Date;
 import java.util.List;
 
@@ -84,6 +86,18 @@ public interface ShipOrderDao {
 	 */
 	public List<Object[]> findLineCount(String systemBookCode, Integer branchNum, List<Integer> transferLineNums,
                                         Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询shipOrder部分字段
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<ShipOrderDTO> findShipOrderDTOs(String systemBookCode, Integer branchNum,
+												List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
 

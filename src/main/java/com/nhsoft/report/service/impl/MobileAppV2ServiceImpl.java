@@ -1,8 +1,6 @@
 package com.nhsoft.report.service.impl;
 
 
-import com.nhsoft.amazon.server.model.RetailPosLog;
-import com.nhsoft.amazon.shared.AppConstants;
 import com.nhsoft.phone.server.model.MobileBusiness;
 import com.nhsoft.phone.server.model.MobileSalesRank;
 import com.nhsoft.phone.server.model.SalesDiscount;
@@ -10,10 +8,12 @@ import com.nhsoft.report.dao.*;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.GroupCustomer;
+import com.nhsoft.report.model.RetailPosLog;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.*;
 import com.nhsoft.report.shared.queryBuilder.CardUserQuery;
 import com.nhsoft.report.shared.queryBuilder.LogQuery;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -52,6 +52,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	private CardUserService cardUserService;
 	@Autowired
 	private GroupCustomerDao groupCustomerDao;
+	@Autowired
 	private BranchResourceService branchResourceService;
 	@Autowired
 	private CardConsumeDao cardConsumeDao;
@@ -178,7 +179,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 			Integer branchNum = (Integer)object[0];
 						
 			nameAndValueDTO = NameAndValueDTO.get(list, "客户折扣");
-			NameAndValueDetailDTO nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
+			NameAndValueDTO.NameAndValueDetailDTO nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
 			nameAndValueDetailDTO.setDetailValue((BigDecimal) object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
 			nameAndValueDTO.setValue(nameAndValueDTO.getValue().add(nameAndValueDetailDTO.getDetailValue()));
 			
@@ -703,45 +704,33 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		
 		List<GroupCustomer> groupCustomers = groupCustomerDao.findDefault(systemBookCode, branchNum);
 		CustomerModelParam customerModelParam = new CustomerModelParam();
-		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomer>());
+		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomerDTO>());
 		customerModelParam.setModelName("消费频次模型(CFM)");
 		customerModelParam.setModelType(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT);
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_01));
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_02));
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_03));
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_04));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_01));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_02));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_03));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_04));
 		customerModelParams.add(customerModelParam);
 
 		customerModelParam = new CustomerModelParam();
-		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomer>());
+		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomerDTO>());
 		customerModelParam.setModelName("消费能力模型(SPM)");
 		customerModelParam.setModelType(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT);
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_05));
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_06));
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_07));
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_08));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_05));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_06));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_07));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_08));
 		customerModelParams.add(customerModelParam);
 
 		customerModelParam = new CustomerModelParam();
-		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomer>());
+		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomerDTO>());
 		customerModelParam.setModelName("客户流失模型(LOC)");
 		customerModelParam.setModelType(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT);
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_09));
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_10));
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_11));
-		customerModelParam.getGroupCustomers().add(
-				GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_12));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_09));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_10));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_11));
+		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_12));
 		customerModelParams.add(customerModelParam);
 		return customerModelParams;
 	}
@@ -1109,7 +1098,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 			Integer branchNum = (Integer)object[0];
 						
 			nameAndValueDTO = NameAndValueDTO.get(list, "客户折扣");
-			NameAndValueDetailDTO nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
+			NameAndValueDTO.NameAndValueDetailDTO nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
 			nameAndValueDetailDTO.setDetailValue((BigDecimal) object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
 			nameAndValueDTO.setValue(nameAndValueDTO.getValue().add(nameAndValueDetailDTO.getDetailValue()));
 			
@@ -1574,7 +1563,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 						summaryDTO.setMoney(BigDecimal.ZERO);
 						summaryList.add(summaryDTO);
 					}
-					OtherInfoDetailDTO detailDTO = new OtherInfoDetailDTO();
+					OtherInfoDTO.OtherInfoDetailDTO detailDTO = new OtherInfoDTO.OtherInfoDetailDTO();
 					BeanUtils.copyProperties(dto, detailDTO);
 					summaryDTO.getDetails().add(detailDTO);
 					if(summaryDTO.getDetails().size() == 2){

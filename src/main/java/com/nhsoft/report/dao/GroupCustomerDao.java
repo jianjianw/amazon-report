@@ -13,6 +13,8 @@ public interface GroupCustomerDao {
 	
 	
 	public List<GroupCustomer> findDefault(String systemBookCode, Integer branchNum);
+
+	public List<GroupCustomer> findBybranch(String systemBookCode, Integer branchNum, String groupCustomerType);
 	
 	
 }

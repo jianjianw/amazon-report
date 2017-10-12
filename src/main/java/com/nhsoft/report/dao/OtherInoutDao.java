@@ -31,4 +31,26 @@ public interface OtherInoutDao {
 	 * @return
 	 */
 	public BigDecimal getUnPaidMoney(String systemBookCode, Integer branchNum, Integer innerBranchNum, Integer supplierNum, String clientFid, int type);
+
+	/**
+	 * 查询其他收支现金收入
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public BigDecimal getCashMoney(String systemBookCode,
+								   List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 按门店汇总其他收支现金收入
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findCashGroupByBranch(String systemBookCode,
+												List<Integer> branchNums, Date dateFrom, Date dateTo);
 }

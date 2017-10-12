@@ -306,4 +306,87 @@ public interface PosOrderDao {
 
 	public List<Object[]> findCustomReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
 
+	/**
+	 * 查询前台现金收入
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public BigDecimal getPosCash(String systemBookCode,
+								 List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询反结账单据数量和金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public Object[] findRepayCountAndMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 营业折扣汇总
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @return
+	 */
+	public Object[] sumBusiDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
+
+	/**
+	 * 营业折扣汇总 根据分店
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findBusiDiscountAnalysisBranchs(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
+
+	/**
+	 * 按门店汇总前台现金收入
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findPosCashGroupByBranch(String systemBookCode,
+												   List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询反结账明细
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findRepayDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 营业折扣明细
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findClientDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
+
+	/**
+	 * 营业折扣明细
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findMgrDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
+
+
 }

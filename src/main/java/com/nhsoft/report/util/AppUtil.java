@@ -2004,6 +2004,28 @@ public class AppUtil {
 		return false;
 		
 	}
+
+	public static BigDecimal getGroupCustomerValue(GroupCustomer groupCustomer, String type) {
+		if (groupCustomer.getGroupCustomerStatistics() == null) {
+			groupCustomer.setGroupCustomerStatistics(new GroupCustomerStatistics());
+		}
+		if (type.equals(AppConstants.MARKET_CUSTOMER_COUNT)) {
+			return BigDecimal.valueOf(groupCustomer.getGroupCustomerStatistics().getCustomerStatisticsConusmeCount());
+		} else if (type.equals(AppConstants.CUSTOMER_MODEL_DEPOSIT_MONEY)) {
+			return groupCustomer.getGroupCustomerStatistics().getCustomerStatisticsDepositMoney();
+		} else if (type.equals(AppConstants.CUSTOMER_MODEL_DEPOSIT_CASH)) {
+			return groupCustomer.getGroupCustomerStatistics().getCustomerStatisticsDepositCash();
+		} else if (type.equals(AppConstants.CUSTOMER_MODEL_CARD_CONSUME)) {
+			return groupCustomer.getGroupCustomerStatistics().getCustomerStatisticsConsumeMoney();
+		} else if (type.equals(AppConstants.CUSTOMER_MODEL_POINT_CONSUME)) {
+			return groupCustomer.getGroupCustomerStatistics().getCustomerStatisticsConusmePonit();
+		} else if (type.equals(AppConstants.CUSTOMER_MODEL_COUPON_CONSUME)) {
+			return BigDecimal.valueOf(groupCustomer.getGroupCustomerStatistics().getCustomerStatisticsConusmeTicket());
+		} else if (type.equals(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT)) {
+			return BigDecimal.valueOf(groupCustomer.getGroupCustomerStatistics().getCustomerStatisticsCount());
+		}
+		return BigDecimal.ZERO;
+	}
 	
 
 }

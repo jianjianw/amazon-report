@@ -297,6 +297,7 @@ public class AppConstants {
 	 */
 	public static final String REDIS_PRE_BOOK_RESOURCE = "AMA_BOOK_RESOURCE";
 	public static final String REDIS_PRE_SYSTEM_BOOK = "AMA_SYSTEM_BOOK";
+	public static final String REDIS_PRE_USER_COLLECT_BRANCH = "AMA_USER_COLLECT_BRANCH";//用户收藏门店
 
 
 	//bookResource
@@ -520,6 +521,43 @@ public class AppConstants {
 	 */
 	public static final String GROUP_CUSTOMER_PROPERTY_DEFAULT = "默认";
 	public static final String GROUP_CUSTOMER_PROPERTY_CUSTOM = "自定义";
+
+
+
+	//pos_order_detail中支付类型
+	public static final String PAYMENT_COUPON = "消费券";
+
+
+	public static final String CUSTOMER_MODEL_CUSTOMER_COUNT = "群体人数";
+	public static final String CUSTOMER_MODEL_COUPON_CONSUME = "消费券使用数";
+	public static final String CUSTOMER_MODEL_CONSUME_COUNT = "消费次数";
+
+	/**
+	 * 现金类型
+	 */
+	public static final String CASH_TYPE_TOTAL = "现金累计总额";
+	public static final String CASH_TYPE_POS = "前台收入";
+	public static final String CASH_TYPE_CARD_DEPOSIT = "卡存款";
+	public static final String CASH_TYPE_REPLACE_CARD = "换卡";
+	public static final String CASH_TYPE_RELAT_CARD = "续卡";
+	public static final String CASH_TYPE_OTHER_INOUT = "其他收支";
+
+
+
+	public static final String RETAIL_POS_LOG_DEL = "删除";
+	public static final String RETAIL_POS_LOG_ALL_CANCLE = "整单取消";
+
+
+	//早/午/晚市指标分析分类
+	public static final String MARKET_CUSTOMER_COUNT = "消费次数";
+
+
+
+	public static final String CUSTOMER_MODEL_DEPOSIT_MONEY = "储值存款";
+	public static final String CUSTOMER_MODEL_DEPOSIT_CASH = "储值收款";
+	public static final String CUSTOMER_MODEL_CARD_CONSUME = "储值消费";
+	public static final String CUSTOMER_MODEL_POINT_CONSUME = "积分消费";
+
 
 
 
