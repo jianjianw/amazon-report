@@ -1,16 +1,10 @@
 package com.nhsoft.report.api.dto;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OperationDTO implements Serializable {
+public class OperationStoreDailyDTO {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2185244162837737684L;
-	private String area;                          //区域
-	private String areaBranchNums;                //本区域所包含的分店号
+	private String branchName;                    //分店
 	private BigDecimal revenue;                   //营业额
 	private BigDecimal realizeRate1;              //完成率
 	private BigDecimal memberSalesRealizeRate;    //会员销售额完成率
@@ -33,17 +27,11 @@ public class OperationDTO implements Serializable {
 	private BigDecimal storageConsumeOccupy;      //储值消费占比
 	private BigDecimal growthOf;                  //环比增长
 	
-	public String getArea() {
-		return area;
+	public String getBranchName() {
+		return branchName;
 	}
-	public void setArea(String area) {
-		this.area = area;
-	}
-	public String getAreaBranchNums() {
-		return areaBranchNums;
-	}
-	public void setAreaBranchNums(String areaBranchNums) {
-		this.areaBranchNums = areaBranchNums;
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
 	}
 	public BigDecimal getRevenue() {
 		return revenue;
@@ -170,9 +158,6 @@ public class OperationDTO implements Serializable {
 	}
 	public void setGrowthOf(BigDecimal growthOf) {
 		this.growthOf = growthOf;
-	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 	
 }
