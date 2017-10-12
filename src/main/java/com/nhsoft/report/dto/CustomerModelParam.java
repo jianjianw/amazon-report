@@ -1,5 +1,6 @@
 package com.nhsoft.report.dto;
 
+import com.nhsoft.report.model.GroupCustomer;
 import org.dom4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,7 @@ public class CustomerModelParam implements Serializable {
 	private static final long serialVersionUID = 6830394379749531809L;
 	private String modelName;
 	private String modelType;
-	private List<GroupCustomerDTO> groupCustomers = new ArrayList<GroupCustomerDTO>();
+	private List<GroupCustomer> groupCustomers = new ArrayList<GroupCustomer>();
 
 	public String getModelName() {
 		return modelName;
@@ -36,17 +37,17 @@ public class CustomerModelParam implements Serializable {
         this.modelType = modelType;
     }
 
-    public List<GroupCustomerDTO> getGroupCustomers() {
+    public List<GroupCustomer> getGroupCustomers() {
 		return groupCustomers;
 	}
 
-	public void setGroupCustomers(List<GroupCustomerDTO> groupCustomers) {
+	public void setGroupCustomers(List<GroupCustomer> groupCustomers) {
 		this.groupCustomers = groupCustomers;
 	}
 
 	public static CustomerModelParam fromXml(Element element){
 		CustomerModelParam param = new CustomerModelParam();
-		List<GroupCustomerDTO> groupCustomers = new ArrayList<GroupCustomerDTO>();
+		List<GroupCustomer> groupCustomers = new ArrayList<GroupCustomer>();
 		Attribute attribute = element.attribute("modelName");
 		if(attribute != null){
 			param.setModelName(attribute.getText());
@@ -59,7 +60,7 @@ public class CustomerModelParam implements Serializable {
 		if(groupList != null){
 			Iterator<Element> iterator = groupList.elementIterator();
 			while(iterator.hasNext()){
-				GroupCustomerDTO groupCustomer = new GroupCustomerDTO();
+				GroupCustomer groupCustomer = new GroupCustomer();
 				Element group = iterator.next();
 				attribute = group.attribute("groupCustomerId");
 				if(attribute != null){
@@ -88,7 +89,7 @@ public class CustomerModelParam implements Serializable {
 		if(groupCustomers != null){
 			Element element = model.addElement("groupCustomers");
 			for(int i = 0;i < groupCustomers.size();i++){
-				GroupCustomerDTO groupCustomer = groupCustomers.get(i);
+				GroupCustomer groupCustomer = groupCustomers.get(i);
 				Element child = element.addElement("groupCustomer");
 				if(groupCustomer.getGroupCustomerId() != null){
 					child.addAttribute("groupCustomerId", groupCustomer.getGroupCustomerId());

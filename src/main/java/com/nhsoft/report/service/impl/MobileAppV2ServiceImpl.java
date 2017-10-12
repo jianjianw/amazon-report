@@ -698,13 +698,13 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		}
 		return list;
 	}
-	
+
 	private List<CustomerModelParam> createDefault(String systemBookCode, Integer branchNum) {
 		List<CustomerModelParam> customerModelParams = new ArrayList<CustomerModelParam>();
-		
+
 		List<GroupCustomer> groupCustomers = groupCustomerDao.findDefault(systemBookCode, branchNum);
 		CustomerModelParam customerModelParam = new CustomerModelParam();
-		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomerDTO>());
+		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomer>());
 		customerModelParam.setModelName("消费频次模型(CFM)");
 		customerModelParam.setModelType(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT);
 		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_01));
@@ -714,7 +714,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		customerModelParams.add(customerModelParam);
 
 		customerModelParam = new CustomerModelParam();
-		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomerDTO>());
+		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomer>());
 		customerModelParam.setModelName("消费能力模型(SPM)");
 		customerModelParam.setModelType(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT);
 		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_05));
@@ -724,7 +724,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		customerModelParams.add(customerModelParam);
 
 		customerModelParam = new CustomerModelParam();
-		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomerDTO>());
+		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomer>());
 		customerModelParam.setModelName("客户流失模型(LOC)");
 		customerModelParam.setModelType(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT);
 		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_09));
