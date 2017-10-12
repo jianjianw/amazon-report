@@ -201,7 +201,7 @@ public class TestSpringBoot {
 
     @Test
     public void testCauseMoney(){
-        List<AdjustmentCauseMoney> adjustmentCauseMoneyByBranch = reportRpc.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<AdjustmentCauseMoney> adjustmentCauseMoneyByBranch = reportRpc.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNums, null, null);
         System.out.println();
     }
 
