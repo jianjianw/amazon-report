@@ -8020,7 +8020,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (dateTo != null) {
 			sb.append("and order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
-		sb.append("and order_state_code in (5, 7)  ");
+		sb.append("and order_state_code in (5, 7) ");
 		if(isMember){
 			sb.append("and order_card_user_num > 0 ");
 		}

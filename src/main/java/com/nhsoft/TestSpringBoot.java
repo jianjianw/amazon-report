@@ -37,10 +37,13 @@ public class TestSpringBoot {
     @Before
     public void date(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
+        //02-16
         try {
-            dateFrom = sdf.parse("2017-10-03");
-            dateTo = sdf.parse("2017-10-14");
+            /*dateFrom = sdf.parse("2017-10-04");
+            dateTo = sdf.parse("2017-10-05");*/
+
+            dateFrom = sdf.parse("2017-02-16");
+            dateTo = sdf.parse("2017-02-17");
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -63,7 +66,8 @@ public class TestSpringBoot {
 
     @Test
     public void testRpcMoney() {
-
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(99);
         String queryBy = AppConstants.BUSINESS_TREND_PAYMENT;
         List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateTo, false);
         System.out.println();
