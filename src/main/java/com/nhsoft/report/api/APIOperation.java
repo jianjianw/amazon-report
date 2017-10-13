@@ -393,6 +393,9 @@ public class APIOperation {
 				for(int j = 0; j < branchList.size(); j++) {
 					if(realBranchNums.get(i) == branchList.get(j).getId().getBranchNum()) {
 						dto2.setBranchName(branchList.get(j).getBranchName());
+						String string = branchList.get(j).getBranchName();
+						System.out.println(string+realBranchNums.get(i)+"+++++++++++"+branchList.get(j).getId().getBranchNum());
+						
 						break;
 					}
 				}
