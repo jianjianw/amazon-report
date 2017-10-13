@@ -3,7 +3,7 @@ package com.nhsoft.report.api.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OperationDTO implements Serializable {
+public class OperationRegionDTO implements Serializable {
 
 	/**
 	 * 
