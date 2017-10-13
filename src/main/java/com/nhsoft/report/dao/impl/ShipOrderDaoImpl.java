@@ -2,12 +2,15 @@ package com.nhsoft.report.dao.impl;
 
 
 import com.nhsoft.report.dao.ShipOrderDao;
+import com.nhsoft.report.dto.ShipOrderDTO;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @Repository
@@ -171,5 +174,36 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 		sqlQuery.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
 		sqlQuery.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
 		return sqlQuery.list();
+	}
+
+	@Override
+	public List<ShipOrderDTO> findShipOrderDTOs(String systemBookCode, Integer branchNum, List<Integer> branchNums,
+												Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select ship_order_fid , ship_order_money as money ");
+		sb.append("from ship_order with(nolock) where system_book_code = :systemBookCode and ship_branch_num is not null ");
+		sb.append("and branch_num = :branchNum ");
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and ship_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and ship_order_audit_time between :dateFrom and :dateTo and ship_order_state_code = 3 ");
+		sb.append("order by ship_order_audit_time desc");
+		String sql = sb.toString();
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		sqlQuery.setInteger("branchNum", branchNum);
+		sqlQuery.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		sqlQuery.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		List<Object[]> objects = sqlQuery.list();
+		List<ShipOrderDTO> list = new ArrayList<ShipOrderDTO>();
+		for(int i = 0;i < objects.size();i++){
+			Object[] object = objects.get(i);
+
+			ShipOrderDTO dto = new ShipOrderDTO();
+			dto.setShipOrderFid((String) object[0]);
+			dto.setShipOrderMoney((BigDecimal) object[1]);
+			list.add(dto);
+		}
+		return list;
 	}
 }

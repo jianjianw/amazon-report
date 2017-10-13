@@ -144,6 +144,18 @@ public interface CardUserDao {
 	 * @return
 	 */
 	public BigDecimal getRevokeMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询发卡数量
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param cardUserCardType
+	 * @return
+	 */
+	public int findTotalCardCount(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
+								  Integer cardUserCardType);
 	
 
 

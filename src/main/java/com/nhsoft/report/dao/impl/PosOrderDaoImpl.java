@@ -19,6 +19,7 @@ import org.hibernate.type.Type;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 @Repository
@@ -1298,4 +1299,185 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		return query.list();
 	}
+
+	@Override
+	public BigDecimal getPosCash(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select sum(payment_money) ");
+		sb.append("from payment with(nolock) where system_book_code = '" + systemBookCode + "' ");
+		sb.append("and payment_pay_by = '现金' ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums) + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		Query query = currentSession().createSQLQuery(sb.toString());
+		Object object = query.uniqueResult();
+		return object == null ? BigDecimal.ZERO : (BigDecimal) object;
+	}
+
+	@Override
+	public Object[] findRepayCountAndMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select count(order_no) as amount, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code = 9  ");
+
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return (Object[]) sqlQuery.uniqueResult();
+	}
+
+	@Override
+	public Object[] sumBusiDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select sum(case when client_fid is not null and order_card_user_num = 0 and order_discount_money > 0 then 1 end) as clientDiscountAmount, ");
+		sb.append("sum(case when client_fid is not null and order_card_user_num = 0 then order_discount_money end) as clientDiscount, ");
+		sb.append("sum(case when order_mgr_discount_money > 0 then 1 end) as mgrDiscountAmount, ");
+		sb.append("sum(order_mgr_discount_money) as mgrDiscountMoney ");
+		sb.append("from pos_order with(nolock) where system_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and shift_table_bizday between :bizFrom and :bizTo ");
+		sb.append("and order_state_code in (5, 7)");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		query.setString("bizFrom", DateUtil.getDateShortStr(dtFrom));
+		query.setString("bizTo", DateUtil.getDateShortStr(dtTo));
+		return (Object[])query.uniqueResult();
+	}
+
+	@Override
+	public List<Object[]> findBusiDiscountAnalysisBranchs(String systemBookCode, Date dtFrom, Date dtTo,
+														  List<Integer> branchNums) {
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, sum(case when client_fid is not null and order_card_user_num = 0 then order_discount_money end) as clientDiscount, ");
+		sb.append("sum(case when order_card_user_num > 0 then order_discount_money end) as cardUserDiscount, ");
+		sb.append("sum(case when order_card_user_num = 0 and client_fid is null then order_discount_money end) as otherDiscount, ");
+		sb.append("sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as posMoney, ");
+		sb.append("sum(order_mgr_discount_money) as mgrDiscountMoney, ");
+		sb.append("sum(order_round) as orderRound, ");
+		sb.append("sum(case when order_card_user_num = 0 and client_fid is null then order_promotion_discount_money end) as policyDiscount, ");
+		sb.append("sum(order_online_discount) as onlineDiscount ");
+		sb.append("from pos_order with(nolock) where system_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and shift_table_bizday between :bizFrom and :bizTo ");
+		sb.append("and order_state_code in (5, 7) group by branch_num");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		query.setString("bizFrom", DateUtil.getDateShortStr(dtFrom));
+		query.setString("bizTo", DateUtil.getDateShortStr(dtTo));
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findPosCashGroupByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+												   Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, sum(payment_money) ");
+		sb.append("from payment with(nolock) where system_book_code = '" + systemBookCode + "' ");
+		sb.append("and payment_pay_by = '现金' ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums) + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by branch_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findRepayDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select order_no as amount, (order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
+		sb.append("order_operator, shift_table_bizday, order_time ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code = 9  order by order_time desc ");
+
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findClientDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select order_no, order_payment_money, order_discount_money, order_operator, shift_table_bizday, order_time ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode and client_fid is not null and order_card_user_num = 0 and order_discount_money > 0 ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dtFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dtFrom) + "' ");
+		}
+		if (dtTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dtTo) + "' ");
+		}
+		sb.append("and order_state_code in (5,7)  order by order_time desc ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
+
+	@Override
+	public List<Object[]> findMgrDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select order_no, order_payment_money, order_mgr_discount_money, order_operator, shift_table_bizday, order_time ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode and order_mgr_discount_money > 0 ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dtFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dtFrom) + "' ");
+		}
+		if (dtTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dtTo) + "' ");
+		}
+		sb.append("and order_state_code in (5,7)  order by order_time desc ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
+
+
 }

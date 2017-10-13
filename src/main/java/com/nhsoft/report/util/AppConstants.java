@@ -297,6 +297,7 @@ public class AppConstants {
 	 */
 	public static final String REDIS_PRE_BOOK_RESOURCE = "AMA_BOOK_RESOURCE";
 	public static final String REDIS_PRE_SYSTEM_BOOK = "AMA_SYSTEM_BOOK";
+	public static final String REDIS_PRE_USER_COLLECT_BRANCH = "AMA_USER_COLLECT_BRANCH";//用户收藏门店
 
 
 	//bookResource
@@ -337,11 +338,6 @@ public class AppConstants {
 
 	//卡状态
 	public static final int CARD_INIT_REVOKE_CODE= 9;//初始化|回收
-
-
-	//card_user_log_type
-	public static final String CARD_USER_LOG_TYPE_REVOKE = "卡回收";
-	public static final String CARD_USER_LOG_TYPE_CHANGE_STORGE = "修改卡介质";
 
 
 	/**
@@ -486,6 +482,82 @@ public class AppConstants {
 	 * 营销活动类型
 	 */
 	public static final String MARKET_ACTION_TYPE_PAYMENT = "支付方式";
+	
+	/**
+	 * card_user_log_type
+	 */
+	public static final String CARD_USER_LOG_TYPE_LOCK = "锁定|解锁";
+	public static final String CARD_USER_LOG_TYPE_CONSUME = "消费修复";
+	public static final String CARD_USER_LOG_TYPE_DEPOSIT = "存款修复";
+	public static final String CARD_USER_LOG_TYPE_POINT = "积分修复";
+	public static final String CARD_USER_LOG_TYPE_CARD = "卡类型修改";
+	public static final String CARD_USER_LOG_TYPE_RECAL_DATE = "异常重新计算时间";
+	public static final String CARD_USER_LOG_TYPE_REVOKE = "卡回收";
+	public static final String CARD_USER_LOG_TYPE_CHANGE_STORGE = "修改卡介质";
+	public static final String CARD_USER_LOG_TYPE_INIT = "卡初始化";
+	public static final String CARD_USER_LOG_INIT_PASSWORD = "清空密码";
+	
+	/**
+	 * client_point_type
+	 */
+	public static final String C_CLIENT_POINT_POS = "POS消费";
+	public static final String C_CLIENT_POINT_CHANGE = "积分兑换";
+	public static final String C_CLIENT_POINT_CONSUME = "卡消费";
+	public static final String C_CLIENT_POINT_DEPOSIT = "卡存款";
+	public static final String C_CLIENT_POINT_TO_DEPOSIT = "积分转储值";
+	public static final String C_CLIENT_POINT_SUMMARY = "积分归档";
+	public static final String C_CLIENT_POINT_DELETE = "积分清除";
+	public static final String C_CLIENT_POINT_ORI = "老会员转卡";
+	public static final String C_CLIENT_POINT_ADMIN_ADJUST = "管理员调整";
+	
+	/**
+	 * 自定义群体类型
+	 */
+	public static final String GROUP_CUSTOMER_TYPE_CARD = "会员群体";
+	public static final String GROUP_CUSTOMER_TYPE_POS_CLIENT = "批发客户群体";
+	
+	/**
+	 * 群体类型
+	 */
+	public static final String GROUP_CUSTOMER_PROPERTY_DEFAULT = "默认";
+	public static final String GROUP_CUSTOMER_PROPERTY_CUSTOM = "自定义";
+
+
+
+	//pos_order_detail中支付类型
+	public static final String PAYMENT_COUPON = "消费券";
+
+
+	public static final String CUSTOMER_MODEL_CUSTOMER_COUNT = "群体人数";
+	public static final String CUSTOMER_MODEL_COUPON_CONSUME = "消费券使用数";
+	public static final String CUSTOMER_MODEL_CONSUME_COUNT = "消费次数";
+
+	/**
+	 * 现金类型
+	 */
+	public static final String CASH_TYPE_TOTAL = "现金累计总额";
+	public static final String CASH_TYPE_POS = "前台收入";
+	public static final String CASH_TYPE_CARD_DEPOSIT = "卡存款";
+	public static final String CASH_TYPE_REPLACE_CARD = "换卡";
+	public static final String CASH_TYPE_RELAT_CARD = "续卡";
+	public static final String CASH_TYPE_OTHER_INOUT = "其他收支";
+
+
+
+	public static final String RETAIL_POS_LOG_DEL = "删除";
+	public static final String RETAIL_POS_LOG_ALL_CANCLE = "整单取消";
+
+
+	//早/午/晚市指标分析分类
+	public static final String MARKET_CUSTOMER_COUNT = "消费次数";
+
+
+
+	public static final String CUSTOMER_MODEL_DEPOSIT_MONEY = "储值存款";
+	public static final String CUSTOMER_MODEL_DEPOSIT_CASH = "储值收款";
+	public static final String CUSTOMER_MODEL_CARD_CONSUME = "储值消费";
+	public static final String CUSTOMER_MODEL_POINT_CONSUME = "积分消费";
+
 
 
 

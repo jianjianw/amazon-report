@@ -4,6 +4,7 @@ import com.nhsoft.report.dao.CardDepositDao;
 import com.nhsoft.report.model.CardDeposit;
 import com.nhsoft.report.model.CardUser;
 import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -302,4 +304,102 @@ public class CardDepositDaoImpl extends  DaoImpl implements CardDepositDao{
 		);
 		return criteria.list();
 	}
+
+
+	@Override
+	public BigDecimal getCashMoney(String systemBookCode,
+								   List<Integer> branchNums, Date dateFrom, Date dateTo, String type) {
+		String sql = "select sum(deposit_cash) as cash " +
+				" from card_deposit with(nolock) where system_book_code = '" + systemBookCode + "'  " +
+				" and branch_num in " + AppUtil.getIntegerParmeList(branchNums) +
+				" and shift_table_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ";
+		if(StringUtils.isNotEmpty(type)){
+			sql = sql + "and deposit_payment_type_name = '" + type + "' ";
+		}
+		Query query = currentSession().createSQLQuery(sql);
+		Object object = query.uniqueResult();
+		return object == null?BigDecimal.ZERO:(BigDecimal)object;
+	}
+
+	@Override
+	public List<Object[]> findMoneyByType(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select deposit_payment_type_name, sum(deposit_cash) as cash, sum(deposit_money) as money ");
+		sb.append("from card_deposit with(nolock) where system_book_code = '" + systemBookCode + "' ");
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateFrom != null){
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if(dateTo != null){
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by deposit_payment_type_name ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findDateSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
+										  String dateType) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select %s, sum(deposit_money) as money ");
+		sb.append("from card_deposit with(nolock) where system_book_code = '" + systemBookCode + "' ");
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateFrom != null){
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if(dateTo != null){
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by %s ");
+
+		String sql = sb.toString();
+		if (dateType.equals(AppConstants.BUSINESS_DATE_YEAR)) {
+			sql = sql.replaceAll("%s", "subString(shift_table_bizday, 0, 7) ");
+		} else {
+			sql = sql.replaceAll("%s", "shift_table_bizday ");
+		}
+		Query query = currentSession().createSQLQuery(sql);
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findCashGroupByBranch(String systemBookCode,
+												List<Integer> branchNums, Date dateFrom, Date dateTo, String type) {
+		Criteria criteria = createByType(systemBookCode, branchNums, dateFrom, dateTo, type);
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.groupProperty("d.branchNum"))
+				.add(Projections.sum("d.depositCash"))
+				.add(Projections.count("d.depositFid"))
+				.add(Projections.sum("d.depositMoney"))
+		);
+		return criteria.list();
+	}
+
+
+	private Criteria createByType(String systemBookCode,
+								  List<Integer> branchNums, Date dateFrom, Date dateTo, String type){
+		Criteria criteria = currentSession().createCriteria(CardDeposit.class, "d")
+				.add(Restrictions.eq("d.systemBookCode", systemBookCode));
+		if(branchNums != null && branchNums.size() > 0){
+			criteria.add(Restrictions.in("d.branchNum", branchNums));
+		}
+		if(dateFrom != null) {
+			criteria.add(Restrictions.ge("d.shiftTableBizday", DateUtil.getDateShortStr(dateFrom)));
+
+		}
+		if(dateTo != null) {
+			criteria.add(Restrictions.le("d.shiftTableBizday", DateUtil.getDateShortStr(dateTo)));
+		}
+		if(StringUtils.isNotEmpty(type)){
+			criteria.add(Restrictions.in("d.depositPaymentTypeName", type.split(",")));
+		}
+		return criteria;
+	}
+
+
 }

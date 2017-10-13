@@ -260,4 +260,27 @@ public interface Report2Rpc {
 	 * @return
 	 */
 	public List<NewItemAnalysis> findNewItemAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, List<String> itemCategoryCodes, int newItemValidDay);
+	
+	
+	/**
+	 * 查询异动信息
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<OtherInfoSummaryDTO> findOtherInfos(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	
+	
+	/**
+	 * 异动明细
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param infoType
+	 * @return
+	 */
+	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String infoType);
 }

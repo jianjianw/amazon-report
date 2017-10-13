@@ -467,4 +467,29 @@ public class CardUserDaoImpl extends  DaoImpl implements CardUserDao {
 		Object object = query.uniqueResult();
 		return object == null?BigDecimal.ZERO:(BigDecimal)object;
 	}
+
+	@Override
+	public int findTotalCardCount(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
+								  Integer cardUserCardType) {
+		dateFrom = DateUtil.getMinOfDate(dateFrom);
+		dateTo = DateUtil.getMaxOfDate(dateTo);
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select count(card_user_num) as num ");
+		sb.append("from card_user with(nolock) where system_book_code = '" + systemBookCode + "' ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and card_user_enroll_shop in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+
+		sb.append("and card_user_date between '" + DateUtil.getDateTimeString(dateFrom) + "' and '" + DateUtil.getDateTimeString(dateTo) + "' ");
+		if (cardUserCardType != null) {
+			sb.append("and card_user_card_type = " + cardUserCardType + " ");
+		}
+		Query query = currentSession().createSQLQuery(sb.toString());
+		Object object = query.uniqueResult();
+		if(object != null){
+			return (Integer)object;
+		}
+		return 0;
+	}
 }

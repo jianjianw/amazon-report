@@ -3,6 +3,7 @@ package com.nhsoft.report.dao.impl;
 import com.nhsoft.report.dao.CardConsumeDao;
 import com.nhsoft.report.model.CardConsume;
 import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
+import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.BooleanUtils;
@@ -309,6 +310,33 @@ public class CardConsumeDaoImpl extends  DaoImpl implements CardConsumeDao {
 		if(salerNames != null && salerNames.size() != 0){
 			query.setParameterList("salerNames", salerNames);
 		}
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findDateSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
+										  String dateType) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select %s, sum(consume_money) as money ");
+		sb.append("from card_consume with(nolock) where system_book_code = '" + systemBookCode + "' ");
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateFrom != null){
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if(dateTo != null){
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by %s ");
+
+		String sql = sb.toString();
+		if (dateType.equals(AppConstants.BUSINESS_DATE_YEAR)) {
+			sql = sql.replaceAll("%s", "subString(shift_table_bizday, 0, 7) ");
+		} else {
+			sql = sql.replaceAll("%s", "shift_table_bizday ");
+		}
+		Query query = currentSession().createSQLQuery(sql);
 		return query.list();
 	}
 }
