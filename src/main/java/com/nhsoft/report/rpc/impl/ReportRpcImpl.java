@@ -2,6 +2,7 @@ package com.nhsoft.report.rpc.impl;
 
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.nhsoft.report.dao.impl.TransferOutMoney;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.*;
 import com.nhsoft.report.param.AdjustmentReason;
@@ -3318,6 +3319,24 @@ public class ReportRpcImpl implements ReportRpc {
 			adjustmentCauseMoney.setLoss((BigDecimal) object[3]);
 			adjustmentCauseMoney.setOther((BigDecimal) object[4]);
 			list.add(adjustmentCauseMoney);
+		}
+		return list;
+	}
+
+	@Override
+	public List<TransferOutMoney> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+		List<Object[]> objects = reportService.findTransferOutMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<TransferOutMoney> list = new ArrayList<TransferOutMoney>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			TransferOutMoney transferOutMoney = new TransferOutMoney();
+			transferOutMoney.setBranchNum((Integer) object[0]);
+			transferOutMoney.setOutMoney((BigDecimal) object[1]);
+			list.add(transferOutMoney);
 		}
 		return list;
 	}

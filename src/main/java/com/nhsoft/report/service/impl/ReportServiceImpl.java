@@ -12487,4 +12487,9 @@ public class ReportServiceImpl implements ReportService {
 		return reportDao.findAdjustmentCauseMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
+	@Override
+	public List<Object[]> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return reportDao.findTransferOutMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
 }

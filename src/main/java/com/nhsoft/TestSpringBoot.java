@@ -1,5 +1,6 @@
 package com.nhsoft;
 
+import com.nhsoft.report.dao.impl.TransferOutMoney;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.BranchRegion;
@@ -35,11 +36,14 @@ public class TestSpringBoot {
     String systemBookCode = "4020";
     @Before
     public void date(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //02-16
         try {
-            dateFrom = sdf.parse("2016-01-19 09:50:56");
-            dateTo = sdf.parse("2017-02-15 00:21:15");
+            /*dateFrom = sdf.parse("2017-10-04");
+            dateTo = sdf.parse("2017-10-05");*/
+
+            dateFrom = sdf.parse("2017-02-16");
+            dateTo = sdf.parse("2017-02-17");
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -62,7 +66,8 @@ public class TestSpringBoot {
 
     @Test
     public void testRpcMoney() {
-
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(99);
         String queryBy = AppConstants.BUSINESS_TREND_PAYMENT;
         List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateTo, false);
         System.out.println();
@@ -147,6 +152,13 @@ public class TestSpringBoot {
     @Test
     public void testCauseMoney(){
         List<AdjustmentCauseMoney> adjustmentCauseMoneyByBranch = reportRpc.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNums, null, null);
+        System.out.println();
+    }
+
+    @Test
+    public void testOutMoney(){
+
+        List<TransferOutMoney> transferOutMoneyByBranch = reportRpc.findTransferOutMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         System.out.println();
     }
 
