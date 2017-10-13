@@ -53,6 +53,12 @@ public class TestSpringBoot {
         }
     }
 
+    @Test
+    public void findBranch(){
+        List<Branch> all = reportRpc.findAll(systemBookCode);
+        System.out.println();
+    }
+
 
     @Test
     public void testRpcMoney() {
