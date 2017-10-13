@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nhsoft.report.api.dto.OperationDTO;
 import com.nhsoft.report.api.dto.OperationStoreDailyDTO;
+import com.nhsoft.report.dto.AdjustmentCauseMoney;
+import com.nhsoft.report.dto.BranchArea;
 import com.nhsoft.report.dto.BranchConsumeReport;
 import com.nhsoft.report.dto.BranchDepositReport;
 import com.nhsoft.report.dto.BranchMoneyReport;
@@ -38,7 +40,7 @@ public class APIOperation {
 	private ReportRpc reportRpc;
 	
 	/**
-	 * 日目标分析
+	 * 日营运分析
 	 * @param systemBookCode 帐套号
 	 * @param branchNums     分店号
 	 * @param date           日期
@@ -205,28 +207,30 @@ public class APIOperation {
 					for(int j = 0; j < differentMoneyList.size(); j++) {
 						if(branchNumsListArea[i].contains(differentMoneyList.get(j).getBranchNum())) {
 							listBranchInArea6.add(differentMoneyList.get(j).getBranchNum());
-							differentMoney.add(differentMoneyList.get(j).getMoney());
+							differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
 						}
 					}
 					for(int j = 0; j < increasedMemberList.size(); j++) {
 						if(branchNumsListArea[i].contains(increasedMemberList.get(j).getBranchNum())) {
 							listBranchInArea7.add(increasedMemberList.get(j).getBranchNum());
-							incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
+							incressedMember = incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
 						}
 					}
 					for(int j = 0; j < salesMoneyGoalList.size(); j++) {
 						if(branchNumsListArea[i].contains(salesMoneyGoalList.get(j).getBranchNum())) {
 							listBranchInArea8.add(salesMoneyGoalList.get(j).getBranchNum());
-							salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+							salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
 						}
 					}
 					for(int j = 0; j < checkMoneyList.size(); j++) {
 						if(branchNumsListArea[i].contains(checkMoneyList.get(j).getBranchNum())) {
 							listBranchInArea9.add(checkMoneyList.get(j).getBranchNum());
-							checkMoney.add(checkMoneyList.get(j).getMoney());
+							checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
 						}
 					}
 				} else {
+					List<Integer> branchNoAreaList = listBranchNoArea(branchList);
+					branchString = getBranchString(branchNoAreaList);        //得到没有区域号分店的list
 					for(int j = 0; j < branchMoneyReportListPre.size(); j++) {
 						if(!listBranchInArea0.contains(branchMoneyReportListPre.get(j).getBranchNum())) {
 							listBranchInArea0.add(branchMoneyReportListPre.get(j).getBranchNum());
@@ -264,22 +268,22 @@ public class APIOperation {
 					}
 					for(int j = 0; j < differentMoneyList.size(); j++) {
 						if(!listBranchInArea6.contains(differentMoneyList.get(j).getBranchNum())) {
-							differentMoney.add(differentMoneyList.get(j).getMoney());
+							differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
 						}
 					}
 					for(int j = 0; j < increasedMemberList.size(); j++) {
 						if(!listBranchInArea7.contains(increasedMemberList.get(j).getBranchNum())) {
-							incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
+							incressedMember = incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
 						}
 					}
 					for(int j = 0; j < salesMoneyGoalList.size(); j++) {
 						if(!listBranchInArea8.contains(salesMoneyGoalList.get(j).getBranchNum())) {
-							salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+							salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
 						}
 					}
 					for(int j = 0; j < checkMoneyList.size(); j++) {
 						if(!listBranchInArea9.contains(checkMoneyList.get(j).getBranchNum())) {
-							checkMoney.add(checkMoneyList.get(j).getMoney());
+							checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
 						}
 					}
 				}
@@ -345,6 +349,10 @@ public class APIOperation {
 				realBranchNums.add(Integer.parseInt(array[i].trim()));
 			}
 			
+			//按分店查询面积
+			List<BranchArea> branchAreaList = reportRpc.findBranchArea(systemBookCode, branchNumList);
+			//按分店查询损耗
+			List<AdjustmentCauseMoney> adjustmentCauseMoneyByBranchList = reportRpc.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNumList, today, nextDay);
 			branchMoneyReportListPre = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, preDay, today, false);
 			branchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, today, nextDay, false);
 			memeberBranchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, today, nextDay, true);
@@ -376,6 +384,11 @@ public class APIOperation {
 				BigDecimal incressedMember = new BigDecimal("0"); //新增会员数
 				BigDecimal salesGoalMoney = new BigDecimal("0");  //目标营业额
 				BigDecimal checkMoney = new BigDecimal("0");      //盘损金额
+				BigDecimal area = new BigDecimal("0");            //分店面积
+				BigDecimal test = new BigDecimal("0");            //试吃
+				BigDecimal peel = new BigDecimal("0");            //去皮
+				BigDecimal breakage = new BigDecimal("0");        //报损
+				BigDecimal other = new BigDecimal("0");                //其他
 				
 				for(int j = 0; j < branchList.size(); j++) {
 					if(realBranchNums.get(i) == branchList.get(j).getId().getBranchNum()) {
@@ -432,29 +445,47 @@ public class APIOperation {
 				
 				for(int j = 0; j < differentMoneyList.size(); j++) {
 					if(realBranchNums.get(i) == differentMoneyList.get(j).getBranchNum()) {
-						differentMoney.add(differentMoneyList.get(j).getMoney());
+						differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
 						break;
 					}
 				}
 				
 				for(int j = 0; j < increasedMemberList.size(); j++) {
 					if(realBranchNums.get(i) == increasedMemberList.get(j).getBranchNum()) {
-						incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
+						incressedMember = incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
 						break;
 					}
 				}
 				
 				for(int j = 0; j < salesMoneyGoalList.size(); j++) {
 					if(realBranchNums.get(i) == salesMoneyGoalList.get(j).getBranchNum()) {
-						salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+						salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
 						break;
 					}
 				}
 				
 				for(int j = 0; j < checkMoneyList.size(); j++) {
 					if(realBranchNums.get(i) == checkMoneyList.get(j).getBranchNum()) {
-						checkMoney.add(checkMoneyList.get(j).getMoney());
+						checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
 						break;
+					}
+				}
+				
+				for(int j = 0; j < branchAreaList.size(); j++) {
+					if(realBranchNums.get(i) == branchAreaList.get(j).getBranchNum()) {
+						if(branchAreaList.get(j).getArea() != null) {
+							area = area.add(branchAreaList.get(j).getArea());
+							break;
+						}
+					}
+				}
+				
+				for(int j = 0; j < adjustmentCauseMoneyByBranchList.size(); j++) {
+					if(realBranchNums.get(i) == adjustmentCauseMoneyByBranchList.get(j).getBranchNum()) {
+						test = test.add(adjustmentCauseMoneyByBranchList.get(j).getTryEat());
+						peel = peel.add(adjustmentCauseMoneyByBranchList.get(j).getFaly());
+						breakage = breakage.add(adjustmentCauseMoneyByBranchList.get(j).getLoss());
+						other = other.add(adjustmentCauseMoneyByBranchList.get(j).getOther());
 					}
 				}
 				
@@ -503,6 +534,13 @@ public class APIOperation {
 				} else {
 					dto2.setGrowthOf(preBizMoney.divide(bizMoney, 2).subtract(new BigDecimal("1")));
 				}
+				if(area.compareTo(new BigDecimal("0.00")) != 0) {
+					dto2.setAreaEfficiency(bizMoney.divide(area, 2));
+				}
+				dto2.setTest(test);
+				dto2.setPeel(peel);
+				dto2.setBreakage(breakage);
+				dto2.setOther(other);
 				listDTO.add(dto2);
 			}
 			return listDTO;
@@ -510,7 +548,7 @@ public class APIOperation {
 	}
 	
 	//将list中的分店号转换成string，逗号隔开的形式
-	private String getBranchString(List list) {
+	private String getBranchString(List<?> list) {
 		StringBuffer buffer = new StringBuffer();
 		for(int i = 0; i < list.size(); i++) {
 			if(i == 0) {
@@ -526,7 +564,18 @@ public class APIOperation {
 		return buffer.toString();
 	}
 	
-	
+	//返回无区域的分店号
+	private List<Integer> listBranchNoArea(List<Branch> allList) {
+		ArrayList<Branch> list = (ArrayList)allList;
+		ArrayList<Branch> list1 = (ArrayList)list.clone();
+		ArrayList<Integer> returnList = new ArrayList<Integer>();
+		for(int i = 0; i < list1.size(); i++) {
+			if(list1.get(i).getBranchRegionNum() == null) {
+				returnList.add(list1.get(i).getId().getBranchNum());
+			}
+		}
+		return returnList;
+	}
 	
 	
 }

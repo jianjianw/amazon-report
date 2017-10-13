@@ -26,6 +26,11 @@ public class OperationStoreDailyDTO {
 	private BigDecimal cartStorageConsume;        //卡储值消费金额
 	private BigDecimal storageConsumeOccupy;      //储值消费占比
 	private BigDecimal growthOf;                  //环比增长
+	private BigDecimal areaEfficiency;            //坪效
+	private BigDecimal test;                      //试吃
+	private BigDecimal peel;                      //去皮
+	private BigDecimal breakage;                  //报损
+	private BigDecimal other;                     //其他
 	
 	public String getBranchName() {
 		return branchName;
@@ -158,6 +163,36 @@ public class OperationStoreDailyDTO {
 	}
 	public void setGrowthOf(BigDecimal growthOf) {
 		this.growthOf = growthOf;
+	}
+	public BigDecimal getAreaEfficiency() {
+		return areaEfficiency;
+	}
+	public void setAreaEfficiency(BigDecimal areaEfficiency) {
+		this.areaEfficiency = areaEfficiency;
+	}
+	public BigDecimal getTest() {
+		return test;
+	}
+	public void setTest(BigDecimal test) {
+		this.test = test;
+	}
+	public BigDecimal getPeel() {
+		return peel;
+	}
+	public void setPeel(BigDecimal peel) {
+		this.peel = peel;
+	}
+	public BigDecimal getBreakage() {
+		return breakage;
+	}
+	public void setBreakage(BigDecimal breakage) {
+		this.breakage = breakage;
+	}
+	public BigDecimal getOther() {
+		return other;
+	}
+	public void setOther(BigDecimal other) {
+		this.other = other;
 	}
 	
 }
