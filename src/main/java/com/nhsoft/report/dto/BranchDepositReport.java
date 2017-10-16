@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 public class BranchDepositReport implements Serializable {
 
     private Integer branchNum;
-    private BigDecimal deposit;
+    private BigDecimal deposit;//卡存款
 
     public Integer getBranchNum() {
         return branchNum;

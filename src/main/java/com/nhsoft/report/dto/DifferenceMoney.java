@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class DifferenceMoney implements Serializable {
-    private Integer branchNum;
+    private Integer branchNum;//配销差额
     private BigDecimal money;
 
     public Integer getBranchNum() {
