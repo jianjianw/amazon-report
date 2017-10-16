@@ -8190,10 +8190,10 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,6) + "' ");
 			}
 		}else if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_WEEK)){
-			dateFrom = DateUtil.getMinOfDate(dateFrom);
-			dateTo = DateUtil.getMaxOfDate(dateTo);
-			sb.append("and branch_transfer_start between '"+dateFrom+"' and '"+dateTo+"' ");
-			sb.append("and branch_transfer_end between '"+dateFrom+"' and '"+dateTo+"' ");
+			/*dateFrom = DateUtil.getDateShortStr(dateFrom);
+			dateTo = DateUtil.getDateShortStr(dateTo);*/
+			sb.append("and branch_transfer_start between  '"+DateUtil.getDateShortStr(dateFrom)+"' and  '"+DateUtil.getDateShortStr(dateTo)+"' ");
+			sb.append("and branch_transfer_end between  '"+DateUtil.getDateShortStr(dateFrom)+"' and  '"+DateUtil.getDateShortStr(dateTo)+"' ");
 
 		}else {
 			if (dateFrom != null) {
@@ -8219,7 +8219,8 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode",systemBookCode);
-		return sqlQuery.list();
+		List list = sqlQuery.list();
+		return list;
 	}
 
 	@Override
