@@ -26,36 +26,6 @@ public class TestSpringBoot {
 
     @Autowired
     private ReportRpc reportRpc;
-    @Autowired
-    private CardDepositService cardDepositService;
-
-
-    Date dateFrom = null;
-    Date dateTo = null;
-    List<Integer> branchNums = null;
-    String systemBookCode = "4020";
-    @Before
-    public void date(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        //02-16
-        try {
-            /*dateFrom = sdf.parse("2017-10-04");
-            dateTo = sdf.parse("2017-10-05");*/
-
-            dateFrom = sdf.parse("2017-02-16");
-            dateTo = sdf.parse("2017-02-17");
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        List<Branch> all = reportRpc.findAll(systemBookCode);
-        branchNums = new ArrayList<Integer>();
-        for (Branch b : all) {
-            Integer branchNum = b.getId().getBranchNum();
-            branchNums.add(branchNum);
-        }
-    }
 
     @Test
     public void findBranch(){
@@ -160,6 +130,56 @@ public class TestSpringBoot {
 
         List<TransferOutMoney> transferOutMoneyByBranch = reportRpc.findTransferOutMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         System.out.println();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    Date dateFrom = null;
+    Date dateTo = null;
+    List<Integer> branchNums = null;
+    String systemBookCode = "4020";
+    @Before
+    public void date(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //02-16
+        try {
+            /*dateFrom = sdf.parse("2017-10-04");
+            dateTo = sdf.parse("2017-10-05");*/
+
+           /* dateFrom = sdf.parse("2017-02-16");
+            dateTo = sdf.parse("2017-02-17");*/
+
+            dateFrom = sdf.parse("2017-01-01");
+            dateTo = sdf.parse("2017-02-01");
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        List<Branch> all = reportRpc.findAll(systemBookCode);
+        branchNums = new ArrayList<Integer>();
+        for (Branch b : all) {
+            Integer branchNum = b.getId().getBranchNum();
+            branchNums.add(branchNum);
+        }
+    }
+
+    @Test
+    public void report(){
+        //按分店查询数据
+        List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNums, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        System.out.println();
+
+
     }
 
 
