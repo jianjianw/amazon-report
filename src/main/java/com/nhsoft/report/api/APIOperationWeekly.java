@@ -49,7 +49,10 @@ public class APIOperationWeekly {
 	@Autowired
 	private ReportRpc reportRpc;
 	
-	//得到指定日期的本周一和上周一，data[0]是本周一
+	/**
+	 * @param specifiedDate 任意一天的日期
+	 * @return 返回该日所在的本周一和上周一，date[0]是本周一
+	 */
 	private Date[] getMonday(Date specifiedDate) {
 		Date[] date = new Date[2];
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
@@ -145,7 +148,11 @@ public class APIOperationWeekly {
 		calendar.add(Calendar.DAY_OF_MONTH, -(week-1)*7);        
 		String specifiedDateStr = sdf.format(calendar.getTime()); 
 		
-		calendar.add(Calendar.DAY_OF_MONTH, -(week*7));
+		if(week == 0) {
+			calendar.add(Calendar.DAY_OF_MONTH, -((week+1)*7));
+		} else {
+			calendar.add(Calendar.DAY_OF_MONTH, -(week*7));
+		}
 		String preSpecifiedDateStr = sdf.format(calendar.getTime());
 		
 		Date specifiedDate = null;
