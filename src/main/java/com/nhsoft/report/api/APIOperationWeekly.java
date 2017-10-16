@@ -23,7 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 
-import com.nhsoft.report.api.dto.OperationDTO;
+
+import com.nhsoft.report.api.dto.OperationRegionDTO;
+import com.nhsoft.report.api.dto.OperationStoreDTO;
+import com.nhsoft.report.dto.AdjustmentCauseMoney;
+import com.nhsoft.report.dto.BranchArea;
 import com.nhsoft.report.dto.BranchConsumeReport;
 import com.nhsoft.report.dto.BranchDepositReport;
 import com.nhsoft.report.dto.BranchMoneyReport;
@@ -45,6 +49,81 @@ public class APIOperationWeekly {
 	@Autowired
 	private ReportRpc reportRpc;
 	
+	//得到指定日期的本周一和上周一，data[0]是本周一
+	private Date[] getMonday(Date specifiedDate) {
+		Date[] date = new Date[2];
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+		String stringToday = sdf.format(specifiedDate);
+		String thisMondayStr = null;
+		String preMondayStr = null;
+		Date today = null;
+		Date thisMonday = null;
+		Date preMonday = null;
+		try {
+			today = sdf.parse(stringToday);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int dayOfWeek = DateUtil.getDayOfWeek(today);
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(today);
+		
+		if(dayOfWeek >= 3 && dayOfWeek <= 7) {
+			calendar.add(Calendar.DAY_OF_MONTH, -(dayOfWeek-2));
+			thisMondayStr = sdf.format(calendar.getTime());
+		} else if(dayOfWeek == 2) {
+			calendar.add(Calendar.DAY_OF_MONTH, 0);
+			thisMondayStr = sdf.format(calendar.getTime());
+		} else if(dayOfWeek == 1){
+			calendar.add(Calendar.DAY_OF_MONTH, -6);
+			thisMondayStr = sdf.format(calendar.getTime());
+		}
+		
+		calendar.add(Calendar.DAY_OF_MONTH, -7);                       
+		preMondayStr = sdf.format(calendar.getTime());
+		
+		try {
+			thisMonday = sdf.parse(thisMondayStr);
+			preMonday = sdf.parse(preMondayStr);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		date[0] = thisMonday;
+		date[1] = preMonday;
+		return date;
+	}
+	
+	//将list中的分店号转换成string，逗号隔开的形式
+	private String getBranchString(List<?> list) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("[");
+		for(int i = 0; i < list.size(); i++) {
+			buffer.append(String.valueOf(list.get(i)));
+			if(i < list.size() - 1) {
+				buffer.append(",");
+			}
+		}
+		buffer.append("]");
+		String str = buffer.toString();
+		return str;
+	}
+	
+	//返回无区域的分店号
+	private List<Integer> listBranchNoArea(List<Branch> allList) {
+		ArrayList<Branch> list = (ArrayList)allList;
+		ArrayList<Branch> list1 = (ArrayList)list.clone();
+		ArrayList<Integer> returnList = new ArrayList<Integer>();
+		for(int i = 0; i < list1.size(); i++) {
+			if(list1.get(i).getBranchRegionNum() == null) {
+				returnList.add(list1.get(i).getId().getBranchNum());
+			}
+		}
+		return returnList;
+	}
+	
 	/**
 	 * 周营运分析
 	 * @param systemBookCode 帐套号
@@ -52,9 +131,8 @@ public class APIOperationWeekly {
 	 * @param week           周
 	 * @return 
 	 */
-	
-	@RequestMapping(method = RequestMethod.GET, value = "/json")
-	public @ResponseBody List listOperation (@RequestHeader("systemBookCode") String systemBookCode,
+	@RequestMapping(method = RequestMethod.GET, value = "/area")
+	public @ResponseBody List listOperationRegion (@RequestHeader("systemBookCode") String systemBookCode,
 		@RequestHeader("branchNums") String branchNums, @RequestHeader("week") int week) {
 		
 		//得到将要查询周的开始日期和结束日期
@@ -65,17 +143,22 @@ public class APIOperationWeekly {
 		calendar.setTime(today);
 		
 		calendar.add(Calendar.DAY_OF_MONTH, -(week-1)*7);        
-		String specifiedDateStr = sdf.format(calendar.getTime());         
+		String specifiedDateStr = sdf.format(calendar.getTime()); 
+		
+		calendar.add(Calendar.DAY_OF_MONTH, -(week*7));
+		String preSpecifiedDateStr = sdf.format(calendar.getTime());
 		
 		Date specifiedDate = null;
+		Date preSpecifiedDate = null;
 		try {
 			specifiedDate = sdf.parse(specifiedDateStr);
+			preSpecifiedDate = sdf.parse(preSpecifiedDateStr);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Date[] date = getMonday(specifiedDate);
-		
+		Date[] preDate = getMonday(preSpecifiedDate);
 		//根据帐套号查询所有分店号
 		List<Branch> branchList = reportRpc.findAll(systemBookCode);
 		List<Integer> branchNumList = new ArrayList<Integer>();
@@ -125,20 +208,20 @@ public class APIOperationWeekly {
 				}
 			}
 			
-			branchMoneyReportListPre = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, date[0], date[1], false);
-			branchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, date[0], date[1], false);
-			memeberBranchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, date[0], date[1], true);
-			branchConsumeReportList = reportRpc.findConsumeByBranch(systemBookCode, branchNumList, date[0], date[1]);
-			lossMoneyList = reportRpc.findLossMoneyByBranch(systemBookCode, branchNumList, date[0], date[1]);
-			branchDepositReportList = reportRpc.findDepositByBranch(systemBookCode, branchNumList, date[0], date[1]);
-			differentMoneyList = reportRpc.findDifferenceMoneyByBranch(systemBookCode, branchNumList, date[0], date[1]);		
-			increasedMemberList = reportRpc.findCardUserCountByBranch(systemBookCode, branchNumList, date[0], date[1]);	
-			salesMoneyGoalList = reportRpc.findSaleMoneyGoalsByBranch(systemBookCode, branchNumList, date[0], date[1], AppConstants.BUSINESS_DATE_SOME_MONTH);	
-			checkMoneyList = reportRpc.findCheckMoneyByBranch(systemBookCode, branchNumList, date[0], date[1]);
+			branchMoneyReportListPre = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, preDate[1], preDate[0], false);
+			branchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, date[1],  date[0],false);
+			memeberBranchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT,date[1],  date[0],true);
+			branchConsumeReportList = reportRpc.findConsumeByBranch(systemBookCode, branchNumList, date[1],date[0]);
+			lossMoneyList = reportRpc.findLossMoneyByBranch(systemBookCode, branchNumList, date[1], date[0]);
+			branchDepositReportList = reportRpc.findDepositByBranch(systemBookCode, branchNumList, date[1], date[0]);
+			differentMoneyList = reportRpc.findDifferenceMoneyByBranch(systemBookCode, branchNumList, date[1], date[0]);		
+			increasedMemberList = reportRpc.findCardUserCountByBranch(systemBookCode, branchNumList, date[1], date[0]);	
+			salesMoneyGoalList = reportRpc.findSaleMoneyGoalsByBranch(systemBookCode, branchNumList, date[1], date[0], AppConstants.BUSINESS_DATE_SOME_MONTH);	
+			checkMoneyList = reportRpc.findCheckMoneyByBranch(systemBookCode, branchNumList, date[1], date[0]);
 			
 			//按区域分组，返回数据
-			OperationDTO dto = null;
-			List<OperationDTO> listDTO = new ArrayList<OperationDTO>();
+			OperationRegionDTO dto = null;
+			List<OperationRegionDTO> listDTO = new ArrayList<OperationRegionDTO>();
 			List<Integer> listBranchInArea0 = new ArrayList<Integer>();        //保存有区域号的所有分店号
 			List<Integer> listBranchInArea1 = new ArrayList<Integer>();        //保存有区域号的所有分店号
 			List<Integer> listBranchInArea2 = new ArrayList<Integer>();        //保存有区域号的所有分店号
@@ -150,7 +233,7 @@ public class APIOperationWeekly {
 			List<Integer> listBranchInArea8 = new ArrayList<Integer>();        //营业额目标
 			List<Integer> listBranchInArea9 = new ArrayList<Integer>();        //盘损金额
 			for(int i = 0; i < branchNumsListArea.length + 1; i++) {
-				dto = new OperationDTO();
+				dto = new OperationRegionDTO();
 				String branchString = null;                       //String类型的分店号
 				BigDecimal preBizMoney = new BigDecimal("0");     //昨天营业额
 				BigDecimal bizMoney = new BigDecimal("0");        //营业额
@@ -167,11 +250,17 @@ public class APIOperationWeekly {
 				BigDecimal salesGoalMoney = new BigDecimal("0");  //目标营业额
 				BigDecimal checkMoney = new BigDecimal("0");      //盘损金额
 				if(i < branchNumsListArea.length) {
-					branchString  = getBranchString(branchNumsListArea[i]);        //得到string类型的分店号
+					if(branchNumsListArea[i].size() != 0) {
+						branchString  = getBranchString(branchNumsListArea[i]);        //得到string类型的分店号
+					} else {
+						branchString = "[  ,  ]";
+					}
 					for(int j = 0; j < branchMoneyReportListPre.size(); j++) {
 						if(branchNumsListArea[i].contains(branchMoneyReportListPre.get(j).getBranchNum())) {
 							listBranchInArea0.add(branchMoneyReportListPre.get(j).getBranchNum());
-							preBizMoney = preBizMoney.add(branchMoneyReportListPre.get(j).getBizMoney());
+							if(branchMoneyReportListPre.get(j).getBizMoney() != null) {
+								preBizMoney = preBizMoney.add(branchMoneyReportListPre.get(j).getBizMoney());
+							}
 						}
 					}
 					for(int j = 0; j < branchMoneyReportList.size(); j++) {
@@ -199,7 +288,9 @@ public class APIOperationWeekly {
 					for(int j = 0; j < lossMoneyList.size(); j++) {
 						if(branchNumsListArea[i].contains(lossMoneyList.get(j).getBranchNum())) {
 							listBranchInArea4.add(lossMoneyList.get(j).getBranchNum());
-							lossMoney = lossMoney.add(lossMoneyList.get(j).getMoney());
+							if(lossMoneyList.get(j).getMoney() != null) {
+								lossMoney = lossMoney.add(lossMoneyList.get(j).getMoney());
+							}
 						}
 					}
 					for(int j = 0; j < branchDepositReportList.size(); j++) {
@@ -345,93 +436,288 @@ public class APIOperationWeekly {
 				listDTO.add(dto);
 			}
 			return listDTO;
-		} else {
-			
-		}
+		} 
 		return null;
 	}
 	
 	
-	//得到指定日期的本周一和上周一，data[0]是本周一
-	private Date[] getMonday(Date specifiedDate) {
-		Date[] date = new Date[2];
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
-		String stringToday = sdf.format(specifiedDate);
-		String thisMondayStr = null;
-		String preMondayStr = null;
-		Date today = null;
-		Date thisMonday = null;
-		Date preMonday = null;
-		try {
-			today = sdf.parse(stringToday);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		int dayOfWeek = DateUtil.getDayOfWeek(today);
+	
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/store")
+	public @ResponseBody List listOperationStore (@RequestHeader("systemBookCode") String systemBookCode,
+		@RequestHeader("branchNums") String branchNums, @RequestHeader("week") int week) {
+		
+		//得到将要查询周的开始日期和结束日期
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
+		Date today = new Date();                                       
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(today);
 		
-		if(dayOfWeek >= 3 && dayOfWeek <= 7) {
-			calendar.add(Calendar.DAY_OF_MONTH, -(dayOfWeek-2));
-			thisMondayStr = sdf.format(calendar.getTime());
-		} else if(dayOfWeek == 2) {
-			calendar.add(Calendar.DAY_OF_MONTH, 0);
-			thisMondayStr = sdf.format(calendar.getTime());
-		} else if(dayOfWeek == 1){
-			calendar.add(Calendar.DAY_OF_MONTH, -6);
-			thisMondayStr = sdf.format(calendar.getTime());
-		}
+		calendar.add(Calendar.DAY_OF_MONTH, -(week-1)*7);        
+		String specifiedDateStr = sdf.format(calendar.getTime()); 
 		
-		calendar.add(Calendar.DAY_OF_MONTH, -7);                       
-		preMondayStr = sdf.format(calendar.getTime());
+		calendar.add(Calendar.DAY_OF_MONTH, -(week*7));
+		String preSpecifiedDateStr = sdf.format(calendar.getTime());
 		
+		Date specifiedDate = null;
+		Date preSpecifiedDate = null;
 		try {
-			thisMonday = sdf.parse(thisMondayStr);
-			preMonday = sdf.parse(preMondayStr);
+			specifiedDate = sdf.parse(specifiedDateStr);
+			preSpecifiedDate = sdf.parse(preSpecifiedDateStr);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		date[0] = thisMonday;
-		date[1] = preMonday;
-		return date;
-	}
-	
-	
-	
-	
-	//将list中的分店号转换成string，逗号隔开的形式
-	private String getBranchString(List<?> list) {
-		StringBuffer buffer = new StringBuffer();
-		for(int i = 0; i < list.size(); i++) {
-			if(i == 0) {
-				buffer.append("[");
-			}
-			buffer.append(String.valueOf(list.get(i)));
-			if(i < list.size() - 1) {
-				buffer.append(",");
-			} else {
-				buffer.append("]");
-			}
+		Date[] date = getMonday(specifiedDate);
+		Date[] preDate = getMonday(preSpecifiedDate);
+		//根据帐套号查询所有分店号
+		List<Branch> branchList = reportRpc.findAll(systemBookCode);
+		List<Integer> branchNumList = new ArrayList<Integer>();
+		for(int j = 0; j < branchList.size(); j++) {
+			branchNumList.add(branchList.get(j).getId().getBranchNum());
 		}
-		return buffer.toString();
-	}
-	
-	//返回无区域的分店号
-	private List<Integer> listBranchNoArea(List<Branch> allList) {
-		ArrayList<Branch> list = (ArrayList)allList;
-		ArrayList<Branch> list1 = (ArrayList)list.clone();
-		ArrayList<Integer> returnList = new ArrayList<Integer>();
-		for(int i = 0; i < list1.size(); i++) {
-			if(list1.get(i).getBranchRegionNum() == null) {
-				returnList.add(list1.get(i).getId().getBranchNum());
+		
+		//根据所有分店查询上一天的营业额
+		List<BranchMoneyReport> branchMoneyReportListPre = null;
+		//根据所有分店查询营业额  非会员
+		List<BranchMoneyReport> branchMoneyReportList = null;
+		//根据所有分店查询营业额  会员
+		List<BranchMoneyReport> memeberBranchMoneyReportList = null;
+		//根据分店查询卡消费
+		List<BranchConsumeReport> branchConsumeReportList = null;
+		//根据分店查询报损金额
+		List<LossMoneyReport> lossMoneyList = null;
+		//根据分店查询卡存款
+		List<BranchDepositReport> branchDepositReportList = null;
+		//根据分店查询配销差额
+		List<DifferenceMoney> differentMoneyList = null;
+		//根据分店查询新增会员数
+		List<CardUserCount> increasedMemberList = null;
+		//根据分店查询营业额目标
+		List<SaleMoneyGoals> salesMoneyGoalList = null;
+		//根据分店查询盘损金额
+		List<CheckMoney> checkMoneyList = null;
+		
+		if(!branchNums.equals("")) {
+			String branchNumStrs = branchNums.substring(1, branchNums.length() - 1);
+			String[] array = branchNumStrs.split(",");
+			List<Integer> realBranchNums = new ArrayList<Integer>();
+			for(int i = 0; i < array.length; i++) {
+				realBranchNums.add(Integer.parseInt(array[i].trim()));
 			}
+			
+			//按分店查询面积
+			List<BranchArea> branchAreaList = reportRpc.findBranchArea(systemBookCode, branchNumList);
+			//按分店查询损耗
+			List<AdjustmentCauseMoney> adjustmentCauseMoneyByBranchList = reportRpc.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNumList, date[1], date[0]);
+			branchMoneyReportListPre = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, preDate[1], preDate[0], false);
+			branchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT, date[1], date[0],false);
+			memeberBranchMoneyReportList = reportRpc.findMoneyByBranch(systemBookCode, branchNumList, AppConstants.BUSINESS_TREND_PAYMENT,date[1],  date[0],true);
+			branchConsumeReportList = reportRpc.findConsumeByBranch(systemBookCode, branchNumList, date[1],date[0]);
+			lossMoneyList = reportRpc.findLossMoneyByBranch(systemBookCode, branchNumList, date[1], date[0]);
+			branchDepositReportList = reportRpc.findDepositByBranch(systemBookCode, branchNumList, date[1], date[0]);
+			differentMoneyList = reportRpc.findDifferenceMoneyByBranch(systemBookCode, branchNumList, date[1], date[0]);		
+			increasedMemberList = reportRpc.findCardUserCountByBranch(systemBookCode, branchNumList, date[1], date[0]);	
+			salesMoneyGoalList = reportRpc.findSaleMoneyGoalsByBranch(systemBookCode, branchNumList, date[1], date[0], AppConstants.BUSINESS_DATE_SOME_MONTH);	
+			checkMoneyList = reportRpc.findCheckMoneyByBranch(systemBookCode, branchNumList, date[1], date[0]);
+			
+			//按分店，返回数据
+			OperationStoreDTO dto2 = null;
+			List<OperationStoreDTO> listDTO = new ArrayList<OperationStoreDTO>();
+			for(int i = 0; i < realBranchNums.size(); i++) {
+				
+				dto2 = new OperationStoreDTO();
+				BigDecimal preBizMoney = new BigDecimal("0");     //昨天营业额
+				BigDecimal bizMoney = new BigDecimal("0");        //营业额
+				BigDecimal orderCount = new BigDecimal("0");      //客单量
+				BigDecimal profit = new BigDecimal("0");          //毛利
+				BigDecimal deposit = new BigDecimal("0");         //卡存款
+				BigDecimal consume = new BigDecimal("0");         //卡消费
+				BigDecimal lossMoney = new BigDecimal("0");       //报损金额
+				BigDecimal differentMoney = new BigDecimal("0");  //配销差额
+				BigDecimal memberBizMoney = new BigDecimal("0");  //会员营业额
+				BigDecimal memberOrderCount = new BigDecimal("0");//会员客单量
+				BigDecimal memberProfit = new BigDecimal("0");    //会员毛利
+				BigDecimal incressedMember = new BigDecimal("0"); //新增会员数
+				BigDecimal salesGoalMoney = new BigDecimal("0");  //目标营业额
+				BigDecimal checkMoney = new BigDecimal("0");      //盘损金额
+				BigDecimal area = new BigDecimal("0");            //分店面积
+				BigDecimal test = new BigDecimal("0");            //试吃
+				BigDecimal peel = new BigDecimal("0");            //去皮
+				BigDecimal breakage = new BigDecimal("0");        //报损
+				BigDecimal other = new BigDecimal("0");                //其他
+				
+				for(int j = 0; j < branchList.size(); j++) {
+					/*
+					if(dto2.getBranchNum().equals(branchList.get(j).getId().getBranchNum())) {
+						dto2.setBranchName(branchList.get(j).getBranchName());
+						break;
+					}*/
+					
+					if(realBranchNums.get(i).equals(branchList.get(j).getId().getBranchNum())) {
+						dto2.setBranchName(branchList.get(j).getBranchName());
+						break;
+					}	
+				}
+				
+				for(int j = 0; j < branchMoneyReportListPre.size(); j++) {
+					if(realBranchNums.get(i) == branchMoneyReportListPre.get(j).getBranchNum()) {
+						preBizMoney = preBizMoney.add(branchMoneyReportListPre.get(j).getBizMoney());
+						break;
+					}
+				}
+				
+				for(int j = 0; j < branchMoneyReportList.size(); j++) {
+					if(realBranchNums.get(i) == branchMoneyReportList.get(j).getBranchNum()) {
+						bizMoney = bizMoney.add(branchMoneyReportList.get(j).getBizMoney());
+						orderCount = orderCount.add(new BigDecimal(branchMoneyReportList.get(j).getOrderCount()));
+						profit = profit.add(branchMoneyReportList.get(j).getProfit());
+						break;
+					}
+				}
+				
+				for(int j = 0; j < memeberBranchMoneyReportList.size(); j++) {
+					if(realBranchNums.get(i) == memeberBranchMoneyReportList.get(j).getBranchNum()) {
+						memberBizMoney = memberBizMoney.add(memeberBranchMoneyReportList.get(j).getBizMoney());
+						memberOrderCount = memberOrderCount.add(new BigDecimal(memeberBranchMoneyReportList.get(j).getOrderCount()));
+						memberProfit = memberProfit.add(memeberBranchMoneyReportList.get(j).getProfit());
+						break;
+					}
+				}
+				
+				for(int j = 0; j < branchConsumeReportList.size(); j++) {
+					if(realBranchNums.get(i) == branchConsumeReportList.get(j).getBranchNum()) {
+						consume = consume.add(branchConsumeReportList.get(j).getConsume());
+						break;
+					}
+				}
+				
+				for(int j = 0; j < lossMoneyList.size(); j++) {
+					if(realBranchNums.get(i) == lossMoneyList.get(j).getBranchNum()) {
+						lossMoney = lossMoney.add(lossMoneyList.get(j).getMoney());
+						break;
+					}
+				}
+				
+				for(int j = 0; j < branchDepositReportList.size(); j++) {
+					if(realBranchNums.get(i) == branchDepositReportList.get(j).getBranchNum()) {
+						deposit = deposit.add(branchDepositReportList.get(j).getDeposit());
+						break;
+					}
+				}
+				
+				for(int j = 0; j < differentMoneyList.size(); j++) {
+					if(realBranchNums.get(i) == differentMoneyList.get(j).getBranchNum()) {
+						differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
+						break;
+					}
+				}
+				
+				for(int j = 0; j < increasedMemberList.size(); j++) {
+					if(realBranchNums.get(i) == increasedMemberList.get(j).getBranchNum()) {
+						incressedMember = incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
+						break;
+					}
+				}
+				
+				for(int j = 0; j < salesMoneyGoalList.size(); j++) {
+					if(realBranchNums.get(i) == salesMoneyGoalList.get(j).getBranchNum()) {
+						salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+						break;
+					}
+				}
+				
+				for(int j = 0; j < checkMoneyList.size(); j++) {
+					if(realBranchNums.get(i) == checkMoneyList.get(j).getBranchNum()) {
+						checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
+						break;
+					}
+				}
+				
+				for(int j = 0; j < branchAreaList.size(); j++) {
+					if(realBranchNums.get(i) == branchAreaList.get(j).getBranchNum()) {
+						if(branchAreaList.get(j).getArea() != null) {
+							area = area.add(branchAreaList.get(j).getArea());
+							break;
+						}
+					}
+				}
+				
+				for(int j = 0; j < adjustmentCauseMoneyByBranchList.size(); j++) {
+					if(realBranchNums.get(i) == adjustmentCauseMoneyByBranchList.get(j).getBranchNum()) {
+						if(adjustmentCauseMoneyByBranchList.get(j).getTryEat() != null) {
+							test = test.add(adjustmentCauseMoneyByBranchList.get(j).getTryEat());
+						}
+						if(adjustmentCauseMoneyByBranchList.get(j).getFaly() != null) {
+							peel = peel.add(adjustmentCauseMoneyByBranchList.get(j).getFaly());
+						}
+						if(adjustmentCauseMoneyByBranchList.get(j).getLoss() != null) {
+							breakage = breakage.add(adjustmentCauseMoneyByBranchList.get(j).getLoss());
+						}
+						if(adjustmentCauseMoneyByBranchList.get(j).getOther() != null) {
+							other = other.add(adjustmentCauseMoneyByBranchList.get(j).getOther());
+						}
+					}
+				}
+				dto2.setBranchNum(realBranchNums.get(i));
+				dto2.setRevenue(bizMoney);
+				if(salesGoalMoney.compareTo(new BigDecimal("0.00")) != 0) {
+					dto2.setRealizeRate1(bizMoney.divide(salesGoalMoney, 2));
+				} else {
+					dto2.setRealizeRate1(new BigDecimal("1"));
+				}
+				if(bizMoney.compareTo(new BigDecimal("0.00")) == 0) {
+					dto2.setMemeberRevenueOccupy(new BigDecimal("0"));
+				} else {
+					dto2.setMemeberRevenueOccupy(memberBizMoney.divide(bizMoney, 2));
+				}
+				dto2.setMemberSalesRealizeRate(new BigDecimal("1"));
+				dto2.setAveBillNums(orderCount);
+				dto2.setAllBillRealizeRate(new BigDecimal("1"));
+				dto2.setMemberBillNums(memberOrderCount);
+				if(orderCount.compareTo(new BigDecimal("0.00")) == 0) {
+					dto2.setBill(new BigDecimal("0"));
+				} else {
+					dto2.setBill(bizMoney.divide(orderCount, 2));
+				}
+				if(memberOrderCount.compareTo(new BigDecimal("0")) == 0) {
+					dto2.setMemberBill(new BigDecimal("0"));
+				} else {
+					dto2.setMemberBill(memberBizMoney.divide(memberOrderCount, 2));
+				}
+				dto2.setDistributionDifferent(differentMoney);
+				dto2.setDestroyDefferent(lossMoney);
+				dto2.setAdjustAmount(checkMoney);
+				dto2.setGrossProfit(profit);
+				dto2.setGrossProfitRate(new BigDecimal("1"));
+				dto2.setIncressedMember(incressedMember);
+				dto2.setRealizeRate2(new BigDecimal("1"));
+				dto2.setCardStorage(deposit);
+				dto2.setRealizeRate3(new BigDecimal("1"));
+				dto2.setCartStorageConsume(consume);
+				if(bizMoney.compareTo(new BigDecimal("0.00")) == 0) {
+					dto2.setStorageConsumeOccupy(new BigDecimal("0"));
+				} else {
+					dto2.setStorageConsumeOccupy(consume.divide(bizMoney, 2));
+				}
+				if(bizMoney.compareTo(new BigDecimal("0.00")) == 0) {
+					dto2.setGrowthOf(new BigDecimal("0"));
+				} else {
+					dto2.setGrowthOf(preBizMoney.divide(bizMoney, 2).subtract(new BigDecimal("1")));
+				}
+				if(area.compareTo(new BigDecimal("0.00")) != 0) {
+					dto2.setAreaEfficiency(bizMoney.divide(area, 2));
+				}
+				dto2.setTest(test);
+				dto2.setPeel(peel);
+				dto2.setBreakage(breakage);
+				dto2.setOther(other);
+				listDTO.add(dto2);
+			}
+			return listDTO;
+			
 		}
-		return returnList;
+		return null;
 	}
-	
-	
-	
 }

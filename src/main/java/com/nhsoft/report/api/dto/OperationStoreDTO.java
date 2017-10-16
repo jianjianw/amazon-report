@@ -2,8 +2,9 @@ package com.nhsoft.report.api.dto;
 
 import java.math.BigDecimal;
 
-public class OperationStoreDailyDTO {
+public class OperationStoreDTO {
 
+	private Integer branchNum;                    //分店编号
 	private String branchName;                    //分店
 	private BigDecimal revenue;                   //营业额
 	private BigDecimal realizeRate1;              //完成率
@@ -193,6 +194,12 @@ public class OperationStoreDailyDTO {
 	}
 	public void setOther(BigDecimal other) {
 		this.other = other;
+	}
+	public Integer getBranchNum() {
+		return branchNum;
+	}
+	public void setBranchNum(Integer branchNum) {
+		this.branchNum = branchNum;
 	}
 	
 }

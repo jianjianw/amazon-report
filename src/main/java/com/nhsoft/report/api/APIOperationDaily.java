@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nhsoft.report.api.dto.OperationDTO;
-import com.nhsoft.report.api.dto.OperationStoreDailyDTO;
+import com.nhsoft.report.api.dto.OperationRegionDTO;
+import com.nhsoft.report.api.dto.OperationStoreDTO;
 import com.nhsoft.report.dto.AdjustmentCauseMoney;
 import com.nhsoft.report.dto.BranchArea;
 import com.nhsoft.report.dto.BranchConsumeReport;
@@ -34,10 +34,40 @@ import com.nhsoft.report.util.AppConstants;
 
 @RestController()
 @RequestMapping("/operation")
-public class APIOperation {
+public class APIOperationDaily {
 
 	@Autowired
 	private ReportRpc reportRpc;
+	
+	//将list中的分店号转换成string，逗号隔开的形式
+	private String getBranchString(List<?> list) {
+		StringBuffer buffer = new StringBuffer();
+		for(int i = 0; i < list.size(); i++) {
+			if(i == 0) {
+				buffer.append("[");
+			}
+			buffer.append(String.valueOf(list.get(i)));
+			if(i < list.size() - 1) {
+				buffer.append(",");
+			} else {
+				buffer.append("]");
+			}
+		}
+		return buffer.toString();
+	}
+	
+	//返回无区域的分店号
+	private List<Integer> listBranchNoArea(List<Branch> allList) {
+		ArrayList<Branch> list = (ArrayList)allList;
+		ArrayList<Branch> list1 = (ArrayList)list.clone();
+		ArrayList<Integer> returnList = new ArrayList<Integer>();
+		for(int i = 0; i < list1.size(); i++) {
+			if(list1.get(i).getBranchRegionNum() == null) {
+				returnList.add(list1.get(i).getId().getBranchNum());
+			}
+		}
+		return returnList;
+	}
 	
 	/**
 	 * 日营运分析
@@ -133,8 +163,8 @@ public class APIOperation {
 			checkMoneyList = reportRpc.findCheckMoneyByBranch(systemBookCode, branchNumList, today, nextDay);
 			
 			//按区域分组，返回数据
-			OperationDTO dto = null;
-			List<OperationDTO> listDTO = new ArrayList<OperationDTO>();
+			OperationRegionDTO dto = null;
+			List<OperationRegionDTO> listDTO = new ArrayList<OperationRegionDTO>();
 			List<Integer> listBranchInArea0 = new ArrayList<Integer>();        //保存有区域号的所有分店号
 			List<Integer> listBranchInArea1 = new ArrayList<Integer>();        //保存有区域号的所有分店号
 			List<Integer> listBranchInArea2 = new ArrayList<Integer>();        //保存有区域号的所有分店号
@@ -146,7 +176,7 @@ public class APIOperation {
 			List<Integer> listBranchInArea8 = new ArrayList<Integer>();        //营业额目标
 			List<Integer> listBranchInArea9 = new ArrayList<Integer>();        //盘损金额
 			for(int i = 0; i < branchNumsListArea.length + 1; i++) {
-				dto = new OperationDTO();
+				dto = new OperationRegionDTO();
 				String branchString = null;                       //String类型的分店号
 				BigDecimal preBizMoney = new BigDecimal("0");     //昨天营业额
 				BigDecimal bizMoney = new BigDecimal("0");        //营业额
@@ -163,7 +193,11 @@ public class APIOperation {
 				BigDecimal salesGoalMoney = new BigDecimal("0");  //目标营业额
 				BigDecimal checkMoney = new BigDecimal("0");      //盘损金额
 				if(i < branchNumsListArea.length) {
-					branchString  = getBranchString(branchNumsListArea[i]);        //得到string类型的分店号
+					if(branchNumsListArea[i].size() != 0) {
+						branchString  = getBranchString(branchNumsListArea[i]);        //得到string类型的分店号
+					} else {
+						branchString = "[  ,  ]";
+					}
 					for(int j = 0; j < branchMoneyReportListPre.size(); j++) {
 						if(branchNumsListArea[i].contains(branchMoneyReportListPre.get(j).getBranchNum())) {
 							listBranchInArea0.add(branchMoneyReportListPre.get(j).getBranchNum());
@@ -365,11 +399,11 @@ public class APIOperation {
 			checkMoneyList = reportRpc.findCheckMoneyByBranch(systemBookCode, branchNumList, today, nextDay);
 			
 			//按分店，返回数据
-			OperationStoreDailyDTO dto2 = null;
-			List<OperationStoreDailyDTO> listDTO = new ArrayList<OperationStoreDailyDTO>();
+			OperationStoreDTO dto2 = null;
+			List<OperationStoreDTO> listDTO = new ArrayList<OperationStoreDTO>();
 			for(int i = 0; i < realBranchNums.size(); i++) {
 				
-				dto2 = new OperationStoreDailyDTO();
+				dto2 = new OperationStoreDTO();
 				BigDecimal preBizMoney = new BigDecimal("0");     //昨天营业额
 				BigDecimal bizMoney = new BigDecimal("0");        //营业额
 				BigDecimal orderCount = new BigDecimal("0");      //客单量
@@ -391,13 +425,16 @@ public class APIOperation {
 				BigDecimal other = new BigDecimal("0");                //其他
 				
 				for(int j = 0; j < branchList.size(); j++) {
-					if(realBranchNums.get(i) == branchList.get(j).getId().getBranchNum()) {
+					/*
+					if(dto2.getBranchNum().equals(branchList.get(j).getId().getBranchNum())) {
 						dto2.setBranchName(branchList.get(j).getBranchName());
-						String string = branchList.get(j).getBranchName();
-						System.out.println(string+realBranchNums.get(i)+"+++++++++++"+branchList.get(j).getId().getBranchNum());
-						
 						break;
-					}
+					}*/
+					
+					if(realBranchNums.get(i).equals(branchList.get(j).getId().getBranchNum())) {
+						dto2.setBranchName(branchList.get(j).getBranchName());
+						break;
+					}	
 				}
 				
 				for(int j = 0; j < branchMoneyReportListPre.size(); j++) {
@@ -491,7 +528,7 @@ public class APIOperation {
 						other = other.add(adjustmentCauseMoneyByBranchList.get(j).getOther());
 					}
 				}
-				
+				dto2.setBranchNum(realBranchNums.get(i));
 				dto2.setRevenue(bizMoney);
 				if(salesGoalMoney.compareTo(new BigDecimal("0.00")) != 0) {
 					dto2.setRealizeRate1(bizMoney.divide(salesGoalMoney, 2));
@@ -548,36 +585,6 @@ public class APIOperation {
 			}
 			return listDTO;
 		}
-	}
-	
-	//将list中的分店号转换成string，逗号隔开的形式
-	private String getBranchString(List<?> list) {
-		StringBuffer buffer = new StringBuffer();
-		for(int i = 0; i < list.size(); i++) {
-			if(i == 0) {
-				buffer.append("[");
-			}
-			buffer.append(String.valueOf(list.get(i)));
-			if(i < list.size() - 1) {
-				buffer.append(",");
-			} else {
-				buffer.append("]");
-			}
-		}
-		return buffer.toString();
-	}
-	
-	//返回无区域的分店号
-	private List<Integer> listBranchNoArea(List<Branch> allList) {
-		ArrayList<Branch> list = (ArrayList)allList;
-		ArrayList<Branch> list1 = (ArrayList)list.clone();
-		ArrayList<Integer> returnList = new ArrayList<Integer>();
-		for(int i = 0; i < list1.size(); i++) {
-			if(list1.get(i).getBranchRegionNum() == null) {
-				returnList.add(list1.get(i).getId().getBranchNum());
-			}
-		}
-		return returnList;
 	}
 	
 	
