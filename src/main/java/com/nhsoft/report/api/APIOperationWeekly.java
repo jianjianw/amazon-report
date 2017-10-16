@@ -229,9 +229,9 @@ public class APIOperationWeekly {
 			List<Integer> listBranchInArea4 = new ArrayList<Integer>();
 			List<Integer> listBranchInArea5 = new ArrayList<Integer>();
 			List<Integer> listBranchInArea6 = new ArrayList<Integer>();
-			List<Integer> listBranchInArea7 = new ArrayList<Integer>();        //新增会员分店号
-			List<Integer> listBranchInArea8 = new ArrayList<Integer>();        //营业额目标
-			List<Integer> listBranchInArea9 = new ArrayList<Integer>();        //盘损金额
+			List<Integer> listBranchInArea7 = new ArrayList<Integer>();        // 保存有区域号的 新增会员分店号
+			List<Integer> listBranchInArea8 = new ArrayList<Integer>();        // 保存有区域号的 营业额目标分店号
+			List<Integer> listBranchInArea9 = new ArrayList<Integer>();        // 保存有区域号的 盘损金额分店号
 			for(int i = 0; i < branchNumsListArea.length + 1; i++) {
 				dto = new OperationRegionDTO();
 				String branchString = null;                       //String类型的分店号

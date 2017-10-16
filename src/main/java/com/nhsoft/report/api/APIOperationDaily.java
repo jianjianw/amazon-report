@@ -39,7 +39,7 @@ public class APIOperationDaily {
 	@Autowired
 	private ReportRpc reportRpc;
 	
-	//将list中的分店号转换成string，逗号隔开的形式
+	// 将list中的分店号转换成string，逗号隔开的形式
 	private String getBranchString(List<?> list) {
 		StringBuffer buffer = new StringBuffer();
 		for(int i = 0; i < list.size(); i++) {
@@ -56,7 +56,7 @@ public class APIOperationDaily {
 		return buffer.toString();
 	}
 	
-	//返回无区域的分店号
+	// 返回无区域的分店号
 	private List<Integer> listBranchNoArea(List<Branch> allList) {
 		ArrayList<Branch> list = (ArrayList)allList;
 		ArrayList<Branch> list1 = (ArrayList)list.clone();
@@ -80,7 +80,7 @@ public class APIOperationDaily {
 	public @ResponseBody List<OperationRegionDTO> listOperation (@RequestHeader("systemBookCode") String systemBookCode,
 		@RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 		
-		//日期
+		// 日期
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date today = null;
 		Date nextDay = null;
@@ -102,36 +102,36 @@ public class APIOperationDaily {
 			e.printStackTrace();
 		}
 		
-		//根据帐套号查询所有分店号
+		// 根据帐套号查询所有分店号
 		List<Branch> branchList = reportRpc.findAll(systemBookCode);
 		List<Integer> branchNumList = new ArrayList<Integer>();
 		for(int j = 0; j < branchList.size(); j++) {
 			branchNumList.add(branchList.get(j).getId().getBranchNum());
 		}
 		
-		//根据所有分店查询上一天的营业额
+		// 根据所有分店查询上一天的营业额
 		List<BranchMoneyReport> branchMoneyReportListPre = null;
-		//根据所有分店查询营业额  非会员
+		// 根据所有分店查询营业额  非会员
 		List<BranchMoneyReport> branchMoneyReportList = null;
-		//根据所有分店查询营业额  会员
+		// 根据所有分店查询营业额  会员
 		List<BranchMoneyReport> memeberBranchMoneyReportList = null;
-		//根据分店查询卡消费
+		// 根据分店查询卡消费
 		List<BranchConsumeReport> branchConsumeReportList = null;
-		//根据分店查询报损金额
+		// 根据分店查询报损金额
 		List<LossMoneyReport> lossMoneyList = null;
-		//根据分店查询卡存款
+		// 根据分店查询卡存款
 		List<BranchDepositReport> branchDepositReportList = null;
-		//根据分店查询配销差额
+		// 根据分店查询配销差额
 		List<DifferenceMoney> differentMoneyList = null;
-		//根据分店查询新增会员数
+		// 根据分店查询新增会员数
 		List<CardUserCount> increasedMemberList = null;
-		//根据分店查询营业额目标
+		// 根据分店查询营业额目标
 		List<SaleMoneyGoals> salesMoneyGoalList = null;
-		//根据分店查询盘损金额
+		// 根据分店查询盘损金额
 		List<CheckMoney> checkMoneyList = null;
 		
 		if(branchNums.equals("")) {
-			//根据帐套号得到所有区域号和区域名称
+			// 根据帐套号得到所有区域号和区域名称
 			List<BranchRegion> branchRegionList = reportRpc.findBranchRegion(systemBookCode);
 			String[] branchRegionName = new String[branchRegionList.size()];
 			List<Integer> branchRegionNumList = new ArrayList<Integer>();
@@ -140,7 +140,7 @@ public class APIOperationDaily {
 				branchRegionName[i] = branchRegionList.get(i).getBranchRegionName();
 			}
 			
-			//根据区域号得到多组分店号
+			// 根据区域号得到多组分店号
 			List<Branch>[] branchListArea =new ArrayList[branchRegionNumList.size()];
 			List<Integer>[] branchNumsListArea = new ArrayList[branchRegionNumList.size()];
 			for(int i = 0; i < branchRegionNumList.size(); i ++) {
@@ -162,7 +162,7 @@ public class APIOperationDaily {
 			salesMoneyGoalList = reportRpc.findSaleMoneyGoalsByBranch(systemBookCode, branchNumList, today, nextDay, AppConstants.BUSINESS_DATE_SOME_MONTH);	
 			checkMoneyList = reportRpc.findCheckMoneyByBranch(systemBookCode, branchNumList, today, nextDay);
 			
-			//按区域分组，返回数据
+			// 按区域分组，返回数据
 			OperationRegionDTO dto = null;
 			List<OperationRegionDTO> listDTO = new ArrayList<OperationRegionDTO>();
 			List<Integer> listBranchInArea0 = new ArrayList<Integer>();        //保存有区域号的所有分店号
@@ -172,9 +172,9 @@ public class APIOperationDaily {
 			List<Integer> listBranchInArea4 = new ArrayList<Integer>();
 			List<Integer> listBranchInArea5 = new ArrayList<Integer>();
 			List<Integer> listBranchInArea6 = new ArrayList<Integer>();
-			List<Integer> listBranchInArea7 = new ArrayList<Integer>();        //新增会员分店号
-			List<Integer> listBranchInArea8 = new ArrayList<Integer>();        //营业额目标
-			List<Integer> listBranchInArea9 = new ArrayList<Integer>();        //盘损金额
+			List<Integer> listBranchInArea7 = new ArrayList<Integer>();        // 保存有区域号的 新增会员分店号
+			List<Integer> listBranchInArea8 = new ArrayList<Integer>();        // 保存有区域号的 营业额目标分店号
+			List<Integer> listBranchInArea9 = new ArrayList<Integer>();        // 保存有区域号的 盘损金额分店号
 			for(int i = 0; i < branchNumsListArea.length + 1; i++) {
 				dto = new OperationRegionDTO();
 				String branchString = null;                       //String类型的分店号
