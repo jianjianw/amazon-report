@@ -15,9 +15,9 @@ public class OperationRegionDTO implements Serializable {
 	private BigDecimal realizeRate1;              //完成率
 	private BigDecimal memberSalesRealizeRate;    //会员销售额完成率
 	private BigDecimal memeberRevenueOccupy;      //会员消费占比
-	private BigDecimal aveBillNums;               //日均客单量
+	private Integer aveBillNums;                  //日均客单量
 	private BigDecimal allBillRealizeRate;        //总客单完成率
-	private BigDecimal memberBillNums;            //会员客单量
+	private Integer memberBillNums;               //会员客单量
 	private BigDecimal bill;                      //客单价
 	private BigDecimal memberBill;                //会员客单价
 	private BigDecimal distributionDifferent;     //配销差额
@@ -25,7 +25,7 @@ public class OperationRegionDTO implements Serializable {
 	private BigDecimal adjustAmount;              //盘损金额
 	private BigDecimal grossProfit;               //毛利金额
 	private BigDecimal grossProfitRate;           //毛利完成率
-	private BigDecimal incressedMember;           //新增会员数
+	private Integer incressedMember;              //新增会员数
 	private BigDecimal realizeRate2;              //完成率
 	private BigDecimal cardStorage;               //卡储值金额
 	private BigDecimal realizeRate3;              //完成率
@@ -69,10 +69,10 @@ public class OperationRegionDTO implements Serializable {
 	public void setMemeberRevenueOccupy(BigDecimal memeberRevenueOccupy) {
 		this.memeberRevenueOccupy = memeberRevenueOccupy;
 	}
-	public BigDecimal getAveBillNums() {
+	public Integer getAveBillNums() {
 		return aveBillNums;
 	}
-	public void setAveBillNums(BigDecimal aveBillNums) {
+	public void setAveBillNums(Integer aveBillNums) {
 		this.aveBillNums = aveBillNums;
 	}
 	public BigDecimal getAllBillRealizeRate() {
@@ -81,10 +81,10 @@ public class OperationRegionDTO implements Serializable {
 	public void setAllBillRealizeRate(BigDecimal allBillRealizeRate) {
 		this.allBillRealizeRate = allBillRealizeRate;
 	}
-	public BigDecimal getMemberBillNums() {
+	public Integer getMemberBillNums() {
 		return memberBillNums;
 	}
-	public void setMemberBillNums(BigDecimal memberBillNums) {
+	public void setMemberBillNums(Integer memberBillNums) {
 		this.memberBillNums = memberBillNums;
 	}
 	public BigDecimal getBill() {
@@ -129,10 +129,10 @@ public class OperationRegionDTO implements Serializable {
 	public void setGrossProfitRate(BigDecimal grossProfitRate) {
 		this.grossProfitRate = grossProfitRate;
 	}
-	public BigDecimal getIncressedMember() {
+	public Integer getIncressedMember() {
 		return incressedMember;
 	}
-	public void setIncressedMember(BigDecimal incressedMember) {
+	public void setIncressedMember(Integer incressedMember) {
 		this.incressedMember = incressedMember;
 	}
 	public BigDecimal getRealizeRate2() {
