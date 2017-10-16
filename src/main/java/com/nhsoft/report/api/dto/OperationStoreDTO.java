@@ -7,7 +7,7 @@ public class OperationStoreDTO {
 	private Integer branchNum;                    //分店编号
 	private String branchName;                    //分店
 	private BigDecimal revenue;                   //营业额
-	private BigDecimal realizeRate1;              //完成率
+	private BigDecimal realizeRate1;              //营业额完成率
 	private BigDecimal memberSalesRealizeRate;    //会员销售额完成率
 	private BigDecimal memeberRevenueOccupy;      //会员消费占比
 	private Integer aveBillNums;                  //日均客单量
@@ -21,9 +21,9 @@ public class OperationStoreDTO {
 	private BigDecimal grossProfit;               //毛利金额
 	private BigDecimal grossProfitRate;           //毛利完成率
 	private Integer incressedMember;              //新增会员数
-	private BigDecimal realizeRate2;              //完成率
+	private BigDecimal realizeRate2;              //新增会员数完成率
 	private BigDecimal cardStorage;               //卡储值金额
-	private BigDecimal realizeRate3;              //完成率
+	private BigDecimal realizeRate3;              //卡储值金额完成率
 	private BigDecimal cartStorageConsume;        //卡储值消费金额
 	private BigDecimal storageConsumeOccupy;      //储值消费占比
 	private BigDecimal growthOf;                  //环比增长

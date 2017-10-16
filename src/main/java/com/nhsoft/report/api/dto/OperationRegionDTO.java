@@ -12,7 +12,7 @@ public class OperationRegionDTO implements Serializable {
 	private String area;                          //区域
 	private String areaBranchNums;                //本区域所包含的分店号
 	private BigDecimal revenue;                   //营业额
-	private BigDecimal realizeRate1;              //完成率
+	private BigDecimal realizeRate1;              //营业额完成率
 	private BigDecimal memberSalesRealizeRate;    //会员销售额完成率
 	private BigDecimal memeberRevenueOccupy;      //会员消费占比
 	private Integer aveBillNums;                  //日均客单量
@@ -26,9 +26,9 @@ public class OperationRegionDTO implements Serializable {
 	private BigDecimal grossProfit;               //毛利金额
 	private BigDecimal grossProfitRate;           //毛利完成率
 	private Integer incressedMember;              //新增会员数
-	private BigDecimal realizeRate2;              //完成率
+	private BigDecimal realizeRate2;              //新增会员数完成率
 	private BigDecimal cardStorage;               //卡储值金额
-	private BigDecimal realizeRate3;              //完成率
+	private BigDecimal realizeRate3;              //卡储值完成率
 	private BigDecimal cartStorageConsume;        //卡储值消费金额
 	private BigDecimal storageConsumeOccupy;      //储值消费占比
 	private BigDecimal growthOf;                  //环比增长
