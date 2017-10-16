@@ -132,7 +132,7 @@ public class APIOperationWeekly {
 	 * @return 
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/area")
-	public @ResponseBody List listOperationRegion (@RequestHeader("systemBookCode") String systemBookCode,
+	public @ResponseBody List<OperationRegionDTO> listOperationArea (@RequestHeader("systemBookCode") String systemBookCode,
 		@RequestHeader("branchNums") String branchNums, @RequestHeader("week") int week) {
 		
 		//得到将要查询周的开始日期和结束日期
@@ -237,23 +237,23 @@ public class APIOperationWeekly {
 				String branchString = null;                       //String类型的分店号
 				BigDecimal preBizMoney = new BigDecimal("0");     //昨天营业额
 				BigDecimal bizMoney = new BigDecimal("0");        //营业额
-				BigDecimal orderCount = new BigDecimal("0");      //客单量
+				Integer orderCount = 0;                           //客单量
 				BigDecimal profit = new BigDecimal("0");          //毛利
 				BigDecimal deposit = new BigDecimal("0");         //卡存款
 				BigDecimal consume = new BigDecimal("0");         //卡消费
 				BigDecimal lossMoney = new BigDecimal("0");       //报损金额
 				BigDecimal differentMoney = new BigDecimal("0");  //配销差额
 				BigDecimal memberBizMoney = new BigDecimal("0");  //会员营业额
-				BigDecimal memberOrderCount = new BigDecimal("0");//会员客单量
+				Integer memberOrderCount = 0;                     //会员客单量
 				BigDecimal memberProfit = new BigDecimal("0");    //会员毛利
-				BigDecimal incressedMember = new BigDecimal("0"); //新增会员数
+				Integer incressedMember = 0;                      //新增会员数
 				BigDecimal salesGoalMoney = new BigDecimal("0");  //目标营业额
 				BigDecimal checkMoney = new BigDecimal("0");      //盘损金额
 				if(i < branchNumsListArea.length) {
 					if(branchNumsListArea[i].size() != 0) {
 						branchString  = getBranchString(branchNumsListArea[i]);        //得到string类型的分店号
 					} else {
-						branchString = "[  ,  ]";
+						branchString = "[,]";
 					}
 					for(int j = 0; j < branchMoneyReportListPre.size(); j++) {
 						if(branchNumsListArea[i].contains(branchMoneyReportListPre.get(j).getBranchNum())) {
@@ -266,23 +266,33 @@ public class APIOperationWeekly {
 					for(int j = 0; j < branchMoneyReportList.size(); j++) {
 						if(branchNumsListArea[i].contains(branchMoneyReportList.get(j).getBranchNum())) {
 							listBranchInArea1.add(branchMoneyReportList.get(j).getBranchNum());
-							bizMoney = bizMoney.add(branchMoneyReportList.get(j).getBizMoney());
-							orderCount = orderCount.add(new BigDecimal(branchMoneyReportList.get(j).getOrderCount()));
-							profit = profit.add(branchMoneyReportList.get(j).getProfit());
+							if(branchMoneyReportList.get(j).getBizMoney() != null) {
+								bizMoney = bizMoney.add(branchMoneyReportList.get(j).getBizMoney());
+							}
+							orderCount = orderCount + branchMoneyReportList.get(j).getOrderCount();
+							if(branchMoneyReportList.get(j).getProfit() != null) {
+								profit = profit.add(branchMoneyReportList.get(j).getProfit());
+							}
 						}
 					}
 					for(int j = 0; j < memeberBranchMoneyReportList.size(); j++) {
 						if(branchNumsListArea[i].contains(memeberBranchMoneyReportList.get(j).getBranchNum())) {
 							listBranchInArea2.add(memeberBranchMoneyReportList.get(j).getBranchNum());
-							memberBizMoney = memberBizMoney.add(memeberBranchMoneyReportList.get(j).getBizMoney());
-							memberOrderCount = memberOrderCount.add(new BigDecimal(memeberBranchMoneyReportList.get(j).getOrderCount()));
-							memberProfit = memberProfit.add(memeberBranchMoneyReportList.get(j).getProfit());
+							if(memeberBranchMoneyReportList.get(j).getBizMoney() != null) {
+								memberBizMoney = memberBizMoney.add(memeberBranchMoneyReportList.get(j).getBizMoney());
+							}
+							memberOrderCount = memberOrderCount + memeberBranchMoneyReportList.get(j).getOrderCount();
+							if(memeberBranchMoneyReportList.get(j).getProfit() != null) {
+								memberProfit = memberProfit.add(memeberBranchMoneyReportList.get(j).getProfit());
+							}
 						}
 					}
 					for(int j = 0; j < branchConsumeReportList.size(); j++) {
 						if(branchNumsListArea[i].contains(branchConsumeReportList.get(j).getBranchNum())) {
 							listBranchInArea3.add(branchConsumeReportList.get(j).getBranchNum());
-							consume = consume.add(branchConsumeReportList.get(j).getConsume());
+							if(branchConsumeReportList.get(j).getConsume() != null) {
+								consume = consume.add(branchConsumeReportList.get(j).getConsume());
+							}
 						}
 					}
 					for(int j = 0; j < lossMoneyList.size(); j++) {
@@ -296,31 +306,39 @@ public class APIOperationWeekly {
 					for(int j = 0; j < branchDepositReportList.size(); j++) {
 						if(branchNumsListArea[i].contains(branchDepositReportList.get(j).getBranchNum())) {
 							listBranchInArea5.add(branchDepositReportList.get(j).getBranchNum());
-							deposit = deposit.add(branchDepositReportList.get(j).getDeposit());
+							if(branchDepositReportList.get(j).getDeposit() != null) {
+								deposit = deposit.add(branchDepositReportList.get(j).getDeposit());
+							}
 						}
 					}
 					for(int j = 0; j < differentMoneyList.size(); j++) {
 						if(branchNumsListArea[i].contains(differentMoneyList.get(j).getBranchNum())) {
 							listBranchInArea6.add(differentMoneyList.get(j).getBranchNum());
-							differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
+							if(differentMoneyList.get(j).getMoney() != null) {
+								differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
+							}
 						}
 					}
 					for(int j = 0; j < increasedMemberList.size(); j++) {
 						if(branchNumsListArea[i].contains(increasedMemberList.get(j).getBranchNum())) {
 							listBranchInArea7.add(increasedMemberList.get(j).getBranchNum());
-							incressedMember = incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
+							incressedMember = incressedMember + increasedMemberList.get(j).getCount();
 						}
 					}
 					for(int j = 0; j < salesMoneyGoalList.size(); j++) {
 						if(branchNumsListArea[i].contains(salesMoneyGoalList.get(j).getBranchNum())) {
 							listBranchInArea8.add(salesMoneyGoalList.get(j).getBranchNum());
-							salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+							if(salesMoneyGoalList.get(j).getSaleMoney() != null) {
+								salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+							}
 						}
 					}
 					for(int j = 0; j < checkMoneyList.size(); j++) {
 						if(branchNumsListArea[i].contains(checkMoneyList.get(j).getBranchNum())) {
 							listBranchInArea9.add(checkMoneyList.get(j).getBranchNum());
-							checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
+							if(checkMoneyList.get(j).getMoney() != null) {
+								checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
+							}
 						}
 					}
 				} else {
@@ -329,56 +347,78 @@ public class APIOperationWeekly {
 					for(int j = 0; j < branchMoneyReportListPre.size(); j++) {
 						if(!listBranchInArea0.contains(branchMoneyReportListPre.get(j).getBranchNum())) {
 							listBranchInArea0.add(branchMoneyReportListPre.get(j).getBranchNum());
-							preBizMoney = preBizMoney.add(branchMoneyReportListPre.get(j).getBizMoney());
+							if(branchMoneyReportListPre.get(j).getBizMoney() != null) {
+								preBizMoney = preBizMoney.add(branchMoneyReportListPre.get(j).getBizMoney());
+							}
 						}
 					}
 					for(int j = 0; j < branchMoneyReportList.size(); j++) {
 						if(!listBranchInArea1.contains(branchMoneyReportList.get(j).getBranchNum())) {
-							bizMoney = bizMoney.add(branchMoneyReportList.get(j).getBizMoney());
-							orderCount = orderCount.add(new BigDecimal(branchMoneyReportList.get(j).getOrderCount()));
-							profit = profit.add(branchMoneyReportList.get(j).getProfit());
+							if(branchMoneyReportList.get(j).getBizMoney() != null) {
+								bizMoney = bizMoney.add(branchMoneyReportList.get(j).getBizMoney());
+							}
+							orderCount = orderCount + branchMoneyReportList.get(j).getOrderCount();
+							if(branchMoneyReportList.get(j).getProfit() != null) {
+								profit = profit.add(branchMoneyReportList.get(j).getProfit());
+							}
 						}
 					}
 					for(int j = 0; j < memeberBranchMoneyReportList.size(); j++) {
 						if(!listBranchInArea2.contains(memeberBranchMoneyReportList.get(j).getBranchNum())) {
-							memberBizMoney = memberBizMoney.add(memeberBranchMoneyReportList.get(j).getBizMoney());
-							memberOrderCount = memberOrderCount.add(new BigDecimal(memeberBranchMoneyReportList.get(j).getOrderCount()));
-							memberProfit = memberProfit.add(memeberBranchMoneyReportList.get(j).getProfit());
+							if(memeberBranchMoneyReportList.get(j).getBizMoney() != null) {
+								memberBizMoney = memberBizMoney.add(memeberBranchMoneyReportList.get(j).getBizMoney());
+							}
+							memberOrderCount = memberOrderCount + memeberBranchMoneyReportList.get(j).getOrderCount();
+							if(memeberBranchMoneyReportList.get(j).getProfit() != null) {
+								memberProfit = memberProfit.add(memeberBranchMoneyReportList.get(j).getProfit());
+							}
 						}
 					}
 					for(int j = 0; j < branchConsumeReportList.size(); j++) {
 						if(!listBranchInArea3.contains(branchConsumeReportList.get(j).getBranchNum())) {
-							consume = consume.add(branchConsumeReportList.get(j).getConsume());
+							if(branchConsumeReportList.get(j).getConsume() != null) {
+								consume = consume.add(branchConsumeReportList.get(j).getConsume());
+							}
 						}
 					}
 					for(int j = 0; j < lossMoneyList.size(); j++) {
 						if(!listBranchInArea4.contains(lossMoneyList.get(j).getBranchNum())) {
-							lossMoney = lossMoney.add(lossMoneyList.get(j).getMoney());
+							if(lossMoneyList.get(j).getMoney() != null) {
+								lossMoney = lossMoney.add(lossMoneyList.get(j).getMoney());
+							}
 						}
 					}
 					for(int j = 0; j < branchDepositReportList.size(); j++) {
 						if(!listBranchInArea5.contains(branchDepositReportList.get(j).getBranchNum())) {
-							deposit = deposit.add(branchDepositReportList.get(j).getDeposit());
+							if(branchDepositReportList.get(j).getDeposit() != null) {
+								deposit = deposit.add(branchDepositReportList.get(j).getDeposit());
+							}
 						}
 					}
 					for(int j = 0; j < differentMoneyList.size(); j++) {
 						if(!listBranchInArea6.contains(differentMoneyList.get(j).getBranchNum())) {
-							differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
+							if(differentMoneyList.get(j).getMoney() != null) {
+								differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
+							}
 						}
 					}
 					for(int j = 0; j < increasedMemberList.size(); j++) {
 						if(!listBranchInArea7.contains(increasedMemberList.get(j).getBranchNum())) {
-							incressedMember = incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
+							incressedMember = incressedMember + increasedMemberList.get(j).getCount();
 						}
 					}
 					for(int j = 0; j < salesMoneyGoalList.size(); j++) {
 						if(!listBranchInArea8.contains(salesMoneyGoalList.get(j).getBranchNum())) {
-							salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+							if(salesMoneyGoalList.get(j).getSaleMoney() != null) {
+								salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+							}
 						}
 					}
 					for(int j = 0; j < checkMoneyList.size(); j++) {
 						if(!listBranchInArea9.contains(checkMoneyList.get(j).getBranchNum())) {
-							checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
+							if(checkMoneyList.get(j).getMoney() != null) {
+								checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
+							}
 						}
 					}
 				}
@@ -403,15 +443,15 @@ public class APIOperationWeekly {
 				dto.setAveBillNums(orderCount);
 				dto.setAllBillRealizeRate(new BigDecimal("1"));
 				dto.setMemberBillNums(memberOrderCount);
-				if(orderCount.compareTo(new BigDecimal("0.00")) == 0) {
+				if(orderCount == 0) {
 					dto.setBill(new BigDecimal("0"));
 				} else {
-					dto.setBill(bizMoney.divide(orderCount, 2));
+					dto.setBill(bizMoney.divide(new BigDecimal(orderCount), 2));
 				}
-				if(memberOrderCount.compareTo(new BigDecimal("0")) == 0) {
+				if(memberOrderCount == 0) {
 					dto.setMemberBill(new BigDecimal("0"));
 				} else {
-					dto.setMemberBill(memberBizMoney.divide(memberOrderCount, 2));
+					dto.setMemberBill(memberBizMoney.divide(new BigDecimal(memberOrderCount), 2));
 				}
 				dto.setDistributionDifferent(differentMoney);
 				dto.setDestroyDefferent(lossMoney);
@@ -444,7 +484,7 @@ public class APIOperationWeekly {
 	
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/store")
-	public @ResponseBody List listOperationStore (@RequestHeader("systemBookCode") String systemBookCode,
+	public @ResponseBody List<OperationStoreDTO> listOperationStore (@RequestHeader("systemBookCode") String systemBookCode,
 		@RequestHeader("branchNums") String branchNums, @RequestHeader("week") int week) {
 		
 		//得到将要查询周的开始日期和结束日期
@@ -506,6 +546,11 @@ public class APIOperationWeekly {
 			for(int i = 0; i < array.length; i++) {
 				realBranchNums.add(Integer.parseInt(array[i].trim()));
 			}
+			if(array.length == 0) {
+				List list = new ArrayList();
+				list.add(new OperationStoreDTO());
+				return list;
+			}
 			
 			//按分店查询面积
 			List<BranchArea> branchAreaList = reportRpc.findBranchArea(systemBookCode, branchNumList);
@@ -528,24 +573,24 @@ public class APIOperationWeekly {
 			for(int i = 0; i < realBranchNums.size(); i++) {
 				
 				dto2 = new OperationStoreDTO();
-				BigDecimal preBizMoney = new BigDecimal("0");     //昨天营业额
-				BigDecimal bizMoney = new BigDecimal("0");        //营业额
-				BigDecimal orderCount = new BigDecimal("0");      //客单量
-				BigDecimal profit = new BigDecimal("0");          //毛利
-				BigDecimal deposit = new BigDecimal("0");         //卡存款
-				BigDecimal consume = new BigDecimal("0");         //卡消费
-				BigDecimal lossMoney = new BigDecimal("0");       //报损金额
-				BigDecimal differentMoney = new BigDecimal("0");  //配销差额
-				BigDecimal memberBizMoney = new BigDecimal("0");  //会员营业额
-				BigDecimal memberOrderCount = new BigDecimal("0");//会员客单量
-				BigDecimal memberProfit = new BigDecimal("0");    //会员毛利
-				BigDecimal incressedMember = new BigDecimal("0"); //新增会员数
-				BigDecimal salesGoalMoney = new BigDecimal("0");  //目标营业额
-				BigDecimal checkMoney = new BigDecimal("0");      //盘损金额
-				BigDecimal area = new BigDecimal("0");            //分店面积
-				BigDecimal test = new BigDecimal("0");            //试吃
-				BigDecimal peel = new BigDecimal("0");            //去皮
-				BigDecimal breakage = new BigDecimal("0");        //报损
+				BigDecimal preBizMoney = new BigDecimal("0");     // 昨天营业额
+				BigDecimal bizMoney = new BigDecimal("0");        // 营业额
+				Integer orderCount = 0;                           // 客单量
+				BigDecimal profit = new BigDecimal("0");          // 毛利
+				BigDecimal deposit = new BigDecimal("0");         // 卡存款
+				BigDecimal consume = new BigDecimal("0");         // 卡消费
+				BigDecimal lossMoney = new BigDecimal("0");       // 报损金额
+				BigDecimal differentMoney = new BigDecimal("0");  // 配销差额
+				BigDecimal memberBizMoney = new BigDecimal("0");  // 会员营业额
+				Integer memberOrderCount = 0;                     // 会员客单量
+				BigDecimal memberProfit = new BigDecimal("0");    // 会员毛利
+				Integer incressedMember = 0;                      // 新增会员数
+				BigDecimal salesGoalMoney = new BigDecimal("0");  // 目标营业额
+				BigDecimal checkMoney = new BigDecimal("0");      // 盘损金额
+				BigDecimal area = new BigDecimal("0");            // 分店面积
+				BigDecimal test = new BigDecimal("0");            // 试吃
+				BigDecimal peel = new BigDecimal("0");            // 去皮
+				BigDecimal breakage = new BigDecimal("0");        // 报损
 				BigDecimal other = new BigDecimal("0");                //其他
 				
 				for(int j = 0; j < branchList.size(); j++) {
@@ -563,74 +608,96 @@ public class APIOperationWeekly {
 				
 				for(int j = 0; j < branchMoneyReportListPre.size(); j++) {
 					if(realBranchNums.get(i) == branchMoneyReportListPre.get(j).getBranchNum()) {
-						preBizMoney = preBizMoney.add(branchMoneyReportListPre.get(j).getBizMoney());
+						if(branchMoneyReportListPre.get(j).getBizMoney() != null) {
+							preBizMoney = preBizMoney.add(branchMoneyReportListPre.get(j).getBizMoney());
+						}
 						break;
 					}
 				}
 				
 				for(int j = 0; j < branchMoneyReportList.size(); j++) {
 					if(realBranchNums.get(i) == branchMoneyReportList.get(j).getBranchNum()) {
-						bizMoney = bizMoney.add(branchMoneyReportList.get(j).getBizMoney());
-						orderCount = orderCount.add(new BigDecimal(branchMoneyReportList.get(j).getOrderCount()));
-						profit = profit.add(branchMoneyReportList.get(j).getProfit());
+						if(branchMoneyReportList.get(j).getBizMoney() != null) {
+							bizMoney = bizMoney.add(branchMoneyReportList.get(j).getBizMoney());
+						}
+						orderCount = orderCount + branchMoneyReportList.get(j).getOrderCount();
+						if(branchMoneyReportList.get(j).getProfit() != null) {
+							profit = profit.add(branchMoneyReportList.get(j).getProfit());
+						}
 						break;
 					}
 				}
 				
 				for(int j = 0; j < memeberBranchMoneyReportList.size(); j++) {
 					if(realBranchNums.get(i) == memeberBranchMoneyReportList.get(j).getBranchNum()) {
-						memberBizMoney = memberBizMoney.add(memeberBranchMoneyReportList.get(j).getBizMoney());
-						memberOrderCount = memberOrderCount.add(new BigDecimal(memeberBranchMoneyReportList.get(j).getOrderCount()));
-						memberProfit = memberProfit.add(memeberBranchMoneyReportList.get(j).getProfit());
+						if(memeberBranchMoneyReportList.get(j).getBizMoney() != null) {
+							memberBizMoney = memberBizMoney.add(memeberBranchMoneyReportList.get(j).getBizMoney());
+						}
+						memberOrderCount = memberOrderCount + memeberBranchMoneyReportList.get(j).getOrderCount();
+						if(memeberBranchMoneyReportList.get(j).getProfit() != null) {
+							memberProfit = memberProfit.add(memeberBranchMoneyReportList.get(j).getProfit());
+						}
 						break;
 					}
 				}
 				
 				for(int j = 0; j < branchConsumeReportList.size(); j++) {
 					if(realBranchNums.get(i) == branchConsumeReportList.get(j).getBranchNum()) {
-						consume = consume.add(branchConsumeReportList.get(j).getConsume());
+						if(branchConsumeReportList.get(j).getConsume() != null) {
+							consume = consume.add(branchConsumeReportList.get(j).getConsume());
+						}
 						break;
 					}
 				}
 				
 				for(int j = 0; j < lossMoneyList.size(); j++) {
 					if(realBranchNums.get(i) == lossMoneyList.get(j).getBranchNum()) {
-						lossMoney = lossMoney.add(lossMoneyList.get(j).getMoney());
+						if(lossMoneyList.get(j).getMoney() != null) {
+							lossMoney = lossMoney.add(lossMoneyList.get(j).getMoney());
+						}
 						break;
 					}
 				}
 				
 				for(int j = 0; j < branchDepositReportList.size(); j++) {
 					if(realBranchNums.get(i) == branchDepositReportList.get(j).getBranchNum()) {
-						deposit = deposit.add(branchDepositReportList.get(j).getDeposit());
+						if(branchDepositReportList.get(j).getDeposit() != null) {
+							deposit = deposit.add(branchDepositReportList.get(j).getDeposit());
+						}
 						break;
 					}
 				}
 				
 				for(int j = 0; j < differentMoneyList.size(); j++) {
 					if(realBranchNums.get(i) == differentMoneyList.get(j).getBranchNum()) {
-						differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
+						if(differentMoneyList.get(j).getMoney() != null) {
+							differentMoney = differentMoney.add(differentMoneyList.get(j).getMoney());
+						}
 						break;
 					}
 				}
 				
 				for(int j = 0; j < increasedMemberList.size(); j++) {
 					if(realBranchNums.get(i) == increasedMemberList.get(j).getBranchNum()) {
-						incressedMember = incressedMember.add(new BigDecimal(increasedMemberList.get(j).getCount()));
+						incressedMember = incressedMember + increasedMemberList.get(j).getCount();
 						break;
 					}
 				}
 				
 				for(int j = 0; j < salesMoneyGoalList.size(); j++) {
 					if(realBranchNums.get(i) == salesMoneyGoalList.get(j).getBranchNum()) {
-						salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+						if(salesMoneyGoalList.get(j).getSaleMoney() != null) {
+							salesGoalMoney = salesGoalMoney.add(salesMoneyGoalList.get(j).getSaleMoney());
+						}
 						break;
 					}
 				}
 				
 				for(int j = 0; j < checkMoneyList.size(); j++) {
 					if(realBranchNums.get(i) == checkMoneyList.get(j).getBranchNum()) {
-						checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
+						if(checkMoneyList.get(j).getMoney() != null) {
+							checkMoney = checkMoney.add(checkMoneyList.get(j).getMoney());
+						}
 						break;
 					}
 				}
@@ -638,7 +705,9 @@ public class APIOperationWeekly {
 				for(int j = 0; j < branchAreaList.size(); j++) {
 					if(realBranchNums.get(i) == branchAreaList.get(j).getBranchNum()) {
 						if(branchAreaList.get(j).getArea() != null) {
-							area = area.add(branchAreaList.get(j).getArea());
+							if(branchAreaList.get(j).getArea() != null) {
+								area = area.add(branchAreaList.get(j).getArea());
+							}
 							break;
 						}
 					}
@@ -676,15 +745,15 @@ public class APIOperationWeekly {
 				dto2.setAveBillNums(orderCount);
 				dto2.setAllBillRealizeRate(new BigDecimal("1"));
 				dto2.setMemberBillNums(memberOrderCount);
-				if(orderCount.compareTo(new BigDecimal("0.00")) == 0) {
+				if(orderCount == 0) {
 					dto2.setBill(new BigDecimal("0"));
 				} else {
-					dto2.setBill(bizMoney.divide(orderCount, 2));
+					dto2.setBill(bizMoney.divide(new BigDecimal(orderCount), 2));
 				}
-				if(memberOrderCount.compareTo(new BigDecimal("0")) == 0) {
+				if(memberOrderCount == 0) {
 					dto2.setMemberBill(new BigDecimal("0"));
 				} else {
-					dto2.setMemberBill(memberBizMoney.divide(memberOrderCount, 2));
+					dto2.setMemberBill(memberBizMoney.divide(new BigDecimal(memberOrderCount), 2));
 				}
 				dto2.setDistributionDifferent(differentMoney);
 				dto2.setDestroyDefferent(lossMoney);

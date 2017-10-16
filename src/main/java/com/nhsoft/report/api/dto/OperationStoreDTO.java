@@ -16,7 +16,7 @@ public class OperationStoreDTO {
 	private BigDecimal bill;                      //客单价
 	private BigDecimal memberBill;                //会员客单价
 	private BigDecimal distributionDifferent;     //配销差额
-	private BigDecimal destroyDefferent;          //报损差额
+	private BigDecimal destroyDefferent;          //报损金额
 	private BigDecimal adjustAmount;              //盘损金额
 	private BigDecimal grossProfit;               //毛利金额
 	private BigDecimal grossProfitRate;           //毛利完成率
