@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 public class BranchConsumeReport implements Serializable {
 
     private Integer branchNum;
-    private BigDecimal consume;
+    private BigDecimal consume; //卡消费金额
 
     public Integer getBranchNum() {
         return branchNum;

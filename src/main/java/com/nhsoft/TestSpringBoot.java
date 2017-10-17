@@ -1,13 +1,12 @@
 package com.nhsoft;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.nhsoft.report.api.dto.OperationStoreDTO;
 import com.nhsoft.report.dao.impl.TransferOutMoney;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
-import com.nhsoft.report.model.BranchRegion;
-import com.nhsoft.report.rpc.ReportRpc;
+import com.nhsoft.report.rpc.*;
+import com.nhsoft.report.service.CardConsumeService;
 import com.nhsoft.report.service.CardDepositService;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
@@ -19,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -31,7 +29,25 @@ import static java.math.BigDecimal.ROUND_HALF_DOWN;
 public class TestSpringBoot {
 
     @Autowired
+    private AdjustmentOrderRpc adjustmentOrderRpc;
+    @Autowired
+    private BranchRpc branchRpc;
+    @Autowired
+    private BranchTransferGoalsRpc branchTransferGoalsRpc;
+    @Autowired
+    private CardConsumeRpc cardConsumeRpc;
+    @Autowired
+    private CardDepositRpc cardDepositRpc;
+    @Autowired
+    private CardUserRpc cardUserRpc;
+    @Autowired
+    private PosOrderRpc posOrderRpc;
+    @Autowired
+    private TransferOutOrderRpc transferOutOrderRpc;
+    @Autowired
     private ReportRpc reportRpc;
+
+
     Date dateFrom = null;
     Date dateTo = null;
     List<Integer> branchNums = null;
@@ -47,7 +63,7 @@ public class TestSpringBoot {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        List<Branch> all = reportRpc.findAll(systemBookCode);
+        List<Branch> all = branchRpc.findAll(systemBookCode);
         branchNums = new ArrayList<Integer>();
         for (Branch b : all) {
             Integer branchNum = b.getId().getBranchNum();
@@ -60,28 +76,28 @@ public class TestSpringBoot {
         List<OperationStoreDTO> list = new ArrayList<>();
         //按分店查询数据
         //营业额
-        List<BranchMoneyReport> moneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNums, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        List<BranchMoneyReport> moneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, branchNums, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //会员营业额
-        List<BranchMoneyReport> memberMoneyByBranch = reportRpc.findMoneyByBranch(systemBookCode, branchNums, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
+        List<BranchMoneyReport> memberMoneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, branchNums, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //卡存款
-        List<BranchDepositReport> depositByBranch = reportRpc.findDepositByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<BranchDepositReport> depositByBranch = cardDepositRpc.findBranchSum(systemBookCode, branchNums, dateFrom, dateTo);
         //卡消费
-        List<BranchConsumeReport> consumeByBranch = reportRpc.findConsumeByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<BranchConsumeReport> consumeByBranch = cardConsumeRpc.findBranchSum(systemBookCode, branchNums, dateFrom, dateTo);
+        //配送金额
+        List<TransferOutMoney> transferOutMoneyByBranch = transferOutOrderRpc.findTransferOutMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         //报损金额
-        List<LossMoneyReport> lossMoneyByBranch = reportRpc.findLossMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<LossMoneyReport> lossMoneyByBranch = adjustmentOrderRpc.findLossMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         //盘损金额
-        List<CheckMoney> checkMoneyByBranch = reportRpc.findCheckMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
-        //配销差额
-        List<DifferenceMoney> differenceMoneyByBranch = reportRpc.findDifferenceMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<CheckMoney> checkMoneyByBranch = adjustmentOrderRpc.findCheckMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         //会员新增数
-        List<CardUserCount> cardUserCountByBranch = reportRpc.findCardUserCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<CardUserCount> cardUserCountByBranch = cardUserRpc.findCardUserCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         //营业额目标
-        List<SaleMoneyGoals> saleMoneyGoalsByBranch = reportRpc.findSaleMoneyGoalsByBranch(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_WEEK);
+        List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_WEEK);
         //分店面积
-        List<BranchArea> branchArea = reportRpc.findBranchArea(systemBookCode, branchNums);
+        List<BranchArea> branchArea = branchRpc.findBranchArea(systemBookCode, branchNums);
 
 
-        List<Branch> all = reportRpc.findAll(systemBookCode);
+        //List<Branch> all = reportRpc.findAll(systemBookCode);
 
         int date = DateUtil.diffDay(dateFrom, dateTo);
         for (int i = 0; i <branchNums.size() ; i++) {
@@ -91,7 +107,7 @@ public class TestSpringBoot {
             Iterator money = moneyByBranch.iterator();
             while(money.hasNext()){
                 BranchMoneyReport next = (BranchMoneyReport)money.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
+                if(store.getBranchNum().equals(next.getBranchNum())){
                     store.setBranchNum(next.getBranchNum());        //分店号
                     store.setRevenue(next.getBizMoney());           //营业额
                     store.setGrossProfit(next.getProfit());         //毛利
@@ -103,7 +119,7 @@ public class TestSpringBoot {
             Iterator memberMoney = memberMoneyByBranch.iterator();
             while(memberMoney.hasNext()){
                 BranchMoneyReport next = (BranchMoneyReport)memberMoney.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
+                if(store.getBranchNum().equals(next.getBranchNum())){
                     store.setMemberBillNums(next.getOrderCount());    //会员客单量
                     store.setMemberBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()),4, ROUND_HALF_DOWN));//会员客单价
                     break;
@@ -112,7 +128,7 @@ public class TestSpringBoot {
             Iterator deposit = depositByBranch.iterator();
             while(deposit.hasNext()){
                 BranchDepositReport next = (BranchDepositReport)deposit.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
+                if(store.getBranchNum().equals(next.getBranchNum())){
                     store.setCardStorage(next.getDeposit());//卡存款
                     break;
                 }
@@ -120,15 +136,25 @@ public class TestSpringBoot {
             Iterator consume = consumeByBranch.iterator();
             while(consume.hasNext()){
                 BranchConsumeReport next = (BranchConsumeReport)consume.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
+                if(store.getBranchNum().equals(next.getBranchNum())){
                     store.setCartStorageConsume(next.getConsume());//卡消费金额
                     break;
                 }
             }
+
+            Iterator transferOut = transferOutMoneyByBranch.iterator();
+            while(transferOut.hasNext()){
+                TransferOutMoney next = (TransferOutMoney)transferOut.next();
+                if(store.getBranchNum().equals(next.getBranchNum())){
+                    store.setDistributionDifferent(next.getOutMoney().subtract(store.getRevenue()));//配销差额
+                    break;
+                }
+            }
+
             Iterator loss = lossMoneyByBranch.iterator();
             while(loss.hasNext()){
                 LossMoneyReport next = (LossMoneyReport)loss.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
+                if(store.getBranchNum().equals(next.getBranchNum())){
                     store.setDestroyDefferent(next.getMoney());//报损金额
                     break;
                 }
@@ -136,23 +162,15 @@ public class TestSpringBoot {
             Iterator check = checkMoneyByBranch.iterator();
             while(check.hasNext()){
                 CheckMoney next = (CheckMoney)check.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
+                if(store.getBranchNum().equals(next.getBranchNum())){
                     store.setAdjustAmount(next.getMoney());//盘损金额
-                    break;
-                }
-            }
-            Iterator difference = differenceMoneyByBranch.iterator();
-            while(difference.hasNext()){
-                DifferenceMoney next = (DifferenceMoney)difference.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
-                    store.setDistributionDifferent(next.getMoney()); //配销差额
                     break;
                 }
             }
             Iterator cardUserCount = cardUserCountByBranch.iterator();
             while(cardUserCount.hasNext()){
                 CardUserCount next = (CardUserCount)cardUserCount.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
+                if(store.getBranchNum().equals(next.getBranchNum())){
                     store.setIncressedMember(next.getCount()); //会员新增数
                     break;
                 }
@@ -160,7 +178,7 @@ public class TestSpringBoot {
             Iterator saleMoneyGoals = saleMoneyGoalsByBranch.iterator();
             while(saleMoneyGoals.hasNext()){
                 SaleMoneyGoals next = (SaleMoneyGoals)saleMoneyGoals.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
+                if(store.getBranchNum().equals(next.getBranchNum())){
                     if(next.getSaleMoney().compareTo(BigDecimal.ZERO) == 0 ){
                         store.setRealizeRate1(BigDecimal.ZERO);
                     }else{
@@ -172,7 +190,7 @@ public class TestSpringBoot {
             Iterator area = branchArea.iterator();
             while(area.hasNext()){
                 BranchArea next = (BranchArea)area.next();
-                if(branchNums.get(i).equals(next.getBranchNum())){
+                if(store.getBranchNum().equals(next.getBranchNum())){
 
                     if(next.getArea() == null || next.getArea().compareTo(BigDecimal.ZERO) == 0 ){
                         store.setAreaEfficiency(BigDecimal.ZERO);
@@ -182,6 +200,9 @@ public class TestSpringBoot {
                     break;
                 }
             }
+
+
+
             list.add(store);
         }
 

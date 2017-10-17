@@ -4,6 +4,7 @@ import com.nhsoft.report.dao.PosOrderDao;
 import com.nhsoft.report.dto.ItemQueryDTO;
 import com.nhsoft.report.service.PosOrderService;
 import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
+import com.nhsoft.report.util.AppConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,5 +103,18 @@ public class PosOrderServiceImpl implements PosOrderService {
 	public List<Object[]> findCustomReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
 		return posOrderDao.findCustomReportByBranch(systemBookCode, branchNums, dateFrom, dateTo, dateType);
 	}
+
+	@Override
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
+
+
+		List<Object[]> objects = null;
+		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
+			objects = posOrderDao.findMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo, isMember);
+		}
+
+		return objects;
+	}
+
 }
 

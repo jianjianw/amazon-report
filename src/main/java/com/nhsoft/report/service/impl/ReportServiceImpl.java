@@ -12427,69 +12427,9 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return list;
 	}
-	@Override
-	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
 
 
-		List<Object[]> objects = null;
-		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
-			objects = reportDao.findMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo, isMember);
-		}
-
-		return objects;
-	}
 
 
-	@Override
-	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo ) {
-		List<Object[]> objects = reportDao.findDepositByBranch(systemBookCode, branchNums, dateFrom, dateTo);
-		return objects;
-	}
-
-	@Override
-	public List<Object[]> findConsumeByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		List<Object[]> objects = reportDao.findConsumeByBranch(systemBookCode, branchNums, dateFrom, dateTo);
-		return objects;
-	}
-
-	@Override
-	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
-		return reportDao.findLossMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
-	}
-
-	@Override
-	public List<Object[]> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportDao.findCheckMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
-	}
-
-	@Override
-	public List<Object[]> findDifferenceMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportDao.findDifferenceMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
-	}
-
-	@Override
-	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportDao.findCardUserCountByBranch(systemBookCode,branchNums,dateFrom,dateTo);
-	}
-
-	@Override
-	public List<Object[]> findSaleMoneyGoalsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,String dateType) {
-		return reportDao.findSaleMoneyGoalsByBranch(systemBookCode,branchNums,dateFrom,dateTo,dateType);
-	}
-
-	@Override
-	public List<Object[]> findBranchArea(String systemBookCode, List<Integer> branchNums) {
-		return reportDao.findBranchArea(systemBookCode,branchNums);
-	}
-
-	@Override
-	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportDao.findAdjustmentCauseMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
-	}
-
-	@Override
-	public List<Object[]> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportDao.findTransferOutMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
-	}
 
 }

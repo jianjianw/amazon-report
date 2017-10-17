@@ -65,6 +65,13 @@ public interface BranchService {
 	 * */
 	public List<Branch> findBranchByBranchRegionNum(String systemBookCode,Integer branchRegionNum);
 
+	/**
+	 * 查询分店面积
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 */
+	public List<Object[]> findBranchArea(String systemBookCode,List<Integer> branchNums);
+
 
 
 }

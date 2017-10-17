@@ -7,6 +7,7 @@ import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
@@ -180,6 +181,87 @@ public class AdjustmentOrderDaoImpl extends DaoImpl implements AdjustmentOrderDa
 		}
 		criteria.setProjection(Projections.rowCount());
 		return ((Long)criteria.uniqueResult()).intValue();
+	}
+
+
+	@Override
+	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select b.branch_num,sum(a.adjustment_order_money) ");
+		sb.append("from adjustment_order a with(nolock) INNER JOIN branch_storehouse b with(nolock) on a.storehouse_num = b.storehouse_num ");
+		sb.append("where a.system_book_code = :systemBookCode ");
+		sb.append("and adjustment_order_direction = '出库' ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and b.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and adjustment_order_audit_time >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and adjustment_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and adjusyment_order_state_code = '3' ");
+		sb.append("group by b.branch_num order by b.branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select house.branch_num,sum(ckdetail.check_order_detail_cost) as money ");
+		sb.append("from check_order_detail ckdetail WITH (nolock) ");
+		sb.append("INNER JOIN check_order ckorder WITH (nolock) ON ckdetail.check_order_fid = ckorder.check_order_fid ");
+		sb.append("INNER JOIN branch_storehouse house WITH (nolock) ON ckorder.storehouse_num = house.storehouse_num ");
+		sb.append("where ckorder.system_book_code = :systemBookCode ");
+		sb.append("and ckdetail.check_order_detail_stock_amount > ckdetail.check_order_detail_qty ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and house.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and ckorder.check_order_audit_time >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and ckorder.check_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and check_order_state_code = '3' ");
+		sb.append("GROUP BY house.branch_num ");
+		sb.append("ORDER BY house.branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+	}
+
+
+
+
+
+	@Override
+	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("select b.branch_num, ");
+		sb.append("sum(case when a.adjustment_order_cause = '试吃' then a.adjustment_order_money END) tryEat, ");
+		sb.append("sum(case when a.adjustment_order_cause = '去皮' then a.adjustment_order_money END) faly, ");
+		sb.append("sum(case when a.adjustment_order_cause = '报损' then a.adjustment_order_money END) loss, ");
+		sb.append("sum(case when a.adjustment_order_cause = '其他' then a.adjustment_order_money END) other ");
+		sb.append("from adjustment_order a inner join branch_storehouse b on a.storehouse_num = b.storehouse_num ");
+		sb.append("where a.system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and b.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and a.adjustment_order_audit_time >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and a.adjustment_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and adjusyment_order_state_code = '3' ");
+		sb.append("group by b.branch_num order by b.branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
 	}
 
 }

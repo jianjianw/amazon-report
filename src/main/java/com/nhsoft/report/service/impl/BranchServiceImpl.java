@@ -96,5 +96,10 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 		return branchDao.findBranchByBranchRegionNum(systemBookCode,branchRegionNum);
 	}
 
+	@Override
+	public List<Object[]> findBranchArea(String systemBookCode, List<Integer> branchNums) {
+		return branchDao.findBranchArea(systemBookCode,branchNums);
+	}
+
 
 }

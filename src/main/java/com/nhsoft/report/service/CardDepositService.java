@@ -1,5 +1,7 @@
 package com.nhsoft.report.service;
 
+import com.nhsoft.report.dto.BranchDepositReport;
+
 import java.util.Date;
 import java.util.List;
 

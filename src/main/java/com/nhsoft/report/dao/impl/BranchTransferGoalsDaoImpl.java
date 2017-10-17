@@ -4,8 +4,10 @@ package com.nhsoft.report.dao.impl;
 import com.nhsoft.report.dao.BranchTransferGoalsDao;
 import com.nhsoft.report.model.BranchTransferGoals;
 import com.nhsoft.report.util.AppConstants;
+import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -122,5 +124,46 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 		return criteria.list();
 	}
 
+	@Override
+	public List<Object[]> findSaleMoneyGoalsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,String dateType) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num,sum(branch_transfer_sale_value) ");
+		sb.append("from branch_transfer_goals ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_YEAR)){
+			if (dateFrom != null) {
+				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateShortStr(dateFrom).substring(0,4) + "' ");
+			}
+			if (dateTo != null) {
+				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,4) + "' ");
+			}
+		}else if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_MONTH)){
+			if (dateFrom != null) {
+				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateShortStr(dateFrom).substring(0,6) + "' ");
+			}
+			if (dateTo != null) {
+				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,6) + "' ");
+			}
+		}else if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_WEEK)){
+			sb.append("and branch_transfer_start between  '"+DateUtil.getDateShortStr(dateFrom)+"' and  '"+DateUtil.getDateShortStr(dateTo)+"' ");
+			sb.append("and branch_transfer_end between  '"+DateUtil.getDateShortStr(dateFrom)+"' and  '"+DateUtil.getDateShortStr(dateTo)+"' ");
+
+		}else {
+			if (dateFrom != null) {
+				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateStr(dateFrom) + "' ");
+			}
+			if (dateTo != null) {
+				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateStr(dateTo) + "' ");
+			}
+		}
+
+		sb.append("group by branch_num order by branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+	}
 
 }
