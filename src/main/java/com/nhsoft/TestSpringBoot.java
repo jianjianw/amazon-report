@@ -1,6 +1,9 @@
 package com.nhsoft;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhsoft.report.api.dto.OperationStoreDTO;
 import com.nhsoft.report.dao.impl.TransferOutMoney;
 import com.nhsoft.report.dto.*;
@@ -10,6 +13,7 @@ import com.nhsoft.report.service.CardConsumeService;
 import com.nhsoft.report.service.CardDepositService;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
+import org.hibernate.jpa.internal.schemagen.ScriptTargetOutputToFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,8 +59,8 @@ public class TestSpringBoot {
     public void date(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            dateFrom = sdf.parse("2016-01-01");
-            dateTo = sdf.parse("2017-02-01");
+            dateFrom = sdf.parse("2017-06-01");
+            dateTo = sdf.parse("2017-07-01");
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -66,6 +71,12 @@ public class TestSpringBoot {
             Integer branchNum = b.getId().getBranchNum();
             branchNums.add(branchNum);
         }
+    }
+
+    @Test
+    public void test3(){
+        List<BranchMoneyReport> moneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, branchNums, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        System.out.println();
     }
 
     @Test
@@ -144,7 +155,13 @@ public class TestSpringBoot {
             while(transferOut.hasNext()){
                 TransferOutMoney next = (TransferOutMoney)transferOut.next();
                 if(store.getBranchNum().equals(next.getBranchNum())){
-                    store.setDistributionDifferent(next.getOutMoney().subtract(store.getRevenue()));//配销差额
+                    BigDecimal outMoney = next.getOutMoney();
+                    if(store.getRevenue() == null){
+                        store.setDistributionDifferent(outMoney.subtract(BigDecimal.ZERO));//配销差额
+                    }else{
+                        store.setDistributionDifferent(outMoney.subtract(store.getRevenue()));//配销差额
+                    }
+
                     break;
                 }
             }
@@ -211,20 +228,22 @@ public class TestSpringBoot {
             }
             list.add(store);
         }
-
+        System.out.println();
         for (int i = 0; i <list.size() ; i++) {
             if(list.get(i).getRevenue() == null){
                 list.remove(i);
             }
         }
-      /*  ObjectMapper mapper = new ObjectMapper();
+
+        System.out.println();
+        ObjectMapper mapper = new ObjectMapper();
         String string = null;
         try {
             string = mapper.writeValueAsString(list);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        System.out.println(string);*/
+        System.out.println(string);
 
 
     }

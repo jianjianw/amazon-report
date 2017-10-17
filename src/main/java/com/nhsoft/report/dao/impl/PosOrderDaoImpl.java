@@ -1501,7 +1501,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		return sqlQuery.list();
+		List list = sqlQuery.list();
+		return list;
 
 	}
 
