@@ -71,12 +71,10 @@ public class TestApi {
                 dateTo = sdf.parse(date);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(dateTo);
-                //获取当前年月
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
-                //获取下个月的第一天
-                calendar.add(Calendar.MONTH,1);
                 int actualMinimum = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+
+                String from = date + "-01";
+                String to = date+actualMinimum;
 
 
             }else if(date.length() == 10){
