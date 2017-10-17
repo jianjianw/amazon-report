@@ -1,10 +1,12 @@
 package com.nhsoft.report.service.impl;
 
 import com.nhsoft.report.dao.CardUserDao;
+import com.nhsoft.report.dto.CardUserCount;
 import com.nhsoft.report.service.CardUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,5 +36,10 @@ public class CardUserServiceImpl implements CardUserService{
 	@Override
 	public List<Object[]> findRevokeCardCountByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {
 		return cardUserDao.findRevokeCardCountByBizday(systemBookCode, branchNums, dateFrom, dateTo, cardUserCardType);
+	}
+
+	@Override
+	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return cardUserDao.findCardUserCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 	}
 }

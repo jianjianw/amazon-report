@@ -155,5 +155,20 @@ public interface PosOrderService {
 
 
 	public List<Object[]> findCustomReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
+
+
+	/**
+	 * 按分店查询营业额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param queryBy
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isMember 是否会员
+	 * @return
+	 */
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
+
+
 }
 

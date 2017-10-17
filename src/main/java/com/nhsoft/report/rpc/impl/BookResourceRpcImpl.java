@@ -4,6 +4,7 @@ package com.nhsoft.report.rpc.impl;
 import com.nhsoft.report.param.AdjustmentReason;
 import com.nhsoft.report.rpc.BookResourceRpc;
 import com.nhsoft.report.service.BookResourceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ import java.util.List;
 @Component
 public class BookResourceRpcImpl implements BookResourceRpc {
 
+
+	@Autowired
 	private BookResourceService bookResourceService;
 
 	@Override

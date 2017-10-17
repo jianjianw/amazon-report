@@ -388,5 +388,15 @@ public interface PosOrderDao {
 	 */
 	public List<Object[]> findMgrDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
 
+	/**
+	 * 按分店查询营业额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isMember 是否会员
+	 * @return
+	 */
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
 
 }

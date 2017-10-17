@@ -24,4 +24,9 @@ public class BranchTransferGoalsServiceImpl implements BranchTransferGoalsServic
 		
 		return branchTransferGoalsDao.findSummaryByDate(systemBookCode, branchNums, dateFrom, dateTo, dateType);
 	}
+
+	@Override
+	public List<Object[]> findSaleMoneyGoalsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,String dateType) {
+		return branchTransferGoalsDao.findSaleMoneyGoalsByBranch(systemBookCode,branchNums,dateFrom,dateTo,dateType);
+	}
 }

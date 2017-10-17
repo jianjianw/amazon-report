@@ -1,6 +1,7 @@
 package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.CardUserDao;
+import com.nhsoft.report.dto.CardUserCount;
 import com.nhsoft.report.model.CardUser;
 import com.nhsoft.report.shared.queryBuilder.CardUserQuery;
 import com.nhsoft.report.util.AppConstants;
@@ -491,5 +492,28 @@ public class CardUserDaoImpl extends  DaoImpl implements CardUserDao {
 			return (Integer)object;
 		}
 		return 0;
+	}
+
+	@Override
+	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select card_user_enroll_shop,count(card_user_num) ");
+		sb.append("from card_user ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and card_user_enroll_shop in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and card_user_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and card_user_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by card_user_enroll_shop order by card_user_enroll_shop asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		List list = sqlQuery.list();
+		return list;
+
 	}
 }

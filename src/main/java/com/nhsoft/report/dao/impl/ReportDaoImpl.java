@@ -8004,35 +8004,10 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		return query.list();
 	}
 
-	@Override
-	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
-		sb.append("count(order_no) as count, sum(order_gross_profit) as profit ");
-		sb.append("from pos_order with(nolock) ");
-		sb.append("where system_book_code = :systemBookCode ");
-		if (branchNums != null && branchNums.size() > 0) {
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("and order_state_code in (5, 7) ");
-		if(isMember){
-			sb.append("and order_card_user_num > 0 ");
-		}
-		sb.append("group by branch_num order by branch_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", systemBookCode);
-		return sqlQuery.list();
-
-	}
 
 
-	@Override
+
+/*	@Override
 	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, sum(deposit_money) as money ");
@@ -8042,10 +8017,10 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if (dateFrom != null) {
-			sb.append("and deposit_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and deposit_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
@@ -8063,214 +8038,20 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if (dateFrom != null) {
-			sb.append("and consume_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and consume_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
-	}
+	}*/
 
-	@Override
-	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select b.branch_num,sum(a.adjustment_order_money) ");
-		sb.append("from adjustment_order a with(nolock) INNER JOIN branch_storehouse b with(nolock) on a.storehouse_num = b.storehouse_num ");
-		sb.append("where a.system_book_code = :systemBookCode ");
-		sb.append("and adjustment_order_direction = '出库' ");
-		if(branchNums != null && branchNums.size()>0){
-			sb.append("and b.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and adjustment_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and adjustment_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("group by b.branch_num order by b.branch_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", systemBookCode);
-		return sqlQuery.list();
-	}
 
-	@Override
-	public List<Object[]> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select house.branch_num,sum(ckdetail.check_order_detail_cost) as money ");
-		sb.append("from check_order_detail ckdetail WITH (nolock) ");
-		sb.append("INNER JOIN check_order ckorder WITH (nolock) ON ckdetail.check_order_fid = ckorder.check_order_fid ");
-		sb.append("INNER JOIN branch_storehouse house WITH (nolock) ON ckorder.storehouse_num = house.storehouse_num ");
-		sb.append("where ckorder.system_book_code = :systemBookCode ");
-		sb.append("and ckdetail.check_order_detail_stock_amount > ckdetail.check_order_detail_qty ");
-		if(branchNums != null && branchNums.size()>0){
-			sb.append("and house.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and ckorder.check_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and ckorder.check_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
 
-		sb.append("GROUP BY house.branch_num ");
-		sb.append("ORDER BY house.branch_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode",systemBookCode);
-		return sqlQuery.list();
-	}
 
-	@Override
-	public List<Object[]> findDifferenceMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select tout.branch_num,sum(tout.out_order_total_money - tin.in_order_total_money) ");
-		sb.append("from transfer_out_order tout with(nolock) INNER JOIN transfer_in_order tin with(nolock) on tout.out_order_fid = tin.out_order_fid ");
-		sb.append("where tout.system_book_code = :systemBookCode ");
-		if(branchNums != null && branchNums.size()>0){
-			sb.append("and tout.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and tout.out_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and tout.out_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("group by tout.branch_num order by branch_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", systemBookCode);
-		return sqlQuery.list();
-	}
-
-	@Override
-	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select card_user_enroll_shop,count(card_user_num) ");
-		sb.append("from card_user ");
-		sb.append("where system_book_code = :systemBookCode ");
-		if(branchNums != null && branchNums.size()>0){
-			sb.append("and card_user_enroll_shop in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and card_user_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and card_user_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("group by card_user_enroll_shop order by card_user_enroll_shop asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", systemBookCode);
-		List list = sqlQuery.list();
-		return list;
-
-	}
-
-	@Override
-	public List<Object[]> findSaleMoneyGoalsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,String dateType) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num,sum(branch_transfer_sale_value) ");
-		sb.append("from branch_transfer_goals ");
-		sb.append("where system_book_code = :systemBookCode ");
-		if(branchNums != null && branchNums.size()>0){
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_YEAR)){
-			if (dateFrom != null) {
-				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateShortStr(dateFrom).substring(0,4) + "' ");
-			}
-			if (dateTo != null) {
-				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,4) + "' ");
-			}
-		}else if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_MONTH)){
-			if (dateFrom != null) {
-				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateShortStr(dateFrom).substring(0,6) + "' ");
-			}
-			if (dateTo != null) {
-				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,6) + "' ");
-			}
-		}else if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_WEEK)){
-			/*dateFrom = DateUtil.getDateShortStr(dateFrom);
-			dateTo = DateUtil.getDateShortStr(dateTo);*/
-			sb.append("and branch_transfer_start between  '"+DateUtil.getDateShortStr(dateFrom)+"' and  '"+DateUtil.getDateShortStr(dateTo)+"' ");
-			sb.append("and branch_transfer_end between  '"+DateUtil.getDateShortStr(dateFrom)+"' and  '"+DateUtil.getDateShortStr(dateTo)+"' ");
-
-		}else {
-			if (dateFrom != null) {
-				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateStr(dateFrom) + "' ");
-			}
-			if (dateTo != null) {
-				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateStr(dateTo) + "' ");
-			}
-		}
-
-		sb.append("group by branch_num order by branch_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode",systemBookCode);
-		return sqlQuery.list();
-	}
-
-	@Override
-	public List<Object[]> findBranchArea(String systemBookCode, List<Integer> branchNums) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num,sum(branch_area) ");
-		sb.append("from branch ");
-		sb.append("where system_book_code = :systemBookCode ");
-		sb.append("group by branch_num order by branch_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode",systemBookCode);
-		List list = sqlQuery.list();
-		return list;
-	}
-
-	@Override
-	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append("select b.branch_num, ");
-		sb.append("sum(case when a.adjustment_order_cause = '试吃' then a.adjustment_order_money END) tryEat, ");
-		sb.append("sum(case when a.adjustment_order_cause = '去皮' then a.adjustment_order_money END) faly, ");
-		sb.append("sum(case when a.adjustment_order_cause = '报损' then a.adjustment_order_money END) loss, ");
-		sb.append("sum(case when a.adjustment_order_cause = '其他' then a.adjustment_order_money END) other ");
-		sb.append("from adjustment_order a inner join branch_storehouse b on a.storehouse_num = b.storehouse_num ");
-		sb.append("where a.system_book_code = :systemBookCode ");
-		if(branchNums != null && branchNums.size()>0){
-			sb.append("and b.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and a.adjustment_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and a.adjustment_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("group by b.branch_num order by b.branch_num asc");
-
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode",systemBookCode);
-		return sqlQuery.list();
-	}
-
-	@Override
-	public List<Object[]> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-
-		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num,sum(out_order_total_money) ");
-		sb.append("from transfer_out_order ");
-		sb.append("where system_book_code = :systemBookCode ");
-		if(branchNums != null && branchNums.size()>0){
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and out_order_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and out_order_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("group by branch_num order by branch_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode",systemBookCode);
-		return sqlQuery.list();
-	}
 
 
 }
