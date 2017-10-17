@@ -1,21 +1,20 @@
 package com.nhsoft.report.api.dto;
 
-public class InputControlsWeekDTO {
+public class InputControlsYearDTO {
 
 	private String display;
-	private String week;
-	
+	private String year;
 	public String getDisplay() {
 		return display;
 	}
 	public void setDisplay(String display) {
 		this.display = display;
 	}
-	public String getWeek() {
-		return week;
+	public String getYear() {
+		return year;
 	}
-	public void setWeek(String week) {
-		this.week = week;
+	public void setYear(String year) {
+		this.year = year;
 	}
 	
 }

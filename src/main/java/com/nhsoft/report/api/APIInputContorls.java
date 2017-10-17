@@ -7,18 +7,27 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nhsoft.report.api.dto.InputControlsBranchDTO;
 import com.nhsoft.report.api.dto.InputControlsMonthDTO;
 import com.nhsoft.report.api.dto.InputControlsWeekDTO;
+import com.nhsoft.report.api.dto.InputControlsYearDTO;
+import com.nhsoft.report.model.Branch;
+import com.nhsoft.report.rpc.BranchRpc;
 import com.nhsoft.report.util.DateUtil;
 
 @RestController()
 @RequestMapping("/inputControls")
 public class APIInputContorls {
+	
+	@Autowired
+	private BranchRpc branchRpc;
 	
 	/**
 	 * @param specifiedDate 任意一天的日期
@@ -113,7 +122,7 @@ public class APIInputContorls {
 			} else {
 				dto.setDisplay(sdf.format(date[1])+"~"+sdf.format(calendar2.getTime()));
 			}
-			dto.setWeek(i);
+			dto.setWeek(sdf.format(date[1])+"~"+sdf.format(calendar2.getTime()));
 			list.add(dto);
 		}
 		return list;
@@ -169,6 +178,70 @@ public class APIInputContorls {
 				list.add(dto);
 				calendar.add(Calendar.MONTH, 1);
 			}
+		}
+		return list;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/year")
+	public @ResponseBody List<InputControlsYearDTO> listYearJson() {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式 
+		Date today = new Date();
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(today);
+		String yearStr = null;
+		
+		//返回本年和前五年的年份
+		InputControlsYearDTO dto = null;
+		List<InputControlsYearDTO> list = new ArrayList<InputControlsYearDTO>();
+		for(int i = 0; i < 6; i++) {
+			dto = new InputControlsYearDTO();
+			yearStr = sdf.format(calendar.getTime()).substring(0, 4);
+			dto.setDisplay(yearStr);
+			dto.setYear(yearStr);
+			calendar.add(Calendar.YEAR, -1);
+			list.add(dto);
+		}
+		return list;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/branch")
+	public @ResponseBody List<InputControlsBranchDTO> listBranchJson(@RequestHeader("systemBookCode") String systemBookCode,
+		@RequestHeader("branchNums") String branchNums) {
+		
+		// 防止传入branchNums的值为空[]，导致转化错误，但也不能是[,,, , ]这种格式
+		if(branchNums.equals("[]")) {
+			List<InputControlsBranchDTO> list = new ArrayList<InputControlsBranchDTO>();
+			return list;
+		}
+		
+		String branchNumStrs = branchNums.substring(1, branchNums.length() - 1);
+		String[] array = branchNumStrs.split(",");
+		
+		List<Integer> branchNumsList = new ArrayList<Integer>();
+		for(int i = 0; i < array.length; i++) {
+			branchNumsList.add(Integer.parseInt(array[i].trim()));
+		}
+		
+		List<Branch> branchList = branchRpc.findAll(systemBookCode);
+		List<Branch> branchForUser = new ArrayList<Branch>();
+		for(int i = 0; i < branchNumsList.size(); i++) {
+			for(int j = 0; j < branchList.size(); j++) {
+				if(branchNumsList.get(i).equals(branchList.get(j).getId().getBranchNum())) {
+					branchForUser.add(branchList.get(j));
+					break;
+				}
+			}
+		}
+		
+		InputControlsBranchDTO dto = null;
+		List<InputControlsBranchDTO> list = new ArrayList<InputControlsBranchDTO>();
+		for(int i = 0; i < branchForUser.size(); i++) {
+			dto = new InputControlsBranchDTO();
+			dto.setBranchName(branchForUser.get(i).getBranchName());
+			dto.setBranchNum(branchForUser.get(i).getId().getBranchNum());
+			list.add(dto);
 		}
 		return list;
 	}
