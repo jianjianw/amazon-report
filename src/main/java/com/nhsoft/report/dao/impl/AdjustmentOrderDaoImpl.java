@@ -200,7 +200,7 @@ public class AdjustmentOrderDaoImpl extends DaoImpl implements AdjustmentOrderDa
 		if (dateTo != null) {
 			sb.append("and adjustment_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
-		sb.append("and adjusyment_order_state_code = '3' ");
+		sb.append("and adjustment_order_state_code = '3' ");
 		sb.append("group by b.branch_num order by b.branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
