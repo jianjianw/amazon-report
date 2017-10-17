@@ -44,9 +44,6 @@ public class TestSpringBoot {
     private PosOrderRpc posOrderRpc;
     @Autowired
     private TransferOutOrderRpc transferOutOrderRpc;
-    @Autowired
-    private ReportRpc reportRpc;
-
 
     Date dateFrom = null;
     Date dateTo = null;
@@ -95,9 +92,9 @@ public class TestSpringBoot {
         List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_WEEK);
         //分店面积
         List<BranchArea> branchArea = branchRpc.findBranchArea(systemBookCode, branchNums);
+        //损耗：试吃，去皮，报损，其他
+        List<AdjustmentCauseMoney> adjustmentCauseMoneyByBranch = adjustmentOrderRpc.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 
-
-        //List<Branch> all = reportRpc.findAll(systemBookCode);
 
         int date = DateUtil.diffDay(dateFrom, dateTo);
         for (int i = 0; i <branchNums.size() ; i++) {
@@ -138,6 +135,7 @@ public class TestSpringBoot {
                 BranchConsumeReport next = (BranchConsumeReport)consume.next();
                 if(store.getBranchNum().equals(next.getBranchNum())){
                     store.setCartStorageConsume(next.getConsume());//卡消费金额
+                    store.setStorageConsumeOccupy(store.getCardStorage().divide(store.getCartStorageConsume(),4,ROUND_HALF_DOWN));//存储消费占比
                     break;
                 }
             }
@@ -200,9 +198,17 @@ public class TestSpringBoot {
                     break;
                 }
             }
-
-
-
+            Iterator adjustmentCause = adjustmentCauseMoneyByBranch.iterator();
+            while(adjustmentCause.hasNext()){
+                AdjustmentCauseMoney next = (AdjustmentCauseMoney)adjustmentCause.next();
+                if(store.getBranchNum().equals(next.getBranchNum())){
+                    store.setTest(next.getTryEat());    //试吃
+                    store.setPeel(next.getFaly());      //去皮
+                    store.setBreakage(next.getLoss());  //报损
+                    store.setOther(next.getOther());    //其他
+                    break;
+                }
+            }
             list.add(store);
         }
 
