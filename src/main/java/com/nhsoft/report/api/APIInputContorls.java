@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nhsoft.report.api.dto.InputControlsMonthDTO;
 import com.nhsoft.report.api.dto.InputControlsWeekDTO;
 import com.nhsoft.report.util.DateUtil;
 
@@ -70,8 +71,7 @@ public class APIInputContorls {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/week")
-	public @ResponseBody List<InputControlsWeekDTO> listBranchJson() {
-		
+	public @ResponseBody List<InputControlsWeekDTO> listWeekJson() {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
 		Date today = new Date();                                       
@@ -115,6 +115,60 @@ public class APIInputContorls {
 			}
 			dto.setWeek(i);
 			list.add(dto);
+		}
+		return list;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/month")
+	public @ResponseBody List<InputControlsMonthDTO> listMonthJson() {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式 
+		Date today = new Date();
+		
+		String subTodayStr = sdf.format(today).substring(5, 7);
+		int month = Integer.parseInt(subTodayStr);
+		
+		Calendar calendar = Calendar.getInstance();
+		
+		InputControlsMonthDTO dto = null;
+		List<InputControlsMonthDTO> list = new ArrayList<InputControlsMonthDTO>();
+		
+		if(month > 3) {
+			String startDay = sdf.format(today).substring(0, 4) + "-01-01";
+			Date start = null;
+			try {
+				start = sdf.parse(startDay);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			calendar.setTime(start);
+			for(int i = 1; i <= 12; i++) {
+				dto = new InputControlsMonthDTO();
+				dto.setDisplay(sdf.format(calendar.getTime()).substring(0, 7));
+				dto.setMonth(sdf.format(calendar.getTime()).substring(0, 7));
+				list.add(dto);
+				calendar.add(Calendar.MONTH, 1);
+			}
+		} else {
+			calendar.setTime(today);
+			calendar.add(Calendar.YEAR, -1);
+			String startDay = sdf.format(calendar.getTime()).substring(0, 4) + "-01-01";
+			Date start = null;
+			try {
+				start = sdf.parse(startDay);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			calendar.setTime(start);
+			for(int i = 1; i <= 12+month; i++) {
+				dto = new InputControlsMonthDTO();
+				dto.setDisplay(sdf.format(calendar.getTime()).substring(0, 7));
+				dto.setMonth(sdf.format(calendar.getTime()).substring(0, 7));
+				list.add(dto);
+				calendar.add(Calendar.MONTH, 1);
+			}
 		}
 		return list;
 	}
