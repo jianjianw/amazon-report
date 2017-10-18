@@ -4,6 +4,7 @@ package com.nhsoft;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhsoft.report.api.TestApi;
 import com.nhsoft.report.api.dto.OperationStoreDTO;
 import com.nhsoft.report.dao.impl.TransferOutMoney;
 import com.nhsoft.report.dto.*;
@@ -247,6 +248,14 @@ public class TestSpringBoot {
 
 
     }
+    @Autowired
+    private TestApi testApi;
 
+
+    @Test
+    public void testApi(){
+        List<OperationStoreDTO> test = testApi.test(systemBookCode, "[1,2,3,4,5,6,7,8,9]", "2017-07-07");
+        System.out.println();
+    }
 
 }

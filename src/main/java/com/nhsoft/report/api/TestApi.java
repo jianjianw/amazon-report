@@ -52,13 +52,14 @@ public class TestApi {
     public List<OperationStoreDTO> test(@RequestHeader("systemBookCode") String systemBookCode,
                                         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
-
         List<Integer> bannchNumList = new ArrayList<>();
-        String replace = branchNums.replace("[", "").replace("]","");
+        String replace = branchNums.replace("[", "").replace("]","").replace(" ","");
         String[] split = replace.split(",");
         for (int i = 0; i <split.length ; i++) {
             bannchNumList.add(Integer.parseInt(split[i]));
         }
+        Date growthDateFrom = null;
+        Date growthDateTo = null;
         Date dateFrom = null;
         Date dateTo = null;
         //营业额目标（查询时间类型）
@@ -75,8 +76,6 @@ public class TestApi {
 
                 String from = date + "-01";
                 String to = date+actualMinimum;
-
-
             }else if(date.length() == 10){
                 dateType = AppConstants.BUSINESS_DATE_SOME_DATE;
                 //按天查
@@ -86,12 +85,25 @@ public class TestApi {
                 calendar.setTime(dateTo);
                 calendar.add(Calendar.DAY_OF_MONTH,1);
                 dateFrom = calendar.getTime();
+                //用于计算查询昨天的营业额
+                growthDateTo = dateFrom;    //昨天
+                Calendar calendar_ = Calendar.getInstance();
+                calendar_.setTime(growthDateTo);
+                calendar_.add(Calendar.DAY_OF_MONTH,-1);
+                growthDateFrom = calendar_.getTime();   //前天
             }else {
                 //按周查
                 dateType =  AppConstants.BUSINESS_DATE_SOME_WEEK;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 dateFrom = sdf.parse(date.substring(0, 11));
                 dateTo = sdf.parse(date.substring(11, date.length()));
+
+                //用于计算查询上周的营业额
+                growthDateTo = dateFrom;//本周一
+                Calendar calendar_ = Calendar.getInstance();
+                calendar_.setTime(growthDateTo);
+                calendar_.add(Calendar.DAY_OF_MONTH,-7);
+                growthDateFrom = calendar_.getTime();   //上周一
             }
         } catch (ParseException e) {
             logger.error("日期解析失败");
@@ -99,7 +111,9 @@ public class TestApi {
 
 
         List<OperationStoreDTO> list = new ArrayList<>();
-        //按分店查询数据
+
+        //用于计算环比增长率
+        List<BranchMoneyReport> growthMoneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, growthDateFrom, growthDateTo, false);
         //营业额
         List<BranchMoneyReport> moneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //会员营业额
@@ -108,7 +122,7 @@ public class TestApi {
         List<BranchDepositReport> depositByBranch = cardDepositRpc.findBranchSum(systemBookCode, bannchNumList, dateFrom, dateTo);
         //卡消费
         List<BranchConsumeReport> consumeByBranch = cardConsumeRpc.findBranchSum(systemBookCode, bannchNumList, dateFrom, dateTo);
-        //bannchNumList
+        //配送金额
         List<TransferOutMoney> transferOutMoneyByBranch = transferOutOrderRpc.findTransferOutMoneyByBranch(systemBookCode, bannchNumList, dateFrom, dateTo);
         //报损金额
         List<LossMoneyReport> lossMoneyByBranch = adjustmentOrderRpc.findLossMoneyByBranch(systemBookCode, bannchNumList, dateFrom, dateTo);
@@ -129,6 +143,17 @@ public class TestApi {
             OperationStoreDTO store = new OperationStoreDTO();
             store.setBranchNum(bannchNumList.get(i));
 
+            //上期的营业额
+            Iterator growth = growthMoneyByBranch.iterator();
+            while (growth.hasNext()) {
+                BranchMoneyReport next = (BranchMoneyReport) growth.next();
+                if (store.getBranchNum().equals(next.getBranchNum())) {
+                    store.setGrowthOf(next.getBizMoney());//上期营业额，先暂存到增长率，为了下面的计算
+                    break;
+                }
+            }
+
+
             Iterator money = moneyByBranch.iterator();
             while (money.hasNext()) {
                 BranchMoneyReport next = (BranchMoneyReport) money.next();
@@ -138,9 +163,12 @@ public class TestApi {
                     store.setGrossProfit(next.getProfit());         //毛利
                     store.setAveBillNums(next.getOrderCount() / day);    //日均客单量
                     store.setBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 4, ROUND_HALF_DOWN));//客单价
+                    //环比增长率
+                    store.setGrowthOf((store.getRevenue().subtract(store.getGrowthOf())).divide(store.getGrowthOf(),4, ROUND_HALF_DOWN));//（今年6月的销售额 - 今年5月的销售额相比）/ 今年5月的销售额相比 （本期-上期）/上期
                     break;
                 }
             }
+
             Iterator memberMoney = memberMoneyByBranch.iterator();
             while (memberMoney.hasNext()) {
                 BranchMoneyReport next = (BranchMoneyReport) memberMoney.next();

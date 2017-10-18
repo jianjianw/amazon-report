@@ -8007,7 +8007,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	@Override
 	public List<Object[]> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData queryData) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select p.branch_num,detail.item_num, detail.order_detail_item_matrix_num, detail.order_detail_state_code, ");
+		sb.append("select p.branch_num,detail.item_num,detail.order_detail_state_code, ");
 		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
 		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_, ");
 		sb.append("sum(detail.order_detail_discount) as discount, count(distinct p.branch_num) as branchCount ");
@@ -8058,12 +8058,12 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 			sb.append(")) ");
 		}
-		sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num, detail.order_detail_state_code ");
+		sb.append("group by p.branch_num, detail.item_num, detail.order_detail_state_code ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		List<Object[]> objects = query.list();
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
 			sb = new StringBuffer();
-			sb.append("select kitDetail.branch_num kitDetail.item_num, kitDetail.order_kit_detail_item_matrix_num, kitDetail.order_kit_detail_state_code, ");
+			sb.append("select kitDetail.branch_num kitDetail.item_num,kitDetail.order_kit_detail_state_code, ");
 			sb.append("sum(kitDetail.order_kit_detail_amount) as amount, sum(kitDetail.order_kit_detail_payment_money) as money, ");
 			sb.append("sum(0.00) as assistAmount, count(kitDetail.item_num) as amount_, ");
 			sb.append("sum(kitDetail.order_kit_detail_discount) as discount, count(distinct kitDetail.order_kit_detail_branch_num) as branchCount ");
@@ -8105,7 +8105,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 				sb.append(")) ");
 			}
-			sb.append("group by kitDetail.branch_num, kitDetail.item_num, kitDetail.order_kit_detail_item_matrix_num, kitDetail.order_kit_detail_state_code ");
+			sb.append("group by kitDetail.branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
 			query = currentSession().createSQLQuery(sb.toString());
 			List<Object[]> subObjects = query.list();
 			objects.addAll(subObjects);
