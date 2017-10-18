@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class TrendMonthly {
 
-	private String month;
+	private String month;                         // 月份
 	private BigDecimal revenue;                   // 营业额
 	private BigDecimal memberRevenue;             // 会员营业额
 	private BigDecimal distributionMoney;         // 配送额
