@@ -3608,7 +3608,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData) {
+	public List<Object[]> findSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData) {////
 		StringBuffer sb = new StringBuffer();
 		if(queryData.getIsQueryCardUser()){
 			sb.append("select detail.item_num, detail.order_detail_item_matrix_num, detail.order_detail_state_code, ");
@@ -8004,50 +8004,114 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		return query.list();
 	}
 
-
-
-
-/*	@Override
-	public List<Object[]> findDepositByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num, sum(deposit_money) as money ");
-		sb.append("from card_deposit with(nolock) ");
-		sb.append("where system_book_code = :systemBookCode ");
-		if(branchNums != null && branchNums.size()>0){
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("group by branch_num order by branch_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", systemBookCode);
-		return sqlQuery.list();
-	}
-
 	@Override
-	public List<Object[]> findConsumeByBranch(String systemBookCode,List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData queryData) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num, sum(consume_money) as money ");
-		sb.append("from card_consume with(nolock) ");
-		sb.append("where system_book_code = :systemBookCode ");
-		if(branchNums != null && branchNums.size()>0){
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		sb.append("select p.branch_num,detail.item_num, detail.order_detail_item_matrix_num, detail.order_detail_state_code, ");
+		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_, ");
+		sb.append("sum(detail.order_detail_discount) as discount, count(distinct p.branch_num) as branchCount ");
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
+		sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
+		if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
+			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
 		}
-		if (dateFrom != null) {
-			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
+				+ "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
+		sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
+		if (queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
 		}
-		if (dateTo != null) {
-			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		sb.append("and p.ORDER_CARD_USER_NUM > 0 ");
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
 		}
-		sb.append("group by branch_num order by branch_num asc");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", systemBookCode);
-		return sqlQuery.list();
-	}*/
+		if (queryData.getIsQueryGrade()) {
+			sb.append("and (detail.item_grade_num is null or detail.item_grade_num = 0 ) ");
+		}
+		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+
+				sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
+
+			} else {
+				sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+
+			}
+		}
+		if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
+			sb.append("and p.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
+		}
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
+		}
+		if(queryData.getTwoStringValueDatas() != null && queryData.getTwoStringValueDatas().size() > 0){
+			sb.append("and exists (select 1 from item_extend_attribute with(nolock) where item_extend_attribute.item_num = detail.item_num and (");
+			for(int i = 0;i < queryData.getTwoStringValueDatas().size();i++){
+				TwoStringValueData twoStringValueData = queryData.getTwoStringValueDatas().get(i);
+				if(i > 0){
+					sb.append(" or ");
+				}
+				sb.append("(item_extend_attribute.attribute_name = '" + twoStringValueData.getKey() + "' and item_extend_attribute.attribute_value like '%" + twoStringValueData.getValue() + "%') ");
+			}
+
+			sb.append(")) ");
+		}
+		sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num, detail.order_detail_state_code ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		List<Object[]> objects = query.list();
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb = new StringBuffer();
+			sb.append("select kitDetail.branch_num kitDetail.item_num, kitDetail.order_kit_detail_item_matrix_num, kitDetail.order_kit_detail_state_code, ");
+			sb.append("sum(kitDetail.order_kit_detail_amount) as amount, sum(kitDetail.order_kit_detail_payment_money) as money, ");
+			sb.append("sum(0.00) as assistAmount, count(kitDetail.item_num) as amount_, ");
+			sb.append("sum(kitDetail.order_kit_detail_discount) as discount, count(distinct kitDetail.order_kit_detail_branch_num) as branchCount ");
+			sb.append("from pos_order_kit_detail as kitDetail with(nolock) ");
+			sb.append("where kitDetail.order_kit_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
+			if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
+				sb.append("and kitDetail.order_kit_detail_branch_num in "
+						+ AppUtil.getIntegerParmeList(queryData.getBranchNums()));
+			}
+			sb.append("and kitDetail.order_kit_detail_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
+					+ "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
+			sb.append("and kitDetail.order_kit_detail_order_state in (5, 7) ");
+			if (queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0) {
+				sb.append("and kitDetail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
+			}
+			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+
+					sb.append("and kitDetail.order_source in " + AppUtil.getStringParmeList(weixinSources));
+
+				} else {
+					sb.append("and (kitDetail.order_source is null or kitDetail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+
+				}
+			}
+			if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
+				sb.append("and kitDetail.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
+			}
+			if(queryData.getTwoStringValueDatas() != null && queryData.getTwoStringValueDatas().size() > 0){
+				sb.append("and exists (select 1 from item_extend_attribute with(nolock) where item_extend_attribute.item_num = kitDetail.item_num and (");
+				for(int i = 0;i < queryData.getTwoStringValueDatas().size();i++){
+					TwoStringValueData twoStringValueData = queryData.getTwoStringValueDatas().get(i);
+					if(i > 0){
+						sb.append(" or ");
+					}
+					sb.append("(item_extend_attribute.attribute_name = '" + twoStringValueData.getKey() + "' and item_extend_attribute.attribute_value like '%" + twoStringValueData.getValue() + "%') ");
+				}
+
+				sb.append(")) ");
+			}
+			sb.append("group by kitDetail.branch_num, kitDetail.item_num, kitDetail.order_kit_detail_item_matrix_num, kitDetail.order_kit_detail_state_code ");
+			query = currentSession().createSQLQuery(sb.toString());
+			List<Object[]> subObjects = query.list();
+			objects.addAll(subObjects);
+		}
+		return objects;
+	}
 
 
 

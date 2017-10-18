@@ -856,6 +856,12 @@ public interface ReportDao {
 
 	public List<Object[]> findCustomerAnalysisBranchItem(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, List<Integer> itemNums);
 
+	/**
+	 * 销售分析 -- 按分店汇总商品信息
+	 * @param queryData
+	 * @return
+	 */
+	public List<Object[]> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData queryData);
 
 
 

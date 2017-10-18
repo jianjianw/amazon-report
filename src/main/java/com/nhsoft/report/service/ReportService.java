@@ -1311,8 +1311,12 @@ public interface ReportService {
                                                         Integer branchNum, Date dateFrom, Date dateTo, Integer itemNum,
                                                         String itemLotNumber, String itemUnit);
 
-
-
+	/**
+	 * 销售分析 -- 按分店汇总商品信息
+	 * @param saleAnalysisQueryData
+	 * @return
+	 */
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 
