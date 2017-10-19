@@ -100,6 +100,18 @@ public interface ShipOrderDao {
 												List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
+	/**
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param companies
+	 * */
+	public List<Object[]> findShipMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
+
+
+
+
 
 
 }

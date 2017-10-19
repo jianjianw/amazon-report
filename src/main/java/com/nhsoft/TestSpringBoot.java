@@ -254,7 +254,7 @@ public class TestSpringBoot {
 
     @Test
     public void testApi(){
-        List<OperationStoreDTO> test = testApi.test(systemBookCode, "[1,2,3,4,5,6,7,8,9]", "2017-07-07");
+        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, "[1,2,3,4,5,6,7,8,9]", "2017-07-07");
         System.out.println();
     }
 

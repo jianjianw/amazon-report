@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhsoft.report.api.dto.OperationStoreDTO;
 import com.nhsoft.report.dao.impl.TransferOutMoney;
 import com.nhsoft.report.dto.*;
+import com.nhsoft.report.model.Branch;
+import com.nhsoft.report.model.BranchRegion;
 import com.nhsoft.report.rpc.*;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
@@ -46,12 +48,12 @@ public class TestApi {
     private TransferOutOrderRpc transferOutOrderRpc;
 
 
-
-
     @RequestMapping(method = RequestMethod.GET, value = "/store")
-    public List<OperationStoreDTO> test(@RequestHeader("systemBookCode") String systemBookCode,
-                                        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-
+    public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
+                                            @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+        systemBookCode = "4020";
+        branchNums ="[]";
+        date = "2017-02-02";
         List<Integer> bannchNumList = new ArrayList<>();
         String replace = branchNums.replace("[", "").replace("]","").replace(" ","");
         String[] split = replace.split(",");
@@ -64,46 +66,47 @@ public class TestApi {
         Date dateTo = null;
         //营业额目标（查询时间类型）
         String dateType = null;
+        Calendar calendar = Calendar.getInstance();
         try {
             if(date.length() == 7){
                 dateType =  AppConstants.BUSINESS_DATE_SOME_MONTH;
                 //按月份查
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-                dateTo = sdf.parse(date);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(dateTo);
-                int actualMinimum = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-
-                String from = date + "-01";
-                String to = date+actualMinimum;
+                dateFrom = sdf.parse(date);
+                calendar.setTime(dateFrom);
+                calendar.add(Calendar.DAY_OF_MONTH,calendar.getActualMaximum(Calendar.DAY_OF_MONTH)-1);
+                dateTo = calendar.getTime();
+                //上个月的时间
+                calendar.setTime(dateFrom);
+                calendar.add(Calendar.MONTH,-1);
+                growthDateFrom = calendar.getTime();
+                calendar.setTime(growthDateFrom);
+                calendar.add(Calendar.DAY_OF_MONTH,calendar.getActualMaximum(Calendar.DAY_OF_MONTH)-1);
+                growthDateTo = calendar.getTime();
             }else if(date.length() == 10){
                 dateType = AppConstants.BUSINESS_DATE_SOME_DATE;
                 //按天查
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                dateTo = sdf.parse(date);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(dateTo);
-                calendar.add(Calendar.DAY_OF_MONTH,1);
-                dateFrom = calendar.getTime();
-                //用于计算查询昨天的营业额
-                growthDateTo = dateFrom;    //昨天
-                Calendar calendar_ = Calendar.getInstance();
-                calendar_.setTime(growthDateTo);
-                calendar_.add(Calendar.DAY_OF_MONTH,-1);
-                growthDateFrom = calendar_.getTime();   //前天
+                dateFrom = sdf.parse(date);
+                dateTo = dateFrom;
+                //昨天的时间
+                calendar.setTime(dateFrom);
+                calendar.add(Calendar.DAY_OF_MONTH,-1);
+                growthDateFrom = calendar.getTime();  //昨天
+                growthDateTo = growthDateFrom;
             }else {
                 //按周查
                 dateType =  AppConstants.BUSINESS_DATE_SOME_WEEK;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 dateFrom = sdf.parse(date.substring(0, 11));
                 dateTo = sdf.parse(date.substring(11, date.length()));
-
-                //用于计算查询上周的营业额
-                growthDateTo = dateFrom;//本周一
-                Calendar calendar_ = Calendar.getInstance();
-                calendar_.setTime(growthDateTo);
-                calendar_.add(Calendar.DAY_OF_MONTH,-7);
-                growthDateFrom = calendar_.getTime();   //上周一
+                //上周的时间
+                calendar.setTime(dateFrom);
+                calendar.add(Calendar.DAY_OF_MONTH,-1);
+                growthDateTo = calendar.getTime();
+                calendar.setTime(growthDateTo);
+                calendar.add(Calendar.DAY_OF_MONTH,-6);
+                growthDateFrom = calendar.getTime();
             }
         } catch (ParseException e) {
             logger.error("日期解析失败");
@@ -139,6 +142,9 @@ public class TestApi {
 
 
         int day = DateUtil.diffDay(dateFrom, dateTo);
+        if(day == 0){
+            day = 1;
+        }
         for (int i = 0; i < bannchNumList.size(); i++) {
             OperationStoreDTO store = new OperationStoreDTO();
             store.setBranchNum(bannchNumList.get(i));
@@ -152,7 +158,6 @@ public class TestApi {
                     break;
                 }
             }
-
 
             Iterator money = moneyByBranch.iterator();
             while (money.hasNext()) {
@@ -280,5 +285,20 @@ public class TestApi {
             }
         }
         return list;
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/region")
+    public List<OperationStoreDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
+                                        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+        List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchNums, date);
+        List<BranchRegion> branchRegions = branchRpc.findBranchRegion(systemBookCode);
+        List<Integer> RegionNumList = new ArrayList<>();
+        for (BranchRegion branchRegion : branchRegions){
+            Integer branchRegionNum = branchRegion.getBranchRegionNum();
+            RegionNumList.add(branchRegionNum);
+        }branchRpc.findBranchArea()
+
+        return null;
     }
 }

@@ -206,4 +206,29 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 		}
 		return list;
 	}
+
+	@Override
+	public List<Object[]> findShipMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select ship_order_deliver,sum(ship_order_money) money ");
+		sb.append("from ship_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(companies != null && companies.size()>0){
+			sb.append("and ship_order_deliver in "+AppUtil.getStringParmeList(companies));
+		}
+		if (dateFrom != null) {
+			sb.append("and ship_order_audit_time >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and ship_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("ship_order_state_code = 3 ");
+		sb.append("group by ship_order_deliver");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+	}
 }
