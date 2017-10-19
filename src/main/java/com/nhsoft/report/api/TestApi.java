@@ -297,7 +297,7 @@ public class TestApi {
         for (BranchRegion branchRegion : branchRegions){
             Integer branchRegionNum = branchRegion.getBranchRegionNum();
             RegionNumList.add(branchRegionNum);
-        }branchRpc.findBranchArea()
+        }
 
         return null;
     }

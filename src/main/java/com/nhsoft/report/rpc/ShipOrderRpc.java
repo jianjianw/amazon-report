@@ -1,5 +1,6 @@
 package com.nhsoft.report.rpc;
 
+import com.nhsoft.report.dto.ShipDetailSummary;
 import com.nhsoft.report.dto.ShipMoneySummary;
 
 import java.util.Date;
@@ -21,9 +22,12 @@ public interface ShipOrderRpc {
 
     /**
      *  明细 返回 货运公司（车辆）、发货单号、运费金额、时间
-     *
-     *
-     *
+     * @param systemBookCode
+     * @param branchNums
+     * @param dateFrom
+     * @param dateTo
+     * @param companies
      * */
+     public List<ShipDetailSummary> findShipDetailByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
 
 }

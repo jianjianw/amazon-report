@@ -258,4 +258,12 @@ public class TestSpringBoot {
         System.out.println();
     }
 
+    @Autowired
+    private ShipOrderRpc shipOrderRpc;
+    @Test
+    public void testShip(){
+        List<ShipDetailSummary> shipDetailByCompanies = shipOrderRpc.findShipDetailByCompanies(systemBookCode, null, null, null, null);
+        System.out.println();
+    }
+
 }
