@@ -8,6 +8,7 @@ import com.nhsoft.report.dao.impl.TransferOutMoney;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.BranchRegion;
+import com.nhsoft.report.model.Region;
 import com.nhsoft.report.rpc.*;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
@@ -369,7 +370,7 @@ public class TestApi {
                         realizeRate3 = realizeRate3.add(storeDTO.getRealizeRate3());        //卡储值完成率
                         cartStorageConsume = cartStorageConsume.add(storeDTO.getCartStorageConsume());      //卡储值消费金额
                         storageConsumeOccupy = storageConsumeOccupy.add(storeDTO.getStorageConsumeOccupy());    //储值消费占比
-                        growthOf = growthOf.add(storeDTO.getGrowthOf());         //环比增长
+                        growthOf = growthOf.add(storeDTO.getGrowthOf());         //环比增长率
                     }
                 }
             }
@@ -390,12 +391,11 @@ public class TestApi {
             region.setGrossProfitRate(grossProfitRate.divide(count_,2,ROUND_HALF_DOWN));
             region.setIncressedMember(incressedMember);
             region.setRealizeRate2(realizeRate2.divide(count_,2,ROUND_HALF_DOWN));
-
-
-
-
-
-
+            region.setCardStorage(cardStorage);
+            region.setRealizeRate3(realizeRate3.divide(count_,2,ROUND_HALF_DOWN));
+            region.setCartStorageConsume(cartStorageConsume);
+            region.setStorageConsumeOccupy(storageConsumeOccupy.divide(count_,2,ROUND_HALF_DOWN));
+            region.setGrowthOf(growthOf.divide(count_,2,ROUND_HALF_DOWN));
 
             list.add(region);
         }
