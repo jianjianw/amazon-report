@@ -225,7 +225,7 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 		if (dateTo != null) {
 			sb.append("and ship_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
-		sb.append("ship_order_state_code = 3 ");
+		sb.append("and ship_order_state_code = 3 ");
 		sb.append("group by ship_order_deliver");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode",systemBookCode);
@@ -250,7 +250,7 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 		if (dateTo != null) {
 			sb.append("and ship_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
-		sb.append("ship_order_state_code = 3 ");
+		sb.append("and ship_order_state_code = 3 ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode",systemBookCode);
 		return sqlQuery.list();

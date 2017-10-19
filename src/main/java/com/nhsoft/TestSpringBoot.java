@@ -261,7 +261,12 @@ public class TestSpringBoot {
     @Autowired
     private ShipOrderRpc shipOrderRpc;
     @Test
-    public void testShip(){
+    public void testShipMoney(){
+        List<ShipMoneySummary> shipMoneyByCompanies = shipOrderRpc.findShipMoneyByCompanies(systemBookCode, null, null, null, null);
+        System.out.println();
+    }
+    @Test
+    public void testShipDeatil(){
         List<ShipDetailSummary> shipDetailByCompanies = shipOrderRpc.findShipDetailByCompanies(systemBookCode, null, null, null, null);
         System.out.println();
     }

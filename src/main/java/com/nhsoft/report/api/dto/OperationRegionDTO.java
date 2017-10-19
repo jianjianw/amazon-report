@@ -15,7 +15,7 @@ public class OperationRegionDTO implements Serializable {
 	private BigDecimal realizeRate1;              //营业额完成率
 	private BigDecimal memberSalesRealizeRate;    //会员销售额完成率
 	private BigDecimal memeberRevenueOccupy;      //会员消费占比
-	private Integer aveBillNums;                  //日均客单量
+	private BigDecimal aveBillNums;                  //日均客单量
 	private BigDecimal allBillRealizeRate;        //总客单完成率
 	private Integer memberBillNums;               //会员客单量
 	private BigDecimal bill;                      //客单价
@@ -69,10 +69,10 @@ public class OperationRegionDTO implements Serializable {
 	public void setMemeberRevenueOccupy(BigDecimal memeberRevenueOccupy) {
 		this.memeberRevenueOccupy = memeberRevenueOccupy;
 	}
-	public Integer getAveBillNums() {
+	public BigDecimal getAveBillNums() {
 		return aveBillNums;
 	}
-	public void setAveBillNums(Integer aveBillNums) {
+	public void setAveBillNums(BigDecimal aveBillNums) {
 		this.aveBillNums = aveBillNums;
 	}
 	public BigDecimal getAllBillRealizeRate() {

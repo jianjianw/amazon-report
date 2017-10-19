@@ -17,8 +17,8 @@ public interface BranchRpc {
      */
     public List<Branch> findAll(String systemBookCode);
 
-    /*
-     *	查询分店区域
+    /**
+     * 根据账套号查询区域
      * @param systemBookCode 帐套号
      * @return
      * */
