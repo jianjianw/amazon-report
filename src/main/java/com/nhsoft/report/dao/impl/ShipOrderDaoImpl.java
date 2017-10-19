@@ -208,7 +208,7 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findShipMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies) {
+	public List<Object[]> findCarriageMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select ship_order_deliver,sum(ship_order_money) money ");
 		sb.append("from ship_order with(nolock) ");
@@ -233,7 +233,7 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findShipDetailByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies) {
+	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select ship_order_fid,ship_order_deliver,ship_order_money,ship_order_audit_time ");
 		sb.append("from ship_order with(nolock) ");

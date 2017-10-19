@@ -1,20 +1,12 @@
 package com.nhsoft;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhsoft.report.api.TestApi;
 import com.nhsoft.report.api.dto.OperationStoreDTO;
-import com.nhsoft.report.dao.impl.TransferOutMoney;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.rpc.*;
-import com.nhsoft.report.service.CardConsumeService;
-import com.nhsoft.report.service.CardDepositService;
 import com.nhsoft.report.util.AppConstants;
-import com.nhsoft.report.util.DateUtil;
-import org.hibernate.jpa.internal.schemagen.ScriptTargetOutputToFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,13 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -80,7 +68,7 @@ public class TestSpringBoot {
         System.out.println();
     }
 
-    @Test
+   /* @Test
     public void report(){
         List<OperationStoreDTO> list = new ArrayList<>();
         //按分店查询数据
@@ -247,7 +235,7 @@ public class TestSpringBoot {
         System.out.println(string);
 
 
-    }
+    }*/
     @Autowired
     private TestApi testApi;
 
@@ -262,12 +250,12 @@ public class TestSpringBoot {
     private ShipOrderRpc shipOrderRpc;
     @Test
     public void testShipMoney(){
-        List<ShipMoneySummary> shipMoneyByCompanies = shipOrderRpc.findShipMoneyByCompanies(systemBookCode, null, null, null, null);
+        List<ShipOrderSummary> shipMoneyByCompanies = shipOrderRpc.findCarriageMoneyByCompanies(systemBookCode, null, null, null, null);
         System.out.println();
     }
     @Test
     public void testShipDeatil(){
-        List<ShipDetailSummary> shipDetailByCompanies = shipOrderRpc.findShipDetailByCompanies(systemBookCode, null, null, null, null);
+        List<ShipDetailsDTO> shipDetailByCompanies = shipOrderRpc.findDetails(systemBookCode, null, null, null, null);
         System.out.println();
     }
 

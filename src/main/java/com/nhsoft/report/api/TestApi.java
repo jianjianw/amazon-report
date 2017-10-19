@@ -53,15 +53,19 @@ public class TestApi {
     @RequestMapping(method = RequestMethod.GET, value = "/store")
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-        systemBookCode = "4020";
-        branchNums ="[]";
-        date = "2017-02-02";
+        //systemBookCode = "4020";
+        branchNums = null;
+        //date = "2016-10-02";
         List<Integer> bannchNumList = new ArrayList<>();
-        String replace = branchNums.replace("[", "").replace("]","").replace(" ","");
-        String[] split = replace.split(",");
-        for (int i = 0; i <split.length ; i++) {
-            bannchNumList.add(Integer.parseInt(split[i]));
+        if(branchNums != null){
+            String replace = branchNums.replace("[", "").replace("]","").replace(" ","");
+            String[] split = replace.split(",");
+            for (int i = 0; i <split.length ; i++) {
+                bannchNumList.add(Integer.parseInt(split[i]));
+            }
         }
+
+
         Date growthDateFrom = null;
         Date growthDateTo = null;
         Date dateFrom = null;
@@ -285,12 +289,14 @@ public class TestApi {
                 list.remove(i);
             }
         }
+        System.out.println();
         return list;
+
     }
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/region")
-    public List<OperationStoreDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
+    public List<OperationRegionDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
                                         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
@@ -306,7 +312,6 @@ public class TestApi {
         }
 
         //先遍历区域，在遍历按分店返回的数据，如果分店号，相等，就将分店的数据封装到区域里面
-
         for (int i = 0; i <regionNumList.size() ; i++) {
             Integer regionNum = regionNumList.get(i);
             //多少个分店号就创建多少个分店
@@ -341,10 +346,10 @@ public class TestApi {
             for (int j = 0; j <branchs.size() ; j++) {
                 Branch branch = branchs.get(j);
                 //给区域中的分店号字段赋值
-                if(j != branchs.size()-1){
-                    areaBranchNums+=branch.getId().getBranchNum()+",";
-                }else{
+                if(j == branchs.size()-1){
                     areaBranchNums+=branch.getId().getBranchNum()+"]";
+                }else{
+                    areaBranchNums+=branch.getId().getBranchNum()+",";
                 }
                 for (int k = 0; k <operationStoreDTOS.size() ; k++) {
                     OperationStoreDTO storeDTO = operationStoreDTOS.get(k);
@@ -374,6 +379,9 @@ public class TestApi {
                     }
                 }
             }
+            if(count_.compareTo(BigDecimal.ZERO) == 0){
+                count_ = count_.add(new BigDecimal(1));
+            }
             region.setRevenue(revenue);
             region.setAreaBranchNums(areaBranchNums);//区域包含的分店
             region.setRealizeRate1(realizeRate1.divide(count_, 2, ROUND_HALF_DOWN));
@@ -396,22 +404,9 @@ public class TestApi {
             region.setCartStorageConsume(cartStorageConsume);
             region.setStorageConsumeOccupy(storageConsumeOccupy.divide(count_,2,ROUND_HALF_DOWN));
             region.setGrowthOf(growthOf.divide(count_,2,ROUND_HALF_DOWN));
-
             list.add(region);
         }
-
-
-
-
-
-
-
-
-        //根据区域得到分店
-        branchRpc.findBranchByBranchRegionNum(systemBookCode,123);
-
-
-
-        return null;
+        System.out.println();
+        return list;
     }
 }

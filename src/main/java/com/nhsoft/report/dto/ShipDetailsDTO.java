@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ShipDetailSummary implements Serializable {
+public class ShipDetailsDTO implements Serializable {
 
     private String orderId;     //发货单号
-    private String companies;   //货运公司
-    private BigDecimal money;       //运费金额
+    private String company;   //货运公司
+    private BigDecimal carriageMoney;       //运费金额
     private Date time;        //时间
 
     public String getOrderId() {
@@ -19,21 +19,22 @@ public class ShipDetailSummary implements Serializable {
         this.orderId = orderId;
     }
 
-    public String getCompanies() {
-        return companies;
+    public String getCompany() {
+        return company;
     }
 
-    public void setCompanies(String companies) {
-        this.companies = companies;
+    public void setCompany(String company) {
+        this.company = company;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public BigDecimal getCarriageMoney() {
+        return carriageMoney;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public void setCarriageMoney(BigDecimal carriageMoney) {
+        this.carriageMoney = carriageMoney;
     }
+
     public Date getTime() {
         return time;
     }

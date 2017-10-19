@@ -1,7 +1,7 @@
 package com.nhsoft.report.rpc;
 
-import com.nhsoft.report.dto.ShipDetailSummary;
-import com.nhsoft.report.dto.ShipMoneySummary;
+import com.nhsoft.report.dto.ShipDetailsDTO;
+import com.nhsoft.report.dto.ShipOrderSummary;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface ShipOrderRpc {
      * @param dateTo
      * @param companies
      * */
-    public List<ShipMoneySummary> findShipMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
+    public List<ShipOrderSummary> findCarriageMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
 
     /**
      *  明细 返回 货运公司（车辆）、发货单号、运费金额、时间
@@ -28,6 +28,6 @@ public interface ShipOrderRpc {
      * @param dateTo
      * @param companies
      * */
-     public List<ShipDetailSummary> findShipDetailByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
+     public List<ShipDetailsDTO> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
 
 }

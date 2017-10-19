@@ -1,7 +1,6 @@
 package com.nhsoft.report.dao;
 
 
-import com.nhsoft.report.dto.ShipDetailSummary;
 import com.nhsoft.report.dto.ShipOrderDTO;
 
 import java.util.Date;
@@ -102,13 +101,14 @@ public interface ShipOrderDao {
 
 
 	/**
+	 * 汇总 按货运公司汇总运费金额
 	 * @param systemBookCode
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
 	 * @param companies
 	 * */
-	public List<Object[]> findShipMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
+	public List<Object[]> findCarriageMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
 
 	/**
 	 *  明细 返回 货运公司（车辆）、发货单号、运费金额、时间
@@ -118,7 +118,7 @@ public interface ShipOrderDao {
 	 * @param dateTo
 	 * @param companies
 	 * */
-	public List<Object[]> findShipDetailByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
+	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
 
 
 
