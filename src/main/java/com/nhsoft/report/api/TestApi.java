@@ -1,14 +1,11 @@
 package com.nhsoft.report.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhsoft.report.api.dto.OperationRegionDTO;
 import com.nhsoft.report.api.dto.OperationStoreDTO;
 import com.nhsoft.report.dao.impl.TransferOutMoney;
 import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.BranchRegion;
-import com.nhsoft.report.model.Region;
 import com.nhsoft.report.rpc.*;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
@@ -53,9 +50,7 @@ public class TestApi {
     @RequestMapping(method = RequestMethod.GET, value = "/store")
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-        //systemBookCode = "4020";
-        branchNums = null;
-        //date = "2016-10-02";
+
         List<Integer> bannchNumList = new ArrayList<>();
         if(branchNums != null){
             String replace = branchNums.replace("[", "").replace("]","").replace(" ","");
@@ -64,8 +59,6 @@ public class TestApi {
                 bannchNumList.add(Integer.parseInt(split[i]));
             }
         }
-
-
         Date growthDateFrom = null;
         Date growthDateTo = null;
         Date dateFrom = null;
@@ -173,10 +166,16 @@ public class TestApi {
                     store.setBranchNum(next.getBranchNum());        //分店号
                     store.setRevenue(next.getBizMoney());           //营业额
                     store.setGrossProfit(next.getProfit());         //毛利
-                    store.setAveBillNums(new BigDecimal(next.getOrderCount()).divide(day_,4, ROUND_HALF_DOWN));    //日均客单量
-                    store.setBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 4, ROUND_HALF_DOWN));//客单价
+                    store.setAveBillNums(new BigDecimal(next.getOrderCount()).divide(day_,2, ROUND_HALF_DOWN));    //日均客单量
+                    store.setBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 2, ROUND_HALF_DOWN));//客单价
+                    //本期营业额-上期营业额
+                    BigDecimal subtract = store.getRevenue().subtract(store.getGrowthOf() == null? BigDecimal.ZERO:store.getGrowthOf());
                     //环比增长率
-                    store.setGrowthOf((store.getRevenue().subtract(store.getGrowthOf())).divide(store.getGrowthOf(),4, ROUND_HALF_DOWN));//（今年6月的销售额 - 今年5月的销售额相比）/ 今年5月的销售额相比 （本期-上期）/上期
+                    if(store.getGrowthOf() == null){
+                        store.setGrowthOf(BigDecimal.ZERO);
+                    }else{
+                        store.setGrowthOf(subtract.divide(store.getGrowthOf(),2, ROUND_HALF_DOWN));//（今年6月的销售额 - 今年5月的销售额相比）/ 今年5月的销售额相比 （本期-上期）/上期
+                    }
                     break;
                 }
             }
@@ -186,7 +185,7 @@ public class TestApi {
                 BranchMoneyReport next = (BranchMoneyReport) memberMoney.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
                     store.setMemberBillNums(next.getOrderCount());    //会员客单量
-                    store.setMemberBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 4, ROUND_HALF_DOWN));//会员客单价
+                    store.setMemberBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 2, ROUND_HALF_DOWN));//会员客单价
                     break;
                 }
             }
@@ -203,7 +202,7 @@ public class TestApi {
                 BranchConsumeReport next = (BranchConsumeReport) consume.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
                     store.setCartStorageConsume(next.getConsume());//卡消费金额
-                    store.setStorageConsumeOccupy(store.getCardStorage().divide(store.getCartStorageConsume(), 4, ROUND_HALF_DOWN));//存储消费占比
+                    store.setStorageConsumeOccupy(store.getCardStorage().divide(store.getCartStorageConsume(), 2, ROUND_HALF_DOWN));//存储消费占比
                     break;
                 }
             }
@@ -249,10 +248,10 @@ public class TestApi {
             while (saleMoneyGoals.hasNext()) {
                 SaleMoneyGoals next = (SaleMoneyGoals) saleMoneyGoals.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    if (next.getSaleMoney().compareTo(BigDecimal.ZERO) == 0) {
+                    if (next.getSaleMoney() == null || next.getSaleMoney().compareTo(BigDecimal.ZERO) == 0) {
                         store.setRealizeRate1(BigDecimal.ZERO);
                     } else {
-                        store.setRealizeRate1(store.getRevenue().divide(next.getSaleMoney())); //营业额目标   完成率
+                        store.setRealizeRate1((store.getRevenue() == null?BigDecimal.ZERO:store.getRevenue()).divide(next.getSaleMoney())); //营业额目标   完成率
                     }
                     break;
                 }
@@ -265,7 +264,7 @@ public class TestApi {
                     if (next.getArea() == null || next.getArea().compareTo(BigDecimal.ZERO) == 0) {
                         store.setAreaEfficiency(BigDecimal.ZERO);
                     } else {
-                        store.setAreaEfficiency(store.getRevenue() == null ? BigDecimal.ZERO : store.getRevenue().divide(next.getArea(), 4, ROUND_HALF_DOWN));//坪效
+                        store.setAreaEfficiency(store.getRevenue() == null ? BigDecimal.ZERO : store.getRevenue().divide(next.getArea(), 2, ROUND_HALF_DOWN));//坪效
                     }
                     break;
                 }
@@ -284,9 +283,17 @@ public class TestApi {
             list.add(store);
         }
 
-        for (int i = 0; i < list.size(); i++) {
+       /* for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getRevenue() == null) {
                 list.remove(i);
+            }
+        }*/
+        //循环遍历清除营业额为null的数据
+        Iterator<OperationStoreDTO> iterator = list.iterator();
+        while(iterator.hasNext()){
+            OperationStoreDTO next = iterator.next();
+            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
+                iterator.remove();
             }
         }
         System.out.println();
@@ -301,7 +308,7 @@ public class TestApi {
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
         //按分店汇总
-        List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchNums, date);
+        List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, null, date);
         //根据账套号查询区域
         List<BranchRegion> branchRegions = branchRpc.findBranchRegion(systemBookCode);
         //得到所有区域号
@@ -356,26 +363,26 @@ public class TestApi {
                     if(branch.getId().getBranchNum().equals(storeDTO.getBranchNum())){
                         count++;//每加入一个分店数据，count就加1
                         revenue = revenue.add(storeDTO.getRevenue()); //营业额
-                        realizeRate1 = realizeRate1.add(storeDTO.getRealizeRate1());   //营业额完成率
-                        memberSalesRealizeRate = memberSalesRealizeRate.add(storeDTO.getMemberSalesRealizeRate());   //会员销售额完成率
-                        memeberRevenueOccupy = memeberRevenueOccupy.add(storeDTO.getMemeberRevenueOccupy());       //会员消费占比
-                        aveBillNums = aveBillNums.add(storeDTO.getAveBillNums());                   //日均客单量
-                        allBillRealizeRate = allBillRealizeRate.add(storeDTO.getAllBillRealizeRate());           //总客单完成率
-                        memberBillNums+=storeDTO.getMemberBillNums();                       //会员客单量
-                        bill = bill.add(storeDTO.getBill());                                //客单价
-                        memberBill = memberBill.add(storeDTO.getMemberBill());              //会员客单价
-                        distributionDifferent = distributionDifferent.add(storeDTO.getDistributionDifferent()); //配销差额
-                        destroyDefferent = destroyDefferent.add(storeDTO.getDestroyDefferent());                //报损金额
-                        adjustAmount = adjustAmount.add(storeDTO.getAdjustAmount());                            //盘损金额
-                        grossProfit = grossProfit.add(storeDTO.getGrossProfit());                               //毛利金额
-                        grossProfitRate = grossProfitRate.add(storeDTO.getGrossProfitRate());                   //毛利完成率
-                        incressedMember+=storeDTO.getIncressedMember();     //新增会员数
-                        realizeRate2 = realizeRate2.add(storeDTO.getRealizeRate2());        //新增会员数完成率
-                        cardStorage = cardStorage.add(storeDTO.getCardStorage());           //卡储值金额
-                        realizeRate3 = realizeRate3.add(storeDTO.getRealizeRate3());        //卡储值完成率
-                        cartStorageConsume = cartStorageConsume.add(storeDTO.getCartStorageConsume());      //卡储值消费金额
-                        storageConsumeOccupy = storageConsumeOccupy.add(storeDTO.getStorageConsumeOccupy());    //储值消费占比
-                        growthOf = growthOf.add(storeDTO.getGrowthOf());         //环比增长率
+                        realizeRate1 = realizeRate1.add(storeDTO.getRealizeRate1()==null?BigDecimal.ZERO:storeDTO.getRealizeRate1());   //营业额完成率
+                        memberSalesRealizeRate = memberSalesRealizeRate.add(storeDTO.getMemberSalesRealizeRate()==null?BigDecimal.ZERO:storeDTO.getMemberSalesRealizeRate());   //会员销售额完成率
+                        memeberRevenueOccupy = memeberRevenueOccupy.add(storeDTO.getMemeberRevenueOccupy()==null?BigDecimal.ZERO:storeDTO.getMemeberRevenueOccupy());       //会员消费占比
+                        aveBillNums = aveBillNums.add(storeDTO.getAveBillNums()==null?BigDecimal.ZERO:storeDTO.getAveBillNums());                   //日均客单量
+                        allBillRealizeRate = allBillRealizeRate.add(storeDTO.getAllBillRealizeRate()==null?BigDecimal.ZERO:storeDTO.getAllBillRealizeRate());           //总客单完成率
+                        memberBillNums+=storeDTO.getMemberBillNums()==null?0:storeDTO.getMemberBillNums();                       //会员客单量
+                        bill = bill.add(storeDTO.getBill()==null?BigDecimal.ZERO:storeDTO.getBill());                                //客单价
+                        memberBill = memberBill.add(storeDTO.getMemberBill()==null?BigDecimal.ZERO:storeDTO.getMemberBill());              //会员客单价
+                        distributionDifferent = distributionDifferent.add(storeDTO.getDistributionDifferent()==null?BigDecimal.ZERO:storeDTO.getDistributionDifferent()); //配销差额
+                        destroyDefferent = destroyDefferent.add(storeDTO.getDestroyDefferent()==null?BigDecimal.ZERO:storeDTO.getDestroyDefferent());                //报损金额
+                        adjustAmount = adjustAmount.add(storeDTO.getAdjustAmount()==null?BigDecimal.ZERO:storeDTO.getAdjustAmount());                            //盘损金额
+                        grossProfit = grossProfit.add(storeDTO.getGrossProfit()==null?BigDecimal.ZERO:storeDTO.getGrossProfit());                               //毛利金额
+                        grossProfitRate = grossProfitRate.add(storeDTO.getGrossProfitRate()==null?BigDecimal.ZERO:storeDTO.getGrossProfitRate());                   //毛利完成率
+                        incressedMember+=storeDTO.getIncressedMember()==null?0:storeDTO.getIncressedMember();     //新增会员数
+                        realizeRate2 = realizeRate2.add(storeDTO.getRealizeRate2()==null?BigDecimal.ZERO:storeDTO.getRealizeRate2());        //新增会员数完成率
+                        cardStorage = cardStorage.add(storeDTO.getCardStorage()==null?BigDecimal.ZERO:storeDTO.getCardStorage());           //卡储值金额
+                        realizeRate3 = realizeRate3.add(storeDTO.getRealizeRate3()==null?BigDecimal.ZERO:storeDTO.getRealizeRate3());        //卡储值完成率
+                        cartStorageConsume = cartStorageConsume.add(storeDTO.getCartStorageConsume()==null?BigDecimal.ZERO:storeDTO.getCartStorageConsume());      //卡储值消费金额
+                        storageConsumeOccupy = storageConsumeOccupy.add(storeDTO.getStorageConsumeOccupy()==null?BigDecimal.ZERO:storeDTO.getStorageConsumeOccupy());    //储值消费占比
+                        growthOf = growthOf.add(storeDTO.getGrowthOf()==null?BigDecimal.ZERO:storeDTO.getGrowthOf());         //环比增长率
                     }
                 }
             }
@@ -383,6 +390,11 @@ public class TestApi {
                 count_ = count_.add(new BigDecimal(1));
             }
             region.setRevenue(revenue);
+            //如果区域下面没分店 areaBranchNums会等于 ]
+            if(areaBranchNums.length() == 1){
+                areaBranchNums = areaBranchNums+"]";
+            }
+            //region.setArea();
             region.setAreaBranchNums(areaBranchNums);//区域包含的分店
             region.setRealizeRate1(realizeRate1.divide(count_, 2, ROUND_HALF_DOWN));
             region.setMemberSalesRealizeRate(memberSalesRealizeRate.divide(count_,2,ROUND_HALF_DOWN));
@@ -406,7 +418,13 @@ public class TestApi {
             region.setGrowthOf(growthOf.divide(count_,2,ROUND_HALF_DOWN));
             list.add(region);
         }
-        System.out.println();
+        Iterator<OperationRegionDTO> iterator = list.iterator();
+        while(iterator.hasNext()){
+            OperationRegionDTO next = iterator.next();
+            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
+                iterator.remove();
+            }
+        }
         return list;
     }
 }
