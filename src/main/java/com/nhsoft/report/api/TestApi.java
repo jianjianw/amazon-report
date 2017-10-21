@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,7 +48,7 @@ public class TestApi {
 
     @RequestMapping(method = RequestMethod.GET, value = "/store")
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
-                                            @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
         List<Integer> bannchNumList = new ArrayList<>();
         if(branchNums != null){
@@ -63,7 +62,7 @@ public class TestApi {
         Date growthDateTo = null;
         Date dateFrom = null;
         Date dateTo = null;
-        //营业额目标（查询时间类型）
+        //营业额目标（查询时间类型）       
         String dateType = null;
         Calendar calendar = Calendar.getInstance();
         try {
@@ -304,7 +303,9 @@ public class TestApi {
 
     @RequestMapping(method = RequestMethod.GET, value = "/region")
     public List<OperationRegionDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
-                                        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date, @RequestHeader("LoggedInUserTenantId") String LoggedInUserTenantId,
+        @RequestHeader("LoggedInUserFullName") String LoggedInUserFullName){
+    	System.out.println(LoggedInUserFullName);
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
         //按分店汇总
