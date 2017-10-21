@@ -1,7 +1,7 @@
 package com.nhsoft.report.util;
 
 import com.google.gson.Gson;
-import com.nhsoft.report.dto.SystemBookProxy;
+import com.nhsoft.module.report.dto.SystemBookProxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;

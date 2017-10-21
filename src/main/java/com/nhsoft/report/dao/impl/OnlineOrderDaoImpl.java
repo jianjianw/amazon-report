@@ -1,9 +1,9 @@
 package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.OnlineOrderDao;
-import com.nhsoft.report.dto.OnlineOrderSaleAnalysisDTO;
-import com.nhsoft.report.shared.State;
-import com.nhsoft.report.shared.queryBuilder.OnlineOrderQuery;
+import com.nhsoft.module.report.dto.OnlineOrderSaleAnalysisDTO;
+import com.nhsoft.module.report.query.State;
+import com.nhsoft.module.report.query.OnlineOrderQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;

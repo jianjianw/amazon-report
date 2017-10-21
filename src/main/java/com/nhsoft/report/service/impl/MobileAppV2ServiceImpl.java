@@ -1,20 +1,21 @@
 package com.nhsoft.report.service.impl;
 
 
+import com.nhsoft.module.report.dto.*;
 import com.nhsoft.phone.server.model.MobileBusiness;
 import com.nhsoft.phone.server.model.MobileSalesRank;
 import com.nhsoft.phone.server.model.SalesDiscount;
 import com.nhsoft.report.dao.*;
-import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.GroupCustomer;
 import com.nhsoft.report.model.RetailPosLog;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.*;
-import com.nhsoft.report.shared.queryBuilder.CardUserQuery;
-import com.nhsoft.report.shared.queryBuilder.LogQuery;
+import com.nhsoft.module.report.query.CardUserQuery;
+import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
+import com.nhsoft.report.util.CopyUtil;
 import com.nhsoft.report.util.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -65,7 +66,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 
 	@Override
 	public MobileBusinessDTO getIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                                   Date dateTo) {
+                                                       Date dateTo) {
 		
 		MobileBusinessDTO dto = mobileAppDao
 				.findMobileAppBusinessDTO(systemBookCode, branchNums, dateFrom, dateTo);		
@@ -133,7 +134,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 			Date dateTo) {
 		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
 
-		List<Branch> branchs = branchService.findInCache(systemBookCode);
+		List<BranchDTO> branchs = CopyUtil.toList(branchService.findInCache(systemBookCode),BranchDTO.class);
 		
 		NameAndValueDTO nameAndValueDTO = null;
 		nameAndValueDTO = new NameAndValueDTO();
@@ -565,7 +566,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	
 	@Override
 	public MobileBusinessPeriodDTO getMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums,
-	                                                          Date dateFrom, Date dateTo) {
+                                                              Date dateFrom, Date dateTo) {
 		List<Object[]> objects = mobileAppDao.findShopTimeAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
 		MobileBusinessPeriodDTO dto = new MobileBusinessPeriodDTO();
 		
@@ -702,35 +703,35 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	private List<CustomerModelParam> createDefault(String systemBookCode, Integer branchNum) {
 		List<CustomerModelParam> customerModelParams = new ArrayList<CustomerModelParam>();
 
-		List<GroupCustomer> groupCustomers = groupCustomerDao.findDefault(systemBookCode, branchNum);
+		List<GroupCustomerDTO> groupCustomers = CopyUtil.toList(groupCustomerDao.findDefault(systemBookCode, branchNum),GroupCustomerDTO.class);
 		CustomerModelParam customerModelParam = new CustomerModelParam();
-		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomer>());
+		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomerDTO>());
 		customerModelParam.setModelName("消费频次模型(CFM)");
 		customerModelParam.setModelType(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT);
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_01));
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_02));
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_03));
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_04));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_01));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_02));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_03));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_CFM_04));
 		customerModelParams.add(customerModelParam);
 
 		customerModelParam = new CustomerModelParam();
-		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomer>());
+		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomerDTO>());
 		customerModelParam.setModelName("消费能力模型(SPM)");
 		customerModelParam.setModelType(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT);
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_05));
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_06));
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_07));
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_08));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_05));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_06));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_07));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_SPM_08));
 		customerModelParams.add(customerModelParam);
 
 		customerModelParam = new CustomerModelParam();
-		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomer>());
+		customerModelParam.setGroupCustomers(new ArrayList<GroupCustomerDTO>());
 		customerModelParam.setModelName("客户流失模型(LOC)");
 		customerModelParam.setModelType(AppConstants.CUSTOMER_MODEL_CUSTOMER_COUNT);
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_09));
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_10));
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_11));
-		customerModelParam.getGroupCustomers().add(GroupCustomer.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_12));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_09));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_10));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_11));
+		customerModelParam.getGroupCustomers().add(GroupCustomerDTO.get(groupCustomers, systemBookCode + branchNum + GroupCustomer.SUFFIX_LOC_12));
 		customerModelParams.add(customerModelParam);
 		return customerModelParams;
 	}
@@ -997,7 +998,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	@Override
 	@Cacheable(value = "serviceCache")
 	public List<MobileBusinessDetailDTO> findPaymentSummary(String systemBookCode, List<Integer> branchNums,
-			Date dateFrom, Date dateTo){
+                                                            Date dateFrom, Date dateTo){
 		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo);
 		List<MobileBusinessDetailDTO> list = new ArrayList<MobileBusinessDetailDTO>();
 		boolean hasCouponType = false;
@@ -1051,7 +1052,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	@Override
 	public List<NameAndValueDTO> findDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo) {
-		List<Branch> branchs = branchService.findInCache(systemBookCode);
+		List<BranchDTO> branchs = CopyUtil.toList(branchService.findInCache(systemBookCode),BranchDTO.class);
 		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
 
 		NameAndValueDTO nameAndValueDTO = null;

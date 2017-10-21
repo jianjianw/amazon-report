@@ -2,7 +2,7 @@ package com.nhsoft.report.service;
 
 
 import com.nhsoft.report.model.AlipayLog;
-import com.nhsoft.report.shared.queryBuilder.LogQuery;
+import com.nhsoft.module.report.query.LogQuery;
 
 import java.util.List;
 

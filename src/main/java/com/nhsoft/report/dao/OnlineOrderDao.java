@@ -1,8 +1,8 @@
 package com.nhsoft.report.dao;
 
 
-import com.nhsoft.report.dto.OnlineOrderSaleAnalysisDTO;
-import com.nhsoft.report.shared.queryBuilder.OnlineOrderQuery;
+import com.nhsoft.module.report.dto.OnlineOrderSaleAnalysisDTO;
+import com.nhsoft.module.report.query.OnlineOrderQuery;
 
 import java.util.Date;
 import java.util.List;

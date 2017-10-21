@@ -1,9 +1,9 @@
 package com.nhsoft.report.service.impl;
 
 
+import com.nhsoft.module.report.dto.AdjustmentReason;
 import com.nhsoft.report.dao.BookResourceDao;
 import com.nhsoft.report.model.BookResource;
-import com.nhsoft.report.param.AdjustmentReason;
 import com.nhsoft.report.param.CardUserType;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.BookResourceService;

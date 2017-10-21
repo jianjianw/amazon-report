@@ -2,7 +2,7 @@ package com.nhsoft.report.dao.impl;
 
 
 import com.nhsoft.report.dao.PosOrderDao;
-import com.nhsoft.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.report.model.Payment;
 import com.nhsoft.report.model.PosItem;
 import com.nhsoft.report.model.PosOrder;
@@ -15,8 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.Type;
-import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -1479,7 +1477,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember) {
+	public List<Object[]> findRevenueByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
 		sb.append("count(order_no) as count, sum(order_gross_profit) as profit ");
@@ -1501,9 +1499,34 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("group by branch_num order by branch_num asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		List list = sqlQuery.list();
-		return list;
+		return sqlQuery.list();
 
+	}
+
+	@Override
+	public List<Object[]> findRevenueByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select shift_table_bizday ,sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money ");
+		sb.append("count(order_no) as count ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code in (5, 7) ");
+		if(isMember){
+			sb.append("and order_card_user_num > 0 ");
+		}
+		sb.append("group by shift_table_bizday order by shift_table_bizday asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
 	}
 
 

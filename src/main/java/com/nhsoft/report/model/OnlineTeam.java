@@ -3,7 +3,7 @@ package com.nhsoft.report.model;
 
 
 
-import com.nhsoft.report.shared.State;
+import com.nhsoft.module.report.query.State;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -1,9 +1,8 @@
 package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.CardUserDao;
-import com.nhsoft.report.dto.CardUserCount;
 import com.nhsoft.report.model.CardUser;
-import com.nhsoft.report.shared.queryBuilder.CardUserQuery;
+import com.nhsoft.module.report.query.CardUserQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;

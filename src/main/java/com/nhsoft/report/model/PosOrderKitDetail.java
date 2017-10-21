@@ -1,7 +1,7 @@
 package com.nhsoft.report.model;
 
 
-import com.nhsoft.report.dto.GsonIgnore;
+import com.nhsoft.module.report.dto.GsonIgnore;
 import org.dom4j.Element;
 
 import java.math.BigDecimal;

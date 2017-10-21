@@ -1,7 +1,7 @@
 package com.nhsoft.report.shared.queryBuilder;
 
 
-import com.nhsoft.report.shared.State;
+import com.nhsoft.module.report.query.State;
 
 import java.util.Date;
 import java.util.List;

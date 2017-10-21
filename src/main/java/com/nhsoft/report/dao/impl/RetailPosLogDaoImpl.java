@@ -2,7 +2,7 @@ package com.nhsoft.report.dao.impl;
 
 import com.nhsoft.report.dao.RetailPosLogDao;
 import com.nhsoft.report.model.RetailPosLog;
-import com.nhsoft.report.shared.queryBuilder.LogQuery;
+import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;

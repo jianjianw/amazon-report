@@ -1,8 +1,8 @@
 package com.nhsoft.report.dao;
 
 import com.nhsoft.phone.server.model.*;
-import com.nhsoft.report.dto.MobileBusinessDTO;
-import com.nhsoft.report.dto.MobileCardDTO;
+import com.nhsoft.module.report.dto.MobileBusinessDTO;
+import com.nhsoft.module.report.dto.MobileCardDTO;
 
 import java.math.BigDecimal;
 import java.util.Date;

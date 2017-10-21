@@ -2,7 +2,7 @@ package com.nhsoft.report.util;
 
 import com.google.gson.*;
 
-import com.nhsoft.report.dto.GsonIgnore;
+import com.nhsoft.module.report.dto.GsonIgnore;
 import com.nhsoft.report.model.*;
 import com.nhsoft.report.param.PosItemTypeParam;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -678,8 +678,48 @@ public class AppUtil {
 		}
 		return buffer;
 	}
-	
 
+	public static Object[] getInventoryAmount(List<Inventory> inventories, Integer itemNum, Integer itemMatrixNum) {
+		BigDecimal amount = BigDecimal.ZERO;
+		BigDecimal money = BigDecimal.ZERO;
+		BigDecimal assistAmount = BigDecimal.ZERO;
+		BigDecimal cost = BigDecimal.ZERO;
+		boolean found = false;
+		for (int i = 0; i < inventories.size(); i++) {
+			Inventory inventory = inventories.get(i);
+			if (inventory.getItemNum().equals(itemNum)) {
+				found = true;
+				if (!inventory.getInventoryMatrixs().isEmpty()) {
+					List<InventoryMatrix> inventoryMatrixs = inventory.getInventoryMatrixs();
+					for (int j = 0; j < inventoryMatrixs.size(); j++) {
+						InventoryMatrix inventoryMatrix = inventoryMatrixs.get(j);
+						if (itemMatrixNum != null && itemMatrixNum != 0) {
+							if (inventoryMatrix.getId().getItemMatrixNum() != null
+									&& !itemMatrixNum.equals(inventoryMatrix.getId().getItemMatrixNum())) {
+								continue;
+							}
+						}
+						amount = amount.add(inventoryMatrix.getInventoryMatrixAmount());
+						assistAmount = assistAmount.add(inventoryMatrix.getInventoryMatrixAssistAmount());
+					}
+				} else {
+					amount = amount.add(inventory.getInventoryAmount());
+					money = money.add(inventory.getInventoryMoney());
+					assistAmount = assistAmount.add(inventory.getInventoryAssistAmount());
+				}
+			}
+		}
+		if (amount.compareTo(BigDecimal.ZERO) > 0) {
+			cost = money.divide(amount, 4, BigDecimal.ROUND_HALF_UP);
+		}
+		Object[] obj = new Object[5];
+		obj[0] = amount;
+		obj[1] = assistAmount;
+		obj[2] = money;
+		obj[3] = cost;
+		obj[4] = found;
+		return obj;
+	}
 
 	public static Object[] getInventoryAmount(List<Inventory> inventories, PosItem posItem, Integer itemMatrixNum,
 			String lotNumber, Branch branch) {

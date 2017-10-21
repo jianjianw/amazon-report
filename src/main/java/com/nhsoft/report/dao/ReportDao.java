@@ -1,9 +1,9 @@
 package com.nhsoft.report.dao;
 
 
-import com.nhsoft.report.dto.*;
+import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.query.*;
 import com.nhsoft.report.model.CustomReport;
-import com.nhsoft.report.shared.queryBuilder.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -45,7 +45,7 @@ public interface ReportDao {
 	 * @return
 	 */
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode,
-																   List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                                                   List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 * 营业收款统计 根据终端汇总

@@ -2,9 +2,9 @@ package com.nhsoft.report.service.impl;
 
 
 import com.nhsoft.report.dao.PolicyPromotionDao;
-import com.nhsoft.report.dto.PolicyPosItem;
+import com.nhsoft.module.report.dto.PolicyPosItem;
 import com.nhsoft.report.service.PolicyPromotionService;
-import com.nhsoft.report.shared.queryBuilder.PolicyPosItemQuery;
+import com.nhsoft.module.report.query.PolicyPosItemQuery;
 import com.nhsoft.report.util.BaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

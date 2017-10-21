@@ -835,4 +835,29 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		return sqlQuery.list();
 	}
 
+	@Override
+	public List<Object[]> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select out_order_audit_bizday,sum(out_order_total_money) ");
+		sb.append("from transfer_out_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and out_order_audit_time >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and out_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and out_order_state_code = '3' ");
+		sb.append("group by out_order_audit_bizday order by out_order_audit_bizday asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+
+	}
+
+
 }

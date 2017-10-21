@@ -1,9 +1,9 @@
 package com.nhsoft.report.dao.impl;
 
+import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.query.*;
 import com.nhsoft.report.dao.ReportDao;
-import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.*;
-import com.nhsoft.report.shared.queryBuilder.*;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
@@ -18,7 +18,6 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -100,7 +99,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums,
-																   Date dateFrom, Date dateTo) {
+                                                                   Date dateFrom, Date dateTo) {
 		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>();
 
 		StringBuffer sb = new StringBuffer();
@@ -5075,7 +5074,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 	@Override
 	public List<AlipayDetailDTO> findAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-			Date dateTo, String paymentTypes) {
+                                                      Date dateTo, String paymentTypes) {
 		Criteria criteria = currentSession().createCriteria(Payment.class, "p").add(
 				Restrictions.eq("p.systemBookCode", systemBookCode));
 		if (branchNums != null && branchNums.size() > 0) {
@@ -7752,7 +7751,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 	@Override
 	public List<CardDepositCommissionDTO> findCardDepositCommissionDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-			Date dateTo, Integer groupType, String querySellers) {
+                                                                        Date dateTo, Integer groupType, String querySellers) {
 		List<CardDepositCommissionDTO> templist = new ArrayList<CardDepositCommissionDTO>();
 		List<CardDepositCommissionDTO> list = new ArrayList<CardDepositCommissionDTO>();
 

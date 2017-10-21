@@ -1,7 +1,7 @@
 package com.nhsoft.report.dao;
 
 
-import com.nhsoft.report.shared.queryBuilder.LogQuery;
+import com.nhsoft.module.report.query.LogQuery;
 
 
 public interface WebLogDao {

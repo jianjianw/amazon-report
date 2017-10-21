@@ -1,7 +1,7 @@
 package com.nhsoft.report.model;
 
 
-import com.nhsoft.report.shared.State;
+import com.nhsoft.module.report.query.State;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;

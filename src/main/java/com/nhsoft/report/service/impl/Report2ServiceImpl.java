@@ -1,11 +1,11 @@
 package com.nhsoft.report.service.impl;
 
+import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.query.*;
 import com.nhsoft.report.dao.*;
-import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.*;
 import com.nhsoft.report.param.PosItemTypeParam;
 import com.nhsoft.report.service.*;
-import com.nhsoft.report.shared.queryBuilder.*;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
@@ -491,7 +491,7 @@ public class Report2ServiceImpl implements Report2Service {
 
 	@Override
 	public List<CardQtySumDTO> findCardQtySumDatasByBranch(String systemBookCode, List<Integer> branchNums,
-	                                                       Date dateFrom, Date dateTo) {
+                                                           Date dateFrom, Date dateTo) {
 		List<CardQtySumDTO> cardQtySumDTOs = reportDao.findCardQtySumDatasByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		
@@ -715,7 +715,7 @@ public class Report2ServiceImpl implements Report2Service {
 
 	@Override
 	public List<CardDepositCommissionDTO> findCardDepositCommissionDTOs(String systemBookCode,
-			List<Integer> branchNums, Date dateFrom, Date dateTo, Integer groupType, String sellers) {
+                                                                        List<Integer> branchNums, Date dateFrom, Date dateTo, Integer groupType, String sellers) {
 		return reportDao.findCardDepositCommissionDTOs(systemBookCode, branchNums, dateFrom, dateTo, groupType, sellers);
 	}
 	
@@ -727,7 +727,7 @@ public class Report2ServiceImpl implements Report2Service {
 
 	@Override
 	public List<CustomerAnalysisTimePeriod> findCustomerAnalysisTimePeriods(String systemBookCode, Date dateFrom,
-			Date dateTo, List<Integer> branchNums, List<Integer> itemNums, String saleType, Date timeFrom, Date timeTo) {
+                                                                            Date dateTo, List<Integer> branchNums, List<Integer> itemNums, String saleType, Date timeFrom, Date timeTo) {
 		
 		String begin = "0000";
 		String end = "2359";
@@ -791,7 +791,7 @@ public class Report2ServiceImpl implements Report2Service {
 
 	@Override
 	public List<CardReportDTO> findCardReportByBranchDay(String systemBookCode, List<Integer> branchNums,
-			Date dateFrom, Date dateTo, Integer cardUserCardType) {
+                                                         Date dateFrom, Date dateTo, Integer cardUserCardType) {
 		List<CardReportDTO> cardReportDTOs = new ArrayList<CardReportDTO>();
 		List<Object[]> cardSendObjects = cardUserDao.findCardCountByBranchBizday(systemBookCode, branchNums, dateFrom,
 				dateTo, cardUserCardType);

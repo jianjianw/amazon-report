@@ -1,16 +1,15 @@
 package com.nhsoft.report.rpc.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.nhsoft.report.dto.AlipayLogDTO;
-import com.nhsoft.report.rpc.AlipayLogRpc;
+import com.nhsoft.module.report.dto.AlipayLogDTO;
+import com.nhsoft.module.report.rpc.AlipayLogRpc;
 import com.nhsoft.report.service.AlipayLogService;
-import com.nhsoft.report.shared.queryBuilder.LogQuery;
+import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.report.util.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-@Service
 @Component
 public class AlipayLogRpcImpl implements AlipayLogRpc {
 

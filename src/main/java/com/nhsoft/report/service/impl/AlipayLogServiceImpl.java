@@ -4,7 +4,7 @@ package com.nhsoft.report.service.impl;
 import com.nhsoft.report.dao.AlipayLogDao;
 import com.nhsoft.report.model.AlipayLog;
 import com.nhsoft.report.service.AlipayLogService;
-import com.nhsoft.report.shared.queryBuilder.LogQuery;
+import com.nhsoft.module.report.query.LogQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

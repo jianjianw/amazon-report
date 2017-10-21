@@ -141,6 +141,7 @@
     <orderEntry type="library" name="Maven: jline:jline:0.9.94" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty:3.7.0.Final" level="project" />
     <orderEntry type="library" name="Maven: com.github.sgroschupf:zkclient:0.1" level="project" />
+    <orderEntry type="module" module-name="report-export" />
     <orderEntry type="library" name="Maven: org.springframework:spring-test:4.3.10.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-test:1.5.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:1.5.6.RELEASE" level="project" />

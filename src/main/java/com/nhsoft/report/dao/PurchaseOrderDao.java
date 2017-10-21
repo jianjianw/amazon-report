@@ -1,13 +1,8 @@
 package com.nhsoft.report.dao;
 
 
-import com.nhsoft.report.model.PurchaseOrder;
 import com.nhsoft.report.model.PurchaseOrderDetail;
-import com.nhsoft.report.shared.queryBuilder.OrderQueryCondition;
-import com.nhsoft.report.shared.queryBuilder.PurchaseOrderCollectQuery;
-import com.nhsoft.report.shared.queryBuilder.PurchaseOrderQuery;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 

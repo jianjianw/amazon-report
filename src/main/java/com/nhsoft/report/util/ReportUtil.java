@@ -1,8 +1,8 @@
 package com.nhsoft.report.util;
 
 
-import com.nhsoft.report.param.ReportInfo;
-import com.nhsoft.report.param.ReportKey;
+import com.nhsoft.module.report.query.ReportInfo;
+import com.nhsoft.module.report.query.ReportKey;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;

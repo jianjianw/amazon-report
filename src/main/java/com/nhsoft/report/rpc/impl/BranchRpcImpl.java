@@ -1,18 +1,18 @@
 package com.nhsoft.report.rpc.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.nhsoft.report.dto.BranchArea;
-import com.nhsoft.report.model.Branch;
-import com.nhsoft.report.model.BranchRegion;
-import com.nhsoft.report.rpc.BranchRpc;
+import com.nhsoft.module.report.dto.BranchArea;
+import com.nhsoft.module.report.dto.BranchDTO;
+import com.nhsoft.module.report.dto.BranchRegionDTO;
+import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.report.service.BranchService;
+import com.nhsoft.report.util.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-@Service
 @Component
 public class BranchRpcImpl implements BranchRpc {
 
@@ -20,18 +20,18 @@ public class BranchRpcImpl implements BranchRpc {
     private BranchService branchService;
 
     @Override
-    public List<Branch> findAll(String systemBookCode) {
-        return branchService.findAll(systemBookCode);
+    public List<BranchDTO> findAll(String systemBookCode) {
+        return CopyUtil.toList(branchService.findAll(systemBookCode), BranchDTO.class);
     }
 
     @Override
-    public List<BranchRegion> findBranchRegion(String systemBookCode) {
-        return branchService.findBranchRegion(systemBookCode);
+    public List<BranchRegionDTO> findBranchRegion(String systemBookCode) {
+        return CopyUtil.toList(branchService.findBranchRegion(systemBookCode), BranchRegionDTO.class);
     }
 
     @Override
-    public List<Branch> findBranchByBranchRegionNum(String systemBookCode, Integer branchRegionNum) {
-        return branchService.findBranchByBranchRegionNum(systemBookCode,branchRegionNum);
+    public List<BranchDTO> findBranchByBranchRegionNum(String systemBookCode, Integer branchRegionNum) {
+        return CopyUtil.toList(branchService.findBranchByBranchRegionNum(systemBookCode,branchRegionNum), BranchDTO.class);
     }
 
     @Override

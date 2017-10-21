@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.nhsoft.module.report.dto.BranchDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ import com.nhsoft.report.api.dto.InputControlsMonthDTO;
 import com.nhsoft.report.api.dto.InputControlsWeekDTO;
 import com.nhsoft.report.api.dto.InputControlsYearDTO;
 import com.nhsoft.report.model.Branch;
-import com.nhsoft.report.rpc.BranchRpc;
+import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.report.util.DateUtil;
 
 @RestController()
@@ -224,11 +225,11 @@ public class APIInputContorls {
 			branchNumsList.add(Integer.parseInt(array[i].trim()));
 		}
 		
-		List<Branch> branchList = branchRpc.findAll(systemBookCode);
-		List<Branch> branchForUser = new ArrayList<Branch>();
+		List<BranchDTO> branchList = branchRpc.findAll(systemBookCode);
+		List<BranchDTO> branchForUser = new ArrayList<BranchDTO>();
 		for(int i = 0; i < branchNumsList.size(); i++) {
 			for(int j = 0; j < branchList.size(); j++) {
-				if(branchNumsList.get(i).equals(branchList.get(j).getId().getBranchNum())) {
+				if(branchNumsList.get(i).equals(branchList.get(j).getBranchNum())) {
 					branchForUser.add(branchList.get(j));
 					break;
 				}
@@ -240,7 +241,7 @@ public class APIInputContorls {
 		for(int i = 0; i < branchForUser.size(); i++) {
 			dto = new InputControlsBranchDTO();
 			dto.setBranchName(branchForUser.get(i).getBranchName());
-			dto.setBranchNum(branchForUser.get(i).getId().getBranchNum());
+			dto.setBranchNum(branchForUser.get(i).getBranchNum());
 			list.add(dto);
 		}
 		return list;

@@ -1,7 +1,7 @@
 package com.nhsoft.report.service;
 
 
-import com.nhsoft.report.dto.*;
+import com.nhsoft.module.report.dto.*;
 
 import java.util.Date;
 import java.util.List;
@@ -245,7 +245,7 @@ public interface MobileAppV2Service {
 	                                            Date dateTo);
 
 	public List<MobileBusinessDetailDTO> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                                        Date dateTo);
+                                                            Date dateTo);
 
 	public List<MobileBusinessDetailDTO> findDepositSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 	                                                        Date dateTo);
@@ -300,7 +300,7 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<CardReportDTO> findCardReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                                  Date dateTo);
+                                                      Date dateTo);
 
 	/**
 	 * 查询部门排行

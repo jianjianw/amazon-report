@@ -2,7 +2,7 @@ package com.nhsoft.report.dao.impl;
 
 
 import com.nhsoft.report.dao.ShipOrderDao;
-import com.nhsoft.report.dto.ShipOrderDTO;
+import com.nhsoft.module.report.dto.ShipOrderDTO;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Query;

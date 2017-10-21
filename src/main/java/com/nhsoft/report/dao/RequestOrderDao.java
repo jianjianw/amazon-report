@@ -2,15 +2,8 @@ package com.nhsoft.report.dao;
 
 
 
-import com.nhsoft.report.dto.RequestOrderDTO;
-import com.nhsoft.report.model.RequestOrder;
 import com.nhsoft.report.model.RequestOrderDetail;
-import com.nhsoft.report.model.RequestOrderDetailId;
-import com.nhsoft.report.model.TaskRequestDetail;
-import com.nhsoft.report.shared.queryBuilder.OrderQueryCondition;
-import com.nhsoft.report.shared.queryBuilder.RequestOrderQuery;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 

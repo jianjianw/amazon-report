@@ -2,9 +2,10 @@ package com.nhsoft.report.rpc.impl;
 
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.nhsoft.report.dto.*;
+import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.query.*;
 import com.nhsoft.report.model.*;
-import com.nhsoft.report.rpc.Report2Rpc;
+import com.nhsoft.module.report.rpc.Report2Rpc;
 import com.nhsoft.report.service.*;
 import com.nhsoft.report.shared.queryBuilder.*;
 import com.nhsoft.report.util.AppConstants;
@@ -19,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
 @Component
 public class Report2RpcImpl implements Report2Rpc {
 	

@@ -1,6 +1,6 @@
 package com.nhsoft.report.service;
 
-import com.nhsoft.report.param.AdjustmentReason;
+import com.nhsoft.module.report.dto.AdjustmentReason;
 import com.nhsoft.report.param.CardUserType;
 import com.nhsoft.report.param.PosItemTypeParam;
 
