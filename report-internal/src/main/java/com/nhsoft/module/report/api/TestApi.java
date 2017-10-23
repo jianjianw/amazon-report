@@ -450,7 +450,7 @@ public class TestApi {
     }
 
 
-    //按营业日汇总
+    //按营业日汇总(时间传递月份)
     public List<TrendDaily> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
                                      @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         List<Integer> bannchNumList = stringToList(branchNums);
@@ -475,37 +475,88 @@ public class TestApi {
         //配送额
         List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findTransferOutMoneyByBizday(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendDaily> list = new ArrayList<>();
-        for(int i = 0 ;i<max;i++){
+
+        for (int i = 0; i <max ; i++) {
+            calendar.setTime(dateFrom);
+            calendar.add(Calendar.DAY_OF_MONTH,i);
+
+            Date time = calendar.getTime();
+            String bizday = DateUtil.getDateShortStr(time);
             TrendDaily trendDaily = new TrendDaily();
+            trendDaily.setDay(bizday);
 
             for (int j = 0; j <revenueByBizday.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(i);
-                trendDaily.setDay(branchBizRevenueSummary.getBiz());
-                trendDaily.setRevenue(branchBizRevenueSummary.getBizMoney());
-                trendDaily.setBillNums(branchBizRevenueSummary.getOrderCount());
+                if(trendDaily.getDay().equals(branchBizRevenueSummary.getBiz())){
+                    trendDaily.setDay(branchBizRevenueSummary.getBiz());
+                    trendDaily.setRevenue(branchBizRevenueSummary.getBizMoney());
+                    trendDaily.setBillNums(branchBizRevenueSummary.getOrderCount());
+                    break;
+                }
             }
 
             for (int j = 0; j <memberRevenueByBizday.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(i);
-                trendDaily.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
-                trendDaily.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
+                if(trendDaily.getDay().equals(branchBizRevenueSummary.getBiz())){
+                    trendDaily.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
+                    trendDaily.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
+                    break;
+                }
+
             }
 
             for (int j = 0; j <transferOutMoneyByBizday.size() ; j++) {
                 TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(i);
-                trendDaily.setDistributionMoney(transferOutMoney.getOutMoney());
+                if(trendDaily.getDay().equals(transferOutMoney.getBiz())){
+                    trendDaily.setDistributionMoney(transferOutMoney.getOutMoney());
+                    break;
+                }
+
             }
+            list.add(trendDaily);
+        }
+        //移出营业额为空的营业日
+        Iterator<TrendDaily> iterator = list.iterator();
+        while(iterator.hasNext()){
+            TrendDaily next = iterator.next();
+            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
+                iterator.remove();
+            }
+        }
+        return list;
+    }
+
+
+    //按营业月汇总（时间传递年份）
+    public List<TrendMonthly> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
+                                         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+        List<Integer> bannchNumList = stringToList(branchNums);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        Date dateFrom = null;
+        try {
+            dateFrom = sdf.parse(date);
+        } catch (ParseException e) {
+            logger.error("日期解析失败");
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateFrom);
+        calendar.add(Calendar.MONTH,11);
+        calendar.add(Calendar.DAY_OF_MONTH,30);
+        Date dateTo = calendar.getTime();
+
+        //营业额 客单量
+        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizday(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        //会员营业额 客单量
+        List<BranchBizRevenueSummary> memberRevenueByBizday = posOrderRpc.findRevenueByBizday(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
+        //配送额
+        List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findTransferOutMoneyByBizday(systemBookCode, bannchNumList, dateFrom, dateTo);
+        List<TrendMonthly> list = new ArrayList<>();
+        for (int i = 0; i <11 ; i++) {
 
         }
 
 
-        return null;
-    }
-
-
-    //按营业月汇总
-    public List<TrendMonthly> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
-                                         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         return null;
     }
 }

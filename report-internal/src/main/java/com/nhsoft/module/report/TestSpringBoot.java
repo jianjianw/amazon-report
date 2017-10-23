@@ -4,6 +4,7 @@ package com.nhsoft.module.report;
 import com.nhsoft.module.report.api.TestApi;
 import com.nhsoft.module.report.api.dto.OperationRegionDTO;
 import com.nhsoft.module.report.api.dto.OperationStoreDTO;
+import com.nhsoft.module.report.api.dto.TrendDaily;
 import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
@@ -63,8 +64,8 @@ public class TestSpringBoot {
     public void date(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            dateFrom = sdf.parse("2017-10-01");
-            dateTo = sdf.parse("2017-10-31");
+            dateFrom = sdf.parse("2017-10");
+            dateTo = sdf.parse("2017-10");
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -100,7 +101,10 @@ public class TestSpringBoot {
 
     @Test
     public void byBizday(){
-        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizday("4020", null, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        //List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizday("4020", null, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+
+        List<TrendDaily> list = testApi.byBizday(systemBookCode, null, "2017-10");
+
         System.out.println();
 
     }
