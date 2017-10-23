@@ -124,6 +124,15 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return objects;
 	}
 
+	@Override
+	public List<Object[]> findRevenueByBizmonth(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+		List<Object[]> objects = null;
+		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
+			objects = posOrderDao.findRevenueByBizmonth(systemBookCode, branchNums, dateFrom, dateTo, isMember);
+		}
+		return objects;
+	}
+
 
 }
 

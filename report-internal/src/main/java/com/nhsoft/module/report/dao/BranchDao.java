@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface BranchDao {
 
+	//根据账套号查询所有门店
 	public List<Branch> findAll(String systemBookCode);
 
 	/**
@@ -38,7 +39,6 @@ public interface BranchDao {
 	 * @param systemBookCode
 	 * @param branchNums 分店号
 	 */
-
 	public List<Object[]> findBranchArea(String systemBookCode,List<Integer> branchNums);
 
 

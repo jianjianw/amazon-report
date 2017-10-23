@@ -26,4 +26,13 @@ public interface TransferOutOrderRpc {
      */
     public List<TransferOutMoney> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
+    /***
+     * 按月份查询配送额
+     * @param systemBookCode
+     * @param branchNums 分店号
+     * @param dateFrom 时间起
+     * @param dateTo 时间止
+     */
+    public List<TransferOutMoney> findTransferOutMoneyBymonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
 }

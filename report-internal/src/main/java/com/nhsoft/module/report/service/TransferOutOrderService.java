@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.service;
 
+import com.nhsoft.module.report.dto.TransferOutMoney;
+
 import java.util.Date;
 import java.util.List;
 
@@ -60,5 +62,14 @@ public interface TransferOutOrderService {
 	 * @param dateTo 时间止
 	 */
 	public List<Object[]> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/***
+	 * 按月份查询配送额
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 */
+	public List<Object[]> findTransferOutMoneyBymonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 }

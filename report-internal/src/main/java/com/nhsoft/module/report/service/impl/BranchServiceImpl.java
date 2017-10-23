@@ -23,7 +23,8 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 
 	@Override
 	public List<Branch> findAll(String systemBookCode) {
-		return branchDao.findAll(systemBookCode);
+		List<Branch> all = branchDao.findAll(systemBookCode);
+		return all;
 	}
 
 	@Override

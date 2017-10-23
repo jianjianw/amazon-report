@@ -52,6 +52,25 @@ public class PosOrderRpcImpl implements PosOrderRpc {
             branchBizRevenueSummary.setBiz((String) object[0]);
             branchBizRevenueSummary.setBizMoney((BigDecimal) object[1]);
             branchBizRevenueSummary.setOrderCount((Integer) object[2]);
+            //branchBizRevenueSummary.setProfit((BigDecimal) object[3]); 按营业日查询，不查毛利
+            list.add(branchBizRevenueSummary);
+        }
+        return list;
+    }
+
+    @Override
+    public List<BranchBizRevenueSummary> findRevenueByBizmonth(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+        List<Object[]> objects = posOrderService.findRevenueByBizmonth(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
+        List<BranchBizRevenueSummary> list = new ArrayList<>();
+        if(objects.isEmpty()){
+            return list;
+        }
+        for (int i = 0; i <objects.size() ; i++) {
+            Object[] object = objects.get(i);
+            BranchBizRevenueSummary branchBizRevenueSummary = new BranchBizRevenueSummary();
+            branchBizRevenueSummary.setBiz((String) object[0]);
+            branchBizRevenueSummary.setBizMoney((BigDecimal) object[1]);
+            branchBizRevenueSummary.setOrderCount((Integer) object[2]);
             branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
             list.add(branchBizRevenueSummary);
         }

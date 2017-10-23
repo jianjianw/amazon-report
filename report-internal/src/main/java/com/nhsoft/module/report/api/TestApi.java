@@ -305,24 +305,29 @@ public class TestApi {
                                              @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
-        //得到所有分店号
-        List<BranchDTO> all = branchRpc.findAll(systemBookCode);
-        List<Integer> branchNumList = new ArrayList<>();
-        for (int i = 0; i <all.size() ; i++) {
-            BranchDTO branchDTO = all.get(i);
-            branchNumList.add(branchDTO.getBranchNum());
-        }
-        //将分店转化为string
-        String branchStr = "[";
-        for (int i = 0; i <branchNumList.size() ; i++) {
-            Integer branch = branchNumList.get(i);
-            if(i == branchNumList.size()-1){
-                branchStr += branch+"]";
-            }else{
-                branchStr += branch+",";
-            }
 
+        String branchStr = null;
+        if(branchNums == null){
+            //得到所有分店号
+            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            List<Integer> branchNumList = new ArrayList<>();
+            for (int i = 0; i <all.size() ; i++) {
+                BranchDTO branchDTO = all.get(i);
+                branchNumList.add(branchDTO.getBranchNum());
+            }
+            //将分店转化为string
+            branchStr = "[";
+            for (int i = 0; i <branchNumList.size() ; i++) {
+                Integer branch = branchNumList.get(i);
+                if(i == branchNumList.size()-1){
+                    branchStr += branch+"]";
+                }else{
+                    branchStr += branch+",";
+                }
+
+            }
         }
+
         //按分店汇总
         List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchStr, date);
         //根据账套号查询区域
@@ -490,8 +495,6 @@ public class TestApi {
                 TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(i);
                 trendDaily.setDistributionMoney(transferOutMoney.getOutMoney());
             }
-            
-
 
         }
 

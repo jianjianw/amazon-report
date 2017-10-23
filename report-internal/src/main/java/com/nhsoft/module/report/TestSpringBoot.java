@@ -4,6 +4,7 @@ package com.nhsoft.module.report;
 import com.nhsoft.module.report.api.TestApi;
 import com.nhsoft.module.report.api.dto.OperationRegionDTO;
 import com.nhsoft.module.report.api.dto.OperationStoreDTO;
+import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
 import com.nhsoft.module.report.dto.ShipOrderSummary;
@@ -11,6 +12,7 @@ import com.nhsoft.module.report.rpc.AdjustmentOrderRpc;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.rpc.ShipOrderRpc;
+import com.nhsoft.module.report.util.AppConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,8 +63,8 @@ public class TestSpringBoot {
     public void date(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            dateFrom = sdf.parse("2017-06-01");
-            dateTo = sdf.parse("2017-07-01");
+            dateFrom = sdf.parse("2017-10-01");
+            dateTo = sdf.parse("2017-10-31");
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -85,13 +87,34 @@ public class TestSpringBoot {
 
     @Test
     public void testApiByStore(){
-        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, branchStr, "2017-10-03");
+        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, null, "2017-10-03");
         System.out.println();
     }
 
     @Test
     public void testApiByRegion(){
         List<OperationRegionDTO> list = testApi.byRegion(systemBookCode, branchStr, "2017-08");
+        System.out.println();
+    }
+
+
+    @Test
+    public void byBizday(){
+        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizday("4020", null, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        System.out.println();
+
+    }
+
+    @Test
+    public void byBizmonth(){
+        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizmonth("4020", null, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        System.out.println();
+
+    }
+
+    @Test
+    public void testAll(){
+        List<BranchDTO> all = branchRpc.findAll("4020");
         System.out.println();
     }
 

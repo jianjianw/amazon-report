@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.TransferOutOrderDao;
+import com.nhsoft.module.report.dto.TransferOutMoney;
 import com.nhsoft.module.report.service.TransferOutOrderService;
 import com.nhsoft.module.report.util.BaseManager;
 import org.slf4j.Logger;
@@ -54,6 +55,11 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 	@Override
 	public List<Object[]> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return transferOutOrderDao.findTransferOutMoneyByBizday(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<Object[]> findTransferOutMoneyBymonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return transferOutOrderDao.findTransferOutMoneyBymonth(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 }

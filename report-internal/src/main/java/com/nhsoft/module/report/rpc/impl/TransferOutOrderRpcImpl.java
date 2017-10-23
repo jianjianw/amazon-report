@@ -50,4 +50,21 @@ public class TransferOutOrderRpcImpl implements TransferOutOrderRpc {
         }
         return list;
     }
+
+    @Override
+    public List<TransferOutMoney> findTransferOutMoneyBymonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = transferOutOrderService.findTransferOutMoneyBymonth(systemBookCode, branchNums, dateFrom, dateTo);
+        List<TransferOutMoney> list = new ArrayList<>();
+        if(objects.isEmpty()){
+            return null;
+        }
+        for (int i = 0; i <objects.size() ; i++) {
+            Object[] object = objects.get(i);
+            TransferOutMoney transferOutMoney = new TransferOutMoney();
+            transferOutMoney.setBiz((String) object[0]);
+            transferOutMoney.setOutMoney((BigDecimal) object[1]);
+            list.add(transferOutMoney);
+        }
+        return list;
+    }
 }

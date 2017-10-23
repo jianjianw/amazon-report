@@ -1507,7 +1507,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findRevenueByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select shift_table_bizday ,sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money ");
+		sb.append("select shift_table_bizday ,sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
 		sb.append("count(order_no) as count ");
 		sb.append("from pos_order with(nolock) ");
 		sb.append("where system_book_code = :systemBookCode ");
@@ -1525,6 +1525,32 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("and order_card_user_num > 0 ");
 		}
 		sb.append("group by shift_table_bizday order by shift_table_bizday asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findRevenueByBizmonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select subString(shift_table_bizday, 0, 7) ,sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
+		sb.append("count(order_no) as count, sum(order_gross_profit) as profit ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code in (5, 7) ");
+		if(isMember){
+			sb.append("and order_card_user_num > 0 ");
+		}
+		sb.append("group by subString(shift_table_bizday, 0, 7) order by subString(shift_table_bizday, 0, 7) asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
