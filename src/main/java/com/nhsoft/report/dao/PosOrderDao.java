@@ -1,11 +1,9 @@
 package com.nhsoft.report.dao;
 
 
-import com.nhsoft.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.report.model.*;
 import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
-import com.nhsoft.report.shared.queryBuilder.PolicyAllowPriftQuery;
-import com.nhsoft.report.shared.queryBuilder.PosOrderQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -397,6 +395,17 @@ public interface PosOrderDao {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
+	public List<Object[]> findRevenueByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
+
+	/**
+	 * 按营业日查询     销售额     客单数
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isMember 是否会员
+	 * @return
+	 */
+	public List<Object[]> findRevenueByBizday(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo, Boolean isMember);
 
 }

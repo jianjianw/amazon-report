@@ -1,7 +1,7 @@
 package com.nhsoft.report.model;
 
 
-import com.nhsoft.report.shared.queryBuilder.TwoStringValueData;
+import com.nhsoft.module.report.query.TwoStringValueData;
 
 import java.io.Serializable;
 import java.util.ArrayList;

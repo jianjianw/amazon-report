@@ -1,7 +1,7 @@
 package com.nhsoft.report.service.impl;
 
 import com.nhsoft.report.dao.PosOrderDao;
-import com.nhsoft.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.report.service.PosOrderService;
 import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.report.util.AppConstants;
@@ -105,16 +105,25 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
+	public List<Object[]> findRevenueByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
 
 
 		List<Object[]> objects = null;
 		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
-			objects = posOrderDao.findMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo, isMember);
+			objects = posOrderDao.findRevenueByBranch(systemBookCode, branchNums, dateFrom, dateTo, isMember);
 		}
-
 		return objects;
 	}
+
+	@Override
+	public List<Object[]> findRevenueByBizday(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+		List<Object[]> objects = null;
+		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
+			objects = posOrderDao.findRevenueByBizday(systemBookCode, branchNums, dateFrom, dateTo, isMember);
+		}
+		return objects;
+	}
+
 
 }
 

@@ -2,7 +2,7 @@ package com.nhsoft.report.service.impl;
 
 import com.nhsoft.amazon.shared.AppConstants;
 import com.nhsoft.report.dao.BranchResourceDao;
-import com.nhsoft.report.dto.CustomerModelParam;
+import com.nhsoft.module.report.dto.CustomerModelParam;
 import com.nhsoft.report.model.BranchResource;
 import com.nhsoft.report.service.BranchResourceService;
 import org.springframework.beans.factory.annotation.Autowired;

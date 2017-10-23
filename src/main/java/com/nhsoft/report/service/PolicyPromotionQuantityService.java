@@ -3,8 +3,8 @@ package com.nhsoft.report.service;
 
 
 
-import com.nhsoft.report.dto.PolicyPosItem;
-import com.nhsoft.report.shared.queryBuilder.PolicyPosItemQuery;
+import com.nhsoft.module.report.dto.PolicyPosItem;
+import com.nhsoft.module.report.query.PolicyPosItemQuery;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package com.nhsoft.report.model;
 
 
 
-import com.nhsoft.report.dto.OrderTraceSearch;
-import com.nhsoft.report.shared.State;
+import com.nhsoft.module.report.dto.OrderTraceSearch;
+import com.nhsoft.module.report.query.State;
 import com.nhsoft.report.util.AppConstants;
 import org.apache.commons.lang3.StringUtils;
 

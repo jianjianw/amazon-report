@@ -1,6 +1,6 @@
 package com.nhsoft.report.model;
 
-import com.nhsoft.report.shared.State;
+import com.nhsoft.module.report.query.State;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;

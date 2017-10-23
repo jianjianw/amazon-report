@@ -1,8 +1,7 @@
 package com.nhsoft.report.dao;
 
-import com.nhsoft.report.dto.CardUserCount;
 import com.nhsoft.report.model.CardUser;
-import com.nhsoft.report.shared.queryBuilder.CardUserQuery;
+import com.nhsoft.module.report.query.CardUserQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;

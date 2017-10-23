@@ -1,10 +1,9 @@
 package com.nhsoft.report.service;
 
-import com.nhsoft.report.dto.*;
+import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.query.*;
 import com.nhsoft.report.model.CustomReport;
 import com.nhsoft.report.model.PosItem;
-import com.nhsoft.report.param.ChainDeliveryParam;
-import com.nhsoft.report.shared.queryBuilder.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -1149,15 +1148,6 @@ public interface ReportService {
 	 */
 	public List<BranchCategoryAnalyseDTO> findBranchCategoryAnalyseDTOs(String systemBookCode, Integer centerBranchNum,
 																		List<Integer> branchNums, Date dateFrom, Date dateTo);
-
-	/**
-	 * 查询补货分析
-	 * @param inventoryAnalysisQuery
-	 * @param chainDeliveryParam
-	 * @return
-	 */
-	public List<InventoryAnalysisDTO> findInventoryAnalysiss(InventoryAnalysisQuery inventoryAnalysisQuery, ChainDeliveryParam chainDeliveryParam);
-
 	/**
 	 * 查询item_recording 过期催销商品
 	 * @param bookCode

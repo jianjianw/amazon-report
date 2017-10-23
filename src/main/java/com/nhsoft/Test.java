@@ -1,13 +1,13 @@
 package com.nhsoft;
 
 import com.google.gson.Gson;
-import com.nhsoft.report.dto.AlipayLogDTO;
-import com.nhsoft.report.dto.BranchMoneyReport;
-import com.nhsoft.report.rpc.AlipayLogRpc;
-import com.nhsoft.report.rpc.PosOrderRpc;
-import com.nhsoft.report.rpc.ReportRpc;
+import com.nhsoft.module.report.dto.AlipayLogDTO;
+import com.nhsoft.module.report.dto.BranchRevenueReport;
+import com.nhsoft.module.report.rpc.AlipayLogRpc;
+import com.nhsoft.module.report.rpc.PosOrderRpc;
+import com.nhsoft.module.report.rpc.ReportRpc;
 import com.nhsoft.report.service.AlipayLogService;
-import com.nhsoft.report.shared.queryBuilder.LogQuery;
+import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.ServiceDeskUtil;
@@ -49,13 +49,6 @@ public class Test {
 	Date dateTo = null;
 	List<Integer> branchNums = null;
 	String systemBookCode = "4020";
-
-	@RequestMapping("/store")
-	public @ResponseBody String store(){
-		List<BranchMoneyReport> moneyByBranch = posOrderRpc.findMoneyByBranch("4020",branchNums, AppConstants.BUSINESS_TREND_PAYMENT,dateFrom,dateTo,false );
-		System.out.println();
-		return null;
-	}
 
 
 

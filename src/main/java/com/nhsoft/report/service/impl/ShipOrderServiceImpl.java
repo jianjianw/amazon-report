@@ -1,8 +1,8 @@
 package com.nhsoft.report.service.impl;
 
 import com.nhsoft.report.dao.ShipOrderDao;
-import com.nhsoft.report.dto.ShipDetailsDTO;
-import com.nhsoft.report.dto.ShipOrderSummary;
+import com.nhsoft.module.report.dto.ShipDetailsDTO;
+import com.nhsoft.module.report.dto.ShipOrderSummary;
 import com.nhsoft.report.service.ShipOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

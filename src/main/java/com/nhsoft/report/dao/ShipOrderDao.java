@@ -1,7 +1,7 @@
 package com.nhsoft.report.dao;
 
 
-import com.nhsoft.report.dto.ShipOrderDTO;
+import com.nhsoft.module.report.dto.ShipOrderDTO;
 
 import java.util.Date;
 import java.util.List;

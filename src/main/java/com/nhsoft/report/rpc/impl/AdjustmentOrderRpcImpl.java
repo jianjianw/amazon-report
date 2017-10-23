@@ -1,10 +1,10 @@
 package com.nhsoft.report.rpc.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.nhsoft.report.dto.AdjustmentCauseMoney;
-import com.nhsoft.report.dto.CheckMoney;
-import com.nhsoft.report.dto.LossMoneyReport;
-import com.nhsoft.report.rpc.AdjustmentOrderRpc;
+import com.nhsoft.module.report.dto.AdjustmentCauseMoney;
+import com.nhsoft.module.report.dto.CheckMoney;
+import com.nhsoft.module.report.dto.LossMoneyReport;
+import com.nhsoft.module.report.rpc.AdjustmentOrderRpc;
 import com.nhsoft.report.service.AdjustmentOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-@Service
 @Component
 public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
 

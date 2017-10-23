@@ -1,9 +1,8 @@
 package com.nhsoft.report.rpc.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.nhsoft.report.dto.BranchConsumeReport;
-import com.nhsoft.report.dto.BranchDepositReport;
-import com.nhsoft.report.rpc.CardDepositRpc;
+import com.nhsoft.module.report.dto.BranchDepositReport;
+import com.nhsoft.module.report.rpc.CardDepositRpc;
 import com.nhsoft.report.service.CardDepositService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-@Service
 @Component
 public class CardDepositRpcImpl implements CardDepositRpc{
 

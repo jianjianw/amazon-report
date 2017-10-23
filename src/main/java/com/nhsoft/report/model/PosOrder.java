@@ -1,7 +1,7 @@
 package com.nhsoft.report.model;
 
-import com.nhsoft.report.dto.GsonIgnore;
-import com.nhsoft.report.dto.TypeAndTwoValuesDTO;
+import com.nhsoft.module.report.dto.GsonIgnore;
+import com.nhsoft.module.report.dto.TypeAndTwoValuesDTO;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
 import org.apache.commons.lang3.BooleanUtils;

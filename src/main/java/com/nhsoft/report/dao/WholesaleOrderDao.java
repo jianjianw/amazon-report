@@ -1,14 +1,10 @@
 package com.nhsoft.report.dao;
 
 
-import com.nhsoft.report.dto.OutOrderPaying;
 import com.nhsoft.report.model.WholesaleOrder;
 import com.nhsoft.report.model.WholesaleOrderDetail;
-import com.nhsoft.report.shared.State;
-import com.nhsoft.report.shared.queryBuilder.OrderQueryCondition;
-import com.nhsoft.report.shared.queryBuilder.WholesaleProfitQuery;
+import com.nhsoft.module.report.query.WholesaleProfitQuery;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 

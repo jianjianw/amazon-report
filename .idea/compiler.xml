@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="amazon-report" />
+        <module name="report-export" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="amazon-report" target="1.8" />
+      <module name="report-export" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

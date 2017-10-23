@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/amazon-report.iml" filepath="$PROJECT_DIR$/.idea/amazon-report.iml" />
+      <module fileurl="file://$PROJECT_DIR$/report-export/report-export.iml" filepath="$PROJECT_DIR$/report-export/report-export.iml" />
     </modules>
   </component>
 </project>

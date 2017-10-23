@@ -1,19 +1,23 @@
 package com.nhsoft.report.api;
 
+import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.report.api.dto.OperationRegionDTO;
 import com.nhsoft.report.api.dto.OperationStoreDTO;
-import com.nhsoft.report.dao.impl.TransferOutMoney;
-import com.nhsoft.report.dto.*;
+import com.nhsoft.report.api.dto.TrendDaily;
+import com.nhsoft.report.api.dto.TrendMonthly;
+import com.nhsoft.module.report.dto.TransferOutMoney;
 import com.nhsoft.report.model.Branch;
 import com.nhsoft.report.model.BranchRegion;
-import com.nhsoft.report.rpc.*;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
 
+import org.hibernate.jpa.criteria.expression.function.AggregationFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -45,24 +49,29 @@ public class TestApi {
     @Autowired
     private TransferOutOrderRpc transferOutOrderRpc;
 
-
-    @RequestMapping(method = RequestMethod.GET, value = "/store")
-    public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
-        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-
+    public List<Integer> stringToList(String str){
         List<Integer> bannchNumList = new ArrayList<>();
-        if(branchNums != null){
-            String replace = branchNums.replace("[", "").replace("]","").replace(" ","");
+        if(str != null){
+            String replace = str.replace("[", "").replace("]","").replace(" ","");
             String[] split = replace.split(",");
             for (int i = 0; i <split.length ; i++) {
                 bannchNumList.add(Integer.parseInt(split[i]));
             }
         }
+        return bannchNumList;
+    }
+
+    //按分店汇总
+    @RequestMapping(method = RequestMethod.GET, value = "/store")
+    public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
+                                            @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+
+        List<Integer> bannchNumList = stringToList(branchNums);
         Date growthDateFrom = null;
         Date growthDateTo = null;
         Date dateFrom = null;
         Date dateTo = null;
-        //营业额目标（查询时间类型）       
+        //营业额目标（查询时间类型）
         String dateType = null;
         Calendar calendar = Calendar.getInstance();
         try {
@@ -114,11 +123,11 @@ public class TestApi {
         List<OperationStoreDTO> list = new ArrayList<>();
 
         //用于计算环比增长率
-        List<BranchMoneyReport> growthMoneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, growthDateFrom, growthDateTo, false);
+        List<BranchRevenueReport> growthMoneyByBranch = posOrderRpc.findRevenueByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, growthDateFrom, growthDateTo, false);
         //营业额
-        List<BranchMoneyReport> moneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findRevenueByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //会员营业额
-        List<BranchMoneyReport> memberMoneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
+        List<BranchRevenueReport> memberMoneyByBranch = posOrderRpc.findRevenueByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //卡存款
         List<BranchDepositReport> depositByBranch = cardDepositRpc.findBranchSum(systemBookCode, bannchNumList, dateFrom, dateTo);
         //卡消费
@@ -151,7 +160,7 @@ public class TestApi {
             //上期的营业额
             Iterator growth = growthMoneyByBranch.iterator();
             while (growth.hasNext()) {
-                BranchMoneyReport next = (BranchMoneyReport) growth.next();
+                BranchRevenueReport next = (BranchRevenueReport) growth.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
                     store.setGrowthOf(next.getBizMoney());//上期营业额，先暂存到增长率，为了下面的计算
                     break;
@@ -160,7 +169,7 @@ public class TestApi {
 
             Iterator money = moneyByBranch.iterator();
             while (money.hasNext()) {
-                BranchMoneyReport next = (BranchMoneyReport) money.next();
+                BranchRevenueReport next = (BranchRevenueReport) money.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
                     store.setBranchNum(next.getBranchNum());        //分店号
                     store.setRevenue(next.getBizMoney());           //营业额
@@ -181,7 +190,7 @@ public class TestApi {
 
             Iterator memberMoney = memberMoneyByBranch.iterator();
             while (memberMoney.hasNext()) {
-                BranchMoneyReport next = (BranchMoneyReport) memberMoney.next();
+                BranchRevenueReport next = (BranchRevenueReport) memberMoney.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
                     store.setMemberBillNums(next.getOrderCount());    //会员客单量
                     store.setMemberBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 2, ROUND_HALF_DOWN));//会员客单价
@@ -281,12 +290,6 @@ public class TestApi {
             }
             list.add(store);
         }
-
-       /* for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getRevenue() == null) {
-                list.remove(i);
-            }
-        }*/
         //循环遍历清除营业额为null的数据
         Iterator<OperationStoreDTO> iterator = list.iterator();
         while(iterator.hasNext()){
@@ -300,21 +303,43 @@ public class TestApi {
 
     }
 
-
+    //按区域汇总
     @RequestMapping(method = RequestMethod.GET, value = "/region")
     public List<OperationRegionDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
+<<<<<<< HEAD
         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date, @RequestHeader("LoggedInUserTenantId") String LoggedInUserTenantId,
         @RequestHeader("LoggedInUserFullName") String LoggedInUserFullName){
     	
+=======
+                                        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+>>>>>>> e316a92bda26879a1cb252c53f00a430e6c51cff
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
+        //得到所有分店号
+        List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+        List<Integer> branchNumList = new ArrayList<>();
+        for (int i = 0; i <all.size() ; i++) {
+            BranchDTO branchDTO = all.get(i);
+            branchNumList.add(branchDTO.getBranchNum());
+        }
+        //将分店转化为string
+        String branchStr = "[";
+        for (int i = 0; i <branchNumList.size() ; i++) {
+            Integer branch = branchNumList.get(i);
+            if(i == branchNumList.size()-1){
+                branchStr += branch+"]";
+            }else{
+                branchStr += branch+",";
+            }
+
+        }
         //按分店汇总
-        List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, null, date);
+        List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchStr, date);
         //根据账套号查询区域
-        List<BranchRegion> branchRegions = branchRpc.findBranchRegion(systemBookCode);
+        List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
         //得到所有区域号
         List<Integer> regionNumList = new ArrayList<>();
-        for (BranchRegion branchRegion : branchRegions){
+        for (BranchRegionDTO branchRegion : branchRegions){
             Integer branchRegionNum = branchRegion.getBranchRegionNum();
             regionNumList.add(branchRegionNum);
         }
@@ -349,19 +374,19 @@ public class TestApi {
             //region.setRegionNum(regionNum);
             int count = 0;//计数器
             BigDecimal count_ = new BigDecimal(count);//包装计数器
-            List<Branch> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
+            List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
 
             for (int j = 0; j <branchs.size() ; j++) {
-                Branch branch = branchs.get(j);
+                BranchDTO branch = branchs.get(j);
                 //给区域中的分店号字段赋值
                 if(j == branchs.size()-1){
-                    areaBranchNums+=branch.getId().getBranchNum()+"]";
+                    areaBranchNums+=branch.getBranchNum()+"]";
                 }else{
-                    areaBranchNums+=branch.getId().getBranchNum()+",";
+                    areaBranchNums+=branch.getBranchNum()+",";
                 }
                 for (int k = 0; k <operationStoreDTOS.size() ; k++) {
                     OperationStoreDTO storeDTO = operationStoreDTOS.get(k);
-                    if(branch.getId().getBranchNum().equals(storeDTO.getBranchNum())){
+                    if(branch.getBranchNum().equals(storeDTO.getBranchNum())){
                         count++;//每加入一个分店数据，count就加1
                         revenue = revenue.add(storeDTO.getRevenue()); //营业额
                         realizeRate1 = realizeRate1.add(storeDTO.getRealizeRate1()==null?BigDecimal.ZERO:storeDTO.getRealizeRate1());   //营业额完成率
@@ -427,5 +452,67 @@ public class TestApi {
             }
         }
         return list;
+    }
+
+
+    //按营业日汇总
+    public List<TrendDaily> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
+                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+        List<Integer> bannchNumList = stringToList(branchNums);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        Calendar calendar = Calendar.getInstance();
+        Date dateFrom = null;
+        Date dateTo = null;
+        try {
+            dateFrom = sdf.parse(date);
+
+        } catch (ParseException e) {
+            logger.error("日期解析失败");
+        }
+        calendar.setTime(dateFrom);
+        int max = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        calendar.add(Calendar.DAY_OF_MONTH,max-1);
+        dateTo = calendar.getTime();
+        //营业额 客单量
+        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizday(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        //会员营业额 客单量
+        List<BranchBizRevenueSummary>  memberRevenueByBizday = posOrderRpc.findRevenueByBizday(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
+        //配送额
+        List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findTransferOutMoneyByBizday(systemBookCode, bannchNumList, dateFrom, dateTo);
+        List<TrendDaily> list = new ArrayList<>();
+        for(int i = 0 ;i<max;i++){
+            TrendDaily trendDaily = new TrendDaily();
+
+            for (int j = 0; j <revenueByBizday.size() ; j++) {
+                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(i);
+                trendDaily.setDay(branchBizRevenueSummary.getBiz());
+                trendDaily.setRevenue(branchBizRevenueSummary.getBizMoney());
+                trendDaily.setBillNums(branchBizRevenueSummary.getOrderCount());
+            }
+
+            for (int j = 0; j <memberRevenueByBizday.size() ; j++) {
+                BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(i);
+                trendDaily.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
+                trendDaily.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
+            }
+
+            for (int j = 0; j <transferOutMoneyByBizday.size() ; j++) {
+                TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(i);
+                trendDaily.setDistributionMoney(transferOutMoney.getOutMoney());
+            }
+            
+
+
+        }
+
+
+        return null;
+    }
+
+
+    //按营业月汇总
+    public List<TrendMonthly> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
+                                         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+        return null;
     }
 }

@@ -2,9 +2,9 @@ package com.nhsoft.report.dao.impl;
 
 
 import com.nhsoft.report.dao.PolicyPromotionMoneyDao;
-import com.nhsoft.report.dto.PolicyPosItem;
+import com.nhsoft.module.report.dto.PolicyPosItem;
 import com.nhsoft.report.model.PolicyPromotionMoney;
-import com.nhsoft.report.shared.queryBuilder.PolicyPosItemQuery;
+import com.nhsoft.module.report.query.PolicyPosItemQuery;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.DateUtil;
 import org.hibernate.Criteria;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 @Repository

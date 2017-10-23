@@ -1,8 +1,8 @@
 package com.nhsoft.report.rpc.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.nhsoft.report.dto.CardUserCount;
-import com.nhsoft.report.rpc.CardUserRpc;
+import com.nhsoft.module.report.dto.CardUserCount;
+import com.nhsoft.module.report.rpc.CardUserRpc;
 import com.nhsoft.report.service.CardUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-@Service
 @Component
 public class CardUserRpcImpl implements CardUserRpc {
 

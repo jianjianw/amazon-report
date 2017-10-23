@@ -50,4 +50,10 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 	public List<Object[]> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return transferOutOrderDao.findTransferOutMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
+
+	@Override
+	public List<Object[]> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return transferOutOrderDao.findTransferOutMoneyByBizday(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
 }

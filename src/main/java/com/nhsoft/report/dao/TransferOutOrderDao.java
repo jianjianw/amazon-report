@@ -262,4 +262,15 @@ public interface TransferOutOrderDao{
 	 * @param dateTo 时间止
 	 */
 	public List<Object[]> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/***
+	 * 按营业日查询配送额
+	 * @param systemBookCode
+	 * @param branchNums 分店号
+	 * @param dateFrom 时间起
+	 * @param dateTo 时间止
+	 */
+	public List<Object[]> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
 }

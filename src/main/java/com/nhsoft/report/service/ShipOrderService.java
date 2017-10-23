@@ -1,7 +1,7 @@
 package com.nhsoft.report.service;
 
-import com.nhsoft.report.dto.ShipDetailsDTO;
-import com.nhsoft.report.dto.ShipOrderSummary;
+import com.nhsoft.module.report.dto.ShipDetailsDTO;
+import com.nhsoft.module.report.dto.ShipOrderSummary;
 
 import java.util.Date;
 import java.util.List;

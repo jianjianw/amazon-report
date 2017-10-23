@@ -2,14 +2,12 @@ package com.nhsoft.report.rpc.impl;
 
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.nhsoft.report.dto.*;
+import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.query.*;
+import com.nhsoft.module.report.rpc.BookResourceRpc;
 import com.nhsoft.report.model.*;
-import com.nhsoft.report.param.AdjustmentReason;
-import com.nhsoft.report.param.ChainDeliveryParam;
-import com.nhsoft.report.rpc.BookResourceRpc;
-import com.nhsoft.report.rpc.ReportRpc;
+import com.nhsoft.module.report.rpc.ReportRpc;
 import com.nhsoft.report.service.*;
-import com.nhsoft.report.shared.queryBuilder.*;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.*;
 
-@Service
 @Component
 public class ReportRpcImpl implements ReportRpc {
 
@@ -2428,11 +2425,6 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<PosItem> posItems) {
-		return reportService.findPosItemRanks(systemBookCode,branchNum,dateFrom,dateTo,posItems);
-	}
-
-	@Override
 	public BigDecimal sumTransferMoney(String systemBookCode, Integer branchNum, List<Integer> transferBranchNums, Date dateFrom, Date dateTo) {
 		return reportService.sumTransferMoney(systemBookCode,branchNum,transferBranchNums,dateFrom,dateTo);
 	}
@@ -2944,11 +2936,6 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<ReportDTO> findReportDTOs(ReportDTO queryReportDTO, CustomReport customReport) {
-		return reportService.findReportDTOs(queryReportDTO,customReport);
-	}
-
-	@Override
 	public List<WholesaleProfitByClient> findWholesaleProfitBySupplier(WholesaleProfitQuery wholesaleProfitQuery) {
 		return reportService.findWholesaleProfitBySupplier(wholesaleProfitQuery);
 	}
@@ -3023,11 +3010,6 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BranchCategoryAnalyseDTO> findBranchCategoryAnalyseDTOs(String systemBookCode, Integer centerBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return reportService.findBranchCategoryAnalyseDTOs(systemBookCode,centerBranchNum,branchNums,dateFrom,dateTo);
-	}
-
-	@Override
-	public List<InventoryAnalysisDTO> findInventoryAnalysiss(InventoryAnalysisQuery inventoryAnalysisQuery, ChainDeliveryParam chainDeliveryParam) {
-		return reportService.findInventoryAnalysiss(inventoryAnalysisQuery,chainDeliveryParam);
 	}
 
 	@Override

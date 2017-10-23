@@ -1,16 +1,15 @@
 package com.nhsoft.report.rpc.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.nhsoft.report.dto.ShipDetailsDTO;
-import com.nhsoft.report.dto.ShipOrderSummary;
-import com.nhsoft.report.rpc.ShipOrderRpc;
+import com.nhsoft.module.report.dto.ShipDetailsDTO;
+import com.nhsoft.module.report.dto.ShipOrderSummary;
+import com.nhsoft.module.report.rpc.ShipOrderRpc;
 import com.nhsoft.report.service.ShipOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-@Service
 @Component
 public class ShipOrderRpcImpl implements ShipOrderRpc {
     @Autowired

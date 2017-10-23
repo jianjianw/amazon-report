@@ -1,12 +1,17 @@
 package com.nhsoft;
 
 
+import com.nhsoft.module.report.dto.BranchDTO;
+import com.nhsoft.module.report.dto.ShipDetailsDTO;
+import com.nhsoft.module.report.dto.ShipOrderSummary;
+import com.nhsoft.module.report.rpc.AdjustmentOrderRpc;
+import com.nhsoft.module.report.rpc.BranchRpc;
+import com.nhsoft.module.report.rpc.PosOrderRpc;
+import com.nhsoft.module.report.rpc.ShipOrderRpc;
 import com.nhsoft.report.api.TestApi;
 import com.nhsoft.report.api.dto.OperationRegionDTO;
 import com.nhsoft.report.api.dto.OperationStoreDTO;
-import com.nhsoft.report.dto.*;
 import com.nhsoft.report.model.Branch;
-import com.nhsoft.report.rpc.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,10 +68,10 @@ public class TestSpringBoot {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        List<Branch> all = branchRpc.findAll(systemBookCode);
+        List<BranchDTO> all = branchRpc.findAll(systemBookCode);
         branchNums = new ArrayList<Integer>();
-        for (Branch b : all) {
-            Integer branchNum = b.getId().getBranchNum();
+        for (BranchDTO b : all) {
+            Integer branchNum = b.getBranchNum();
             branchNums.add(branchNum);
         }
 

@@ -1,7 +1,7 @@
 package com.nhsoft.report.dao;
 
-import com.nhsoft.report.dto.PolicyPosItem;
-import com.nhsoft.report.shared.queryBuilder.PolicyPosItemQuery;
+import com.nhsoft.module.report.dto.PolicyPosItem;
+import com.nhsoft.module.report.query.PolicyPosItemQuery;
 
 import java.util.Date;
 import java.util.List;

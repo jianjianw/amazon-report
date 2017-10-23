@@ -1,8 +1,8 @@
 package com.nhsoft.report.rpc.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.nhsoft.report.dto.SaleMoneyGoals;
-import com.nhsoft.report.rpc.BranchTransferGoalsRpc;
+import com.nhsoft.module.report.dto.SaleMoneyGoals;
+import com.nhsoft.module.report.rpc.BranchTransferGoalsRpc;
 import com.nhsoft.report.service.BranchTransferGoalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-@Service
 @Component
 public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
 

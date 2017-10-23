@@ -1,7 +1,7 @@
 package com.nhsoft.report.util;
 
 
-import com.nhsoft.report.shared.State;
+import com.nhsoft.module.report.query.State;
 
 public class AppConstants {
 	/**

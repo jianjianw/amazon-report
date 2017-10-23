@@ -1,6 +1,6 @@
 package com.nhsoft.report.service;
 
-import com.nhsoft.report.dto.CustomerModelParam;
+import com.nhsoft.module.report.dto.CustomerModelParam;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.nhsoft.report.service;
 
 
-import com.nhsoft.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.report.shared.queryBuilder.CardReportQuery;
 
 import java.util.Date;
@@ -158,7 +158,7 @@ public interface PosOrderService {
 
 
 	/**
-	 * 按分店查询营业额
+	 * 按分店查询营业额 客单量 毛利
 	 * @param systemBookCode
 	 * @param branchNums
 	 * @param queryBy
@@ -167,7 +167,19 @@ public interface PosOrderService {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
+	public List<Object[]> findRevenueByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
+
+	/**
+	 * 按营业日查询 销售额 客单数
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param queryBy 统计类型 按营业额(AppConstants.BUSINESS_TREND_PAYMENT) or 按储值额 or 按发卡量
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isMember 是否会员
+	 * @return
+	 */
+	public List<Object[]> findRevenueByBizday(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
 
 
 }

@@ -2,9 +2,8 @@ package com.nhsoft.report.model;
 
 
 
-import com.nhsoft.report.dto.MarketData;
 import com.nhsoft.report.param.PosActionParam;
-import com.nhsoft.report.shared.State;
+import com.nhsoft.module.report.query.State;
 import com.nhsoft.report.util.AppConstants;
 import com.nhsoft.report.util.AppUtil;
 import com.nhsoft.report.util.DateUtil;

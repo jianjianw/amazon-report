@@ -1,6 +1,6 @@
 package com.nhsoft.report.dao;
 
-import com.nhsoft.report.shared.queryBuilder.WholesaleProfitQuery;
+import com.nhsoft.module.report.query.WholesaleProfitQuery;
 
 import java.util.Date;
 import java.util.List;
