@@ -28,8 +28,6 @@ public class TestApi {
 
     private static final Logger logger = LoggerFactory.getLogger(TestApi.class);
 
-
-
     @Autowired
     private AdjustmentOrderRpc adjustmentOrderRpc;
     @Autowired
