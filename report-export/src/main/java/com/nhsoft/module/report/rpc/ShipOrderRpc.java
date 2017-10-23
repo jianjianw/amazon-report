@@ -1,6 +1,6 @@
 package com.nhsoft.module.report.rpc;
 
-import com.nhsoft.module.report.dto.ShipDetailsDTO;
+import com.nhsoft.module.report.dto.ShipDetailDTO;
 import com.nhsoft.module.report.dto.ShipOrderSummary;
 
 import java.util.Date;
@@ -28,6 +28,6 @@ public interface ShipOrderRpc {
      * @param dateTo
      * @param companies
      * */
-     public List<ShipDetailsDTO> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
+     public List<ShipDetailDTO> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
 
 }

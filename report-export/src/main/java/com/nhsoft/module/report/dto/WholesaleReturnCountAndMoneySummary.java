@@ -1,6 +1,5 @@
 package com.nhsoft.module.report.dto;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
