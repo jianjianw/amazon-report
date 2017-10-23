@@ -305,7 +305,7 @@ public class TestApi {
     public List<OperationRegionDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date, @RequestHeader("LoggedInUserTenantId") String LoggedInUserTenantId,
         @RequestHeader("LoggedInUserFullName") String LoggedInUserFullName){
-    	System.out.println(LoggedInUserFullName);
+    	
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
         //按分店汇总
