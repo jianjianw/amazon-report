@@ -212,7 +212,7 @@ public class TestApi {
             while (deposit.hasNext()) {
                 BranchDepositReport next = (BranchDepositReport) deposit.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setCardStorage(next.getDeposit());//卡存款
+                    store.setCardStorage(next.getDeposit()==null?BigDecimal.ZERO:next.getDeposit());//卡存款
                     break;
                 }
             }

@@ -88,7 +88,7 @@ public class TestSpringBoot {
 
     @Test
     public void testApiByStore(){
-        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, "", "2017-10");
+        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, "", "2017-10-10");
         System.out.println();
     }
 
