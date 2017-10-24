@@ -5,12 +5,14 @@
 
 	<groupId>com.nhsoft</groupId>
 	<artifactId>amazon-report</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
     <modules>
         <module>report-export</module>
         <module>report-internal</module>
     </modules>
-    <packaging>pom</packaging>
+
 
 	<name>amazon-report</name>
 

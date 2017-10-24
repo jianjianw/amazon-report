@@ -4,9 +4,9 @@ import com.nhsoft.module.report.api.dto.OperationRegionDTO;
 import com.nhsoft.module.report.api.dto.OperationStoreDTO;
 import com.nhsoft.module.report.api.dto.TrendDaily;
 import com.nhsoft.module.report.api.dto.TrendMonthly;
+
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.rpc.*;
-import com.nhsoft.module.report.dto.TransferOutMoney;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public class TestApi {
     private static final Logger logger = LoggerFactory.getLogger(TestApi.class);
 
     @Autowired
-    private AdjustmentOrderRpc adjustmentOrderRpc;
+    protected AdjustmentOrderRpc adjustmentOrderRpc;
     @Autowired
     private BranchRpc branchRpc;
     @Autowired
