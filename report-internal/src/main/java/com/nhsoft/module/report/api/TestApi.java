@@ -191,10 +191,10 @@ public class TestApi {
                     break;
                 }
             }
-          /*  //如果营业额为null或0 就跳出循环
-            if(store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) == 0){
+            //如果营业额为null或0 就跳出循环
+            if(store.getRevenue() == null && store.getIncressedMember() == null && store.getCardStorage() == null ){
                 continue;
-            }*/
+            }
 
             Iterator memberMoney = memberMoneyByBranch.iterator();
             while (memberMoney.hasNext()) {
@@ -232,7 +232,6 @@ public class TestApi {
                     } else {
                         store.setDistributionDifferent(outMoney.subtract(store.getRevenue()));//配销差额
                     }
-
                     break;
                 }
             }
