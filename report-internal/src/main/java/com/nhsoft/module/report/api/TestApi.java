@@ -112,7 +112,7 @@ public class TestApi {
                 //按周查
                 dateType =  AppConstants.BUSINESS_DATE_SOME_WEEK;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                dateFrom = sdf.parse(date.substring(0, 11));
+                dateFrom = sdf.parse(date.substring(0, 10));
                 dateTo = sdf.parse(date.substring(11, date.length()));
                 //上周的时间
                 calendar.setTime(dateFrom);
