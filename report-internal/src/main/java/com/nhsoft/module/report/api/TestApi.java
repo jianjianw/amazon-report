@@ -347,8 +347,7 @@ public class TestApi {
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
 
-        String branchStr = null;
-        if(branchNums == null){
+        if(branchNums == null||branchNums.length() == 0){
             //得到所有分店号
             List<BranchDTO> all = branchRpc.findAll(systemBookCode);
             List<Integer> branchNumList = new ArrayList<>();
@@ -357,20 +356,20 @@ public class TestApi {
                 branchNumList.add(branchDTO.getBranchNum());
             }
             //将分店转化为string
-            branchStr = "[";
+            branchNums = "[";
             for (int i = 0; i <branchNumList.size() ; i++) {
                 Integer branch = branchNumList.get(i);
                 if(i == branchNumList.size()-1){
-                    branchStr += branch+"]";
+                    branchNums += branch+"]";
                 }else{
-                    branchStr += branch+",";
+                    branchNums += branch+",";
                 }
 
             }
         }
 
         //按分店汇总
-        List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchStr, date);
+        List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchNums, date);
         //根据账套号查询区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
         //得到所有区域号
