@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.service;
 
 
+import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.BranchRegion;
 
@@ -72,6 +73,13 @@ public interface BranchService {
 	 * @param branchNums 分店号
 	 */
 	public List<Object[]> findBranchArea(String systemBookCode,List<Integer> branchNums);
+
+	/**
+	 * 根据分店号查询分店
+	 * @param systemBookCode
+	 * @param branchNum 分店号
+	 * */
+	public Branch readWithNolock(String systemBookCode, Integer branchNum);
 
 
 

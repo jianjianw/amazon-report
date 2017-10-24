@@ -161,6 +161,8 @@ public class TestApi {
         for (int i = 0; i < bannchNumList.size(); i++) {
             OperationStoreDTO store = new OperationStoreDTO();
             store.setBranchNum(bannchNumList.get(i));
+            BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, bannchNumList.get(i));
+            store.setBranchName(branchDTO.getBranchName());
             //上期的营业额
             Iterator growth = growthMoneyByBranch.iterator();
             while (growth.hasNext()) {
@@ -191,20 +193,18 @@ public class TestApi {
                     break;
                 }
             }
-            //如果营业额为null或0 就跳出循环
-            if(store.getRevenue() == null && store.getIncressedMember() == null && store.getCardStorage() == null ){
-                continue;
-            }
 
-            Iterator memberMoney = memberMoneyByBranch.iterator();
-            while (memberMoney.hasNext()) {
-                BranchRevenueReport next = (BranchRevenueReport) memberMoney.next();
+
+            Iterator cardUserCount = cardUserCountByBranch.iterator();
+            while (cardUserCount.hasNext()) {
+                CardUserCount next = (CardUserCount) cardUserCount.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setMemberBillNums(next.getOrderCount());    //会员客单量
-                    store.setMemberBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 2, ROUND_HALF_DOWN));//会员客单价
+                    store.setIncressedMember(next.getCount()); //会员新增数
                     break;
                 }
             }
+
+
             Iterator deposit = depositByBranch.iterator();
             while (deposit.hasNext()) {
                 BranchDepositReport next = (BranchDepositReport) deposit.next();
@@ -213,16 +213,27 @@ public class TestApi {
                     break;
                 }
             }
-            Iterator consume = consumeByBranch.iterator();
-            while (consume.hasNext()) {
-                BranchConsumeReport next = (BranchConsumeReport) consume.next();
+
+            Iterator transferOutMoney = transferOutMoneyByBranch.iterator();//配送金额
+            while (transferOutMoney.hasNext()) {
+                TransferOutMoney next = (TransferOutMoney) transferOutMoney.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setCartStorageConsume(next.getConsume());//卡消费金额
-                    store.setStorageConsumeOccupy(store.getCardStorage().divide(store.getCartStorageConsume(), 2, ROUND_HALF_DOWN));//存储消费占比
+                    BigDecimal outMoney = next.getOutMoney();
+                    store.setDistributionDifferent(outMoney);
                     break;
                 }
             }
-            Iterator transferOut = transferOutMoneyByBranch.iterator();
+
+            //如果营业额,会员新增数，卡存款，配送金额 为null或0  就跳出本次循环
+            if( store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) ==0
+                    && store.getIncressedMember() == null || store.getIncressedMember().equals(0)
+                    && store.getCardStorage() == null || store.getCardStorage().compareTo(BigDecimal.ZERO) == 0
+                    && store.getDistributionDifferent() == null || store.getDistributionDifferent().compareTo(BigDecimal.ZERO) == 0 ){
+                continue;
+            }
+
+
+            Iterator transferOut = transferOutMoneyByBranch.iterator();//计算配销差额
             while (transferOut.hasNext()) {
                 TransferOutMoney next = (TransferOutMoney) transferOut.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
@@ -235,6 +246,29 @@ public class TestApi {
                     break;
                 }
             }
+
+
+            Iterator memberMoney = memberMoneyByBranch.iterator();
+            while (memberMoney.hasNext()) {
+                BranchRevenueReport next = (BranchRevenueReport) memberMoney.next();
+                if (store.getBranchNum().equals(next.getBranchNum())) {
+                    store.setMemberBillNums(next.getOrderCount());    //会员客单量
+                    store.setMemberBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 2, ROUND_HALF_DOWN));//会员客单价
+                    break;
+                }
+            }
+
+
+            Iterator consume = consumeByBranch.iterator();
+            while (consume.hasNext()) {
+                BranchConsumeReport next = (BranchConsumeReport) consume.next();
+                if (store.getBranchNum().equals(next.getBranchNum())) {
+                    store.setCartStorageConsume(next.getConsume());//卡消费金额
+                    store.setStorageConsumeOccupy(store.getCardStorage().divide(store.getCartStorageConsume(), 2, ROUND_HALF_DOWN));//存储消费占比
+                    break;
+                }
+            }
+
             Iterator loss = lossMoneyByBranch.iterator();
             while (loss.hasNext()) {
                 LossMoneyReport next = (LossMoneyReport) loss.next();
@@ -251,14 +285,7 @@ public class TestApi {
                     break;
                 }
             }
-            Iterator cardUserCount = cardUserCountByBranch.iterator();
-            while (cardUserCount.hasNext()) {
-                CardUserCount next = (CardUserCount) cardUserCount.next();
-                if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setIncressedMember(next.getCount()); //会员新增数
-                    break;
-                }
-            }
+
             Iterator saleMoneyGoals = saleMoneyGoalsByBranch.iterator();
             while (saleMoneyGoals.hasNext()) {
                 SaleMoneyGoals next = (SaleMoneyGoals) saleMoneyGoals.next();

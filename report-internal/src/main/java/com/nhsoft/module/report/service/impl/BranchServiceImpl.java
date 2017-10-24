@@ -101,5 +101,11 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 		return branchDao.findBranchArea(systemBookCode,branchNums);
 	}
 
+	@Override
+	public Branch readWithNolock(String systemBookCode, Integer branchNum) {
+		return branchDao.readWithNolock(systemBookCode,branchNum);
+	}
+
+
 
 }

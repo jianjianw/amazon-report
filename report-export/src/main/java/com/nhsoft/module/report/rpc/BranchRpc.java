@@ -39,4 +39,11 @@ public interface BranchRpc {
      * @param branchNums 分店号
      */
     public List<BranchArea> findBranchArea(String systemBookCode, List<Integer> branchNums);
+
+    /**
+     * 根据分店号查询分店
+     * @param systemBookCode
+     * @param branchNum 分店号
+     * */
+    public BranchDTO readWithNolock(String systemBookCode, Integer branchNum);
 }

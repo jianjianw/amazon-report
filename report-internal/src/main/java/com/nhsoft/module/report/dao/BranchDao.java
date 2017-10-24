@@ -20,7 +20,11 @@ public interface BranchDao {
 	 */
 	public List<Branch> findActivedRdc(String systemBookCode);
 
-
+	/**
+	 * 根据分店号查询分店
+	 * @param systemBookCode
+	 * @param branchNum 分店号
+	 * */
 	public Branch readWithNolock(String systemBookCode, Integer branchNum);
 
 	public List<Branch> findAllActived(String systemBookCode);
@@ -40,6 +44,7 @@ public interface BranchDao {
 	 * @param branchNums 分店号
 	 */
 	public List<Object[]> findBranchArea(String systemBookCode,List<Integer> branchNums);
+
 
 
 }
