@@ -80,7 +80,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(multipleDataSource);
 		sessionFactory.getHibernateProperties().putAll(hibernateProperties);
-		sessionFactory.setPackagesToScan("com.nhsoft.report.model");
+		sessionFactory.setPackagesToScan("com.nhsoft.module.report.model");
 		sessionFactory.setPhysicalNamingStrategy(new SpringPhysicalNamingStrategy());
 		return sessionFactory;
 		
@@ -155,7 +155,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(shardingDataSource());
 		sessionFactory.getHibernateProperties().putAll(hibernateProperties);
-		sessionFactory.setPackagesToScan("com.nhsoft.report.model");
+		sessionFactory.setPackagesToScan("com.nhsoft.module.report.model");
 		sessionFactory.setPhysicalNamingStrategy(new SpringPhysicalNamingStrategy());
 		return sessionFactory;
 		

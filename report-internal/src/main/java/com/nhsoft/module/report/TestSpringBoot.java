@@ -64,8 +64,8 @@ public class TestSpringBoot {
     public void date(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            dateFrom = sdf.parse("2017-10");
-            dateTo = sdf.parse("2017-10");
+            dateFrom = sdf.parse("2017-10-01");
+            dateTo = sdf.parse("2017-10-02");
 
         } catch (ParseException e) {
             e.printStackTrace();
