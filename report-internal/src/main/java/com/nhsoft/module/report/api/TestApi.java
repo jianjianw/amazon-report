@@ -61,7 +61,10 @@ public class TestApi {
     @RequestMapping(method = RequestMethod.GET, value = "/store")
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-
+        //如果传递过来的参数为null或者为空串，将它变为null
+        if(branchNums.length() == 0){
+            branchNums = null;
+        }
         List<Integer> bannchNumList = stringToList(branchNums);
         //如果传入分店为null,就查询所有数据
         if(bannchNumList == null || bannchNumList.size() == 0){
