@@ -413,7 +413,6 @@ public class TestApi {
             BigDecimal growthOf = BigDecimal.ZERO;                  //环比增长
             String areaBranchNums = "[";
             int count = 0;//计数器
-            BigDecimal count_ = new BigDecimal(count);//包装计数器
             //得到区域下面的所有分店
             List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
 
@@ -454,8 +453,9 @@ public class TestApi {
                     }
                 }
             }
-            if(count_.compareTo(BigDecimal.ZERO) == 0){
-                count_ = count_.add(new BigDecimal(1));
+            BigDecimal bigCount = new BigDecimal(count);//包装计数器
+            if(bigCount.compareTo(BigDecimal.ZERO) == 0){
+                bigCount = bigCount.add(new BigDecimal(1));
             }
             region.setArea(branchRegions.get(i).getBranchRegionName());
             region.setRevenue(revenue);
@@ -464,11 +464,11 @@ public class TestApi {
                 areaBranchNums = areaBranchNums+"]";
             }
             region.setAreaBranchNums(areaBranchNums);//区域包含的分店
-            region.setRealizeRate1(realizeRate1.divide(count_, 2, ROUND_HALF_DOWN));
-            region.setMemberSalesRealizeRate(memberSalesRealizeRate.divide(count_,2,ROUND_HALF_DOWN));
-            region.setMemeberRevenueOccupy(memeberRevenueOccupy.divide(count_,2,ROUND_HALF_DOWN));
-            region.setAveBillNums(aveBillNums.divide(count_,2,ROUND_HALF_DOWN));
-            region.setAllBillRealizeRate(allBillRealizeRate.divide(count_,2,ROUND_HALF_DOWN));
+            region.setRealizeRate1(realizeRate1.divide(bigCount, 2, ROUND_HALF_DOWN));
+            region.setMemberSalesRealizeRate(memberSalesRealizeRate.divide(bigCount,2,ROUND_HALF_DOWN));
+            region.setMemeberRevenueOccupy(memeberRevenueOccupy.divide(bigCount,2,ROUND_HALF_DOWN));
+            region.setAveBillNums(aveBillNums.divide(bigCount,2,ROUND_HALF_DOWN));
+            region.setAllBillRealizeRate(allBillRealizeRate.divide(bigCount,2,ROUND_HALF_DOWN));
             region.setMemberBillNums(memberBillNums);
             region.setBill(bill);
             region.setMemberBill(memberBill);
@@ -476,25 +476,16 @@ public class TestApi {
             region.setDestroyDefferent(destroyDefferent);
             region.setAdjustAmount(adjustAmount);
             region.setGrossProfit(grossProfit);
-            region.setGrossProfitRate(grossProfitRate.divide(count_,2,ROUND_HALF_DOWN));
+            region.setGrossProfitRate(grossProfitRate.divide(bigCount,2,ROUND_HALF_DOWN));
             region.setIncressedMember(incressedMember);
-            region.setRealizeRate2(realizeRate2.divide(count_,2,ROUND_HALF_DOWN));
+            region.setRealizeRate2(realizeRate2.divide(bigCount,2,ROUND_HALF_DOWN));
             region.setCardStorage(cardStorage);
-            region.setRealizeRate3(realizeRate3.divide(count_,2,ROUND_HALF_DOWN));
+            region.setRealizeRate3(realizeRate3.divide(bigCount,2,ROUND_HALF_DOWN));
             region.setCartStorageConsume(cartStorageConsume);
-            region.setStorageConsumeOccupy(storageConsumeOccupy.divide(count_,2,ROUND_HALF_DOWN));
-            region.setGrowthOf(growthOf.divide(count_,2,ROUND_HALF_DOWN));
+            region.setStorageConsumeOccupy(storageConsumeOccupy.divide(bigCount,2,ROUND_HALF_DOWN));
+            region.setGrowthOf(growthOf.divide(bigCount,2,ROUND_HALF_DOWN));
             list.add(region);
         }
-
-        //按分店查询的时候，已经将营业额为空的移出了，所以这块不用移出营业额为空的区域了
-        /*Iterator<OperationRegionDTO> iterator = list.iterator();
-        while(iterator.hasNext()){
-            OperationRegionDTO next = iterator.next();
-            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
-                iterator.remove();
-            }
-        }*/
         return list;
     }
 

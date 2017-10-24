@@ -3108,11 +3108,10 @@ public class ReportRpcImpl implements ReportRpc {
 		return object;
 	}
 
-
-
-
-
-
+	@Override
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData saleAnalysisQueryData) {
+		return reportService.findSaleAnalysisByBranchPosItems(saleAnalysisQueryData);
+	}
 
 
 }
