@@ -327,14 +327,6 @@ public class TestApi {
             }
             list.add(store);
         }
-        //循环遍历清除营业额为null的数据,使用for循环会漏掉数据
-      /*  Iterator<OperationStoreDTO> iterator = list.iterator();
-        while(iterator.hasNext()){
-            OperationStoreDTO next = iterator.next();
-            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
-                iterator.remove();
-            }
-        }*/
         System.out.println();
         return list;
 
