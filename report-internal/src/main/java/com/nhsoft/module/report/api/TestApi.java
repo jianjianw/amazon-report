@@ -286,7 +286,7 @@ public class TestApi {
             }
             list.add(store);
         }
-        //循环遍历清除营业额为null的数据
+        //循环遍历清除营业额为null的数据,使用for循环会漏掉数据
         Iterator<OperationStoreDTO> iterator = list.iterator();
         while(iterator.hasNext()){
             OperationStoreDTO next = iterator.next();
@@ -476,7 +476,7 @@ public class TestApi {
         List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findTransferOutMoneyByBizday(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendDaily> list = new ArrayList<>();
 
-        for (int i = 0; i <max ; i++) {
+        for (int i = 0; i <max; i++) {
             calendar.setTime(dateFrom);
             calendar.add(Calendar.DAY_OF_MONTH,i);
 
@@ -494,6 +494,9 @@ public class TestApi {
                     break;
                 }
             }
+//            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
+//                continue;
+//            }
 
             for (int j = 0; j <memberRevenueByBizday.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(i);
@@ -515,14 +518,6 @@ public class TestApi {
             }
             list.add(trendDaily);
         }
-        //移出营业额为空的营业日
-        Iterator<TrendDaily> iterator = list.iterator();
-        while(iterator.hasNext()){
-            TrendDaily next = iterator.next();
-            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
-                iterator.remove();
-            }
-        }
         return list;
     }
 
@@ -538,7 +533,6 @@ public class TestApi {
         } catch (ParseException e) {
             logger.error("日期解析失败");
         }
-
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateFrom);
         calendar.add(Calendar.MONTH,11);
@@ -553,10 +547,51 @@ public class TestApi {
         List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findTransferOutMoneyByBizday(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendMonthly> list = new ArrayList<>();
         for (int i = 0; i <11 ; i++) {
+            calendar.setTime(dateFrom);
+            calendar.add(Calendar.MONTH,i);
+            Date time = calendar.getTime();
+            String bizmonth = DateUtil.getYearAndMonthString(time);
+            TrendMonthly trendMonthly = new TrendMonthly();
+            trendMonthly.setMonth(bizmonth);
 
+            for (int j = 0; j <revenueByBizday.size() ; j++) {
+                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(i);
+                if(trendMonthly.getMonth().equals(branchBizRevenueSummary.getBiz())){
+                    trendMonthly.setRevenue(branchBizRevenueSummary.getBizMoney());
+                    trendMonthly.setBillNums(branchBizRevenueSummary.getOrderCount());
+                    trendMonthly.setGross(branchBizRevenueSummary.getProfit());
+                    break;
+                }
+
+            }
+
+            for (int j = 0; j <memberRevenueByBizday.size() ; j++) {
+                BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(i);
+                if(trendMonthly.getMonth().equals(branchBizRevenueSummary.getBiz())){
+                    trendMonthly.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
+                    trendMonthly.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
+                    trendMonthly.setGross(branchBizRevenueSummary.getProfit());
+                    break;
+                }
+            }
+
+            for (int j = 0; j <transferOutMoneyByBizday.size() ; j++) {
+                TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(i);
+                if(trendMonthly.getMonth().equals(transferOutMoney.getBiz())){
+                    trendMonthly.setDistributionMoney(transferOutMoney.getOutMoney());
+                }
+            }
+            list.add(trendMonthly);
         }
 
+        Iterator<TrendMonthly> iterator = list.iterator();
+        while (iterator.hasNext()){
+            TrendMonthly next = iterator.next();
+            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
+                iterator.remove();
+            }
+        }
 
-        return null;
+        return list;
     }
 }
