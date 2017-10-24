@@ -229,7 +229,7 @@ public class TestApi {
 
             //如果营业额,会员新增数，卡存款，配送金额 为null或0  就跳出本次循环
             if( store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) ==0
-                    && store.getIncressedMember() == null || store.getIncressedMember() == 0
+                    && store.getIncressedMember() == null || store.getIncressedMember().equals(0)
                     && store.getCardStorage() == null || store.getCardStorage().compareTo(BigDecimal.ZERO) == 0
                     && store.getDistributionDifferent() == null || store.getDistributionDifferent().compareTo(BigDecimal.ZERO) == 0 ){
                 continue;
