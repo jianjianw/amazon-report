@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
+public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 
 
 	private StringBuffer createByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery){

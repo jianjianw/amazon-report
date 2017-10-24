@@ -12,7 +12,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>report-internal</artifactId>
+    <artifactId>amazon-report-internal</artifactId>
     <packaging>jar</packaging>
 
 
