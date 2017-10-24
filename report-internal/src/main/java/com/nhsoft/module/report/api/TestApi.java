@@ -183,10 +183,10 @@ public class TestApi {
                     break;
                 }
             }
-            //如果营业额为null或0 就跳出循环
+          /*  //如果营业额为null或0 就跳出循环
             if(store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) == 0){
                 continue;
-            }
+            }*/
 
             Iterator memberMoney = memberMoneyByBranch.iterator();
             while (memberMoney.hasNext()) {
@@ -342,10 +342,16 @@ public class TestApi {
             Integer branchRegionNum = branchRegion.getBranchRegionNum();
             regionNumList.add(branchRegionNum);
         }
+        //得到所有区域名称
+        List<String> regionNames = new ArrayList<>();
+        for (BranchRegionDTO branchRegion : branchRegions){
+            String branchRegionName = branchRegion.getBranchRegionName();
+            regionNames.add(branchRegionName);
+        }
 
         //先遍历区域，在遍历按分店返回的数据，如果分店号，相等，就将分店的数据封装到区域里面
-        for (int i = 0; i <regionNumList.size() ; i++) {
-            Integer regionNum = regionNumList.get(i);
+        for (int i = 0; i <branchRegions.size() ; i++) {
+            Integer regionNum = branchRegions.get(i).getBranchRegionNum();
             //多少个分店号就创建多少个分店
             OperationRegionDTO region = new OperationRegionDTO();
             BigDecimal revenue = BigDecimal.ZERO;  //营业额
@@ -370,7 +376,6 @@ public class TestApi {
             BigDecimal storageConsumeOccupy = BigDecimal.ZERO;      //储值消费占比
             BigDecimal growthOf = BigDecimal.ZERO;                  //环比增长
             String areaBranchNums = "[";
-            //region.setRegionNum(regionNum);
             int count = 0;//计数器
             BigDecimal count_ = new BigDecimal(count);//包装计数器
             List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
@@ -414,12 +419,12 @@ public class TestApi {
             if(count_.compareTo(BigDecimal.ZERO) == 0){
                 count_ = count_.add(new BigDecimal(1));
             }
+            region.setArea(branchRegions.get(i).getBranchRegionName());
             region.setRevenue(revenue);
             //如果区域下面没分店 areaBranchNums会等于 ]
             if(areaBranchNums.length() == 1){
                 areaBranchNums = areaBranchNums+"]";
             }
-            //region.setArea();
             region.setAreaBranchNums(areaBranchNums);//区域包含的分店
             region.setRealizeRate1(realizeRate1.divide(count_, 2, ROUND_HALF_DOWN));
             region.setMemberSalesRealizeRate(memberSalesRealizeRate.divide(count_,2,ROUND_HALF_DOWN));
