@@ -4,6 +4,13 @@ import java.math.BigDecimal;
 
 public class OperationStoreDTO {
 
+	public OperationStoreDTO() {
+		this.revenue = BigDecimal.ZERO;
+		this.incressedMember = 0;
+		this.cardStorage = BigDecimal.ZERO;
+		this.distributionDifferent = BigDecimal.ZERO;
+	}
+
 	private Integer branchNum;                    //分店编号
 	private String branchName;                    //分店
 	private BigDecimal revenue;                   //营业额
