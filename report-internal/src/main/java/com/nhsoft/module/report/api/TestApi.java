@@ -62,7 +62,7 @@ public class TestApi {
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
         //如果传递过来的参数为null或者为空串，将它变为null
-        if(branchNums.length() == 0){
+        if(branchNums == null || branchNums.equals("")){
             branchNums = null;
         }
         List<Integer> bannchNumList = stringToList(branchNums);
@@ -160,7 +160,7 @@ public class TestApi {
         if(day == 0){
             day = 1;
         }
-        BigDecimal day_ = new BigDecimal(day);//包装日期
+        BigDecimal bigDay = new BigDecimal(day);//包装日期
         for (int i = 0; i < bannchNumList.size(); i++) {
             OperationStoreDTO store = new OperationStoreDTO();
             store.setBranchNum(bannchNumList.get(i));
@@ -183,7 +183,7 @@ public class TestApi {
                     store.setBranchNum(next.getBranchNum());        //分店号
                     store.setRevenue(next.getBizMoney());           //营业额
                     store.setGrossProfit(next.getProfit());         //毛利
-                    store.setAveBillNums(new BigDecimal(next.getOrderCount()).divide(day_,2, ROUND_HALF_DOWN));    //日均客单量
+                    store.setAveBillNums(new BigDecimal(next.getOrderCount()).divide(bigDay,2, ROUND_HALF_DOWN));    //日均客单量
                     store.setBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 2, ROUND_HALF_DOWN));//客单价
                     //本期营业额-上期营业额
                     BigDecimal subtract = store.getRevenue().subtract(store.getGrowthOf() == null? BigDecimal.ZERO:store.getGrowthOf());
@@ -229,7 +229,7 @@ public class TestApi {
 
             //如果营业额,会员新增数，卡存款，配送金额 为null或0  就跳出本次循环
             if( store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) ==0
-                    && store.getIncressedMember() == null || store.getIncressedMember().equals(0)
+                    && store.getIncressedMember() == null || store.getIncressedMember() == 0
                     && store.getCardStorage() == null || store.getCardStorage().compareTo(BigDecimal.ZERO) == 0
                     && store.getDistributionDifferent() == null || store.getDistributionDifferent().compareTo(BigDecimal.ZERO) == 0 ){
                 continue;
@@ -500,6 +500,8 @@ public class TestApi {
 
 
     //按营业日汇总(时间传递月份)
+    //按分店汇总
+    @RequestMapping(method = RequestMethod.GET, value = "/bizday")
     public List<TrendDaily> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
                                      @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         List<Integer> bannchNumList = stringToList(branchNums);
@@ -573,6 +575,7 @@ public class TestApi {
 
 
     //按营业月汇总（时间传递年份）
+    @RequestMapping(method = RequestMethod.GET, value = "/bizmonth")
     public List<TrendMonthly> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
                                          @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         List<Integer> bannchNumList = stringToList(branchNums);
