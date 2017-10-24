@@ -19,8 +19,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
     private PosOrderService posOrderService;
 
     @Override
-    public List<BranchRevenueReport> findRevenueByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
-        List<Object[]> objects = posOrderService.findRevenueByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateTo,isMember);
+    public List<BranchRevenueReport> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+        List<Object[]> objects = posOrderService.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateTo,isMember);
         List<BranchRevenueReport> list = new ArrayList<BranchRevenueReport>();
         if(objects.isEmpty()){
             return list;
@@ -39,9 +39,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
     }
 
     @Override
-    public List<BranchBizRevenueSummary> findRevenueByBizday(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+    public List<BranchBizRevenueSummary> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 
-        List<Object[]> objects = posOrderService.findRevenueByBizday(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
+        List<Object[]> objects = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
         List<BranchBizRevenueSummary> list = new ArrayList<>();
         if(objects.isEmpty()){
             return list;
@@ -52,15 +52,15 @@ public class PosOrderRpcImpl implements PosOrderRpc {
             branchBizRevenueSummary.setBiz((String) object[0]);
             branchBizRevenueSummary.setBizMoney((BigDecimal) object[1]);
             branchBizRevenueSummary.setOrderCount((Integer) object[2]);
-            //branchBizRevenueSummary.setProfit((BigDecimal) object[3]); 按营业日查询，不查毛利
+            branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
             list.add(branchBizRevenueSummary);
         }
         return list;
     }
 
     @Override
-    public List<BranchBizRevenueSummary> findRevenueByBizmonth(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
-        List<Object[]> objects = posOrderService.findRevenueByBizmonth(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
+    public List<BranchBizRevenueSummary> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+        List<Object[]> objects = posOrderService.findMoneyBizmonthSummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
         List<BranchBizRevenueSummary> list = new ArrayList<>();
         if(objects.isEmpty()){
             return list;

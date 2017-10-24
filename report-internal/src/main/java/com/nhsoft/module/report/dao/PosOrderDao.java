@@ -395,10 +395,10 @@ public interface PosOrderDao {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findRevenueByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
 
 	/**
-	 * 按营业日查询     销售额     客单数
+	 * 按营业日汇总     销售额     客单数
 	 * @param systemBookCode
 	 * @param branchNums
 	 * @param dateFrom
@@ -406,11 +406,11 @@ public interface PosOrderDao {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findRevenueByBizday(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo, Boolean isMember);
+	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo, Boolean isMember);
 
 
 	/**
-	 * 按月份查询 销售额 客单数 毛利
+	 * 按月份汇总 销售额 客单数 毛利
 	 * @param systemBookCode
 	 * @param branchNums
 	 * @param dateFrom
@@ -418,7 +418,7 @@ public interface PosOrderDao {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findRevenueByBizmonth(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo, Boolean isMember);
+	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo, Boolean isMember);
 
 
 }

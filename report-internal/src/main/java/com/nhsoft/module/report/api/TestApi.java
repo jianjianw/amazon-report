@@ -119,11 +119,11 @@ public class TestApi {
         List<OperationStoreDTO> list = new ArrayList<>();
 
         //用于计算环比增长率
-        List<BranchRevenueReport> growthMoneyByBranch = posOrderRpc.findRevenueByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, growthDateFrom, growthDateTo, false);
+        List<BranchRevenueReport> growthMoneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, growthDateFrom, growthDateTo, false);
         //营业额
-        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findRevenueByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //会员营业额
-        List<BranchRevenueReport> memberMoneyByBranch = posOrderRpc.findRevenueByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
+        List<BranchRevenueReport> memberMoneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //卡存款
         List<BranchDepositReport> depositByBranch = cardDepositRpc.findBranchSum(systemBookCode, bannchNumList, dateFrom, dateTo);
         //卡消费
@@ -182,6 +182,10 @@ public class TestApi {
                     }
                     break;
                 }
+            }
+            //如果营业额为null或0 就跳出循环
+            if(store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) == 0){
+                continue;
             }
 
             Iterator memberMoney = memberMoneyByBranch.iterator();
@@ -287,13 +291,13 @@ public class TestApi {
             list.add(store);
         }
         //循环遍历清除营业额为null的数据,使用for循环会漏掉数据
-        Iterator<OperationStoreDTO> iterator = list.iterator();
+      /*  Iterator<OperationStoreDTO> iterator = list.iterator();
         while(iterator.hasNext()){
             OperationStoreDTO next = iterator.next();
             if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
                 iterator.remove();
             }
-        }
+        }*/
         System.out.println();
         return list;
 
@@ -439,13 +443,15 @@ public class TestApi {
             region.setGrowthOf(growthOf.divide(count_,2,ROUND_HALF_DOWN));
             list.add(region);
         }
-        Iterator<OperationRegionDTO> iterator = list.iterator();
+
+        //按分店查询的时候，已经将营业额为空的移出了，所以这块不用移出营业额为空的区域了
+        /*Iterator<OperationRegionDTO> iterator = list.iterator();
         while(iterator.hasNext()){
             OperationRegionDTO next = iterator.next();
             if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
                 iterator.remove();
             }
-        }
+        }*/
         return list;
     }
 
@@ -469,9 +475,9 @@ public class TestApi {
         calendar.add(Calendar.DAY_OF_MONTH,max-1);
         dateTo = calendar.getTime();
         //营业额 客单量
-        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizday(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //会员营业额 客单量
-        List<BranchBizRevenueSummary>  memberRevenueByBizday = posOrderRpc.findRevenueByBizday(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
+        List<BranchBizRevenueSummary>  memberRevenueByBizday = posOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //配送额
         List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findTransferOutMoneyByBizday(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendDaily> list = new ArrayList<>();
@@ -494,9 +500,10 @@ public class TestApi {
                     break;
                 }
             }
-//            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
-//                continue;
-//            }
+            //如果营业额为null或0 就跳出循环
+            if(trendDaily.getRevenue() == null || trendDaily.getRevenue().compareTo(BigDecimal.ZERO) == 0){
+                continue;
+            }
 
             for (int j = 0; j <memberRevenueByBizday.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(i);
@@ -540,11 +547,11 @@ public class TestApi {
         Date dateTo = calendar.getTime();
 
         //营业额 客单量
-        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizday(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        List<BranchBizRevenueSummary> revenueByBizmonth = posOrderRpc.findMoneyBizmonthSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //会员营业额 客单量
-        List<BranchBizRevenueSummary> memberRevenueByBizday = posOrderRpc.findRevenueByBizday(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
+        List<BranchBizRevenueSummary> memberRevenueByBizmonth = posOrderRpc.findMoneyBizmonthSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //配送额
-        List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findTransferOutMoneyByBizday(systemBookCode, bannchNumList, dateFrom, dateTo);
+        List<TransferOutMoney> transferOutMoneyBymonth = transferOutOrderRpc.findTransferOutMoneyBymonth(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendMonthly> list = new ArrayList<>();
         for (int i = 0; i <11 ; i++) {
             calendar.setTime(dateFrom);
@@ -554,19 +561,23 @@ public class TestApi {
             TrendMonthly trendMonthly = new TrendMonthly();
             trendMonthly.setMonth(bizmonth);
 
-            for (int j = 0; j <revenueByBizday.size() ; j++) {
-                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(i);
+            for (int j = 0; j <revenueByBizmonth.size() ; j++) {
+                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(i);
                 if(trendMonthly.getMonth().equals(branchBizRevenueSummary.getBiz())){
                     trendMonthly.setRevenue(branchBizRevenueSummary.getBizMoney());
                     trendMonthly.setBillNums(branchBizRevenueSummary.getOrderCount());
                     trendMonthly.setGross(branchBizRevenueSummary.getProfit());
                     break;
                 }
-
             }
 
-            for (int j = 0; j <memberRevenueByBizday.size() ; j++) {
-                BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(i);
+            //如果营业额为null或0 就跳出循环
+            if(trendMonthly.getRevenue() == null || trendMonthly.getRevenue().compareTo(BigDecimal.ZERO) == 0){
+                continue;
+            }
+
+            for (int j = 0; j <memberRevenueByBizmonth.size() ; j++) {
+                BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizmonth.get(i);
                 if(trendMonthly.getMonth().equals(branchBizRevenueSummary.getBiz())){
                     trendMonthly.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
                     trendMonthly.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
@@ -575,23 +586,14 @@ public class TestApi {
                 }
             }
 
-            for (int j = 0; j <transferOutMoneyByBizday.size() ; j++) {
-                TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(i);
+            for (int j = 0; j <transferOutMoneyBymonth.size() ; j++) {
+                TransferOutMoney transferOutMoney = transferOutMoneyBymonth.get(i);
                 if(trendMonthly.getMonth().equals(transferOutMoney.getBiz())){
                     trendMonthly.setDistributionMoney(transferOutMoney.getOutMoney());
                 }
             }
             list.add(trendMonthly);
         }
-
-        Iterator<TrendMonthly> iterator = list.iterator();
-        while (iterator.hasNext()){
-            TrendMonthly next = iterator.next();
-            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
-                iterator.remove();
-            }
-        }
-
         return list;
     }
 }

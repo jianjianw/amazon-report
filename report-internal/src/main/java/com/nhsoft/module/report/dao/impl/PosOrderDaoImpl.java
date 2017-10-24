@@ -1478,7 +1478,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findRevenueByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember) {
+	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
 		sb.append("count(order_no) as count, sum(order_gross_profit) as profit ");
@@ -1505,10 +1505,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findRevenueByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember) {
+	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select shift_table_bizday ,sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
-		sb.append("count(order_no) as count ");
+		sb.append("count(order_no) as count,sum(order_gross_profit) as profit ");
 		sb.append("from pos_order with(nolock) ");
 		sb.append("where system_book_code = :systemBookCode ");
 		if (branchNums != null && branchNums.size() > 0) {
@@ -1531,7 +1531,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findRevenueByBizmonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember) {
+	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select subString(shift_table_bizday, 0, 7) ,sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
 		sb.append("count(order_no) as count, sum(order_gross_profit) as profit ");
