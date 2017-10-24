@@ -372,18 +372,7 @@ public class TestApi {
         List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchNums, date);
         //根据账套号查询区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
-        //得到所有区域号
-        List<Integer> regionNumList = new ArrayList<>();
-        for (BranchRegionDTO branchRegion : branchRegions){
-            Integer branchRegionNum = branchRegion.getBranchRegionNum();
-            regionNumList.add(branchRegionNum);
-        }
-        //得到所有区域名称
-        List<String> regionNames = new ArrayList<>();
-        for (BranchRegionDTO branchRegion : branchRegions){
-            String branchRegionName = branchRegion.getBranchRegionName();
-            regionNames.add(branchRegionName);
-        }
+
 
         //先遍历区域，在遍历按分店返回的数据，如果分店号，相等，就将分店的数据封装到区域里面
         for (int i = 0; i <branchRegions.size() ; i++) {
