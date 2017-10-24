@@ -88,13 +88,13 @@ public class TestSpringBoot {
 
     @Test
     public void testApiByStore(){
-        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, "", "2017-10");
+        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, "", "2017-10-12~2017-10-08");
         System.out.println();
     }
 
     @Test
     public void testApiByRegion(){
-        List<OperationRegionDTO> list = testApi.byRegion(systemBookCode, null, "2017-08");
+        List<OperationRegionDTO> list = testApi.byRegion(systemBookCode, "", "2017-03-20");
         System.out.println();
     }
 
