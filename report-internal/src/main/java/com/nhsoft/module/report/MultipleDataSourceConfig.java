@@ -7,9 +7,8 @@ import com.dangdang.ddframe.rdb.sharding.api.rule.ShardingRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.TableRule;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.database.DatabaseShardingStrategy;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.database.NoneDatabaseShardingAlgorithm;
-import com.dangdang.ddframe.rdb.sharding.api.strategy.table.TableShardingStrategy;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
-import com.nhsoft.module.report.sharding.AlipayLogTableShardingAlgorithm;
+import com.nhsoft.module.report.sharding.AlipayLogSharding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -130,12 +129,8 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		
 		DataSourceRule dataSourceRule = new DataSourceRule(customDataSources, "ama");
 		
-		//alipayLog
-		TableRule alipayLogTableRule = TableRule.builder("alipay_log")
-				.actualTables(Arrays.asList("alipay_log", "alipay_log_history"))
-				.dataSourceRule(dataSourceRule)
-				.tableShardingStrategy(new TableShardingStrategy("alipay_log_start", new AlipayLogTableShardingAlgorithm()))
-				.build();
+		TableRule alipayLogTableRule = AlipayLogSharding.createTableRule(dataSourceRule);
+		
 		
 		ShardingRule shardingRule = ShardingRule.builder()
 				.dataSourceRule(dataSourceRule)

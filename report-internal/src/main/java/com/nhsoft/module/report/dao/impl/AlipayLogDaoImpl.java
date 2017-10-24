@@ -8,73 +8,73 @@ import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.LockMode;
 import org.hibernate.SQLQuery;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 @Repository
 public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
-
-
-	private StringBuffer createByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery){
-		StringBuffer sb = new StringBuffer();
-		sb.append("select * from alipay_log where system_book_code = '"+systemBookCode+"' ");
+	
+	
+	private Criteria createByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery){
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
+				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
 		if(StringUtils.isNotEmpty(logQuery.getLogItem())){
-			sb.append("and alipay_log_order_no like '%"+logQuery.getLogItem()+"%'");
-			SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-			return sb;
+			criteria.add(Restrictions.like("a.alipayLogOrderNo", logQuery.getLogItem(), MatchMode.ANYWHERE));
+			return criteria;
 		}
 		if(branchNum != null){
-			sb.append("and branch_num = "+branchNum+" ");
+			criteria.add(Restrictions.eq("a.branchNum", branchNum));
 		}
 		if(StringUtils.isNotEmpty(logQuery.getOperator())){
-			sb.append("and alipay_log_operator = '"+logQuery.getOperator()+"' ");
+			criteria.add(Restrictions.eq("a.alipayLogOperator", logQuery.getOperator()));
 		}
 		if(StringUtils.isNotEmpty(logQuery.getOperateType())){
-			sb.append("and alipay_log_type = '"+logQuery.getOperateType()+"' ");
+			criteria.add(Restrictions.eq("a.alipayLogType", logQuery.getOperateType()));
 		}
-		sb.append("and alipay_log_start BETWEEN '"+ DateUtil.getLongDateTimeStr(logQuery.getDateFrom()) + "' and '" + DateUtil.getLongDateTimeStr(logQuery.getDateTo()) + "' ");
-
-		return sb;
+		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(logQuery.getDateFrom()), DateUtil.getMaxOfDate(logQuery.getDateTo())));
+		criteria.setLockMode(LockMode.NONE);
+		return criteria;
 	}
-
+	
 	@Override
-	public int countByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery){
-		StringBuffer sb = createByLogQuery(systemBookCode, branchNum, logQuery);
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		int size = sqlQuery.list().size();
-		return size;
+	public int countByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery) {
+		Criteria criteria = createByLogQuery(systemBookCode, branchNum, logQuery);
+		criteria.setProjection(Projections.rowCount());
+		return ((Long)criteria.uniqueResult()).intValue();
 	}
-
+	
 	@Override
 	public List<AlipayLog> findByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery, int offset,
-										  int limit) {
-
-		StringBuffer sb = createByLogQuery(systemBookCode, branchNum, logQuery);
-
+	                                      int limit) {
+		Criteria criteria = createByLogQuery(systemBookCode, branchNum, logQuery);
+		if(logQuery.isPaging()){
+			criteria.setFirstResult(offset);
+			criteria.setMaxResults(limit);
+		}
 		if(logQuery.getSortField() != null){
 			if(logQuery.getSortType().equals("ASC")){
-				sb.append("order by "+ logQuery.getSortField() +" ASC ");
-			}else{
-				sb.append("order by "+ logQuery.getSortField() +" DESC ");
+				criteria.addOrder(Order.asc(logQuery.getSortField()));
+			} else {
+				criteria.addOrder(Order.desc(logQuery.getSortField()));
 			}
-
+		} else {
+			criteria.addOrder(Order.asc("a.alipayLogStart"));
 		}
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-
-		if(logQuery.isPaging()){
-			sqlQuery.setFirstResult(offset);
-			sqlQuery.setMaxResults(limit);
-		}
-		sqlQuery.addEntity(AlipayLog.class);
-		return sqlQuery.list();
-
+		return criteria.list();
 	}
-
+	
 	@Override
 	public List<Object[]> findBranchSummaryPayFail(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 													Date dateTo, boolean isDeposit, String alipayLogTypes){
@@ -94,8 +94,8 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				}
 			}
 		}
-
-		sb.append("and alipay_log_start BETWEEN '"+DateUtil.getLongDateTimeStr(dateFrom) + "' and '" + DateUtil.getLongDateTimeStr(dateTo) + "' ");
+		
+		sb.append("and alipay_log_start between '"+DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' and '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 
 		if(isDeposit){
 			sb.append("and alipay_log_order_no like 'DEP%' ");
@@ -129,7 +129,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				}
 			}
 		}
-		sb.append("and alipay_log_start BETWEEN '"+DateUtil.getLongDateTimeStr(dateFrom) + "' and '" + DateUtil.getLongDateTimeStr(dateTo) + "' ");
+		sb.append("and alipay_log_start between '"+DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' and '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 
 		if(StringUtils.isNotEmpty(alipayLogTypes)){
 			sb.append("and alipay_log_type in ("+alipayLogTypes+") ");
@@ -147,8 +147,8 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 		sb.append("select alipay_log_trade_no,alipay_log_order_no,branch_num," +
 				"alipay_log_start,alipay_log_buyer_id,alipay_log_money,alipay_log_receipt_money,alipay_log_buyer_money from alipay_log where ");
 		sb.append("system_book_code = '"+systemBookCode+"' ");
-		sb.append("and alipay_log_start BETWEEN '"+DateUtil.getLongDateTimeStr(dateFrom) + "' and '" + DateUtil.getLongDateTimeStr(dateTo) + "' ");
-		sb.append("and alipay_log_trade_state = "+true+" and alipay_log_trade_valid = "+true+" ");
+		sb.append("and alipay_log_start between '"+DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' and '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
+		sb.append("and alipay_log_trade_state = 1 and alipay_log_trade_valid = 1 ");
 		sb.append("and alipay_log_type in ("+alipayLogTypes+") ");
 		if (branchNums != null && branchNums.size() > 0){
 			sb.append("and branch_num in (");
@@ -216,8 +216,8 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 		sb.append("select alipay_log_trade_no,alipay_log_order_no,branch_num," +
 				"alipay_log_start,alipay_log_buyer_id,alipay_log_money,alipay_log_receipt_money,alipay_log_buyer_money from alipay_log where ");
 		sb.append("system_book_code = '"+systemBookCode+"' ");
-		sb.append("and alipay_log_start BETWEEN '"+DateUtil.getLongDateTimeStr(dateFrom) + "' and '" + DateUtil.getLongDateTimeStr(dateTo) + "' ");
-		sb.append("and alipay_log_trade_state = "+true+" and alipay_log_trade_valid = "+true+" ");
+		sb.append("and alipay_log_start between '"+DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' and '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
+		sb.append("and alipay_log_trade_state = 1 and alipay_log_trade_valid = 1 ");
 		sb.append("and alipay_log_type in ("+alipayLogTypes+") ");
 		if (branchNums != null && branchNums.size() > 0){
 			sb.append("and branch_num in (");
@@ -285,8 +285,8 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 	public List<Object[]> findDepositSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String alipayLogTypes){
 		StringBuffer sb = new StringBuffer();
 		sb.append("select sum(alipay_log_money),count(alipay_log_id) from alipay_log where system_book_code = '"+systemBookCode+"' ");
-		sb.append("and alipay_log_start BETWEEN '"+DateUtil.getLongDateTimeStr(dateFrom) + "' and '" + DateUtil.getLongDateTimeStr(dateTo) + "' ");
-		sb.append("and alipay_log_trade_state = "+true+" and alipay_log_trade_valid = "+true+" ");
+		sb.append("and alipay_log_start between '"+DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' and '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
+		sb.append("and alipay_log_trade_state = 1 and alipay_log_trade_valid = 1 ");
 		sb.append("and alipay_log_type in ("+alipayLogTypes+") ");
 		if (branchNums != null && branchNums.size() > 0){
 			sb.append("and branch_num in (");
