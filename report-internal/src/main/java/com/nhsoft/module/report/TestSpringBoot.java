@@ -111,7 +111,7 @@ public class TestSpringBoot {
 
     @Test
     public void byBizmonth(){
-        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizmonth("4020", null, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findMoneyBizmonthSummary("4020", null, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         System.out.println();
 
     }

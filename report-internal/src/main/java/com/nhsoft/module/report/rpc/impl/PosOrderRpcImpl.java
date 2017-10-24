@@ -19,8 +19,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
     private PosOrderService posOrderService;
 
     @Override
-    public List<BranchRevenueReport> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
-        List<Object[]> objects = posOrderService.findMoneyByBranch(systemBookCode, branchNums, queryBy, dateFrom, dateTo,isMember);
+    public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+        List<Object[]> objects = posOrderService.findMoneyBranchSummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo,isMember);
         List<BranchRevenueReport> list = new ArrayList<BranchRevenueReport>();
         if(objects.isEmpty()){
             return list;

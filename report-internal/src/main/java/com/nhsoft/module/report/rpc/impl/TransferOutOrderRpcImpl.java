@@ -17,9 +17,9 @@ public class TransferOutOrderRpcImpl implements TransferOutOrderRpc {
     @Autowired
     private TransferOutOrderService transferOutOrderService;
     @Override
-    public List<TransferOutMoney> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+    public List<TransferOutMoney> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
-        List<Object[]> objects = transferOutOrderService.findTransferOutMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<Object[]> objects = transferOutOrderService.findMoneyBranchSummary(systemBookCode, branchNums, dateFrom, dateTo);
         List<TransferOutMoney> list = new ArrayList<TransferOutMoney>();
         if(objects.isEmpty()){
             return list;
@@ -35,8 +35,8 @@ public class TransferOutOrderRpcImpl implements TransferOutOrderRpc {
     }
 
     @Override
-    public List<TransferOutMoney> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-        List<Object[]> objects = transferOutOrderService.findTransferOutMoneyByBizday(systemBookCode, branchNums, dateFrom, dateTo);
+    public List<TransferOutMoney> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = transferOutOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, dateFrom, dateTo);
         List<TransferOutMoney> list = new ArrayList<>();
         if(objects.isEmpty()){
             return null;
@@ -52,8 +52,8 @@ public class TransferOutOrderRpcImpl implements TransferOutOrderRpc {
     }
 
     @Override
-    public List<TransferOutMoney> findTransferOutMoneyBymonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-        List<Object[]> objects = transferOutOrderService.findTransferOutMoneyBymonth(systemBookCode, branchNums, dateFrom, dateTo);
+    public List<TransferOutMoney> findMoneyBymonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = transferOutOrderService.findMoneyBymonthSummary(systemBookCode, branchNums, dateFrom, dateTo);
         List<TransferOutMoney> list = new ArrayList<>();
         if(objects.isEmpty()){
             return null;

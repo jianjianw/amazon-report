@@ -813,7 +813,7 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 	}
 
 	@Override
-	public List<Object[]> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num,sum(out_order_total_money) ");
@@ -836,7 +836,7 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 	}
 
 	@Override
-	public List<Object[]> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("select out_order_audit_bizday,sum(out_order_total_money) ");
@@ -860,7 +860,7 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 	}
 
 	@Override
-	public List<Object[]> findTransferOutMoneyBymonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findMoneyBymonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select subString(out_order_audit_bizday, 0, 7),sum(out_order_total_money) ");
 		sb.append("from transfer_out_order with(nolock) ");

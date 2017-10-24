@@ -119,17 +119,17 @@ public class TestApi {
         List<OperationStoreDTO> list = new ArrayList<>();
 
         //用于计算环比增长率
-        List<BranchRevenueReport> growthMoneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, growthDateFrom, growthDateTo, false);
+        List<BranchRevenueReport> growthMoneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, growthDateFrom, growthDateTo, false);
         //营业额
-        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //会员营业额
-        List<BranchRevenueReport> memberMoneyByBranch = posOrderRpc.findMoneyByBranch(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
+        List<BranchRevenueReport> memberMoneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //卡存款
         List<BranchDepositReport> depositByBranch = cardDepositRpc.findBranchSum(systemBookCode, bannchNumList, dateFrom, dateTo);
         //卡消费
         List<BranchConsumeReport> consumeByBranch = cardConsumeRpc.findBranchSum(systemBookCode, bannchNumList, dateFrom, dateTo);
         //配送金额
-        List<TransferOutMoney> transferOutMoneyByBranch = transferOutOrderRpc.findTransferOutMoneyByBranch(systemBookCode, bannchNumList, dateFrom, dateTo);
+        List<TransferOutMoney> transferOutMoneyByBranch = transferOutOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, dateFrom, dateTo);
         //报损金额
         List<LossMoneyReport> lossMoneyByBranch = adjustmentOrderRpc.findLossMoneyByBranch(systemBookCode, bannchNumList, dateFrom, dateTo);
         //盘损金额
@@ -479,7 +479,7 @@ public class TestApi {
         //会员营业额 客单量
         List<BranchBizRevenueSummary>  memberRevenueByBizday = posOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //配送额
-        List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findTransferOutMoneyByBizday(systemBookCode, bannchNumList, dateFrom, dateTo);
+        List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendDaily> list = new ArrayList<>();
 
         for (int i = 0; i <max; i++) {
@@ -551,7 +551,7 @@ public class TestApi {
         //会员营业额 客单量
         List<BranchBizRevenueSummary> memberRevenueByBizmonth = posOrderRpc.findMoneyBizmonthSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //配送额
-        List<TransferOutMoney> transferOutMoneyBymonth = transferOutOrderRpc.findTransferOutMoneyBymonth(systemBookCode, bannchNumList, dateFrom, dateTo);
+        List<TransferOutMoney> transferOutMoneyBymonth = transferOutOrderRpc.findMoneyBymonthSummary(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendMonthly> list = new ArrayList<>();
         for (int i = 0; i <11 ; i++) {
             calendar.setTime(dateFrom);
@@ -596,4 +596,5 @@ public class TestApi {
         }
         return list;
     }
+
 }

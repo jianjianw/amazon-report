@@ -395,7 +395,7 @@ public interface PosOrderDao {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
+	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
 
 	/**
 	 * 按营业日汇总     销售额     客单数

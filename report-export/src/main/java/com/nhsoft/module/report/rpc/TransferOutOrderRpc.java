@@ -15,7 +15,7 @@ public interface TransferOutOrderRpc {
      * @param dateFrom 时间起
      * @param dateTo 时间止
      */
-    public List<TransferOutMoney> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+    public List<TransferOutMoney> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
     /***
      * 按营业日查询配送额
@@ -24,7 +24,7 @@ public interface TransferOutOrderRpc {
      * @param dateFrom 时间起
      * @param dateTo 时间止
      */
-    public List<TransferOutMoney> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+    public List<TransferOutMoney> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
     /***
      * 按月份查询配送额
@@ -33,6 +33,6 @@ public interface TransferOutOrderRpc {
      * @param dateFrom 时间起
      * @param dateTo 时间止
      */
-    public List<TransferOutMoney> findTransferOutMoneyBymonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+    public List<TransferOutMoney> findMoneyBymonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 }

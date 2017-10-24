@@ -48,18 +48,18 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 	}
 
 	@Override
-	public List<Object[]> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return transferOutOrderDao.findTransferOutMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return transferOutOrderDao.findMoneyBranchSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return transferOutOrderDao.findTransferOutMoneyByBizday(systemBookCode,branchNums,dateFrom,dateTo);
+	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return transferOutOrderDao.findMoneyBizdaySummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findTransferOutMoneyBymonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return transferOutOrderDao.findTransferOutMoneyBymonth(systemBookCode,branchNums,dateFrom,dateTo);
+	public List<Object[]> findMoneyBymonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return transferOutOrderDao.findMoneyBymonthSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 }

@@ -19,7 +19,7 @@ public interface PosOrderRpc  {
      * @return
      *
      */
-    public List<BranchRevenueReport> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
+    public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
 
 
     /**

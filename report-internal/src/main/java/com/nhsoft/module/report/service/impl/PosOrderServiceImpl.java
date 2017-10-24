@@ -105,12 +105,12 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	public List<Object[]> findMoneyByBranch(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
+	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
 
 
 		List<Object[]> objects = null;
 		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
-			objects = posOrderDao.findMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo, isMember);
+			objects = posOrderDao.findMoneyBranchSummary(systemBookCode, branchNums, dateFrom, dateTo, isMember);
 		}
 		return objects;
 	}

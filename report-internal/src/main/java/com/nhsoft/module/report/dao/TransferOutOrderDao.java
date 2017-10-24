@@ -260,7 +260,7 @@ public interface TransferOutOrderDao{
 	 * @param dateFrom 时间起
 	 * @param dateTo 时间止
 	 */
-	public List<Object[]> findTransferOutMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/***
 	 * 按营业日查询配送额
@@ -269,7 +269,7 @@ public interface TransferOutOrderDao{
 	 * @param dateFrom 时间起
 	 * @param dateTo 时间止
 	 */
-	public List<Object[]> findTransferOutMoneyByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
 	/***
@@ -279,7 +279,7 @@ public interface TransferOutOrderDao{
 	 * @param dateFrom 时间起
 	 * @param dateTo 时间止
 	 */
-	public List<Object[]> findTransferOutMoneyBymonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findMoneyBymonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
 
