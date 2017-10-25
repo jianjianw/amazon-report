@@ -1,0 +1,25 @@
+<Configuration status="INFO" monitorInterval="1800">
+    <properties>
+        <property name="LOG_HOME">c:/AppLogs/AmazonReport/</property>
+    </properties>
+    <Appenders>
+        <Console name="Stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{MM-dd HH:mm:ss.SSS} %-5p [%F\:%L]%x %m%n" />
+        </Console>
+        <RollingRandomAccessFile name="Fileout"
+                                 fileName="${LOG_HOME}/AmazonReport.log"
+                                 filePattern="${LOG_HOME}/AmazonReport.%d{yyyy-MM-dd}.log">
+            <PatternLayout
+                    pattern="%d{MM-dd HH:mm:ss.SSS}[%24F:%-3L:%-5p]%x %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" />
+            </Policies>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Fileout" />
+            <AppenderRef ref="Stdout" />
+        </Root>
+    </Loggers>
+</Configuration>
