@@ -143,7 +143,7 @@ public class APIInputContorls {
 		List<InputControlsMonthDTO> list = new ArrayList<InputControlsMonthDTO>();
 		
 		if(month > 3) {
-			String startDay = sdf.format(today).substring(0, 4) + "-01-01";
+			String startDay = sdf.format(today).substring(0, 7) + "-01";
 			Date start = null;
 			try {
 				start = sdf.parse(startDay);
@@ -152,17 +152,16 @@ public class APIInputContorls {
 				e.printStackTrace();
 			}
 			calendar.setTime(start);
-			for(int i = 1; i <= 12; i++) {
+			for(int i = 1; i <= month; i++) {
 				dto = new InputControlsMonthDTO();
 				dto.setDisplay(sdf.format(calendar.getTime()).substring(0, 7));
 				dto.setMonth(sdf.format(calendar.getTime()).substring(0, 7));
 				list.add(dto);
-				calendar.add(Calendar.MONTH, 1);
+				calendar.add(Calendar.MONTH, -1);
 			}
 		} else {
 			calendar.setTime(today);
-			calendar.add(Calendar.YEAR, -1);
-			String startDay = sdf.format(calendar.getTime()).substring(0, 4) + "-01-01";
+			String startDay = sdf.format(calendar.getTime()).substring(0, 7) + "-01";
 			Date start = null;
 			try {
 				start = sdf.parse(startDay);
@@ -176,7 +175,7 @@ public class APIInputContorls {
 				dto.setDisplay(sdf.format(calendar.getTime()).substring(0, 7));
 				dto.setMonth(sdf.format(calendar.getTime()).substring(0, 7));
 				list.add(dto);
-				calendar.add(Calendar.MONTH, 1);
+				calendar.add(Calendar.MONTH, -1);
 			}
 		}
 		return list;
@@ -207,15 +206,32 @@ public class APIInputContorls {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/branch")
-	public @ResponseBody List<InputControlsBranchDTO> listBranchJson(@RequestHeader("systemBookCode") String systemBookCode,
-																	 @RequestHeader("branchNums") String branchNums) {
+	public @ResponseBody List<InputControlsBranchDTO> listBranchJson(@RequestHeader("systemBookCode") String systemBookCode) {
 		
 		// 防止传入branchNums的值为空[]，导致转化错误，但也不能是[,,, , ]这种格式
+		/*
 		if(branchNums.equals("[]")) {
 			List<InputControlsBranchDTO> list = new ArrayList<InputControlsBranchDTO>();
 			return list;
-		}
-		
+		}*/
+
+
+			List<BranchDTO> branchList = branchRpc.findAll(systemBookCode);
+			InputControlsBranchDTO dto = new InputControlsBranchDTO();
+		    List<InputControlsBranchDTO> list = new ArrayList<InputControlsBranchDTO>();
+			dto.setBranchName("所有分店");
+			dto.setBranchNum("");
+			list.add(dto);
+
+			for(int i = 0; i < branchList.size(); i++) {
+				dto = new InputControlsBranchDTO();
+				dto.setBranchName(branchList.get(i).getBranchName());
+				dto.setBranchNum(String.valueOf(branchList.get(i).getBranchNum()));
+				list.add(dto);
+			}
+			return list;
+
+		/*
 		String branchNumStrs = branchNums.substring(1, branchNums.length() - 1);
 		String[] array = branchNumStrs.split(",");
 		
@@ -243,7 +259,9 @@ public class APIInputContorls {
 			dto.setBranchNum(branchForUser.get(i).getBranchNum());
 			list.add(dto);
 		}
-		return list;
+//		return list;*/
+
+
 	}
 	
 }

@@ -522,6 +522,7 @@ public class TestApi {
     @RequestMapping(method = RequestMethod.GET, value = "/bizday")
     public List<TrendDaily> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
                                      @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+
         List<Integer> bannchNumList = stringToList(branchNums);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Calendar calendar = Calendar.getInstance();

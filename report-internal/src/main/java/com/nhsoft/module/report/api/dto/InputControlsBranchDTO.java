@@ -3,7 +3,7 @@ package com.nhsoft.module.report.api.dto;
 public class InputControlsBranchDTO {
 
 	private String branchName;
-	private Integer branchNum;
+	private String branchNum;
 	
 	public String getBranchName() {
 		return branchName;
@@ -11,10 +11,10 @@ public class InputControlsBranchDTO {
 	public void setBranchName(String branchName) {
 		this.branchName = branchName;
 	}
-	public Integer getBranchNum() {
+	public String getBranchNum() {
 		return branchNum;
 	}
-	public void setBranchNum(Integer branchNum) {
+	public void setBranchNum(String branchNum) {
 		this.branchNum = branchNum;
 	}
 	
