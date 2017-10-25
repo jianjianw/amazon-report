@@ -862,7 +862,7 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 	@Override
 	public List<Object[]> findMoneyBymonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select subString(out_order_audit_bizday, 0, 7),sum(out_order_total_money) ");
+		sb.append("select subString(out_order_audit_bizday, 0, 7) as bizmonth,sum(out_order_total_money) as money ");
 		sb.append("from transfer_out_order with(nolock) ");
 		sb.append("where system_book_code = :systemBookCode ");
 		if(branchNums != null && branchNums.size()>0){
