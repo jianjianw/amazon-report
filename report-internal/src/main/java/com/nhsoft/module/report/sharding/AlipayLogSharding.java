@@ -7,6 +7,8 @@ import com.dangdang.ddframe.rdb.sharding.api.strategy.database.DatabaseShardingS
 import com.dangdang.ddframe.rdb.sharding.api.strategy.database.SingleKeyDatabaseShardingAlgorithm;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.table.SingleKeyTableShardingAlgorithm;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.table.TableShardingStrategy;
+import com.dangdang.ddframe.rdb.sharding.constant.DatabaseType;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Range;
 import com.nhsoft.module.report.DynamicDataSourceContextHolder;
 import com.nhsoft.module.report.util.DateUtil;

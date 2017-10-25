@@ -27,6 +27,25 @@ public class RetailDetailQueryData extends QueryBuilder {
 	private String exceptionConditon;			//异常條件
 	private String saler;//销售员
 	private String saleType;//销售方式：微商城、实体店
+	private Date timeFrom;
+	private Date timeTo;
+	
+	
+	public Date getTimeFrom() {
+		return timeFrom;
+	}
+	
+	public void setTimeFrom(Date timeFrom) {
+		this.timeFrom = timeFrom;
+	}
+	
+	public Date getTimeTo() {
+		return timeTo;
+	}
+	
+	public void setTimeTo(Date timeTo) {
+		this.timeTo = timeTo;
+	}
 	
 	public String getSaleType() {
 		return saleType;
