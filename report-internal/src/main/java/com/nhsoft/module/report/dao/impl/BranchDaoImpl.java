@@ -5,6 +5,7 @@ import com.nhsoft.module.report.dao.BranchDao;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.BranchRegion;
 import org.hibernate.Criteria;
+import org.hibernate.LockMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -19,10 +20,13 @@ public class BranchDaoImpl extends DaoImpl implements BranchDao {
 	public List<Branch> findAll(String systemBookCode) {
 		Criteria criteria = currentSession().createCriteria(Branch.class, "b");
 		if (systemBookCode != null) {
-			criteria.add(Restrictions.eq("b.id.systemBookCode", systemBookCode));
+			criteria.add(Restrictions.eq("b.id.systemBookCode", systemBookCode))
+					.add(Restrictions.or(Restrictions.eq("b.branchVirtual",false),
+										 Restrictions.isNull("b.branchVirtual")));
 
 		}
 		criteria.addOrder(Order.asc("b.id.branchNum"));
+		criteria.setLockMode(LockMode.NONE);
 		return criteria.list();
 	}
 
@@ -31,6 +35,7 @@ public class BranchDaoImpl extends DaoImpl implements BranchDao {
 		Criteria criteria = currentSession().createCriteria(Branch.class, "b")
 				.add(Restrictions.eq("b.id.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("b.branchActived", true)).add(Restrictions.eq("b.branchRdc", true));
+		criteria.setLockMode(LockMode.NONE);
 		return criteria.list();
 	}
 
@@ -48,6 +53,7 @@ public class BranchDaoImpl extends DaoImpl implements BranchDao {
 		Criteria criteria = currentSession().createCriteria(Branch.class, "b")
 				.add(Restrictions.eq("b.id.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("b.branchActived", true)).addOrder(Order.asc("b.id.branchNum"));
+		criteria.setLockMode(LockMode.NONE);
 		return criteria.list();
 	}
 

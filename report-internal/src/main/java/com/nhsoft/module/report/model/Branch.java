@@ -100,6 +100,7 @@ public class Branch implements java.io.Serializable {
 	private String branchModule;
 	private Boolean branchActived;
 	private Boolean branchMatrixPriceActived;
+	private Boolean branchVirtual; // 是否虚拟店
 	
 	public Branch(){
 		
@@ -183,6 +184,13 @@ public class Branch implements java.io.Serializable {
 		this.branchType = branchType;
 	}
 
+	public Boolean getBranchVirtual() {
+		return branchVirtual;
+	}
+
+	public void setBranchVirtual(Boolean branchVirtual) {
+		this.branchVirtual = branchVirtual;
+	}
 
 	@Override
 	public int hashCode() {
