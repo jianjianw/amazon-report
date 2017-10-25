@@ -5,6 +5,7 @@ import com.nhsoft.module.report.api.TestApi;
 import com.nhsoft.module.report.api.dto.OperationRegionDTO;
 import com.nhsoft.module.report.api.dto.OperationStoreDTO;
 import com.nhsoft.module.report.api.dto.TrendDaily;
+import com.nhsoft.module.report.api.dto.TrendMonthly;
 import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
@@ -88,22 +89,21 @@ public class TestSpringBoot {
 
     @Test
     public void testApiByStore(){
-        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, "", "2017-10-12~2017-10-08");
+        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, null, "2017-10-04");
         System.out.println();
     }
 
     @Test
     public void testApiByRegion(){
-        List<OperationRegionDTO> list = testApi.byRegion(systemBookCode, "", "2017-03-20");
+        List<OperationRegionDTO> list = testApi.byRegion(systemBookCode, null, "2017-03");
         System.out.println();
     }
 
 
     @Test
     public void byBizday(){
-        //List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findRevenueByBizday("4020", null, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
 
-        List<TrendDaily> list = testApi.byBizday(systemBookCode, null, "2017-10");
+        List<TrendDaily> list = testApi.byBizday(systemBookCode, "", "2017-10");
 
         System.out.println();
 
@@ -111,9 +111,8 @@ public class TestSpringBoot {
 
     @Test
     public void byBizmonth(){
-        List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findMoneyBizmonthSummary("4020", null, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        List<TrendMonthly> trendMonthlies = testApi.byBizmonth(systemBookCode, "", "2017");
         System.out.println();
-
     }
 
     @Test

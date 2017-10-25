@@ -51,15 +51,20 @@ public class TestApi {
     private AlipayLogRpc alipayLogRpc;
 
     public List<Integer> stringToList(String str){
+
         List<Integer> bannchNumList = new ArrayList<>();
-        if(str != null){
+        //如果传递过来的参数为null或者为空串，将它变为null
+        if(str == null || str.length() == 0){
+            return bannchNumList;
+        }else{
             String replace = str.replace("[", "").replace("]","").replace(" ","");
             String[] split = replace.split(",");
             for (int i = 0; i <split.length ; i++) {
                 bannchNumList.add(Integer.parseInt(split[i]));
             }
+            return bannchNumList;
         }
-        return bannchNumList;
+
     }
     
     //按分店汇总
@@ -79,10 +84,7 @@ public class TestApi {
     @RequestMapping(method = RequestMethod.GET, value = "/store")
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-        //如果传递过来的参数为null或者为空串，将它变为null
-        if(branchNums == null || branchNums.equals("")){
-            branchNums = null;
-        }
+
         List<Integer> bannchNumList = stringToList(branchNums);
         //如果传入分店为null,就查询所有数据
         if(bannchNumList == null || bannchNumList.size() == 0){
@@ -443,7 +445,7 @@ public class TestApi {
                 }else{
                     areaBranchNums+=branch.getBranchNum()+",";
                 }
-                for (int k = 0; k <operationStoreDTOS.size() ; k++) {
+                for (int k = 0; k <operationStoreDTOS.size(); k++) {
                     OperationStoreDTO storeDTO = operationStoreDTOS.get(k);
                     if(branch.getBranchNum().equals(storeDTO.getBranchNum())){
                         count++;//每加入一个分店数据，count就加1
@@ -505,7 +507,6 @@ public class TestApi {
             list.add(region);
         }
 
-        //按分店查询的时候，已经将营业额为空的移出了，所以这块不用移出营业额为空的区域了
         /*Iterator<OperationRegionDTO> iterator = list.iterator();
         while(iterator.hasNext()){
             OperationRegionDTO next = iterator.next();
@@ -518,7 +519,6 @@ public class TestApi {
 
 
     //按营业日汇总(时间传递月份)
-    //按分店汇总
     @RequestMapping(method = RequestMethod.GET, value = "/bizday")
     public List<TrendDaily> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
                                      @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
@@ -554,8 +554,8 @@ public class TestApi {
             TrendDaily trendDaily = new TrendDaily();
             trendDaily.setDay(bizday);
 
-            for (int j = 0; j <revenueByBizday.size() ; j++) {
-                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(i);
+            for (int j = 0; j <revenueByBizday.size(); j++) {
+                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(j);
                 if(trendDaily.getDay().equals(branchBizRevenueSummary.getBiz())){
                     trendDaily.setDay(branchBizRevenueSummary.getBiz());
                     trendDaily.setRevenue(branchBizRevenueSummary.getBizMoney());
@@ -569,7 +569,7 @@ public class TestApi {
             }
 
             for (int j = 0; j <memberRevenueByBizday.size() ; j++) {
-                BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(i);
+                BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(j);
                 if(trendDaily.getDay().equals(branchBizRevenueSummary.getBiz())){
                     trendDaily.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
                     trendDaily.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
@@ -579,7 +579,7 @@ public class TestApi {
             }
 
             for (int j = 0; j <transferOutMoneyByBizday.size() ; j++) {
-                TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(i);
+                TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(j);
                 if(trendDaily.getDay().equals(transferOutMoney.getBiz())){
                     trendDaily.setDistributionMoney(transferOutMoney.getOutMoney());
                     break;
@@ -626,7 +626,7 @@ public class TestApi {
             trendMonthly.setMonth(bizmonth);
 
             for (int j = 0; j <revenueByBizmonth.size() ; j++) {
-                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(i);
+                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(j);
                 if(trendMonthly.getMonth().equals(branchBizRevenueSummary.getBiz())){
                     trendMonthly.setRevenue(branchBizRevenueSummary.getBizMoney());
                     trendMonthly.setBillNums(branchBizRevenueSummary.getOrderCount());
@@ -641,7 +641,7 @@ public class TestApi {
             }
 
             for (int j = 0; j <memberRevenueByBizmonth.size() ; j++) {
-                BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizmonth.get(i);
+                BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizmonth.get(j);
                 if(trendMonthly.getMonth().equals(branchBizRevenueSummary.getBiz())){
                     trendMonthly.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
                     trendMonthly.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
@@ -651,7 +651,7 @@ public class TestApi {
             }
 
             for (int j = 0; j <transferOutMoneyBymonth.size() ; j++) {
-                TransferOutMoney transferOutMoney = transferOutMoneyBymonth.get(i);
+                TransferOutMoney transferOutMoney = transferOutMoneyBymonth.get(j);
                 if(trendMonthly.getMonth().equals(transferOutMoney.getBiz())){
                     trendMonthly.setDistributionMoney(transferOutMoney.getOutMoney());
                 }
