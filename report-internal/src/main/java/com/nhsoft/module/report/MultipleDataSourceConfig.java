@@ -26,6 +26,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -137,8 +138,13 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 				.tableRules(Arrays.asList(alipayLogTableRule))
 				.databaseShardingStrategy(new DatabaseShardingStrategy("none", new NoneDatabaseShardingAlgorithm()))
 				.build();
-		
-		DataSource dataSource = ShardingDataSourceFactory.createDataSource(shardingRule);
+
+		DataSource dataSource = null;
+		try {
+			dataSource = ShardingDataSourceFactory.createDataSource(shardingRule);
+		} catch (SQLException e) {
+			logger.error("创建SharingDateSource失败");
+		}
 		return dataSource;
 	}
 	
