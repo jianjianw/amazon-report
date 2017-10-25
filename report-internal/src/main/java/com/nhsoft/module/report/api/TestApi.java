@@ -50,11 +50,16 @@ public class TestApi {
     @Autowired
     private AlipayLogRpc alipayLogRpc;
 
-    public List<Integer> stringToList(String str){
+    public List<Integer> stringToList(String systemBookCode,String str){
 
         List<Integer> bannchNumList = new ArrayList<>();
-        //如果传递过来的参数为null或者为空串，将它变为null
+        //如果传入分店为null,就查询所有分店
         if(str == null || str.length() == 0){
+            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            for (int i = 0; i <all.size() ; i++) {
+                BranchDTO branchDTO = all.get(i);
+                bannchNumList.add(branchDTO.getBranchNum());
+            }
             return bannchNumList;
         }else{
             String replace = str.replace("[", "").replace("]","").replace(" ","");
@@ -67,7 +72,7 @@ public class TestApi {
 
     }
     
-    //按分店汇总
+    //按分店汇总alipaylogs
     @RequestMapping(method = RequestMethod.GET, value = "/findAlipayLogs")
     public @ResponseBody  List<AlipayLogDTO> findAlipayLogs(@RequestParam("systemBookCode") String systemBookCode) {
     
@@ -85,15 +90,8 @@ public class TestApi {
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
-        List<Integer> bannchNumList = stringToList(branchNums);
-        //如果传入分店为null,就查询所有数据
-        if(bannchNumList == null || bannchNumList.size() == 0){
-            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
-            for (int i = 0; i <all.size() ; i++) {
-                BranchDTO branchDTO = all.get(i);
-                bannchNumList.add(branchDTO.getBranchNum());
-            }
-        }
+        List<Integer> bannchNumList = stringToList(systemBookCode,branchNums);
+
         Date growthDateFrom = null;
         Date growthDateTo = null;
         Date dateFrom = null;
@@ -366,7 +364,7 @@ public class TestApi {
                                              @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
-
+/*
         if(branchNums == null||branchNums.length() == 0){
             //得到所有分店号
             List<BranchDTO> all = branchRpc.findAll(systemBookCode);
@@ -386,7 +384,7 @@ public class TestApi {
                 }
 
             }
-        }
+        }*/
 
         //按分店汇总
         List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchNums, date);
@@ -522,7 +520,7 @@ public class TestApi {
     @RequestMapping(method = RequestMethod.GET, value = "/bizday")
     public List<TrendDaily> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
                                      @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
-        List<Integer> bannchNumList = stringToList(branchNums);
+        List<Integer> bannchNumList = stringToList(systemBookCode,branchNums);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Calendar calendar = Calendar.getInstance();
         Date dateFrom = null;
@@ -596,7 +594,7 @@ public class TestApi {
     @RequestMapping(method = RequestMethod.GET, value = "/bizmonth")
     public List<TrendMonthly> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
                                          @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
-        List<Integer> bannchNumList = stringToList(branchNums);
+        List<Integer> bannchNumList = stringToList(systemBookCode,branchNums);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         Date dateFrom = null;
         try {
