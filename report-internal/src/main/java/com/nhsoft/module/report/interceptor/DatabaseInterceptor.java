@@ -168,10 +168,12 @@ public class DatabaseInterceptor {
 			Long end = System.currentTimeMillis();
 			int diff = (int) ((end - begin) / 1000);
 			if(diff > 10){
+				logger.warn(String.format("接口[%s]耗时%d秒", name, diff));
 				Cat.logEvent("SLOW RPC", name, Event.SUCCESS, createCondition(jp));
 
 			}
 			if(size != null && size > 10000){
+				logger.warn(String.format("接口[%s]返回数据%d条", name, size));
 				Cat.logEvent("BIG RPC", name, Event.SUCCESS, createCondition(jp));
 
 			}
