@@ -552,25 +552,25 @@ public class TestApi {
             Date time = calendar.getTime();
             String bizday = DateUtil.getDateShortStr(time);
             TrendDaily trendDaily = new TrendDaily();
-            trendDaily.setDay(bizday);
+            trendDaily.setDay(bizday.substring(bizday.length()-2,bizday.length())+"日");
+
 
             for (int j = 0; j <revenueByBizday.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(j);
-                if(trendDaily.getDay().equals(branchBizRevenueSummary.getBiz())){
-                    trendDaily.setDay(branchBizRevenueSummary.getBiz());
+                if(bizday.equals(branchBizRevenueSummary.getBiz())){
                     trendDaily.setRevenue(branchBizRevenueSummary.getBizMoney());
                     trendDaily.setBillNums(branchBizRevenueSummary.getOrderCount());
                     break;
                 }
             }
-            //如果营业额为null或0 就跳出循环
+          /*  //如果营业额为null或0 就跳出循环
             if(trendDaily.getRevenue() == null || trendDaily.getRevenue().compareTo(BigDecimal.ZERO) == 0){
                 continue;
-            }
+            }*/
 
             for (int j = 0; j <memberRevenueByBizday.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(j);
-                if(trendDaily.getDay().equals(branchBizRevenueSummary.getBiz())){
+                if(bizday.equals(branchBizRevenueSummary.getBiz())){
                     trendDaily.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
                     trendDaily.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
                     break;
@@ -580,7 +580,7 @@ public class TestApi {
 
             for (int j = 0; j <transferOutMoneyByBizday.size() ; j++) {
                 TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(j);
-                if(trendDaily.getDay().equals(transferOutMoney.getBiz())){
+                if(bizday.equals(transferOutMoney.getBiz())){
                     trendDaily.setDistributionMoney(transferOutMoney.getOutMoney());
                     break;
                 }
@@ -617,17 +617,17 @@ public class TestApi {
         //配送额
         List<TransferOutMoney> transferOutMoneyBymonth = transferOutOrderRpc.findMoneyBymonthSummary(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendMonthly> list = new ArrayList<>();
-        for (int i = 0; i <11 ; i++) {
+        for (int i = 0; i <12 ; i++) {
             calendar.setTime(dateFrom);
             calendar.add(Calendar.MONTH,i);
             Date time = calendar.getTime();
             String bizmonth = DateUtil.getYearAndMonthString(time);
             TrendMonthly trendMonthly = new TrendMonthly();
-            trendMonthly.setMonth(bizmonth);
+            trendMonthly.setMonth(bizmonth.substring(bizmonth.length()-2,bizmonth.length())+"月");
 
             for (int j = 0; j <revenueByBizmonth.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(j);
-                if(trendMonthly.getMonth().equals(branchBizRevenueSummary.getBiz())){
+                if(bizmonth.equals(branchBizRevenueSummary.getBiz())){
                     trendMonthly.setRevenue(branchBizRevenueSummary.getBizMoney());
                     trendMonthly.setBillNums(branchBizRevenueSummary.getOrderCount());
                     trendMonthly.setGross(branchBizRevenueSummary.getProfit());
@@ -635,14 +635,14 @@ public class TestApi {
                 }
             }
 
-            //如果营业额为null或0 就跳出循环
+         /*   //如果营业额为null或0 就跳出循环
             if(trendMonthly.getRevenue() == null || trendMonthly.getRevenue().compareTo(BigDecimal.ZERO) == 0){
                 continue;
-            }
+            }*/
 
             for (int j = 0; j <memberRevenueByBizmonth.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizmonth.get(j);
-                if(trendMonthly.getMonth().equals(branchBizRevenueSummary.getBiz())){
+                if(bizmonth.equals(branchBizRevenueSummary.getBiz())){
                     trendMonthly.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
                     trendMonthly.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
                     trendMonthly.setGross(branchBizRevenueSummary.getProfit());
@@ -652,7 +652,7 @@ public class TestApi {
 
             for (int j = 0; j <transferOutMoneyBymonth.size() ; j++) {
                 TransferOutMoney transferOutMoney = transferOutMoneyBymonth.get(j);
-                if(trendMonthly.getMonth().equals(transferOutMoney.getBiz())){
+                if(bizmonth.equals(transferOutMoney.getBiz())){
                     trendMonthly.setDistributionMoney(transferOutMoney.getOutMoney());
                 }
             }
