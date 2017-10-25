@@ -5,8 +5,11 @@ import com.nhsoft.module.report.api.dto.OperationStoreDTO;
 import com.nhsoft.module.report.api.dto.TrendDaily;
 import com.nhsoft.module.report.api.dto.TrendMonthly;
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.model.AlipayLog;
+import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.dto.TransferOutMoney;
+import com.nhsoft.module.report.service.AlipayLogService;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 import org.slf4j.Logger;
@@ -44,6 +47,8 @@ public class TestApi {
     private PosOrderRpc posOrderRpc;
     @Autowired
     private TransferOutOrderRpc transferOutOrderRpc;
+    @Autowired
+    private AlipayLogRpc alipayLogRpc;
 
     public List<Integer> stringToList(String str){
         List<Integer> bannchNumList = new ArrayList<>();
@@ -55,6 +60,19 @@ public class TestApi {
             }
         }
         return bannchNumList;
+    }
+    
+    //按分店汇总
+    @RequestMapping(method = RequestMethod.GET, value = "/findAlipayLogs")
+    public @ResponseBody  List<AlipayLogDTO> findAlipayLogs(@RequestParam("systemBookCode") String systemBookCode) {
+    
+        LogQuery logQuery = new LogQuery();
+        logQuery.setSystemBookCode(systemBookCode);
+        logQuery.setPaging(false);
+        logQuery.setDateFrom(DateUtil.addMonth(Calendar.getInstance().getTime(), -3));
+        logQuery.setDateTo(Calendar.getInstance().getTime());
+    
+        return alipayLogRpc.findByLogQuery(systemBookCode, 99, logQuery, 0, 0);
     }
 
     //按分店汇总

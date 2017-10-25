@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.interceptor;
 
+import com.dangdang.ddframe.rdb.sharding.api.HintManager;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Transaction;
@@ -61,7 +62,8 @@ public class DatabaseInterceptor {
 			DynamicDataSourceContextHolder.setDataSourceType("asn");
 
 		}
-
+//		HintManager hintManager = HintManager.getInstance();
+//		hintManager.addDatabaseShardingValue("t_order", "user_id", 1);
 		logger.info(String.format("systemBookCode = %s database = %s", systemBookCode, DynamicDataSourceContextHolder.getDataSourceType()));
 	}
 	

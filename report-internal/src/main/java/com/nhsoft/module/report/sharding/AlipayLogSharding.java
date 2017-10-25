@@ -3,9 +3,12 @@ package com.nhsoft.module.report.sharding;
 import com.dangdang.ddframe.rdb.sharding.api.ShardingValue;
 import com.dangdang.ddframe.rdb.sharding.api.rule.DataSourceRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.TableRule;
+import com.dangdang.ddframe.rdb.sharding.api.strategy.database.DatabaseShardingStrategy;
+import com.dangdang.ddframe.rdb.sharding.api.strategy.database.SingleKeyDatabaseShardingAlgorithm;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.table.SingleKeyTableShardingAlgorithm;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.table.TableShardingStrategy;
 import com.google.common.collect.Range;
+import com.nhsoft.module.report.DynamicDataSourceContextHolder;
 import com.nhsoft.module.report.util.DateUtil;
 
 import java.util.*;
@@ -24,11 +27,35 @@ public class AlipayLogSharding {
 		return TableRule.builder("alipay_log")
 				.actualTables(actualTables)
 				.dataSourceRule(dataSourceRule)
-				.tableShardingStrategy(new TableShardingStrategy("alipay_log_start", new AlipayLogSharding.AlipayLogShardingAlgorithm()))
+				.tableShardingStrategy(new TableShardingStrategy("alipay_log_start", new AlipayLogSharding.AlipayLogShardingTableAlgorithm()))
+				.databaseShardingStrategy(new DatabaseShardingStrategy("system_book_code", new AlipayLogSharding.AlipayLogShardingDataBaseAlgorithm()))
 				.build();
 	}
 	
-	public static class AlipayLogShardingAlgorithm implements SingleKeyTableShardingAlgorithm<Date> {
+	public static class AlipayLogShardingDataBaseAlgorithm implements SingleKeyDatabaseShardingAlgorithm<String> {
+		
+		@Override
+		public String doEqualSharding(Collection<String> collection, ShardingValue<String> shardingValue) {
+			return DynamicDataSourceContextHolder.getDataSourceType();
+		}
+		
+		@Override
+		public Collection<String> doInSharding(Collection<String> collection, ShardingValue<String> shardingValue) {
+			Collection<String> result = new LinkedHashSet<String>(1);
+			result.add(DynamicDataSourceContextHolder.getDataSourceType());
+			return result;
+		}
+		
+		@Override
+		public Collection<String> doBetweenSharding(Collection<String> collection, ShardingValue<String> shardingValue) {
+			Collection<String> result = new LinkedHashSet<String>(1);
+			result.add(DynamicDataSourceContextHolder.getDataSourceType());
+			return result;
+		}
+	}
+	
+	
+	public static class AlipayLogShardingTableAlgorithm implements SingleKeyTableShardingAlgorithm<Date> {
 		
 		@Override
 		public String doEqualSharding(Collection<String> collection, ShardingValue<Date> shardingValue) {
@@ -49,7 +76,7 @@ public class AlipayLogSharding {
 			
 			Date dateFrom = range.lowerEndpoint();
 			Date dateTo = range.upperEndpoint();
-			Collection<String> result = new LinkedHashSet<String>(0);
+			Collection<String> result = new LinkedHashSet<String>(1);
 			Date now = DateUtil.getMinOfDate(Calendar.getInstance().getTime());
 			Date limitDate = DateUtil.addMonth(now, -1);
 			if(dateTo.compareTo(limitDate) < 0){
