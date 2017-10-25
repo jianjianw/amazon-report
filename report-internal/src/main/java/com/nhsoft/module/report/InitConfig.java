@@ -82,7 +82,7 @@ public class InitConfig {
 	public EhCacheFactoryBean shareDictionaryDataCache() {
 		EhCacheFactoryBean bean = new EhCacheFactoryBean();
 		bean.setCacheManager(cacheManager().getObject());
-		bean.setCacheName("com.pos3.application.SHARE_DICTIONARY_DATA");
+		bean.setCacheName("com.amazonReport.application.SHARE_DICTIONARY_DATA");
 		return bean;
 	}
 	
