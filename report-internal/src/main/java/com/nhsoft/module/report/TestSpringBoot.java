@@ -14,7 +14,6 @@ import com.nhsoft.module.report.rpc.AdjustmentOrderRpc;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.rpc.ShipOrderRpc;
-import com.nhsoft.module.report.util.AppConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
