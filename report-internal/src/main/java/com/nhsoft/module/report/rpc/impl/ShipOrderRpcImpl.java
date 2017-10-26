@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.rpc.impl;
 
+import com.alibaba.dubbo.rpc.protocol.dubbo.DubboInvoker;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
 import com.nhsoft.module.report.dto.ShipOrderSummary;
 import com.nhsoft.module.report.rpc.ShipOrderRpc;
@@ -20,6 +21,7 @@ public class ShipOrderRpcImpl implements ShipOrderRpc {
 
     @Override
     public List<ShipDetailDTO> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies) {
+        
         return shipOrderService.findDetails(systemBookCode,branchNums,dateFrom,dateTo,companies);
     }
 }
