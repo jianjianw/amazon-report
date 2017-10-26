@@ -28,10 +28,11 @@ import java.util.List;
 
 /**
  * Created by yangqin on 2017/8/26.
- */
+ *//*
 @Aspect
 @Configuration
 //顺序不能设太高 dubbo的service会失效
+
 @Order(-1000)
 public class DatabaseInterceptor {
 	
@@ -182,4 +183,4 @@ public class DatabaseInterceptor {
 	}
 	
 	
-}
+}*/

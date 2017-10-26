@@ -220,13 +220,13 @@ public class APIInputContorls {
 			InputControlsBranchDTO dto = new InputControlsBranchDTO();
 		    List<InputControlsBranchDTO> list = new ArrayList<InputControlsBranchDTO>();
 			dto.setBranchName("所有分店");
-			dto.setBranchNum("");
+			dto.setBranchNum(""+"|所有分店");
 			list.add(dto);
 
 			for(int i = 0; i < branchList.size(); i++) {
 				dto = new InputControlsBranchDTO();
 				dto.setBranchName(String.valueOf(branchList.get(i).getBranchNum())+"|"+branchList.get(i).getBranchName());
-				dto.setBranchNum(String.valueOf(branchList.get(i).getBranchNum()));
+				dto.setBranchNum(String.valueOf(branchList.get(i).getBranchNum())+"|"+branchList.get(i).getBranchName());
 				list.add(dto);
 			}
 			return list;
