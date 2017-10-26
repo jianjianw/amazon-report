@@ -45,38 +45,39 @@ public class ReportApi {
     @Autowired
     private AlipayLogRpc alipayLogRpc;
 
-    public List<Integer> stringToList(String systemBookCode,String str){
+    public List<Integer> stringToList(String systemBookCode, String str) {
 
         List<Integer> bannchNumList = new ArrayList<>();
         //如果传入分店为null,就查询所有分店
-        if(str == null || str.length() == 0){
+        if (str == null || str.length() == 0) {
             List<BranchDTO> all = branchRpc.findAll(systemBookCode);
-            for (int i = 0; i <all.size() ; i++) {
+            for (int i = 0; i < all.size(); i++) {
                 BranchDTO branchDTO = all.get(i);
                 bannchNumList.add(branchDTO.getBranchNum());
             }
             return bannchNumList;
-        }else{
-            String replace = str.replace("[", "").replace("]","").replace(" ","");
+        } else {
+            String replace = str.replace("[", "").replace("]", "").replace(" ", "");
             String[] split = replace.split(",");
-            for (int i = 0; i <split.length ; i++) {
+            for (int i = 0; i < split.length; i++) {
                 bannchNumList.add(Integer.parseInt(split[i]));
             }
             return bannchNumList;
         }
 
     }
-    
+
     //按分店汇总alipaylogs
     @RequestMapping(method = RequestMethod.GET, value = "/findAlipayLogs")
-    public @ResponseBody  List<AlipayLogDTO> findAlipayLogs(@RequestParam("systemBookCode") String systemBookCode) {
-    
+    public @ResponseBody
+    List<AlipayLogDTO> findAlipayLogs(@RequestParam("systemBookCode") String systemBookCode) {
+
         LogQuery logQuery = new LogQuery();
         logQuery.setSystemBookCode(systemBookCode);
         logQuery.setPaging(false);
         logQuery.setDateFrom(DateUtil.addMonth(Calendar.getInstance().getTime(), -3));
         logQuery.setDateTo(Calendar.getInstance().getTime());
-    
+
         return alipayLogRpc.findByLogQuery(systemBookCode, 99, logQuery, 0, 0);
     }
 
@@ -85,7 +86,7 @@ public class ReportApi {
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
-        List<Integer> bannchNumList = stringToList(systemBookCode,branchNums);
+        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
 
         Date growthDateFrom = null;
         Date growthDateTo = null;
@@ -95,22 +96,22 @@ public class ReportApi {
         String dateType = null;
         Calendar calendar = Calendar.getInstance();
         try {
-            if(date.length() == 7){
-                dateType =  AppConstants.BUSINESS_DATE_SOME_MONTH;
+            if (date.length() == 7) {
+                dateType = AppConstants.BUSINESS_DATE_SOME_MONTH;
                 //按月份查
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
                 dateFrom = sdf.parse(date);
                 calendar.setTime(dateFrom);
-                calendar.add(Calendar.DAY_OF_MONTH,calendar.getActualMaximum(Calendar.DAY_OF_MONTH)-1);
+                calendar.add(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - 1);
                 dateTo = calendar.getTime();
                 //上个月的时间
                 calendar.setTime(dateFrom);
-                calendar.add(Calendar.MONTH,-1);
+                calendar.add(Calendar.MONTH, -1);
                 growthDateFrom = calendar.getTime();
                 calendar.setTime(growthDateFrom);
-                calendar.add(Calendar.DAY_OF_MONTH,calendar.getActualMaximum(Calendar.DAY_OF_MONTH)-1);
+                calendar.add(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - 1);
                 growthDateTo = calendar.getTime();
-            }else if(date.length() == 10){
+            } else if (date.length() == 10) {
                 dateType = AppConstants.BUSINESS_DATE_SOME_DATE;
                 //按天查
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -118,21 +119,21 @@ public class ReportApi {
                 dateTo = dateFrom;
                 //昨天的时间
                 calendar.setTime(dateFrom);
-                calendar.add(Calendar.DAY_OF_MONTH,-1);
+                calendar.add(Calendar.DAY_OF_MONTH, -1);
                 growthDateFrom = calendar.getTime();  //昨天
                 growthDateTo = growthDateFrom;
-            }else {
+            } else {
                 //按周查
-                dateType =  AppConstants.BUSINESS_DATE_SOME_WEEK;
+                dateType = AppConstants.BUSINESS_DATE_SOME_WEEK;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 dateFrom = sdf.parse(date.substring(0, 11));
                 dateTo = sdf.parse(date.substring(11, date.length()));
                 //上周的时间
                 calendar.setTime(dateFrom);
-                calendar.add(Calendar.DAY_OF_MONTH,-1);
+                calendar.add(Calendar.DAY_OF_MONTH, -1);
                 growthDateTo = calendar.getTime();
                 calendar.setTime(growthDateTo);
-                calendar.add(Calendar.DAY_OF_MONTH,-6);
+                calendar.add(Calendar.DAY_OF_MONTH, -6);
                 growthDateFrom = calendar.getTime();
             }
         } catch (ParseException e) {
@@ -170,7 +171,7 @@ public class ReportApi {
 
         int day = DateUtil.diffDay(dateFrom, dateTo);
         //为了及计算日均客单量
-        if(day == 0){
+        if (day == 0) {
             day = 1;
         }
         BigDecimal bigDay = new BigDecimal(day);//包装日期
@@ -196,15 +197,15 @@ public class ReportApi {
                     store.setBranchNum(next.getBranchNum());        //分店号
                     store.setRevenue(next.getBizMoney());           //营业额
                     store.setGrossProfit(next.getProfit());         //毛利
-                    store.setAveBillNums(new BigDecimal(next.getOrderCount()).divide(bigDay,2, ROUND_HALF_DOWN));    //日均客单量
+                    store.setAveBillNums(new BigDecimal(next.getOrderCount()).divide(bigDay, 2, ROUND_HALF_DOWN));    //日均客单量
                     store.setBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 2, ROUND_HALF_DOWN));//客单价
                     //本期营业额-上期营业额
-                    BigDecimal subtract = store.getRevenue().subtract(store.getGrowthOf() == null? BigDecimal.ZERO:store.getGrowthOf());
+                    BigDecimal subtract = store.getRevenue().subtract(store.getGrowthOf() == null ? BigDecimal.ZERO : store.getGrowthOf());
                     //环比增长率
-                    if(store.getGrowthOf() == null){
+                    if (store.getGrowthOf() == null) {
                         store.setGrowthOf(BigDecimal.ZERO);
-                    }else{
-                        store.setGrowthOf(subtract.divide(store.getGrowthOf(),2, ROUND_HALF_DOWN));//（今年6月的销售额 - 今年5月的销售额相比）/ 今年5月的销售额相比 （本期-上期）/上期
+                    } else {
+                        store.setGrowthOf(subtract.divide(store.getGrowthOf(), 2, ROUND_HALF_DOWN));//（今年6月的销售额 - 今年5月的销售额相比）/ 今年5月的销售额相比 （本期-上期）/上期
                     }
                     break;
                 }
@@ -241,10 +242,10 @@ public class ReportApi {
             }
 
             //如果营业额,会员新增数，卡存款，配送金额 为null或0  就跳出本次循环
-            if( store.getRevenue().compareTo(BigDecimal.ZERO) ==0
+            if (store.getRevenue().compareTo(BigDecimal.ZERO) == 0
                     && store.getIncressedMember().equals(0)
                     && store.getCardStorage().compareTo(BigDecimal.ZERO) == 0
-                    && store.getDistributionDifferent().compareTo(BigDecimal.ZERO) == 0 ){
+                    && store.getDistributionDifferent().compareTo(BigDecimal.ZERO) == 0) {
                 continue;
             }
 
@@ -309,7 +310,7 @@ public class ReportApi {
                     if (next.getSaleMoney() == null || next.getSaleMoney().compareTo(BigDecimal.ZERO) == 0) {
                         store.setRealizeRate1(BigDecimal.ZERO);
                     } else {
-                        store.setRealizeRate1((store.getRevenue() == null?BigDecimal.ZERO:store.getRevenue()).divide(next.getSaleMoney(),2, ROUND_HALF_DOWN)); //营业额目标   完成率
+                        store.setRealizeRate1((store.getRevenue() == null ? BigDecimal.ZERO : store.getRevenue()).divide(next.getSaleMoney(), 2, ROUND_HALF_DOWN)); //营业额目标   完成率
                     }
                     break;
                 }
@@ -356,7 +357,7 @@ public class ReportApi {
     //按区域汇总
     @RequestMapping(method = RequestMethod.GET, value = "/region")
     public List<OperationRegionDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
-                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
 /*
@@ -387,19 +388,19 @@ public class ReportApi {
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
         //得到所有区域号
         List<Integer> regionNumList = new ArrayList<>();
-        for (BranchRegionDTO branchRegion : branchRegions){
+        for (BranchRegionDTO branchRegion : branchRegions) {
             Integer branchRegionNum = branchRegion.getBranchRegionNum();
             regionNumList.add(branchRegionNum);
         }
         //得到所有区域名称
         List<String> regionNames = new ArrayList<>();
-        for (BranchRegionDTO branchRegion : branchRegions){
+        for (BranchRegionDTO branchRegion : branchRegions) {
             String branchRegionName = branchRegion.getBranchRegionName();
             regionNames.add(branchRegionName);
         }
 
         //先遍历区域，在遍历按分店返回的数据，如果分店号，相等，就将分店的数据封装到区域里面
-        for (int i = 0; i <branchRegions.size() ; i++) {
+        for (int i = 0; i < branchRegions.size(); i++) {
             Integer regionNum = branchRegions.get(i).getBranchRegionNum();
             //多少个分店号就创建多少个分店
             OperationRegionDTO region = new OperationRegionDTO();
@@ -417,7 +418,7 @@ public class ReportApi {
             BigDecimal adjustAmount = BigDecimal.ZERO;              //盘损金额
             BigDecimal grossProfit = BigDecimal.ZERO;               //毛利金额
             BigDecimal grossProfitRate = BigDecimal.ZERO;           //毛利完成率
-            Integer incressedMember = 0 ;              //新增会员数
+            Integer incressedMember = 0;              //新增会员数
             BigDecimal realizeRate2 = BigDecimal.ZERO;              //新增会员数完成率
             BigDecimal cardStorage = BigDecimal.ZERO;               //卡储值金额
             BigDecimal realizeRate3 = BigDecimal.ZERO;              //卡储值完成率
@@ -430,58 +431,58 @@ public class ReportApi {
             //得到区域下面的所有分店
             List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
 
-            for (int j = 0; j <branchs.size() ; j++) {
+            for (int j = 0; j < branchs.size(); j++) {
                 BranchDTO branch = branchs.get(j);
                 //给区域中的分店号字段赋值
-                if(j == branchs.size()-1){
-                    areaBranchNums+=branch.getBranchNum()+"]";
-                }else{
-                    areaBranchNums+=branch.getBranchNum()+",";
+                if (j == branchs.size() - 1) {
+                    areaBranchNums += branch.getBranchNum() + "]";
+                } else {
+                    areaBranchNums += branch.getBranchNum() + ",";
                 }
-                for (int k = 0; k <operationStoreDTOS.size(); k++) {
+                for (int k = 0; k < operationStoreDTOS.size(); k++) {
                     OperationStoreDTO storeDTO = operationStoreDTOS.get(k);
-                    if(branch.getBranchNum().equals(storeDTO.getBranchNum())){
+                    if (branch.getBranchNum().equals(storeDTO.getBranchNum())) {
                         count++;//每加入一个分店数据，count就加1
                         revenue = revenue.add(storeDTO.getRevenue() == null ? BigDecimal.ZERO : storeDTO.getRevenue()); //营业额
-                        realizeRate1 = realizeRate1.add(storeDTO.getRealizeRate1()==null?BigDecimal.ZERO:storeDTO.getRealizeRate1());   //营业额完成率
-                        memberSalesRealizeRate = memberSalesRealizeRate.add(storeDTO.getMemberSalesRealizeRate()==null?BigDecimal.ZERO:storeDTO.getMemberSalesRealizeRate());   //会员销售额完成率
-                        memeberRevenueOccupy = memeberRevenueOccupy.add(storeDTO.getMemeberRevenueOccupy()==null?BigDecimal.ZERO:storeDTO.getMemeberRevenueOccupy());       //会员消费占比
-                        aveBillNums = aveBillNums.add(storeDTO.getAveBillNums()==null?BigDecimal.ZERO:storeDTO.getAveBillNums());                   //日均客单量
-                        allBillRealizeRate = allBillRealizeRate.add(storeDTO.getAllBillRealizeRate()==null?BigDecimal.ZERO:storeDTO.getAllBillRealizeRate());           //总客单完成率
-                        memberBillNums+=storeDTO.getMemberBillNums()==null?0:storeDTO.getMemberBillNums();                       //会员客单量
-                        bill = bill.add(storeDTO.getBill()==null?BigDecimal.ZERO:storeDTO.getBill());                                //客单价
-                        memberBill = memberBill.add(storeDTO.getMemberBill()==null?BigDecimal.ZERO:storeDTO.getMemberBill());              //会员客单价
-                        distributionDifferent = distributionDifferent.add(storeDTO.getDistributionDifferent()==null?BigDecimal.ZERO:storeDTO.getDistributionDifferent()); //配销差额
-                        destroyDefferent = destroyDefferent.add(storeDTO.getDestroyDefferent()==null?BigDecimal.ZERO:storeDTO.getDestroyDefferent());                //报损金额
-                        adjustAmount = adjustAmount.add(storeDTO.getAdjustAmount()==null?BigDecimal.ZERO:storeDTO.getAdjustAmount());                            //盘损金额
-                        grossProfit = grossProfit.add(storeDTO.getGrossProfit()==null?BigDecimal.ZERO:storeDTO.getGrossProfit());                               //毛利金额
-                        grossProfitRate = grossProfitRate.add(storeDTO.getGrossProfitRate()==null?BigDecimal.ZERO:storeDTO.getGrossProfitRate());                   //毛利完成率
-                        incressedMember+=storeDTO.getIncressedMember()==null?0:storeDTO.getIncressedMember();     //新增会员数
-                        realizeRate2 = realizeRate2.add(storeDTO.getRealizeRate2()==null?BigDecimal.ZERO:storeDTO.getRealizeRate2());        //新增会员数完成率
-                        cardStorage = cardStorage.add(storeDTO.getCardStorage()==null?BigDecimal.ZERO:storeDTO.getCardStorage());           //卡储值金额
-                        realizeRate3 = realizeRate3.add(storeDTO.getRealizeRate3()==null?BigDecimal.ZERO:storeDTO.getRealizeRate3());        //卡储值完成率
-                        cartStorageConsume = cartStorageConsume.add(storeDTO.getCartStorageConsume()==null?BigDecimal.ZERO:storeDTO.getCartStorageConsume());      //卡储值消费金额
-                        storageConsumeOccupy = storageConsumeOccupy.add(storeDTO.getStorageConsumeOccupy()==null?BigDecimal.ZERO:storeDTO.getStorageConsumeOccupy());    //储值消费占比
-                        growthOf = growthOf.add(storeDTO.getGrowthOf()==null?BigDecimal.ZERO:storeDTO.getGrowthOf());         //环比增长率
+                        realizeRate1 = realizeRate1.add(storeDTO.getRealizeRate1() == null ? BigDecimal.ZERO : storeDTO.getRealizeRate1());   //营业额完成率
+                        memberSalesRealizeRate = memberSalesRealizeRate.add(storeDTO.getMemberSalesRealizeRate() == null ? BigDecimal.ZERO : storeDTO.getMemberSalesRealizeRate());   //会员销售额完成率
+                        memeberRevenueOccupy = memeberRevenueOccupy.add(storeDTO.getMemeberRevenueOccupy() == null ? BigDecimal.ZERO : storeDTO.getMemeberRevenueOccupy());       //会员消费占比
+                        aveBillNums = aveBillNums.add(storeDTO.getAveBillNums() == null ? BigDecimal.ZERO : storeDTO.getAveBillNums());                   //日均客单量
+                        allBillRealizeRate = allBillRealizeRate.add(storeDTO.getAllBillRealizeRate() == null ? BigDecimal.ZERO : storeDTO.getAllBillRealizeRate());           //总客单完成率
+                        memberBillNums += storeDTO.getMemberBillNums() == null ? 0 : storeDTO.getMemberBillNums();                       //会员客单量
+                        bill = bill.add(storeDTO.getBill() == null ? BigDecimal.ZERO : storeDTO.getBill());                                //客单价
+                        memberBill = memberBill.add(storeDTO.getMemberBill() == null ? BigDecimal.ZERO : storeDTO.getMemberBill());              //会员客单价
+                        distributionDifferent = distributionDifferent.add(storeDTO.getDistributionDifferent() == null ? BigDecimal.ZERO : storeDTO.getDistributionDifferent()); //配销差额
+                        destroyDefferent = destroyDefferent.add(storeDTO.getDestroyDefferent() == null ? BigDecimal.ZERO : storeDTO.getDestroyDefferent());                //报损金额
+                        adjustAmount = adjustAmount.add(storeDTO.getAdjustAmount() == null ? BigDecimal.ZERO : storeDTO.getAdjustAmount());                            //盘损金额
+                        grossProfit = grossProfit.add(storeDTO.getGrossProfit() == null ? BigDecimal.ZERO : storeDTO.getGrossProfit());                               //毛利金额
+                        grossProfitRate = grossProfitRate.add(storeDTO.getGrossProfitRate() == null ? BigDecimal.ZERO : storeDTO.getGrossProfitRate());                   //毛利完成率
+                        incressedMember += storeDTO.getIncressedMember() == null ? 0 : storeDTO.getIncressedMember();     //新增会员数
+                        realizeRate2 = realizeRate2.add(storeDTO.getRealizeRate2() == null ? BigDecimal.ZERO : storeDTO.getRealizeRate2());        //新增会员数完成率
+                        cardStorage = cardStorage.add(storeDTO.getCardStorage() == null ? BigDecimal.ZERO : storeDTO.getCardStorage());           //卡储值金额
+                        realizeRate3 = realizeRate3.add(storeDTO.getRealizeRate3() == null ? BigDecimal.ZERO : storeDTO.getRealizeRate3());        //卡储值完成率
+                        cartStorageConsume = cartStorageConsume.add(storeDTO.getCartStorageConsume() == null ? BigDecimal.ZERO : storeDTO.getCartStorageConsume());      //卡储值消费金额
+                        storageConsumeOccupy = storageConsumeOccupy.add(storeDTO.getStorageConsumeOccupy() == null ? BigDecimal.ZERO : storeDTO.getStorageConsumeOccupy());    //储值消费占比
+                        growthOf = growthOf.add(storeDTO.getGrowthOf() == null ? BigDecimal.ZERO : storeDTO.getGrowthOf());         //环比增长率
                         break;
                     }
                 }
             }
-            if(count_.compareTo(BigDecimal.ZERO) == 0){
+            if (count_.compareTo(BigDecimal.ZERO) == 0) {
                 count_ = count_.add(new BigDecimal(1));
             }
             region.setArea(branchRegions.get(i).getBranchRegionName());
             region.setRevenue(revenue);
             //如果区域下面没分店 areaBranchNums会等于 ]
-            if(areaBranchNums.length() == 1){
-                areaBranchNums = areaBranchNums+"]";
+            if (areaBranchNums.length() == 1) {
+                areaBranchNums = areaBranchNums + "]";
             }
             region.setAreaBranchNums(areaBranchNums);//区域包含的分店
             region.setRealizeRate1(realizeRate1.divide(count_, 2, ROUND_HALF_DOWN));
-            region.setMemberSalesRealizeRate(memberSalesRealizeRate.divide(count_,2,ROUND_HALF_DOWN));
-            region.setMemeberRevenueOccupy(memeberRevenueOccupy.divide(count_,2,ROUND_HALF_DOWN));
-            region.setAveBillNums(aveBillNums.divide(count_,2,ROUND_HALF_DOWN));
-            region.setAllBillRealizeRate(allBillRealizeRate.divide(count_,2,ROUND_HALF_DOWN));
+            region.setMemberSalesRealizeRate(memberSalesRealizeRate.divide(count_, 2, ROUND_HALF_DOWN));
+            region.setMemeberRevenueOccupy(memeberRevenueOccupy.divide(count_, 2, ROUND_HALF_DOWN));
+            region.setAveBillNums(aveBillNums.divide(count_, 2, ROUND_HALF_DOWN));
+            region.setAllBillRealizeRate(allBillRealizeRate.divide(count_, 2, ROUND_HALF_DOWN));
             region.setMemberBillNums(memberBillNums);
             region.setBill(bill);
             region.setMemberBill(memberBill);
@@ -489,14 +490,14 @@ public class ReportApi {
             region.setDestroyDefferent(destroyDefferent);
             region.setAdjustAmount(adjustAmount);
             region.setGrossProfit(grossProfit);
-            region.setGrossProfitRate(grossProfitRate.divide(count_,2,ROUND_HALF_DOWN));
+            region.setGrossProfitRate(grossProfitRate.divide(count_, 2, ROUND_HALF_DOWN));
             region.setIncressedMember(incressedMember);
-            region.setRealizeRate2(realizeRate2.divide(count_,2,ROUND_HALF_DOWN));
+            region.setRealizeRate2(realizeRate2.divide(count_, 2, ROUND_HALF_DOWN));
             region.setCardStorage(cardStorage);
-            region.setRealizeRate3(realizeRate3.divide(count_,2,ROUND_HALF_DOWN));
+            region.setRealizeRate3(realizeRate3.divide(count_, 2, ROUND_HALF_DOWN));
             region.setCartStorageConsume(cartStorageConsume);
-            region.setStorageConsumeOccupy(storageConsumeOccupy.divide(count_,2,ROUND_HALF_DOWN));
-            region.setGrowthOf(growthOf.divide(count_,2,ROUND_HALF_DOWN));
+            region.setStorageConsumeOccupy(storageConsumeOccupy.divide(count_, 2, ROUND_HALF_DOWN));
+            region.setGrowthOf(growthOf.divide(count_, 2, ROUND_HALF_DOWN));
             list.add(region);
         }
 
@@ -514,8 +515,8 @@ public class ReportApi {
     //按营业日汇总(时间传递月份)
     @RequestMapping(method = RequestMethod.GET, value = "/bizday")
     public List<TrendDailyDTO> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
-                                        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
-        List<Integer> bannchNumList = stringToList(systemBookCode,branchNums);
+                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Calendar calendar = Calendar.getInstance();
         Date dateFrom = null;
@@ -528,29 +529,29 @@ public class ReportApi {
         }
         calendar.setTime(dateFrom);
         int max = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        calendar.add(Calendar.DAY_OF_MONTH,max-1);
+        calendar.add(Calendar.DAY_OF_MONTH, max - 1);
         dateTo = calendar.getTime();
         //营业额 客单量
         List<BranchBizRevenueSummary> revenueByBizday = posOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //会员营业额 客单量
-        List<BranchBizRevenueSummary>  memberRevenueByBizday = posOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
+        List<BranchBizRevenueSummary> memberRevenueByBizday = posOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //配送额
         List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendDailyDTO> list = new ArrayList<>();
 
-        for (int i = 0; i <max; i++) {
+        for (int i = 0; i < max; i++) {
             calendar.setTime(dateFrom);
-            calendar.add(Calendar.DAY_OF_MONTH,i);
+            calendar.add(Calendar.DAY_OF_MONTH, i);
 
             Date time = calendar.getTime();
             String bizday = DateUtil.getDateShortStr(time);
             TrendDailyDTO trendDaily = new TrendDailyDTO();
-            trendDaily.setDay(bizday.substring(bizday.length()-2,bizday.length())+"日");
+            trendDaily.setDay(bizday.substring(bizday.length() - 2, bizday.length()) + "日");
 
 
-            for (int j = 0; j <revenueByBizday.size(); j++) {
+            for (int j = 0; j < revenueByBizday.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(j);
-                if(bizday.equals(branchBizRevenueSummary.getBiz())){
+                if (bizday.equals(branchBizRevenueSummary.getBiz())) {
                     trendDaily.setRevenue(branchBizRevenueSummary.getBizMoney());
                     trendDaily.setBillNums(branchBizRevenueSummary.getOrderCount());
                     break;
@@ -561,9 +562,9 @@ public class ReportApi {
                 continue;
             }*/
 
-            for (int j = 0; j <memberRevenueByBizday.size() ; j++) {
+            for (int j = 0; j < memberRevenueByBizday.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(j);
-                if(bizday.equals(branchBizRevenueSummary.getBiz())){
+                if (bizday.equals(branchBizRevenueSummary.getBiz())) {
                     trendDaily.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
                     trendDaily.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
                     break;
@@ -571,9 +572,9 @@ public class ReportApi {
 
             }
 
-            for (int j = 0; j <transferOutMoneyByBizday.size() ; j++) {
+            for (int j = 0; j < transferOutMoneyByBizday.size(); j++) {
                 TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(j);
-                if(bizday.equals(transferOutMoney.getBiz())){
+                if (bizday.equals(transferOutMoney.getBiz())) {
                     trendDaily.setDistributionMoney(transferOutMoney.getOutMoney());
                     break;
                 }
@@ -588,8 +589,8 @@ public class ReportApi {
     //按营业月汇总（时间传递年份）
     @RequestMapping(method = RequestMethod.GET, value = "/bizmonth")
     public List<TrendMonthlyDTO> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
-                                            @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
-        List<Integer> bannchNumList = stringToList(systemBookCode,branchNums);
+                                         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         Date dateFrom = null;
         try {
@@ -599,8 +600,8 @@ public class ReportApi {
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateFrom);
-        calendar.add(Calendar.MONTH,11);
-        calendar.add(Calendar.DAY_OF_MONTH,30);
+        calendar.add(Calendar.MONTH, 11);
+        calendar.add(Calendar.DAY_OF_MONTH, 30);
         Date dateTo = calendar.getTime();
 
         //营业额 客单量
@@ -610,17 +611,17 @@ public class ReportApi {
         //配送额
         List<TransferOutMoney> transferOutMoneyBymonth = transferOutOrderRpc.findMoneyBymonthSummary(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendMonthlyDTO> list = new ArrayList<>();
-        for (int i = 0; i <12 ; i++) {
+        for (int i = 0; i < 12; i++) {
             calendar.setTime(dateFrom);
-            calendar.add(Calendar.MONTH,i);
+            calendar.add(Calendar.MONTH, i);
             Date time = calendar.getTime();
             String bizmonth = DateUtil.getYearAndMonthString(time);
             TrendMonthlyDTO trendMonthly = new TrendMonthlyDTO();
-            trendMonthly.setMonth(bizmonth.substring(bizmonth.length()-2,bizmonth.length())+"月");
+            trendMonthly.setMonth(bizmonth.substring(bizmonth.length() - 2, bizmonth.length()) + "月");
 
-            for (int j = 0; j <revenueByBizmonth.size() ; j++) {
+            for (int j = 0; j < revenueByBizmonth.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(j);
-                if(bizmonth.equals(branchBizRevenueSummary.getBiz())){
+                if (bizmonth.equals(branchBizRevenueSummary.getBiz())) {
                     trendMonthly.setRevenue(branchBizRevenueSummary.getBizMoney());
                     trendMonthly.setBillNums(branchBizRevenueSummary.getOrderCount());
                     trendMonthly.setGross(branchBizRevenueSummary.getProfit());
@@ -633,9 +634,9 @@ public class ReportApi {
                 continue;
             }*/
 
-            for (int j = 0; j <memberRevenueByBizmonth.size() ; j++) {
+            for (int j = 0; j < memberRevenueByBizmonth.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizmonth.get(j);
-                if(bizmonth.equals(branchBizRevenueSummary.getBiz())){
+                if (bizmonth.equals(branchBizRevenueSummary.getBiz())) {
                     trendMonthly.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
                     trendMonthly.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
                     trendMonthly.setGross(branchBizRevenueSummary.getProfit());
@@ -643,9 +644,9 @@ public class ReportApi {
                 }
             }
 
-            for (int j = 0; j <transferOutMoneyBymonth.size() ; j++) {
+            for (int j = 0; j < transferOutMoneyBymonth.size(); j++) {
                 TransferOutMoney transferOutMoney = transferOutMoneyBymonth.get(j);
-                if(bizmonth.equals(transferOutMoney.getBiz())){
+                if (bizmonth.equals(transferOutMoney.getBiz())) {
                     trendMonthly.setDistributionMoney(transferOutMoney.getOutMoney());
                 }
             }
@@ -658,36 +659,40 @@ public class ReportApi {
     //1、增加门店完成率排名
     @RequestMapping(method = RequestMethod.GET, value = "/branchTop")
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateBranchTop(@RequestHeader("systemBookCode") String systemBookCode,
-                                                                    @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+                                                                    @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
         List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
         Date dateFrom = null;
         Date dateTo = null;
         //营业额
-        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo,false);
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //营业额目标
         List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_MONTH);
 
         List<SaleFinishMoneyTopDTO> list = new ArrayList<>();
-        for (int i = 0; i <bannchNumList.size() ; i++) {
+        for (int i = 0; i < bannchNumList.size(); i++) {
             SaleFinishMoneyTopDTO saleFinishMoneyTopDTO = new SaleFinishMoneyTopDTO();
             BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, bannchNumList.get(i));
             saleFinishMoneyTopDTO.setName(branchDTO.getBranchName());
             saleFinishMoneyTopDTO.setNum(bannchNumList.get(i));
-            //营业额
-            for (int j = 0; j <moneyByBranch.size() ; j++) {
+            //暂存营业额
+            for (int j = 0; j < moneyByBranch.size(); j++) {
                 BranchRevenueReport branchRevenueReport = moneyByBranch.get(j);
-                if(saleFinishMoneyTopDTO.getNum().equals(branchRevenueReport.getBranchNum())){
+                if (saleFinishMoneyTopDTO.getNum().equals(branchRevenueReport.getBranchNum())) {
                     saleFinishMoneyTopDTO.setFinishMoneyRate(branchRevenueReport.getBizMoney());
                     break;
                 }
             }
-            for (int j = 0; j <saleMoneyGoalsByBranch.size() ; j++) {
+            //计算完成率
+            for (int j = 0; j < saleMoneyGoalsByBranch.size(); j++) {
                 SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(j);
-                if(saleFinishMoneyTopDTO.getNum().equals(saleMoneyGoals.getBranchNum())){
-                    if(saleFinishMoneyTopDTO.getFinishMoneyRate() == null){
+                if (saleFinishMoneyTopDTO.getNum().equals(saleMoneyGoals.getBranchNum())) {
+                    if (saleFinishMoneyTopDTO.getFinishMoneyRate() == null || saleFinishMoneyTopDTO.getFinishMoneyRate().compareTo(BigDecimal.ZERO) == 0) {
                         saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
+                    } else if (saleMoneyGoals.getSaleMoney() == null || saleMoneyGoals.getSaleMoney().compareTo(BigDecimal.ZERO) == 0) {
+                        saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
+                    } else {
+                        saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getFinishMoneyRate().divide(saleMoneyGoals.getSaleMoney(), 2, ROUND_HALF_DOWN));
                     }
-                    saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getFinishMoneyRate().divide(saleMoneyGoals.getSaleMoney(),2,ROUND_HALF_DOWN));
                     break;
                 }
             }
@@ -696,5 +701,15 @@ public class ReportApi {
         list.sort(Comparator.comparing(SaleFinishMoneyTopDTO::getFinishMoneyRate));
         return list;
     }
+
     //2、增加区域完成率排名
+    @RequestMapping(method = RequestMethod.GET, value = "/regionTop")
+    public List<SaleFinishMoneyTopDTO> findMoneyFinishRateRegionTop(@RequestHeader("systemBookCode") String systemBookCode,
+                                                                    @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+
+
+        return null;
+    }
+
+
 }
