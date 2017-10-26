@@ -1,7 +1,7 @@
 package com.nhsoft.module.report;
 
 
-import com.nhsoft.module.report.api.TestApi;
+import com.nhsoft.module.report.api.ReportApi;
 import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
@@ -34,7 +34,7 @@ public class TestSpringBoot {
     @Autowired
     private ShipOrderRpc shipOrderRpc;
     @Autowired
-    private TestApi testApi;
+    private ReportApi reportApi;
 
     @Test
     public void testShipMoney(){
@@ -84,13 +84,13 @@ public class TestSpringBoot {
 
     @Test
     public void testApiByStore(){
-        List<OperationStoreDTO> test = testApi.byBranch(systemBookCode, null, "2017-10-04");
+        List<OperationStoreDTO> test = reportApi.byBranch(systemBookCode, null, "2017-10-04");
         System.out.println();
     }
 
     @Test
     public void testApiByRegion(){
-        List<OperationRegionDTO> list = testApi.byRegion(systemBookCode, null, "2017-03");
+        List<OperationRegionDTO> list = reportApi.byRegion(systemBookCode, null, "2017-03");
         System.out.println();
     }
 
@@ -98,7 +98,7 @@ public class TestSpringBoot {
     @Test
     public void byBizday(){
 
-        List<TrendDailyDTO> list = testApi.byBizday(systemBookCode, "", "2017-10");
+        List<TrendDaily> list = reportApi.byBizday(systemBookCode, "", "2017-10");
 
         System.out.println();
 
@@ -106,7 +106,7 @@ public class TestSpringBoot {
 
     @Test
     public void byBizmonth(){
-        List<TrendMonthlyDTO> trendMonthlies = testApi.byBizmonth(systemBookCode, "", "2017");
+        List<TrendMonthly> trendMonthlies = reportApi.byBizmonth(systemBookCode, "", "2017");
         System.out.println();
     }
 
@@ -119,20 +119,20 @@ public class TestSpringBoot {
 
     @Test
     public void testBranchTop(){
-        List<SaleFinishMoneyTopDTO> moneyFinishRateBranchTop = testApi.findMoneyFinishRateBranchTop("4020", null, null);
+        List<SaleFinishMoneyTopDTO> moneyFinishRateBranchTop = reportApi.findMoneyFinishRateBranchTop("4020", null, null);
         System.out.println();
     }
 
 
     @Test
     public void testCarriage(){
-        List<ShipOrderSummary> carriageMoneyByCompanies = shipOrderRpc.findCarriageMoneyByCompanies("4020",null,null,null,null);
+        List<ShipOrderSummary> carriageMoneyByCompanies = shipOrderRpc.findCarriageMoneyByCompanies("4020",null,new Date(),new Date(),null);
         System.out.println();
     }
 
     @Test
     public void testFindDetails(){
-        List<ShipDetailDTO> details = shipOrderRpc.findDetails("4020", null, null, null, null);
+        List<ShipDetailDTO> details = shipOrderRpc.findDetails("4020", null, new Date(), new Date(), null);
         System.out.println();
     }
 
