@@ -515,18 +515,18 @@ public class ReportApi {
     //按营业日汇总---日趋势 (时间传递月份)
     @RequestMapping(method = RequestMethod.GET, value = "/bizday")
     public List<TrendDailyDTO> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
-                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+                                        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
         List<Integer> bannchNumList = new ArrayList<>();
         int index = branchNums.indexOf("|");
-        String str = branchNums.substring(0,index);
-        if(str.length() == 0){
+        String str = branchNums.substring(0, index);
+        if (str.length() == 0) {
             List<BranchDTO> all = branchRpc.findAll(systemBookCode);
             for (int i = 0; i < all.size(); i++) {
                 BranchDTO branchDTO = all.get(i);
                 bannchNumList.add(branchDTO.getBranchNum());
             }
-        }else {
+        } else {
             bannchNumList.add(Integer.parseInt(str));
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
@@ -601,17 +601,17 @@ public class ReportApi {
     //按营业月汇总---月趋势（时间传递年份）
     @RequestMapping(method = RequestMethod.GET, value = "/bizmonth")
     public List<TrendMonthlyDTO> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
-                                         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+                                            @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
         List<Integer> bannchNumList = new ArrayList<>();
         int index = branchNums.indexOf("|");
-        String str = branchNums.substring(0,index);
-        if(str.length() == 0){
+        String str = branchNums.substring(0, index);
+        if (str.length() == 0) {
             List<BranchDTO> all = branchRpc.findAll(systemBookCode);
             for (int i = 0; i < all.size(); i++) {
                 BranchDTO branchDTO = all.get(i);
                 bannchNumList.add(branchDTO.getBranchNum());
             }
-        }else {
+        } else {
             bannchNumList.add(Integer.parseInt(str));
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
@@ -686,10 +686,11 @@ public class ReportApi {
         List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
         Date dateFrom = null;
         Date dateTo = null;
+        Date dateStr = DateUtil.getDateStr(date);
         //营业额
-        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateStr, dateStr, false);
         //营业额目标
-        List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_MONTH);
+        List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateStr, dateStr, AppConstants.BUSINESS_DATE_SOME_DATE);
 
         List<SaleFinishMoneyTopDTO> list = new ArrayList<>();
         for (int i = 0; i < bannchNumList.size(); i++) {
@@ -737,8 +738,42 @@ public class ReportApi {
         List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //营业额目标
         List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_MONTH);
-
-
+        //得到所有区域
+        List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
+        List<SaleFinishMoneyTopDTO> list = new ArrayList<>();
+        for (int i = 0; i < branchRegions.size(); i++) {
+            BranchRegionDTO branchRegionDTO = branchRegions.get(i);
+            SaleFinishMoneyTopDTO saleFinishMoneyTopDTO = new SaleFinishMoneyTopDTO();
+            saleFinishMoneyTopDTO.setName(branchRegionDTO.getBranchRegionName());
+            saleFinishMoneyTopDTO.setNum(branchRegionDTO.getBranchRegionNum());
+            //得到区域下的所有分店
+            List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionDTO.getBranchRegionNum());
+            for (int j = 0; j < branchs.size(); j++) {
+                BranchDTO branchDTO = branchs.get(j);
+                //暂存营业额
+                for (int k = 0; k < moneyByBranch.size(); k++) {
+                    BranchRevenueReport branchRevenueReport = moneyByBranch.get(k);
+                    if (branchDTO.getBranchNum().equals(branchRevenueReport.getBranchNum())) {
+                        saleFinishMoneyTopDTO.setFinishMoneyRate(branchRevenueReport.getBizMoney());
+                    }
+                }
+                //查询营业额目标，计算营业额完成率
+                for (int k = 0; k < saleMoneyGoalsByBranch.size(); k++) {
+                    SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(i);
+                    if (branchDTO.getBranchNum().equals(saleMoneyGoals.getBranchNum())) {
+                        if (saleFinishMoneyTopDTO.getFinishMoneyRate() == null || saleFinishMoneyTopDTO.getFinishMoneyRate().compareTo(BigDecimal.ZERO) == 0)
+                        {
+                            saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
+                        } else if (saleMoneyGoals.getSaleMoney() == null || saleMoneyGoals.getSaleMoney().compareTo(BigDecimal.ZERO) == 0)
+                        {
+                            saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
+                        }else {
+                            saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getFinishMoneyRate().divide(saleMoneyGoals.getSaleMoney(),2,ROUND_HALF_DOWN));
+                        }
+                    }
+                }
+            }
+        }
 
 
         return null;
