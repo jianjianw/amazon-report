@@ -516,20 +516,18 @@ public class ReportApi {
     @RequestMapping(method = RequestMethod.GET, value = "/bizday")
     public List<TrendDailyDTO> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
                                      @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-        //List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
 
         List<Integer> bannchNumList = new ArrayList<>();
-        //如果传入分店为null,就查询所有分店
-        if (branchNums == null || branchNums.length() == 0) {
+        int index = branchNums.indexOf("|");
+        String str = branchNums.substring(0,index);
+        if(str.length() == 0){
             List<BranchDTO> all = branchRpc.findAll(systemBookCode);
             for (int i = 0; i < all.size(); i++) {
                 BranchDTO branchDTO = all.get(i);
                 bannchNumList.add(branchDTO.getBranchNum());
             }
-        }else{
-            int i = branchNums.indexOf("|");
-            String substring = branchNums.substring(0, i);
-            bannchNumList.add(Integer.parseInt(substring));
+        }else {
+            bannchNumList.add(Integer.parseInt(str));
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Calendar calendar = Calendar.getInstance();
@@ -720,6 +718,8 @@ public class ReportApi {
     @RequestMapping(method = RequestMethod.GET, value = "/regionTop")
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateRegionTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+
+
 
 
         return null;

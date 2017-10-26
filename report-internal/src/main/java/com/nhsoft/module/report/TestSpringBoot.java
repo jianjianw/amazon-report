@@ -98,7 +98,7 @@ public class TestSpringBoot {
     @Test
     public void byBizday(){
 
-        List<TrendDailyDTO> list = reportApi.byBizday(systemBookCode, "", "2017-10");
+        List<TrendDailyDTO> list = reportApi.byBizday(systemBookCode, "122|好的", "2017-10");
 
         System.out.println();
 
@@ -126,7 +126,7 @@ public class TestSpringBoot {
 
     @Test
     public void testRegionTop(){
-        reportApi.findMoneyFinishRateRegionTop("4020","",null);
+        reportApi.findMoneyFinishRateRegionTop("4020","123|haha",null);
     }
 
     @Test
