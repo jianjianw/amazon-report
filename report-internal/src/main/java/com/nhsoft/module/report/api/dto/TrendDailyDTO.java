@@ -2,7 +2,7 @@ package com.nhsoft.module.report.api.dto;
 
 import java.math.BigDecimal;
 
-public class TrendDaily {
+public class TrendDailyDTO {
 
 	private String day;                           // 日期
 	private BigDecimal revenue;                   // 营业额

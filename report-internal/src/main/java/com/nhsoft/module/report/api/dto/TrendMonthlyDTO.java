@@ -2,7 +2,7 @@ package com.nhsoft.module.report.api.dto;
 
 import java.math.BigDecimal;
 
-public class TrendMonthly {
+public class TrendMonthlyDTO {
 
 	private String month;                         // 月份
 	private BigDecimal revenue;                   // 营业额

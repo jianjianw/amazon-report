@@ -2,11 +2,9 @@ package com.nhsoft.module.report.api;
 
 import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.model.AlipayLog;
 import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.dto.TransferOutMoney;
-import com.nhsoft.module.report.service.AlipayLogService;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 import org.slf4j.Logger;
@@ -515,8 +513,8 @@ public class TestApi {
 
     //按营业日汇总(时间传递月份)
     @RequestMapping(method = RequestMethod.GET, value = "/bizday")
-    public List<TrendDaily> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
-                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+    public List<TrendDailyDTO> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
+                                        @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         List<Integer> bannchNumList = stringToList(systemBookCode,branchNums);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Calendar calendar = Calendar.getInstance();
@@ -538,7 +536,7 @@ public class TestApi {
         List<BranchBizRevenueSummary>  memberRevenueByBizday = posOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //配送额
         List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, dateFrom, dateTo);
-        List<TrendDaily> list = new ArrayList<>();
+        List<TrendDailyDTO> list = new ArrayList<>();
 
         for (int i = 0; i <max; i++) {
             calendar.setTime(dateFrom);
@@ -546,7 +544,7 @@ public class TestApi {
 
             Date time = calendar.getTime();
             String bizday = DateUtil.getDateShortStr(time);
-            TrendDaily trendDaily = new TrendDaily();
+            TrendDailyDTO trendDaily = new TrendDailyDTO();
             trendDaily.setDay(bizday.substring(bizday.length()-2,bizday.length())+"日");
 
 
@@ -589,8 +587,8 @@ public class TestApi {
 
     //按营业月汇总（时间传递年份）
     @RequestMapping(method = RequestMethod.GET, value = "/bizmonth")
-    public List<TrendMonthly> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
-                                         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+    public List<TrendMonthlyDTO> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
+                                            @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         List<Integer> bannchNumList = stringToList(systemBookCode,branchNums);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         Date dateFrom = null;
@@ -611,13 +609,13 @@ public class TestApi {
         List<BranchBizRevenueSummary> memberRevenueByBizmonth = posOrderRpc.findMoneyBizmonthSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, true);
         //配送额
         List<TransferOutMoney> transferOutMoneyBymonth = transferOutOrderRpc.findMoneyBymonthSummary(systemBookCode, bannchNumList, dateFrom, dateTo);
-        List<TrendMonthly> list = new ArrayList<>();
+        List<TrendMonthlyDTO> list = new ArrayList<>();
         for (int i = 0; i <12 ; i++) {
             calendar.setTime(dateFrom);
             calendar.add(Calendar.MONTH,i);
             Date time = calendar.getTime();
             String bizmonth = DateUtil.getYearAndMonthString(time);
-            TrendMonthly trendMonthly = new TrendMonthly();
+            TrendMonthlyDTO trendMonthly = new TrendMonthlyDTO();
             trendMonthly.setMonth(bizmonth.substring(bizmonth.length()-2,bizmonth.length())+"月");
 
             for (int j = 0; j <revenueByBizmonth.size() ; j++) {

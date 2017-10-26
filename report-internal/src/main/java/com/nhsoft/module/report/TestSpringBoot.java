@@ -3,7 +3,6 @@ package com.nhsoft.module.report;
 
 import com.nhsoft.module.report.api.TestApi;
 import com.nhsoft.module.report.api.dto.*;
-import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
 import com.nhsoft.module.report.dto.ShipOrderSummary;
@@ -99,7 +98,7 @@ public class TestSpringBoot {
     @Test
     public void byBizday(){
 
-        List<TrendDaily> list = testApi.byBizday(systemBookCode, "", "2017-10");
+        List<TrendDailyDTO> list = testApi.byBizday(systemBookCode, "", "2017-10");
 
         System.out.println();
 
@@ -107,7 +106,7 @@ public class TestSpringBoot {
 
     @Test
     public void byBizmonth(){
-        List<TrendMonthly> trendMonthlies = testApi.byBizmonth(systemBookCode, "", "2017");
+        List<TrendMonthlyDTO> trendMonthlies = testApi.byBizmonth(systemBookCode, "", "2017");
         System.out.println();
     }
 
