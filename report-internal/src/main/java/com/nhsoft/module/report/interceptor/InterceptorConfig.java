@@ -9,6 +9,6 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new ApiInterceptor()).addPathPatterns("/testApi/bizday/**");
+        registry.addInterceptor(new ApiInterceptor()).addPathPatterns("/**");
     }
 }
