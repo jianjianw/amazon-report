@@ -98,7 +98,7 @@ public class TestSpringBoot {
     @Test
     public void byBizday(){
 
-        List<TrendDaily> list = reportApi.byBizday(systemBookCode, "", "2017-10");
+        List<TrendDailyDTO> list = reportApi.byBizday(systemBookCode, "", "2017-10");
 
         System.out.println();
 
@@ -106,7 +106,7 @@ public class TestSpringBoot {
 
     @Test
     public void byBizmonth(){
-        List<TrendMonthly> trendMonthlies = reportApi.byBizmonth(systemBookCode, "", "2017");
+        List<TrendMonthlyDTO> trendMonthlies = reportApi.byBizmonth(systemBookCode, "", "2017");
         System.out.println();
     }
 
