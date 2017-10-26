@@ -8,10 +8,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletWebRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Aspect
 @Configuration
@@ -23,19 +19,15 @@ public class ApiInterceptor {
     }
 
     @Around(value="ApiInterceptor.api()")
-    public void printLog(ProceedingJoinPoint point){
+    public Object printLog(ProceedingJoinPoint point) throws Throwable {
 
         String name = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
         long preTime = System.currentTimeMillis();
-        try {
-            Object proceed = point.proceed();
-        } catch (Throwable throwable) {
-            logger.error("拦截器异常");
-        }
-
+        Object object = point.proceed(point.getArgs());
         long afterTime = System.currentTimeMillis();
-        long diff = (afterTime - preTime)/1000;
-        logger.info("请求路径为：" + name +"----------- 耗时："+diff);
+        long diff = (afterTime - preTime) / 1000;
+        logger.info("请求路径为：" + name + "----------- 耗时：" + diff);
+        return object;
 
     }
 
