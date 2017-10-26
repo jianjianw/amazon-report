@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="report-internal:war">
+    <output-path>$PROJECT_DIR$/report-internal/target</output-path>
+    <root id="archive" name="amazon-report-internal-0.0.2-SNAPSHOT.war">
+      <element id="artifact" artifact-name="report-internal:war exploded" />
+    </root>
+  </artifact>
+</component>
