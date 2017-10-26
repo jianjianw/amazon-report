@@ -823,10 +823,10 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if (dateFrom != null) {
-			sb.append("and out_order_audit_time >= '" + DateUtil.getMinOfDate(dateFrom) + "' ");
+			sb.append("and out_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and out_order_audit_time <= '" + DateUtil.getMaxOfDate(dateTo) + "' ");
+			sb.append("and out_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 		}
 		sb.append("and out_order_state_code = '3' ");
 		sb.append("group by branch_num order by branch_num asc");
@@ -846,10 +846,10 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if (dateFrom != null) {
-			sb.append("and out_order_audit_time >= '" + DateUtil.getMinOfDate(dateFrom) + "' ");
+			sb.append("and out_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and out_order_audit_time <= '" + DateUtil.getMaxOfDate(dateTo) + "' ");
+			sb.append("and out_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 		}
 		sb.append("and out_order_state_code = '3' ");
 		sb.append("group by out_order_audit_bizday order by out_order_audit_bizday asc");
@@ -869,10 +869,10 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if (dateFrom != null) {
-			sb.append("and out_order_audit_time >= '" + DateUtil.getMinOfDate(dateFrom) + "' ");
+			sb.append("and out_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and out_order_audit_time <= '" + DateUtil.getMinOfDate(dateTo) + "' ");
+			sb.append("and out_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 		}
 		sb.append("and out_order_state_code = '3' ");
 		sb.append("group by subString(out_order_audit_bizday, 0, 7) order by subString(out_order_audit_bizday, 0, 7) asc");

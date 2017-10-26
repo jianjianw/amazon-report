@@ -504,10 +504,10 @@ public class CardUserDaoImpl extends  DaoImpl implements CardUserDao {
 			sb.append("and card_user_enroll_shop in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if (dateFrom != null) {
-			sb.append("and card_user_date >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+			sb.append("and card_user_date >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and card_user_date <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+			sb.append("and card_user_date <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 		}
 		sb.append("group by card_user_enroll_shop order by card_user_enroll_shop asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
