@@ -602,7 +602,18 @@ public class ReportApi {
     @RequestMapping(method = RequestMethod.GET, value = "/bizmonth")
     public List<TrendMonthlyDTO> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
                                          @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+        List<Integer> bannchNumList = new ArrayList<>();
+        int index = branchNums.indexOf("|");
+        String str = branchNums.substring(0,index);
+        if(str.length() == 0){
+            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            for (int i = 0; i < all.size(); i++) {
+                BranchDTO branchDTO = all.get(i);
+                bannchNumList.add(branchDTO.getBranchNum());
+            }
+        }else {
+            bannchNumList.add(Integer.parseInt(str));
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         Date dateFrom = null;
         try {
@@ -718,9 +729,6 @@ public class ReportApi {
     @RequestMapping(method = RequestMethod.GET, value = "/regionTop")
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateRegionTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-
-
-
 
         return null;
     }

@@ -210,7 +210,7 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 	@Override
 	public List<Object[]> findCarriageMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select ship_order_deliver,sum(ship_order_money) money ");
+		sb.append("select ship_order_deliver,sum(ship_order_carriage) money ");
 		sb.append("from ship_order with(nolock) ");
 		sb.append("where system_book_code = :systemBookCode ");
 		if (branchNums != null && branchNums.size() > 0) {
@@ -220,10 +220,10 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 			sb.append("and ship_order_deliver in "+AppUtil.getStringParmeList(companies));
 		}
 		if (dateFrom != null) {
-			sb.append("and ship_order_audit_time >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+			sb.append("and ship_order_audit_time >= '" + DateUtil.getMinOfDate(dateFrom) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and ship_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+			sb.append("and ship_order_audit_time <= '" + DateUtil.getMaxOfDate(dateTo) + "' ");
 		}
 		sb.append("and ship_order_state_code = 3 ");
 		sb.append("group by ship_order_deliver");
@@ -235,7 +235,7 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 	@Override
 	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select ship_order_fid,ship_order_deliver,ship_order_money,ship_order_audit_time ");
+		sb.append("select ship_order_fid,ship_order_deliver,ship_order_carriage,ship_order_audit_time ");
 		sb.append("from ship_order with(nolock) ");
 		sb.append("where system_book_code = :systemBookCode ");
 		if (branchNums != null && branchNums.size() > 0) {
@@ -245,10 +245,10 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 			sb.append("and ship_order_deliver in "+AppUtil.getStringParmeList(companies));
 		}
 		if (dateFrom != null) {
-			sb.append("and ship_order_audit_time >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+			sb.append("and ship_order_audit_time >= '" + DateUtil.getMinOfDate(dateFrom) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and ship_order_audit_time <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+			sb.append("and ship_order_audit_time <= '" + DateUtil.getMaxOfDate(dateTo) + "' ");
 		}
 		sb.append("and ship_order_state_code = 3 ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
