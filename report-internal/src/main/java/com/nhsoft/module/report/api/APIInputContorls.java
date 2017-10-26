@@ -194,7 +194,7 @@ public class APIInputContorls {
 		//返回本年和前五年的年份
 		InputControlsYearDTO dto = null;
 		List<InputControlsYearDTO> list = new ArrayList<InputControlsYearDTO>();
-		for(int i = 0; i < 6; i++) {
+		for(int i = 0; i < 5; i++) {
 			dto = new InputControlsYearDTO();
 			yearStr = sdf.format(calendar.getTime()).substring(0, 4);
 			dto.setDisplay(yearStr);
@@ -225,7 +225,7 @@ public class APIInputContorls {
 
 			for(int i = 0; i < branchList.size(); i++) {
 				dto = new InputControlsBranchDTO();
-				dto.setBranchName(branchList.get(i).getBranchName());
+				dto.setBranchName(String.valueOf(branchList.get(i).getBranchNum())+"|"+branchList.get(i).getBranchName());
 				dto.setBranchNum(String.valueOf(branchList.get(i).getBranchNum()));
 				list.add(dto);
 			}
