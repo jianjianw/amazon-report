@@ -67,7 +67,7 @@ public class ReportApi {
 
     }
 
-    //按分店汇总alipaylogs
+    //alipaylogs
     @RequestMapping(method = RequestMethod.GET, value = "/findAlipayLogs")
     public @ResponseBody
     List<AlipayLogDTO> findAlipayLogs(@RequestParam("systemBookCode") String systemBookCode) {
