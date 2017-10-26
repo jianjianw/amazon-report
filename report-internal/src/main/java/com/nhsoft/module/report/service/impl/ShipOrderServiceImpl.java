@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.service.impl;
 
 
+import com.alibaba.dubbo.rpc.protocol.dubbo.DubboInvoker;
 import com.nhsoft.module.report.dao.ShipOrderDao;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
 import com.nhsoft.module.report.dto.ShipOrderSummary;
@@ -20,6 +21,7 @@ public class ShipOrderServiceImpl implements ShipOrderService {
     private ShipOrderDao shipOrderDao;
     @Override
     public List<ShipOrderSummary> findCarriageMoneyByCompanies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies) {
+
         List<Object[]> objects = shipOrderDao.findCarriageMoneyByCompanies(systemBookCode, branchNums, dateFrom, dateTo, companies);
         List<ShipOrderSummary> list = new ArrayList<>();
         if(objects.isEmpty()){

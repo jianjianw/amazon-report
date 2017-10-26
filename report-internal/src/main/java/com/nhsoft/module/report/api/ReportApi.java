@@ -2,11 +2,9 @@ package com.nhsoft.module.report.api;
 
 import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.model.AlipayLog;
 import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.dto.TransferOutMoney;
-import com.nhsoft.module.report.service.AlipayLogService;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 import org.slf4j.Logger;
@@ -23,10 +21,10 @@ import java.util.*;
 import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
 @RestController
-@RequestMapping("/testApi")
-public class TestApi {
+@RequestMapping("/reportApi")
+public class ReportApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestApi.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReportApi.class);
 
     @Autowired
     private AdjustmentOrderRpc adjustmentOrderRpc;
@@ -658,6 +656,7 @@ public class TestApi {
 
 
     //1、增加门店完成率排名
+    @RequestMapping(method = RequestMethod.GET, value = "/branchTop")
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateBranchTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
@@ -682,23 +681,19 @@ public class TestApi {
                     break;
                 }
             }
-
             for (int j = 0; j <saleMoneyGoalsByBranch.size() ; j++) {
                 SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(j);
                 if(saleFinishMoneyTopDTO.getNum().equals(saleMoneyGoals.getBranchNum())){
                     if(saleFinishMoneyTopDTO.getFinishMoneyRate() == null){
                         saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
                     }
-                    if(saleMoneyGoals.getSaleMoney() == null){
-                        saleMoneyGoals.setSaleMoney(new BigDecimal(1));
-                    }
                     saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getFinishMoneyRate().divide(saleMoneyGoals.getSaleMoney(),2,ROUND_HALF_DOWN));
                     break;
                 }
             }
             list.add(saleFinishMoneyTopDTO);
-
         }
+        list.sort(Comparator.comparing(SaleFinishMoneyTopDTO::getFinishMoneyRate));
         return list;
     }
     //2、增加区域完成率排名
