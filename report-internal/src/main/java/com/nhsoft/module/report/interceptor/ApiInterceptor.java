@@ -22,14 +22,10 @@ public class ApiInterceptor {
     public void api() {
     }
 
-
     @Around(value="ApiInterceptor.api()")
     public void printLog(ProceedingJoinPoint point){
 
-        ServletWebRequest servletContainer = (ServletWebRequest) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = servletContainer.getRequest();
-
-        String url = request.getRequestURL().toString();
+        String name = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
         long preTime = System.currentTimeMillis();
         try {
             Object proceed = point.proceed();
@@ -39,7 +35,7 @@ public class ApiInterceptor {
 
         long afterTime = System.currentTimeMillis();
         long diff = (afterTime - preTime)/1000;
-        logger.info("请求路径为：" + url +"----------- 耗时："+diff);
+        logger.info("请求路径为：" + name +"----------- 耗时："+diff);
 
     }
 
