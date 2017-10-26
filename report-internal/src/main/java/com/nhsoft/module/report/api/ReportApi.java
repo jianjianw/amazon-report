@@ -512,11 +512,23 @@ public class ReportApi {
     }
 
 
-    //按营业日汇总(时间传递月份)
+    //按营业日汇总---日趋势 (时间传递月份)
     @RequestMapping(method = RequestMethod.GET, value = "/bizday")
     public List<TrendDailyDTO> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
                                      @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+
+        List<Integer> bannchNumList = new ArrayList<>();
+        int index = branchNums.indexOf("|");
+        String str = branchNums.substring(0,index);
+        if(str.length() == 0){
+            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            for (int i = 0; i < all.size(); i++) {
+                BranchDTO branchDTO = all.get(i);
+                bannchNumList.add(branchDTO.getBranchNum());
+            }
+        }else {
+            bannchNumList.add(Integer.parseInt(str));
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Calendar calendar = Calendar.getInstance();
         Date dateFrom = null;
@@ -586,11 +598,22 @@ public class ReportApi {
     }
 
 
-    //按营业月汇总（时间传递年份）
+    //按营业月汇总---月趋势（时间传递年份）
     @RequestMapping(method = RequestMethod.GET, value = "/bizmonth")
     public List<TrendMonthlyDTO> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
                                          @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+        List<Integer> bannchNumList = new ArrayList<>();
+        int index = branchNums.indexOf("|");
+        String str = branchNums.substring(0,index);
+        if(str.length() == 0){
+            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            for (int i = 0; i < all.size(); i++) {
+                BranchDTO branchDTO = all.get(i);
+                bannchNumList.add(branchDTO.getBranchNum());
+            }
+        }else {
+            bannchNumList.add(Integer.parseInt(str));
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         Date dateFrom = null;
         try {
@@ -706,6 +729,9 @@ public class ReportApi {
     @RequestMapping(method = RequestMethod.GET, value = "/regionTop")
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateRegionTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+
+
+
 
 
         return null;

@@ -8,10 +8,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletWebRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Aspect
 @Configuration
@@ -22,24 +18,25 @@ public class ApiInterceptor {
     public void api() {
     }
 
-
     @Around(value="ApiInterceptor.api()")
-    public void printLog(ProceedingJoinPoint point){
+    public Object printLog(ProceedingJoinPoint point) throws Throwable  {
 
-        ServletWebRequest servletContainer = (ServletWebRequest) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = servletContainer.getRequest();
-
-        String url = request.getRequestURL().toString();
-        long preTime = System.currentTimeMillis();
+        String name = null;
+        Object object;
+        long diff = 0;
         try {
-            Object proceed = point.proceed();
+            name = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
+            long preTime = System.currentTimeMillis();
+            object = point.proceed();
+            long afterTime = System.currentTimeMillis();
+            diff = (afterTime - preTime) / 1000;
         } catch (Throwable throwable) {
             logger.error("拦截器异常");
+            throw throwable;
+        } finally {
+            logger.info("请求路径为：" + name + "----------- 耗时：" + diff);
         }
-
-        long afterTime = System.currentTimeMillis();
-        long diff = (afterTime - preTime)/1000;
-        logger.info("请求路径为：" + url +"----------- 耗时："+diff);
+        return object;
 
     }
 
