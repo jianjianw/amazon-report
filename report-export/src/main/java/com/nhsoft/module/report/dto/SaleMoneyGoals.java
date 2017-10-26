@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 public class SaleMoneyGoals implements Serializable {
 
     private Integer branchNum;
-    private BigDecimal saleMoney;
+    private BigDecimal saleMoney;//营业额目标
 
     public Integer getBranchNum() {
         return branchNum;

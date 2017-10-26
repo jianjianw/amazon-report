@@ -2,10 +2,7 @@ package com.nhsoft.module.report;
 
 
 import com.nhsoft.module.report.api.TestApi;
-import com.nhsoft.module.report.api.dto.OperationRegionDTO;
-import com.nhsoft.module.report.api.dto.OperationStoreDTO;
-import com.nhsoft.module.report.api.dto.TrendDaily;
-import com.nhsoft.module.report.api.dto.TrendMonthly;
+import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
@@ -117,6 +114,13 @@ public class TestSpringBoot {
     @Test
     public void testAll(){
         List<BranchDTO> all = branchRpc.findAll("4020");
+        System.out.println();
+    }
+
+
+    @Test
+    public void testBranchTop(){
+        List<SaleFinishMoneyTopDTO> moneyFinishRateBranchTop = testApi.findMoneyFinishRateBranchTop("4020", null, null);
         System.out.println();
     }
 
