@@ -2310,17 +2310,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				sb.append("and detail.order_detail_state_code = " + AppConstants.POS_ORDER_DETAIL_STATE_CANCEL + " ");
 
 				
-			} 
-//			else if(queryData.getExceptionConditon().equals(AppConstants.ANTI_SETTLEMENT)){
-				
-//				sb.append("and exists (select 1 from invoice_change as i with(nolock) where i.order_no = p.order_no and i.system_book_code  = '" + queryData.getSystemBookCode() + "' ");
-//				if(queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0){
-//					sb.append("and i.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
-//				}
-//				sb.append("and i.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFromShiftTable()) + "' ");
-//				sb.append("and '" + DateUtil.getDateShortStr(queryData.getDtToShiftTable()) + "' )");
-
-//			}
+			}
 		}
 		if (StringUtils.isNotEmpty(queryData.getSaleMoneyFlag())) {
 			if (queryData.getSaleMoney() == null) {
@@ -2385,6 +2375,19 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 
 			}
+		}
+		if(queryData.getTimeFrom() != null && queryData.getTimeTo() != null){
+			String timeFrom = DateUtil.getHHmmStr2(queryData.getTimeFrom());
+			String timeTo = DateUtil.getHHmmStr2(queryData.getTimeTo());
+			
+			if(timeFrom.compareTo(timeTo) <= 0){
+				sb.append("and p.order_time_char between '" + timeFrom + "' and '" + timeTo + "' ");
+			} else {
+				sb.append("and (p.order_time_char >= '" + timeFrom + "' or p.order_time_char <= '" + timeTo + "' ) ");
+				
+			}
+			
+			
 		}
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setMaxResults(10000);
