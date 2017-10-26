@@ -19,14 +19,23 @@ public class ApiInterceptor {
     }
 
     @Around(value="ApiInterceptor.api()")
-    public Object printLog(ProceedingJoinPoint point) throws Throwable {
+    public Object printLog(ProceedingJoinPoint point) throws Throwable  {
 
-        String name = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
-        long preTime = System.currentTimeMillis();
-        Object object = point.proceed(point.getArgs());
-        long afterTime = System.currentTimeMillis();
-        long diff = (afterTime - preTime) / 1000;
-        logger.info("请求路径为：" + name + "----------- 耗时：" + diff);
+        String name = null;
+        Object object;
+        long diff = 0;
+        try {
+            name = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
+            long preTime = System.currentTimeMillis();
+            object = point.proceed(point.getArgs());
+            long afterTime = System.currentTimeMillis();
+            diff = (afterTime - preTime) / 1000;
+        } catch (Throwable throwable) {
+            logger.error("拦截器异常");
+            throw throwable;
+        } finally {
+            logger.info("请求路径为：" + name + "----------- 耗时：" + diff);
+        }
         return object;
 
     }
