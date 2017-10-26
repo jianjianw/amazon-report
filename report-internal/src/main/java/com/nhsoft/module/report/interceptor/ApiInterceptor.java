@@ -27,7 +27,7 @@ public class ApiInterceptor {
         try {
             name = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
             long preTime = System.currentTimeMillis();
-            object = point.proceed(point.getArgs());
+            object = point.proceed();
             long afterTime = System.currentTimeMillis();
             diff = (afterTime - preTime) / 1000;
         } catch (Throwable throwable) {
