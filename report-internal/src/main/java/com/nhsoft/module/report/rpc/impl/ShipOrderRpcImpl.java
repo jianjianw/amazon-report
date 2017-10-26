@@ -1,6 +1,5 @@
 package com.nhsoft.module.report.rpc.impl;
 
-import com.alibaba.dubbo.rpc.protocol.dubbo.DubboInvoker;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
 import com.nhsoft.module.report.dto.ShipOrderSummary;
 import com.nhsoft.module.report.rpc.ShipOrderRpc;
