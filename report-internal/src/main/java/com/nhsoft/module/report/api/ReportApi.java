@@ -730,6 +730,13 @@ public class ReportApi {
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateRegionTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
+        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+        Date dateFrom = null;
+        Date dateTo = null;
+        //营业额
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
+        //营业额目标
+        List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_MONTH);
 
 
 

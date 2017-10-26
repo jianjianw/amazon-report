@@ -223,7 +223,7 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 			sb.append("and ship_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and ship_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateFrom)) + "' ");
+			sb.append("and ship_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 		}
 		sb.append("and ship_order_state_code = 3 ");
 		sb.append("group by ship_order_deliver");
@@ -248,7 +248,7 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 			sb.append("and ship_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and ship_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateFrom)) + "' ");
+			sb.append("and ship_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 		}
 		sb.append("and ship_order_state_code = 3 ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
