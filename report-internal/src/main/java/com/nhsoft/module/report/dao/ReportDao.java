@@ -861,7 +861,7 @@ public interface ReportDao {
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData queryData);
+	public List<Object[]> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData queryData);
 
 
 

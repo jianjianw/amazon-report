@@ -8007,7 +8007,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData queryData) {
+	public List<Object[]> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData queryData) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select p.branch_num,detail.item_num,detail.order_detail_state_code, ");
 		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");

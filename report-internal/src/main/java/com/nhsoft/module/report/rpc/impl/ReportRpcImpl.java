@@ -3109,8 +3109,8 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData saleAnalysisQueryData) {
-		return reportService.findSaleAnalysisByBranchPosItems(saleAnalysisQueryData);
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData saleAnalysisQueryData) {
+		return reportService.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
 	}
 
 

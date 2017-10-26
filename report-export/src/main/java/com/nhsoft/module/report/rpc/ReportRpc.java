@@ -1267,7 +1267,7 @@ public interface ReportRpc {
 	 * @param saleAnalysisQueryData
 	 * @return
 	 */
-	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData saleAnalysisQueryData);
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 
