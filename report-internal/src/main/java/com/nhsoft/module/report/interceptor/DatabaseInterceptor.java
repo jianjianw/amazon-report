@@ -63,8 +63,6 @@ public class DatabaseInterceptor {
 			DynamicDataSourceContextHolder.setDataSourceType("asn");
 
 		}
-//		HintManager hintManager = HintManager.getInstance();
-//		hintManager.addDatabaseShardingValue("t_order", "user_id", 1);
 		logger.info(String.format("systemBookCode = %s database = %s", systemBookCode, DynamicDataSourceContextHolder.getDataSourceType()));
 	}
 	

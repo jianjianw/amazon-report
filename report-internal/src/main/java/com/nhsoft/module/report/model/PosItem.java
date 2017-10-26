@@ -7,17 +7,22 @@ import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-@SuppressWarnings("unchecked")
+
 public class PosItem implements java.io.Serializable {
 
 	private static final Logger logger = LoggerFactory.getLogger(PosItem.class);
 	private static final long serialVersionUID = -4598224475348745971L;
+	@Id
 	private Integer itemNum;
 	private String systemBookCode;
 	private String itemCode;
@@ -30,8 +35,11 @@ public class PosItem implements java.io.Serializable {
 	private String itemDepartment;
 	private String itemCategory;
 	private BigDecimal itemRegularPrice;
+	@Column(name = "itemLevel2_Price")
 	private BigDecimal itemLevel2Price;
+	@Column(name = "itemLevel3_Price")
 	private BigDecimal itemLevel3Price;
+	@Column(name = "itemLevel4_Price")
 	private BigDecimal itemLevel4Price;
 	private String itemNoteInfo;
 	private String itemSaleMessage;
@@ -77,8 +85,11 @@ public class PosItem implements java.io.Serializable {
 	private String itemMethod;
 	private BigDecimal itemGrossRate;
 	private Integer itemStatus;
+	@Column(name = "itemLevel2_Wholesale")
 	private BigDecimal itemLevel2Wholesale;
+	@Column(name = "itemLevel3_Wholesale")
 	private BigDecimal itemLevel3Wholesale;
+	@Column(name = "itemLevel4_Wholesale")
 	private BigDecimal itemLevel4Wholesale;
 	private Boolean itemSynchFlag;
 	private Boolean itemWholesaleFlag;
@@ -102,10 +113,20 @@ public class PosItem implements java.io.Serializable {
 	private BigDecimal itemInTax;
 	private Boolean itemManufactureFlag;
 	private BigDecimal itemFinishedRate;
-
-	private List<ItemBar> itemBars = new ArrayList<ItemBar>(); 
+	
+	@OneToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinColumn(name = "itemNum", updatable=false, insertable=false)
+	private List<ItemBar> itemBars = new ArrayList<ItemBar>();
+	@OneToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinColumn(name = "itemNum", updatable=false, insertable=false)
 	private List<ItemMatrix> itemMatrixs = new ArrayList<ItemMatrix>(); //lazy = false
+	@OneToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinColumn(name = "itemNum", updatable=false, insertable=false)
 	private List<PosItemKit> posItemKits = new ArrayList<PosItemKit>();
+	
 	
 	@JsonIgnore
 	private List<StoreMatrix> storeMatrixs = new ArrayList<StoreMatrix>();
