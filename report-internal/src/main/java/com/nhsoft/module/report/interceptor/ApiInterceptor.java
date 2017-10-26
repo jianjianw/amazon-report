@@ -11,9 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 public class ApiInterceptor implements HandlerInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(ApiInterceptor.class);
     private long  preTime;
+    String url;
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-
+        url = httpServletRequest.getRequestURL().toString();
         preTime = System.currentTimeMillis();
         return true;
     }
@@ -27,7 +28,7 @@ public class ApiInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
         long afterTime = System.currentTimeMillis();
         long time = (afterTime - preTime)/1000;
-        logger.info("访问时间为"+time);
+        logger.info("访问路径为:"+url+"--------------访问时间为:"+time);
 
     }
 }

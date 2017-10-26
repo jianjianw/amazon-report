@@ -125,4 +125,29 @@ public class TestSpringBoot {
     }
 
 
+    @Test
+    public void testCarriage(){
+        List<ShipOrderSummary> carriageMoneyByCompanies = shipOrderRpc.findCarriageMoneyByCompanies("4020",null,null,null,null);
+        System.out.println();
+    }
+
+    @Test
+    public void testFindDetails(){
+        List<ShipDetailDTO> details = shipOrderRpc.findDetails("4020", null, null, null, null);
+        System.out.println();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
