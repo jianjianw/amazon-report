@@ -1,9 +1,6 @@
 package com.nhsoft.module.report.api;
 
-import com.nhsoft.module.report.api.dto.OperationRegionDTO;
-import com.nhsoft.module.report.api.dto.OperationStoreDTO;
-import com.nhsoft.module.report.api.dto.TrendDaily;
-import com.nhsoft.module.report.api.dto.TrendMonthly;
+import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.AlipayLog;
 import com.nhsoft.module.report.query.LogQuery;
@@ -659,4 +656,50 @@ public class TestApi {
         return list;
     }
 
+
+    //1、增加门店完成率排名
+    public List<SaleFinishMoneyTopDTO> findMoneyFinishRateBranchTop(@RequestHeader("systemBookCode") String systemBookCode,
+                                                                    @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+        Date dateFrom = null;
+        Date dateTo = null;
+        //营业额
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo,false);
+        //营业额目标
+        List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_MONTH);
+
+        List<SaleFinishMoneyTopDTO> list = new ArrayList<>();
+        for (int i = 0; i <bannchNumList.size() ; i++) {
+            SaleFinishMoneyTopDTO saleFinishMoneyTopDTO = new SaleFinishMoneyTopDTO();
+            BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, bannchNumList.get(i));
+            saleFinishMoneyTopDTO.setName(branchDTO.getBranchName());
+            saleFinishMoneyTopDTO.setNum(bannchNumList.get(i));
+            //营业额
+            for (int j = 0; j <moneyByBranch.size() ; j++) {
+                BranchRevenueReport branchRevenueReport = moneyByBranch.get(j);
+                if(saleFinishMoneyTopDTO.getNum().equals(branchRevenueReport.getBranchNum())){
+                    saleFinishMoneyTopDTO.setFinishMoneyRate(branchRevenueReport.getBizMoney());
+                    break;
+                }
+            }
+
+            for (int j = 0; j <saleMoneyGoalsByBranch.size() ; j++) {
+                SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(j);
+                if(saleFinishMoneyTopDTO.getNum().equals(saleMoneyGoals.getBranchNum())){
+                    if(saleFinishMoneyTopDTO.getFinishMoneyRate() == null){
+                        saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
+                    }
+                    if(saleMoneyGoals.getSaleMoney() == null){
+                        saleMoneyGoals.setSaleMoney(new BigDecimal(1));
+                    }
+                    saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getFinishMoneyRate().divide(saleMoneyGoals.getSaleMoney(),2,ROUND_HALF_DOWN));
+                    break;
+                }
+            }
+            list.add(saleFinishMoneyTopDTO);
+
+        }
+        return list;
+    }
+    //2、增加区域完成率排名
 }

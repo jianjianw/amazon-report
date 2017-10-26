@@ -133,6 +133,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return objects;
 	}
 
+	@Override
+	public List<Object[]> findMoneyFinishRateBranchTop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return null;
+	}
+
 
 }
 
