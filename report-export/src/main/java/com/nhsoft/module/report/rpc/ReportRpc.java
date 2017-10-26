@@ -362,7 +362,7 @@ public interface ReportRpc {
 	 * @param retailDetailQueryData
 	 * @return
 	 */
-	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData);
+	public List<RetailDetail> findRetailDetails(String systemBookCode, RetailDetailQueryData retailDetailQueryData);
 
 	/**
 	 * 查询采购商品明细
