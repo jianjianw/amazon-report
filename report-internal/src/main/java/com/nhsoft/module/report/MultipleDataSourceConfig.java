@@ -72,7 +72,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		logger.info("开始初始化sessionFactory");
 		MultipleDataSource multipleDataSource = new MultipleDataSource();
 		multipleDataSource.setTargetDataSources(customDataSources);
-		multipleDataSource.setDefaultTargetDataSource(customDataSources.get("ama"));
+		multipleDataSource.setDefaultTargetDataSource(customDataSources.get("cs"));
 		multipleDataSource.afterPropertiesSet();
 
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();

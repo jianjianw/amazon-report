@@ -178,6 +178,7 @@ public class DatabaseInterceptor {
 		} catch (Throwable throwable) {
 			t.setStatus(Transaction.SUCCESS);
 			t.setStatus(throwable);
+			logger.error(throwable.getMessage(), throwable);
 			throw throwable;
 		} finally {
 			Long end = System.currentTimeMillis();

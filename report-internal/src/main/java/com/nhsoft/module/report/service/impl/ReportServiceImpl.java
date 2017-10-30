@@ -8633,8 +8633,8 @@ public class ReportServiceImpl implements ReportService {
 			if (alipaySumDTO == null) {
 				continue;
 			}
-			alipaySumDTO.setDepositSuccessMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
-			alipaySumDTO.setDepositSuccessQty(BigDecimal.valueOf((Long) object[2]));
+			alipaySumDTO.setDepositSuccessMoney(alipaySumDTO.getDepositSuccessMoney().add(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]));
+			alipaySumDTO.setDepositSuccessQty(alipaySumDTO.getDepositSuccessQty().add(BigDecimal.valueOf((Long) object[2])));
 		}
 
 		// POS消费成功
@@ -9211,10 +9211,12 @@ public class ReportServiceImpl implements ReportService {
 		} else {
 			alipayLogTypes = paymentType;
 		}
-
+		
 		if (StringUtils.isEmpty(type)) {
 			list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
-			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP," + AppConstants.S_Prefix_WD + ",member",
+			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP",
+					alipayLogTypes));
+			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "member",
 					alipayLogTypes));
 			if(queryAll){
 				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null,
@@ -9241,22 +9243,15 @@ public class ReportServiceImpl implements ReportService {
 				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "member",
 						alipayLogTypes));
 			}
-		} else if (type.equals("微店消费")) {
-			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.S_Prefix_WD,
-					alipayLogTypes));
-			if(queryAll){
-				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.S_Prefix_WD,
-						alipayLogTypes));
-			}
 		}
-
+		
 		if (list.size() == 0) {
 			return list;
 		}
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		for (int i = 0; i < list.size(); i++) {
 			AlipayDetailDTO alipayDetailDTO = list.get(i);
-
+			
 			Branch branch = AppUtil.getBranch(branchs, alipayDetailDTO.getBranchNum());
 			if (branch != null) {
 				alipayDetailDTO.setBranchName(branch.getBranchName());
