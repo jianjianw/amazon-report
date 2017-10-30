@@ -1,10 +1,5 @@
 package com.nhsoft.module.report.model;
-
-import com.nhsoft.amazon.server.model.SystemRole;
-import com.nhsoft.amazon.server.param.HomeIndex;
-import com.nhsoft.amazon.shared.PrivilegeConstants;
 import com.nhsoft.module.report.dto.AppUserToDoDTO;
-import com.nhsoft.module.report.util.AppConstants;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -58,10 +53,10 @@ public class AppUser implements java.io.Serializable {
     private Boolean appUserWshopRemind;//是否微商城提醒
     private Boolean appUserDefault; //是否申请证书用户
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	/*@ManyToMany(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
 	@JoinTable(name="UserRole", joinColumns={@JoinColumn(name="appUserNum")}, inverseJoinColumns={@JoinColumn(name="systemRoleNum", referencedColumnName="systemRoleNum")})
-	private List<SystemRole> systemRoles = new ArrayList<SystemRole>();
+	private List<SystemRole> systemRoles = new ArrayList<SystemRole>();*/
 	@ManyToMany(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
 	@JoinTable(name="BranchUser", joinColumns={@JoinColumn(name="appUserNum")}, inverseJoinColumns={@JoinColumn(name="systemBookCode", referencedColumnName="systemBookCode"), @JoinColumn(name="branchNum", referencedColumnName="branchNum")})
@@ -70,9 +65,6 @@ public class AppUser implements java.io.Serializable {
 	@Fetch(FetchMode.SUBSELECT)
 	@JoinTable(name="AppUserRegion", joinColumns={@JoinColumn(name="appUserNum")}, inverseJoinColumns={@JoinColumn(name="regionNum", referencedColumnName="regionNum")})
 	private List<Region> regions = new ArrayList<Region>();
-
-	@Transient
-	private HomeIndex homeIndex;
 
 	//解析用 不存表
 	@Transient
@@ -352,14 +344,6 @@ public class AppUser implements java.io.Serializable {
 		this.userMaxDiscountRate = userMaxDiscountRate;
 	}
 
-	public HomeIndex getHomeIndex() {
-		return homeIndex;
-	}
-
-	public void setHomeIndex(HomeIndex homeIndex) {
-		this.homeIndex = homeIndex;
-	}
-
 	public String getAppUserEmail() {
 		return appUserEmail;
 	}
@@ -457,13 +441,13 @@ public class AppUser implements java.io.Serializable {
 
 	}
 
-	public List<SystemRole> getSystemRoles() {
+/*	public List<SystemRole> getSystemRoles() {
 		return systemRoles;
 	}
 
 	public void setSystemRoles(List<SystemRole> systemRoles) {
 		this.systemRoles = systemRoles;
-	}
+	}*/
 
 	public String getAppUserPhone() {
 		return appUserPhone;
