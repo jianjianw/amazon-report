@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
+public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 	
 	
 	private Criteria createByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery){
@@ -82,12 +82,9 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
-		if(dateFrom != null){
-			criteria.add(Restrictions.ge("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom)));
-		}
-		if(dateTo != null){
-			criteria.add(Restrictions.le("a.alipayLogStart", DateUtil.getMaxOfDate(dateTo)));
-		}
+		
+		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
+		
 		if(isDeposit){
 			criteria.add(Restrictions.like("a.alipayLogOrderNo", "DEP", MatchMode.START));
 		} else {
@@ -116,12 +113,8 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
-		if(dateFrom != null){
-			criteria.add(Restrictions.ge("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom)));
-		}
-		if(dateTo != null){
-			criteria.add(Restrictions.le("a.alipayLogStart", DateUtil.getMaxOfDate(dateTo)));
-		}
+		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
+		
 		if(StringUtils.isNotEmpty(alipayLogTypes)){
 			criteria.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
 			
@@ -147,12 +140,8 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
-		if (dateFrom != null) {
-			criteria.add(Restrictions.ge("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom)));
-		}
-		if (dateTo != null) {
-			criteria.add(Restrictions.le("a.alipayLogStart", DateUtil.getMaxOfDate(dateTo)));
-		}
+		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
+		
 		if(StringUtils.isNotEmpty(orderNoPres)){
 			
 			Disjunction disjunction = Restrictions.disjunction();
@@ -233,12 +222,8 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
-		if (dateFrom != null) {
-			criteria.add(Restrictions.ge("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom)));
-		}
-		if (dateTo != null) {
-			criteria.add(Restrictions.le("a.alipayLogStart", DateUtil.getMaxOfDate(dateTo)));
-		}
+		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
+		
 		if(StringUtils.isNotEmpty(orderNoPres)){
 			
 			if(orderNoPres.equals("POS")){
@@ -322,12 +307,8 @@ public class AlipayLogDaoImpl extends DaoImpl implements AlipayLogDao {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
-		if (dateFrom != null) {
-			criteria.add(Restrictions.ge("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom)));
-		}
-		if (dateTo != null) {
-			criteria.add(Restrictions.le("a.alipayLogStart", DateUtil.getMaxOfDate(dateTo)));
-		}
+		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
+		
 		criteria.add(Restrictions.disjunction()
 				.add(Restrictions.like("a.alipayLogOrderNo", "DEP", MatchMode.START))
 				.add(Restrictions.eq("a.alipayLogOrderNo", ""))
