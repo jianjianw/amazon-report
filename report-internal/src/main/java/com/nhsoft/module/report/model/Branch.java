@@ -602,7 +602,20 @@ public class Branch implements java.io.Serializable {
 		}
 		return document.asXML();
 	}
-	
+	/**
+	 * 判断是否加盟店
+	 *
+	 * @return
+	 */
+	@JsonIgnore
+	public boolean isJoinBranch() {
+		if (!id.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)
+				&& StringUtils.equals(branchType, AppConstants.BRANCH_TYPE_JOIN)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	/**
 	 * 判断是否配送中心
 	 * @return

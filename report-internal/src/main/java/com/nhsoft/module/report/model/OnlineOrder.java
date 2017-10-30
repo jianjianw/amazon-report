@@ -1,10 +1,10 @@
 package com.nhsoft.module.report.model;
 
 
-import com.nhsoft.module.origin.export.AppConstants;
-import com.nhsoft.module.origin.export.State;
-import com.nhsoft.module.pos.export.dto.OrderTraceSearch;
-import org.apache.commons.lang.StringUtils;
+import com.nhsoft.module.report.dto.OrderTraceSearch;
+import com.nhsoft.module.report.query.State;
+import com.nhsoft.module.report.util.AppConstants;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 

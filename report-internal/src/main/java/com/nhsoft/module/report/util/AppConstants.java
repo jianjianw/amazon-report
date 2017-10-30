@@ -559,6 +559,11 @@ public class AppConstants {
 	public static final String CUSTOMER_MODEL_POINT_CONSUME = "积分消费";
 
 
+	public static final String BRANCH_TYPE_JOIN = "加盟";
+
+	public static final String ONLINE_ORDER_SOURCE_MERCURY= "水星微商城";
+
+
 
 
 

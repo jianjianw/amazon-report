@@ -1,7 +1,8 @@
 package com.nhsoft.module.report.model;
 
-import com.nhsoft.module.origin.export.AppConstants;
-import com.nhsoft.utils.DateUtil;
+
+import com.nhsoft.amazon.shared.AppConstants;
+import com.nhsoft.module.report.util.DateUtil;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

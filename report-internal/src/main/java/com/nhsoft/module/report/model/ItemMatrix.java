@@ -1,6 +1,6 @@
 package com.nhsoft.module.report.model;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;

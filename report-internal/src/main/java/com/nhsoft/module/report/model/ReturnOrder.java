@@ -1,7 +1,7 @@
 package com.nhsoft.module.report.model;
 
 
-import com.nhsoft.module.origin.export.State;
+import com.nhsoft.module.report.query.State;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 

@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.model;
 
-import com.nhsoft.module.base.export.dto.TwoStringValueData;
+
+import com.nhsoft.module.report.query.TwoStringValueData;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;

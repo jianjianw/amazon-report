@@ -1,6 +1,6 @@
 package com.nhsoft.module.report.model;
 
-import com.nhsoft.module.origin.export.AppConstants;
+import com.nhsoft.module.report.util.AppConstants;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
