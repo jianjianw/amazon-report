@@ -341,14 +341,6 @@ public class ReportApi {
             }
             list.add(store);
         }
-        //循环遍历清除营业额为null的数据,使用for循环会漏掉数据
-      /*  Iterator<OperationStoreDTO> iterator = list.iterator();
-        while(iterator.hasNext()){
-            OperationStoreDTO next = iterator.next();
-            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
-                iterator.remove();
-            }
-        }*/
         System.out.println();
         return list;
 
@@ -360,28 +352,6 @@ public class ReportApi {
                                              @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
-/*
-        if(branchNums == null||branchNums.length() == 0){
-            //得到所有分店号
-            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
-            List<Integer> branchNumList = new ArrayList<>();
-            for (int i = 0; i <all.size() ; i++) {
-                BranchDTO branchDTO = all.get(i);
-                branchNumList.add(branchDTO.getBranchNum());
-            }
-            //将分店转化为string
-            branchNums = "[";
-            for (int i = 0; i <branchNumList.size() ; i++) {
-                Integer branch = branchNumList.get(i);
-                if(i == branchNumList.size()-1){
-                    branchNums += branch+"]";
-                }else{
-                    branchNums += branch+",";
-                }
-
-            }
-        }*/
-
         //按分店汇总
         List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchNums, date);
         //根据账套号查询区域
@@ -500,14 +470,6 @@ public class ReportApi {
             region.setGrowthOf(growthOf.divide(count_, 2, ROUND_HALF_DOWN));
             list.add(region);
         }
-
-        /*Iterator<OperationRegionDTO> iterator = list.iterator();
-        while(iterator.hasNext()){
-            OperationRegionDTO next = iterator.next();
-            if(next.getRevenue() == null || next.getRevenue().compareTo(BigDecimal.ZERO) == 0){
-                iterator.remove();
-            }
-        }*/
         return list;
     }
 
@@ -651,11 +613,6 @@ public class ReportApi {
                     break;
                 }
             }
-
-         /*   //如果营业额为null或0 就跳出循环
-            if(trendMonthly.getRevenue() == null || trendMonthly.getRevenue().compareTo(BigDecimal.ZERO) == 0){
-                continue;
-            }*/
 
             for (int j = 0; j < memberRevenueByBizmonth.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizmonth.get(j);
