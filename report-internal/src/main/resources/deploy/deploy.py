@@ -25,6 +25,7 @@ if __name__ == "__main__":
         pass
     elif platform == "darwin":
         target_dir = '../../../../target/'
+        target_dir = os.path.abspath(target_dir)
         if dist is None:
             dist = target_dir
         standard_dir = 'standard'
