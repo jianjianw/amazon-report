@@ -1,8 +1,10 @@
 package com.nhsoft.module.report.model;
 
-
 import com.nhsoft.module.report.query.State;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,9 +14,11 @@ import java.util.List;
  * ClientPreSettlement entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class ClientPreSettlement implements java.io.Serializable {
 
 	private static final long serialVersionUID = 8658109095728267487L;
+	@Id
 	private String preSettlementNo;
 	private String systemBookCode;
 	private Integer branchNum;
@@ -36,9 +40,19 @@ public class ClientPreSettlement implements java.io.Serializable {
 	private String preSettlementPaymentType;
 	private Integer accountBankNum;
 	private Date preSettlementDate;
+	
+
+	@Embedded
+	@AttributeOverrides( {
+		 			@AttributeOverride(name="stateCode", column = @Column(name="preSettlementStateCode")), 
+		@AttributeOverride(name="stateName", column = @Column(name="preSettlementStateName")) } )
 	private State state;
 	private Boolean preSettlementSelfFlag;
 	
+
+	@ManyToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinTable(name="ClientSelfSettlementDetail", joinColumns={@JoinColumn(name="preSettlementNo")}, inverseJoinColumns={@JoinColumn(name="wholesaleBookFid", referencedColumnName="wholesaleBookFid")})
 	private List<WholesaleBook> wholesaleBooks = new ArrayList<WholesaleBook>();
 
 	public List<WholesaleBook> getWholesaleBooks() {

@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -7,8 +8,10 @@ import java.util.Date;
  * InventoryLnDetail entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class InventoryLnHistory implements java.io.Serializable {
 
+	@Embeddable
 	public static class InventoryLnHistoryId implements java.io.Serializable {
 
 		private static final long serialVersionUID = -2924475859564587979L;
@@ -97,6 +100,7 @@ public class InventoryLnHistory implements java.io.Serializable {
 	}
 	
 	private static final long serialVersionUID = 2035213025643053078L;
+	@EmbeddedId
 	private InventoryLnHistoryId id;
 	private Integer itemNum;
 	private Integer itemMatrixNum;
@@ -111,11 +115,13 @@ public class InventoryLnHistory implements java.io.Serializable {
 	private Date inventoryLnDetailDate;
 	private BigDecimal inventoryLnDetailUseRate;
 	private String inventoryLnDetailUseUnit;
+	@Column(name = "inventoryLnDetailUseQty")
 	private BigDecimal inventoryLnDetailUseAmount;
 	private Date inventoryLnDetailUpdateTime;
 	private String inventoryLnDetailMemo;
 	private BigDecimal inventoryLnDetailTare;//件皮重
 	private Integer supplierNum;
+	@Transient
 	private BigDecimal inventoryLnDetailTransferPrice; //批次锁定配送价
 
 	public BigDecimal getInventoryLnDetailTransferPrice() {

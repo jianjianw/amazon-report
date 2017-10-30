@@ -1,10 +1,11 @@
 package com.nhsoft.module.report.model;
 
-
-import com.nhsoft.module.report.dto.GsonIgnore;
 import com.nhsoft.module.report.query.State;
 import com.nhsoft.module.report.util.AppConstants;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,9 +15,11 @@ import java.util.List;
  * TransferOutOrder entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class TransferOutOrder implements java.io.Serializable {
 
 	private static final long serialVersionUID = -4784395156086714997L;
+	@Id
 	private String outOrderFid;
 	private String systemBookCode;
 	private Integer branchNum;
@@ -25,6 +28,10 @@ public class TransferOutOrder implements java.io.Serializable {
 	private Integer storehouseNum;
 	private Date outOrderDate;
 	private String outOrderOperator;
+	@Embedded
+	@AttributeOverrides( {
+		 			@AttributeOverride(name="stateCode", column = @Column(name="outOrderStateCode")), 
+		@AttributeOverride(name="stateName", column = @Column(name="outOrderStateName")) } )
 	private State state;
 	private String outOrderMemo;
 	private Boolean outOrderTransferFlag;
@@ -56,36 +63,41 @@ public class TransferOutOrder implements java.io.Serializable {
 	private BigDecimal outOrderUseQty;
 	private String outOrderLabel;
 	private String outOrderInnerBill;
+	private BigDecimal outOrderCostMoney;
+	@OneToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinColumn(name = "outOrderFid", updatable=false, insertable=false)
 	private List<OutOrderDetail> outOrderDetails = new ArrayList<OutOrderDetail>();
-	@GsonIgnore
+	@ManyToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinTable(name="RequestOrderTransferOutOrder", joinColumns={@JoinColumn(name="outOrderFid")}, inverseJoinColumns={@JoinColumn(name="requestOrderFid", referencedColumnName="requestOrderFid")})
 	private List<RequestOrder> requestOrders = new ArrayList<RequestOrder>();
 	
-	@GsonIgnore
+	@Transient
 	private String requestOrderFids;
-
-	@GsonIgnore
+	@Transient
 	private Branch branch;
 	
 	//配送中心按顶级类拆单时过滤用
-	@GsonIgnore
+	@Transient
 	private String categoryCode;
-	@GsonIgnore
+	@Transient
 	private String itemDepartment;
-	@GsonIgnore
+	@Transient
 	private AppUser appUser;
-	@GsonIgnore
+	@Transient
 	private String copyFid;//复制单据号
-	@GsonIgnore
+	@Transient
 	private boolean flushFlag = false;
-	@GsonIgnore
+	@Transient
 	private Boolean saveAndAudit = false;
-	@GsonIgnore
+	@Transient
 	private Date outOrderInTime;
-	@GsonIgnore
+	@Transient
 	private String settleMentState;
-	@GsonIgnore
+	@Transient
 	private String orderState;
-	@GsonIgnore
+	@Transient
 	private Boolean tempAudit;
 	
 	public Branch getToBranch() {
@@ -96,17 +108,23 @@ public class TransferOutOrder implements java.io.Serializable {
 		this.toBranch = toBranch;
 	}
 	
-	@GsonIgnore
-	
+	@Transient
 	private Branch toBranch;
 
 	
 	//内部调拨单使用
-	@GsonIgnore
+	@Transient
 	private Integer inStorehouseNum;
-
 	
-    public Boolean getTempAudit() {
+	public BigDecimal getOutOrderCostMoney() {
+		return outOrderCostMoney;
+	}
+	
+	public void setOutOrderCostMoney(BigDecimal outOrderCostMoney) {
+		this.outOrderCostMoney = outOrderCostMoney;
+	}
+	
+	public Boolean getTempAudit() {
 		return tempAudit;
 	}
 
@@ -631,11 +649,21 @@ public class TransferOutOrder implements java.io.Serializable {
 		return total;
 	}
 	
+	public BigDecimal calCostMoney(){
+		BigDecimal total = BigDecimal.ZERO;
+		for(int i = 0; i < outOrderDetails.size(); i++){
+			OutOrderDetail detail = outOrderDetails.get(i);
+			total = total.add(detail.getOutOrderDetailSaleSubtotal());
+		}
+		return total;
+	}
+	
 	public void recal(){
 		outOrderTotalMoney = BigDecimal.ZERO;
 		outOrderOtherFee = BigDecimal.ZERO;
 		outOrderSaleMoney = BigDecimal.ZERO;
 		BigDecimal useQty = BigDecimal.ZERO;
+		outOrderCostMoney = BigDecimal.ZERO;
 		for(int i = outOrderDetails.size() - 1;i >= 0;i--){
 			OutOrderDetail detail = outOrderDetails.get(i);
 			
@@ -662,11 +690,18 @@ public class TransferOutOrder implements java.io.Serializable {
 				outOrderSaleMoney = outOrderSaleMoney.add(detail.getOutOrderDetailSalePrice().multiply(detail.getOutOrderDetailQty()));
 			}
 			outOrderOtherFee = outOrderOtherFee.add(detail.getOutOrderDetailOtherFee());
+			if(detail.getOutOrderDetailSubtotal() != null){
+				outOrderCostMoney = outOrderCostMoney.add(detail.getOutOrderDetailSubtotal());
+				
+			}
+			
 			
 			useQty = useQty.add(detail.getOutOrderDetailUseQty());
 		}
 		outOrderTotalMoney = outOrderTotalMoney.setScale(2, BigDecimal.ROUND_HALF_UP);
 		outOrderSaleMoney = outOrderSaleMoney.setScale(2, BigDecimal.ROUND_HALF_UP);
+		outOrderCostMoney = outOrderCostMoney.setScale(2, BigDecimal.ROUND_HALF_UP);
+		
 		outOrderDueMoney = outOrderTotalMoney;
 		if(outOrderUseQty == null){
 			outOrderUseQty = useQty;

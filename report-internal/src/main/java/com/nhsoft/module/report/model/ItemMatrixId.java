@@ -1,9 +1,12 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Embeddable;
+
 /**
  * ItemMatrixId entity. @author MyEclipse Persistence Tools
  */
 
+@Embeddable
 public class ItemMatrixId implements java.io.Serializable {
 
 	private static final long serialVersionUID = 8411903278702435117L;

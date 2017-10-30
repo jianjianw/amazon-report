@@ -773,10 +773,10 @@ public class ReportApi {
                     }
                 }
             }
+            list.add(saleFinishMoneyTopDTO);
         }
-
-
-        return null;
+        list.sort(Comparator.comparing(SaleFinishMoneyTopDTO::getFinishMoneyRate));
+        return list;
     }
 
 

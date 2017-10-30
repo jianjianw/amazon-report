@@ -1,16 +1,21 @@
 package com.nhsoft.module.report.model;
 
 
-import com.nhsoft.module.report.util.AppConstants;
+import com.nhsoft.amazon.shared.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 public class PosItemLog implements java.io.Serializable {
 
 	private static final long serialVersionUID = 4017784879621340343L;
+	@Id
 	private String posItemLogFid;
 	private Integer itemNum;
 	private Integer inStorehouseNum;
@@ -58,26 +63,47 @@ public class PosItemLog implements java.io.Serializable {
 	private BigDecimal posItemLogLnBalance; //调整前单批次基本数量
 	
 	//临时属性
+	@Transient
 	private Integer repeatCount;
+	@Transient
 	private String systemBookName;
+	@Transient
 	private String branchName;
+	@Transient
 	private String refBillNo;
+	@Transient
 	private Branch branch;
+	@Transient
 	private BigDecimal posItemLogOtherFee;
+	@Transient
 	private PosItem posItem;
+	@Transient
 	private String inventoryLnDetailMemo;
+	@Transient
 	private BigDecimal inventoryLnDetailTare;//件皮重
+	@Transient
 	private boolean useLotRate = false;//启用批次换算率
+	@Transient
 	private boolean useAssistQty = false; //启用辅助单位代替常用单位
+	@Transient
 	private boolean centerTransferInRefCost = false; //调入单按中心成本价调入
+	@Transient
 	private Integer supplierNum;
+	@Transient
 	private BigDecimal inventoryLnDetailTransferPrice; //批次锁定配送价
+	@Transient
 	private String posItemLogBillNoRef;//关联单据号
+	@Transient
 	private String antiBillNo;//冲红单据号
+	@Transient
 	private Boolean outWithOrderPrice; //按单据金额出库
+	@Transient
 	private Boolean changeOrderPrice; //修改单据单价
+	@Transient
 	private boolean enoughInventory = true; //库存足够
+	@Transient
 	private Boolean queryInventory = true; //inventoryDao.updateInventory中是否重读库存
+	@Transient
 	private Inventory inventory;
  
 	public Inventory getInventory() {

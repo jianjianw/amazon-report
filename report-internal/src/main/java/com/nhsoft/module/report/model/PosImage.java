@@ -1,14 +1,18 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 
 /**
  * PosImage entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class PosImage implements java.io.Serializable {
 
 	private static final long serialVersionUID = 4596685954662561706L;
+	@Id
 	private String posImageId;
 	private Integer itemNum;
 	private String systemBookCode;

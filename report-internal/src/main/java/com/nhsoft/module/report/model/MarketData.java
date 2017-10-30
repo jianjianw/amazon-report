@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.model;
 
 
+import com.nhsoft.module.report.dto.BranchDTO;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -21,7 +22,7 @@ public class MarketData implements Serializable {
 	private Date marketDetailValidDate;      //营销活动截止日期
 	private Integer state; //营销活动状态
 	private String weixinActionQrcodeUrl; //二维码显示url
-	private List<Branch> appliedBranches; //应用门店
+	private List<BranchDTO> appliedBranches; //应用门店
 	private Integer maxCount; //总可发券数量
 	private Integer ticketStock; //剩余可发券数量
 	
@@ -70,13 +71,13 @@ public class MarketData implements Serializable {
 	public String getWeixinActionQrcodeUrl() {
 		return weixinActionQrcodeUrl;
 	}
-	public List<Branch> getAppliedBranches() {
+	public List<BranchDTO> getAppliedBranches() {
 		return appliedBranches;
 	}
 	public void setWeixinActionQrcodeUrl(String weixinActionQrcodeUrl) {
 		this.weixinActionQrcodeUrl = weixinActionQrcodeUrl;
 	}
-	public void setAppliedBranches(List<Branch> appliedBranches) {
+	public void setAppliedBranches(List<BranchDTO> appliedBranches) {
 		this.appliedBranches = appliedBranches;
 	}
 	public Integer getTicketStock() {

@@ -1,7 +1,6 @@
 package com.nhsoft.module.report.model;
 
 
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;

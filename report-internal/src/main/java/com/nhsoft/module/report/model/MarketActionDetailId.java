@@ -1,7 +1,9 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+@Embeddable
 public class MarketActionDetailId implements Serializable{
 
 	private static final long serialVersionUID = -5025375005165135L;

@@ -1,8 +1,11 @@
 package com.nhsoft.module.report.model;
 
-
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,10 +15,12 @@ import java.util.List;
  * InventoryLnDetail entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class InventoryLnDetail implements java.io.Serializable {
 
 
 	private static final long serialVersionUID = 2035213025643053078L;
+	@EmbeddedId
 	private InventoryLnDetailId id;
 	private Integer itemNum;
 	private Integer itemMatrixNum;
@@ -30,6 +35,7 @@ public class InventoryLnDetail implements java.io.Serializable {
 	private Date inventoryLnDetailDate;
 	private BigDecimal inventoryLnDetailUseRate;
 	private String inventoryLnDetailUseUnit;
+	@Column(name="inventoryLnDetailUseQty")
 	private BigDecimal inventoryLnDetailUseAmount;
 	private Date inventoryLnDetailUpdateTime;
 	private BigDecimal inventoryLnDetailPackPrice;
@@ -37,12 +43,15 @@ public class InventoryLnDetail implements java.io.Serializable {
 	private BigDecimal inventoryLnDetailTare;//件皮重
 	private Integer supplierNum;
 
-	//临时属性 
+	//临时属性
+	@Transient
 	private BigDecimal inventoryLnDetailRemainAmount;
+	@Transient
 	private BigDecimal inventoryLnDetailRemainAssistAmount;
 
 	//临时属性 更新标记
-	private boolean update = false;  
+	@Transient
+	private boolean update = false;
 
 	public BigDecimal getInventoryLnDetailRemainAssistAmount() {
 		return inventoryLnDetailRemainAssistAmount;

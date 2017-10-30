@@ -1,14 +1,18 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+@Entity
 public class OrderTaskDetailBranch implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1801179548548265243L;
+	@Id
 	private String orderTaskDetailBranchFid;
 	private String orderTaskDetailFid;
 	private String systemBookCode;

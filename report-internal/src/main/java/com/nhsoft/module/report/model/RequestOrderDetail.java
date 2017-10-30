@@ -1,18 +1,21 @@
 package com.nhsoft.module.report.model;
 
-
-import com.nhsoft.module.report.dto.GsonIgnore;
-
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * RequestOrderDetail entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class RequestOrderDetail implements java.io.Serializable {
 
 	private static final long serialVersionUID = 4454653338602908706L;
+	@EmbeddedId
 	private RequestOrderDetailId id;
 	private Integer itemNum;
 	private String requestOrderDetailItemName;
@@ -47,9 +50,11 @@ public class RequestOrderDetail implements java.io.Serializable {
 	private Integer requestOrderDetailItemType;
 	
 	//临时属性
+	@Transient
 	private BigDecimal itemInventoryRate;
-	@GsonIgnore
+	@Transient
 	private ItemMatrix itemMatrix;
+	@Transient
 	private BigDecimal requestOrderDetailActualQty;
 
 	
@@ -402,5 +407,16 @@ public class RequestOrderDetail implements java.io.Serializable {
 			}
 		}
 		return null;
+	}
+	
+	public static List<RequestOrderDetail> find(List<RequestOrderDetail> requestOrderDetails, String requestOrderFid) {
+		List<RequestOrderDetail> list = new ArrayList<RequestOrderDetail>();
+		for(int i = 0;i < requestOrderDetails.size();i++){
+			RequestOrderDetail detail = requestOrderDetails.get(i);
+			if(detail.getId().getRequestOrderFid().equals(requestOrderFid)){
+				list.add(detail);
+			}
+		}
+		return list;
 	}
 }

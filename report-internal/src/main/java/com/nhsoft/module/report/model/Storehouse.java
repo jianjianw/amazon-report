@@ -1,5 +1,9 @@
 package com.nhsoft.module.report.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,14 +12,18 @@ import java.util.List;
  * Storehouse entity. @author MyEclipse Persistence Tools
  */
 
-public class Storehouse implements java.io.Serializable {
+@Entity
+public class Storehouse  implements java.io.Serializable {
 
 	 /**
 	 * 
 	 */
 	 private static final long serialVersionUID = 6845344997127599076L;
-	 private Integer storehouseNum;
+	  @Id
+	private Integer storehouseNum;
 	 private String systemBookCode;
+	@Transient
+	 private Integer branchNum;
 	 private String storehouseCode;
 	 private String storehouseName;
 	 private String storehouseLocation;
@@ -29,9 +37,21 @@ public class Storehouse implements java.io.Serializable {
 	 private Boolean storehouseDelTag;
 	 private Boolean storehouseCenterTag;
 	 private Boolean storehouseOverflow;
-	 private List<Branch> branchs = new ArrayList<Branch>();
 
-    public Integer getStorehouseNum() {
+	@ManyToMany(fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinTable(name="BranchStorehouse", joinColumns={@JoinColumn(name="storehouseNum")}, inverseJoinColumns={@JoinColumn(name="systemBookCode", referencedColumnName="systemBookCode"), @JoinColumn(name="branchNum", referencedColumnName="branchNum")})
+	private List<Branch> branchs = new ArrayList<Branch>();
+	
+	public Integer getBranchNum() {
+		return branchNum;
+	}
+	
+	public void setBranchNum(Integer branchNum) {
+		this.branchNum = branchNum;
+	}
+	
+	public Integer getStorehouseNum() {
         return this.storehouseNum;
     }
     
@@ -182,6 +202,28 @@ public class Storehouse implements java.io.Serializable {
 		} else if (!storehouseNum.equals(other.storehouseNum))
 			return false;
 		return true;
+	}
+	
+	public static List<Storehouse> findStorehouses(List<Storehouse> storehouses, Integer branchNum, boolean isCenter) {
+		List<Storehouse> list = new ArrayList<Storehouse>();
+		for (int i = 0; i < storehouses.size(); i++) {
+			Storehouse storehouse = storehouses.get(i);
+			List<Branch> branchs = storehouse.getBranchs();
+			if (branchs.size() == 0) {
+				continue;
+			}
+			Branch branch = branchs.get(0);
+			if (branch.getId().getBranchNum().equals(branchNum)) {
+				if (isCenter) {
+					if (storehouse.getStorehouseCenterTag() != null && storehouse.getStorehouseCenterTag()) {
+						list.add(storehouse);
+					}
+				} else {
+					list.add(storehouse);
+				}
+			}
+		}
+		return list;
 	}
 
 

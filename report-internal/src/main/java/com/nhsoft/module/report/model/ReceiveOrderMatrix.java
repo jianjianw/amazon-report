@@ -1,14 +1,19 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
+@Entity
 public class ReceiveOrderMatrix implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3343170726390633691L;
+	@Id
 	private String receiveOrderFid;
 	private String systemBookCode;
 	private Integer branchNum;
@@ -16,6 +21,7 @@ public class ReceiveOrderMatrix implements Serializable {
 	private Boolean receiveOrderInvoiceFlag;
 	
 	//临时属性
+	@Transient
 	private String receiveOrderInvoiceNo;
 
 	public String getReceiveOrderInvoiceNo() {

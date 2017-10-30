@@ -1,14 +1,18 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 
 /**
  * CardBalance entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class CardBalance implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8146906751552283559L;
+	@Id
 	private Integer cardUserNum;
 	private BigDecimal cardBalanceTotalDeposit;
 	private BigDecimal cardBalanceTotalConsume;

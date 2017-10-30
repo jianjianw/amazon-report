@@ -1,9 +1,11 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Embeddable;
+
 /**
  * PosItemKitId entity. @author MyEclipse Persistence Tools
  */
-
+@Embeddable
 public class PosItemKitId implements java.io.Serializable {
 
 	private static final long serialVersionUID = 711323540292406707L;

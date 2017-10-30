@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -7,6 +9,7 @@ import java.util.Date;
  * SmsSend entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class SmsSend implements java.io.Serializable {
 	
 	public static int SMS_TYPE_SALE = 0;//营销类
@@ -14,6 +17,7 @@ public class SmsSend implements java.io.Serializable {
 	
 
 	private static final long serialVersionUID = 3537017856770433484L;
+	@Id
 	private String smsSendId;
 	private String systemBookCode;
 	private Integer branchNum;
@@ -30,6 +34,7 @@ public class SmsSend implements java.io.Serializable {
 	private String smsSendDeliveryStatus;
 	private Integer smsSendCount;	
 	private Integer smsSendType = SMS_TYPE_SALE;
+	private Boolean smsSendUpload;
 	
 
 	public Integer getSmsSendType() {
@@ -164,4 +169,11 @@ public class SmsSend implements java.io.Serializable {
 		return smsSendDeliveryStatus;
 	}
 
+	public Boolean getSmsSendUpload() {
+		return smsSendUpload;
+	}
+
+	public void setSmsSendUpload(Boolean smsSendUpload) {
+		this.smsSendUpload = smsSendUpload;
+	}
 }

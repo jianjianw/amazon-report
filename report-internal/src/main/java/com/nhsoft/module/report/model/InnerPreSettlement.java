@@ -1,16 +1,20 @@
 package com.nhsoft.module.report.model;
 
-
 import com.nhsoft.module.report.query.State;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 public class InnerPreSettlement implements java.io.Serializable {
 
 	private static final long serialVersionUID = 3247515015167079736L;
+	@Id
 	private String preSettlementNo;
 	private String systemBookCode;
 	private Integer centerBranchNum;
@@ -25,6 +29,10 @@ public class InnerPreSettlement implements java.io.Serializable {
 	private Date preSettlementCreateTime;
 	private String preSettlementAuditor;
 	private Date preSettlementAuditTime;
+	@Embedded
+	@AttributeOverrides( {
+		 			@AttributeOverride(name="stateCode", column = @Column(name="preSettlementStateCode")), 
+		@AttributeOverride(name="stateName", column = @Column(name="preSettlementStateName")) } )
 	private State state;
 	private String preSettlementRefBillNo;
 	private String preSettlementAccountNo;
@@ -34,6 +42,9 @@ public class InnerPreSettlement implements java.io.Serializable {
 	private Boolean preSettlementSelfFlag;
 	private Boolean preSettlementSynchFlag;
 	
+	@ManyToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinTable(name="InnerSelfSettlementDetail", joinColumns={@JoinColumn(name="preSettlementNo")}, inverseJoinColumns={@JoinColumn(name="requestOrderFid", referencedColumnName="requestOrderFid")})
 	private List<RequestOrder> requestOrders = new ArrayList<RequestOrder>();
 
 	public Boolean getPreSettlementSynchFlag() {

@@ -1,10 +1,11 @@
 package com.nhsoft.module.report.model;
 
+import com.nhsoft.amazon.shared.AppConstants;
 
-
-import com.nhsoft.module.report.util.AppConstants;
-
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,9 +14,11 @@ import java.util.List;
  * StoreItemSupplier entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class StoreItemSupplier  implements java.io.Serializable {
 
 	private static final long serialVersionUID = -7364262264481498941L;
+	@EmbeddedId
 	private StoreItemSupplierId id;
 	private Integer storeItemSupplierPri;
 	private BigDecimal storeItemSupplierMin;
@@ -191,8 +194,89 @@ public class StoreItemSupplier  implements java.io.Serializable {
 		
 	}
 	
-
-
+	public static Integer getDefaultSupplier(List<StoreItemSupplier> storeItemSuppliers, Integer branchNum,
+	                                         Integer itemNum) {
+		if (storeItemSuppliers == null) {
+			return null;
+		}
+		Integer centerSupplierNum = null;
+		for (int i = 0; i < storeItemSuppliers.size(); i++) {
+			StoreItemSupplier storeItemSupplier = storeItemSuppliers.get(i);
+			if (!storeItemSupplier.getId().getItemNum().equals(itemNum)) {
+				continue;
+			}
+			if (storeItemSupplier.getId().getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)) {
+				centerSupplierNum = storeItemSupplier.getId().getSupplierNum();
+			}
+			if (storeItemSupplier.getId().getBranchNum().equals(branchNum)) {
+				return storeItemSupplier.getId().getSupplierNum();
+			}
+		}
+		return centerSupplierNum;
+	}
+	
+	public static StoreItemSupplier getPreStoreItemSupplier(List<StoreItemSupplier> storeItemSuppliers,
+	                                                        String systemBookCode, Integer branchNum, Integer itemNum) {
+		StoreItemSupplier preStoreItemSupplier = null;
+		for (int i = 0; i < storeItemSuppliers.size(); i++) {
+			StoreItemSupplier storeItemSupplier = storeItemSuppliers.get(i);
+			if (storeItemSupplier.getId().getSystemBookCode().equals(systemBookCode)
+					&& storeItemSupplier.getId().getItemNum().equals(itemNum)) {
+				if(branchNum != null && !storeItemSupplier.getId().getBranchNum().equals(branchNum)){
+					continue;
+				}
+				if(storeItemSupplier.getStoreItemSupplierDefault() != null && storeItemSupplier.getStoreItemSupplierDefault()){
+					return storeItemSupplier;
+				}
+				if (preStoreItemSupplier == null) {
+					preStoreItemSupplier = storeItemSupplier;
+				} else {
+					if (storeItemSupplier.getStoreItemSupplierPri() > preStoreItemSupplier.getStoreItemSupplierPri()) {
+						preStoreItemSupplier = storeItemSupplier;
+					} else if (storeItemSupplier.getStoreItemSupplierPri().equals(
+							preStoreItemSupplier.getStoreItemSupplierPri())) {
+						if (preStoreItemSupplier.getStoreItemSupplierLastestTime() == null
+								&& storeItemSupplier.getStoreItemSupplierLastestTime() != null) {
+							preStoreItemSupplier = storeItemSupplier;
+						} else if (preStoreItemSupplier.getStoreItemSupplierLastestTime() != null
+								&& storeItemSupplier.getStoreItemSupplierLastestTime() != null) {
+							if (preStoreItemSupplier.getStoreItemSupplierLastestTime().compareTo(
+									storeItemSupplier.getStoreItemSupplierLastestTime()) < 0) {
+								preStoreItemSupplier = storeItemSupplier;
+							}
+						}
+					}
+				}
+			}
+		}
+		return preStoreItemSupplier;
+	}
+	
+	
+	public static List<StoreItemSupplier> findStoreItemSuppliers(List<StoreItemSupplier> storeItemSuppliers,
+	                                                             String systemBookCode, Integer branchNum, Integer itemNum) {
+		List<StoreItemSupplier> list = new ArrayList<StoreItemSupplier>();
+		for (int i = 0; i < storeItemSuppliers.size(); i++) {
+			StoreItemSupplier storeItemSupplier = storeItemSuppliers.get(i);
+			if (storeItemSupplier.getId().getBranchNum().equals(branchNum)
+					&& storeItemSupplier.getId().getSystemBookCode().equals(systemBookCode)
+					&& storeItemSupplier.getId().getItemNum().equals(itemNum)) {
+				list.add(storeItemSupplier);
+			}
+		}
+		return list;
+	}
+	
+	public static StoreItemSupplier get(List<StoreItemSupplier> storeItemSuppliers,
+	                                                     StoreItemSupplierId id) {
+		for (int i = 0; i < storeItemSuppliers.size(); i++) {
+			StoreItemSupplier storeItemSupplier = storeItemSuppliers.get(i);
+			if (storeItemSupplier.getId().equals(id)) {
+				return storeItemSupplier;
+			}
+		}
+		return null;
+	}
 
 
 
