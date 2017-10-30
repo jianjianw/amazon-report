@@ -141,6 +141,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		try {
 			dataSource = ShardingDataSourceFactory.createDataSource(shardingRule);
 		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
 			logger.error("创建SharingDateSource失败");
 		}
 		return dataSource;
