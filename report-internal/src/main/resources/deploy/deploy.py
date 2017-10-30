@@ -56,6 +56,7 @@ if __name__ == "__main__":
         shutil.rmtree(target_dir+standard_dir)
     elif platform == "win32":
         target_dir = '../../../../target/'
+        target_dir = os.path.abspath(target_dir)+ '\\'
         deploy_path = os.path.dirname(py_path)
         os.chdir(deploy_path)
         if dist is None:
