@@ -1,8 +1,10 @@
 package com.nhsoft.module.report.model;
 
-
 import com.nhsoft.module.report.query.State;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,9 +14,11 @@ import java.util.List;
  * TransferInOrder entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class TransferInOrder implements java.io.Serializable {
 
 	private static final long serialVersionUID = -924794960784002869L;
+	@Id
 	private String inOrderFid;
 	private String systemBookCode;
 	private Integer branchNum;
@@ -25,6 +29,10 @@ public class TransferInOrder implements java.io.Serializable {
 	private Date inOrderDate;
 	private String inOrderOperator;
 	private String inOrderMemo;
+	@Embedded
+	@AttributeOverrides( {
+		 			@AttributeOverride(name="stateCode", column = @Column(name="inOrderStateCode")), 
+		@AttributeOverride(name="stateName", column = @Column(name="inOrderStateName")) } )
 	private State state;
 	private Boolean inOrderTransferFlag;
 	private String inOrderCreator;
@@ -46,11 +54,17 @@ public class TransferInOrder implements java.io.Serializable {
 	private Boolean inOrderAntiFlag;
 	private String inOrderAuditBizday;
 	private String inOrderLabel;
+	@OneToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinColumn(name = "inOrderFid", updatable=false, insertable=false)
 	private List<InOrderDetail> inOrderDetails = new ArrayList<InOrderDetail>();
 	
 	//临时属性
+	@Transient
 	private String antiOrderFid;
+	@Transient
 	private Boolean tempAudit;
+	@Transient
 	private Boolean saveAndAudit = false;
 	
 	public Boolean getSaveAndAudit() {
@@ -94,10 +108,13 @@ public class TransferInOrder implements java.io.Serializable {
 	}
 
 	//临时属性 是否来自API
+	@Transient
 	private boolean fromAPi = false;
 
 
+	@Transient
 	private AppUser appUser;
+	@Transient
 	private String copyFid;
 	
 	

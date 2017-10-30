@@ -1,6 +1,8 @@
 package com.nhsoft.module.report.model;
 
+
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 
 @Entity
@@ -10,6 +12,7 @@ public class CustomReport implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -4588484567304300016L;
+	@Id
 	private Integer customReportNum;
 	private String systemBookCode;
 	private String customReportModule;
@@ -17,7 +20,6 @@ public class CustomReport implements Serializable {
 	private String customReportCondition;
 	private String customReportColumn;
 	private String customReportContext;
-
 	public Integer getCustomReportNum() {
 		return customReportNum;
 	}

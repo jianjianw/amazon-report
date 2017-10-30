@@ -1,8 +1,13 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Entity
 public class UndeductionPosOrderDetail implements java.io.Serializable {
 
 	/**
@@ -10,6 +15,7 @@ public class UndeductionPosOrderDetail implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -2277059797330313062L;
 
+	@Embeddable
 	public static class UndeductionPosOrderDetailId implements java.io.Serializable {
 
 		private static final long serialVersionUID = 3355956852426062662L;
@@ -66,8 +72,10 @@ public class UndeductionPosOrderDetail implements java.io.Serializable {
 
 	}
 
+	@EmbeddedId
 	private UndeductionPosOrderDetailId id;
 	private Integer itemNum;
+	@Transient
 	private String orderDetailType;
 	private String orderDetailItem;
 	private BigDecimal orderDetailPrice;
@@ -93,6 +101,7 @@ public class UndeductionPosOrderDetail implements java.io.Serializable {
 	private Date orderTime;
 	private Boolean orderDetailHasKit;
 	
+	@Transient
 	private Integer orderKitDetailNum;
 
 
