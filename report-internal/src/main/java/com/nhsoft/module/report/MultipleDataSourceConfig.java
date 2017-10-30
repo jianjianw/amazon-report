@@ -126,7 +126,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 	@Bean(name = "shardingDataSource")
 	public DataSource shardingDataSource() {
 		
-		DataSourceRule dataSourceRule = new DataSourceRule(customDataSources, "ama");
+		DataSourceRule dataSourceRule = new DataSourceRule(customDataSources, "cs");
 		
 		TableRule alipayLogTableRule = AlipayLogSharding.createTableRule(dataSourceRule);
 		
