@@ -31,10 +31,9 @@ public class ApiInterceptor {
             long afterTime = System.currentTimeMillis();
             diff = (afterTime - preTime) / 1000;
         } catch (Throwable throwable) {
-            logger.error("拦截器异常");
             throw throwable;
         } finally {
-            logger.info("请求路径为：" + name + "----------- 耗时：" + diff);
+            logger.info("API：" + name + "耗时：" + diff + "s");
         }
         return object;
 

@@ -12,6 +12,8 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.DateUtil;
 import com.nhsoft.module.report.util.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,7 @@ import java.util.*;
 
 @Component
 public class ReportRpcImpl implements ReportRpc {
+	private static final Logger logger = LoggerFactory.getLogger(ReportRpcImpl.class);
 
 	@Autowired
 	private ReceiveOrderService receiveOrderService;
@@ -2627,12 +2630,17 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<AlipaySumDTO> findAlipaySumDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String payType) {
-		return reportService.findAlipaySumDTOs(systemBookCode,branchNums,dateFrom,dateTo,payType);
+		
+		List<AlipaySumDTO> list = reportService.findAlipaySumDTOs(systemBookCode,branchNums,dateFrom,dateTo,payType);
+		logger.info("findAlipaySumDTOs 返回数据" + list.size() + "条");
+		return list;
 	}
 
 	@Override
 	public List<AlipayDetailDTO> findAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String type, String paymentType, Boolean queryAll) {
-		return reportService.findAlipayDetailDTOs(systemBookCode,branchNums,dateFrom,dateTo,type,paymentType,queryAll);
+		List<AlipayDetailDTO> list = reportService.findAlipayDetailDTOs(systemBookCode,branchNums,dateFrom,dateTo,type,paymentType,queryAll);
+		logger.info("findAlipayDetailDTOs 返回数据" + list.size() + "条");
+		return list;
 	}
 
 	@Override
