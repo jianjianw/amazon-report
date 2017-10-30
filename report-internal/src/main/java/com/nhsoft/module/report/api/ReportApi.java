@@ -641,13 +641,18 @@ public class ReportApi {
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateBranchTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
         List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dateFrom = null;
-        Date dateTo = null;
-        Date dateStr = DateUtil.getDateStr(date);
+        try {
+            dateFrom = sdf.parse(date);
+        } catch (ParseException e) {
+            logger.error("日期解析失败");
+        }
+
         //营业额
-        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateStr, dateStr, false);
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateFrom, false);
         //营业额目标
-        List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateStr, dateStr, AppConstants.BUSINESS_DATE_SOME_DATE);
+        List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateFrom, AppConstants.BUSINESS_DATE_SOME_DATE);
 
         List<SaleFinishMoneyTopDTO> list = new ArrayList<>();
         for (int i = 0; i < bannchNumList.size(); i++) {
@@ -655,31 +660,38 @@ public class ReportApi {
             BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, bannchNumList.get(i));
             saleFinishMoneyTopDTO.setName(branchDTO.getBranchName());
             saleFinishMoneyTopDTO.setNum(bannchNumList.get(i));
-            //暂存营业额
+            //营业额
             for (int j = 0; j < moneyByBranch.size(); j++) {
                 BranchRevenueReport branchRevenueReport = moneyByBranch.get(j);
                 if (saleFinishMoneyTopDTO.getNum().equals(branchRevenueReport.getBranchNum())) {
-                    saleFinishMoneyTopDTO.setFinishMoneyRate(branchRevenueReport.getBizMoney());
+                    saleFinishMoneyTopDTO.setSaleMoney(branchRevenueReport.getBizMoney());
                     break;
                 }
             }
-            //计算完成率
+            //营业额目标  和  完成率
             for (int j = 0; j < saleMoneyGoalsByBranch.size(); j++) {
                 SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(j);
-                if (saleFinishMoneyTopDTO.getNum().equals(saleMoneyGoals.getBranchNum())) {
-                    if (saleFinishMoneyTopDTO.getFinishMoneyRate() == null || saleFinishMoneyTopDTO.getFinishMoneyRate().compareTo(BigDecimal.ZERO) == 0) {
-                        saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
-                    } else if (saleMoneyGoals.getSaleMoney() == null || saleMoneyGoals.getSaleMoney().compareTo(BigDecimal.ZERO) == 0) {
-                        saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
-                    } else {
-                        saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getFinishMoneyRate().divide(saleMoneyGoals.getSaleMoney(), 2, ROUND_HALF_DOWN));
-                    }
-                    break;
-                }
+
+               if(saleFinishMoneyTopDTO.getNum().equals(saleMoneyGoals.getBranchNum())){
+                   //营业额目标
+                   saleFinishMoneyTopDTO.setGolaMoney(saleMoneyGoals.getSaleMoney());
+                   //完成率
+                   if(saleFinishMoneyTopDTO.getSaleMoney() == null || saleFinishMoneyTopDTO.getSaleMoney().compareTo(BigDecimal.ZERO) == 0){
+                       saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
+                   }else if(saleFinishMoneyTopDTO.getGolaMoney() == null || saleFinishMoneyTopDTO.getGolaMoney().compareTo(BigDecimal.ZERO) == 0){
+                       saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
+                   }else{
+                       saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getSaleMoney().divide(saleFinishMoneyTopDTO.getGolaMoney(),2,ROUND_HALF_DOWN));
+                   }
+               }
             }
             list.add(saleFinishMoneyTopDTO);
         }
         list.sort(Comparator.comparing(SaleFinishMoneyTopDTO::getFinishMoneyRate));
+        for (int i = 0; i <list.size(); i++) {
+            SaleFinishMoneyTopDTO saleFinishMoneyTopDTO = list.get(i);
+            saleFinishMoneyTopDTO.setTopNum(i+1);
+        }
         return list;
     }
 
@@ -707,25 +719,26 @@ public class ReportApi {
             List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionDTO.getBranchRegionNum());
             for (int j = 0; j < branchs.size(); j++) {
                 BranchDTO branchDTO = branchs.get(j);
-                //暂存营业额
+                //营业额
                 for (int k = 0; k < moneyByBranch.size(); k++) {
                     BranchRevenueReport branchRevenueReport = moneyByBranch.get(k);
                     if (branchDTO.getBranchNum().equals(branchRevenueReport.getBranchNum())) {
-                        saleFinishMoneyTopDTO.setFinishMoneyRate(branchRevenueReport.getBizMoney());
+                        saleFinishMoneyTopDTO.setSaleMoney(branchRevenueReport.getBizMoney());
                     }
                 }
-                //查询营业额目标，计算营业额完成率
+                //目标，完成率
                 for (int k = 0; k < saleMoneyGoalsByBranch.size(); k++) {
                     SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(i);
                     if (branchDTO.getBranchNum().equals(saleMoneyGoals.getBranchNum())) {
-                        if (saleFinishMoneyTopDTO.getFinishMoneyRate() == null || saleFinishMoneyTopDTO.getFinishMoneyRate().compareTo(BigDecimal.ZERO) == 0)
-                        {
+                        //营业额目标
+                        saleFinishMoneyTopDTO.setGolaMoney(saleMoneyGoals.getSaleMoney());
+                        //完成率
+                        if(saleFinishMoneyTopDTO.getSaleMoney() == null || saleFinishMoneyTopDTO.getSaleMoney().compareTo(BigDecimal.ZERO) == 0){
                             saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
-                        } else if (saleMoneyGoals.getSaleMoney() == null || saleMoneyGoals.getSaleMoney().compareTo(BigDecimal.ZERO) == 0)
-                        {
+                        }else if(saleFinishMoneyTopDTO.getGolaMoney() == null || saleFinishMoneyTopDTO.getGolaMoney().compareTo(BigDecimal.ZERO) == 0){
                             saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
-                        }else {
-                            saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getFinishMoneyRate().divide(saleMoneyGoals.getSaleMoney(),2,ROUND_HALF_DOWN));
+                        }else{
+                            saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getSaleMoney().divide(saleFinishMoneyTopDTO.getGolaMoney(),2,ROUND_HALF_DOWN));
                         }
                     }
                 }
@@ -733,6 +746,10 @@ public class ReportApi {
             list.add(saleFinishMoneyTopDTO);
         }
         list.sort(Comparator.comparing(SaleFinishMoneyTopDTO::getFinishMoneyRate));
+        for (int i = 0; i <list.size(); i++) {
+            SaleFinishMoneyTopDTO saleFinishMoneyTopDTO = list.get(i);
+            saleFinishMoneyTopDTO.setTopNum(i+1);
+        }
         return list;
     }
 
