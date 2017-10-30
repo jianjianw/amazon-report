@@ -11815,8 +11815,8 @@ public class ReportServiceImpl implements ReportService {
 		List<Object[]> objects = reportDao.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
 
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
-		Integer itemNum;
 		Integer branchNum;
+		Integer itemNum;
 		Integer stateCode;
 		BigDecimal amount;
 		BigDecimal money;
@@ -11827,8 +11827,8 @@ public class ReportServiceImpl implements ReportService {
 		Integer saleBranchCount;
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
-			itemNum = (Integer) object[0];
-			branchNum = object[1] == null ? 0 : (Integer) object[1];
+			branchNum = (Integer) object[0];
+			itemNum = object[1] == null ? 0 : (Integer) object[1];
 			stateCode = (Integer) object[2];
 			amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
