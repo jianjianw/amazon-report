@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -7,12 +9,14 @@ import java.util.Date;
  * Branch entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class BranchTransferGoals implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8442385698180998816L;
+	@EmbeddedId
 	private BranchTransferGoalsId id;
 	private BigDecimal branchTransferValue;
 	private BigDecimal branchTransferSaleValue;

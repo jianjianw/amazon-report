@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +11,17 @@ import java.util.List;
 
 
 //TODO  新增属性后 posItemDaoHibernate相关查询代码也需要修改
+@Entity
 public class PosItemKit implements java.io.Serializable {
 
 	private static final long serialVersionUID = -3876270134227789443L;
+	@EmbeddedId
 	private PosItemKitId id;
+	@ManyToOne
+	@JoinColumn(name="kitItemNum", insertable=false, updatable=false)
 	private PosItem posItem;
 	private BigDecimal posItemKitAmount;
+	@Transient
 	private Integer posItemKitItemMatrixNum; 
 	private String systemBookCode;
 	private Boolean posItemAmountUnFixed;

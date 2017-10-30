@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nhsoft.module.report.util.AppConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -12,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -92,31 +96,133 @@ public class Branch implements java.io.Serializable {
 	}
 	@EmbeddedId
 	private BranchId id;
+	private String abchinaAccountId;
+	private String toAbchinaAccountId;
 	private Integer branchRegionNum;
 	private String branchCode;
 	private String branchName;
+	private Boolean branchActived;
+	private String branchPostcode;
+	private String branchAddr;
+	private String branchFax;
+	private String branchPhone;
 	private Boolean branchRdc;
 	private String branchType;
-	private String branchModule;
-	private Boolean branchActived;
+	private String branchTransferType;
 	private Boolean branchMatrixPriceActived;
+	private String branchSynchId;
+	private String branchDigest;
+	@Transient
+	private String branchLicense;
+	private BigDecimal branchCreditLimit;
+	private String branchBankNo;
+	private Boolean branchRequestCheckMoney;
+	private BigDecimal branchArea;
+	private String branchLinkMan;
+	private Integer branchOffLineDay;
+	private BigDecimal branchCardBalanceLimit;
+	private String branchModule;
+	private String branchEmail;
+	private String branchRegionType;
+	private Integer branchEmployeeCount;
+	private Date branchExpiration;
+	private BigDecimal branchRent;
+	private String branchSellerId;
+	private String branchSellerEmail;
+	private Integer branchStatus;
+	private Integer managementTemplateNum;
+	private Boolean branchSupportIc;
+	private Boolean branchSupportId;
+	private String branchProduct;
 	private Boolean branchVirtual; // 是否虚拟店
+	private Boolean branchKitEnabled;
+	private Date branchCloseTime;
+	private Boolean branchStockClosed;
+	private Boolean branchTmall;
+	private Date branchCreateTime;
+	@Transient
+	private BigDecimal branchMatrixLongitude; //经度
+	@Transient
+	private BigDecimal branchMatrixLatitude; //纬度
 	
 	public Branch(){
 		
 	}
 	
-	
-	public Boolean getBranchMatrixPriceActived() {
-		return branchMatrixPriceActived;
+	public Date getBranchCreateTime() {
+		return branchCreateTime;
 	}
-	
-	public void setBranchMatrixPriceActived(Boolean branchMatrixPriceActived) {
-		this.branchMatrixPriceActived = branchMatrixPriceActived;
+
+	public void setBranchCreateTime(Date branchCreateTime) {
+		this.branchCreateTime = branchCreateTime;
 	}
-	
+
 	public Branch(String systemBookCode, Integer branchNum){
 		setId(new BranchId(systemBookCode, branchNum));
+	}
+	
+	public Boolean getBranchTmall() {
+		return branchTmall;
+	}
+
+	public void setBranchTmall(Boolean branchTmall) {
+		this.branchTmall = branchTmall;
+	}
+
+	public Boolean getBranchStockClosed() {
+		return branchStockClosed;
+	}
+
+	public void setBranchStockClosed(Boolean branchStockClosed) {
+		this.branchStockClosed = branchStockClosed;
+	}
+
+	public Date getBranchCloseTime() {
+		return branchCloseTime;
+	}
+
+	public void setBranchCloseTime(Date branchCloseTime) {
+		this.branchCloseTime = branchCloseTime;
+	}
+
+	public Boolean getBranchKitEnabled() {
+		return branchKitEnabled;
+	}
+
+	public void setBranchKitEnabled(Boolean branchKitEnabled) {
+		this.branchKitEnabled = branchKitEnabled;
+	}
+
+	public Boolean getBranchVirtual() {
+		return branchVirtual;
+	}
+
+	public void setBranchVirtual(Boolean branchVirtual) {
+		this.branchVirtual = branchVirtual;
+	}
+
+	public String getBranchProduct() {
+		return branchProduct;
+	}
+
+	public void setBranchProduct(String branchProduct) {
+		this.branchProduct = branchProduct;
+	}
+
+	public Integer getManagementTemplateNum() {
+		return managementTemplateNum;
+	}
+
+	public void setManagementTemplateNum(Integer managementTemplateNum) {
+		this.managementTemplateNum = managementTemplateNum;
+	}
+
+	public Integer getBranchStatus() {
+		return branchStatus;
+	}
+
+	public void setBranchStatus(Integer branchStatus) {
+		this.branchStatus = branchStatus;
 	}
 
 	public BranchId getId() {
@@ -127,6 +233,45 @@ public class Branch implements java.io.Serializable {
 		this.id = id;
 	}
 
+	public String getBranchSellerId() {
+		return branchSellerId;
+	}
+
+	public void setBranchSellerId(String branchSellerId) {
+		this.branchSellerId = branchSellerId;
+	}
+
+	public String getBranchSellerEmail() {
+		return branchSellerEmail;
+	}
+
+	public void setBranchSellerEmail(String branchSellerEmail) {
+		this.branchSellerEmail = branchSellerEmail;
+	}
+
+	public String getBranchRegionType() {
+		return branchRegionType;
+	}
+
+	public void setBranchRegionType(String branchRegionType) {
+		this.branchRegionType = branchRegionType;
+	}
+
+	public Integer getBranchEmployeeCount() {
+		return branchEmployeeCount;
+	}
+
+	public void setBranchEmployeeCount(Integer branchEmployeeCount) {
+		this.branchEmployeeCount = branchEmployeeCount;
+	}
+
+	public String getBranchEmail() {
+		return branchEmail;
+	}
+
+	public void setBranchEmail(String branchEmail) {
+		this.branchEmail = branchEmail;
+	}
 
 	public String getBranchModule() {
 		return branchModule;
@@ -134,6 +279,38 @@ public class Branch implements java.io.Serializable {
 
 	public void setBranchModule(String branchModule) {
 		this.branchModule = branchModule;
+	}
+
+	public String getAbchinaAccountId() {
+		return abchinaAccountId;
+	}
+
+	public void setAbchinaAccountId(String abchinaAccountId) {
+		this.abchinaAccountId = abchinaAccountId;
+	}
+
+	public String getToAbchinaAccountId() {
+		return toAbchinaAccountId;
+	}
+
+	public void setToAbchinaAccountId(String toAbchinaAccountId) {
+		this.toAbchinaAccountId = toAbchinaAccountId;
+	}
+
+	public BigDecimal getBranchMatrixLongitude() {
+		return branchMatrixLongitude;
+	}
+
+	public BigDecimal getBranchMatrixLatitude() {
+		return branchMatrixLatitude;
+	}
+
+	public void setBranchMatrixLongitude(BigDecimal branchMatrixLongitude) {
+		this.branchMatrixLongitude = branchMatrixLongitude;
+	}
+
+	public void setBranchMatrixLatitude(BigDecimal branchMatrixLatitude) {
+		this.branchMatrixLatitude = branchMatrixLatitude;
 	}
 
 	public Integer getBranchRegionNum() {
@@ -168,6 +345,38 @@ public class Branch implements java.io.Serializable {
 		this.branchActived = branchActived;
 	}
 
+	public String getBranchPostcode() {
+		return branchPostcode;
+	}
+
+	public void setBranchPostcode(String branchPostcode) {
+		this.branchPostcode = branchPostcode;
+	}
+
+	public String getBranchAddr() {
+		return branchAddr;
+	}
+
+	public void setBranchAddr(String branchAddr) {
+		this.branchAddr = branchAddr;
+	}
+
+	public String getBranchFax() {
+		return branchFax;
+	}
+
+	public void setBranchFax(String branchFax) {
+		this.branchFax = branchFax;
+	}
+
+	public String getBranchPhone() {
+		return branchPhone;
+	}
+
+	public void setBranchPhone(String branchPhone) {
+		this.branchPhone = branchPhone;
+	}
+
 	public Boolean getBranchRdc() {
 		return branchRdc;
 	}
@@ -184,12 +393,135 @@ public class Branch implements java.io.Serializable {
 		this.branchType = branchType;
 	}
 
-	public Boolean getBranchVirtual() {
-		return branchVirtual;
+	public String getBranchTransferType() {
+		return branchTransferType;
 	}
 
-	public void setBranchVirtual(Boolean branchVirtual) {
-		this.branchVirtual = branchVirtual;
+	public void setBranchTransferType(String branchTransferType) {
+		this.branchTransferType = branchTransferType;
+	}
+
+	public Boolean getBranchMatrixPriceActived() {
+		if(branchMatrixPriceActived == null){
+			return false;
+		}
+		return branchMatrixPriceActived;
+	}
+
+	public void setBranchMatrixPriceActived(Boolean branchMatrixPriceActived) {
+		this.branchMatrixPriceActived = branchMatrixPriceActived;
+	}
+
+	public String getBranchSynchId() {
+		return branchSynchId;
+	}
+
+	public void setBranchSynchId(String branchSynchId) {
+		this.branchSynchId = branchSynchId;
+	}
+
+	public String getBranchDigest() {
+		return branchDigest;
+	}
+
+	public void setBranchDigest(String branchDigest) {
+		this.branchDigest = branchDigest;
+	}
+
+	public String getBranchLicense() {
+		return branchLicense;
+	}
+
+	public void setBranchLicense(String branchLicense) {
+		this.branchLicense = branchLicense;
+	}
+
+	public BigDecimal getBranchCreditLimit() {
+		return branchCreditLimit;
+	}
+
+	public void setBranchCreditLimit(BigDecimal branchCreditLimit) {
+		this.branchCreditLimit = branchCreditLimit;
+	}
+
+	public String getBranchBankNo() {
+		return branchBankNo;
+	}
+
+	public void setBranchBankNo(String branchBankNo) {
+		this.branchBankNo = branchBankNo;
+	}
+
+	public Boolean getBranchRequestCheckMoney() {
+		return branchRequestCheckMoney;
+	}
+
+	public void setBranchRequestCheckMoney(Boolean branchRequestCheckMoney) {
+		this.branchRequestCheckMoney = branchRequestCheckMoney;
+	}
+
+	public BigDecimal getBranchArea() {
+		return branchArea;
+	}
+
+	public void setBranchArea(BigDecimal branchArea) {
+		this.branchArea = branchArea;
+	}
+
+	public String getBranchLinkMan() {
+		return branchLinkMan;
+	}
+
+	public void setBranchLinkMan(String branchLinkMan) {
+		this.branchLinkMan = branchLinkMan;
+	}
+
+	public Integer getBranchOffLineDay() {
+		return branchOffLineDay;
+	}
+
+	public void setBranchOffLineDay(Integer branchOffLineDay) {
+		this.branchOffLineDay = branchOffLineDay;
+	}
+
+	public BigDecimal getBranchCardBalanceLimit() {
+		return branchCardBalanceLimit;
+	}
+
+	public void setBranchCardBalanceLimit(BigDecimal branchCardBalanceLimit) {
+		this.branchCardBalanceLimit = branchCardBalanceLimit;
+	}
+
+	public Date getBranchExpiration() {
+		return branchExpiration;
+	}
+
+	public void setBranchExpiration(Date branchExpiration) {
+		this.branchExpiration = branchExpiration;
+	}
+
+	public BigDecimal getBranchRent() {
+		return branchRent;
+	}
+
+	public void setBranchRent(BigDecimal branchRent) {
+		this.branchRent = branchRent;
+	}
+
+	public Boolean getBranchSupportIc() {
+		return branchSupportIc;
+	}
+
+	public void setBranchSupportIc(Boolean branchSupportIc) {
+		this.branchSupportIc = branchSupportIc;
+	}
+
+	public Boolean getBranchSupportId() {
+		return branchSupportId;
+	}
+
+	public void setBranchSupportId(Boolean branchSupportId) {
+		this.branchSupportId = branchSupportId;
 	}
 
 	@Override
@@ -270,21 +602,6 @@ public class Branch implements java.io.Serializable {
 		}
 		return document.asXML();
 	}
-
-	/**
-	 * 判断是否加盟店
-	 * 
-	 * @return
-	 */
-/*	@JsonIgnore
-	public boolean isJoinBranch() {
-		if (!id.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)
-				&& StringUtils.equals(branchType, AppConstants.BRANCH_TYPE_JOIN)) {
-			return true;
-		} else {
-			return false;
-		}
-	}*/
 	
 	/**
 	 * 判断是否配送中心

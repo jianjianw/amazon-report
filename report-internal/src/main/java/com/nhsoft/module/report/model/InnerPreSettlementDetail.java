@@ -1,17 +1,25 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 
 /**
  * InnerPreSettlementDetail entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class InnerPreSettlementDetail implements java.io.Serializable {
 	
 	
 
 	private static final long serialVersionUID = -7842817419316421617L;
+	@EmbeddedId
 	private InnerPreSettlementDetailId id;
+	@ManyToOne
+	@JoinColumn(name="preSettlementNo", insertable=false, updatable=false)
 	private InnerPreSettlement innerPreSettlement;
 	private BigDecimal preSettlementDetailMoney;
 

@@ -1,12 +1,18 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.List;
+
 /**
  * PrivilegeResource entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class PrivilegeResource implements java.io.Serializable {
 
 	private static final long serialVersionUID = -664261981733010243L;
+	@Id
 	private String privilegeResourceKey;
 	private String privilegeResourceName;
 	private String privilegeResourceCategory;
@@ -80,6 +86,16 @@ public class PrivilegeResource implements java.io.Serializable {
 
 	public void setPrivilegeResourceMode(String privilegeResourceMode) {
 		this.privilegeResourceMode = privilegeResourceMode;
+	}
+	
+	public static PrivilegeResource get(List<PrivilegeResource> privilegeResources, String privilegeResourceName, String privilegeResourceType){
+		for(int i = 0;i < privilegeResources.size();i++){
+			PrivilegeResource privilegeResource = privilegeResources.get(i);
+			if(privilegeResource.getPrivilegeResourceName().equals(privilegeResourceName) && privilegeResource.getPrivilegeResourceType().equals(privilegeResourceType)){
+				return privilegeResource;
+			}
+		}
+		return null;
 	}
 
 	@Override

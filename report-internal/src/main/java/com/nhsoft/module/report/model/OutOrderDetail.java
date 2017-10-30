@@ -1,8 +1,8 @@
 package com.nhsoft.module.report.model;
 
-
 import com.nhsoft.module.report.dto.GsonIgnore;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,10 +11,11 @@ import java.util.List;
 /**
  * OutOrderDetail entity. @author MyEclipse Persistence Tools
  */
-
+@Entity
 public class OutOrderDetail implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5808497566717324855L;
+	@EmbeddedId
 	private OutOrderDetailId id;
 	private Integer itemNum;
 	private String outOrderDetailItemName;
@@ -66,17 +67,27 @@ public class OutOrderDetail implements java.io.Serializable {
 
 	//查询用
 	@GsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="outOrderFid", insertable=false, updatable=false)
 	private TransferOutOrder transferOutOrder;
 	
 	// 临时属性
+	@Transient
 	private BigDecimal itemInventoryRate;
 	@GsonIgnore
+	@Transient
 	private ItemMatrix itemMatrix;
+	@Transient
 	private Boolean centerPackage = false;//是否中心压筐
+	@Transient
 	private BigDecimal outOrderDetailPreUseRate; //扣减皮重之前的转换率
+	@Transient
 	private BigDecimal outOrderDetailLockInventoryQty;
+	@Transient
 	private BigDecimal outOrderDetailUseViewQty;
+	@Transient
 	private Boolean fixProfit;//是否锁定毛利率
+	@Transient
 	private String itemCostMode;
 	
 	public String getItemCostMode() {

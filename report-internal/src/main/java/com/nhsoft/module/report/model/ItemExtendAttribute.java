@@ -1,17 +1,21 @@
 package com.nhsoft.module.report.model;
 
+import com.nhsoft.module.base.export.dto.TwoStringValueData;
 
-import com.nhsoft.module.report.query.TwoStringValueData;
-
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class ItemExtendAttribute implements Serializable {
 
 	/**
 	 * 
 	 */
+	@Embeddable
 	public static class ItemExtendAttributeId implements Serializable {
 
 		private static final long serialVersionUID = -4303495322140820269L;
@@ -34,9 +38,27 @@ public class ItemExtendAttribute implements Serializable {
 			this.attributeName = attributeName;
 		}
 
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			ItemExtendAttributeId that = (ItemExtendAttributeId) o;
+
+			if (itemNum != null ? !itemNum.equals(that.itemNum) : that.itemNum != null) return false;
+			return attributeName != null ? attributeName.equals(that.attributeName) : that.attributeName == null;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = itemNum != null ? itemNum.hashCode() : 0;
+			result = 31 * result + (attributeName != null ? attributeName.hashCode() : 0);
+			return result;
+		}
 	}
 
 	private static final long serialVersionUID = 1433828423909546162L;
+	@EmbeddedId
 	private ItemExtendAttributeId id;
 	private String systemBookCode;
 	private String attributeValue;

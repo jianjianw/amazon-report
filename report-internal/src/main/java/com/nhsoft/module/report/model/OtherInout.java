@@ -1,8 +1,8 @@
 package com.nhsoft.module.report.model;
 
+import com.nhsoft.module.report.query.State;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -29,8 +29,11 @@ public class OtherInout implements java.io.Serializable {
 	private Date otherInoutCreateTime;
 	private String otherInoutAuditMan;
 	private Date otherInoutAuditTime;
-	private Integer otherInoutStateCode;
-	private String otherInoutStateName;
+	@Embedded
+	@AttributeOverrides( {
+		 			@AttributeOverride(name="stateCode", column = @Column(name="otherInoutStateCode")), 
+		@AttributeOverride(name="stateName", column = @Column(name="otherInoutStateName")) } )
+	private State state;
 	private String otherInoutMemo;
 	private Integer accountBankNum;
 	private Boolean otherInoutSyncFlag;
@@ -48,23 +51,7 @@ public class OtherInout implements java.io.Serializable {
 
 	public OtherInout() {
 	}
-	
-	public Integer getOtherInoutStateCode() {
-		return otherInoutStateCode;
-	}
-	
-	public void setOtherInoutStateCode(Integer otherInoutStateCode) {
-		this.otherInoutStateCode = otherInoutStateCode;
-	}
-	
-	public String getOtherInoutStateName() {
-		return otherInoutStateName;
-	}
-	
-	public void setOtherInoutStateName(String otherInoutStateName) {
-		this.otherInoutStateName = otherInoutStateName;
-	}
-	
+
 	public String getOtherInoutBillNo() {
 		return otherInoutBillNo;
 	}
@@ -183,6 +170,14 @@ public class OtherInout implements java.io.Serializable {
 
 	public void setOtherInoutAuditTime(Date otherInoutAuditTime) {
 		this.otherInoutAuditTime = otherInoutAuditTime;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
 	}
 
 	public String getOtherInoutMemo() {

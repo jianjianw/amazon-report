@@ -1,9 +1,12 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Embeddable;
+
 /**
  * InventoryLnDetailId entity. @author MyEclipse Persistence Tools
  */
 
+@Embeddable
 public class InventoryLnDetailId implements java.io.Serializable {
 
 	private static final long serialVersionUID = -2924475859564587979L;

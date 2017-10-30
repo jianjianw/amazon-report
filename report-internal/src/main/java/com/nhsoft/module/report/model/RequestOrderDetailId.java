@@ -1,9 +1,11 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Embeddable;
+
 /**
  * RequestOrderDetailId entity. @author MyEclipse Persistence Tools
  */
-
+@Embeddable
 public class RequestOrderDetailId implements java.io.Serializable {
 
 	private static final long serialVersionUID = 2527266138765184069L;

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class SystemBook implements java.io.Serializable {
@@ -208,6 +209,13 @@ public class SystemBook implements java.io.Serializable {
 			bookDeleteData = "20150101";
 		}		
 		return DateUtil.getDateStr(bookDeleteData);
+	}
+
+	public static SystemBook get(List<SystemBook> systemBookList, String systemBookCode) {
+		if(systemBookList == null) {
+			return null;
+		}
+		return systemBookList.stream().filter(s -> s.getSystemBookCode().equals(systemBookCode)).findAny().orElse(null);
 	}
 
 }

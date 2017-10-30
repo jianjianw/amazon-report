@@ -1,9 +1,10 @@
 package com.nhsoft.module.report.model;
 
-
-import com.nhsoft.module.report.dto.GsonIgnore;
 import com.nhsoft.module.report.query.State;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,9 +14,11 @@ import java.util.List;
  * RequestOrder entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class RequestOrder implements java.io.Serializable {
 
 	private static final long serialVersionUID = 7592986647652749128L;
+	@Id
 	private String requestOrderFid;
 	private String systemBookCode;
 	private Integer branchNum;
@@ -24,6 +27,10 @@ public class RequestOrder implements java.io.Serializable {
 	private String requestOrderProposer;
 	private Date requestOrderApplyTime;
 	private Date requestOrderDeadline;
+	@Embedded
+	@AttributeOverrides( {
+		 			@AttributeOverride(name="stateCode", column = @Column(name="requestOrderStateCode")), 
+		@AttributeOverride(name="stateName", column = @Column(name="requestOrderStateName")) } )
 	private State state;
 	private String requestOrderMemo;
 	private Boolean requestOrderTransferFlag;
@@ -43,16 +50,26 @@ public class RequestOrder implements java.io.Serializable {
 	private String requestOrderTransferState;
 	private String requestOrderAuditBizday;
 	private Integer requestOrderPrintCount;
+	
+	
+	@OneToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinColumn(name = "requestOrderFid", updatable=false, insertable=false)
 	private List<RequestOrderDetail> requestOrderDetails = new ArrayList<RequestOrderDetail>();
 	
-	@GsonIgnore
+	@ManyToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinTable(name="RequestOrderTransferOutOrder", joinColumns={@JoinColumn(name="requestOrderFid")}, inverseJoinColumns={@JoinColumn(name="outOrderFid", referencedColumnName="outOrderFid")})
 	private List<TransferOutOrder> transferOutOrders = new ArrayList<TransferOutOrder>();
+	@Transient
 	private String itemCategoryCode;
 	
 	//临时属性
-	@GsonIgnore
+	@Transient
 	private AppUser appUser;
+	@Transient
 	private String copyFid;
+	@Transient
 	private String source;//单据来源
 	
 	public String getSource() {
@@ -472,17 +489,4 @@ public class RequestOrder implements java.io.Serializable {
 		}
 		return null;
 	}
-	
-	private String orderNo;
-	private Long storeId;
-	private String proposer;
-	private Date applyTime;
-	private Date deadLine;
-	private Integer status;
-	private Long totalFee;
-	private Long prePayment;
-	private Date pickTime;
-	private Date sendTime;
-	private Date receiveTime;
-	private String memo;
 }

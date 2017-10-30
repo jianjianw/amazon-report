@@ -1,12 +1,16 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Entity
 public class MarketPayment implements java.io.Serializable {
 
     private static final long serialVersionUID = -7991185599164480824L;
-    private String marketPaymentNo;
+    @Id
+	private String marketPaymentNo;
     private String systemBookCode;
     private String marketPaymentFid;
     private BigDecimal marketPaymentMoney;

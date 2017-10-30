@@ -1,9 +1,12 @@
 package com.nhsoft.module.report.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nhsoft.module.report.util.AppConstants;
+import com.nhsoft.amazon.shared.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,9 +16,11 @@ import java.util.List;
  * Supplier entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class Supplier implements java.io.Serializable {
 
 	private static final long serialVersionUID = -7209508044762750480L;
+	@Id
 	private Integer supplierNum;
 	private String abchinaAccountId;
 	private String systemBookCode;
@@ -53,14 +58,18 @@ public class Supplier implements java.io.Serializable {
 	private Date supplierCreateTime;
 	private String supplierCreator;
 	private String supplierSettleDays;
-
+	
+	@Transient
 	private List<SupplierShareBranch> supplierSharedBranches;
 	
 	// 界面使用
+	@Transient
 	private BigDecimal itemPrice;// 采购单价
+	@Transient
 	private BigDecimal lastPrice;// 最后一次进价
+	@Transient
 	private String storeItemReturnType;
-	
+	@Transient
 	private AppUser appUser;
 
 	public Supplier() {
@@ -441,6 +450,13 @@ public class Supplier implements java.io.Serializable {
 		
 		int day = c.get(Calendar.DAY_OF_MONTH);
 		System.out.println(day);
+	}
+
+	public static Supplier get(List<Supplier> suppliers, Integer supplierNum) {
+		if(suppliers == null) {
+			return null;
+		}
+		return suppliers.stream().filter(s -> s.getSupplierNum().equals(supplierNum)).findFirst().orElse(null);
 	}
 
 }

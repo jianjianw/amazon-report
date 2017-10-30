@@ -1,9 +1,12 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Embeddable;
+
 /**
  * InnerPreSettlementDetailId entity. @author MyEclipse Persistence Tools
  */
 
+@Embeddable
 public class InnerPreSettlementDetailId implements java.io.Serializable {
 
 	private static final long serialVersionUID = 8846727857762470983L;

@@ -1,10 +1,12 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.Embeddable;
 
 /**
  * Branch entity. @author MyEclipse Persistence Tools
  */
 
+@Embeddable
 public class BranchTransferGoalsId implements java.io.Serializable {
 
 

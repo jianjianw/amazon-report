@@ -1,5 +1,10 @@
 package com.nhsoft.module.report.model;
 
+import org.apache.commons.lang.StringUtils;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +13,25 @@ import java.util.List;
  * ItemMatrix entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class ItemMatrix implements java.io.Serializable {
 
 	private static final long serialVersionUID = 8089649682486878559L;
+	@EmbeddedId
 	private ItemMatrixId id;
 	private String itemMatrixBarcode;
 	private String itemMatrixCode;
+	@Column(name = "itemMatrix_01")
 	private String itemMatrix01;
+	@Column(name = "itemMatrix_02")
 	private String itemMatrix02;
+	@Column(name = "itemMatrix_03")
 	private String itemMatrix03;
+	@Column(name = "itemMatrix_04")
 	private String itemMatrix04;
+	@Column(name = "itemMatrix_05")
 	private String itemMatrix05;
+	@Column(name = "itemMatrix_06")
 	private String itemMatrix06;
 	private Boolean itemMatrixDelTag;
 	private BigDecimal itemMatrixAddOns;
@@ -136,6 +149,45 @@ public class ItemMatrix implements java.io.Serializable {
 			}
 		}
 		return list;
+	}
+	
+	public static ItemMatrix get(List<ItemMatrix> itemMatrixs, Integer itemNum, Integer itemMatrixNum) {
+		if (itemMatrixNum == null) {
+			return null;
+		}
+		for (int i = 0; i < itemMatrixs.size(); i++) {
+			ItemMatrix itemMatrix = itemMatrixs.get(i);
+			if (itemMatrix.getId().getItemNum().equals(itemNum)
+					&& itemMatrix.getId().getItemMatrixNum().equals(itemMatrixNum)) {
+				return itemMatrix;
+			}
+		}
+		return null;
+	}
+	
+	public String getMatrixName() {
+		
+		String str = "(";
+		if (StringUtils.isNotEmpty(itemMatrix01)) {
+			str = str + itemMatrix01;
+		}
+		if (StringUtils.isNotEmpty(itemMatrix02)) {
+			str = str + "|" + itemMatrix02;
+		}
+		if (StringUtils.isNotEmpty(itemMatrix03)) {
+			str = str + "|" + itemMatrix03;
+		}
+		if (StringUtils.isNotEmpty(itemMatrix04)) {
+			str = str + "|" + itemMatrix04;
+		}
+		if (StringUtils.isNotEmpty(itemMatrix05)) {
+			str = str + "|" + itemMatrix05;
+		}
+		if (StringUtils.isNotEmpty(itemMatrix06)) {
+			str = str + itemMatrix06;
+		}
+		str = str + ")";
+		return str;
 	}
 
 }

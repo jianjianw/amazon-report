@@ -1,5 +1,8 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,9 +12,11 @@ import java.util.List;
  * InventoryBatchDetail entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class InventoryBatchDetail implements java.io.Serializable {
 
 	private static final long serialVersionUID = -2715190943803830563L;
+	@EmbeddedId
 	private InventoryBatchDetailId id;
 	private Integer itemNum;
 	private Integer itemMatrixNum;
@@ -29,7 +34,8 @@ public class InventoryBatchDetail implements java.io.Serializable {
 	private Date inventoryBatchDetailDate;
 	private String inventoryBatchDetailUuid;
 	
-	//临时属性 修改前数量 
+	//临时属性 修改前数量
+	@Transient
 	private BigDecimal inventoryBatchDetailPreAmount;
 
 	public String getInventoryBatchDetailUuid() {

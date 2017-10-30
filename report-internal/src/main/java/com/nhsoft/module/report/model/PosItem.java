@@ -12,12 +12,12 @@ import org.hibernate.annotations.FetchMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.*;
 
-
+@Entity
 public class PosItem implements java.io.Serializable {
 
 	private static final Logger logger = LoggerFactory.getLogger(PosItem.class);
@@ -113,7 +113,7 @@ public class PosItem implements java.io.Serializable {
 	private BigDecimal itemInTax;
 	private Boolean itemManufactureFlag;
 	private BigDecimal itemFinishedRate;
-	
+
 	@OneToMany
 	@Fetch(FetchMode.SUBSELECT)
 	@JoinColumn(name = "itemNum", updatable=false, insertable=false)
@@ -127,36 +127,59 @@ public class PosItem implements java.io.Serializable {
 	@JoinColumn(name = "itemNum", updatable=false, insertable=false)
 	private List<PosItemKit> posItemKits = new ArrayList<PosItemKit>();
 	
-	
 	@JsonIgnore
+	@Transient
 	private List<StoreMatrix> storeMatrixs = new ArrayList<StoreMatrix>();
 	
 	@JsonIgnore
+	@Transient
 	private List<CollectionItem> collectionItems = new ArrayList<CollectionItem>();
 	
 	@JsonIgnore
+	@OneToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinColumn(name = "itemNum", updatable=false, insertable=false)
 	private List<PosItemGrade> posItemGrades = new ArrayList<PosItemGrade>();
 	
 	
 	@JsonIgnore
+	@Transient
 	private List<ItemProperty> itemPropertys = new ArrayList<ItemProperty>();
 	
 	//临时属性
 	@JsonIgnore
+	@Transient
 	private SaleCommission saleCommission;
 
 	
 	//临时属性 供应商新品申请用到
+	@Transient
 	private Boolean updateImages = false;
+	@Transient
 	private List<PosImage> posImages;
+	@Transient
 	private PosItemDetail posItemDetail;
+	@Transient
 	private List<String> ossObjectIds;
+	@Transient
 	private String itemMemo;
 	//导入商品时用到
+	@Transient
 	private StoreItemSupplier storeItemSupplier;
+	@Transient
 	private AppUser appUser;
+	@Transient
 	private BigDecimal amount;
+	@Transient
 	private Integer repeatType; //导入失败原因 0 代码重复 1 名称重复
+	
+	public StoreItemSupplier getStoreItemSupplier() {
+		return storeItemSupplier;
+	}
+	
+	public void setStoreItemSupplier(StoreItemSupplier storeItemSupplier) {
+		this.storeItemSupplier = storeItemSupplier;
+	}
 	
 	public BigDecimal getItemFinishedRate() {
 		return itemFinishedRate;
@@ -897,14 +920,6 @@ public class PosItem implements java.io.Serializable {
 		this.itemSynchFlag = itemSynchFlag;
 	}
 
-	public StoreItemSupplier getStoreItemSupplier() {
-		return storeItemSupplier;
-	}
-
-	public void setStoreItemSupplier(StoreItemSupplier storeItemSupplier) {
-		this.storeItemSupplier = storeItemSupplier;
-	}
-
 	public String getItemEnName() {
 		return itemEnName;
 	}
@@ -1199,6 +1214,9 @@ public class PosItem implements java.io.Serializable {
 			subElement.addElement("ITEM_NUM").addText("0");
 			
 		}
+		if(itemLastEditTime != null){
+			subElement.addElement("ITEM_LAST_EDIT_TIME").addText(DateUtil.getLongDateTimeStr(itemLastEditTime));
+		}
 		subElement.addElement("COMMISSION_TYPE").addText(saleCommission.getCommissionType() == null?"":saleCommission.getCommissionType().toString());
 		subElement.addElement("COMMISSION_MONEY").addText(saleCommission.getCommissionMoney() == null?"0":saleCommission.getCommissionMoney().toString());
 		subElement.addElement("COMMISSION_MAX").addText(saleCommission.getCommissionMax() == null?"0":saleCommission.getCommissionMax().toString());
@@ -1376,7 +1394,7 @@ public class PosItem implements java.io.Serializable {
 		subElement = element.addElement("ITEM_BAR_LIST");
 		for(int i = 0;i < itemBars.size();i++){
 			ItemBar itemBar = itemBars.get(i);
-			Element barElement = subElement.addElement("ITEM_BAR");
+			Element barElement = subElement.addElement("ITEM_BAR");			
 			barElement.addElement("ITEM_NUM").setText("0");
 			barElement.addElement("ITEM_BAR_CODE").setText(itemBar.getItemBarCode());
 			barElement.addElement("SYSTEM_BOOK_CODE").setText(itemBar.getSystemBookCode());
@@ -1443,7 +1461,7 @@ public class PosItem implements java.io.Serializable {
 			subElement = element.addElement("POS_IMAGE_LIST");
 			for(int i = 0;i < posImages.size();i++){
 				PosImage posImage = posImages.get(i);
-				Element imageElement = subElement.addElement("POS_IMAGE");
+				Element imageElement = subElement.addElement("POS_IMAGE");			
 				imageElement.addElement("POS_IMAGE_ID").setText(posImage.getPosImageId());
 			}
 		}
@@ -1869,7 +1887,10 @@ public class PosItem implements java.io.Serializable {
 				if(subElement != null){
 					posItem.setItemMemo(subElement.getText());
 				}
-				
+				subElement = (Element) element.selectSingleNode("ITEM_LAST_EDIT_TIME");
+				if(subElement != null){
+					posItem.setItemLastEditTime(DateUtil.getDateTimeHMS(subElement.getText()));
+				}
 				subElement = (Element) element.selectSingleNode("SALE_COMMISSION");
 				if(subElement != null){
 					SaleCommission saleCommission = new SaleCommission();
@@ -2150,7 +2171,7 @@ public class PosItem implements java.io.Serializable {
 	}
 	
 	public String getItemCostMode(Branch branch){
-		if(itemCostMode.trim().equals(AppConstants.C_ITEM_COST_MODE_CENTER_MANUAL)){		
+		if(itemCostMode.trim().equals(AppConstants.C_ITEM_COST_MODE_CENTER_MANUAL)){
 			
 			if(branch == null 
 					|| branch.getId().getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)
@@ -2166,7 +2187,7 @@ public class PosItem implements java.io.Serializable {
 	}
 	
 	public String getItemCostMode(Branch branch, Integer branchNum){
-		if(itemCostMode.trim().equals(AppConstants.C_ITEM_COST_MODE_CENTER_MANUAL)){
+		if(itemCostMode.trim().equals(AppConstants.C_ITEM_COST_MODE_CENTER_MANUAL)){		
 			
 			if(branchNum.equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)
 					|| (branch != null && branch.getBranchRdc())){
@@ -2265,6 +2286,18 @@ public class PosItem implements java.io.Serializable {
 			} 
 		}
 		return true;
+	}
+	
+	public static PosItem get(Integer itemNum, List<PosItem> posItems) {
+		if (posItems == null) {
+			return null;
+		}
+		for (int i = 0; i < posItems.size(); i++) {
+			if (posItems.get(i).getItemNum().equals(itemNum)) {
+				return posItems.get(i);
+			}
+		}
+		return null;
 	}
 
 }

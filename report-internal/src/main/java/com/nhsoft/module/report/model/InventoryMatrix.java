@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.model;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +10,11 @@ import java.util.List;
  * InventoryMatrix entity. @author MyEclipse Persistence Tools
  */
 
+@Entity
 public class InventoryMatrix implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5498132124120012563L;
+	@EmbeddedId
 	private InventoryMatrixId id;
 	private BigDecimal inventoryMatrixAmount;
 	private BigDecimal inventoryMatrixAssistAmount;
