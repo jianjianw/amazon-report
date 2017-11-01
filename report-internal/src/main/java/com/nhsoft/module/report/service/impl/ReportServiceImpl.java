@@ -5802,7 +5802,7 @@ public class ReportServiceImpl implements ReportService {
 					salerCommission.getRank().set(rank, data + count);
 				}
 			}
-		}/////
+		}
 		if (salerCommissions.size() > 0) {
 			List<Branch> branchs = branchService.findInCache(systemBookCode);
 			for (int i = 0; i < salerCommissions.size(); i++) {
@@ -6241,10 +6241,10 @@ public class ReportServiceImpl implements ReportService {
 				}
 			}
 		} else {
-			objects = reportDao.findSaleAnalysisCommonItemMatrix(saleAnalysisQueryData);////
+			objects = reportDao.findSaleAnalysisCommonItemMatrix(saleAnalysisQueryData);
 
 		}
-		
+		////
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		Integer itemNum;
 		Integer itemMatrixNum;
@@ -7367,7 +7367,7 @@ public class ReportServiceImpl implements ReportService {
 			bookSummaryReport.setTransferOutCount(transferOutOrderDao.countByBranch(systemBookCode, null, dateFrom,
 					dateTo));
 		}
-		////
+
 		if (StringUtils.isEmpty(module) || module.contains(AppConstants.C_AMA_MODULE_WHOLESALE)) {
 			bookSummaryReport.setWholesaleOrderCount(wholesaleOrderDao.countByBranch(systemBookCode, null, dateFrom,
 					dateTo));
@@ -11806,9 +11806,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData saleAnalysisQueryData) {
 
-
 		List<Object[]> objects = reportDao.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
-
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		Integer branchNum;
 		Integer itemNum;
@@ -11850,6 +11848,7 @@ public class ReportServiceImpl implements ReportService {
 			if (data == null) {
 				data = new SaleAnalysisByPosItemDTO();
 				data.setItemNum(itemNum);
+				data.setBranchNum(branchNum);
 				map.put(itemNum + "|" + branchNum, data);
 			}
 			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
