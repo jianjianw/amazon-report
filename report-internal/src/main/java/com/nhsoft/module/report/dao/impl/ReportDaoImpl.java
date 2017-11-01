@@ -8009,22 +8009,21 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	@Override
 	public List<Object[]> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData queryData) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select p.branch_num,detail.item_num,detail.order_detail_state_code, ");
+		sb.append("select detail.order_detail_branch_num,detail.item_num,detail.order_detail_state_code, ");
 		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
 		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_, ");
-		sb.append("sum(detail.order_detail_discount) as discount, count(distinct p.branch_num) as branchCount ");
-		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
-		sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
+		sb.append("sum(detail.order_detail_discount) as discount  ");
+		sb.append("from pos_order_detail as detail with(nolock) ");
+		sb.append("where detail.order_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
 		if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
-			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
+			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
 		}
-		sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
+		sb.append("and detail.order_detail_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
 				+ "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
-		sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
+		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
 		if (queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0) {
 			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
 		}
-		sb.append("and p.ORDER_CARD_USER_NUM > 0 ");
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
 			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
 		}
@@ -8033,17 +8032,17 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
-
-				sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				
+				
 			} else {
-				sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
+				
+				sb.append("and detail.order_source = '" + queryData.getSaleType() + "' ");
 			}
 		}
 		if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
-			sb.append("and p.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
+			sb.append("and detail.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
 		}
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
 			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
@@ -8060,15 +8059,15 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 			sb.append(")) ");
 		}
-		sb.append("group by p.branch_num, detail.item_num, detail.order_detail_state_code ");
+		sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_state_code ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		List<Object[]> objects = query.list();
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
 			sb = new StringBuffer();
-			sb.append("select kitDetail.branch_num kitDetail.item_num,kitDetail.order_kit_detail_state_code, ");
+			sb.append("select kitDetail.order_kit_detail_branch_num, kitDetail.item_num,  kitDetail.order_kit_detail_state_code, ");
 			sb.append("sum(kitDetail.order_kit_detail_amount) as amount, sum(kitDetail.order_kit_detail_payment_money) as money, ");
 			sb.append("sum(0.00) as assistAmount, count(kitDetail.item_num) as amount_, ");
-			sb.append("sum(kitDetail.order_kit_detail_discount) as discount, count(distinct kitDetail.order_kit_detail_branch_num) as branchCount ");
+			sb.append("sum(kitDetail.order_kit_detail_discount) as discount ");
 			sb.append("from pos_order_kit_detail as kitDetail with(nolock) ");
 			sb.append("where kitDetail.order_kit_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
 			if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
@@ -8083,13 +8082,13 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
-
-					sb.append("and kitDetail.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-				} else {
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					sb.append("and (kitDetail.order_source is null or kitDetail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
+					
+					
+				} else {
+					
+					sb.append("and kitDetail.order_source = '" + queryData.getSaleType() + "' ");
 				}
 			}
 			if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
@@ -8104,10 +8103,10 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 					}
 					sb.append("(item_extend_attribute.attribute_name = '" + twoStringValueData.getKey() + "' and item_extend_attribute.attribute_value like '%" + twoStringValueData.getValue() + "%') ");
 				}
-
+				
 				sb.append(")) ");
 			}
-			sb.append("group by kitDetail.branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
+			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
 			query = currentSession().createSQLQuery(sb.toString());
 			List<Object[]> subObjects = query.list();
 			objects.addAll(subObjects);

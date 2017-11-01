@@ -6391,7 +6391,7 @@ public class ReportServiceImpl implements ReportService {
 		List<PosItem> posItems = posItemService.findShortItems(saleAnalysisQueryData.getSystemBookCode());
 		
 		List<ItemExtendAttribute> itemExtendAttributes = null;
-		if((saleAnalysisQueryData.getQueryItemExtendAttribute() != null 
+		if((saleAnalysisQueryData.getQueryItemExtendAttribute() != null
 				&& saleAnalysisQueryData.getQueryItemExtendAttribute())
 				
 				|| (saleAnalysisQueryData.getTwoStringValueDatas() != null && saleAnalysisQueryData.getTwoStringValueDatas().size() > 0)){
@@ -6409,7 +6409,7 @@ public class ReportServiceImpl implements ReportService {
 
 			if(itemExtendAttributes != null){
 				itemItemExtendAttributes = CopyUtil.toList(ItemExtendAttribute.find(itemExtendAttributes, posItemNum),ItemExtendAttributeDTO.class);
-				if(saleAnalysisQueryData.getTwoStringValueDatas() != null && saleAnalysisQueryData.getTwoStringValueDatas().size() > 0 
+				if(saleAnalysisQueryData.getTwoStringValueDatas() != null && saleAnalysisQueryData.getTwoStringValueDatas().size() > 0
 						&& !ItemExtendAttributeDTO.exists(itemItemExtendAttributes, saleAnalysisQueryData.getTwoStringValueDatas())){
 					list.remove(i);
 					continue;
@@ -6418,7 +6418,7 @@ public class ReportServiceImpl implements ReportService {
 				if(saleAnalysisQueryData.getQueryItemExtendAttribute() != null && saleAnalysisQueryData.getQueryItemExtendAttribute()){
 					data.setItemExtendAttributes(itemItemExtendAttributes);
 				}
-					
+				
 			}
 			
 			PosItem posItem = AppUtil.getPosItem(posItemNum, posItems);
@@ -11808,7 +11808,7 @@ public class ReportServiceImpl implements ReportService {
 
 
 		List<Object[]> objects = reportDao.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
-
+		
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		Integer branchNum;
 		Integer itemNum;
@@ -11818,12 +11818,10 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal assistAmount;
 		BigDecimal count_;
 		BigDecimal discount;
-		Integer itemGradeNum;
-		Integer saleBranchCount;
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			branchNum = (Integer) object[0];
-			itemNum = object[1] == null ? 0 : (Integer) object[1];
+			itemNum = (Integer) object[1];
 			stateCode = (Integer) object[2];
 			amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
@@ -11831,26 +11829,23 @@ public class ReportServiceImpl implements ReportService {
 			count_ = BigDecimal.valueOf(object[6] == null ? 0 : (Integer) object[6]);
 			if (object[7] instanceof BigDecimal) {
 				discount = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
-
+				
 			} else if (object[7] instanceof Double) {
 				discount = object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Double) object[7]);
 			} else {
 				discount = BigDecimal.ZERO;
 			}
-			saleBranchCount = 0;
-			if(object.length > 8){
-				saleBranchCount = (Integer) object[8];
-			}
-
+			
 			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
 				continue;
 			}
-
-			SaleAnalysisByPosItemDTO data = map.get(itemNum + "|" + branchNum);
+			
+			SaleAnalysisByPosItemDTO data = map.get(branchNum + "|" + itemNum);
 			if (data == null) {
 				data = new SaleAnalysisByPosItemDTO();
 				data.setItemNum(itemNum);
-				map.put(itemNum + "|" + branchNum, data);
+				data.setBranchNum(branchNum);
+				map.put(branchNum + "|" + itemNum, data);
 			}
 			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
 				data.setTotalNum(data.getTotalNum().subtract(amount));
@@ -11860,7 +11855,7 @@ public class ReportServiceImpl implements ReportService {
 				data.setReturnMoney(data.getReturnMoney().add(money));
 				data.setReturnAssist(data.getReturnAssist().add(assistAmount));
 				data.setItemDiscount(data.getItemDiscount().subtract(discount));
-
+				
 			}
 			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_PRESENT)) {
 				data.setPresentNum(data.getPresentNum().add(amount));
@@ -11877,97 +11872,32 @@ public class ReportServiceImpl implements ReportService {
 				data.setSaleMoney(data.getSaleMoney().add(money));
 				data.setSaleAssist(data.getSaleAssist().add(assistAmount));
 				data.setItemDiscount(data.getItemDiscount().add(discount));
-				data.setSaleBranchCount(saleBranchCount);
 			}
-
+			
 		}
-		List<PosItemGrade> posItemGrades = new ArrayList<PosItemGrade>();
-		if (saleAnalysisQueryData.getIsQueryGrade()) {
-			objects = reportDao.findSaleAnalysisCommonItemGrade(saleAnalysisQueryData);
-			List<Integer> gradeItemNums = new ArrayList<Integer>();
-			for (int i = 0; i < objects.size(); i++) {
-				Object[] object = objects.get(i);
-				itemNum = (Integer) object[0];
-				itemGradeNum = (Integer) object[1];
-				stateCode = (Integer) object[2];
-				amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-				money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-				assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
-				count_ = BigDecimal.valueOf(object[6] == null ? 0 : (Integer) object[6]);
-				discount = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
-
-				if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
-					continue;
-				}
-
-				SaleAnalysisByPosItemDTO data = map.get(itemNum + "|" + itemGradeNum);
-				if (data == null) {
-					data = new SaleAnalysisByPosItemDTO();
-					data.setItemNum(itemNum);
-					data.setItemGradeNum(itemGradeNum);
-					map.put(itemNum + "|" + itemGradeNum, data);
-				}
-				if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
-					data.setTotalNum(data.getTotalNum().subtract(amount));
-					data.setTotalMoney(data.getTotalMoney().subtract(money));
-					data.setCountTotal(data.getCountTotal().subtract(count_));
-					data.setReturnNum(data.getReturnNum().add(amount));
-					data.setReturnMoney(data.getReturnMoney().add(money));
-					data.setReturnAssist(data.getReturnAssist().add(assistAmount));
-					data.setItemDiscount(data.getItemDiscount().subtract(discount));
-
-				}
-				if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_PRESENT)) {
-					data.setPresentNum(data.getPresentNum().add(amount));
-					data.setPresentMoney(data.getPresentMoney().add(money));
-					data.setPresentAssist(data.getPresentAssist().add(assistAmount));
-					data.setCountTotal(data.getCountTotal().add(count_));
-					data.setTotalNum(data.getTotalNum().add(amount));
-				}
-				if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_SALE)) {
-					data.setTotalNum(data.getTotalNum().add(amount));
-					data.setTotalMoney(data.getTotalMoney().add(money));
-					data.setCountTotal(data.getCountTotal().add(count_));
-					data.setSaleNum(data.getSaleNum().add(amount));
-					data.setSaleMoney(data.getSaleMoney().add(money));
-					data.setSaleAssist(data.getSaleAssist().add(assistAmount));
-					data.setItemDiscount(data.getItemDiscount().add(discount));
-
-				}
-				if (!gradeItemNums.contains(itemNum)) {
-					gradeItemNums.add(itemNum);
-				}
-
-			}
-			if (gradeItemNums.size() > 0) {
-				posItemGrades.addAll(posItemGradeDao.find(saleAnalysisQueryData.getSystemBookCode(), gradeItemNums));
-
-			}
-		}
-
+		
 		List<SaleAnalysisByPosItemDTO> list = new ArrayList<SaleAnalysisByPosItemDTO>(map.values());
 		if (list.isEmpty()) {
 			return list;
 		}
-
+		
 		List<PosItem> posItems = posItemService.findShortItems(saleAnalysisQueryData.getSystemBookCode());
-
+		
 		List<ItemExtendAttribute> itemExtendAttributes = null;
 		if((saleAnalysisQueryData.getQueryItemExtendAttribute() != null
 				&& saleAnalysisQueryData.getQueryItemExtendAttribute())
-
+				
 				|| (saleAnalysisQueryData.getTwoStringValueDatas() != null && saleAnalysisQueryData.getTwoStringValueDatas().size() > 0)){
 			itemExtendAttributes = itemExtendAttributeDao.find(saleAnalysisQueryData.getSystemBookCode());
 		}
-
+		
 		PosItemGrade posItemGrade;
 		List<ItemExtendAttributeDTO> itemItemExtendAttributes = null;
 		for (int i = list.size() - 1; i >= 0; i--) {
 			SaleAnalysisByPosItemDTO data = list.get(i);
-
+			
 			Integer posItemNum = data.getItemNum();
-			itemGradeNum = data.getItemGradeNum();
-
+			
 			if(itemExtendAttributes != null){
 				itemItemExtendAttributes = CopyUtil.toList(ItemExtendAttribute.find(itemExtendAttributes, posItemNum),ItemExtendAttributeDTO.class);
 				if(saleAnalysisQueryData.getTwoStringValueDatas() != null && saleAnalysisQueryData.getTwoStringValueDatas().size() > 0
@@ -11975,13 +11905,13 @@ public class ReportServiceImpl implements ReportService {
 					list.remove(i);
 					continue;
 				}
-
+				
 				if(saleAnalysisQueryData.getQueryItemExtendAttribute() != null && saleAnalysisQueryData.getQueryItemExtendAttribute()){
 					data.setItemExtendAttributes(itemItemExtendAttributes);
 				}
-
+				
 			}
-
+			
 			PosItem posItem = AppUtil.getPosItem(posItemNum, posItems);
 			if (posItem == null) {
 				list.remove(i);
@@ -12012,14 +11942,7 @@ public class ReportServiceImpl implements ReportService {
 			data.setUnit(posItem.getItemUnit());
 			data.setCategoryName(posItem.getItemCategory());
 			data.setCategoryCode(posItem.getItemCategoryCode());
-
-			if (itemGradeNum != null) {
-				posItemGrade = AppUtil.getPosItemGrade(posItemGrades, itemGradeNum);
-				if (posItemGrade != null) {
-					data.setItemName(data.getItemName().concat("(" + posItemGrade.getItemGradeName() + ")"));
-					data.setItemCode(posItemGrade.getItemGradeCode());
-				}
-			}
+			
 		}
 		return list;
 	}

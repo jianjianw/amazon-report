@@ -401,6 +401,7 @@ public class AppConstants {
 	 * 订单来源条件
 	 */
 	public static final String POS_ORDER_SALE_TYPE_WCHAT = "微商城";
+	public static final String POS_ORDER_SALE_TYPE_BRANCH = "实体店";
 
 
 	public static final String BRANCH_TYPE_DIRECT = "直营";

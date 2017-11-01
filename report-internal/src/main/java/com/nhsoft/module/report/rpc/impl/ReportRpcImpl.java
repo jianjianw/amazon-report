@@ -2632,14 +2632,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<AlipaySumDTO> findAlipaySumDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String payType) {
 		
 		List<AlipaySumDTO> list = reportService.findAlipaySumDTOs(systemBookCode,branchNums,dateFrom,dateTo,payType);
-		logger.info("findAlipaySumDTOs 返回数据" + list.size() + "条");
 		return list;
 	}
 
 	@Override
 	public List<AlipayDetailDTO> findAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String type, String paymentType, Boolean queryAll) {
 		List<AlipayDetailDTO> list = reportService.findAlipayDetailDTOs(systemBookCode,branchNums,dateFrom,dateTo,type,paymentType,queryAll);
-		logger.info("findAlipayDetailDTOs 返回数据" + list.size() + "条");
 		return list;
 	}
 
@@ -3117,7 +3115,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData saleAnalysisQueryData) {
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode, SaleAnalysisQueryData saleAnalysisQueryData) {
 		return reportService.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
 	}
 
