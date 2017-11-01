@@ -107,8 +107,8 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 												  Date dateTo, String alipayLogTypes) {
 		
 		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
-				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
-				.add(Restrictions.isNotNull("a.alipayLogBuyerId"));
+				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
+				
 		if(branchNums != null && branchNums.size() > 0){
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
@@ -119,6 +119,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 			criteria.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
 			
 		}
+		criteria.add(Restrictions.isNotNull("a.alipayLogBuyerId"));
 		criteria.setProjection(Projections.projectionList()
 				.add(Projections.groupProperty("a.branchNum"))
 				.add(Projections.sum("a.alipayLogMoney"))
@@ -131,16 +132,17 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 	public List<AlipayDetailDTO> findAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 													   Date dateTo, String orderNoPre, String alipayLogTypes){
 		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
-				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
-				.add(Restrictions.eq("a.alipayLogTradeState", true))
-				.add(Restrictions.eq("a.alipayLogTradeValid", true))
-				.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
+				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
+				
 		
 		if (branchNums != null && branchNums.size() > 0) {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
 		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
+		criteria.add(Restrictions.eq("a.alipayLogTradeState", true))
+				.add(Restrictions.eq("a.alipayLogTradeValid", true))
+				.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
 		
 		if(StringUtils.isNotEmpty(orderNoPre)){
 			
@@ -208,17 +210,17 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 	public List<AlipayDetailDTO> findCancelAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums,
 															 Date dateFrom, Date dateTo, String orderNoPre, String alipayLogTypes){
 		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
-				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
-				.add(Restrictions.eq("a.alipayLogTradeState", true))
-				.add(Restrictions.eq("a.alipayLogTradeValid", false))
-				.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
+				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
+				
 		
 		if (branchNums != null && branchNums.size() > 0) {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
 		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
-		
+		criteria.add(Restrictions.eq("a.alipayLogTradeState", true))
+				.add(Restrictions.eq("a.alipayLogTradeValid", false))
+				.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
 		if(StringUtils.isNotEmpty(orderNoPre)){
 			
 			if(orderNoPre.equals("POS")){
@@ -290,17 +292,17 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 	@Override
 	public List<Object[]> findDepositSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String alipayLogTypes){
 		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
-				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
-				.add(Restrictions.eq("a.alipayLogTradeState", true))
-				.add(Restrictions.eq("a.alipayLogTradeValid", true))
-				.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
+				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
+				
 		
 		if (branchNums != null && branchNums.size() > 0) {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
 		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
-		
+		criteria.add(Restrictions.eq("a.alipayLogTradeState", true))
+				.add(Restrictions.eq("a.alipayLogTradeValid", true))
+				.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
 		criteria.add(Restrictions.like("a.alipayLogOrderNo", "DEP", MatchMode.START));
 		
 		criteria.setProjection(Projections.projectionList()
@@ -312,17 +314,17 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 		
 		
 		criteria = currentSession().createCriteria(AlipayLog.class, "a")
-				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
-				.add(Restrictions.eq("a.alipayLogTradeState", true))
-				.add(Restrictions.eq("a.alipayLogTradeValid", true))
-				.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
+				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
+				
 		
 		if (branchNums != null && branchNums.size() > 0) {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
 		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
-		
+		criteria.add(Restrictions.eq("a.alipayLogTradeState", true))
+				.add(Restrictions.eq("a.alipayLogTradeValid", true))
+				.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
 		criteria.add(Restrictions.eq("a.alipayLogOrderNo", ""));
 		
 		criteria.setProjection(Projections.projectionList()
