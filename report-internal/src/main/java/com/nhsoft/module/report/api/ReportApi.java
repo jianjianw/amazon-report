@@ -687,7 +687,12 @@ public class ReportApi {
             }
             list.add(saleFinishMoneyTopDTO);
         }
-        list.sort(Comparator.comparing(SaleFinishMoneyTopDTO::getFinishMoneyRate));
+        if(list == null){
+            return list;
+        }
+        //排序返回
+        Collections.sort(list);
+        //list.sort(Comparator.comparing(SaleFinishMoneyTopDTO::getFinishMoneyRate));
         for (int i = 0; i <list.size(); i++) {
             SaleFinishMoneyTopDTO saleFinishMoneyTopDTO = list.get(i);
             saleFinishMoneyTopDTO.setTopNum(i+1);

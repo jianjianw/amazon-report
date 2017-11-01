@@ -1,6 +1,7 @@
 package com.nhsoft.module.report;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhsoft.module.report.api.ReportApi;
 import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dto.BranchDTO;
@@ -118,7 +119,7 @@ public class TestSpringBoot {
 
     @Test
     public void testBranchTop(){
-        List<SaleFinishMoneyTopDTO> moneyFinishRateBranchTop = reportApi.findMoneyFinishRateBranchTop("4020", "", null);
+        List<SaleFinishMoneyTopDTO> moneyFinishRateBranchTop = reportApi.findMoneyFinishRateBranchTop("4020", "", "2017-10-10");
         System.out.println();
     }
 
@@ -143,13 +144,13 @@ public class TestSpringBoot {
     private ReportRpc reportRpc;
 
     @Test
-    public void testSaleAnalysis(){
+    public void testSaleAnalysis() throws Exception{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dateFrom = null;
         Date dateTo = null;
         try {
-            dateFrom = sdf.parse("2017-02-09");
-            dateTo  = sdf.parse("2017-10-10");
+            dateFrom = sdf.parse("2017-10-01");
+            dateTo  = sdf.parse("2017-11-01");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -160,16 +161,18 @@ public class TestSpringBoot {
         data.setDtFrom(dateFrom);
         data.setDtTo(dateTo);
         List<Integer> itemNums = new ArrayList<>();
-        itemNums.add(110010009);
+        /*itemNums.add(110010009);
         itemNums.add(110010007);
         itemNums.add(110010008);
         itemNums.add(402000378);
-        itemNums.add(402001101);
-        itemNums.add(402001163);
-        itemNums.add(402002323);
+        itemNums.add(402001101);*/
+       /* itemNums.add(402001163);
+        itemNums.add(402002323);*/
         data.setPosItemNums(itemNums);
         List<SaleAnalysisByPosItemDTO> saleAnalysisByBranchPosItems = reportRpc.findSaleAnalysisByBranchPosItems("4020", data);
-        System.out.println();
+        ObjectMapper mapper = new ObjectMapper();
+        String string = mapper.writeValueAsString(saleAnalysisByBranchPosItems);
+        System.out.println(string);
     }
 
 
