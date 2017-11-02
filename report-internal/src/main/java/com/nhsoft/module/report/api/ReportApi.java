@@ -56,7 +56,8 @@ public class ReportApi {
                 bannchNumList.add(branchDTO.getBranchNum());
             }
             return bannchNumList;
-        } else {
+        }
+        else {
             String replace = str.replace("[", "").replace("]", "").replace(" ", "");
             String[] split = replace.split(",");
             for (int i = 0; i < split.length; i++) {
@@ -86,6 +87,11 @@ public class ReportApi {
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
+        //点击区域跳转到分店，区域下面没有分店，直接一个空的list
+        if(branchNums != null && branchNums.length() == 2){
+            List<OperationStoreDTO>  list = new ArrayList<>();
+            return list;
+        }
         List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
 
         Date growthDateFrom = null;
