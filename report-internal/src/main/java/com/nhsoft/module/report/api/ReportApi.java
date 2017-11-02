@@ -468,12 +468,12 @@ public class ReportApi {
             }else{
                 region.setBill(revenue.divide(new BigDecimal(memberBillNums), 2, ROUND_HALF_DOWN));     //客单价
             }
-            region.setAveBillNums(new BigDecimal(billNums).divide(bigDay));                                     //日均客单量
+            region.setAveBillNums(new BigDecimal(billNums).divide(bigDay, 2, ROUND_HALF_DOWN));                                     //日均客单量
             region.setMemberBillNums(memberBillNums);                                                           //会员客单量
             if(memberBill.compareTo(BigDecimal.ZERO) == 0){
                 region.setMemberBill(BigDecimal.ZERO);
             }else{
-                region.setMemberBill(memberSaleMoney.divide(memberBill));                                       //会员客单价
+                region.setMemberBill(memberSaleMoney.divide(memberBill, 2, ROUND_HALF_DOWN));                                       //会员客单价
             }
             region.setDestroyDefferent(destroyDefferent);                                                      //报损金额
             region.setAdjustAmount(adjustAmount);                                                              //盘损金额
