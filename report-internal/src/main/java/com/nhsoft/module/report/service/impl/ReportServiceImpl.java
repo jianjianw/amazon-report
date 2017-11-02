@@ -11882,6 +11882,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 		
 		List<PosItem> posItems = posItemService.findShortItems(saleAnalysisQueryData.getSystemBookCode());
+		List<Branch> branches = branchService.findInCache(saleAnalysisQueryData.getSystemBookCode());
 		
 		List<ItemExtendAttribute> itemExtendAttributes = null;
 		if((saleAnalysisQueryData.getQueryItemExtendAttribute() != null
@@ -11890,8 +11891,7 @@ public class ReportServiceImpl implements ReportService {
 				|| (saleAnalysisQueryData.getTwoStringValueDatas() != null && saleAnalysisQueryData.getTwoStringValueDatas().size() > 0)){
 			itemExtendAttributes = itemExtendAttributeDao.find(saleAnalysisQueryData.getSystemBookCode());
 		}
-		
-		PosItemGrade posItemGrade;
+		Branch branch;
 		List<ItemExtendAttributeDTO> itemItemExtendAttributes = null;
 		for (int i = list.size() - 1; i >= 0; i--) {
 			SaleAnalysisByPosItemDTO data = list.get(i);
@@ -11936,6 +11936,11 @@ public class ReportServiceImpl implements ReportService {
 					continue;
 				}
 			}
+			branch = Branch.get(branches, data.getBranchNum());
+			if(branch != null){
+				data.setBranchName(branch.getBranchName());
+			}
+			
 			data.setItemName(posItem.getItemName());
 			data.setItemCode(posItem.getItemCode());
 			data.setSpec(posItem.getItemSpec());

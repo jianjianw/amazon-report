@@ -25,6 +25,7 @@ public class SaleAnalysisByPosItemDTO extends SaleAnalysisDTO {
 	private Integer saleBranchCount;//销售门店数
 
 	private Integer branchNum;
+	private String branchName;
 	private String bizday;
 	private List<ItemExtendAttributeDTO> itemExtendAttributes;
 
@@ -44,7 +45,15 @@ public class SaleAnalysisByPosItemDTO extends SaleAnalysisDTO {
 		setItemDiscount(BigDecimal.ZERO);
 		setSaleBranchCount(0);
 	}
-
+	
+	public String getBranchName() {
+		return branchName;
+	}
+	
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
+	}
+	
 	public List<ItemExtendAttributeDTO> getItemExtendAttributes() {
 		return itemExtendAttributes;
 	}
