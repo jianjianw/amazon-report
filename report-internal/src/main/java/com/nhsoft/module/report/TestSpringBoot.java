@@ -90,7 +90,7 @@ public class TestSpringBoot {
 
     @Test
     public void testApiByRegion(){
-        List<OperationRegionDTO> list = reportApi.byRegion(systemBookCode, null, "2017-03");
+        List<OperationRegionDTO> list = reportApi.byRegion(systemBookCode, null, "2017-03-03");
         System.out.println();
     }
 

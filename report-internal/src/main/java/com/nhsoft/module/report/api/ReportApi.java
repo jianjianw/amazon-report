@@ -365,8 +365,7 @@ public class ReportApi {
 
     //按区域汇总
     @RequestMapping(method = RequestMethod.GET, value = "/region")
-    public List<OperationRegionDTO
-            > byRegion(@RequestHeader("systemBookCode") String systemBookCode,
+    public List<OperationRegionDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
                                              @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
@@ -374,7 +373,7 @@ public class ReportApi {
         List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchNums, date);
         //根据账套号查询区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
-        //得到所有区域号
+     /*   //得到所有区域号
         List<Integer> regionNumList = new ArrayList<>();
         for (BranchRegionDTO branchRegion : branchRegions) {
             Integer branchRegionNum = branchRegion.getBranchRegionNum();
@@ -385,7 +384,7 @@ public class ReportApi {
         for (BranchRegionDTO branchRegion : branchRegions) {
             String branchRegionName = branchRegion.getBranchRegionName();
             regionNames.add(branchRegionName);
-        }
+        }*/
 
         //先遍历区域，在遍历按分店返回的数据，如果分店号，相等，就将分店的数据封装到区域里面
         for (int i = 0; i < branchRegions.size(); i++) {
@@ -407,7 +406,7 @@ public class ReportApi {
             BigDecimal cardStorage = BigDecimal.ZERO;               //卡储值金额
             BigDecimal cartStorageConsume = BigDecimal.ZERO;        //卡储值消费金额
             BigDecimal beforeSaleMoney  =BigDecimal.ZERO;           //上期营业额
-            BigDecimal bigDay = BigDecimal.ZERO;
+            BigDecimal bigDay = new BigDecimal(1);
             String areaBranchNums = "[";
             //得到区域下面的所有分店
             List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
