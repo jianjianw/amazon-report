@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.service;
 
+import com.nhsoft.module.report.dto.PosItemLogSummaryDTO;
+
 import java.util.Date;
 import java.util.List;
 
@@ -53,4 +55,5 @@ public interface PosItemLogService {
 	public List<Object[]> findSumByItemFlag(String systemBookCode,
 	                                        List<Integer> branchNums, Date dateFrom, Date dateTo, String summaries, List<Integer> itemNums,
 	                                        Integer storehouseNum, List<String> memos);
+
 }

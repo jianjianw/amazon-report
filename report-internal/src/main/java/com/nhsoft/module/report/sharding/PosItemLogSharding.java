@@ -66,7 +66,7 @@ public static class PosItemLogShardingTableAlgorithm implements SingleKeyTableSh
 		
 		String value = shardingValue.getValue();
 		value = value.substring(0,4);
-		if(value.equals(DateUtil.getCurrentYear() + "")) {
+		if(value.compareTo(DateUtil.getCurrentYear() + "") >= 0) {
 			return "pos_item_log";
 		}
 		for (String each : collection) {
@@ -103,7 +103,7 @@ public static class PosItemLogShardingTableAlgorithm implements SingleKeyTableSh
 		
 		int year = DateUtil.getCurrentYear();
 		for (Integer i = newRange.lowerEndpoint(); i <= newRange.upperEndpoint(); i++) {
-			if(i == year) {
+			if(i >= year) {
 				result.add("pos_item_log");
 			} else {
 				result.add("pos_item_log_" + i);
