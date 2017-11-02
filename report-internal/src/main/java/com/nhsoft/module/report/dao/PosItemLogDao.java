@@ -108,5 +108,25 @@ public interface PosItemLogDao {
 	 * @return
 	 */
 	public List<Object[]> findItemLatestPriceDate(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums, String posItemLogSummary);
-
+	
+	/**
+	 * 按商品、日期、类型、进出标记汇总
+	 * @param storeQueryCondition
+	 * @return
+	 */
+	public List<Object[]> findItemBizTypeFlagSummary(StoreQueryCondition storeQueryCondition);
+	
+	/**
+	 * 按商品、进出标记汇总
+	 * @param storeQueryCondition
+	 * @return
+	 */
+	public List<Object[]> findItemFlagSummary(StoreQueryCondition storeQueryCondition);
+	
+	/**
+	 * 按分店、进出标记汇总
+	 * @param storeQueryCondition
+	 * @return
+	 */
+	public List<Object[]> findBranchFlagSummary(StoreQueryCondition storeQueryCondition);
 }

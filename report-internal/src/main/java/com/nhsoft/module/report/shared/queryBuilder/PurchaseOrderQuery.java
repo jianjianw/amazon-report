@@ -12,7 +12,6 @@ public class PurchaseOrderQuery extends QueryBuilder {
 	 */
 	private static final long serialVersionUID = 8439708771586165958L;
 	
-	private String systemBookCode;
 	private List<Integer> branchNums;
 	private Integer supplierNum;
 	private String queryFid;

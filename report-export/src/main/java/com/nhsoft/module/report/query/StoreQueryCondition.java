@@ -24,12 +24,21 @@ public class StoreQueryCondition extends  QueryBuilder{
 	private String posItemLogLotNumber;
 	private String itemDepartment;
 	private Date exactDateEnd;
+	private List<String> memos;
 	
 	private boolean isPaging = true;
 	private String sortField;
 	private String sortType;
 	
 	public StoreQueryCondition(){}
+	
+	public List<String> getMemos() {
+		return memos;
+	}
+	
+	public void setMemos(List<String> memos) {
+		this.memos = memos;
+	}
 	
 	public Date getExactDateEnd() {
 		return exactDateEnd;

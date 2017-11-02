@@ -2,6 +2,7 @@ package com.nhsoft.module.report.service.impl;
 
 
 import com.nhsoft.module.report.dao.PosItemLogDao;
+import com.nhsoft.module.report.query.StoreQueryCondition;
 import com.nhsoft.module.report.service.PosItemLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,5 +33,20 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	@Override
 	public List<Object[]> findSumByItemFlag(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String summaries, List<Integer> itemNums, Integer storehouseNum, List<String> memos) {
 		return posItemLogDao.findSumByItemFlag(systemBookCode, branchNums, dateFrom, dateTo, summaries, itemNums, storehouseNum, memos);
+	}
+	
+	@Override
+	public List<Object[]> findItemBizTypeFlagSummary(StoreQueryCondition storeQueryCondition) {
+		return posItemLogDao.findItemBizTypeFlagSummary(storeQueryCondition);
+	}
+	
+	@Override
+	public List<Object[]> findItemFlagSummary(StoreQueryCondition storeQueryCondition) {
+		return posItemLogDao.findItemFlagSummary(storeQueryCondition);
+	}
+	
+	@Override
+	public List<Object[]> findBranchFlagSummary(StoreQueryCondition storeQueryCondition) {
+		return posItemLogDao.findBranchFlagSummary(storeQueryCondition);
 	}
 }

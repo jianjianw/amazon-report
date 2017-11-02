@@ -1,6 +1,6 @@
 package com.nhsoft.module.report.service;
 
-import com.nhsoft.module.report.dto.PosItemLogSummaryDTO;
+import com.nhsoft.module.report.query.StoreQueryCondition;
 
 import java.util.Date;
 import java.util.List;
@@ -55,5 +55,26 @@ public interface PosItemLogService {
 	public List<Object[]> findSumByItemFlag(String systemBookCode,
 	                                        List<Integer> branchNums, Date dateFrom, Date dateTo, String summaries, List<Integer> itemNums,
 	                                        Integer storehouseNum, List<String> memos);
+	
+	/**
+	 * 按商品、日期、类型、进出标记汇总
+	 * @param storeQueryCondition
+	 * @return
+	 */
+	public List<Object[]> findItemBizTypeFlagSummary(StoreQueryCondition storeQueryCondition);
+	
+	/**
+	 * 按商品、进出标记汇总
+	 * @param storeQueryCondition
+	 * @return
+	 */
+	public List<Object[]> findItemFlagSummary(StoreQueryCondition storeQueryCondition);
+	
+	/**
+	 * 按分店、进出标记汇总
+	 * @param storeQueryCondition
+	 * @return
+	 */
+	public List<Object[]> findBranchFlagSummary(StoreQueryCondition storeQueryCondition);
 
 }
