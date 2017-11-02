@@ -3,12 +3,12 @@ package com.nhsoft.module.report.api.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class SaleFinishMoneyTopDTO implements Serializable,Comparable<SaleFinishMoneyTopDTO> {
+public class SaleFinishMoneyTopDTO implements Serializable{
 
     private Integer num;//分店或区域号
     private String name;//分店或区域名
     private BigDecimal saleMoney;   //营业额
-    private BigDecimal golaMoney;   //营业额目标
+    private BigDecimal goalMoney;   //营业额目标
     private BigDecimal finishMoneyRate;//完成率
     private Integer topNum;//排名
 
@@ -36,12 +36,12 @@ public class SaleFinishMoneyTopDTO implements Serializable,Comparable<SaleFinish
         this.saleMoney = saleMoney;
     }
 
-    public BigDecimal getGolaMoney() {
-        return golaMoney;
+    public BigDecimal getGoalMoney() {
+        return goalMoney;
     }
 
-    public void setGolaMoney(BigDecimal golaMoney) {
-        this.golaMoney = golaMoney;
+    public void setGoalMoney(BigDecimal goalMoney) {
+        this.goalMoney = goalMoney;
     }
 
     public BigDecimal getFinishMoneyRate() {
@@ -60,13 +60,4 @@ public class SaleFinishMoneyTopDTO implements Serializable,Comparable<SaleFinish
         this.topNum = topNum;
     }
 
-
-    @Override
-    public int compareTo(SaleFinishMoneyTopDTO o) {
-        int flag = this.finishMoneyRate.compareTo(o.finishMoneyRate);
-        if(flag == 0) {
-            flag = this.finishMoneyRate.subtract(o.finishMoneyRate).intValue();
-        }
-        return flag;
-    }
 }
