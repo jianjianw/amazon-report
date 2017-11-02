@@ -1,11 +1,12 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
 
+import com.nhsoft.module.report.query.QueryBuilder;
 import com.nhsoft.module.report.query.State;
 
 import java.util.Date;
 
-public class BranchTransferOutOrderQuery extends QueryBuilder{
+public class BranchTransferOutOrderQuery extends QueryBuilder {
 
 	private static final long serialVersionUID = -1490590318253607897L;
 	
@@ -98,21 +99,5 @@ public class BranchTransferOutOrderQuery extends QueryBuilder{
 	public void setBranchNum(Integer branchNum) {
 		this.branchNum = branchNum;
 	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		if (outDateFrom != null && outDateTo != null) {
-			if (outDateFrom.after(outDateTo)) {
-				return false;
-			}
-		}
-		if (auditDateFrom != null && auditDateTo != null) {
-			if (auditDateFrom.after(auditDateTo)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 
 }

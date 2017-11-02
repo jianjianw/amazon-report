@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,7 +12,6 @@ public class PosItemQuery extends QueryBuilder {
 	 * 
 	 */
 	private static final long serialVersionUID = 924046220160477532L;
-	private String systemBookCode;
 	private Integer branchNum;//查询门店
 	private String categoryCode;// 类别
 	private Integer supplierNum;// 供应商
@@ -207,14 +208,6 @@ public class PosItemQuery extends QueryBuilder {
 
 	public void setItemLastEditTime(Date itemLastEditTime) {
 		this.itemLastEditTime = itemLastEditTime;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 
 	public String getCategoryCode() {
@@ -455,12 +448,6 @@ public class PosItemQuery extends QueryBuilder {
 
 	public void setItemTreeBrand(String itemTreeBrand) {
 		this.itemTreeBrand = itemTreeBrand;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
 	}
 
 	public String getFilterType() {

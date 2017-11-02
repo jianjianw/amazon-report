@@ -1,10 +1,11 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
 
-public class ShopPosItemQuery implements java.io.Serializable {
+import com.nhsoft.module.report.query.QueryBuilder;
+
+public class ShopPosItemQuery extends QueryBuilder {
 
 	private static final long serialVersionUID = -5109960546148847470L;
-	private String systemBookCode;
 	private String itemName; // 商品名称
 	private String ItemType; // 可选值：for_shelved（已下架的）/ sold_out（已售罄的） / on_sale (当前在售)
 	private String sortField;
@@ -49,14 +50,6 @@ public class ShopPosItemQuery implements java.io.Serializable {
 
 	public void setSortType(String sortType) {
 		this.sortType = sortType;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 
 }

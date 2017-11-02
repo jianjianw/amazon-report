@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 
 public class MarketPaymentQuery extends QueryBuilder {
@@ -34,14 +36,6 @@ public class MarketPaymentQuery extends QueryBuilder {
 		this.sortName = sortName;
 	}
 
-	public String getSystemBookCode() {
-        return systemBookCode;
-    }
-
-    public void setSystemBookCode(String systemBookCode) {
-        this.systemBookCode = systemBookCode;
-    }
-
     public Integer getBranchNum() {
         return branchNum;
     }
@@ -74,17 +68,5 @@ public class MarketPaymentQuery extends QueryBuilder {
         this.marketPaymentToCustomerNo = marketPaymentToCustomerNo;
     }
 
-    @Override
-    public boolean checkQueryBuild() {
-        if (dateFrom != null && dateTo != null) {
-            if (dateFrom.after(dateTo)) {
-                return false;
-            }
-        }
-        if (systemBookCode == null) {
-            return false;
-        }
-        return true;
-    }
 
 }

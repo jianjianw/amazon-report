@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
@@ -135,12 +137,6 @@ public class TicketSendDetailQuery extends QueryBuilder {
 
 	public void setPaging(boolean paging) {
 		this.paging = paging;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
 	}
 
 	public String getExactPrintedNum() {

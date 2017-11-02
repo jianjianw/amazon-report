@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
@@ -146,11 +148,6 @@ public class ShoppingQuery extends QueryBuilder {
 
 	public void setPaging(boolean isPaging) {
 		this.isPaging = isPaging;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		return false;
 	}
 
 	public Integer getState() {

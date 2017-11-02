@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -128,10 +130,5 @@ public class UnusalItemQuery extends QueryBuilder {
 	public void setPaging(boolean isPaging) {
 		this.isPaging = isPaging;
 	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
-	}
+	
 }

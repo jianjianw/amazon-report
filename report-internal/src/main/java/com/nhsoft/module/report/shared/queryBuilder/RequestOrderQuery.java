@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
@@ -165,17 +167,7 @@ public class RequestOrderQuery extends QueryBuilder {
 	public void setStorehouseBranchNum(Integer storehouseBranchNum) {
 		this.storehouseBranchNum = storehouseBranchNum;
 	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		if (dateFrom == null || dateTo == null) {
-			return false;
-		}
-		if (dateFrom.after(dateTo)) {
-			return false;
-		}
-		return true;
-	}
+	
 	
 	public boolean isQueryDetais() {
 		return queryDetais;

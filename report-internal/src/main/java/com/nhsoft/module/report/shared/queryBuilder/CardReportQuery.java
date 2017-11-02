@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -238,11 +240,6 @@ public class CardReportQuery extends QueryBuilder {
 
 	public void setUnPayFlag(boolean unPayFlag) {
 		this.unPayFlag = unPayFlag;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		return false;
 	}
 
 	public List<String> getClientPointOperateType() {

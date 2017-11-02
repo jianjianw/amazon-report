@@ -1,30 +1,21 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
-import java.io.Serializable;
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 
-public class MarketQuery implements Serializable{
+public class MarketQuery extends QueryBuilder{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1062889026800935063L;
-	private String systemBookCode;
 	private Integer branchNum;
 	private Date dateFrom;
 	private Date dateTo;
 	private Integer marketCountFrom;//营销人数起
 	private Integer marketCountTo;//营销人数至
 	private String couponTypeId;
-
-	
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
 
 	public Integer getBranchNum() {
 		return branchNum;
@@ -73,18 +64,5 @@ public class MarketQuery implements Serializable{
 	public void setCouponTypeId(String couponTypeId) {
 		this.couponTypeId = couponTypeId;
 	}
-
-	public boolean checkQueryBuild() {
-		if (dateFrom != null && dateTo != null) {
-			if (dateFrom.after(dateTo)) {
-				return false;
-			}
-		}
-		if (marketCountFrom != null && marketCountTo != null) {
-			if (marketCountFrom > marketCountTo) {
-				return false;
-			}
-		}
-		return true;
-	}
+	
 }

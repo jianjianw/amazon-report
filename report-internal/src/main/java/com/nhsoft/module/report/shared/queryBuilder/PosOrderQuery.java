@@ -1,10 +1,11 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
-import java.io.Serializable;
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
-public class PosOrderQuery implements Serializable{
+public class PosOrderQuery extends QueryBuilder{
 
 	/**
 	 * 
@@ -25,14 +26,6 @@ public class PosOrderQuery implements Serializable{
 	private String sortField;
 	private String sortType;
 	private boolean page = true;
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
 
 	public List<Integer> getBranchNums() {
 		return branchNums;

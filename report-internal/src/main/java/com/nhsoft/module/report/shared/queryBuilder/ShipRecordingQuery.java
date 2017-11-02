@@ -1,15 +1,14 @@
-package com.nhsoft.module.report.shared.queryBuilder;
+import com.nhsoft.module.report.query.QueryBuilder;
 
 import java.util.Date;
 import java.util.List;
 
-public class ShipRecordingQuery extends QueryBuilder{
+public class ShipRecordingQuery extends QueryBuilder {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3025237721595858608L;
-	private String systemBookCode;
 	private Integer centerBranchNum;
 	private Integer branchNum;
 	private List<Integer> branchNums;//收货分店
@@ -23,19 +22,6 @@ public class ShipRecordingQuery extends QueryBuilder{
 	//排序
 	private String sortField;
 	private String sortType;
-	
-	@Override
-	public boolean checkQueryBuild() {
-		 if (dateFrom != null && dateTo != null) {
-	            if (dateFrom.after(dateTo)) {
-	                return false;
-	            }
-	        }
-	        if (systemBookCode == null) {
-	            return false;
-	        }
-	        return true;
-	}
 	
 	public List<Integer> getTransferLineNums() {
 		return transferLineNums;
@@ -59,14 +45,6 @@ public class ShipRecordingQuery extends QueryBuilder{
 
 	public void setSortType(String sortType) {
 		this.sortType = sortType;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 	
 	public Boolean getIsPasing() {

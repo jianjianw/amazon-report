@@ -1,9 +1,11 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
-public class PurchaseOrderQuery extends QueryBuilder{
+public class PurchaseOrderQuery extends QueryBuilder {
 
 	/**
 	 * 
@@ -30,14 +32,6 @@ public class PurchaseOrderQuery extends QueryBuilder{
 	
 	public void setQueryRequestOrders(Boolean queryRequestOrders) {
 		this.queryRequestOrders = queryRequestOrders;
-	}
-	
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 
 	public List<Integer> getBranchNums() {
@@ -86,11 +80,6 @@ public class PurchaseOrderQuery extends QueryBuilder{
 
 	public void setDateTo(Date dateTo) {
 		this.dateTo = dateTo;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		return true;
 	}
 
 	public Boolean getIsNew() {

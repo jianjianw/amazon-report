@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
@@ -75,11 +77,6 @@ public class PreSettlementQueryData extends QueryBuilder {
 
 	public PreSettlementQueryData(String systemBookCode){
 		this.systemBookCode = systemBookCode;
-	}
-	
-	@Override
-	public boolean checkQueryBuild() {
-		return true;
 	}
 
 	public Integer getBranchNum() {

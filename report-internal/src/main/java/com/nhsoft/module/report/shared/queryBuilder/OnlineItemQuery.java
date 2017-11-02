@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
 
+import com.nhsoft.module.report.query.QueryBuilder;
 import com.nhsoft.module.report.query.State;
 
 import java.util.Date;
@@ -23,12 +24,7 @@ public class OnlineItemQuery extends QueryBuilder {
 	private String paymentType;
 	private Integer orderType; // ONLINE_ORDER_TYPE_NORMAL 是普通订单
 								// ONLINE_ORDER_TYPE_TEAM是团购订单
-
-	@Override
-	public boolean checkQueryBuild() {
-
-		return false;
-	}
+	
 
 	public List<Integer> getItemNums() {
 		return itemNums;

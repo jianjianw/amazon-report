@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
@@ -81,11 +83,5 @@ public class CheckQueryCondition extends QueryBuilder {
 	public void setQueryType(String queryType) {
 		this.queryType = queryType;
 	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
-	}
-
+	
 }

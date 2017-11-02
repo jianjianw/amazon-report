@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
@@ -134,11 +136,6 @@ public class ClientQuery extends QueryBuilder {
 
 	public void setIsEnable(Boolean isEnable) {
 		this.isEnable = isEnable;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		return false;
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 public class TransferRuleQuery extends QueryBuilder {
 
 	/**
@@ -51,11 +53,6 @@ public class TransferRuleQuery extends QueryBuilder {
 	public void setStorehouseNum(Integer storehouseNum) {
 		this.storehouseNum = storehouseNum;
 	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
-	}
+	
 
 }

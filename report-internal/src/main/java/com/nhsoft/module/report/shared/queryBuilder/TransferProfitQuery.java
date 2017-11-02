@@ -1,9 +1,11 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
-public class TransferProfitQuery extends QueryBuilder{
+public class TransferProfitQuery extends QueryBuilder {
 
 	/**
 	 * 
@@ -146,10 +148,5 @@ public class TransferProfitQuery extends QueryBuilder{
 		this.selectSupplierNum = selectSupplierNum;
 	}
 
-	@Override
-	public boolean checkQueryBuild() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }

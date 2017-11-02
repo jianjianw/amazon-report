@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
@@ -226,11 +228,6 @@ public class OrderTaskQuery extends QueryBuilder {
 	public void setIsAssign(Boolean isAssign) {
 		this.isAssign = isAssign;
 	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
-	}
+	
 
 }

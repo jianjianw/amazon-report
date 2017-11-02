@@ -1,19 +1,19 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
 
+import com.nhsoft.module.report.query.QueryBuilder;
 import com.nhsoft.module.report.query.State;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class OrderQueryCondition implements java.io.Serializable{
+public class OrderQueryCondition extends QueryBuilder{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2378343498739563873L;
-	private String systemBookCode;
 	private Date dateStart;
 	private Date dateEnd;
 	private String fid;
@@ -171,14 +171,6 @@ public class OrderQueryCondition implements java.io.Serializable{
 		this.receiveBranchNums = receiveBranchNums;
 	}
 
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
-
 	public List<Integer> getFilterBranchNums() {
 		return filterBranchNums;
 	}
@@ -321,13 +313,6 @@ public class OrderQueryCondition implements java.io.Serializable{
 
 	public void setStorehouseNum(Integer storehouseNum) {
 		this.storehouseNum = storehouseNum;
-	}
-
-	public boolean isvalidData(){
-		if ((dateStart != null) && (dateEnd != null) && (dateEnd.getYear() > 0) && (dateStart.getYear() > 0)){
-			return true;
-		}
-		return false;
 	}
 
 	public String getClientNum() {

@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -102,11 +104,6 @@ public class OssObjectQuery extends QueryBuilder {
 	public void setSortType(String sortType) {
 		this.sortType = sortType;
 	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
-	}
+	
 
 }

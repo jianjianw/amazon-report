@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.List;
 
 public class InventoryQuery extends QueryBuilder {
@@ -8,7 +10,6 @@ public class InventoryQuery extends QueryBuilder {
 	 * 
 	 */
 	private static final long serialVersionUID = -9016463180537738272L;
-	private String systemBookCode;
 	private List<Integer> branchNums;
 	private List<Integer> itemNums;// 商品编号
 	private List<String> itemCategorys; // 类别代码
@@ -25,14 +26,6 @@ public class InventoryQuery extends QueryBuilder {
 	private Integer branchNum;
 	private boolean showSaleCeaseItem = false;//仅显示停售商品 
 	private String queryId;
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
 
 	public Integer getBranchNum() {
 		return branchNum;
@@ -97,12 +90,6 @@ public class InventoryQuery extends QueryBuilder {
 	public void setItemBrand(String itemBrand) {
 		this.itemBrand = itemBrand;
 	}
-
-	@Override
-    public boolean checkQueryBuild() {
-        
-        return false;
-    }
 
 	public String getUnitType() {
 		return unitType;

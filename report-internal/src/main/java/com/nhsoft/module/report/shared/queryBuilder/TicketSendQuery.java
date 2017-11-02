@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.shared.queryBuilder;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 
 public class TicketSendQuery extends QueryBuilder {
@@ -120,12 +122,6 @@ public class TicketSendQuery extends QueryBuilder {
 
 	public void setStateType(Integer stateType) {
 		this.stateType = stateType;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
 	}
 
 	public String getSortField() {
