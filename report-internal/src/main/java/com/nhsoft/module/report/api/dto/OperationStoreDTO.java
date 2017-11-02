@@ -39,7 +39,16 @@ public class OperationStoreDTO {
 	private BigDecimal peel;                      //去皮
 	private BigDecimal breakage;                  //报损
 	private BigDecimal other;                     //其他
-	
+
+	//新加临时属性
+	private BigDecimal saleMoneyGoal;				//营业额目标
+	private BigDecimal beforeSaleMoney;			//上一期营业额
+	private BigDecimal transferOutMoney;			//配送金额
+	private Integer billNums;					//客单量
+	private BigDecimal memberSaleMoney;			//会员销售额
+	private BigDecimal bigDay;						//日期之差，计算日均客单量
+
+
 	public Integer getBranchNum() {
 		return branchNum;
 	}
@@ -208,5 +217,53 @@ public class OperationStoreDTO {
 	public void setOther(BigDecimal other) {
 		this.other = other;
 	}
-	
+
+
+	public BigDecimal getSaleMoneyGoal() {
+		return saleMoneyGoal;
+	}
+
+	public void setSaleMoneyGoal(BigDecimal saleMoneyGoal) {
+		this.saleMoneyGoal = saleMoneyGoal;
+	}
+
+	public BigDecimal getBeforeSaleMoney() {
+		return beforeSaleMoney;
+	}
+
+	public void setBeforeSaleMoney(BigDecimal beforeSaleMoney) {
+		this.beforeSaleMoney = beforeSaleMoney;
+	}
+
+	public BigDecimal getTransferOutMoney() {
+		return transferOutMoney;
+	}
+
+	public void setTransferOutMoney(BigDecimal transferOutMoney) {
+		this.transferOutMoney = transferOutMoney;
+	}
+
+	public Integer getBillNums() {
+		return billNums;
+	}
+
+	public void setBillNums(Integer billNums) {
+		this.billNums = billNums;
+	}
+
+	public BigDecimal getMemberSaleMoney() {
+		return memberSaleMoney;
+	}
+
+	public void setMemberSaleMoney(BigDecimal memberSaleMoney) {
+		this.memberSaleMoney = memberSaleMoney;
+	}
+
+	public BigDecimal getBigDay() {
+		return bigDay;
+	}
+
+	public void setBigDay(BigDecimal bigDay) {
+		this.bigDay = bigDay;
+	}
 }
