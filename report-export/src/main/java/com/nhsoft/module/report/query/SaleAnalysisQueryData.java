@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 import java.util.List;
 
@@ -140,11 +138,6 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 
 	public void setIsQueryChild(Boolean isQueryChild) {
 		this.isQueryChild = isQueryChild;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		return false;
 	}
 
 	public Boolean getIsQueryCF() {

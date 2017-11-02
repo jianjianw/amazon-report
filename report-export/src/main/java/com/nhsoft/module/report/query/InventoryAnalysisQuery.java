@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.List;
 
 public class InventoryAnalysisQuery extends QueryBuilder {
@@ -144,11 +142,6 @@ public class InventoryAnalysisQuery extends QueryBuilder {
 
 	public void setIsShowAll(Boolean isShowAll) {
 		this.isShowAll = isShowAll;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		return false;
 	}
 
 	public int getIndexUnit() {

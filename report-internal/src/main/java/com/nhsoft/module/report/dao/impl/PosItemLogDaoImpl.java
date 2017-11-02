@@ -2,7 +2,7 @@ package com.nhsoft.module.report.dao.impl;
 
 import com.nhsoft.module.report.dao.PosItemLogDao;
 import com.nhsoft.module.report.model.PosItemLog;
-import com.nhsoft.module.report.shared.queryBuilder.StoreQueryCondition;
+import com.nhsoft.module.report.query.StoreQueryCondition;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.DateUtil;
@@ -15,8 +15,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

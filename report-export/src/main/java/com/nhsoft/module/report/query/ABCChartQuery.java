@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 import java.util.List;
 
@@ -18,35 +16,6 @@ public class ABCChartQuery extends QueryBuilder {
     private Date dateTo; 									//结束时间
     private List<String> types;            				//【调出，批发， 销售】
     private List<Integer> posItemNums;			//商品nums
-    
-	@Override
-	public boolean checkQueryBuild() {
-		 if (dateFrom != null && dateTo != null) {
-	            if (dateFrom.after(dateTo)) {
-	                return false;
-	            }
-	        }
-	        if (systemBookCode == null) {
-	            return false;
-	        }
-	        return true;
-		}
-		
-		@SuppressWarnings("deprecation")
-		public boolean isThrowTowYears(){
-			if(dateFrom.getYear() != dateTo.getYear()){
-			    return false;
-			}
-			return true;
-		}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
 
 	public Integer getBranchNum() {
 		return branchNum;

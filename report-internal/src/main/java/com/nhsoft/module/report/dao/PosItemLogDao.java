@@ -2,9 +2,8 @@ package com.nhsoft.module.report.dao;
 
 
 import com.nhsoft.module.report.model.PosItemLog;
-import com.nhsoft.module.report.shared.queryBuilder.StoreQueryCondition;
+import com.nhsoft.module.report.query.StoreQueryCondition;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 

@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 import java.util.List;
 
@@ -42,11 +40,6 @@ public class WholesaleProfitQuery extends QueryBuilder {
 		this.branchNums = branchNums;
 	}
 
-	@Override
-	public boolean checkQueryBuild() {
-		return false;
-	}
-
 	public String getDateType() {
 		return dateType;
 	}
@@ -85,14 +78,6 @@ public class WholesaleProfitQuery extends QueryBuilder {
 
 	public void setSortType(String sortType) {
 		this.sortType = sortType;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 
 	public Integer getBanchNum() {

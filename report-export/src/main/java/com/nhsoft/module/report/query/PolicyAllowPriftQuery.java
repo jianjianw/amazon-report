@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 import java.util.List;
 
@@ -22,11 +20,6 @@ public class PolicyAllowPriftQuery extends QueryBuilder {
 	private List<String> categoryCodes;
 	private List<String> orderSellers; //销售员
 	private boolean isPromotion = true;
-
-	@Override
-	public boolean checkQueryBuild() {
-		return false;
-	}
 
 
 	public List<String> getOrderSellers() {

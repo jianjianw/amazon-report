@@ -13,7 +13,6 @@ import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
-import com.nhsoft.module.report.shared.queryBuilder.StoreQueryCondition;
 import com.nhsoft.module.report.shared.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;

@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.rpc.impl;
 
 import com.nhsoft.module.report.dto.PosItemLogSummaryDTO;
+import com.nhsoft.module.report.query.StoreQueryCondition;
 import com.nhsoft.module.report.rpc.PosItemLogRpc;
 import com.nhsoft.module.report.service.PosItemLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 	
 	
 	@Override
-	public List<PosItemLogSummaryDTO> findBranchItemFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,  String summaries, List<Integer> itemNums, Integer storehouseNum) {
-		List<Object[]> objects = posItemLogService.findBranchItemFlagSummary(systemBookCode, branchNums, dateFrom, dateTo, summaries, itemNums, storehouseNum);
+	public List<PosItemLogSummaryDTO> findBranchItemFlagSummary(StoreQueryCondition storeQueryCondition) {
+		List<Object[]> objects = posItemLogService.findBranchItemFlagSummary(storeQueryCondition.getSystemBookCode(), storeQueryCondition.getBranchNums(),
+				storeQueryCondition.getDateStart(), storeQueryCondition.getDateEnd(), storeQueryCondition.getPosItemLogSummary(), storeQueryCondition.getItemNums(), storeQueryCondition.getStorehouseNum());
 		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>();
 		Object[] object = null;
 		for(int i = 0;i < objects.size();i++){
@@ -45,7 +47,7 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 	}
 	
 	@Override
-	public List<PosItemLogSummaryDTO> findItemBizTypeFlagSummary(String systemBookCode, List<Integer> branchNum, Date dateFrom, Date dateTo) {
+	public List<PosItemLogSummaryDTO> findItemBizTypeFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String summaries, List<Integer> itemNums, Integer storehouseNum) {
 		return null;
 	}
 	

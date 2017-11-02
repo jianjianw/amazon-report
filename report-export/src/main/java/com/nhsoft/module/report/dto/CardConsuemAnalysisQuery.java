@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.dto;
 
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -90,12 +92,6 @@ public class CardConsuemAnalysisQuery extends QueryBuilder {
 
 	public void setMoneyTo(BigDecimal moneyTo) {
 		this.moneyTo = moneyTo;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
 	}
 
 }

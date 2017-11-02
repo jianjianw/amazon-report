@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 import java.util.List;
 
@@ -100,9 +98,5 @@ public class SupplierSaleQuery extends QueryBuilder {
 		this.checkList = checkList;
 	}
 
-	@Override
-	public boolean checkQueryBuild() {
-		return true;
-	}
 
 }
