@@ -1,4 +1,4 @@
-package com.nhsoft.module.report.dto;
+package com.nhsoft.module.report.query;
 
 import java.io.Serializable;
 
@@ -15,7 +15,6 @@ public abstract  class QueryBuilder implements Serializable {
     public void setSystemBookCode(String systemBookCode) {
         this.systemBookCode = systemBookCode;
     }
-
-    public abstract boolean checkQueryBuild();
+    
 
 }

@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -129,12 +127,6 @@ public class WeixinPosItemQuery extends QueryBuilder {
 
 	public void setWeixinItemNums(List<Integer> weixinItemNums) {
 		this.weixinItemNums = weixinItemNums;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
 	}
 
 }

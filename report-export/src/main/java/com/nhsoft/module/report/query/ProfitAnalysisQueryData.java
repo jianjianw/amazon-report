@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 import java.util.List;
 
@@ -189,13 +187,6 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 
 	public void setCheckTo(Date checkTo) {
 		this.checkTo = checkTo;
-	}
-
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
 	}
 
 }

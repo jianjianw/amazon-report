@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +10,6 @@ public class SupplierBranchQuery extends QueryBuilder {
 	 */
 	private static final long serialVersionUID = 4929397470384141156L;
 
-	private String systemBookCode;
 	private Integer branchNum;
 	private Date dateFrom;
 	private Date dateTo;
@@ -35,14 +32,7 @@ public class SupplierBranchQuery extends QueryBuilder {
 	public SupplierBranchQuery(String systemBookCode){
 		this.systemBookCode = systemBookCode;
 	}
-	
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
 
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
 
 	public Date getDateFrom() {
 		return dateFrom;
@@ -90,12 +80,6 @@ public class SupplierBranchQuery extends QueryBuilder {
 
 	public void setCheckString(String checkString) {
 		this.checkString = checkString;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return true;
 	}
 
 	public List<String> getListStrings() {

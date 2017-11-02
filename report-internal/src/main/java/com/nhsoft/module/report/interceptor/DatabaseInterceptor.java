@@ -1,12 +1,12 @@
 package com.nhsoft.module.report.interceptor;
 
-import com.dangdang.ddframe.rdb.sharding.api.HintManager;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Transaction;
 import com.nhsoft.module.report.DynamicDataSourceContextHolder;
 import com.nhsoft.module.report.dto.APIException;
 import com.nhsoft.module.report.dto.SystemBookProxy;
+import com.nhsoft.module.report.query.QueryBuilder;
 import com.nhsoft.module.report.shared.ServiceBizException;
 import com.nhsoft.module.report.util.DateUtil;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
@@ -67,10 +67,16 @@ public class DatabaseInterceptor {
 			throw new RuntimeException("systemBookCode not found");
 		}
 		Object object = objects[0];
-		if(!(object instanceof  String)){
-			throw new RuntimeException("systemBookCode not found");
+		String systemBookCode;
+		if(object instanceof QueryBuilder){
+			systemBookCode = ((QueryBuilder)object).getSystemBookCode();
+		} else {
+			if(!(object instanceof  String)){
+				throw new RuntimeException("systemBookCode not found");
+			}
+			systemBookCode = (String) objects[0];
+			
 		}
-		String systemBookCode = (String) objects[0];
 		SystemBookProxy systemBookProxy = ServiceDeskUtil.getSystemBookProxy(systemBookCode);
 		String rds = rdsNameMap.get(systemBookProxy.getBookProxyName());
 		if(rds == null){

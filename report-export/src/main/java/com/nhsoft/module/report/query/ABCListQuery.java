@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 import java.util.List;
 
@@ -11,26 +9,12 @@ public class ABCListQuery extends QueryBuilder {
 	 * 
 	 */
 	private static final long serialVersionUID = 256504585725488985L;
-	private String systemBookCode;
 	private Integer branchNum;           		//当前店
 	private List<Integer> branchNums;			//分店List
     private Date dateFrom;							//开始时间
     private Date dateTo; 								//结束时间
     private List<String> categoryCodeList; 	//商品类别
     private List<String> types;            			//【调出，批发， 销售】
-
-	@Override
-	public boolean checkQueryBuild(){
-		 if (dateFrom != null && dateTo != null) {
-            if (dateFrom.after(dateTo)) {
-                return false;
-            }
-        }
-        if (systemBookCode == null) {
-            return false;
-        }
-        return true;
-	}
 	
 	@SuppressWarnings("deprecation")
 	public boolean isThrowTowYears(){
@@ -38,14 +22,6 @@ public class ABCListQuery extends QueryBuilder {
 		    return false;
 		}
 		return true;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 
 	public Integer getBranchNum() {

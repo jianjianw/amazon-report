@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 import java.util.List;
 
@@ -28,12 +26,6 @@ public class PurchaseOrderCollectQuery extends QueryBuilder {
 	private String purchaseOrderFid; //订单号
 	private List<Integer> branchNums;//收货分店
 	private Boolean queryTopCategory; //是否按顶级类汇总
-
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
-	}
 
 	public String getItemDepartment() {
 		return itemDepartment;

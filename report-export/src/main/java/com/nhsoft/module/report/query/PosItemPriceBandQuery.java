@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -26,19 +24,6 @@ public class PosItemPriceBandQuery extends QueryBuilder {
     private BigDecimal higher; 					//较高
     private BigDecimal highest;					//最高
     private String type;            					//【调出，批发， 销售】
-	
-	@Override
-	public boolean checkQueryBuild(){
-		 if (dateFrom != null && dateTo != null) {
-            if (dateFrom.after(dateTo)) {
-                return false;
-            }
-        }
-        if (systemBookCode == null) {
-            return false;
-        }
-        return true;
-	}
 	
 	@SuppressWarnings("deprecation")
 	public boolean isThrowTowYears(){

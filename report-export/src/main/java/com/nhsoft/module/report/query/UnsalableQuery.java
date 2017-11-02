@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +10,6 @@ public class UnsalableQuery extends QueryBuilder {
 	 * 
 	 */
 	private static final long serialVersionUID = -6528468639188043162L;
-	private String systemBookCode;
 	private Integer branchNum; // 当前店
 	private List<Integer> branchNums;
 	private List<Integer> supplierNums; // 供应商
@@ -30,14 +27,6 @@ public class UnsalableQuery extends QueryBuilder {
 	private Date dateTo;
 	private Integer itemTransferDayMultiple = 1;//动销天数倍数
 
-	@Override
-	public boolean checkQueryBuild() {
-		if (systemBookCode == null) {
-			return false;
-		}
-		return true;
-	}
-
 	public Integer getItemTransferDayMultiple() {
 		return itemTransferDayMultiple;
 	}
@@ -52,14 +41,6 @@ public class UnsalableQuery extends QueryBuilder {
 
 	public void setBranchNums(List<Integer> branchNums) {
 		this.branchNums = branchNums;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 
 	public Integer getBranchNum() {

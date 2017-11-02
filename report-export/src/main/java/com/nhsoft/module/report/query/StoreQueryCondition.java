@@ -1,15 +1,14 @@
-package com.nhsoft.module.report.shared.queryBuilder;
+package com.nhsoft.module.report.query;
 
 import java.util.Date;
 import java.util.List;
 
-public class StoreQueryCondition extends QueryBuilder{
+public class StoreQueryCondition extends  QueryBuilder{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7226473118040279430L;
-	
 	private Integer branchNum;
 	private Date dateStart;
 	private Date dateEnd;
@@ -23,7 +22,6 @@ public class StoreQueryCondition extends QueryBuilder{
 	private String refBillNo;  //关联单据号
 	private List<Integer> branchNums;
 	private String posItemLogLotNumber;
-	private Boolean filterElement; //非配送中心过滤成分商品
 	private String itemDepartment;
 	private Date exactDateEnd;
 	
@@ -47,14 +45,6 @@ public class StoreQueryCondition extends QueryBuilder{
 
 	public void setItemDepartment(String itemDepartment) {
 		this.itemDepartment = itemDepartment;
-	}
-
-	public Boolean getFilterElement() {
-		return filterElement;
-	}
-
-	public void setFilterElement(Boolean filterElement) {
-		this.filterElement = filterElement;
 	}
 
 	public String getPosItemLogLotNumber() {
@@ -123,11 +113,6 @@ public class StoreQueryCondition extends QueryBuilder{
 
 	public void setItemCategoryCodes(List<String> itemCategoryCodes) {
 		this.itemCategoryCodes = itemCategoryCodes;
-	}
-
-	@Override
-	public boolean checkQueryBuild() {
-		return true;
 	}
 
 	public String getUnitType() {

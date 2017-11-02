@@ -9,6 +9,7 @@ import com.dangdang.ddframe.rdb.sharding.api.strategy.database.DatabaseShardingS
 import com.dangdang.ddframe.rdb.sharding.api.strategy.database.NoneDatabaseShardingAlgorithm;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.sharding.AlipayLogSharding;
+import com.nhsoft.module.report.sharding.PosItemLogSharding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -129,11 +130,11 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		DataSourceRule dataSourceRule = new DataSourceRule(customDataSources, "cs");
 		
 		TableRule alipayLogTableRule = AlipayLogSharding.createTableRule(dataSourceRule);
-		
+		TableRule posItemLogTableRule = PosItemLogSharding.createTableRule(dataSourceRule);
 		
 		ShardingRule shardingRule = ShardingRule.builder()
 				.dataSourceRule(dataSourceRule)
-				.tableRules(Arrays.asList(alipayLogTableRule))
+				.tableRules(Arrays.asList(alipayLogTableRule, posItemLogTableRule))
 				.databaseShardingStrategy(new DatabaseShardingStrategy("none", new NoneDatabaseShardingAlgorithm()))
 				.build();
 

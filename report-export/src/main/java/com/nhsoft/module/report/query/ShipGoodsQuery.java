@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.List;
 
 public class ShipGoodsQuery extends QueryBuilder {
@@ -11,7 +9,6 @@ public class ShipGoodsQuery extends QueryBuilder {
 	 */
 	private static final long serialVersionUID = 864637283183283330L;
 
-	private String systemBookCode;
 	private Integer centerBranchNum;
 	private Integer branchNum;
 	private List<Integer> branchNums; // 收货分店
@@ -19,14 +16,6 @@ public class ShipGoodsQuery extends QueryBuilder {
 	private Integer storehouseNum; // 出货仓库
 	private Boolean isClientFid;
 	private String settlementState;			//结算状态
-		
-	@Override
-	public boolean checkQueryBuild() {
-		if (systemBookCode == null) {
-			return false;
-		}
-		return true;
-	}
 
 	public Integer getBranchNum() {
 		return branchNum;
@@ -34,14 +23,6 @@ public class ShipGoodsQuery extends QueryBuilder {
 
 	public void setBranchNum(Integer branchNum) {
 		this.branchNum = branchNum;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 
 	public List<Integer> getBranchNums() {

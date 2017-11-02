@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.util.Date;
 
 public class LogQuery extends QueryBuilder {
@@ -158,10 +156,5 @@ public class LogQuery extends QueryBuilder {
 		this.logSystem = logSystem;
 	}
 
-	@Override
-	public boolean checkQueryBuild() {
-		
-		return false;
-	}
 
 }

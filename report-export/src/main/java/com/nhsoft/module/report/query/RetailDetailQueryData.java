@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.query;
 
-import com.nhsoft.module.report.dto.QueryBuilder;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -181,11 +179,6 @@ public class RetailDetailQueryData extends QueryBuilder {
 		retailPrice = null;		
 		posClientFid = null;		
 		exceptionConditon = null;		
-	}
-	
-	@Override
-	public boolean checkQueryBuild() {
-		return false;
 	}
 
 }
