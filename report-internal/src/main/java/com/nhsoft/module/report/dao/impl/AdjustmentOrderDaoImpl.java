@@ -255,7 +255,7 @@ public class AdjustmentOrderDaoImpl extends DaoImpl implements AdjustmentOrderDa
 			sb.append("and a.adjustment_order_audit_time >= '" +  DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and a.adjustment_order_audit_time <= '" +  DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateFrom)) + "' ");
+			sb.append("and a.adjustment_order_audit_time <= '" +  DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 		}
 		sb.append("and adjustment_order_state_code = '3' ");
 		sb.append("group by b.branch_num order by b.branch_num asc");

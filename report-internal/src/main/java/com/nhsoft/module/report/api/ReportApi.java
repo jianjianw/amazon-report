@@ -150,7 +150,7 @@ public class ReportApi {
         List<OperationStoreDTO> list = new ArrayList<>();
 
         //用于计算环比增长率
-        List<BranchRevenueReport> growthMoneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, beforeDateFrom, beforeDateTo, false);
+        List<BranchRevenueReport> beforeMoneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, beforeDateFrom, beforeDateTo, false);
         //营业额
         List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //会员营业额
@@ -188,9 +188,9 @@ public class ReportApi {
             store.setBranchName(branchDTO.getBranchName());
             store.setBigDay(bigDay);
             //上期的营业额
-            Iterator growth = growthMoneyByBranch.iterator();
-            while (growth.hasNext()) {
-                BranchRevenueReport next = (BranchRevenueReport) growth.next();
+            Iterator before = beforeMoneyByBranch.iterator();
+            while (before.hasNext()) {
+                BranchRevenueReport next = (BranchRevenueReport) before.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
                     store.setBeforeSaleMoney(next.getBizMoney());//上期营业额
                     break;
@@ -270,9 +270,9 @@ public class ReportApi {
 
                     store.setMemberSaleMoney(next.getBizMoney());//会员销售额
                     if(store.getMemberSaleMoney() == null || store.getMemberSaleMoney().compareTo(BigDecimal.ZERO) == 0 ){
-                        store.setMemeberRevenueOccupy(BigDecimal.ZERO);//会员销售额占比
+                        store.setMemeberRevenueOccupy(BigDecimal.ZERO);
                     }else if(store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) == 0) {
-                        store.setMemeberRevenueOccupy(BigDecimal.ZERO);//会员销售额占比
+                        store.setMemeberRevenueOccupy(BigDecimal.ZERO);
                     }else{
                         store.setMemeberRevenueOccupy(store.getMemberSaleMoney().divide(store.getRevenue(),2,ROUND_HALF_DOWN));//会员销售额占比
                     }
@@ -543,7 +543,6 @@ public class ReportApi {
             TrendDailyDTO trendDaily = new TrendDailyDTO();
             trendDaily.setDay(bizday.substring(bizday.length() - 2, bizday.length()) + "日");
 
-
             for (int j = 0; j < revenueByBizday.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(j);
                 if (bizday.equals(branchBizRevenueSummary.getBiz())) {
@@ -651,6 +650,7 @@ public class ReportApi {
                 TransferOutMoney transferOutMoney = transferOutMoneyBymonth.get(j);
                 if (bizmonth.equals(transferOutMoney.getBiz())) {
                     trendMonthly.setDistributionMoney(transferOutMoney.getOutMoney());
+                    break;
                 }
             }
             list.add(trendMonthly);
