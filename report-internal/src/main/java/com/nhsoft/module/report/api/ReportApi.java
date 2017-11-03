@@ -787,7 +787,7 @@ public class ReportApi {
                 }
                 //目标，完成率
                 for (int k = 0; k < saleMoneyGoalsByBranch.size(); k++) {
-                    SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(i);
+                    SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(k);
                     if (branchDTO.getBranchNum().equals(saleMoneyGoals.getBranchNum())) {
                         //营业额目标
                         saleFinishMoneyTopDTO.setGoalMoney(saleMoneyGoals.getSaleMoney());
@@ -846,7 +846,7 @@ public class ReportApi {
         calendar.setTime(dateFrom);
         calendar.add(Calendar.MONTH,11);
         int maximum = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        calendar.add(Calendar.DAY_OF_MONTH,maximum+1);
+        calendar.add(Calendar.DAY_OF_MONTH,maximum-1);
         Date dateTo = calendar.getTime();
 
         //营业额
@@ -855,7 +855,8 @@ public class ReportApi {
         List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_MONTH);
         //营业额完成率
 
-        //营业额年度增长率
+
+        //营业额年度增长率()
 
         return null;
     }

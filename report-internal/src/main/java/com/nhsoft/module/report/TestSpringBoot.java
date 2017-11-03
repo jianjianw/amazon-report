@@ -175,6 +175,11 @@ public class TestSpringBoot {
         System.out.println(string);
     }
 
+    @Test
+    public void test1(){
+        List<SaleMoneyMonthDTO> saleAnalysisByMonth = reportApi.findSaleAnalysisByMonth("4020",null,"2016");
+        System.out.println();
+    }
 
 
 
