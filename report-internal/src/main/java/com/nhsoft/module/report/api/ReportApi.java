@@ -186,6 +186,7 @@ public class ReportApi {
             store.setBranchNum(bannchNumList.get(i));
             BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, bannchNumList.get(i));
             store.setBranchName(branchDTO.getBranchName());
+            store.setBigDay(bigDay);
             //上期的营业额
             Iterator growth = growthMoneyByBranch.iterator();
             while (growth.hasNext()) {
@@ -406,7 +407,7 @@ public class ReportApi {
             BigDecimal cardStorage = BigDecimal.ZERO;               //卡储值金额
             BigDecimal cartStorageConsume = BigDecimal.ZERO;        //卡储值消费金额
             BigDecimal beforeSaleMoney  =BigDecimal.ZERO;           //上期营业额
-            BigDecimal bigDay = new BigDecimal(1);
+            BigDecimal bigDay = BigDecimal.ONE;
             String areaBranchNums = "[";
             //得到区域下面的所有分店
             List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
@@ -470,7 +471,8 @@ public class ReportApi {
             if(billNums == null || billNums.equals(0)){
                 region.setAveBillNums(BigDecimal.ZERO);
             }else{
-                region.setAveBillNums(new BigDecimal(billNums).divide(bigDay, 2, ROUND_HALF_DOWN));                                     //日均客单量
+                BigDecimal bigBillNums = new BigDecimal(billNums);
+                region.setAveBillNums(bigBillNums.divide(bigDay, 2, ROUND_HALF_DOWN));                                     //日均客单量
             }
 
             region.setMemberBillNums(memberBillNums);                                                           //会员客单量
@@ -726,7 +728,7 @@ public class ReportApi {
            @Override
            public int compare(SaleFinishMoneyTopDTO top1, SaleFinishMoneyTopDTO top2) {
                if(top1.getFinishMoneyRate() == null || top2.getFinishMoneyRate() == null){
-                   return 1;
+                   return -1;
                }
                int i = top1.getFinishMoneyRate().subtract(top2.getFinishMoneyRate()).intValue();
                if(i == 0){
@@ -810,7 +812,7 @@ public class ReportApi {
             @Override
             public int compare(SaleFinishMoneyTopDTO top1, SaleFinishMoneyTopDTO top2) {
                 if(top1.getFinishMoneyRate() == null || top2.getFinishMoneyRate() == null){
-                    return 1;
+                    return -1;
                 }
                 int i = top1.getFinishMoneyRate().subtract(top2.getFinishMoneyRate()).intValue();
                 if(i == 0){
