@@ -374,18 +374,6 @@ public class ReportApi {
         List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchNums, date);
         //根据账套号查询区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
-     /*   //得到所有区域号
-        List<Integer> regionNumList = new ArrayList<>();
-        for (BranchRegionDTO branchRegion : branchRegions) {
-            Integer branchRegionNum = branchRegion.getBranchRegionNum();
-            regionNumList.add(branchRegionNum);
-        }
-        //得到所有区域名称
-        List<String> regionNames = new ArrayList<>();
-        for (BranchRegionDTO branchRegion : branchRegions) {
-            String branchRegionName = branchRegion.getBranchRegionName();
-            regionNames.add(branchRegionName);
-        }*/
 
         //先遍历区域，在遍历按分店返回的数据，如果分店号，相等，就将分店的数据封装到区域里面
         for (int i = 0; i < branchRegions.size(); i++) {
@@ -876,9 +864,6 @@ public class ReportApi {
         calendar.add(Calendar.DAY_OF_MONTH,maximum-1);
         beforeDateTo = calendar.getTime();
 
-
-
-
         //营业额
         List<BranchBizRevenueSummary> revenueByBizmonth = posOrderRpc.findMoneyBizmonthSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //按月份查询营业额目标
@@ -896,13 +881,13 @@ public class ReportApi {
             SaleMoneyMonthDTO saleMoneyMonthDTO = new SaleMoneyMonthDTO();
             saleMoneyMonthDTO.setMonth(bizmonth);
             for (int j = 0; j <revenueByBizmonth.size() ; j++) {
-                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(i);
+                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(j);
                 if(saleMoneyMonthDTO.getMonth().equals(branchBizRevenueSummary.getBiz())){
                     saleMoneyMonthDTO.setSaleMoney(branchBizRevenueSummary.getBizMoney());//营业额
                 }
             }
             for (int j = 0; j <saleMoneyGoalsByDate.size() ; j++) {
-                SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByDate.get(i);
+                SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByDate.get(j);
                 if(saleMoneyMonthDTO.getMonth().equals(saleMoneyGoals.getDate())){
                     saleMoneyMonthDTO.setSaleMoneyGoal(saleMoneyGoals.getSaleMoney());//营业额目标
                     //营业额完成率
@@ -915,9 +900,9 @@ public class ReportApi {
                     }
                 }
             }
-            //环比增长率
+            //同比增长率
             for (int j = 0; j <beforeRevenueByBizmonth.size() ; j++) {
-                BranchBizRevenueSummary branchBizRevenueSummary = beforeRevenueByBizmonth.get(i);
+                BranchBizRevenueSummary branchBizRevenueSummary = beforeRevenueByBizmonth.get(j);
                 if(saleMoneyMonthDTO.getMonth().equals(branchBizRevenueSummary.getBiz())){
                     BigDecimal saleMoney = saleMoneyMonthDTO.getSaleMoney();//本期销售额
                     BigDecimal bizMoney = branchBizRevenueSummary.getBizMoney();//同期销售额
@@ -932,9 +917,7 @@ public class ReportApi {
             }
             list.add(saleMoneyMonthDTO);
         }
-
         return list;
     }
-
 
 }
