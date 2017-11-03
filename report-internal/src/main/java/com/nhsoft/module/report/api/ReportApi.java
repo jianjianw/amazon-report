@@ -728,7 +728,7 @@ public class ReportApi {
            @Override
            public int compare(SaleFinishMoneyTopDTO top1, SaleFinishMoneyTopDTO top2) {
                if(top1.getFinishMoneyRate() == null || top2.getFinishMoneyRate() == null){
-                   return -1;
+                   return 1;
                }
                int i = top1.getFinishMoneyRate().subtract(top2.getFinishMoneyRate()).intValue();
                if(i == 0){
@@ -812,7 +812,7 @@ public class ReportApi {
             @Override
             public int compare(SaleFinishMoneyTopDTO top1, SaleFinishMoneyTopDTO top2) {
                 if(top1.getFinishMoneyRate() == null || top2.getFinishMoneyRate() == null){
-                    return -1;
+                    return 1;
                 }
                 int i = top1.getFinishMoneyRate().subtract(top2.getFinishMoneyRate()).intValue();
                 if(i == 0){
