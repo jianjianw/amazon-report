@@ -864,7 +864,7 @@ public class ReportApi {
         calendar.add(Calendar.DAY_OF_MONTH,maximum-1);
         beforeDateTo = calendar.getTime();
 
-        //营业额
+        //按月份查询营业额
         List<BranchBizRevenueSummary> revenueByBizmonth = posOrderRpc.findMoneyBizmonthSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //按月份查询营业额目标
         List<SaleMoneyGoals> saleMoneyGoalsByDate = branchTransferGoalsRpc.findSaleMoneyGoalsByDate(systemBookCode, bannchNumList, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_MONTH);
@@ -916,7 +916,7 @@ public class ReportApi {
                         saleMoney = (saleMoney == null ? BigDecimal.ZERO : saleMoney);
                         BigDecimal divide = (saleMoney.subtract(bizMoney)).divide(bizMoney, 2, ROUND_HALF_DOWN);
                         BigDecimal product = new BigDecimal(100);
-                        saleMoneyMonthDTO.setAddRate(divide.multiply(product));
+                        saleMoneyMonthDTO.setAddRate(divide.multiply(product) == null?BigDecimal.ZERO : divide.multiply(product));
                     }
                 }
             }

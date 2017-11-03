@@ -1556,10 +1556,5 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sqlQuery.list();
 	}
 
-	@Override
-	public List<Object[]> findMoneyFinishRateBranchTop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return null;
-	}
-
 
 }

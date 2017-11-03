@@ -183,12 +183,14 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,4) + "' ");
 			}
 		}else if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_MONTH)){
+			sb.append("and {fn LENGTH(branch_transfer_interval)} = 6 ");
 			if (dateFrom != null) {
 				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateShortStr(dateFrom).substring(0,6) + "' ");
 			}
 			if (dateTo != null) {
 				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,6) + "' ");
 			}
+
 		}else {
 			if (dateFrom != null) {
 				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateStr(dateFrom) + "' ");
