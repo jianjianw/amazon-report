@@ -39,7 +39,7 @@ public class TransferOutOrderRpcImpl implements TransferOutOrderRpc {
         List<Object[]> objects = transferOutOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, dateFrom, dateTo);
         List<TransferOutMoney> list = new ArrayList<>();
         if(objects.isEmpty()){
-            return null;
+            return list;
         }
         for (int i = 0; i <objects.size() ; i++) {
             Object[] object = objects.get(i);
@@ -56,7 +56,7 @@ public class TransferOutOrderRpcImpl implements TransferOutOrderRpc {
         List<Object[]> objects = transferOutOrderService.findMoneyBymonthSummary(systemBookCode, branchNums, dateFrom, dateTo);
         List<TransferOutMoney> list = new ArrayList<>();
         if(objects.isEmpty()){
-            return null;
+            return list;
         }
         for (int i = 0; i <objects.size() ; i++) {
             Object[] object = objects.get(i);

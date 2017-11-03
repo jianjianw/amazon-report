@@ -897,7 +897,9 @@ public class ReportApi {
                     }else if(saleMoneyMonthDTO.getSaleMoneyGoal() == null || saleMoneyMonthDTO.getSaleMoneyGoal().compareTo(BigDecimal.ZERO) == 0){
                         saleMoneyMonthDTO.setFinishMoneyRate(BigDecimal.ZERO);
                     }else{
-                        saleMoneyMonthDTO.setFinishMoneyRate(saleMoneyMonthDTO.getSaleMoney().divide(saleMoneyMonthDTO.getSaleMoneyGoal(),2,ROUND_HALF_DOWN));
+                        BigDecimal divide = saleMoneyMonthDTO.getSaleMoney().divide(saleMoneyMonthDTO.getSaleMoneyGoal(), 2, ROUND_HALF_DOWN);
+                        BigDecimal product = new BigDecimal(100);
+                        saleMoneyMonthDTO.setFinishMoneyRate(divide.multiply(product));
                     }
                 }
             }
@@ -912,7 +914,9 @@ public class ReportApi {
                         saleMoneyMonthDTO.setAddRate(BigDecimal.ZERO);
                     }else{
                         saleMoney = (saleMoney == null ? BigDecimal.ZERO : saleMoney);
-                        saleMoneyMonthDTO.setAddRate((saleMoney.subtract(bizMoney)).divide(bizMoney,2,ROUND_HALF_DOWN));
+                        BigDecimal divide = (saleMoney.subtract(bizMoney)).divide(bizMoney, 2, ROUND_HALF_DOWN);
+                        BigDecimal product = new BigDecimal(100);
+                        saleMoneyMonthDTO.setAddRate(divide.multiply(product));
                     }
                 }
             }

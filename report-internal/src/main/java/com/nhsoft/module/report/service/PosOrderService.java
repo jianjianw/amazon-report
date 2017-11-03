@@ -195,13 +195,5 @@ public interface PosOrderService {
 	 */
 	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
 
-	/**
-	 * 按门店 营业额完成率排名
-	 * @param systemBookCode
-	 * @param branchNums
-	 * @param dateFrom
-	 * @param dateTo
-	 * */
-	public List<Object[]> findMoneyFinishRateBranchTop(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo);
 }
 
