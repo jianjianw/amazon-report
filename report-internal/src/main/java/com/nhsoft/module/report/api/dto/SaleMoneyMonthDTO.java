@@ -8,7 +8,7 @@ public class SaleMoneyMonthDTO implements Serializable {
     private BigDecimal saleMoney;       //营业额
     private BigDecimal saleMoneyGoal;   //营业额目标
     private BigDecimal finishMoneyRate;     //营业额完成率
-    private BigDecimal yearAddRate;         //营业额年度增长率
+    private BigDecimal AddRate;         //营业额年度增长率
 
 
     public String getMonth() {
@@ -43,11 +43,11 @@ public class SaleMoneyMonthDTO implements Serializable {
         this.finishMoneyRate = finishMoneyRate;
     }
 
-    public BigDecimal getYearAddRate() {
-        return yearAddRate;
+    public BigDecimal getAddRate() {
+        return AddRate;
     }
 
-    public void setYearAddRate(BigDecimal yearAddRate) {
-        this.yearAddRate = yearAddRate;
+    public void setAddRate(BigDecimal addRate) {
+        AddRate = addRate;
     }
 }

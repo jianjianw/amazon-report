@@ -618,8 +618,10 @@ public class ReportApi {
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateFrom);
-        calendar.add(Calendar.MONTH, 11);
-        calendar.add(Calendar.DAY_OF_MONTH, 30);
+        int month = 12;
+        calendar.add(Calendar.MONTH, month-1);
+        int maximum = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        calendar.add(Calendar.DAY_OF_MONTH,maximum-1);
         Date dateTo = calendar.getTime();
 
         //营业额 客单量
@@ -629,7 +631,7 @@ public class ReportApi {
         //配送额
         List<TransferOutMoney> transferOutMoneyBymonth = transferOutOrderRpc.findMoneyBymonthSummary(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendMonthlyDTO> list = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i <month ; i++) {
             calendar.setTime(dateFrom);
             calendar.add(Calendar.MONTH, i);
             Date time = calendar.getTime();
@@ -831,10 +833,25 @@ public class ReportApi {
         }
         return list;
     }
+
+    //销售分析
     @RequestMapping(method = RequestMethod.GET, value = "/saleAnalysis")
     public List<SaleMoneyMonthDTO> findSaleAnalysisByMonth(@RequestHeader("systemBookCode") String systemBookCode,
                                                            @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
-        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+
+        List<Integer> bannchNumList = new ArrayList<>();
+        int index = branchNums.indexOf("|");
+        String str = branchNums.substring(0, index);
+        if (str.length() == 0) {
+            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            for (int i = 0; i < all.size(); i++) {
+                BranchDTO branchDTO = all.get(i);
+                bannchNumList.add(branchDTO.getBranchNum());
+            }
+        } else {
+            bannchNumList.add(Integer.parseInt(str));
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         Date dateFrom = null;
         try {
@@ -844,21 +861,79 @@ public class ReportApi {
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateFrom);
-        calendar.add(Calendar.MONTH,11);
+        int month = 12;
+        calendar.add(Calendar.MONTH,month-1);
         int maximum = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         calendar.add(Calendar.DAY_OF_MONTH,maximum-1);
         Date dateTo = calendar.getTime();
 
+        Date beforeDateform  = null;        //去年的开始时间
+        Date beforeDateTo = null;           //去年的结束时间
+        calendar.setTime(dateFrom);
+        calendar.add(Calendar.YEAR,-1);
+        beforeDateform = calendar.getTime();
+        calendar.add(Calendar.MONTH,month-1);
+        calendar.add(Calendar.DAY_OF_MONTH,maximum-1);
+        beforeDateTo = calendar.getTime();
+
+
+
+
         //营业额
-        List<BranchBizRevenueSummary> revenueByBizmonth = posOrderRpc.findMoneyBizmonthSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);        //营业额目标
+        List<BranchBizRevenueSummary> revenueByBizmonth = posOrderRpc.findMoneyBizmonthSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateTo, false);
         //按月份查询营业额目标
-        List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_MONTH);
-        //营业额完成率
+        List<SaleMoneyGoals> saleMoneyGoalsByDate = branchTransferGoalsRpc.findSaleMoneyGoalsByDate(systemBookCode, bannchNumList, dateFrom, dateTo, AppConstants.BUSINESS_DATE_SOME_MONTH);
+        //查询去年的营业额
+        List<BranchBizRevenueSummary> beforeRevenueByBizmonth = posOrderRpc.findMoneyBizmonthSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, beforeDateform, beforeDateTo, false);
 
 
-        //营业额年度增长率()
+        List<SaleMoneyMonthDTO> list = new ArrayList<>();
+        for (int i = 0; i <month ; i++) {
+            calendar.setTime(dateFrom);
+            calendar.add(Calendar.MONTH, i);
+            Date time = calendar.getTime();
+            String bizmonth = DateUtil.getYearAndMonthString(time);
+            SaleMoneyMonthDTO saleMoneyMonthDTO = new SaleMoneyMonthDTO();
+            saleMoneyMonthDTO.setMonth(bizmonth);
+            for (int j = 0; j <revenueByBizmonth.size() ; j++) {
+                BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(i);
+                if(saleMoneyMonthDTO.getMonth().equals(branchBizRevenueSummary.getBiz())){
+                    saleMoneyMonthDTO.setSaleMoney(branchBizRevenueSummary.getBizMoney());//营业额
+                }
+            }
+            for (int j = 0; j <saleMoneyGoalsByDate.size() ; j++) {
+                SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByDate.get(i);
+                if(saleMoneyMonthDTO.getMonth().equals(saleMoneyGoals.getDate())){
+                    saleMoneyMonthDTO.setSaleMoneyGoal(saleMoneyGoals.getSaleMoney());//营业额目标
+                    //营业额完成率
+                    if(saleMoneyMonthDTO.getSaleMoney() == null || saleMoneyMonthDTO.getSaleMoney().compareTo(BigDecimal.ZERO) == 0){
+                        saleMoneyMonthDTO.setFinishMoneyRate(BigDecimal.ZERO);
+                    }else if(saleMoneyMonthDTO.getSaleMoneyGoal() == null || saleMoneyMonthDTO.getSaleMoneyGoal().compareTo(BigDecimal.ZERO) == 0){
+                        saleMoneyMonthDTO.setFinishMoneyRate(BigDecimal.ZERO);
+                    }else{
+                        saleMoneyMonthDTO.setFinishMoneyRate(saleMoneyMonthDTO.getSaleMoney().divide(saleMoneyMonthDTO.getSaleMoneyGoal(),2,ROUND_HALF_DOWN));
+                    }
+                }
+            }
+            //环比增长率
+            for (int j = 0; j <beforeRevenueByBizmonth.size() ; j++) {
+                BranchBizRevenueSummary branchBizRevenueSummary = beforeRevenueByBizmonth.get(i);
+                if(saleMoneyMonthDTO.getMonth().equals(branchBizRevenueSummary.getBiz())){
+                    BigDecimal saleMoney = saleMoneyMonthDTO.getSaleMoney();//本期销售额
+                    BigDecimal bizMoney = branchBizRevenueSummary.getBizMoney();//同期销售额
+                    //计算同比增长率   （本期-同期）/同期
+                    if(bizMoney == null || bizMoney.compareTo(BigDecimal.ZERO) == 0){
+                        saleMoneyMonthDTO.setAddRate(BigDecimal.ZERO);
+                    }else{
+                        saleMoney = (saleMoney == null ? BigDecimal.ZERO : saleMoney);
+                        saleMoneyMonthDTO.setAddRate((saleMoney.subtract(bizMoney)).divide(bizMoney,2,ROUND_HALF_DOWN));
+                    }
+                }
+            }
+            list.add(saleMoneyMonthDTO);
+        }
 
-        return null;
+        return list;
     }
 
 
