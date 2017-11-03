@@ -879,16 +879,17 @@ public class ReportApi {
             Date time = calendar.getTime();
             String bizmonth = DateUtil.getYearAndMonthString(time);
             SaleMoneyMonthDTO saleMoneyMonthDTO = new SaleMoneyMonthDTO();
-            saleMoneyMonthDTO.setMonth(bizmonth);
+            saleMoneyMonthDTO.setMonth(bizmonth.substring(bizmonth.length() - 2, bizmonth.length()) + "月");
+
             for (int j = 0; j <revenueByBizmonth.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(j);
-                if(saleMoneyMonthDTO.getMonth().equals(branchBizRevenueSummary.getBiz())){
+                if(bizmonth.equals(branchBizRevenueSummary.getBiz())){
                     saleMoneyMonthDTO.setSaleMoney(branchBizRevenueSummary.getBizMoney());//营业额
                 }
             }
             for (int j = 0; j <saleMoneyGoalsByDate.size() ; j++) {
                 SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByDate.get(j);
-                if(saleMoneyMonthDTO.getMonth().equals(saleMoneyGoals.getDate())){
+                if(bizmonth.equals(saleMoneyGoals.getDate())){
                     saleMoneyMonthDTO.setSaleMoneyGoal(saleMoneyGoals.getSaleMoney());//营业额目标
                     //营业额完成率
                     if(saleMoneyMonthDTO.getSaleMoney() == null || saleMoneyMonthDTO.getSaleMoney().compareTo(BigDecimal.ZERO) == 0){
@@ -903,7 +904,7 @@ public class ReportApi {
             //同比增长率
             for (int j = 0; j <beforeRevenueByBizmonth.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = beforeRevenueByBizmonth.get(j);
-                if(saleMoneyMonthDTO.getMonth().equals(branchBizRevenueSummary.getBiz())){
+                if(bizmonth.equals(branchBizRevenueSummary.getBiz())){
                     BigDecimal saleMoney = saleMoneyMonthDTO.getSaleMoney();//本期销售额
                     BigDecimal bizMoney = branchBizRevenueSummary.getBizMoney();//同期销售额
                     //计算同比增长率   （本期-同期）/同期
