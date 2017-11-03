@@ -725,14 +725,9 @@ public class ReportApi {
        Collections.sort(list, new Comparator<SaleFinishMoneyTopDTO>() {
            @Override
            public int compare(SaleFinishMoneyTopDTO top1, SaleFinishMoneyTopDTO top2) {
-              /* //升序
-               int i = 0;
-               try {
-                   i = top1.getFinishMoneyRate().compareTo(top2.getFinishMoneyRate());
-               } catch (Exception e) {
-                   System.out.println("排序异常");
+               if(top1.getFinishMoneyRate() == null || top2.getFinishMoneyRate() == null){
+                   return 1;
                }
-               return i;*/
                int i = top1.getFinishMoneyRate().subtract(top2.getFinishMoneyRate()).intValue();
                if(i == 0){
                    return 0;
@@ -744,9 +739,6 @@ public class ReportApi {
            }
        });
 
-        //排序返回
-        //Collections.sort(list);
-        //Collections.sort(list,Comparator.comparing(SaleFinishMoneyTopDTO::getFinishMoneyRate));
         for (int i = 0; i <list.size(); i++) {
             SaleFinishMoneyTopDTO saleFinishMoneyTopDTO = list.get(i);
             saleFinishMoneyTopDTO.setTopNum(i+1);
@@ -813,7 +805,24 @@ public class ReportApi {
         if(list.isEmpty()){
             return list;
         }
-        list.sort(Comparator.comparing(SaleFinishMoneyTopDTO::getFinishMoneyRate));
+        //排序
+        Collections.sort(list, new Comparator<SaleFinishMoneyTopDTO>() {
+            @Override
+            public int compare(SaleFinishMoneyTopDTO top1, SaleFinishMoneyTopDTO top2) {
+                if(top1.getFinishMoneyRate() == null || top2.getFinishMoneyRate() == null){
+                    return 1;
+                }
+                int i = top1.getFinishMoneyRate().subtract(top2.getFinishMoneyRate()).intValue();
+                if(i == 0){
+                    return 0;
+                }else if (i>0){
+                    return 1;
+                }else {
+                    return -1;
+                }
+            }
+        });
+
         for (int i = 0; i <list.size(); i++) {
             SaleFinishMoneyTopDTO saleFinishMoneyTopDTO = list.get(i);
             saleFinishMoneyTopDTO.setTopNum(i+1);
