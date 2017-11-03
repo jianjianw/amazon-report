@@ -187,6 +187,7 @@ public class ReportApi {
             BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, bannchNumList.get(i));
             store.setBranchName(branchDTO.getBranchName());
             store.setBigDay(bigDay);
+            store.setBranchName(branchDTO.getBranchName());
             //上期的营业额
             Iterator before = beforeMoneyByBranch.iterator();
             while (before.hasNext()) {
