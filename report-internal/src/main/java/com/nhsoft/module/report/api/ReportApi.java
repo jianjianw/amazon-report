@@ -891,6 +891,7 @@ public class ReportApi {
                         saleMoneyMonthDTO.setAddRate(BigDecimal.ZERO);
                     }else{
                         saleMoney = (saleMoney == null ? BigDecimal.ZERO : saleMoney);
+                        //同比增长率
                         BigDecimal divide = (saleMoney.subtract(bizMoney)).divide(bizMoney, 4, ROUND_HALF_DOWN);
                         BigDecimal product = new BigDecimal(100);
                         saleMoneyMonthDTO.setAddRate(divide.multiply(product) == null?BigDecimal.ZERO : divide.multiply(product));

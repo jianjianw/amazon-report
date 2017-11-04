@@ -24,6 +24,14 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	@Override
 	public List<Branch> findAll(String systemBookCode) {
 		List<Branch> all = branchDao.findAll(systemBookCode);
+		//遍历all，将分店号为99的去除
+		for (int i = 0; i <all.size() ; i++) {
+			Branch branch = all.get(i);
+			if(branch.getId().getBranchNum().equals(99)){
+				all.remove(i);
+				break;
+			}
+		}
 		return all;
 	}
 
