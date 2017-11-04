@@ -878,10 +878,12 @@ public class ReportApi {
                     }
                 }
             }
+            //截取月份，因为要和去年的比较
+            String reMonth = bizmonth.replaceAll("2017", "2016");
             //同比增长率
             for (int j = 0; j <beforeRevenueByBizmonth.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = beforeRevenueByBizmonth.get(j);
-                if(bizmonth.equals(branchBizRevenueSummary.getBiz())){
+                if(reMonth.equals(branchBizRevenueSummary.getBiz())){
                     BigDecimal saleMoney = saleMoneyMonthDTO.getSaleMoney();//本期销售额
                     BigDecimal bizMoney = branchBizRevenueSummary.getBizMoney();//同期销售额
                     //设置同期营业额
@@ -901,5 +903,4 @@ public class ReportApi {
         }
         return list;
     }
-
 }
