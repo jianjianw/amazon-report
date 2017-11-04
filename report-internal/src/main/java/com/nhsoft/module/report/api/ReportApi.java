@@ -354,7 +354,7 @@ public class ReportApi {
                     break;
                 }
             }
-            store.setMemberSalesRealizeRate(BigDecimal.ZERO);       //会员销售额完成率
+            //暂时将完成率设置为0
             store.setAllBillRealizeRate(BigDecimal.ZERO);           //总客单完成率
             store.setGrossProfitRate(BigDecimal.ZERO);              //毛利完成率
             store.setRealizeRate2(BigDecimal.ZERO);                 //新增会员数完成率
@@ -491,6 +491,7 @@ public class ReportApi {
             }else{
                 region.setGrowthOf((revenue.subtract(beforeSaleMoney)).divide(beforeSaleMoney, 2, ROUND_HALF_DOWN));//环比增长率     （本期-上期）/上期
             }
+            //暂时将完成率设置为0
             region.setAllBillRealizeRate(BigDecimal.ZERO);      //总客单完成率
             region.setGrossProfitRate(BigDecimal.ZERO);        //毛利完成率
             region.setRealizeRate2(BigDecimal.ZERO);  //新增会员数完成率
