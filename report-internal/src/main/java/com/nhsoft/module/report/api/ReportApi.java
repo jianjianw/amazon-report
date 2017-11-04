@@ -878,8 +878,8 @@ public class ReportApi {
                     }
                 }
             }
-            //截取月份，因为要和去年的比较
-            String reMonth = bizmonth.replaceAll("2017", "2016");
+            //改变年份，因为要和去年的比较
+            String reMonth = bizmonth.replaceAll(date, Integer.parseInt(date)-1+"");
             //同比增长率
             for (int j = 0; j <beforeRevenueByBizmonth.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = beforeRevenueByBizmonth.get(j);
