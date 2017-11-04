@@ -119,14 +119,15 @@ public class TestSpringBoot {
 
     @Test
     public void testBranchTop(){
-        List<SaleFinishMoneyTopDTO> moneyFinishRateBranchTop = reportApi.findMoneyFinishRateBranchTop("4020", "", "2017-10-10");
+        List<SaleFinishMoneyTopDTO> moneyFinishRateBranchTop = reportApi.findMoneyFinishRateBranchTop("4020", null, "2017-10-10");
         System.out.println();
     }
 
 
     @Test
     public void testRegionTop(){
-        reportApi.findMoneyFinishRateRegionTop("4020","123|haha",null);
+        List<SaleFinishMoneyTopDTO> moneyFinishRateRegionTop = reportApi.findMoneyFinishRateRegionTop("4020", null, "2017-10-11");
+        System.out.println();
     }
 
     @Test

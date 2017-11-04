@@ -3,7 +3,7 @@ package com.nhsoft.module.report.api.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class SaleFinishMoneyTopDTO implements Serializable{
+public class SaleFinishMoneyTopDTO implements Serializable,Comparable<SaleFinishMoneyTopDTO>{
 
 
     public SaleFinishMoneyTopDTO() {
@@ -67,4 +67,9 @@ public class SaleFinishMoneyTopDTO implements Serializable{
         this.topNum = topNum;
     }
 
+    @Override
+    public int compareTo(SaleFinishMoneyTopDTO top) {
+        int i = this.getFinishMoneyRate().compareTo(top.getFinishMoneyRate());
+        return i;
+    }
 }
