@@ -193,7 +193,7 @@ public class ReportApi {
             while (before.hasNext()) {
                 BranchRevenueReport next = (BranchRevenueReport) before.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setBeforeSaleMoney(next.getBizMoney());//上期营业额
+                    store.setBeforeSaleMoney(next.getBizMoney() == null ? BigDecimal.ZERO : next.getBizMoney());//上期营业额
                     break;
                 }
             }
@@ -203,19 +203,15 @@ public class ReportApi {
                 BranchRevenueReport next = (BranchRevenueReport) money.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
                     store.setBranchNum(next.getBranchNum());        //分店号
-                    store.setRevenue(next.getBizMoney());           //营业额
-                    store.setGrossProfit(next.getProfit());         //毛利
-                    store.setBillNums(next.getOrderCount());        //客单量
-                    store.setAveBillNums(new BigDecimal(next.getOrderCount()).divide(bigDay, 2, ROUND_HALF_DOWN));    //日均客单量
-                    store.setBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 2, ROUND_HALF_DOWN));//客单价
+                    store.setRevenue(next.getBizMoney() == null ? BigDecimal.ZERO : next.getBizMoney());           //营业额
+                    store.setGrossProfit(next.getProfit() == null ? BigDecimal.ZERO : next.getProfit());         //毛利
+                    store.setBillNums(next.getOrderCount() == null ? 0 : next.getOrderCount());        //客单量
+                    store.setAveBillNums(new BigDecimal(store.getBillNums()).divide(bigDay, 2, ROUND_HALF_DOWN));    //日均客单量
+                    store.setBill(store.getRevenue().divide(new BigDecimal(store.getBillNums()), 2, ROUND_HALF_DOWN));//客单价
                     //本期营业额-上期营业额
-                    BigDecimal subtract = store.getRevenue().subtract(store.getGrowthOf() == null ? BigDecimal.ZERO : store.getGrowthOf());
+                    BigDecimal subtract = store.getRevenue().subtract(store.getBeforeSaleMoney());
                     //环比增长率
-                    if (store.getGrowthOf() == null) {
-                        store.setGrowthOf(BigDecimal.ZERO);
-                    } else {
-                        store.setGrowthOf(subtract.divide(store.getGrowthOf(), 2, ROUND_HALF_DOWN));//（今年6月的销售额 - 今年5月的销售额相比）/ 今年5月的销售额相比 （本期-上期）/上期
-                    }
+                    store.setGrowthOf(subtract.divide(store.getBeforeSaleMoney(), 2, ROUND_HALF_DOWN));//（今年6月的销售额 - 今年5月的销售额相比）/ 今年5月的销售额相比 （本期-上期）/上期
                     break;
                 }
             }
@@ -225,7 +221,7 @@ public class ReportApi {
             while (cardUserCount.hasNext()) {
                 CardUserCount next = (CardUserCount) cardUserCount.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setIncressedMember(next.getCount()); //会员新增数
+                    store.setIncressedMember(next.getCount() == null ? 0 : next.getCount()); //会员新增数
                     break;
                 }
             }
@@ -235,7 +231,7 @@ public class ReportApi {
             while (deposit.hasNext()) {
                 BranchDepositReport next = (BranchDepositReport) deposit.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setCardStorage(next.getDeposit());//卡存款
+                    store.setCardStorage(next.getDeposit() == null ? BigDecimal.ZERO : next.getDeposit());//卡存款
                     break;
                 }
             }
@@ -277,7 +273,7 @@ public class ReportApi {
                     }else{
                         store.setMemeberRevenueOccupy(store.getMemberSaleMoney().divide(store.getRevenue(),2,ROUND_HALF_DOWN));//会员销售额占比
                     }
-                    store.setMemberBillNums(next.getOrderCount());    //会员客单量
+                    store.setMemberBillNums(next.getOrderCount() == null ? 0 : next.getOrderCount());    //会员客单量
                     store.setMemberBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 2, ROUND_HALF_DOWN));//会员客单价
                     break;
                 }
@@ -304,7 +300,7 @@ public class ReportApi {
             while (loss.hasNext()) {
                 LossMoneyReport next = (LossMoneyReport) loss.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setDestroyDefferent(next.getMoney());//报损金额
+                    store.setDestroyDefferent(next.getMoney() == null ? BigDecimal.ZERO : next.getMoney());//报损金额
                     break;
                 }
             }
@@ -312,7 +308,7 @@ public class ReportApi {
             while (check.hasNext()) {
                 CheckMoney next = (CheckMoney) check.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setAdjustAmount(next.getMoney());//盘损金额
+                    store.setAdjustAmount(next.getMoney()== null ? BigDecimal.ZERO : next.getMoney());//盘损金额
                     break;
                 }
             }
@@ -351,13 +347,18 @@ public class ReportApi {
             while (adjustmentCause.hasNext()) {
                 AdjustmentCauseMoney next = (AdjustmentCauseMoney) adjustmentCause.next();
                 if (store.getBranchNum().equals(next.getBranchNum())) {
-                    store.setTest(next.getTryEat());    //试吃
-                    store.setPeel(next.getFaly());      //去皮
-                    store.setBreakage(next.getLoss());  //报损
-                    store.setOther(next.getOther());    //其他
+                    store.setTest(next.getTryEat() == null ? BigDecimal.ZERO : next.getTryEat() );    //试吃
+                    store.setPeel(next.getFaly() == null ? BigDecimal.ZERO : next.getFaly() );      //去皮
+                    store.setBreakage(next.getLoss() == null ? BigDecimal.ZERO : next.getLoss());  //报损
+                    store.setOther(next.getOther() == null ? BigDecimal.ZERO : next.getOther());    //其他
                     break;
                 }
             }
+            store.setMemberSalesRealizeRate(BigDecimal.ZERO);       //会员销售额完成率
+            store.setAllBillRealizeRate(BigDecimal.ZERO);           //总客单完成率
+            store.setGrossProfitRate(BigDecimal.ZERO);              //毛利完成率
+            store.setRealizeRate2(BigDecimal.ZERO);                 //新增会员数完成率
+            store.setRealizeRate3(BigDecimal.ZERO);                 //卡储值完成率
             list.add(store);
         }
         System.out.println();
@@ -441,12 +442,15 @@ public class ReportApi {
             }
             region.setAreaBranchNums(areaBranchNums);                                                       //区域包含的分店
             region.setRevenue(revenue);//营业额
+            region.setSaleMoneyGoal(saleMoneyGoal);//营业额目标
             if(saleMoneyGoal.compareTo(BigDecimal.ZERO) == 0){
                 region.setRealizeRate1(BigDecimal.ZERO);
             }else{
                 region.setRealizeRate1(revenue.divide(saleMoneyGoal, 2, ROUND_HALF_DOWN));              //营业额完成率
             }
+            region.setTransferOutMoney(transferOutMoney);//配送金额
             region.setDistributionDifferent(transferOutMoney.subtract(revenue));                                //配销差额
+            region.setMemberSaleMoney(memberSaleMoney);//会员销售额
             if(revenue.compareTo(BigDecimal.ZERO) == 0){
                 region.setMemeberRevenueOccupy(BigDecimal.ZERO);
             }else {
@@ -457,6 +461,7 @@ public class ReportApi {
             }else{
                 region.setBill(revenue.divide(new BigDecimal(memberBillNums), 2, ROUND_HALF_DOWN));     //客单价
             }
+            region.setBillNums(billNums);//客单量
             if(billNums == null || billNums.equals(0)){
                 region.setAveBillNums(BigDecimal.ZERO);
             }else{
