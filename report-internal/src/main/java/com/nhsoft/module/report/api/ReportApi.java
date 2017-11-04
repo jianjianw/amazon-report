@@ -211,7 +211,11 @@ public class ReportApi {
                     //本期营业额-上期营业额
                     BigDecimal subtract = store.getRevenue().subtract(store.getBeforeSaleMoney());
                     //环比增长率
-                    store.setGrowthOf(subtract.divide(store.getBeforeSaleMoney(), 2, ROUND_HALF_DOWN));//（今年6月的销售额 - 今年5月的销售额相比）/ 今年5月的销售额相比 （本期-上期）/上期
+                    if(store.getBeforeSaleMoney().compareTo(BigDecimal.ZERO) == 0){
+                        store.setGrowthOf(BigDecimal.ZERO);
+                    }else{
+                        store.setGrowthOf(subtract.divide(store.getBeforeSaleMoney(), 2, ROUND_HALF_DOWN));//（本期-上期）/上期
+                    }
                     break;
                 }
             }
@@ -382,6 +386,7 @@ public class ReportApi {
             Integer regionNum = branchRegions.get(i).getBranchRegionNum();
             //多少个分店号就创建多少个分店
             OperationRegionDTO region = new OperationRegionDTO();
+
             BigDecimal revenue = BigDecimal.ZERO;  //营业额
             BigDecimal saleMoneyGoal = BigDecimal.ZERO;//营业额目标
             Integer billNums = 0;                   //客单量
@@ -486,6 +491,7 @@ public class ReportApi {
             }else{
                 region.setStorageConsumeOccupy(cardStorage.divide(cartStorageConsume, 2, ROUND_HALF_DOWN));//储值消费占比
             }
+            region.setBeforeSaleMoney(beforeSaleMoney);//上期营业额
             if(beforeSaleMoney.compareTo(BigDecimal.ZERO) == 0){
                 region.setGrowthOf(BigDecimal.ZERO);
             }else{

@@ -4,11 +4,40 @@ import java.math.BigDecimal;
 
 public class OperationStoreDTO {
 
+
 	public OperationStoreDTO() {
+		this.branchNum = 0;
 		this.revenue = BigDecimal.ZERO;
-		this.incressedMember = 0;
-		this.cardStorage = BigDecimal.ZERO;
+		this.realizeRate1 = BigDecimal.ZERO;
+		this.memberSalesRealizeRate = BigDecimal.ZERO;
+		this.memeberRevenueOccupy = BigDecimal.ZERO;
+		this.aveBillNums = BigDecimal.ZERO;
+		this.allBillRealizeRate = BigDecimal.ZERO;
+		this.memberBillNums = 0;
+		this.bill = BigDecimal.ZERO;
+		this.memberBill = BigDecimal.ZERO;
 		this.distributionDifferent = BigDecimal.ZERO;
+		this.destroyDefferent = BigDecimal.ZERO;
+		this.adjustAmount = BigDecimal.ZERO;
+		this.grossProfit = BigDecimal.ZERO;
+		this.grossProfitRate = BigDecimal.ZERO;
+		this.incressedMember = 0;
+		this.realizeRate2 = BigDecimal.ZERO;
+		this.cardStorage = BigDecimal.ZERO;
+		this.realizeRate3 = BigDecimal.ZERO;
+		this.cartStorageConsume = BigDecimal.ZERO;
+		this.storageConsumeOccupy = BigDecimal.ZERO;
+		this.growthOf = BigDecimal.ZERO;
+		this.areaEfficiency = BigDecimal.ZERO;
+		this.test = BigDecimal.ZERO;
+		this.peel = BigDecimal.ZERO;
+		this.breakage = BigDecimal.ZERO;
+		this.other = BigDecimal.ZERO;
+		this.saleMoneyGoal = BigDecimal.ZERO;
+		this.beforeSaleMoney = BigDecimal.ZERO;
+		this.transferOutMoney = BigDecimal.ZERO;
+		this.billNums = 0;
+		this.memberSaleMoney = BigDecimal.ZERO;
 	}
 
 	private Integer branchNum;                    //分店编号
