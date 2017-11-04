@@ -546,7 +546,6 @@ public class ReportApi {
         //配送额
         List<TransferOutMoney> transferOutMoneyByBizday = transferOutOrderRpc.findMoneyBizdaySummary(systemBookCode, bannchNumList, dateFrom, dateTo);
         List<TrendDailyDTO> list = new ArrayList<>();
-
         for (int i = 0; i < max; i++) {
             calendar.setTime(dateFrom);
             calendar.add(Calendar.DAY_OF_MONTH, i);
@@ -555,37 +554,31 @@ public class ReportApi {
             String bizday = DateUtil.getDateShortStr(time);
             TrendDailyDTO trendDaily = new TrendDailyDTO();
             trendDaily.setDay(bizday.substring(bizday.length() - 2, bizday.length()) + "日");
-
+            //营业额 客单量
             for (int j = 0; j < revenueByBizday.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizday.get(j);
                 if (bizday.equals(branchBizRevenueSummary.getBiz())) {
-                    trendDaily.setRevenue(branchBizRevenueSummary.getBizMoney());
-                    trendDaily.setBillNums(branchBizRevenueSummary.getOrderCount());
+                    trendDaily.setRevenue(branchBizRevenueSummary.getBizMoney() == null ? BigDecimal.ZERO : branchBizRevenueSummary.getBizMoney());
+                    trendDaily.setBillNums(branchBizRevenueSummary.getOrderCount() == null ? 0 : branchBizRevenueSummary.getOrderCount());
                     break;
                 }
             }
-          /*  //如果营业额为null或0 就跳出循环
-            if(trendDaily.getRevenue() == null || trendDaily.getRevenue().compareTo(BigDecimal.ZERO) == 0){
-                continue;
-            }*/
-
+            //会员营业额 客单量
             for (int j = 0; j < memberRevenueByBizday.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizday.get(j);
                 if (bizday.equals(branchBizRevenueSummary.getBiz())) {
-                    trendDaily.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
-                    trendDaily.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
+                    trendDaily.setMemberRevenue(branchBizRevenueSummary.getBizMoney() == null ? BigDecimal.ZERO : branchBizRevenueSummary.getBizMoney());
+                    trendDaily.setMemberBillNums(branchBizRevenueSummary.getOrderCount() == null ? 0 : branchBizRevenueSummary.getOrderCount());
                     break;
                 }
-
             }
-
+            //配送额
             for (int j = 0; j < transferOutMoneyByBizday.size(); j++) {
                 TransferOutMoney transferOutMoney = transferOutMoneyByBizday.get(j);
                 if (bizday.equals(transferOutMoney.getBiz())) {
-                    trendDaily.setDistributionMoney(transferOutMoney.getOutMoney());
+                    trendDaily.setDistributionMoney(transferOutMoney.getOutMoney() == null ? BigDecimal.ZERO : transferOutMoney.getOutMoney());
                     break;
                 }
-
             }
             list.add(trendDaily);
         }
@@ -638,31 +631,31 @@ public class ReportApi {
             String bizmonth = DateUtil.getYearAndMonthString(time);
             TrendMonthlyDTO trendMonthly = new TrendMonthlyDTO();
             trendMonthly.setMonth(bizmonth.substring(bizmonth.length() - 2, bizmonth.length()) + "月");
-
+            //营业额 客单量
             for (int j = 0; j < revenueByBizmonth.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(j);
                 if (bizmonth.equals(branchBizRevenueSummary.getBiz())) {
-                    trendMonthly.setRevenue(branchBizRevenueSummary.getBizMoney());
-                    trendMonthly.setBillNums(branchBizRevenueSummary.getOrderCount());
-                    trendMonthly.setGross(branchBizRevenueSummary.getProfit());
+                    trendMonthly.setRevenue(branchBizRevenueSummary.getBizMoney() == null ? BigDecimal.ZERO : branchBizRevenueSummary.getBizMoney());
+                    trendMonthly.setBillNums(branchBizRevenueSummary.getOrderCount() == null ? 0 : branchBizRevenueSummary.getOrderCount());
+                    trendMonthly.setGross(branchBizRevenueSummary.getProfit() == null ? BigDecimal.ZERO : branchBizRevenueSummary.getProfit());
                     break;
                 }
             }
-
+            //会员营业额 客单量
             for (int j = 0; j < memberRevenueByBizmonth.size(); j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = memberRevenueByBizmonth.get(j);
                 if (bizmonth.equals(branchBizRevenueSummary.getBiz())) {
-                    trendMonthly.setMemberRevenue(branchBizRevenueSummary.getBizMoney());
-                    trendMonthly.setMemberBillNums(branchBizRevenueSummary.getOrderCount());
-                    trendMonthly.setGross(branchBizRevenueSummary.getProfit());
+                    trendMonthly.setMemberRevenue(branchBizRevenueSummary.getBizMoney() == null ? BigDecimal.ZERO : branchBizRevenueSummary.getBizMoney());
+                    trendMonthly.setMemberBillNums(branchBizRevenueSummary.getOrderCount() == null ? 0 : branchBizRevenueSummary.getOrderCount());
+                    trendMonthly.setGross(branchBizRevenueSummary.getProfit() == null ? BigDecimal.ZERO : branchBizRevenueSummary.getProfit());
                     break;
                 }
             }
-
+            //配送额
             for (int j = 0; j < transferOutMoneyBymonth.size(); j++) {
                 TransferOutMoney transferOutMoney = transferOutMoneyBymonth.get(j);
                 if (bizmonth.equals(transferOutMoney.getBiz())) {
-                    trendMonthly.setDistributionMoney(transferOutMoney.getOutMoney());
+                    trendMonthly.setDistributionMoney(transferOutMoney.getOutMoney() == null ? BigDecimal.ZERO : transferOutMoney.getOutMoney());
                     break;
                 }
             }
@@ -700,7 +693,7 @@ public class ReportApi {
             for (int j = 0; j < moneyByBranch.size(); j++) {
                 BranchRevenueReport branchRevenueReport = moneyByBranch.get(j);
                 if (saleFinishMoneyTopDTO.getNum().equals(branchRevenueReport.getBranchNum())) {
-                    saleFinishMoneyTopDTO.setSaleMoney(branchRevenueReport.getBizMoney());
+                    saleFinishMoneyTopDTO.setSaleMoney(branchRevenueReport.getBizMoney() == null ? BigDecimal.ZERO : branchRevenueReport.getBizMoney() );
                     break;
                 }
             }
@@ -710,7 +703,7 @@ public class ReportApi {
 
                if(saleFinishMoneyTopDTO.getNum().equals(saleMoneyGoals.getBranchNum())){
                    //营业额目标
-                   saleFinishMoneyTopDTO.setGoalMoney(saleMoneyGoals.getSaleMoney());
+                   saleFinishMoneyTopDTO.setGoalMoney(saleMoneyGoals.getSaleMoney() == null ? BigDecimal.ZERO : saleMoneyGoals.getSaleMoney());
                    //完成率
                    if(saleFinishMoneyTopDTO.getSaleMoney() == null || saleFinishMoneyTopDTO.getSaleMoney().compareTo(BigDecimal.ZERO) == 0){
                        saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
@@ -730,9 +723,10 @@ public class ReportApi {
        Collections.sort(list, new Comparator<SaleFinishMoneyTopDTO>() {
            @Override
            public int compare(SaleFinishMoneyTopDTO top1, SaleFinishMoneyTopDTO top2) {
-               if(top1.getFinishMoneyRate() == null || top2.getFinishMoneyRate() == null){
+               //将完成率为空的设置成了0
+               /*if(top1.getFinishMoneyRate() == null || top2.getFinishMoneyRate() == null){
                    return 1;
-               }
+               }*/
                int i = top1.getFinishMoneyRate().subtract(top2.getFinishMoneyRate()).intValue();
                if(i == 0){
                    return 0;
@@ -785,7 +779,7 @@ public class ReportApi {
                 for (int k = 0; k < moneyByBranch.size(); k++) {
                     BranchRevenueReport branchRevenueReport = moneyByBranch.get(k);
                     if (branchDTO.getBranchNum().equals(branchRevenueReport.getBranchNum())) {
-                        saleFinishMoneyTopDTO.setSaleMoney(branchRevenueReport.getBizMoney());
+                        saleFinishMoneyTopDTO.setSaleMoney(branchRevenueReport.getBizMoney() == null ? BigDecimal.ZERO : branchRevenueReport.getBizMoney());
                     }
                 }
                 //目标，完成率
@@ -793,7 +787,7 @@ public class ReportApi {
                     SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(k);
                     if (branchDTO.getBranchNum().equals(saleMoneyGoals.getBranchNum())) {
                         //营业额目标
-                        saleFinishMoneyTopDTO.setGoalMoney(saleMoneyGoals.getSaleMoney());
+                        saleFinishMoneyTopDTO.setGoalMoney(saleMoneyGoals.getSaleMoney() == null ? BigDecimal.ZERO : saleMoneyGoals.getSaleMoney());
                         //完成率
                         if(saleFinishMoneyTopDTO.getSaleMoney() == null || saleFinishMoneyTopDTO.getSaleMoney().compareTo(BigDecimal.ZERO) == 0){
                             saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
@@ -814,9 +808,6 @@ public class ReportApi {
         Collections.sort(list, new Comparator<SaleFinishMoneyTopDTO>() {
             @Override
             public int compare(SaleFinishMoneyTopDTO top1, SaleFinishMoneyTopDTO top2) {
-                if(top1.getFinishMoneyRate() == null || top2.getFinishMoneyRate() == null){
-                    return 1;
-                }
                 int i = top1.getFinishMoneyRate().subtract(top2.getFinishMoneyRate()).intValue();
                 if(i == 0){
                     return 0;
@@ -893,17 +884,18 @@ public class ReportApi {
             String bizmonth = DateUtil.getYearAndMonthString(time);
             SaleMoneyMonthDTO saleMoneyMonthDTO = new SaleMoneyMonthDTO();
             saleMoneyMonthDTO.setMonth(bizmonth.substring(bizmonth.length() - 2, bizmonth.length()) + "月");
-
+            //营业额
             for (int j = 0; j <revenueByBizmonth.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = revenueByBizmonth.get(j);
                 if(bizmonth.equals(branchBizRevenueSummary.getBiz())){
-                    saleMoneyMonthDTO.setSaleMoney(branchBizRevenueSummary.getBizMoney());//营业额
+                    saleMoneyMonthDTO.setSaleMoney(branchBizRevenueSummary.getBizMoney() == null ? BigDecimal.ZERO : branchBizRevenueSummary.getBizMoney());//营业额
                 }
             }
+            //营业额目标
             for (int j = 0; j <saleMoneyGoalsByDate.size() ; j++) {
                 SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByDate.get(j);
                 if(bizmonth.equals(saleMoneyGoals.getDate())){
-                    saleMoneyMonthDTO.setSaleMoneyGoal(saleMoneyGoals.getSaleMoney());//营业额目标
+                    saleMoneyMonthDTO.setSaleMoneyGoal(saleMoneyGoals.getSaleMoney() == null ? BigDecimal.ZERO : saleMoneyGoals.getSaleMoney());//营业额目标
                     //营业额完成率
                     if(saleMoneyMonthDTO.getSaleMoney() == null || saleMoneyMonthDTO.getSaleMoney().compareTo(BigDecimal.ZERO) == 0){
                         saleMoneyMonthDTO.setFinishMoneyRate(BigDecimal.ZERO);
@@ -922,6 +914,8 @@ public class ReportApi {
                 if(bizmonth.equals(branchBizRevenueSummary.getBiz())){
                     BigDecimal saleMoney = saleMoneyMonthDTO.getSaleMoney();//本期销售额
                     BigDecimal bizMoney = branchBizRevenueSummary.getBizMoney();//同期销售额
+                    //设置同期营业额
+                    saleMoneyMonthDTO.setBeforeSaleMoney(bizMoney == null ? BigDecimal.ZERO : bizMoney);
                     //计算同比增长率   （本期-同期）/同期
                     if(bizMoney == null || bizMoney.compareTo(BigDecimal.ZERO) == 0){
                         saleMoneyMonthDTO.setAddRate(BigDecimal.ZERO);

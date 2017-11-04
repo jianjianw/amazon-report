@@ -4,6 +4,15 @@ import java.math.BigDecimal;
 
 public class TrendDailyDTO {
 
+
+	public TrendDailyDTO() {
+		this.revenue = BigDecimal.ZERO;
+		this.memberRevenue = BigDecimal.ZERO;
+		this.distributionMoney = BigDecimal.ZERO;
+		this.billNums = 0;
+		this.memberBillNums = 0;
+	}
+
 	private String day;                           // 日期
 	private BigDecimal revenue;                   // 营业额
 	private BigDecimal memberRevenue;             // 会员营业额

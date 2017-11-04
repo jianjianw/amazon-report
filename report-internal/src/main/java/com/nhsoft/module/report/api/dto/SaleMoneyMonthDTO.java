@@ -4,11 +4,22 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class SaleMoneyMonthDTO implements Serializable {
+
+    public SaleMoneyMonthDTO() {
+
+        this.saleMoney = BigDecimal.ZERO;
+        this.saleMoneyGoal = BigDecimal.ZERO;
+        this.finishMoneyRate = BigDecimal.ZERO;
+        this.addRate = BigDecimal.ZERO;
+        this.beforeSaleMoney = BigDecimal.ZERO;
+    }
+
     private String month;//月份
     private BigDecimal saleMoney;       //营业额
     private BigDecimal saleMoneyGoal;   //营业额目标
     private BigDecimal finishMoneyRate;     //营业额完成率
-    private BigDecimal AddRate;         //营业额年度增长率
+    private BigDecimal addRate;         //营业额年度增长率
+    private BigDecimal beforeSaleMoney;      //同期营业额
 
 
     public String getMonth() {
@@ -44,10 +55,18 @@ public class SaleMoneyMonthDTO implements Serializable {
     }
 
     public BigDecimal getAddRate() {
-        return AddRate;
+        return addRate;
     }
 
     public void setAddRate(BigDecimal addRate) {
-        AddRate = addRate;
+        this.addRate = addRate;
+    }
+
+    public BigDecimal getBeforeSaleMoney() {
+        return beforeSaleMoney;
+    }
+
+    public void setBeforeSaleMoney(BigDecimal beforeSaleMoney) {
+        this.beforeSaleMoney = beforeSaleMoney;
     }
 }

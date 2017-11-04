@@ -5,6 +5,13 @@ import java.math.BigDecimal;
 
 public class SaleFinishMoneyTopDTO implements Serializable{
 
+
+    public SaleFinishMoneyTopDTO() {
+        this.saleMoney = BigDecimal.ZERO;
+        this.goalMoney = BigDecimal.ZERO;
+        this.finishMoneyRate = BigDecimal.ZERO;
+    }
+
     private Integer num;//分店或区域号
     private String name;//分店或区域名
     private BigDecimal saleMoney;   //营业额
