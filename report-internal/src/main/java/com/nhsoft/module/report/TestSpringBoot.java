@@ -1,14 +1,10 @@
 package com.nhsoft.module.report;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhsoft.module.report.api.ReportApi;
 import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dto.BranchDTO;
-import com.nhsoft.module.report.dto.SaleAnalysisByPosItemDTO;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
 import com.nhsoft.module.report.dto.ShipOrderSummary;
-import com.nhsoft.module.report.query.SaleAnalysisQueryData;
 import com.nhsoft.module.report.rpc.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,13 +80,13 @@ public class TestSpringBoot {
 
     @Test
     public void testApiByStore(){           //API：com.nhsoft.module.report.api.ReportApi.byBranch耗时：2350ms
-        List<OperationStoreDTO> test = reportApi.byBranch(systemBookCode, null, "2017-11");
+        List<OperationStoreDTO> test = reportApi.byBranch(systemBookCode, null, "2017-10-30|2017-11-05");
         System.out.println();
     }
 
     @Test
     public void testApiByRegion(){          //API：com.nhsoft.module.report.api.ReportApi.byRegion耗时：3119ms
-        List<OperationRegionDTO> list = reportApi.byRegion(systemBookCode, null, "2017-03-03");
+        List<OperationRegionDTO> list = reportApi.byRegion(systemBookCode, null, "2017-10-30|2017-11-05");
         System.out.println();
     }
 
@@ -137,17 +133,6 @@ public class TestSpringBoot {
         List<SaleMoneyMonthDTO> saleAnalysisByMonth = reportApi.findSaleAnalysisByMonth("4020","|","2017");
         System.out.println();
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

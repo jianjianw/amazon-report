@@ -157,8 +157,6 @@ public interface CardUserDao {
 	public int findTotalCardCount(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
 								  Integer cardUserCardType);
 
-
-
 	/**
 	 * 按分店查询新增会员数
 	 * @param systemBookCode

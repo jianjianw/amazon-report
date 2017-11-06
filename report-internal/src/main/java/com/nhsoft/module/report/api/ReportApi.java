@@ -145,15 +145,12 @@ public class ReportApi {
                 dateType = AppConstants.BUSINESS_DATE_SOME_WEEK;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 dateFrom = sdf.parse(date.substring(0, 11));
+                dateTo = sdf.parse(date.substring(11, date.length()));
                 //判断当前时间是否在dateFrom和dateTo之间
                 if(currentTime.getTime() >= dateFrom.getTime() && currentTime.getTime() <= dateTo.getTime()){
                     //在，就将dateTo设置为当前时间
                     dateTo = currentTime;
-                }else{
-                    //不在，就直接截取dateTo
-                    dateTo = sdf.parse(date.substring(11, date.length()));
                 }
-
                 //上周的时间
                 calendar.setTime(dateFrom);
                 calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -846,8 +843,8 @@ public class ReportApi {
 
     //年度销售分析
     @RequestMapping(method = RequestMethod.GET, value = "/saleAnalysis")
-    public List<SaleMoneyMonthDTO> findSaleAnalysisByMonth(@RequestHeader("systemBookCode") String systemBookCode,
-                                                           @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+    public List<SaleMoneyMonthDTO> findSaleAnalysisByMonth(@RequestParam("systemBookCode") String systemBookCode,
+                                                           @RequestParam("branchNums") String branchNums, @RequestParam("date") String date){
 
         List<Integer> bannchNumList = new ArrayList<>();
         int index = branchNums.indexOf("|");
