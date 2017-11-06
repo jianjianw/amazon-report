@@ -382,7 +382,6 @@ public class ReportApi {
             store.setRealizeRate3(BigDecimal.ZERO);                 //卡储值完成率
             list.add(store);
         }
-        System.out.println();
         return list;
 
     }
