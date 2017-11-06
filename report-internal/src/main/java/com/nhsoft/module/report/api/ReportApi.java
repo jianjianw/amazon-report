@@ -843,8 +843,8 @@ public class ReportApi {
 
     //年度销售分析
     @RequestMapping(method = RequestMethod.GET, value = "/saleAnalysis")
-    public List<SaleMoneyMonthDTO> findSaleAnalysisByMonth(@RequestParam("systemBookCode") String systemBookCode,
-                                                           @RequestParam("branchNums") String branchNums, @RequestParam("date") String date){
+    public List<SaleMoneyMonthDTO> findSaleAnalysisByMonth(@RequestHeader("systemBookCode") String systemBookCode,
+                                                           @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
 
         List<Integer> bannchNumList = new ArrayList<>();
         int index = branchNums.indexOf("|");
