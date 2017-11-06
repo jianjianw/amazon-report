@@ -176,6 +176,7 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_YEAR)){
+			sb.append("and {fn LENGTH(branch_transfer_interval)} = 4 ");
 			if (dateFrom != null) {
 				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateShortStr(dateFrom).substring(0,4) + "' ");
 			}
@@ -192,6 +193,7 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 			}
 
 		}else {
+			sb.append("and {fn LENGTH(branch_transfer_interval)} = 10 ");
 			if (dateFrom != null) {
 				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateStr(dateFrom) + "' ");
 			}

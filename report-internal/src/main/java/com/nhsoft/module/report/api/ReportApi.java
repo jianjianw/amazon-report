@@ -860,7 +860,7 @@ public class ReportApi {
         return list;
     }
 
-    //销售分析
+    //年度销售分析
     @RequestMapping(method = RequestMethod.GET, value = "/saleAnalysis")
     public List<SaleMoneyMonthDTO> findSaleAnalysisByMonth(@RequestHeader("systemBookCode") String systemBookCode,
                                                            @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
@@ -950,7 +950,7 @@ public class ReportApi {
                         }else if(saleMoneyMonthDTO.getSaleMoneyGoal() == null || saleMoneyMonthDTO.getSaleMoneyGoal().compareTo(BigDecimal.ZERO) == 0){
                             saleMoneyMonthDTO.setFinishMoneyRate(BigDecimal.ZERO);
                         }else{
-                            BigDecimal divide = saleMoneyMonthDTO.getSaleMoney().divide(saleMoneyMonthDTO.getSaleMoneyGoal(), 4, ROUND_HALF_DOWN);
+                            BigDecimal divide = (saleMoneyMonthDTO.getSaleMoney()).divide(saleMoneyMonthDTO.getSaleMoneyGoal(), 4, ROUND_HALF_DOWN);
                             BigDecimal product = new BigDecimal(100);
                             saleMoneyMonthDTO.setFinishMoneyRate(divide.multiply(product));
                         }
@@ -964,21 +964,25 @@ public class ReportApi {
             for (int j = 0; j <beforeRevenueByBizmonth.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = beforeRevenueByBizmonth.get(j);
                 if(reMonth.equals(branchBizRevenueSummary.getBiz())){
-                    BigDecimal saleMoney = saleMoneyMonthDTO.getSaleMoney();//本期销售额
-                    BigDecimal bizMoney = branchBizRevenueSummary.getBizMoney();//同期销售额
-                    //设置同期营业额
-                    saleMoneyMonthDTO.setBeforeSaleMoney(bizMoney == null ? BigDecimal.ZERO : bizMoney);
-                    //计算同比增长率   （本期-同期）/同期
-                    if(bizMoney == null || bizMoney.compareTo(BigDecimal.ZERO) == 0){
-                        saleMoneyMonthDTO.setAddRate(BigDecimal.ZERO);
+                    if(bizmonthInt>currentInt){
+                        saleMoneyMonthDTO.setAddRate(null);
                     }else{
-                        //同比增长率
-                        BigDecimal divide = (saleMoney.subtract(bizMoney)).divide(bizMoney, 4, ROUND_HALF_DOWN);
-                        BigDecimal product = new BigDecimal(100);
-                        saleMoneyMonthDTO.setAddRate(divide.multiply(product));
+                        BigDecimal saleMoney = saleMoneyMonthDTO.getSaleMoney();//本期销售额
+                        BigDecimal bizMoney = branchBizRevenueSummary.getBizMoney();//同期销售额
+                        //设置同期营业额
+                        saleMoneyMonthDTO.setBeforeSaleMoney(bizMoney == null ? BigDecimal.ZERO : bizMoney);
+                        //计算同比增长率   （本期-同期）/同期
+                        if(bizMoney == null || bizMoney.compareTo(BigDecimal.ZERO) == 0){
+                            saleMoneyMonthDTO.setAddRate(BigDecimal.ZERO);
+                        }else{
+                            //同比增长率
+                            BigDecimal divide = (saleMoney.subtract(bizMoney)).divide(bizMoney, 4, ROUND_HALF_DOWN);
+                            BigDecimal product = new BigDecimal(100);
+                            saleMoneyMonthDTO.setAddRate(divide.multiply(product));
+                        }
                     }
+                    break;
                 }
-                break;
             }
             list.add(saleMoneyMonthDTO);
         }
