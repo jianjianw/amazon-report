@@ -83,20 +83,21 @@ public class TestSpringBoot {
     }
 
     @Test
-    public void testApiByStore(){
+    public void testApiByStore(){           //API：com.nhsoft.module.report.api.ReportApi.byBranch耗时：2350ms
         List<OperationStoreDTO> test = reportApi.byBranch(systemBookCode, null, "2017-10-04");
         System.out.println();
     }
 
     @Test
-    public void testApiByRegion(){
+    public void testApiByRegion(){          //API：com.nhsoft.module.report.api.ReportApi.byRegion耗时：3119ms
         List<OperationRegionDTO> list = reportApi.byRegion(systemBookCode, null, "2017-03-03");
         System.out.println();
     }
 
 
     @Test
-    public void byBizday(){
+    public void byBizday(){     //API：com.nhsoft.module.report.api.ReportApi.byBizday耗时：201ms
+
 
         List<TrendDailyDTO> list = reportApi.byBizday(systemBookCode, "122|好的", "2017-10");
 
@@ -105,7 +106,7 @@ public class TestSpringBoot {
     }
 
     @Test
-    public void byBizmonth(){
+    public void byBizmonth(){   //API：com.nhsoft.module.report.api.ReportApi.byBizmonth耗时：363ms
         List<TrendMonthlyDTO> trendMonthlies = reportApi.byBizmonth(systemBookCode, "|", "2017");
         System.out.println();
     }
@@ -118,66 +119,21 @@ public class TestSpringBoot {
 
 
     @Test
-    public void testBranchTop(){
+    public void testBranchTop(){        //API：com.nhsoft.module.report.api.ReportApi.findMoneyFinishRateBranchTop耗时：1948ms
         List<SaleFinishMoneyTopDTO> moneyFinishRateBranchTop = reportApi.findMoneyFinishRateBranchTop("4020", null, "2017-10-10");
         System.out.println();
     }
 
 
     @Test
-    public void testRegionTop(){
+    public void testRegionTop(){        //API：com.nhsoft.module.report.api.ReportApi.findMoneyFinishRateRegionTop耗时：961ms
         List<SaleFinishMoneyTopDTO> moneyFinishRateRegionTop = reportApi.findMoneyFinishRateRegionTop("4020", null, "2017-10-11");
         System.out.println();
     }
 
-    @Test
-    public void testCarriage(){
-        List<ShipOrderSummary> carriageMoneyByCompanies = shipOrderRpc.findCarriageMoneyByCompanies("4020",null,new Date(),new Date(),null);
-        System.out.println();
-    }
 
     @Test
-    public void testFindDetails(){
-        List<ShipDetailDTO> details = shipOrderRpc.findDetails("4020", null, new Date(), new Date(), null);
-        System.out.println();
-    }
-    @Autowired
-    private ReportRpc reportRpc;
-
-    @Test
-    public void testSaleAnalysis() throws Exception{
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateFrom = null;
-        Date dateTo = null;
-        try {
-            dateFrom = sdf.parse("2017-10-01");
-            dateTo  = sdf.parse("2017-11-01");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        List<Integer> list = new ArrayList<>();
-        SaleAnalysisQueryData data = new SaleAnalysisQueryData();
-        data.setSystemBookCode("4020");
-        data.setBranchNums(list);
-        data.setDtFrom(dateFrom);
-        data.setDtTo(dateTo);
-        List<Integer> itemNums = new ArrayList<>();
-        /*itemNums.add(110010009);
-        itemNums.add(110010007);
-        itemNums.add(110010008);
-        itemNums.add(402000378);
-        itemNums.add(402001101);*/
-       /* itemNums.add(402001163);
-        itemNums.add(402002323);*/
-        data.setPosItemNums(itemNums);
-        List<SaleAnalysisByPosItemDTO> saleAnalysisByBranchPosItems = reportRpc.findSaleAnalysisByBranchPosItems("4020", data);
-        ObjectMapper mapper = new ObjectMapper();
-        String string = mapper.writeValueAsString(saleAnalysisByBranchPosItems);
-        System.out.println(string);
-    }
-
-    @Test
-    public void test1(){
+    public void test1(){            //API：com.nhsoft.module.report.api.ReportApi.findSaleAnalysisByMonth耗时：331ms
         List<SaleMoneyMonthDTO> saleAnalysisByMonth = reportApi.findSaleAnalysisByMonth("4020","|","2017");
         System.out.println();
     }

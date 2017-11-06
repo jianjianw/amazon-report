@@ -839,4 +839,5 @@ public class DateUtil {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日HH时mm分");
 		return sdf.format(date);
 	}
+
 }
