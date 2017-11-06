@@ -105,9 +105,6 @@ public class ReportApi {
         Calendar calendar = Calendar.getInstance();
         //获取当前系统时间
         Date currentTime = calendar.getTime();
-        //String dateStr = DateUtil.getDateStr(currentTime);
-
-
         try {
             if (date.length() == 7) {
                 dateType = AppConstants.BUSINESS_DATE_SOME_MONTH;
@@ -967,26 +964,21 @@ public class ReportApi {
             for (int j = 0; j <beforeRevenueByBizmonth.size() ; j++) {
                 BranchBizRevenueSummary branchBizRevenueSummary = beforeRevenueByBizmonth.get(j);
                 if(reMonth.equals(branchBizRevenueSummary.getBiz())){
-                    if(bizmonthInt>currentInt){
-                        saleMoneyMonthDTO.setBeforeSaleMoney(null);
-                        saleMoneyMonthDTO.setAddRate(null);
-                    }else {
-                        BigDecimal saleMoney = saleMoneyMonthDTO.getSaleMoney();//本期销售额
-                        BigDecimal bizMoney = branchBizRevenueSummary.getBizMoney();//同期销售额
-                        //设置同期营业额
-                        saleMoneyMonthDTO.setBeforeSaleMoney(bizMoney == null ? BigDecimal.ZERO : bizMoney);
-                        //计算同比增长率   （本期-同期）/同期
-                        if(bizMoney == null || bizMoney.compareTo(BigDecimal.ZERO) == 0){
-                            saleMoneyMonthDTO.setAddRate(BigDecimal.ZERO);
-                        }else{
-                            //同比增长率
-                            BigDecimal divide = (saleMoney.subtract(bizMoney)).divide(bizMoney, 4, ROUND_HALF_DOWN);
-                            BigDecimal product = new BigDecimal(100);
-                            saleMoneyMonthDTO.setAddRate(divide.multiply(product));
-                        }
+                    BigDecimal saleMoney = saleMoneyMonthDTO.getSaleMoney();//本期销售额
+                    BigDecimal bizMoney = branchBizRevenueSummary.getBizMoney();//同期销售额
+                    //设置同期营业额
+                    saleMoneyMonthDTO.setBeforeSaleMoney(bizMoney == null ? BigDecimal.ZERO : bizMoney);
+                    //计算同比增长率   （本期-同期）/同期
+                    if(bizMoney == null || bizMoney.compareTo(BigDecimal.ZERO) == 0){
+                        saleMoneyMonthDTO.setAddRate(BigDecimal.ZERO);
+                    }else{
+                        //同比增长率
+                        BigDecimal divide = (saleMoney.subtract(bizMoney)).divide(bizMoney, 4, ROUND_HALF_DOWN);
+                        BigDecimal product = new BigDecimal(100);
+                        saleMoneyMonthDTO.setAddRate(divide.multiply(product));
                     }
-                    break;
                 }
+                break;
             }
             list.add(saleMoneyMonthDTO);
         }
