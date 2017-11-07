@@ -512,8 +512,7 @@ public class CardUserDaoImpl extends  DaoImpl implements CardUserDao {
 		sb.append("group by card_user_enroll_shop order by card_user_enroll_shop asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		List list = sqlQuery.list();
-		return list;
+		return sqlQuery.list();
 
 	}
 }
