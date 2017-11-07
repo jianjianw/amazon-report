@@ -22,7 +22,7 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 
 @Configuration
-@ImportResource({"classpath:config.xml"})
+@ImportResource({"classpath:config.xml", "classpath:dubbo.xml"})
 public class InitConfig {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InitConfig.class);

@@ -10,6 +10,7 @@ import com.dangdang.ddframe.rdb.sharding.api.strategy.database.NoneDatabaseShard
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.sharding.AlipayLogSharding;
 import com.nhsoft.module.report.sharding.PosItemLogSharding;
+import com.nhsoft.module.report.sharding.PosOrderSharding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -26,12 +28,15 @@ import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by yangqin on 2017/8/26.
  */
 @Configuration
+@PropertySource({"classpath:sharding.properties"})
 public class MultipleDataSourceConfig implements EnvironmentAware {
 	private static final Logger logger = LoggerFactory.getLogger(MultipleDataSourceConfig.class);
 	
@@ -131,10 +136,14 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		
 		TableRule alipayLogTableRule = AlipayLogSharding.createTableRule(dataSourceRule);
 		TableRule posItemLogTableRule = PosItemLogSharding.createTableRule(dataSourceRule);
+		TableRule posOrderTableRule = PosOrderSharding.createTableRule(dataSourceRule);
+		TableRule paymentTableRule = PosOrderSharding.createPaymentTableRule(dataSourceRule);
+		TableRule posOrderDetailTableRule = PosOrderSharding.createPosOrderDetailTableRule(dataSourceRule);
+		TableRule posOrderKitDetailTableRule = PosOrderSharding.createPosOrderKitDetailTableRule(dataSourceRule);
 		
 		ShardingRule shardingRule = ShardingRule.builder()
 				.dataSourceRule(dataSourceRule)
-				.tableRules(Arrays.asList(alipayLogTableRule, posItemLogTableRule))
+				.tableRules(Arrays.asList(alipayLogTableRule, posItemLogTableRule,posOrderTableRule, paymentTableRule, posOrderDetailTableRule, posOrderKitDetailTableRule))
 				.databaseShardingStrategy(new DatabaseShardingStrategy("none", new NoneDatabaseShardingAlgorithm()))
 				.build();
 
