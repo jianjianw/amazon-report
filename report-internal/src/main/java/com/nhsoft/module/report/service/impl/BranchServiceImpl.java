@@ -114,7 +114,7 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_readWithNolock' + #p0 + #p2")
+	@Cacheable(value = "serviceCache", key = "'AMA_readWithNolock' + #p0 + #p1")
 	public Branch readWithNolock(String systemBookCode, Integer branchNum) {
 		return branchDao.readWithNolock(systemBookCode,branchNum);
 	}
