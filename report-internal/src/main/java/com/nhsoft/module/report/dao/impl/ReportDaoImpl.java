@@ -2368,13 +2368,13 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
-				
-				sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-			} else {
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
+				
+				
+			} else {
+				
+				sb.append("and p.order_source = '" + queryData.getSaleType() + "' ");
 			}
 		}
 		if(queryData.getTimeFrom() != null && queryData.getTimeTo() != null){

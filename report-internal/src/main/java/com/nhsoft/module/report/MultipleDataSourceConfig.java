@@ -45,6 +45,8 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 
 	@Value("${dpc.url}")
 	private String DPC_URL;
+	@Value("${sharding.pos_order.book_codes}")
+	private String posOrderShardingBooks;
 	
 	public static class MultipleDataSource extends AbstractRoutingDataSource {
 		
@@ -136,14 +138,16 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		
 		TableRule alipayLogTableRule = AlipayLogSharding.createTableRule(dataSourceRule);
 		TableRule posItemLogTableRule = PosItemLogSharding.createTableRule(dataSourceRule);
-		TableRule posOrderTableRule = PosOrderSharding.createTableRule(dataSourceRule);
-		TableRule paymentTableRule = PosOrderSharding.createPaymentTableRule(dataSourceRule);
-		TableRule posOrderDetailTableRule = PosOrderSharding.createPosOrderDetailTableRule(dataSourceRule);
-		TableRule posOrderKitDetailTableRule = PosOrderSharding.createPosOrderKitDetailTableRule(dataSourceRule);
+		TableRule posOrderTableRule = PosOrderSharding.createTableRule(dataSourceRule, posOrderShardingBooks);
+		TableRule paymentTableRule = PosOrderSharding.createPaymentTableRule(dataSourceRule, posOrderShardingBooks);
+		TableRule posOrderDetailTableRule = PosOrderSharding.createPosOrderDetailTableRule(dataSourceRule, posOrderShardingBooks);
+		TableRule posOrderKitDetailTableRule = PosOrderSharding.createPosOrderKitDetailTableRule(dataSourceRule, posOrderShardingBooks);
 		
 		ShardingRule shardingRule = ShardingRule.builder()
 				.dataSourceRule(dataSourceRule)
-				.tableRules(Arrays.asList(alipayLogTableRule, posItemLogTableRule,posOrderTableRule, paymentTableRule, posOrderDetailTableRule, posOrderKitDetailTableRule))
+				.tableRules(Arrays.asList(alipayLogTableRule, posItemLogTableRule
+						,posOrderTableRule, paymentTableRule, posOrderDetailTableRule, posOrderKitDetailTableRule
+				))
 				.databaseShardingStrategy(new DatabaseShardingStrategy("none", new NoneDatabaseShardingAlgorithm()))
 				.build();
 
