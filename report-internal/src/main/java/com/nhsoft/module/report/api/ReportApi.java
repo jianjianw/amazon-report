@@ -1,23 +1,28 @@
 package com.nhsoft.module.report.api;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.dto.TransferOutMoney;
 import com.nhsoft.module.report.util.AppConstants;
+import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.*;
 
-
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
@@ -45,6 +50,9 @@ public class ReportApi {
     private TransferOutOrderRpc transferOutOrderRpc;
     @Autowired
     private AlipayLogRpc alipayLogRpc;
+    @Autowired
+    private RedisTemplate redisTemplate;
+
 
     public List<Integer> stringToList(String systemBookCode, String str) {
 
@@ -87,6 +95,22 @@ public class ReportApi {
     @RequestMapping(method = RequestMethod.GET, value = "/store")
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
+
+      /*  Gson gson = AppUtil.toBuilderGson();
+        ValueOperations valueOperations = null;
+        try {
+            valueOperations = redisTemplate.opsForValue();
+            //读取缓存
+            String storelist = (String)valueOperations.get(AppConstants.REPORT+"STORELIST");
+            if(storelist != null){
+                List<OperationStoreDTO> list =gson.fromJson(storelist, new TypeToken<List<OperationStoreDTO>>() {}.getType());
+               return list;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("读取缓存失败");
+        }*/
+
 
         //点击区域跳转到分店，区域下面没有分店，直接一个空的list
         if(branchNums != null && branchNums.length() == 2){

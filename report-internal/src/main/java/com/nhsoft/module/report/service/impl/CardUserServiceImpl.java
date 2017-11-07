@@ -3,6 +3,7 @@ package com.nhsoft.module.report.service.impl;
 import com.nhsoft.module.report.dao.CardUserDao;
 import com.nhsoft.module.report.service.CardUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -37,6 +38,7 @@ public class CardUserServiceImpl implements CardUserService {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'findCardUserCountByBranch' + #p0")
 	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return cardUserDao.findCardUserCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 	}

@@ -3,6 +3,7 @@ package com.nhsoft.module.report.service.impl;
 import com.nhsoft.module.report.dao.CardConsumeDao;
 import com.nhsoft.module.report.service.CardConsumeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,6 +19,7 @@ public class CardConsumeServiceImpl implements CardConsumeService {
 	
 	
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findBranchSum' + #p0")
 	public List<Object[]> findBranchSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return cardConsumeDao.findBranchSum(systemBookCode, branchNums, dateFrom, dateTo, null);
 	}

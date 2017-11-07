@@ -8,6 +8,7 @@ import com.nhsoft.module.report.util.AppConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -105,6 +106,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findMoneyBranchSummary' + #p0 + #p2")
 	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
 
 
@@ -116,6 +118,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findMoneyBizdaySummary' + #p0 + #p2")
 	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 		List<Object[]> objects = null;
 		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
@@ -125,6 +128,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findMoneyBizmonthSummary' + #p0 + #p2")
 	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 		List<Object[]> objects = null;
 		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
