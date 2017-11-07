@@ -96,18 +96,18 @@ public class ReportApi {
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
-      /*  Gson gson = AppUtil.toBuilderGson();
+       /* Gson gson = AppUtil.toBuilderGson();
         ValueOperations valueOperations = null;
         try {
             valueOperations = redisTemplate.opsForValue();
             //读取缓存
-            String storelist = (String)valueOperations.get(AppConstants.REPORT+"STORELIST");
+            String storelist = (String)valueOperations.get("STORELIST");
             if(storelist != null){
                 List<OperationStoreDTO> list =gson.fromJson(storelist, new TypeToken<List<OperationStoreDTO>>() {}.getType());
                return list;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             logger.error("读取缓存失败");
         }*/
 
