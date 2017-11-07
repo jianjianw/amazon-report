@@ -21,5 +21,7 @@
             <AppenderRef ref="Fileout" />
             <AppenderRef ref="Stdout" />
         </Root>
+        <Logger level="Error" name="org.springframework" />
+
     </Loggers>
 </Configuration>

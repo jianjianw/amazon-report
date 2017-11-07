@@ -2316,6 +2316,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			if (queryData.getSaleMoney() == null) {
 				queryData.setSaleMoney(BigDecimal.ZERO);
 			}
+			
 			String caseSql = "(case when detail.order_detail_state_code = 2 then 0 "
 					+ "when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) ";
 			BigDecimal saleMoney = queryData.getSaleMoney();
