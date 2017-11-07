@@ -9,6 +9,7 @@ import com.nhsoft.module.report.util.BaseManager;
 import com.nhsoft.module.report.util.MemCacheUtil;
 import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,6 +23,7 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	private ConcurrentMap<String, Date> cacheDateMap = new ConcurrentHashMap<String, Date>();
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findAll' + #p0")
 	public List<Branch> findAll(String systemBookCode) {
 		List<Branch> all = branchDao.findAll(systemBookCode);
 		//遍历all，将分店号为99的去除
@@ -110,6 +112,7 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_readWithNolock' + #p0 + #p2")
 	public Branch readWithNolock(String systemBookCode, Integer branchNum) {
 		return branchDao.readWithNolock(systemBookCode,branchNum);
 	}
