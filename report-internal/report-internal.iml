@@ -129,7 +129,6 @@
     <orderEntry type="library" name="Maven: org.unidal.framework:foundation-service:2.5.0" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-all:4.0.24.Final" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-container-default:1.6" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.0.20" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-classworlds:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.xbean:xbean-reflect:3.7" level="project" />
     <orderEntry type="library" name="Maven: com.nhsoft:amazon-phone:1.0" level="project" />
@@ -151,5 +150,6 @@
     <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-test:1.5.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-test:4.3.10.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.0.24" level="project" />
   </component>
 </module>
