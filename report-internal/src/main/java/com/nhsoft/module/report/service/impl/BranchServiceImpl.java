@@ -108,6 +108,7 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'findBranchArea' + #p0")
 	public List<Object[]> findBranchArea(String systemBookCode, List<Integer> branchNums) {
 		return branchDao.findBranchArea(systemBookCode,branchNums);
 	}
