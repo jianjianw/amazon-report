@@ -7,26 +7,33 @@ import java.math.BigDecimal;
  * */
 public class YearMoneyAddRateDTO implements Serializable {
 
-    private String name;//分店或区域
+    private String branchName;                      //分店名
+    private Integer branchNum;                      //分店号
+    private BigDecimal saleMoney;                   //营业额
+    private BigDecimal beforeSaleMoney;             //同期营业额
+    private BigDecimal saleMoneyAddRate;            //营业额同比增长率
+    private BigDecimal billNum;                      //客单量
+    private BigDecimal beforeBillNums;              //同期客单量
+    private BigDecimal billNumAddRate;              //客单量同比增长率
+    private BigDecimal billMoney;                   //客单价
+    private BigDecimal beforebillMoney;             //同期客单价
+    private BigDecimal billMoneyAddRate;            //客单价同比增长率
+    private int top;                                //排名
 
-    private BigDecimal saleMoney;   //营业额
-    private BigDecimal beforeSaleMoney; //同期营业额
-    private BigDecimal saleMoneyAddRate;//营业额同比增长率
-
-    private BigDecimal billNum;    //客单量
-    private BigDecimal beforeBillNums;  //同期客单量
-    private BigDecimal billNumAddRate;  //客单量同比增长率
-
-    private BigDecimal billMoney;   //客单价
-    private BigDecimal beforebillMoney;//同期客单价
-    private BigDecimal billMoneyAddRate;    //客单价同比增长率
-
-    public String getName() {
-        return name;
+    public String getBranchName() {
+        return branchName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public Integer getBranchNum() {
+        return branchNum;
+    }
+
+    public void setBranchNum(Integer branchNum) {
+        this.branchNum = branchNum;
     }
 
     public BigDecimal getSaleMoney() {
@@ -99,5 +106,13 @@ public class YearMoneyAddRateDTO implements Serializable {
 
     public void setBillMoneyAddRate(BigDecimal billMoneyAddRate) {
         this.billMoneyAddRate = billMoneyAddRate;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
+    public void setTop(int top) {
+        this.top = top;
     }
 }

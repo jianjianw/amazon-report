@@ -1042,21 +1042,21 @@ public class ReportApi {
             }
             //星期五
             for (int j = 0; j <fridayMoneyGoal.size() ; j++) {
-                SaleMoneyGoals saleMoneyGoals = fridayMoneyGoal.get(i);
+                SaleMoneyGoals saleMoneyGoals = fridayMoneyGoal.get(j);
                 if(branchNum.equals(saleMoneyGoals.getBranchNum())){
                     branchFinishRateTopDTO.setFriSaleMoneyGoal(saleMoneyGoals.getSaleMoney() == null ?BigDecimal.ZERO : saleMoneyGoals.getSaleMoney());
                 }
             }
             //星期六
             for (int j = 0; j <saturdayMoneyGoal.size() ; j++) {
-                SaleMoneyGoals saleMoneyGoals = saturdayMoneyGoal.get(i);
+                SaleMoneyGoals saleMoneyGoals = saturdayMoneyGoal.get(j);
                 if(branchNum.equals(saleMoneyGoals.getBranchNum())){
                     branchFinishRateTopDTO.setSatSaleMoneyGoal(saleMoneyGoals.getSaleMoney() == null ? BigDecimal.ZERO : saleMoneyGoals.getSaleMoney());
                 }
             }
             //星期天
             for (int j = 0; j <sundayMoneyGoal.size() ; j++) {
-                SaleMoneyGoals saleMoneyGoals = sundayMoneyGoal.get(i);
+                SaleMoneyGoals saleMoneyGoals = sundayMoneyGoal.get(j);
                 if(branchNum.equals(saleMoneyGoals.getBranchNum())){
                     branchFinishRateTopDTO.setSunSaleMoneyGoal(saleMoneyGoals.getSaleMoney() == null ? BigDecimal.ZERO : saleMoneyGoals.getSaleMoney());
                 }
@@ -1064,7 +1064,7 @@ public class ReportApi {
 
             //按分店汇总营业额(当天营业额)
             for (int j = 0; j <moneyByBranch.size() ; j++) {
-                BranchRevenueReport branchRevenueReport = moneyByBranch.get(i);
+                BranchRevenueReport branchRevenueReport = moneyByBranch.get(j);
                 if(branchNum.equals(branchRevenueReport.getBranchNum())){
                     branchFinishRateTopDTO.setSaleMoney(branchRevenueReport.getBizMoney() == null ? BigDecimal.ZERO : branchRevenueReport.getBizMoney() );//营业额
                     branchFinishRateTopDTO.setOrderCount(branchRevenueReport.getOrderCount() == null ? 0 : branchRevenueReport.getOrderCount());  //客单量
@@ -1074,7 +1074,7 @@ public class ReportApi {
 
             //按分店汇总日营业额目标(当天的目标)
             for (int j = 0; j <saleMoneyGoalsByBranch.size() ; j++) {
-                SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(i);
+                SaleMoneyGoals saleMoneyGoals = saleMoneyGoalsByBranch.get(j);
                 if(branchNum.equals(saleMoneyGoals.getBranchNum())){
                     //营业额目标
                     branchFinishRateTopDTO.setSaleMoneyGoal(saleMoneyGoals.getSaleMoney() == null ? BigDecimal.ZERO : saleMoneyGoals.getSaleMoney());
@@ -1091,7 +1091,7 @@ public class ReportApi {
 
             //按分店汇总月营业额目标
             for (int j = 0; j <monthGoal.size() ; j++) {
-                SaleMoneyGoals saleMoneyGoals = monthGoal.get(i);
+                SaleMoneyGoals saleMoneyGoals = monthGoal.get(j);
                 if(branchNum.equals(saleMoneyGoals.getBranchNum())){
                     branchFinishRateTopDTO.setMonthSaleMoneyGoal(saleMoneyGoals.getSaleMoney() == null ? BigDecimal.ZERO : saleMoneyGoals.getSaleMoney());
                     //日均营业额目标
@@ -1139,9 +1139,31 @@ public class ReportApi {
                 }
             }
         }
-
         Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
         //list.sort(Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
+        for (int i = 0; i <list.size() ; i++) {
+            //设置排名
+            BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
+            branchFinishRateTopDTO.setTop(i+1);
+        }
         return list;
+    }
+    //销售额同比增长排名
+    @RequestMapping(method=RequestMethod.GET,value="/moneyAddRateDTO")
+    public List<YearMoneyAddRateDTO> findBeforeAddRateTop(@RequestHeader("systemBookCode") String systemBookCode,
+                                                          @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+        Date dateFrom = DateUtil.getShortDate(date);
+        //按分店查询营业额
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateFrom, false);
+
+        //按分店查询同期营业额
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateFrom);
+        int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);    //今年的第几周
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) + 1;    //本周的周几
+
+
+        return null;
     }
 }
