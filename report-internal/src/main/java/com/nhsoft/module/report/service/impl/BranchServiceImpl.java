@@ -23,7 +23,6 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	private ConcurrentMap<String, Date> cacheDateMap = new ConcurrentHashMap<String, Date>();
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findAll' + #p0")
 	public List<Branch> findAll(String systemBookCode) {
 		List<Branch> all = branchDao.findAll(systemBookCode);
 		//遍历all，将分店号为99的去除
@@ -102,19 +101,19 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findBranchByBranchRegionNum' + #p0")
+	@Cacheable(value = "serviceCache")
 	public List<Branch> findBranchByBranchRegionNum(String systemBookCode, Integer branchRegionNum) {
 		return branchDao.findBranchByBranchRegionNum(systemBookCode,branchRegionNum);
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'findBranchArea' + #p0")
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findBranchArea(String systemBookCode, List<Integer> branchNums) {
 		return branchDao.findBranchArea(systemBookCode,branchNums);
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_readWithNolock' + #p0 + #p1")
+	@Cacheable(value = "serviceCache")
 	public Branch readWithNolock(String systemBookCode, Integer branchNum) {
 		return branchDao.readWithNolock(systemBookCode,branchNum);
 	}

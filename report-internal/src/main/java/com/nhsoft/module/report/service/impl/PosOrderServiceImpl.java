@@ -106,7 +106,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findMoneyBranchSummary' + #p0 + #p2")
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
 
 
@@ -118,7 +118,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findMoneyBizdaySummary' + #p0 + #p2")
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 		List<Object[]> objects = null;
 		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
@@ -128,7 +128,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findMoneyBizmonthSummary' + #p0 + #p2")
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 		List<Object[]> objects = null;
 		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){

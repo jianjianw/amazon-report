@@ -2,7 +2,10 @@ package com.nhsoft.module.report.api.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-
+/**
+ *
+ * 按月份汇总营业额
+ * */
 public class SaleMoneyMonthDTO implements Serializable {
 
     public SaleMoneyMonthDTO() {

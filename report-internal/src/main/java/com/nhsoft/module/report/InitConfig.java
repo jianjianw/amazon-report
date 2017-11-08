@@ -60,6 +60,7 @@ public class InitConfig {
 		jedisConnectionFactory.setPassword(REDIS_PASS);
 		jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
 		jedisConnectionFactory.setTimeout(60000);
+		jedisConnectionFactory.afterPropertiesSet();		//Cannot get Jedis connection
 		
 		RedisTemplate redisTemplate = new RedisTemplate();
 		redisTemplate.setConnectionFactory(jedisConnectionFactory);
