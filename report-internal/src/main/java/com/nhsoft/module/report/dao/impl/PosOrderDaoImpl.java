@@ -191,11 +191,11 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
 		sb.append("count(detail.item_num) as saleCount ");
 		sb.append("from pos_order_detail as detail with(nolock) ");
-		sb.append("where detail.order_detail_book_code = :systemBookCode ");
+		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' ");
 		if (branchNums != null && branchNums.size() > 0) {
 			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
-		sb.append("and detail.order_detail_bizday between :dateFrom and :dateTo ");
+		sb.append("and detail.order_detail_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and  '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		sb.append("and detail.order_detail_order_state in (5, 7) ");
 		sb.append("and detail.order_detail_state_code != 8 and detail.item_num is not null ");
 		if (itemNums != null && itemNums.size() > 0) {
@@ -206,9 +206,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		sb.append("group by detail.item_num");
 		Query query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", systemBookCode);
-		query.setString("dateFrom", DateUtil.getDateShortStr(dateFrom));
-		query.setString("dateTo", DateUtil.getDateShortStr(dateTo));
 		List<Object[]> objects = query.list();
 		if (queryKit) {
 			sb = new StringBuffer();
@@ -218,11 +215,11 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
 			sb.append("count(detail.item_num) as saleCount ");
 			sb.append("from pos_order_kit_detail as detail with(nolock) ");
-			sb.append("where detail.order_kit_detail_book_code = :systemBookCode ");
+			sb.append("where detail.order_kit_detail_book_code = '" + systemBookCode + "' ");
 			if (branchNums != null && branchNums.size() > 0) {
 				sb.append("and detail.order_kit_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 			}
-			sb.append("and detail.order_kit_detail_bizday between :dateFrom and :dateTo ");
+			sb.append("and detail.order_kit_detail_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and  '" + DateUtil.getDateShortStr(dateTo) + "' ");
 			sb.append("and detail.order_kit_detail_order_state in (5, 7) ");
 			sb.append("and detail.order_kit_detail_state_code != 8  and detail.item_num is not null ");
 			if (itemNums != null && itemNums.size() > 0) {
@@ -230,9 +227,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			}
 			sb.append("group by detail.item_num");
 			query = currentSession().createSQLQuery(sb.toString());
-			query.setString("systemBookCode", systemBookCode);
-			query.setString("dateFrom", DateUtil.getDateShortStr(dateFrom));
-			query.setString("dateTo", DateUtil.getDateShortStr(dateTo));
 			List<Object[]> kitObjects = query.list();
 			objects.addAll(kitObjects);
 		}
