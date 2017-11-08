@@ -19,7 +19,7 @@ public class CardConsumeServiceImpl implements CardConsumeService {
 	
 	
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findBranchSum' + #p0")
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findBranchSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return cardConsumeDao.findBranchSum(systemBookCode, branchNums, dateFrom, dateTo, null);
 	}

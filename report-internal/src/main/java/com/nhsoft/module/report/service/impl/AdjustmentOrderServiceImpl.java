@@ -31,7 +31,7 @@ public class AdjustmentOrderServiceImpl implements AdjustmentOrderService {
 
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findAdjustmentCauseMoneyByBranch' + #p0")
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return adjustmentOrderDao.findAdjustmentCauseMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}

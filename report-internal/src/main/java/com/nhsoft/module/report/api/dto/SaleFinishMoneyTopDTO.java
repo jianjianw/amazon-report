@@ -2,7 +2,9 @@ package com.nhsoft.module.report.api.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-
+/**
+ * 区域或分店，按营业额完成率排名
+ * */
 public class SaleFinishMoneyTopDTO implements Serializable,Comparable<SaleFinishMoneyTopDTO>{
 
 
