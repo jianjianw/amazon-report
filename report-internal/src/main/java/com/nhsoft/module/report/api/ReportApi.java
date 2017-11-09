@@ -1163,7 +1163,8 @@ public class ReportApi {
                 Integer integer = branchNumList.get(i);
                 for (int j = 0; j <list.size() ; j++) {
                     BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(j);
-                    if(integer.equals(branchFinishRateTopDTO)){
+                    Integer branchNum = branchFinishRateTopDTO.getBranchNum();
+                    if(integer .equals(branchNum)){
                         newList.add(branchFinishRateTopDTO);
                     }
                 }
