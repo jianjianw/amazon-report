@@ -1113,7 +1113,8 @@ public class ReportApi {
             list.add(branchFinishRateTopDTO);
         }
         //排序
-        Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
+        Comparator<BranchFinishRateTopDTO> comparing = Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate);
+        list.sort(comparing.reversed());
         for (int i = 0; i <list.size() ; i++) {
             //设置排名
             BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
@@ -1149,10 +1150,14 @@ public class ReportApi {
                     }
                 }
             }
-            //如果数据被全部移出，不能返回空，因为前台要拿日期数据
-            BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO();
-            branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
-            list.add(branchFinishRateTopDTO);
+            if(list.size() == 0){
+                //如果数据被全部移出，不能返回空，因为前台要拿日期数据
+                BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO();
+                branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
+                branchFinishRateTopDTO.setTop(null);
+                list.add(branchFinishRateTopDTO);
+            }
+
         }
 
         List<BranchFinishRateTopDTO> newList = new ArrayList<>();

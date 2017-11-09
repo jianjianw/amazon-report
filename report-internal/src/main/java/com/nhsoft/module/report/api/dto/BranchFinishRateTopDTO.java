@@ -37,7 +37,7 @@ public class BranchFinishRateTopDTO implements Serializable {
     private BigDecimal sunSaleMoneyGoal;            //星期天营业额目标
     private BigDecimal monSaleMoneyGoal;            //星期一到星期四营业额目标
     private String date;                             //返回日期和星期几
-    private int top;                                //排名
+    private Integer top;                                //排名
 
 
     public String getBranchName() {
@@ -152,11 +152,11 @@ public class BranchFinishRateTopDTO implements Serializable {
         this.date = date;
     }
 
-    public int getTop() {
+    public Integer getTop() {
         return top;
     }
 
-    public void setTop(int top) {
+    public void setTop(Integer top) {
         this.top = top;
     }
 }
