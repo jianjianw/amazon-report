@@ -1094,18 +1094,17 @@ public class ReportApi {
         if(branchNums != null && branchNums.length()>3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
             String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
             String[] branchArray = replace.split(",");
-            if(branchArray.length>0){//如果前台有分店就要过滤其他分店
-                Iterator<BranchFinishRateTopDTO> iterator = list.iterator();
-                while(iterator.hasNext()){
-                    BranchFinishRateTopDTO next = iterator.next();
-                    for (int i = 0; i <branchArray.length ; i++) {
-                        Integer integer = Integer.parseInt(branchArray[i]);
-                        if(!integer.equals(next.getBranchNum())){
-                            iterator.remove();
-                        }
+            Iterator<BranchFinishRateTopDTO> iterator = list.iterator();
+            while(iterator.hasNext()){
+                BranchFinishRateTopDTO next = iterator.next();
+                for (int i = 0; i <branchArray.length ; i++) {
+                    Integer integer = Integer.parseInt(branchArray[i]);
+                    if(!integer.equals(next.getBranchNum())){
+                        iterator.remove();
                     }
                 }
             }
+
         }
 
         //判断有没有过滤条件
