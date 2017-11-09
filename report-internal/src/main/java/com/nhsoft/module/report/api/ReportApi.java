@@ -45,11 +45,11 @@ public class ReportApi {
     private AlipayLogRpc alipayLogRpc;
 
 
-    public List<Integer> stringToList(String systemBookCode, String str) {
+    public List<Integer> stringToList(String systemBookCode, String branchNums) {
 
         List<Integer> bannchNumList = new ArrayList<>();
         //如果传入分店为null,就查询所有分店
-        if (str == null || str.length() == 0) {
+        if (branchNums == null || branchNums.length() == 0 || branchNums.length() == 2) {
             List<BranchDTO> all = branchRpc.findAll(systemBookCode);
             for (int i = 0; i < all.size(); i++) {
                 BranchDTO branchDTO = all.get(i);
@@ -58,7 +58,7 @@ public class ReportApi {
             return bannchNumList;
         }
         else {
-            String replace = str.replace("[", "").replace("]", "").replace(" ", "");
+            String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
             String[] split = replace.split(",");
             for (int i = 0; i < split.length; i++) {
                 bannchNumList.add(Integer.parseInt(split[i]));
@@ -1089,7 +1089,7 @@ public class ReportApi {
         }
 
         //判断有没有过滤条件
-        if(goal == null || goal.equals("null")){    //查询所有
+        if(goal == null || goal.equals("null") || goal.length() == 0){    //查询所有
             Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
             for (int i = 0; i <list.size() ; i++) {
                 //设置排名
