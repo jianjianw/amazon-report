@@ -965,6 +965,7 @@ public class ReportApi {
         return list;
     }
 
+    ///分割线，下面的两个方法是给下面的api用的
 
     //查询所有分店
     public List<Integer> findAllBranch(String systemBookCode) {
@@ -976,9 +977,6 @@ public class ReportApi {
             bannchNumList.add(branchDTO.getBranchNum());
         }
         return bannchNumList;
-
-
-
     }
     //将分店字符串装入集合
     public List<Integer> subBranchNum(String systemBookCode,String branchNums){
