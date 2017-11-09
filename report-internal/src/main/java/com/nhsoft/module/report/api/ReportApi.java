@@ -1087,10 +1087,10 @@ public class ReportApi {
 
             list.add(branchFinishRateTopDTO);
         }
-
+        //排序
+        Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
         //判断有没有过滤条件
         if(goal == null || goal.equals("null") || goal.length() == 0){    //查询所有
-            Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
             for (int i = 0; i <list.size() ; i++) {
                 //设置排名
                 BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
@@ -1126,12 +1126,6 @@ public class ReportApi {
                     }
                 }
             }
-           /* Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
-            for (int i = 0; i <list.size() ; i++) {
-                //设置排名
-                BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
-                branchFinishRateTopDTO.setTop(i+1);
-            }*/
             return list;
         }
 
