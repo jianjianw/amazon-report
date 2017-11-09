@@ -1252,6 +1252,10 @@ public class ReportApi {
             list.add(yearMoneyAddRateDTO);
         }
         Collections.sort(list,Comparator.comparing(YearMoneyAddRateDTO::getSaleMoneyAddRate));
+        for (int i = 0; i <list.size() ; i++) {
+            YearMoneyAddRateDTO yearMoneyAddRateDTO = list.get(i);
+            yearMoneyAddRateDTO.setTop(i+1);
+        }
         return list;
     }
 }
