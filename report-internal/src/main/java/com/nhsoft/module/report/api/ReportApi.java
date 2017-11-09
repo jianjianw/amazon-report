@@ -970,7 +970,7 @@ public class ReportApi {
     public List<BranchFinishRateTopDTO> findFinishRateTopByBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                                                   @RequestHeader("branchNums") String branchNums,
                                                                   @RequestHeader("date") String date, @RequestHeader("goal") String goal){
-        String[] arrayDay = {"一","二","三","四","五","六","日"};
+        String[] arrayDay = {"日","一","二","三","四","五","六"};
         Date dateFrom = DateUtil.getShortDate(date);
         Integer dayCountOfMonth = DateUtil.getDayCountOfMonth(dateFrom);//获取当月天数
         BigDecimal bigDay = new BigDecimal(dayCountOfMonth);
@@ -1014,7 +1014,7 @@ public class ReportApi {
             branchFinishRateTopDTO.setBranchNum(branchNum);
             branchFinishRateTopDTO.setBranchName(branchDTO.getBranchName());
 
-            branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day-1] + " )");
+            branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
             //星期一到星期四
             for (int j = 0; j <thursdayMoneyGoal.size() ; j++) {
                 SaleMoneyGoals saleMoneyGoals = thursdayMoneyGoal.get(j);
