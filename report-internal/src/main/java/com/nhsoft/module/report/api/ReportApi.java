@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 
 import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
@@ -994,7 +995,7 @@ public class ReportApi {
         Integer dayCountOfMonth = DateUtil.getDayCountOfMonth(dateFrom);//获取当月天数
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateFrom);
-        Integer day = calendar.get(Calendar.DAY_OF_WEEK) + 1;
+        Integer day = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         BigDecimal bigDay = new BigDecimal(day);
         calendar.add(Calendar.DAY_OF_MONTH, -day);
         Date time = calendar.getTime();//得到上周星期天
@@ -1148,22 +1149,109 @@ public class ReportApi {
         }
         return list;
     }
+
     //销售额同比增长排名
     @RequestMapping(method=RequestMethod.GET,value="/moneyAddRateDTO")
     public List<YearMoneyAddRateDTO> findBeforeAddRateTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                           @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
         Date dateFrom = DateUtil.getShortDate(date);
-        //按分店查询营业额
-        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateFrom, false);
 
-        //按分店查询同期营业额
+        //根据当前日期获得，今天是今年的第几周,周几
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateFrom);
         int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);    //今年的第几周
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) + 1;    //本周的周几
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);    //本周的周几
+
+        //根据第几周获取，同期的日期（去年第几周的日期）
+        calendar.add(Calendar.YEAR,-1);//上一年
+        calendar.set(Calendar.WEEK_OF_YEAR, weekOfYear); // 设置为2016年的第10周
+        calendar.set(Calendar.DAY_OF_WEEK,dayOfWeek); // 1表示周日，2表示周一，7表示周六
+        Date beforeDateFrom = calendar.getTime();
 
 
-        return null;
+        //按分店查询同期营业额
+        List<BranchRevenueReport> beforeMoneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, beforeDateFrom, beforeDateFrom, false);
+        //按分店查询营业额
+        List<BranchRevenueReport> moneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, dateFrom, dateFrom, false);
+
+        List<YearMoneyAddRateDTO> list = new ArrayList<>();
+
+        for (int i = 0; i <bannchNumList.size() ; i++) {
+            YearMoneyAddRateDTO yearMoneyAddRateDTO = new YearMoneyAddRateDTO();
+            Integer branchNum = bannchNumList.get(i);
+            BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, branchNum);
+            yearMoneyAddRateDTO.setBranchNum(branchNum);
+            yearMoneyAddRateDTO.setBranchName(branchDTO.getBranchName());
+            //同期分店营业额
+            for (int j = 0; j <beforeMoneyByBranch.size() ; j++) {
+                BranchRevenueReport branchRevenueReport = beforeMoneyByBranch.get(i);
+                if(branchNum.equals(branchRevenueReport.getBranchNum())){
+                    yearMoneyAddRateDTO.setBeforeSaleMoney(branchRevenueReport.getBizMoney() == null ? BigDecimal.ZERO : branchRevenueReport.getBizMoney());   //营业额
+                    yearMoneyAddRateDTO.setBeforeBillNum(branchRevenueReport.getOrderCount() == null ? 0 : branchRevenueReport.getOrderCount());    //客单量
+                    if(yearMoneyAddRateDTO.getBeforeSaleMoney().compareTo(BigDecimal.ZERO) == 0 || yearMoneyAddRateDTO.getBeforeBillNum().equals(0)){
+                        yearMoneyAddRateDTO.setBeforebillMoney(BigDecimal.ZERO);   //客单价
+                    }else{
+                        yearMoneyAddRateDTO.setBeforebillMoney(yearMoneyAddRateDTO.getBeforeSaleMoney().divide(new BigDecimal(yearMoneyAddRateDTO.getBeforeBillNum()),4,ROUND_HALF_DOWN));   //客单价
+                    }
+                    yearMoneyAddRateDTO.setBeforeProfit(branchRevenueReport.getProfit());//毛利
+                }
+            }
+            //本期分店营业额
+            for (int j = 0; j <moneyByBranch.size() ; j++) {
+                BranchRevenueReport branchRevenueReport = moneyByBranch.get(i);
+                if(branchNum.equals(branchRevenueReport.getBranchNum())){
+                    yearMoneyAddRateDTO.setSaleMoney(branchRevenueReport.getBizMoney() == null ? BigDecimal.ZERO : branchRevenueReport.getBizMoney());//营业额
+                    yearMoneyAddRateDTO.setBillNum(branchRevenueReport.getOrderCount() == null ? 0 : branchRevenueReport.getOrderCount());//客单量
+                    if(yearMoneyAddRateDTO.getSaleMoney().compareTo(BigDecimal.ZERO) == 0 || yearMoneyAddRateDTO.getBillNum().equals(0)){
+                        yearMoneyAddRateDTO.setBillMoney(BigDecimal.ZERO);
+                    }else{
+                        yearMoneyAddRateDTO.setBillMoney(yearMoneyAddRateDTO.getSaleMoney().divide(new BigDecimal(yearMoneyAddRateDTO.getBillNum()),4,ROUND_HALF_DOWN));//客单价
+                    }
+                    yearMoneyAddRateDTO.setProfit(branchRevenueReport.getProfit());//毛利
+
+                    //营业额同比增长率   （本期-同期）/ 同期
+                    BigDecimal saleMoney = yearMoneyAddRateDTO.getSaleMoney();//本期
+                    BigDecimal beforeSaleMoney = yearMoneyAddRateDTO.getBeforeSaleMoney();//同期
+                    if(beforeSaleMoney.compareTo(BigDecimal.ZERO) == 0){
+                        yearMoneyAddRateDTO.setSaleMoneyAddRate(BigDecimal.ZERO);
+                    }else{
+                        yearMoneyAddRateDTO.setSaleMoneyAddRate((saleMoney.subtract(beforeSaleMoney)).divide(beforeSaleMoney,4,ROUND_HALF_DOWN));
+                    }
+
+
+                    //客单量同比增长率
+                    BigDecimal billNum = new BigDecimal(yearMoneyAddRateDTO.getBillNum());//本期
+                    BigDecimal beforeBillNum = new BigDecimal(yearMoneyAddRateDTO.getBeforeBillNum());//同期
+                    if(beforeBillNum.equals(0)){
+                        yearMoneyAddRateDTO.setBillNumAddRate(BigDecimal.ZERO);
+                    }else{
+                        yearMoneyAddRateDTO.setBillNumAddRate((billNum.subtract(beforeBillNum)).divide(beforeBillNum,4,ROUND_HALF_DOWN));
+                    }
+
+
+                    //客单价同比增长率
+                    BigDecimal billMoney = yearMoneyAddRateDTO.getBillMoney();//本期
+                    BigDecimal beforebillMoney = yearMoneyAddRateDTO.getBeforebillMoney();//同期
+                    if(beforebillMoney.compareTo(BigDecimal.ZERO) == 0){
+                        yearMoneyAddRateDTO.setBillMoneyAddRate(BigDecimal.ZERO);
+                    }else{
+                        yearMoneyAddRateDTO.setBillMoneyAddRate((billMoney.subtract(beforebillMoney).divide(beforebillMoney,4,ROUND_HALF_DOWN)));
+                    }
+
+                    //毛利同比增长率
+                    BigDecimal profit = yearMoneyAddRateDTO.getProfit();//本期
+                    BigDecimal beforeProfit = yearMoneyAddRateDTO.getBeforeProfit();//同期
+                    if(beforeProfit.compareTo(BigDecimal.ZERO) == 0){
+                        yearMoneyAddRateDTO.setBeforeProfit(BigDecimal.ZERO);
+                    }
+                    yearMoneyAddRateDTO.setBeforeProfit(profit.subtract(beforeProfit).divide(beforeProfit,4,ROUND_HALF_DOWN));
+
+                }
+            }
+            list.add(yearMoneyAddRateDTO);
+        }
+        Collections.sort(list,Comparator.comparing(YearMoneyAddRateDTO::getSaleMoneyAddRate));
+        return list;
     }
 }
