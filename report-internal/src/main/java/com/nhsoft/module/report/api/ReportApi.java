@@ -1108,9 +1108,7 @@ public class ReportApi {
         }
 
         //判断有没有过滤条件
-        if(goal == null || goal.length() == 0){
-            return list;
-        }else{
+        if(goal != null && goal.length() > 0){
             boolean flag = false;
             BigDecimal start = null;
             BigDecimal end = null;
@@ -1140,8 +1138,8 @@ public class ReportApi {
                 }
             }
         }
+
         Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
-        //list.sort(Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
         for (int i = 0; i <list.size() ; i++) {
             //设置排名
             BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
