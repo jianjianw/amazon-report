@@ -993,10 +993,10 @@ public class ReportApi {
 
         Date dateFrom = DateUtil.getShortDate(date);
         Integer dayCountOfMonth = DateUtil.getDayCountOfMonth(dateFrom);//获取当月天数
+        BigDecimal bigDay = new BigDecimal(dayCountOfMonth);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateFrom);
         Integer day = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        BigDecimal bigDay = new BigDecimal(day);
         calendar.add(Calendar.DAY_OF_MONTH, -day);
         Date time = calendar.getTime();//得到上周星期天
         calendar.setTime(time);
