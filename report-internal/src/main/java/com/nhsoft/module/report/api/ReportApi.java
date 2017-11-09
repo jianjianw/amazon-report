@@ -1126,12 +1126,12 @@ public class ReportApi {
                     }
                 }
             }
-            Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
+           /* Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
             for (int i = 0; i <list.size() ; i++) {
                 //设置排名
                 BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
                 branchFinishRateTopDTO.setTop(i+1);
-            }
+            }*/
             return list;
         }
 
