@@ -1159,7 +1159,6 @@ public class ReportApi {
         //得到分店号,判断要不要过滤其他分店
         if(branchNums != null && branchNums.length()>3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
             List<Integer> branchNumList = subBranchNum(systemBookCode, branchNums);
-            Iterator<BranchFinishRateTopDTO> iterator = list.iterator();
             for (int i = 0; i <branchNumList.size() ; i++) {
                 Integer integer = branchNumList.get(i);
                 for (int j = 0; j <list.size() ; j++) {
