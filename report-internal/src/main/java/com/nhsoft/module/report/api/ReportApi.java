@@ -1155,6 +1155,13 @@ public class ReportApi {
                 BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO();
                 branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
                 branchFinishRateTopDTO.setTop(null);
+                branchFinishRateTopDTO.setSaleMoney(null);
+                branchFinishRateTopDTO.setSaleMoneyGoal(null);
+                branchFinishRateTopDTO.setSaleMoneyFinishRate(null);
+                branchFinishRateTopDTO.setSunSaleMoneyGoal(null);
+                branchFinishRateTopDTO.setMonSaleMoneyGoal(null);
+                branchFinishRateTopDTO.setSatSaleMoneyGoal(null);
+                branchFinishRateTopDTO.setFriSaleMoneyGoal(null);
                 list.add(branchFinishRateTopDTO);
             }
 
@@ -1173,6 +1180,20 @@ public class ReportApi {
                         newList.add(branchFinishRateTopDTO);
                     }
                 }
+            }
+            if(newList.size() == 0){
+                //如果数据被全部移出，不能返回空，因为前台要拿日期数据
+                BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO();
+                branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
+                branchFinishRateTopDTO.setTop(null);
+                branchFinishRateTopDTO.setSaleMoney(null);
+                branchFinishRateTopDTO.setSaleMoneyGoal(null);
+                branchFinishRateTopDTO.setSaleMoneyFinishRate(null);
+                branchFinishRateTopDTO.setSunSaleMoneyGoal(null);
+                branchFinishRateTopDTO.setMonSaleMoneyGoal(null);
+                branchFinishRateTopDTO.setSatSaleMoneyGoal(null);
+                branchFinishRateTopDTO.setFriSaleMoneyGoal(null);
+                list.add(branchFinishRateTopDTO);
             }
             return newList;
         }else{
