@@ -1089,7 +1089,15 @@ public class ReportApi {
         }
 
         //判断有没有过滤条件
-        if(goal != null && goal.length() > 0){
+        if(goal == null || goal.equals("null")){    //查询所有
+            Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
+            for (int i = 0; i <list.size() ; i++) {
+                //设置排名
+                BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
+                branchFinishRateTopDTO.setTop(i+1);
+            }
+            return list;
+        } else{
             boolean flag = false;
             BigDecimal start = null;
             BigDecimal end = null;
@@ -1118,15 +1126,16 @@ public class ReportApi {
                     }
                 }
             }
+            Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
+            for (int i = 0; i <list.size() ; i++) {
+                //设置排名
+                BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
+                branchFinishRateTopDTO.setTop(i+1);
+            }
+            return list;
         }
 
-        Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
-        for (int i = 0; i <list.size() ; i++) {
-            //设置排名
-            BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
-            branchFinishRateTopDTO.setTop(i+1);
-        }
-        return list;
+
     }
 
     //销售额同比增长排名
