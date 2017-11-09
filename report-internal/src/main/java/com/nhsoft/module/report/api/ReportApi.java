@@ -1114,30 +1114,13 @@ public class ReportApi {
         }
         //排序
         Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
-        //得到分店号,判断要不要过滤其他分店
-        if(branchNums != null && branchNums.length()>3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
-            List<Integer> branchNumList = subBranchNum(systemBookCode, branchNums);
-            Iterator<BranchFinishRateTopDTO> iterator = list.iterator();
-            for (int i = 0; i <branchNumList.size() ; i++) {
-                Integer integer = branchNumList.get(i);
-                while(iterator.hasNext()){
-                    BranchFinishRateTopDTO next = iterator.next();
-                    if(!integer.equals(next.getBranchNum())){
-                        iterator.remove();
-                    }
-                }
-            }
+        for (int i = 0; i <list.size() ; i++) {
+            //设置排名
+            BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
+            branchFinishRateTopDTO.setTop(i+1);
         }
 
-        //判断有没有过滤条件
-        if(goal == null || goal.equals("null") || goal.length() == 0){    //查询所有
-            for (int i = 0; i <list.size() ; i++) {
-                //设置排名
-                BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
-                branchFinishRateTopDTO.setTop(i+1);
-            }
-            return list;
-        } else{
+        if(goal != null && !goal.equals("null")){
             boolean flag = false;
             BigDecimal start = null;
             BigDecimal end = null;
@@ -1170,10 +1153,26 @@ public class ReportApi {
             BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO();
             branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
             list.add(branchFinishRateTopDTO);
-            return list;
         }
 
-
+        List<BranchFinishRateTopDTO> newList = new ArrayList<>();
+        //得到分店号,判断要不要过滤其他分店
+        if(branchNums != null && branchNums.length()>3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
+            List<Integer> branchNumList = subBranchNum(systemBookCode, branchNums);
+            Iterator<BranchFinishRateTopDTO> iterator = list.iterator();
+            for (int i = 0; i <branchNumList.size() ; i++) {
+                Integer integer = branchNumList.get(i);
+                for (int j = 0; j <list.size() ; j++) {
+                    BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
+                    if(integer.equals(branchFinishRateTopDTO)){
+                        newList.add(branchFinishRateTopDTO);
+                    }
+                }
+            }
+            return newList;
+        }else{
+            return list;
+        }
     }
 
     //销售额同比增长排名
