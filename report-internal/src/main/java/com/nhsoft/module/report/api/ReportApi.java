@@ -1167,7 +1167,7 @@ public class ReportApi {
             yearMoneyAddRateDTO.setBranchName(branchDTO.getBranchName());
             //同期分店营业额
             for (int j = 0; j <beforeMoneyByBranch.size() ; j++) {
-                BranchRevenueReport branchRevenueReport = beforeMoneyByBranch.get(i);
+                BranchRevenueReport branchRevenueReport = beforeMoneyByBranch.get(j);
                 if(branchNum.equals(branchRevenueReport.getBranchNum())){
                     yearMoneyAddRateDTO.setBeforeSaleMoney(branchRevenueReport.getBizMoney() == null ? BigDecimal.ZERO : branchRevenueReport.getBizMoney());   //营业额
                     yearMoneyAddRateDTO.setBeforeBillNum(branchRevenueReport.getOrderCount() == null ? 0 : branchRevenueReport.getOrderCount());    //客单量
@@ -1181,7 +1181,7 @@ public class ReportApi {
             }
             //本期分店营业额
             for (int j = 0; j <moneyByBranch.size() ; j++) {
-                BranchRevenueReport branchRevenueReport = moneyByBranch.get(i);
+                BranchRevenueReport branchRevenueReport = moneyByBranch.get(j);
                 if(branchNum.equals(branchRevenueReport.getBranchNum())){
                     yearMoneyAddRateDTO.setSaleMoney(branchRevenueReport.getBizMoney() == null ? BigDecimal.ZERO : branchRevenueReport.getBizMoney());//营业额
                     yearMoneyAddRateDTO.setBillNum(branchRevenueReport.getOrderCount() == null ? 0 : branchRevenueReport.getOrderCount());//客单量
