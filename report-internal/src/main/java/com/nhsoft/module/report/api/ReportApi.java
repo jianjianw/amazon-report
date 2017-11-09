@@ -965,6 +965,33 @@ public class ReportApi {
         return list;
     }
 
+
+    //查询所有分店
+    public List<Integer> findAllBranch(String systemBookCode) {
+
+        List<Integer> bannchNumList = new ArrayList<>();
+        List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+        for (int i = 0; i < all.size(); i++) {
+            BranchDTO branchDTO = all.get(i);
+            bannchNumList.add(branchDTO.getBranchNum());
+        }
+        return bannchNumList;
+
+
+
+    }
+    //将分店字符串装入集合
+    public List<Integer> subBranchNum(String systemBookCode,String branchNums){
+        List<Integer> bannchNumList = new ArrayList<>();
+        String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
+        String[] split = replace.split(",");
+        for (int i = 0; i < split.length; i++) {
+            bannchNumList.add(Integer.parseInt(split[i]));
+        }
+        return bannchNumList;
+    }
+
+
     //门店每日完成率排名(门店业绩完成)
     @RequestMapping(method=RequestMethod.GET ,value="/finishRateTop")
     public List<BranchFinishRateTopDTO> findFinishRateTopByBranch(@RequestHeader("systemBookCode") String systemBookCode,
@@ -989,8 +1016,7 @@ public class ReportApi {
         calendar.add(Calendar.DAY_OF_MONTH,7);//得到这周星期天
         Date sunday = calendar.getTime();
         //为了计算排名，不管传递几个分店都要查询所有
-        List<Integer> bannchNumList = stringToList(systemBookCode, null);
-
+        List<Integer> bannchNumList = findAllBranch(systemBookCode);
         //星期四
         List<SaleMoneyGoals> thursdayMoneyGoal = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, thursday, thursday, AppConstants.BUSINESS_DATE_SOME_DATE);
         //星期五
@@ -1092,13 +1118,12 @@ public class ReportApi {
         Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
         //得到分店号,判断要不要过滤其他分店
         if(branchNums != null && branchNums.length()>3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
-            String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
-            String[] branchArray = replace.split(",");
+            List<Integer> branchNumList = subBranchNum(systemBookCode, branchNums);
             Iterator<BranchFinishRateTopDTO> iterator = list.iterator();
             while(iterator.hasNext()){
                 BranchFinishRateTopDTO next = iterator.next();
-                for (int i = 0; i <branchArray.length ; i++) {
-                    Integer integer = Integer.parseInt(branchArray[i]);
+                for (int i = 0; i <branchNumList.size() ; i++) {
+                    Integer integer = branchNumList.get(i);
                     if(!integer.equals(next.getBranchNum())){
                         iterator.remove();
                     }
@@ -1158,7 +1183,7 @@ public class ReportApi {
     @RequestMapping(method=RequestMethod.GET,value="/moneyAddRateDTO")
     public List<YearMoneyAddRateDTO> findBeforeAddRateTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                           @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
-        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+        List<Integer> bannchNumList = stringToList(systemBookCode, null);
         Date dateFrom = DateUtil.getShortDate(date);
 
         //根据当前日期获得，今天是今年的第几周,周几
