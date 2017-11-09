@@ -1118,16 +1118,15 @@ public class ReportApi {
         if(branchNums != null && branchNums.length()>3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
             List<Integer> branchNumList = subBranchNum(systemBookCode, branchNums);
             Iterator<BranchFinishRateTopDTO> iterator = list.iterator();
-            while(iterator.hasNext()){
-                BranchFinishRateTopDTO next = iterator.next();
-                for (int i = 0; i <branchNumList.size() ; i++) {
-                    Integer integer = branchNumList.get(i);
+            for (int i = 0; i <branchNumList.size() ; i++) {
+                Integer integer = branchNumList.get(i);
+                while(iterator.hasNext()){
+                    BranchFinishRateTopDTO next = iterator.next();
                     if(!integer.equals(next.getBranchNum())){
                         iterator.remove();
                     }
                 }
             }
-
         }
 
         //判断有没有过滤条件
