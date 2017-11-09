@@ -1091,20 +1091,23 @@ public class ReportApi {
         //排序
         Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
         //得到分店号,判断要不要过滤其他分店
-        String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
-        String[] branchArray = replace.split(",");
-        if(branchArray.length>0){//如果前台有分店就要过滤其他分店
-            Iterator<BranchFinishRateTopDTO> iterator = list.iterator();
-            while(iterator.hasNext()){
-                BranchFinishRateTopDTO next = iterator.next();
-                for (int i = 0; i <branchArray.length ; i++) {
-                    if(!next.getBranchNum().equals(Integer.parseInt(branchArray[i]))){
-                        iterator.remove();
+        if(branchNums != null && branchNums.length()>0){
+            String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
+            String[] branchArray = replace.split(",");
+            if(branchArray.length>0){//如果前台有分店就要过滤其他分店
+                Iterator<BranchFinishRateTopDTO> iterator = list.iterator();
+                while(iterator.hasNext()){
+                    BranchFinishRateTopDTO next = iterator.next();
+                    for (int i = 0; i <branchArray.length ; i++) {
+                        Integer integer = Integer.parseInt(branchArray[i]);
+                        if(!integer.equals(next.getBranchNum())){
+                            iterator.remove();
+                        }
                     }
                 }
             }
-            return list;
         }
+
         //判断有没有过滤条件
         if(goal == null || goal.equals("null") || goal.length() == 0){    //查询所有
             for (int i = 0; i <list.size() ; i++) {
