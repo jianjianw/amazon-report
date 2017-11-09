@@ -1091,7 +1091,7 @@ public class ReportApi {
         //排序
         Collections.sort(list,Comparator.comparing(BranchFinishRateTopDTO::getSaleMoneyFinishRate));
         //得到分店号,判断要不要过滤其他分店
-        if(branchNums != null && branchNums.length()>0){
+        if(branchNums != null && branchNums.length()>3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
             String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
             String[] branchArray = replace.split(",");
             if(branchArray.length>0){//如果前台有分店就要过滤其他分店
