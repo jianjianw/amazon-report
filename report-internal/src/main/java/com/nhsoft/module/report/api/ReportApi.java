@@ -10,7 +10,6 @@ import com.nhsoft.module.report.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -18,7 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static java.math.BigDecimal.ROUND_HALF_DOWN;
+import static java.math.BigDecimal.ROUND_HALF_UP;
 
 @RestController
 @RequestMapping("/reportApi")
@@ -87,22 +86,6 @@ public class ReportApi {
     @RequestMapping(method = RequestMethod.GET, value = "/store")
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-
-       /* Gson gson = AppUtil.toBuilderGson();
-        ValueOperations valueOperations = null;
-        try {
-            valueOperations = redisTemplate.opsForValue();
-            //读取缓存
-            String storelist = (String)valueOperations.get("STORELIST");
-            if(storelist != null){
-                List<OperationStoreDTO> list =gson.fromJson(storelist, new TypeToken<List<OperationStoreDTO>>() {}.getType());
-               return list;
-            }
-        } catch (Exception e) {
-            //e.printStackTrace();
-            logger.error("读取缓存失败");
-        }*/
-
 
         //点击区域跳转到分店，区域下面没有分店，直接一个空的list
         if(branchNums != null && branchNums.length() == 2){
@@ -239,15 +222,15 @@ public class ReportApi {
                     store.setRevenue(next.getBizMoney() == null ? BigDecimal.ZERO : next.getBizMoney());           //营业额
                     store.setGrossProfit(next.getProfit() == null ? BigDecimal.ZERO : next.getProfit());         //毛利
                     store.setBillNums(next.getOrderCount() == null ? 0 : next.getOrderCount());        //客单量
-                    store.setAveBillNums(new BigDecimal(store.getBillNums()).divide(bigDay, 4, ROUND_HALF_DOWN));    //日均客单量
-                    store.setBill(store.getRevenue().divide(new BigDecimal(store.getBillNums()), 4, ROUND_HALF_DOWN));//客单价
+                    store.setAveBillNums(new BigDecimal(store.getBillNums()).divide(bigDay, 4, ROUND_HALF_UP));    //日均客单量
+                    store.setBill(store.getRevenue().divide(new BigDecimal(store.getBillNums()), 4, ROUND_HALF_UP));//客单价
                     //本期营业额-上期营业额
                     BigDecimal subtract = store.getRevenue().subtract(store.getBeforeSaleMoney());
                     //环比增长率
                     if(store.getBeforeSaleMoney().compareTo(BigDecimal.ZERO) == 0){
                         store.setGrowthOf(BigDecimal.ZERO);
                     }else{
-                        store.setGrowthOf(subtract.divide(store.getBeforeSaleMoney(), 4, ROUND_HALF_DOWN));//（本期-上期）/上期
+                        store.setGrowthOf(subtract.divide(store.getBeforeSaleMoney(), 4, ROUND_HALF_UP));//（本期-上期）/上期
                     }
                     break;
                 }
@@ -308,10 +291,10 @@ public class ReportApi {
                     }else if(store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) == 0) {
                         store.setMemeberRevenueOccupy(BigDecimal.ZERO);
                     }else{
-                        store.setMemeberRevenueOccupy(store.getMemberSaleMoney().divide(store.getRevenue(),2,ROUND_HALF_DOWN));//会员销售额占比
+                        store.setMemeberRevenueOccupy(store.getMemberSaleMoney().divide(store.getRevenue(),2,ROUND_HALF_UP));//会员销售额占比
                     }
                     store.setMemberBillNums(next.getOrderCount() == null ? 0 : next.getOrderCount());    //会员客单量
-                    store.setMemberBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 4, ROUND_HALF_DOWN));//会员客单价
+                    store.setMemberBill(next.getBizMoney().divide(new BigDecimal(next.getOrderCount()), 4, ROUND_HALF_UP));//会员客单价
                     break;
                 }
             }
@@ -327,7 +310,7 @@ public class ReportApi {
                     }else if(store.getCardStorage() == null || store.getCardStorage().compareTo(BigDecimal.ZERO) == 0){
                         store.setStorageConsumeOccupy(BigDecimal.ZERO);
                     }else{
-                        store.setStorageConsumeOccupy(store.getCardStorage().divide(store.getCartStorageConsume(), 4, ROUND_HALF_DOWN));//存储消费占比
+                        store.setStorageConsumeOccupy(store.getCardStorage().divide(store.getCartStorageConsume(), 4, ROUND_HALF_UP));//存储消费占比
                     }
                     break;
                 }
@@ -360,7 +343,7 @@ public class ReportApi {
                     }else if(store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) == 0){
                         store.setRealizeRate1(BigDecimal.ZERO);
                     }else {
-                        store.setRealizeRate1(store.getRevenue().divide(store.getSaleMoneyGoal(), 4, ROUND_HALF_DOWN));//营业额完成率
+                        store.setRealizeRate1(store.getRevenue().divide(store.getSaleMoneyGoal(), 4, ROUND_HALF_UP));//营业额完成率
                     }
                     break;
                 }
@@ -375,7 +358,7 @@ public class ReportApi {
                     } else if(store.getRevenue() == null || store.getRevenue().compareTo(BigDecimal.ZERO) == 0){
                         store.setAreaEfficiency(BigDecimal.ZERO);
                     }else {
-                        store.setAreaEfficiency(store.getRevenue().divide(next.getArea(), 4, ROUND_HALF_DOWN));//坪效
+                        store.setAreaEfficiency(store.getRevenue().divide(next.getArea(), 4, ROUND_HALF_UP));//坪效
                     }
                     break;
                 }
@@ -483,7 +466,7 @@ public class ReportApi {
             if(saleMoneyGoal.compareTo(BigDecimal.ZERO) == 0){
                 region.setRealizeRate1(BigDecimal.ZERO);
             }else{
-                region.setRealizeRate1(revenue.divide(saleMoneyGoal, 4, ROUND_HALF_DOWN));              //营业额完成率
+                region.setRealizeRate1(revenue.divide(saleMoneyGoal, 4, ROUND_HALF_UP));              //营业额完成率
             }
             region.setTransferOutMoney(transferOutMoney);//配送金额
             region.setDistributionDifferent(transferOutMoney.subtract(revenue));                                //配销差额
@@ -491,26 +474,26 @@ public class ReportApi {
             if(revenue.compareTo(BigDecimal.ZERO) == 0){
                 region.setMemeberRevenueOccupy(BigDecimal.ZERO);
             }else {
-                region.setMemeberRevenueOccupy(memberSaleMoney.divide(revenue, 4, ROUND_HALF_DOWN));    //会员消费占比
+                region.setMemeberRevenueOccupy(memberSaleMoney.divide(revenue, 4, ROUND_HALF_UP));    //会员消费占比
             }
             if(memberBillNums.equals(0)){
                 region.setBill(BigDecimal.ZERO);
             }else{
-                region.setBill(revenue.divide(new BigDecimal(memberBillNums), 4, ROUND_HALF_DOWN));     //客单价
+                region.setBill(revenue.divide(new BigDecimal(memberBillNums), 4, ROUND_HALF_UP));     //客单价
             }
             region.setBillNums(billNums);//客单量
             if(billNums == null || billNums.equals(0)){
                 region.setAveBillNums(BigDecimal.ZERO);
             }else{
                 BigDecimal bigBillNums = new BigDecimal(billNums);
-                region.setAveBillNums(bigBillNums.divide(bigDay, 4, ROUND_HALF_DOWN));                                     //日均客单量
+                region.setAveBillNums(bigBillNums.divide(bigDay, 4, ROUND_HALF_UP));                                     //日均客单量
             }
 
             region.setMemberBillNums(memberBillNums);                                                           //会员客单量
             if(memberBill.compareTo(BigDecimal.ZERO) == 0){
                 region.setMemberBill(BigDecimal.ZERO);
             }else{
-                region.setMemberBill(memberSaleMoney.divide(memberBill, 4, ROUND_HALF_DOWN));                                       //会员客单价
+                region.setMemberBill(memberSaleMoney.divide(memberBill, 4, ROUND_HALF_UP));                                       //会员客单价
             }
             region.setDestroyDefferent(destroyDefferent);                                                      //报损金额
             region.setAdjustAmount(adjustAmount);                                                              //盘损金额
@@ -521,13 +504,13 @@ public class ReportApi {
             if(cartStorageConsume.compareTo(BigDecimal.ZERO) == 0){
                 region.setStorageConsumeOccupy(BigDecimal.ZERO);
             }else{
-                region.setStorageConsumeOccupy(cardStorage.divide(cartStorageConsume, 4, ROUND_HALF_DOWN));//储值消费占比
+                region.setStorageConsumeOccupy(cardStorage.divide(cartStorageConsume, 4, ROUND_HALF_UP));//储值消费占比
             }
             region.setBeforeSaleMoney(beforeSaleMoney);//上期营业额
             if(beforeSaleMoney.compareTo(BigDecimal.ZERO) == 0){
                 region.setGrowthOf(BigDecimal.ZERO);
             }else{
-                region.setGrowthOf((revenue.subtract(beforeSaleMoney)).divide(beforeSaleMoney, 4, ROUND_HALF_DOWN));//环比增长率     （本期-上期）/上期
+                region.setGrowthOf((revenue.subtract(beforeSaleMoney)).divide(beforeSaleMoney, 4, ROUND_HALF_UP));//环比增长率     （本期-上期）/上期
             }
             //暂时将完成率设置为0
             region.setAllBillRealizeRate(BigDecimal.ZERO);      //总客单完成率
@@ -770,7 +753,7 @@ public class ReportApi {
                    }else if(saleFinishMoneyTopDTO.getGoalMoney() == null || saleFinishMoneyTopDTO.getGoalMoney().compareTo(BigDecimal.ZERO) == 0){
                        saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
                    }else{
-                       saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getSaleMoney().divide(saleFinishMoneyTopDTO.getGoalMoney(),2,ROUND_HALF_DOWN));
+                       saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getSaleMoney().divide(saleFinishMoneyTopDTO.getGoalMoney(),2,ROUND_HALF_UP));
                    }
                }
             }
@@ -837,7 +820,7 @@ public class ReportApi {
                         }else if(saleFinishMoneyTopDTO.getGoalMoney() == null || saleFinishMoneyTopDTO.getGoalMoney().compareTo(BigDecimal.ZERO) == 0){
                             saleFinishMoneyTopDTO.setFinishMoneyRate(BigDecimal.ZERO);
                         }else{
-                            saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getSaleMoney().divide(saleFinishMoneyTopDTO.getGoalMoney(),2,ROUND_HALF_DOWN));
+                            saleFinishMoneyTopDTO.setFinishMoneyRate(saleFinishMoneyTopDTO.getSaleMoney().divide(saleFinishMoneyTopDTO.getGoalMoney(),2,ROUND_HALF_UP));
                         }
                     }
                 }
@@ -946,7 +929,7 @@ public class ReportApi {
                         }else if(saleMoneyMonthDTO.getSaleMoneyGoal() == null || saleMoneyMonthDTO.getSaleMoneyGoal().compareTo(BigDecimal.ZERO) == 0){
                             saleMoneyMonthDTO.setFinishMoneyRate(BigDecimal.ZERO);
                         }else{
-                            BigDecimal divide = (saleMoneyMonthDTO.getSaleMoney()).divide(saleMoneyMonthDTO.getSaleMoneyGoal(), 4, ROUND_HALF_DOWN);
+                            BigDecimal divide = (saleMoneyMonthDTO.getSaleMoney()).divide(saleMoneyMonthDTO.getSaleMoneyGoal(), 4, ROUND_HALF_UP);
                             BigDecimal product = new BigDecimal(100);
                             saleMoneyMonthDTO.setFinishMoneyRate(divide.multiply(product));
                         }
@@ -969,7 +952,7 @@ public class ReportApi {
                             saleMoneyMonthDTO.setAddRate(BigDecimal.ZERO);
                         }else{
                             //同比增长率
-                            BigDecimal divide = (saleMoney.subtract(bizMoney)).divide(bizMoney, 4, ROUND_HALF_DOWN);
+                            BigDecimal divide = (saleMoney.subtract(bizMoney)).divide(bizMoney, 4, ROUND_HALF_UP);
                             BigDecimal product = new BigDecimal(100);
                             saleMoneyMonthDTO.setAddRate(divide.multiply(product));
                         }
@@ -1083,7 +1066,7 @@ public class ReportApi {
                         branchFinishRateTopDTO.setSaleMoneyFinishRate(BigDecimal.ZERO);
                     }else{
                         branchFinishRateTopDTO.setSaleMoneyFinishRate(branchFinishRateTopDTO.getSaleMoney()
-                                .divide(branchFinishRateTopDTO.getSaleMoneyGoal(),4,ROUND_HALF_DOWN));
+                                .divide(branchFinishRateTopDTO.getSaleMoneyGoal(),4,ROUND_HALF_UP));
                     }
                 }
             }
@@ -1097,7 +1080,7 @@ public class ReportApi {
                     if(branchFinishRateTopDTO.getMonthSaleMoneyGoal().compareTo(BigDecimal.ZERO) == 0 ){
                         branchFinishRateTopDTO.setAvgSaleMoneyGoal(BigDecimal.ZERO);
                     }else{
-                        branchFinishRateTopDTO.setAvgSaleMoneyGoal(branchFinishRateTopDTO.getMonthSaleMoneyGoal().divide(bigDay,4,ROUND_HALF_DOWN));
+                        branchFinishRateTopDTO.setAvgSaleMoneyGoal(branchFinishRateTopDTO.getMonthSaleMoneyGoal().divide(bigDay,4,ROUND_HALF_UP));
                     }
                 }
             }
@@ -1188,7 +1171,7 @@ public class ReportApi {
                     if(yearMoneyAddRateDTO.getBeforeSaleMoney().compareTo(BigDecimal.ZERO) == 0 || yearMoneyAddRateDTO.getBeforeBillNum().equals(0)){
                         yearMoneyAddRateDTO.setBeforebillMoney(BigDecimal.ZERO);   //客单价
                     }else{
-                        yearMoneyAddRateDTO.setBeforebillMoney(yearMoneyAddRateDTO.getBeforeSaleMoney().divide(new BigDecimal(yearMoneyAddRateDTO.getBeforeBillNum()),4,ROUND_HALF_DOWN));   //客单价
+                        yearMoneyAddRateDTO.setBeforebillMoney(yearMoneyAddRateDTO.getBeforeSaleMoney().divide(new BigDecimal(yearMoneyAddRateDTO.getBeforeBillNum()),4,ROUND_HALF_UP));   //客单价
                     }
                     yearMoneyAddRateDTO.setBeforeProfit(branchRevenueReport.getProfit());//毛利
                 }
@@ -1202,7 +1185,7 @@ public class ReportApi {
                     if(yearMoneyAddRateDTO.getSaleMoney().compareTo(BigDecimal.ZERO) == 0 || yearMoneyAddRateDTO.getBillNum().equals(0)){
                         yearMoneyAddRateDTO.setBillMoney(BigDecimal.ZERO);
                     }else{
-                        yearMoneyAddRateDTO.setBillMoney(yearMoneyAddRateDTO.getSaleMoney().divide(new BigDecimal(yearMoneyAddRateDTO.getBillNum()),4,ROUND_HALF_DOWN));//客单价
+                        yearMoneyAddRateDTO.setBillMoney(yearMoneyAddRateDTO.getSaleMoney().divide(new BigDecimal(yearMoneyAddRateDTO.getBillNum()),4,ROUND_HALF_UP));//客单价
                     }
                     yearMoneyAddRateDTO.setProfit(branchRevenueReport.getProfit());//毛利
 
@@ -1212,7 +1195,7 @@ public class ReportApi {
                     if(beforeSaleMoney.compareTo(BigDecimal.ZERO) == 0){
                         yearMoneyAddRateDTO.setSaleMoneyAddRate(BigDecimal.ZERO);
                     }else{
-                        yearMoneyAddRateDTO.setSaleMoneyAddRate((saleMoney.subtract(beforeSaleMoney)).divide(beforeSaleMoney,4,ROUND_HALF_DOWN));
+                        yearMoneyAddRateDTO.setSaleMoneyAddRate((saleMoney.subtract(beforeSaleMoney)).divide(beforeSaleMoney,4,ROUND_HALF_UP));
                     }
 
 
@@ -1222,7 +1205,7 @@ public class ReportApi {
                     if(beforeBillNum.equals(0)){
                         yearMoneyAddRateDTO.setBillNumAddRate(BigDecimal.ZERO);
                     }else{
-                        yearMoneyAddRateDTO.setBillNumAddRate((billNum.subtract(beforeBillNum)).divide(beforeBillNum,4,ROUND_HALF_DOWN));
+                        yearMoneyAddRateDTO.setBillNumAddRate((billNum.subtract(beforeBillNum)).divide(beforeBillNum,4,ROUND_HALF_UP));
                     }
 
 
@@ -1232,7 +1215,7 @@ public class ReportApi {
                     if(beforebillMoney.compareTo(BigDecimal.ZERO) == 0){
                         yearMoneyAddRateDTO.setBillMoneyAddRate(BigDecimal.ZERO);
                     }else{
-                        yearMoneyAddRateDTO.setBillMoneyAddRate((billMoney.subtract(beforebillMoney).divide(beforebillMoney,4,ROUND_HALF_DOWN)));
+                        yearMoneyAddRateDTO.setBillMoneyAddRate((billMoney.subtract(beforebillMoney).divide(beforebillMoney,4,ROUND_HALF_UP)));
                     }
 
                     //毛利同比增长率
@@ -1241,7 +1224,7 @@ public class ReportApi {
                     if(beforeProfit.compareTo(BigDecimal.ZERO) == 0){
                         yearMoneyAddRateDTO.setBeforeProfit(BigDecimal.ZERO);
                     }
-                    yearMoneyAddRateDTO.setBeforeProfit(profit.subtract(beforeProfit).divide(beforeProfit,4,ROUND_HALF_DOWN));
+                    yearMoneyAddRateDTO.setBeforeProfit(profit.subtract(beforeProfit).divide(beforeProfit,4,ROUND_HALF_UP));
 
                 }
             }

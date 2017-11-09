@@ -80,7 +80,7 @@ public class TestSpringBoot {
 
     @Test
     public void testApiByStore(){           //API：com.nhsoft.module.report.api.ReportApi.byBranch耗时：2350ms
-        List<OperationStoreDTO> test = reportApi.byBranch(systemBookCode, null, "2017-10-30|2017-11-05");
+        List<OperationStoreDTO> test = reportApi.byBranch(systemBookCode, null, "2017-10");
         System.out.println();
     }
 
