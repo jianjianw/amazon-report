@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 
 import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
@@ -45,8 +44,6 @@ public class ReportApi {
     private TransferOutOrderRpc transferOutOrderRpc;
     @Autowired
     private AlipayLogRpc alipayLogRpc;
-    @Autowired
-    private RedisTemplate redisTemplate;
 
 
     public List<Integer> stringToList(String systemBookCode, String str) {
