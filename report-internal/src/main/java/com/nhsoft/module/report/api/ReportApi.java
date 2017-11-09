@@ -1120,7 +1120,7 @@ public class ReportApi {
             branchFinishRateTopDTO.setTop(i+1);
         }
 
-        if(goal != null && !goal.equals("null")){
+        if(goal != null && goal.length()>0 && !goal.equals("null")){
             boolean flag = false;
             BigDecimal start = null;
             BigDecimal end = null;
@@ -1162,7 +1162,7 @@ public class ReportApi {
             for (int i = 0; i <branchNumList.size() ; i++) {
                 Integer integer = branchNumList.get(i);
                 for (int j = 0; j <list.size() ; j++) {
-                    BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(i);
+                    BranchFinishRateTopDTO branchFinishRateTopDTO = list.get(j);
                     if(integer.equals(branchFinishRateTopDTO)){
                         newList.add(branchFinishRateTopDTO);
                     }
