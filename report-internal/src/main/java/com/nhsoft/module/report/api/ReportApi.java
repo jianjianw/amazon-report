@@ -1126,6 +1126,10 @@ public class ReportApi {
                     }
                 }
             }
+            //如果数据被全部移出，不能返回空，因为前台要拿日期数据
+            BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO();
+            branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
+            list.add(branchFinishRateTopDTO);
             return list;
         }
 
