@@ -369,10 +369,7 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal value1;
 		BigDecimal value2;
 		Date dpcLimitTime = DateUtil.addDay(now, -2);
-		if (dpcLimitTime.compareTo(dateFrom) > 0 
-				&& systemBook.getBookReadDpc() != null 
-				&& systemBook.getBookReadDpc() 
-				&& (type != 3 && type != 4)) {
+		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && (type != 3 && type != 4)) {
 			if (dpcLimitTime.compareTo(dateTo) > 0) {
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
