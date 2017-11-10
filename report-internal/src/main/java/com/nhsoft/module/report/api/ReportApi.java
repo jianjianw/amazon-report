@@ -1150,16 +1150,13 @@ public class ReportApi {
                     }
                 }
             }
-            if(list.size() == 0){
-                //如果数据被全部移出，不能返回空，因为前台要拿日期数据
-                BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO(date+"( 星期" + arrayDay[day] + " )");
-                list.add(branchFinishRateTopDTO);
-            }
         }
 
-        List<BranchFinishRateTopDTO> newList = new ArrayList<>();
+
         //得到分店号,判断要不要过滤其他分店
         if(branchNums != null && branchNums.length()>=3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
+            //创建一个新的list
+            List<BranchFinishRateTopDTO> newList = new ArrayList<>();
             List<Integer> branchNumList = subBranchNum(systemBookCode, branchNums);
             for (int i = 0; i <branchNumList.size() ; i++) {
                 Integer integer = branchNumList.get(i);
