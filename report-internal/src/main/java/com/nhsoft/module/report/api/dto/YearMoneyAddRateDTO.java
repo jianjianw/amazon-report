@@ -57,7 +57,8 @@ public class YearMoneyAddRateDTO implements Serializable {
     private BigDecimal beforeProfit;                //同期毛利
     private BigDecimal profitAddRate;               //毛利同比增长率
     private Integer top;                                //排名
-    private String date;                            //日期
+    private String date;                            //日期(今年)
+    private String lastYearDate;                   //去年的日期
 
     public String getBranchName() {
         return branchName;
@@ -185,5 +186,13 @@ public class YearMoneyAddRateDTO implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getLastYearDate() {
+        return lastYearDate;
+    }
+
+    public void setLastYearDate(String lastYearDate) {
+        this.lastYearDate = lastYearDate;
     }
 }

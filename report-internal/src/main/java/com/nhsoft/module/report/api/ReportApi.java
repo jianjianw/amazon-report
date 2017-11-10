@@ -1202,6 +1202,7 @@ public class ReportApi {
         calendar.set(Calendar.WEEK_OF_YEAR, weekOfYear); // 设置为2016年的第10周
         calendar.set(Calendar.DAY_OF_WEEK,day+1); // 1表示周日，2表示周一，7表示周六
         Date beforeDateFrom = calendar.getTime();
+        String beforeDateStr = DateUtil.getDateStr(beforeDateFrom);
 
 
         //按分店查询同期营业额
@@ -1218,6 +1219,7 @@ public class ReportApi {
             yearMoneyAddRateDTO.setBranchNum(branchNum);
             yearMoneyAddRateDTO.setBranchName(branchDTO.getBranchName());
             yearMoneyAddRateDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
+            yearMoneyAddRateDTO.setLastYearDate(beforeDateStr);
             //同期分店营业额
             for (int j = 0; j <beforeMoneyByBranch.size() ; j++) {
                 BranchRevenueReport branchRevenueReport = beforeMoneyByBranch.get(j);
