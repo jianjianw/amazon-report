@@ -1258,7 +1258,7 @@ public class ReportApi {
                     //客单量同比增长率
                     BigDecimal billNum = new BigDecimal(yearMoneyAddRateDTO.getBillNum());//本期
                     BigDecimal beforeBillNum = new BigDecimal(yearMoneyAddRateDTO.getBeforeBillNum());//同期
-                    if(beforeBillNum.equals(0)){
+                    if(beforeBillNum.compareTo(BigDecimal.ZERO) == 0){
                         yearMoneyAddRateDTO.setBillNumAddRate(BigDecimal.ZERO);
                     }else{
                         yearMoneyAddRateDTO.setBillNumAddRate((billNum.subtract(beforeBillNum)).divide(beforeBillNum,4,ROUND_HALF_UP));
@@ -1316,7 +1316,7 @@ public class ReportApi {
         }else{
             if(list.size() == 0){
                 YearMoneyAddRateDTO yearMoneyAddRateDTO = new YearMoneyAddRateDTO(date+"( 星期" + arrayDay[day] + " )");
-                newList.add(yearMoneyAddRateDTO);
+                list.add(yearMoneyAddRateDTO);
             }
             return list;
         }
