@@ -37,6 +37,9 @@ public class RedisUtil {
 	
 	
 	public static synchronized  void init(){
+		if(!redisNameMap.isEmpty()){
+			return;
+		}
 		String[] array = redisNameMapStr.split(",");
 		for(int i = 0;i < array.length;i++){
 			String[] subArray = array[i].split(":");
