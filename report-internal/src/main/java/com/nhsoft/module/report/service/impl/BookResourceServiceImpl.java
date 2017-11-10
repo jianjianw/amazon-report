@@ -3,7 +3,6 @@ package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.BookResourceDao;
 import com.nhsoft.module.report.dto.AdjustmentReason;
-
 import com.nhsoft.module.report.model.BookResource;
 import com.nhsoft.module.report.param.CardUserType;
 import com.nhsoft.module.report.param.ChainDeliveryParam;
@@ -12,7 +11,6 @@ import com.nhsoft.module.report.service.BookResourceService;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.BaseManager;
 import com.nhsoft.module.report.util.RedisUtil;
-import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,27 +34,17 @@ public class BookResourceServiceImpl extends BaseManager implements BookResource
 
 	@Override
 	public List<PosItemTypeParam> findPosItemTypeParamsInCache(String systemBookCode) {
-		if(RedisUtil.isRedisValid()){
-			String key = AppConstants.REDIS_PRE_BOOK_RESOURCE + AppConstants.POS_ITEM_TYPE + systemBookCode;
-			Object object = RedisUtil.get(key);
-			if(object == null){
-				List<PosItemTypeParam> params = findPosItemTypeParams(systemBookCode);
-				RedisUtil.put(key, params, AppConstants.REDIS_CACHE_LIVE_SECOND);
-				return params;
-			} else {
-				return (List<PosItemTypeParam>) object;
-			}
-
+		
+		String key = AppConstants.REDIS_PRE_BOOK_RESOURCE + AppConstants.POS_ITEM_TYPE + systemBookCode;
+		Object object = RedisUtil.get(key);
+		if(object == null){
+			List<PosItemTypeParam> params = findPosItemTypeParams(systemBookCode);
+			RedisUtil.put(key, params, AppConstants.REDIS_CACHE_LIVE_SECOND);
+			return params;
 		} else {
-
-			Element element = getElementFromCache(AppConstants.POS_ITEM_TYPE + systemBookCode);
-			if(element == null){
-				element = new Element(AppConstants.POS_ITEM_TYPE + systemBookCode, findPosItemTypeParams(systemBookCode));
-				element.setEternal(true);
-				putElementToCache(element);
-			}
-			return (List<PosItemTypeParam>) element.getObjectValue();
+			return (List<PosItemTypeParam>) object;
 		}
+
 	}
 
 	@Override
@@ -73,28 +61,17 @@ public class BookResourceServiceImpl extends BaseManager implements BookResource
 	@Override
 	public List<CardUserType> findCardUserTypesInCache(String systemBookCode) {
 
-		if(RedisUtil.isRedisValid()){
-			String key = AppConstants.REDIS_PRE_BOOK_RESOURCE + AppConstants.CARD_CATEGORY + systemBookCode;
-			Object object = RedisUtil.get(key);
-			if(object == null){
-				List<CardUserType> cardUserTypes = findCardUserTypes(systemBookCode);
-				RedisUtil.put(key, cardUserTypes, AppConstants.REDIS_CACHE_LIVE_SECOND);
-				return cardUserTypes;
-			} else {
-				return (List<CardUserType>) object;
-			}
-
+		
+		String key = AppConstants.REDIS_PRE_BOOK_RESOURCE + AppConstants.CARD_CATEGORY + systemBookCode;
+		Object object = RedisUtil.get(key);
+		if(object == null){
+			List<CardUserType> cardUserTypes = findCardUserTypes(systemBookCode);
+			RedisUtil.put(key, cardUserTypes, AppConstants.REDIS_CACHE_LIVE_SECOND);
+			return cardUserTypes;
 		} else {
-
-			Element element = getElementFromCache(AppConstants.CARD_CATEGORY + systemBookCode);
-			if(element == null){
-				List<CardUserType> cardUserTypes = findCardUserTypes(systemBookCode);
-				element = new Element(AppConstants.CARD_CATEGORY + systemBookCode, cardUserTypes);
-				element.setEternal(true);
-				putElementToCache(element);
-			}
-			return (List<CardUserType>) element.getObjectValue();
+			return (List<CardUserType>) object;
 		}
+
 
 	}
 
