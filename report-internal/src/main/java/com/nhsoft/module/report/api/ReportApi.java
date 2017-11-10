@@ -1230,7 +1230,7 @@ public class ReportApi {
                     }else{
                         yearMoneyAddRateDTO.setBeforebillMoney(yearMoneyAddRateDTO.getBeforeSaleMoney().divide(new BigDecimal(yearMoneyAddRateDTO.getBeforeBillNum()),4,ROUND_HALF_UP));   //客单价
                     }
-                    yearMoneyAddRateDTO.setBeforeProfit(branchRevenueReport.getProfit());//毛利
+                    yearMoneyAddRateDTO.setBeforeProfit(branchRevenueReport.getProfit() == null ? BigDecimal.ZERO : branchRevenueReport.getProfit());//毛利
                 }
             }
             //本期分店营业额
@@ -1280,8 +1280,9 @@ public class ReportApi {
                     BigDecimal beforeProfit = yearMoneyAddRateDTO.getBeforeProfit();//同期
                     if(beforeProfit.compareTo(BigDecimal.ZERO) == 0){
                         yearMoneyAddRateDTO.setBeforeProfit(BigDecimal.ZERO);
+                    }else{
+                        yearMoneyAddRateDTO.setBeforeProfit(profit.subtract(beforeProfit).divide(beforeProfit,4,ROUND_HALF_UP));
                     }
-                    yearMoneyAddRateDTO.setBeforeProfit(profit.subtract(beforeProfit).divide(beforeProfit,4,ROUND_HALF_UP));
 
                 }
             }
