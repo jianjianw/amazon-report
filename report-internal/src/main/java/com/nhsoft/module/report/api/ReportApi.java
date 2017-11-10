@@ -1152,19 +1152,9 @@ public class ReportApi {
             }
             if(list.size() == 0){
                 //如果数据被全部移出，不能返回空，因为前台要拿日期数据
-                BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO();
-                branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
-                branchFinishRateTopDTO.setTop(null);
-                branchFinishRateTopDTO.setSaleMoney(null);
-                branchFinishRateTopDTO.setSaleMoneyGoal(null);
-                branchFinishRateTopDTO.setSaleMoneyFinishRate(null);
-                branchFinishRateTopDTO.setSunSaleMoneyGoal(null);
-                branchFinishRateTopDTO.setMonSaleMoneyGoal(null);
-                branchFinishRateTopDTO.setSatSaleMoneyGoal(null);
-                branchFinishRateTopDTO.setFriSaleMoneyGoal(null);
+                BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO(date+"( 星期" + arrayDay[day] + " )");
                 list.add(branchFinishRateTopDTO);
             }
-
         }
 
         List<BranchFinishRateTopDTO> newList = new ArrayList<>();
@@ -1183,16 +1173,7 @@ public class ReportApi {
             }
             if(newList.size() == 0){
                 //如果数据被全部移出，不能返回空，因为前台要拿日期数据
-                BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO();
-                branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
-                branchFinishRateTopDTO.setTop(null);
-                branchFinishRateTopDTO.setSaleMoney(null);
-                branchFinishRateTopDTO.setSaleMoneyGoal(null);
-                branchFinishRateTopDTO.setSaleMoneyFinishRate(null);
-                branchFinishRateTopDTO.setSunSaleMoneyGoal(null);
-                branchFinishRateTopDTO.setMonSaleMoneyGoal(null);
-                branchFinishRateTopDTO.setSatSaleMoneyGoal(null);
-                branchFinishRateTopDTO.setFriSaleMoneyGoal(null);
+                BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO(date+"( 星期" + arrayDay[day] + " )");
                 list.add(branchFinishRateTopDTO);
             }
             return newList;
@@ -1205,19 +1186,19 @@ public class ReportApi {
     @RequestMapping(method=RequestMethod.GET,value="/moneyAddRateDTO")
     public List<YearMoneyAddRateDTO> findBeforeAddRateTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                           @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
+        String[] arrayDay = {"日","一","二","三","四","五","六"};
         List<Integer> bannchNumList = stringToList(systemBookCode, null);
         Date dateFrom = DateUtil.getShortDate(date);
-
         //根据当前日期获得，今天是今年的第几周,周几
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateFrom);
         int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);    //今年的第几周
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);    //本周的周几
+        int day = calendar.get(Calendar.DAY_OF_WEEK)-1;    //本周的周几
 
         //根据第几周获取，同期的日期（去年第几周的日期）
         calendar.add(Calendar.YEAR,-1);//上一年
         calendar.set(Calendar.WEEK_OF_YEAR, weekOfYear); // 设置为2016年的第10周
-        calendar.set(Calendar.DAY_OF_WEEK,dayOfWeek); // 1表示周日，2表示周一，7表示周六
+        calendar.set(Calendar.DAY_OF_WEEK,day+1); // 1表示周日，2表示周一，7表示周六
         Date beforeDateFrom = calendar.getTime();
 
 
@@ -1234,6 +1215,7 @@ public class ReportApi {
             BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, branchNum);
             yearMoneyAddRateDTO.setBranchNum(branchNum);
             yearMoneyAddRateDTO.setBranchName(branchDTO.getBranchName());
+            yearMoneyAddRateDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
             //同期分店营业额
             for (int j = 0; j <beforeMoneyByBranch.size() ; j++) {
                 BranchRevenueReport branchRevenueReport = beforeMoneyByBranch.get(j);
@@ -1302,11 +1284,40 @@ public class ReportApi {
             }
             list.add(yearMoneyAddRateDTO);
         }
-        Collections.sort(list,Comparator.comparing(YearMoneyAddRateDTO::getSaleMoneyAddRate));
+        //排序（默认是升序），取反（降序）
+        Comparator<YearMoneyAddRateDTO> comparing = Comparator.comparing(YearMoneyAddRateDTO::getSaleMoneyAddRate);
+        list.sort(comparing.reversed());
         for (int i = 0; i <list.size() ; i++) {
             YearMoneyAddRateDTO yearMoneyAddRateDTO = list.get(i);
             yearMoneyAddRateDTO.setTop(i+1);
         }
-        return list;
+
+        List<YearMoneyAddRateDTO> newList = new ArrayList<>();
+        //得到分店号,判断要不要过滤其他分店
+        if(branchNums != null && branchNums.length()>=3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
+            List<Integer> branchNumList = subBranchNum(systemBookCode, branchNums);
+            for (int i = 0; i <branchNumList.size() ; i++) {
+                Integer integer = branchNumList.get(i);
+                for (int j = 0; j <list.size() ; j++) {
+                    YearMoneyAddRateDTO yearMoneyAddRateDTO = list.get(j);
+                    Integer branchNum = yearMoneyAddRateDTO.getBranchNum();
+                    if(integer .equals(branchNum)){
+                        newList.add(yearMoneyAddRateDTO);
+                    }
+                }
+            }
+            if(newList.size() == 0){
+                YearMoneyAddRateDTO yearMoneyAddRateDTO = new YearMoneyAddRateDTO(date+"( 星期" + arrayDay[day] + " )");
+                newList.add(yearMoneyAddRateDTO);
+            }
+            return newList;
+        }else{
+            if(list.size() == 0){
+                YearMoneyAddRateDTO yearMoneyAddRateDTO = new YearMoneyAddRateDTO(date+"( 星期" + arrayDay[day] + " )");
+                newList.add(yearMoneyAddRateDTO);
+            }
+            return list;
+        }
+
     }
 }

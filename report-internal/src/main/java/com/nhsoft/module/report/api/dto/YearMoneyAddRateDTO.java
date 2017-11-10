@@ -23,6 +23,25 @@ public class YearMoneyAddRateDTO implements Serializable {
         this.profitAddRate = BigDecimal.ZERO;
     }
 
+    public YearMoneyAddRateDTO(String date) {
+        this.branchName = null;
+        this.branchNum = null;
+        this.saleMoney = null;
+        this.beforeSaleMoney = null;
+        this.saleMoneyAddRate = null;
+        this.billNum = null;
+        this.beforeBillNum = null;
+        this.billNumAddRate = null;
+        this.billMoney = null;
+        this.beforebillMoney = null;
+        this.billMoneyAddRate = null;
+        this.profit = null;
+        this.beforeProfit = null;
+        this.profitAddRate = null;
+        this.top = null;
+        this.date = date;
+    }
+
     private String branchName;                      //分店名
     private Integer branchNum;                      //分店号
     private BigDecimal saleMoney;                   //营业额
@@ -37,7 +56,8 @@ public class YearMoneyAddRateDTO implements Serializable {
     private BigDecimal profit;                      //毛利
     private BigDecimal beforeProfit;                //同期毛利
     private BigDecimal profitAddRate;               //毛利同比增长率
-    private int top;                                //排名
+    private Integer top;                                //排名
+    private String date;                            //日期
 
     public String getBranchName() {
         return branchName;
@@ -151,11 +171,19 @@ public class YearMoneyAddRateDTO implements Serializable {
         this.profitAddRate = profitAddRate;
     }
 
-    public int getTop() {
+    public Integer getTop() {
         return top;
     }
 
-    public void setTop(int top) {
+    public void setTop(Integer top) {
         this.top = top;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

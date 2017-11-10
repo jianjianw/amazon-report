@@ -23,6 +23,25 @@ public class BranchFinishRateTopDTO implements Serializable {
 
     }
 
+
+    public BranchFinishRateTopDTO(String date) {
+        this.branchName = null;
+        this.branchNum = null;
+        this.saleMoney = null;
+        this.saleMoneyGoal = null;
+        this.orderCount = null;
+        this.profit = null;
+        this.saleMoneyFinishRate = null;
+        this.monthSaleMoneyGoal = null;
+        this.avgSaleMoneyGoal = null;
+        this.friSaleMoneyGoal = null;
+        this.satSaleMoneyGoal = null;
+        this.sunSaleMoneyGoal = null;
+        this.monSaleMoneyGoal = null;
+        this.date = date;
+        this.top = null;
+    }
+
     private String branchName;                        //分店名
     private Integer branchNum;                        //分店号
     private BigDecimal saleMoney;                     //当天营业额
