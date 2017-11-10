@@ -720,7 +720,7 @@ public class ReportApi {
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
         List<BranchDTO> all = null;
-        List<Integer> bannchNumList = null;
+        List<Integer> bannchNumList = new ArrayList<>();
         //如果传入分店为null,就查询所有分店
         if (branchNums == null || branchNums.length() == 0 ) {
             all = branchRpc.findInCache(systemBookCode);
@@ -801,7 +801,7 @@ public class ReportApi {
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
         List<BranchDTO> all = null;
-        List<Integer> bannchNumList = null;
+        List<Integer> bannchNumList = new ArrayList<>();
         //如果传入分店为null,就查询所有分店
         if (branchNums == null || branchNums.length() == 0 ) {
             all = branchRpc.findInCache(systemBookCode);
