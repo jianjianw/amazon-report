@@ -83,7 +83,7 @@ public class ReportApi {
 
     //按分店汇总                                 (按分店汇总)
     @RequestMapping(method = RequestMethod.GET, value = "/store")
-    public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
+    public List<OperationStoreDTO> findSaleMoneyByBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
         //点击区域跳转到分店，区域下面没有分店，直接一个空的list
@@ -386,12 +386,12 @@ public class ReportApi {
 
     //按区域汇总                                 (按分店汇总)
     @RequestMapping(method = RequestMethod.GET, value = "/region")
-    public List<OperationRegionDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
+    public List<OperationRegionDTO> findSaleMoneyByRegion(@RequestHeader("systemBookCode") String systemBookCode,
                                              @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
         //按区域汇总
         List<OperationRegionDTO> list = new ArrayList<>();
         //按分店汇总
-        List<OperationStoreDTO> operationStoreDTOS = byBranch(systemBookCode, branchNums, date);
+        List<OperationStoreDTO> operationStoreDTOS = findSaleMoneyByBranch(systemBookCode, branchNums, date);
         //根据账套号查询区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
 
