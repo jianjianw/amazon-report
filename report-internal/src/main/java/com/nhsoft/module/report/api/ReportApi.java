@@ -800,8 +800,6 @@ public class ReportApi {
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateRegionTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
-        //List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
-
         List<BranchDTO> all = null;
         List<Integer> bannchNumList = null;
         //如果传入分店为null,就查询所有分店
