@@ -20,7 +20,7 @@ public class AppConstants {
 	public static final String PAYMENT_DEPOSIT_POINT = "积分"; //积分转储值付款方式
 
 
-	public static final int CACHE_LIVE_DAY = 60 * 60 * 24; //缓存有效时间一天
+	public static final int CACHE_LIVE_DAY = 60 * 60; //缓存有效时间一天
 	public static final String INIT_TIME = "1899-12-30 00:00:00";
 	
 	/**

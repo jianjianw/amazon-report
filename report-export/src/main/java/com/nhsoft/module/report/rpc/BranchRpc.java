@@ -15,7 +15,7 @@ public interface BranchRpc {
      * @param systemBookCode 帐套号
      * @return
      */
-    public List<BranchDTO> findAll(String systemBookCode);
+    public List<BranchDTO> findInCache(String systemBookCode);
 
     /**
      * 根据账套号查询区域

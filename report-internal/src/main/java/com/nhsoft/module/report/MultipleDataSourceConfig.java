@@ -111,6 +111,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		redisTemplate.setConnectionFactory(jedisConnectionFactory);
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setValueSerializer(new MyJackson2JsonRedisSerializer());
+		redisTemplate.afterPropertiesSet();
 		return redisTemplate;
 	}
 

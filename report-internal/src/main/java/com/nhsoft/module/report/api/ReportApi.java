@@ -49,7 +49,7 @@ public class ReportApi {
         List<Integer> bannchNumList = new ArrayList<>();
         //如果传入分店为null,就查询所有分店
         if (branchNums == null || branchNums.length() == 0 ) {
-            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
             for (int i = 0; i < all.size(); i++) {
                 BranchDTO branchDTO = all.get(i);
                 bannchNumList.add(branchDTO.getBranchNum());
@@ -531,7 +531,7 @@ public class ReportApi {
         int index = branchNums.indexOf("|");
         String str = branchNums.substring(0, index);
         if (str.length() == 0) {
-            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
             for (int i = 0; i < all.size(); i++) {
                 BranchDTO branchDTO = all.get(i);
                 bannchNumList.add(branchDTO.getBranchNum());
@@ -621,7 +621,7 @@ public class ReportApi {
         int index = branchNums.indexOf("|");
         String str = branchNums.substring(0, index);
         if (str.length() == 0) {
-            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
             for (int i = 0; i < all.size(); i++) {
                 BranchDTO branchDTO = all.get(i);
                 bannchNumList.add(branchDTO.getBranchNum());
@@ -847,7 +847,7 @@ public class ReportApi {
         int index = branchNums.indexOf("|");
         String str = branchNums.substring(0, index);
         if (str.length() == 0) {
-            List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+            List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
             for (int i = 0; i < all.size(); i++) {
                 BranchDTO branchDTO = all.get(i);
                 bannchNumList.add(branchDTO.getBranchNum());
@@ -970,7 +970,7 @@ public class ReportApi {
     public List<Integer> findAllBranch(String systemBookCode) {
 
         List<Integer> bannchNumList = new ArrayList<>();
-        List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+        List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
         for (int i = 0; i < all.size(); i++) {
             BranchDTO branchDTO = all.get(i);
             bannchNumList.add(branchDTO.getBranchNum());

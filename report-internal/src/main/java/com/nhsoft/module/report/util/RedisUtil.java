@@ -21,7 +21,7 @@ public class RedisUtil {
 	private static String redisNameMapStr;
 	
 	@Value("${redis.name.map}")
-	public static void setRedisNameMapStr(String redisNameMapStr) {
+	public void setRedisNameMapStr(String redisNameMapStr) {
 		RedisUtil.redisNameMapStr = redisNameMapStr;
 	}
 	
