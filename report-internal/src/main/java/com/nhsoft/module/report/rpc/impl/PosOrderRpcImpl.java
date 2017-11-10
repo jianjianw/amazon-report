@@ -6,6 +6,7 @@ import com.nhsoft.module.report.dto.BranchRevenueReport;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.PosOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
     private PosOrderService posOrderService;
 
     @Override
+    @Cacheable(value="serviceCache")
     public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
         List<Object[]> objects = posOrderService.findMoneyBranchSummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo,isMember);
         List<BranchRevenueReport> list = new ArrayList<BranchRevenueReport>();
