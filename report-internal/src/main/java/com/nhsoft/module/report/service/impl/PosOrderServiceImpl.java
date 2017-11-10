@@ -119,7 +119,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	@Override
 	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
-
+		//TODO 需要添加type参数，下面的两个接口也需要
 		int type = 0;//暂时解决报错，等会去掉
 
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);

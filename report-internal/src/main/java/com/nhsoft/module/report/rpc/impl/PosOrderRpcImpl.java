@@ -1,25 +1,14 @@
 package com.nhsoft.module.report.rpc.impl;
 
-
-import com.nhsoft.amazon.server.dto.OrderQueryDTO;
-import com.nhsoft.amazon.server.dto.OrderReportDTO;
-import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
-import com.nhsoft.module.report.dao.ReportDao;
 import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.BranchRevenueReport;
-import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.PosOrderService;
-import com.nhsoft.module.report.service.SystemBookService;
-import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 @Component
