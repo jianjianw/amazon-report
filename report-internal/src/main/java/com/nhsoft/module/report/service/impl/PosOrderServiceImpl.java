@@ -119,7 +119,13 @@ public class PosOrderServiceImpl implements PosOrderService {
 	@Override
 	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
-		//TODO 需要添加type参数，下面的两个接口也需要
+
+		List<Object[]> objects = null;
+		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
+			objects = posOrderDao.findMoneyBranchSummary(systemBookCode, branchNums, dateFrom, dateTo, isMember);
+		}
+		return objects;
+		/*//TODO 需要添加type参数，下面的两个接口也需要
 		int type = 0;//暂时解决报错，等会去掉
 
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
@@ -306,14 +312,19 @@ public class PosOrderServiceImpl implements PosOrderService {
 
 			return objects;
 		}
-
+*/
 	}
 
 	@Override
 	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 
-		int type = 0;//暂时解决报错，等会去掉
+		List<Object[]> objects = null;
+		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
+			objects = posOrderDao.findMoneyBizdaySummary(systemBookCode, branchNums, dateFrom, dateTo, isMember);
+		}
+		return objects;
+		/*int type = 0;//暂时解决报错，等会去掉
 
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
@@ -499,14 +510,22 @@ public class PosOrderServiceImpl implements PosOrderService {
 			}
 
 			return objects;
-		}
+		}*/
 	}
 
 	@Override
 	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 
-		int type = 0;//暂时解决报错，等会去掉
+
+		List<Object[]> objects = null;
+		if (queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)) {
+			objects = posOrderDao.findMoneyBizmonthSummary(systemBookCode, branchNums, dateFrom, dateTo, isMember);
+		}
+		return objects;
+
+
+		/*int type = 0;//暂时解决报错，等会去掉
 
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
@@ -691,8 +710,8 @@ public class PosOrderServiceImpl implements PosOrderService {
 
 			return objects;
 		}
+	}*/
+
 	}
-
-
 }
 
