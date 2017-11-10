@@ -4,6 +4,7 @@ package com.nhsoft.module.report.rpc.impl;
 import com.nhsoft.amazon.server.dto.OrderQueryDTO;
 import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
+import com.nhsoft.module.report.dao.ReportDao;
 import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.BranchRevenueReport;
 import com.nhsoft.module.report.model.SystemBook;
@@ -29,9 +30,11 @@ public class PosOrderRpcImpl implements PosOrderRpc {
     public SystemBookService systemBookService;
     @Autowired
     private PosOrderRemoteService posOrderRemoteService;
-
+    @Autowired
+    public ReportDao reportDao;
 
     public List<Object[]> goBigCenterBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type){
+
         SystemBook systemBook = systemBookService.readInCache(systemBookCode);
         Date now = Calendar.getInstance().getTime();
         now = DateUtil.getMinOfDate(now);
@@ -40,7 +43,11 @@ public class PosOrderRpcImpl implements PosOrderRpc {
         }
 
         Date deleteDate = systemBook.getDeleteDate();
-        dateFrom = DateUtil.getMinOfDate(dateFrom);
+        if (dateFrom != null) {
+            dateFrom = DateUtil.getMinOfDate(dateFrom);
+        } else {
+            dateFrom = deleteDate;
+        }
         if (deleteDate != null && dateFrom.compareTo(deleteDate) < 0) {
             dateFrom = deleteDate;
         }
@@ -48,8 +55,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
         BigDecimal value1;
         BigDecimal value2;
         Date dpcLimitTime = DateUtil.addDay(now, -2);
-
-        if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()) {
+        if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && (type != 3 && type != 4)) {
 
             if (dpcLimitTime.compareTo(dateTo) > 0) {
                 OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
@@ -60,15 +66,12 @@ public class PosOrderRpcImpl implements PosOrderRpc {
                 List<OrderReportDTO> list = posOrderRemoteService.findBranchSummary(orderQueryDTO);
                 List<Object[]> returnList = new ArrayList<Object[]>();
                 for (int i = 0; i < list.size(); i++) {
-                    Object[] objects = new Object[4];
-
-                    objects[0] = list.get(i).getBranchNum();
-                    /*objects[1] = list.get(i).getBizday();//营业额
-                    objects[2] = list.get(i).getOrderCount();//客单量
-                    objects[3] = list.get(i).getProfit();//毛利*/
+                    Object[] objects = new Object[5];
+                    objects[0] = list.get(i).getBranchNum();//分店号
+                    objects[1] = list.get(i).getBizday();//营业日
                     if(type == 0){
                         objects[2] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
-                                .subtract(list.get(i).getMgrDiscount());
+                                .subtract(list.get(i).getMgrDiscount());//营业额
 
                     } else if(type == 1){
                         objects[2] = BigDecimal.valueOf(list.get(i).getOrderCount());
@@ -93,8 +96,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
                         } else {
                             objects[2] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));;
                         }
-                        objects[3] = value1;
-                        objects[4] = value2;
+                        objects[3] = value1;//客单量
+                        objects[4] = value2;//毛利
+
 
                     }
                     returnList.add(objects);
@@ -102,12 +106,12 @@ public class PosOrderRpcImpl implements PosOrderRpc {
                 return returnList;
             } else {
 
-                /*OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
+                OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
                 orderQueryDTO.setSystemBookCode(systemBookCode);
                 orderQueryDTO.setBranchNum(branchNums);
                 orderQueryDTO.setDateFrom(dateFrom);
                 orderQueryDTO.setDateTo(DateUtil.addDay(dpcLimitTime, -1));
-                List<OrderReportDTO> list = posOrderRemoteService.findBranchDaySummary(orderQueryDTO);
+                List<OrderReportDTO> list = posOrderRemoteService.findBranchSummary(orderQueryDTO);
                 List<Object[]> returnList = new ArrayList<Object[]>();
                 for (int i = 0; i < list.size(); i++) {
                     Object[] objects = new Object[5];
@@ -172,10 +176,49 @@ public class PosOrderRpcImpl implements PosOrderRpc {
                         }
                     }
                 }
-                return returnList;*/
+                return returnList;
             }
+        }else{
+
+            List<Object[]> objects = null;
+            if(type == 3 || type == 4){
+                objects = reportDao.findDayWholes(systemBookCode, branchNums, dateFrom, dateTo, true);
+            } else {
+                objects = reportDao.findDayWholes(systemBookCode, branchNums, dateFrom, dateTo, false);
+            }
+            if(type > 0){
+                Object[] object = null;
+                for(int i = 0;i < objects.size();i++){
+                    object = objects.get(i);
+                    if(type == 1 || type == 3){
+                        value1 = object[3] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[3]);
+
+                        object[2] = value1;
+
+                    } else if(type == 2 || type == 4){
+                        value1 = object[3] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[3]);
+                        value2 = object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2];
+
+                        if(value1.compareTo(BigDecimal.ZERO) > 0){
+                            object[2] = value2.divide(value1, 2, BigDecimal.ROUND_HALF_UP);
+                        }
+                    } else if(type == 5){
+                        object[2] = object[4];
+                    } else if(type == 6){
+                        value1 = object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2];
+                        value2 = object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4];
+
+                        if(value1.compareTo(BigDecimal.ZERO) > 0){
+                            object[2] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));;
+                        }
+                        object[3] = value1;
+                        object[4] = value2;
+                    }
+                }
+            }
+            return objects;
         }
-        return null;
+
     }
 
     public List goBigCenterDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type){

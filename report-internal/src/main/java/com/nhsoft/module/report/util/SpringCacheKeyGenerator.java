@@ -1,4 +1,4 @@
-package com.nhsoft.module.report.interceptor;
+package com.nhsoft.module.report.util;
 
 import com.nhsoft.module.report.util.DateUtil;
 import org.springframework.cache.interceptor.KeyGenerator;

@@ -1255,7 +1255,6 @@ public class ReportApi {
                         yearMoneyAddRateDTO.setSaleMoneyAddRate((saleMoney.subtract(beforeSaleMoney)).divide(beforeSaleMoney,4,ROUND_HALF_UP));
                     }
 
-
                     //客单量同比增长率
                     BigDecimal billNum = new BigDecimal(yearMoneyAddRateDTO.getBillNum());//本期
                     BigDecimal beforeBillNum = new BigDecimal(yearMoneyAddRateDTO.getBeforeBillNum());//同期
@@ -1264,7 +1263,6 @@ public class ReportApi {
                     }else{
                         yearMoneyAddRateDTO.setBillNumAddRate((billNum.subtract(beforeBillNum)).divide(beforeBillNum,4,ROUND_HALF_UP));
                     }
-
 
                     //客单价同比增长率
                     BigDecimal billMoney = yearMoneyAddRateDTO.getBillMoney();//本期
