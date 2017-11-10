@@ -24,4 +24,13 @@ public interface InventoryService {
 	 * @return
 	 */
 	public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums);
+	
+	/**
+	 * 按商品主键汇总配送仓库库存数量 金额
+	 * @param systemBookCode
+	 * @param branchNum 分店号
+	 * @param itemNums 商品主键列表
+	 * @return
+	 */
+	public List<Object[]> findCenterStore(String systemBookCode, Integer branchNum, List<Integer> itemNums);
 }

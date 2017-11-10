@@ -2,6 +2,7 @@ package com.nhsoft.module.report.service;
 
 import com.nhsoft.module.report.dto.AdjustmentReason;
 import com.nhsoft.module.report.param.CardUserType;
+import com.nhsoft.module.report.param.ChainDeliveryParam;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 
 import java.util.List;
@@ -50,6 +51,13 @@ public interface BookResourceService {
 	 * @return
 	 */
 	public List<CardUserType> findCardUserTypes(String systemBookCode);
+	
+	/**
+	 * 从缓存读连锁配送参数
+	 * @param systemBookCode
+	 * @return
+	 */
+	public ChainDeliveryParam readChainDeliveryParamInCache(String systemBookCode);
 
 
 }

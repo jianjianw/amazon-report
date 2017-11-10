@@ -886,7 +886,6 @@ public class Report2RpcImpl implements Report2Rpc {
 		posItemQuery.setSystemBookCode(systemBookCode);
 		posItemQuery.setBranchNum(branchNum);
 		posItemQuery.setCategoryCodes(itemCategoryCodes);
-		posItemQuery.setFilterType(AppConstants.ITEM_TYPE_CHAIN);
 		posItemQuery.setIsFindNoStock(false);
 		posItemQuery.setPaging(false);
 		posItemQuery.setItemNums(itemNums);
@@ -917,6 +916,17 @@ public class Report2RpcImpl implements Report2Rpc {
 			dto.setItemNum(analysis.getItemNum());
 			dto.setAbc(analysis.getABC());
 			dto.setSaleQty(analysis.getSaleQty());
+			reportUtil.add(dto);
+			chainItemNums.remove(analysis.getItemNum());
+		}
+		for(int i = 0;i < chainItemNums.size();i++){
+			Integer itemNum = chainItemNums.get(i);
+			innerItemNums.add(itemNum);
+			
+			RequestAnalysisDTO dto = reportUtil.getInstance();
+			dto.setItemNum(itemNum);
+			dto.setAbc("C");
+			dto.setSaleQty(BigDecimal.ZERO);
 			reportUtil.add(dto);
 		}
 		List<PosItem> posItems = null;
@@ -960,6 +970,8 @@ public class Report2RpcImpl implements Report2Rpc {
 			}
 			dto.setItemSalePrice(item.getItemRegularPrice());
 			dto.setItemLevel2Price(item.getItemLevel2Price());
+			dto.setItemPurchaseScope(item.getItemPurchaseScope());
+			
 			if(branch.getBranchMatrixPriceActived() && storeMatrix != null
 					&& storeMatrix.getStoreMatrixPriceEnabled() != null && storeMatrix.getStoreMatrixPriceEnabled()) {
 				if(storeMatrix.getStoreMatrixRegularPrice() != null && storeMatrix.getStoreMatrixRegularPrice().compareTo(BigDecimal.ZERO) > 0) {

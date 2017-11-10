@@ -38,10 +38,7 @@ public interface InventoryDao {
 	 * @return
 	 */
 	public List<Object[]> findCenterStore(String systemBookCode, Integer branchNum, List<Integer> itemNums);
-
-
-	public List<Inventory> findByStorehouseNum(Integer storehouseNum, List<Integer> itemNums);
-
+	
 
 	/**
 	 * 读取商品库存
@@ -66,7 +63,7 @@ public interface InventoryDao {
 	 * 查询商品库存数量 金额
 	 * @param systemBookCode
 	 * @param branchNums
-	 * @param posItemNum
+	 * @param itemNums
 	 * @return
 	 */
 	public List<Object[]> findItemSummary(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
