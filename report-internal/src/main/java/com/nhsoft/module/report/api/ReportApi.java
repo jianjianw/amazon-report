@@ -43,8 +43,7 @@ public class ReportApi {
     private TransferOutOrderRpc transferOutOrderRpc;
     @Autowired
     private AlipayLogRpc alipayLogRpc;
-
-
+    //将分店字符串转化成list<Integer>
     public List<Integer> stringToList(String systemBookCode, String branchNums) {
 
         List<Integer> bannchNumList = new ArrayList<>();
@@ -82,7 +81,7 @@ public class ReportApi {
         return alipayLogRpc.findByLogQuery(systemBookCode, 99, logQuery, 0, 0);
     }
 
-    //按分店汇总
+    //按分店汇总                                 (按分店汇总)
     @RequestMapping(method = RequestMethod.GET, value = "/store")
     public List<OperationStoreDTO> byBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
@@ -385,7 +384,7 @@ public class ReportApi {
 
     }
 
-    //按区域汇总
+    //按区域汇总                                 (按分店汇总)
     @RequestMapping(method = RequestMethod.GET, value = "/region")
     public List<OperationRegionDTO> byRegion(@RequestHeader("systemBookCode") String systemBookCode,
                                              @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
@@ -523,7 +522,7 @@ public class ReportApi {
     }
 
 
-    //按营业日汇总---日趋势 (时间传递月份)
+    //按营业日汇总---日趋势 (时间传递月份)        (按营业日汇总)
     @RequestMapping(method = RequestMethod.GET, value = "/bizday")
     public List<TrendDailyDTO> byBizday(@RequestHeader("systemBookCode") String systemBookCode,
                                         @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
@@ -614,7 +613,7 @@ public class ReportApi {
     }
 
 
-    //按营业月汇总---月趋势（时间传递年份）
+    //按营业月汇总---月趋势（时间传递年份）          （按营业月汇总）
     @RequestMapping(method = RequestMethod.GET, value = "/bizmonth")
     public List<TrendMonthlyDTO> byBizmonth(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
@@ -708,7 +707,7 @@ public class ReportApi {
     }
 
 
-    //1、门店完成率排名
+    //1、门店完成率排名                         （按分店汇总）
     @RequestMapping(method = RequestMethod.GET, value = "/branchTop")
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateBranchTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
@@ -771,7 +770,7 @@ public class ReportApi {
         return list;
     }
 
-    //2、区域完成率排名
+    //2、区域完成率排名                         （按分店汇总）
     @RequestMapping(method = RequestMethod.GET, value = "/regionTop")
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateRegionTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
@@ -839,7 +838,7 @@ public class ReportApi {
         return list;
     }
 
-    //年度销售分析
+    //年度销售分析                              （按营业月汇总）
     @RequestMapping(method = RequestMethod.GET, value = "/saleAnalysis")
     public List<SaleMoneyMonthDTO> findSaleAnalysisByMonth(@RequestHeader("systemBookCode") String systemBookCode,
                                                            @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
@@ -990,7 +989,7 @@ public class ReportApi {
     }
 
 
-    //门店每日完成率排名(门店业绩完成)
+    //门店每日完成率排名(门店业绩完成率排名)    （按分店汇总）
     @RequestMapping(method=RequestMethod.GET ,value="/finishRateTop")
     public List<BranchFinishRateTopDTO> findFinishRateTopByBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                                                   @RequestHeader("branchNums") String branchNums,
@@ -1184,7 +1183,7 @@ public class ReportApi {
         }
     }
 
-    //销售额同比增长排名
+    //销售额同比增长排名                     （按分店汇总）
     @RequestMapping(method=RequestMethod.GET,value="/moneyAddRateDTO")
     public List<YearMoneyAddRateDTO> findBeforeAddRateTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                           @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
