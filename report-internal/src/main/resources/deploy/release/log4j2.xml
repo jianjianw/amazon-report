@@ -20,5 +20,7 @@
         <Root level="info">
             <AppenderRef ref="Fileout" />
         </Root>
+        <Logger level="Error" name="org.springframework" />
+
     </Loggers>
 </Configuration>

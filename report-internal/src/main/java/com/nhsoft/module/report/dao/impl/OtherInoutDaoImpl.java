@@ -6,6 +6,7 @@ import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.DateUtil;
 import org.hibernate.Criteria;
+import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -135,6 +136,7 @@ public class OtherInoutDaoImpl extends  DaoImpl implements OtherInoutDao {
 		if (dateTo != null) {
 			criteria.add(Restrictions.le("o.otherInoutBizday", DateUtil.getDateShortStr(dateTo)));
 		}
+		criteria.setLockMode(LockMode.NONE);
 		return criteria;
 	}
 
@@ -147,5 +149,83 @@ public class OtherInoutDaoImpl extends  DaoImpl implements OtherInoutDao {
 				.add(Projections.sum("o.otherInoutMoney")));
 		return criteria.list();
 	}
-
+	
+	@Override
+	public List<Object[]> findBranchsMoney(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> innerBranchNums) {
+		Criteria criteria = currentSession().createCriteria(OtherInout.class, "o")
+				.add(Restrictions.eq("o.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.isNotNull("o.innerBranchNum"))
+				.add(Restrictions.eq("o.systemBookCode", systemBookCode));
+		if (branchNum != null) {
+			criteria.add(Restrictions.eq("o.branchNum", branchNum));
+			
+		}
+		if (innerBranchNums != null && innerBranchNums.size() > 0) {
+			criteria.add(Restrictions.in("o.innerBranchNum", innerBranchNums));
+		}
+		if (dateFrom != null) {
+			criteria.add(Restrictions.ge("o.otherInoutAuditTime", DateUtil.getMinOfDate(dateFrom)));
+		}
+		if (dateTo != null) {
+			criteria.add(Restrictions.le("o.otherInoutAuditTime", DateUtil.getMaxOfDate(dateTo)));
+		}
+		criteria.setLockMode(LockMode.NONE);
+		
+		criteria.setProjection(Projections
+				.projectionList()
+				.add(Projections.groupProperty("o.innerBranchNum"))
+				.add(Projections.groupProperty("o.otherInoutFlag"))
+				.add(Projections.sum("o.otherInoutMoney"))
+				.add(Projections.sqlProjection(
+						"sum(OTHER_INOUT_DUE_MONEY - OTHER_INOUT_DISCOUNT_MONEY - OTHER_INOUT_PAID_MONEY ) as unpay",
+						new String[] { "unpay" }, new Type[] { StandardBasicTypes.BIG_DECIMAL })));
+		return criteria.list();
+	}
+	
+	@Override
+	public List<OtherInout> findByBranch(String systemBookCode, Integer branchNum, Integer innerBranchNum, Date dateFrom, Date dateTo) {
+		Criteria criteria = currentSession().createCriteria(OtherInout.class, "o")
+				.add(Restrictions.eq("o.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.eq("o.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("o.branchNum", branchNum));
+		if (innerBranchNum != null) {
+			criteria.add(Restrictions.eq("o.innerBranchNum", innerBranchNum));
+		}
+		if (dateFrom != null) {
+			criteria.add(Restrictions.ge("o.otherInoutAuditTime", DateUtil.getMinOfDate(dateFrom)));
+		}
+		if (dateTo != null) {
+			criteria.add(Restrictions.le("o.otherInoutAuditTime", DateUtil.getMaxOfDate(dateTo)));
+		}
+		criteria.setLockMode(LockMode.NONE);
+		
+		return criteria.list();
+	}
+	
+	@Override
+	public List<Object[]> findMoneybyBranch(String systemBookCode, Integer branchNum, Integer innerBranchNum, Date dateFrom, Date dateTo) {
+		Criteria criteria = currentSession().createCriteria(OtherInout.class, "o")
+				.add(Restrictions.eq("o.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.eq("o.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("o.branchNum", branchNum));
+		if (innerBranchNum != null) {
+			criteria.add(Restrictions.eq("o.innerBranchNum", innerBranchNum));
+		}
+		if (dateFrom != null) {
+			criteria.add(Restrictions.ge("o.otherInoutAuditTime", DateUtil.getMinOfDate(dateFrom)));
+		}
+		if (dateTo != null) {
+			criteria.add(Restrictions.le("o.otherInoutAuditTime", DateUtil.getMaxOfDate(dateTo)));
+		}
+		criteria.setLockMode(LockMode.NONE);
+		criteria.setProjection(Projections
+				.projectionList()
+				.add(Projections.groupProperty("o.otherInoutFlag"))
+				.add(Projections.sum("o.otherInoutMoney"))
+				.add(Projections.sqlProjection(
+						"sum(OTHER_INOUT_DUE_MONEY - OTHER_INOUT_DISCOUNT_MONEY - OTHER_INOUT_PAID_MONEY ) as unpay",
+						new String[] { "unpay" }, new Type[] { StandardBasicTypes.BIG_DECIMAL })));
+		return criteria.list();
+	}
+	
 }

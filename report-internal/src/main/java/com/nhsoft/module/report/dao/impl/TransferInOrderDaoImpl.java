@@ -9,6 +9,7 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.*;
@@ -335,6 +336,102 @@ public class TransferInOrderDaoImpl extends DaoImpl implements TransferInOrderDa
 		}
 		sb.append("group by convert(varchar(12) , in_order_audit_time, 112)");
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+	
+	@Override
+	public List<Object[]> findMoneyByBranchNums(String systemBookCode, Integer inBranchNum, Date dateFrom, Date dateTo, List<Integer> branchNums) {
+		Criteria criteria = currentSession().createCriteria(TransferInOrder.class, "t")
+				.add(Restrictions.eq("t.inBranchNum", inBranchNum))
+				.add(Restrictions.eq("t.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.eq("t.systemBookCode", systemBookCode));
+		if(branchNums != null && branchNums.size() > 0){
+			criteria.add(Restrictions.in("t.branchNum", branchNums));
+		}
+		if(dateFrom != null){
+			criteria.add(Restrictions.ge("t.inOrderPaymentDate", dateFrom));
+		}
+		if(dateTo != null){
+			criteria.add(Restrictions.le("t.inOrderPaymentDate", dateTo));
+			
+		}
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.groupProperty("t.branchNum"))
+				.add(Projections.sum("t.inOrderDueMoney"))
+		);
+		criteria.setLockMode(LockMode.NONE);
+		return criteria.list();
+	}
+	
+	@Override
+	public BigDecimal readBranchUnPaidMoney(String systemBookCode, Integer branchNum, Integer inBranchNum) {
+		Criteria criteria = currentSession().createCriteria(TransferInOrder.class, "t")
+				.add(Restrictions.eq("t.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("t.state.stateCode",AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.eq("t.inBranchNum", inBranchNum))
+				.add(Restrictions.sqlRestriction("abs(in_order_due_money - in_order_paid_money - in_order_discount_money) > 0.01"))
+				.add(Restrictions.eq("t.branchNum", branchNum));
+		criteria.setProjection(Projections.sqlProjection("sum(in_order_due_money - in_order_paid_money - in_order_discount_money) as unPaid",
+				new String[]{"unPaid"}, new Type[]{StandardBasicTypes.BIG_DECIMAL}));
+		criteria.setLockMode(LockMode.NONE);
+		
+		Object object = criteria.uniqueResult();
+		if(object != null){
+			return (BigDecimal)object;
+		}
+		return BigDecimal.ZERO;
+	}
+	
+	@Override
+	public List<TransferInOrder> findBySettleBranch(String systemBookCode, Integer branchNum, Integer inBranchNum, Date dateFrom, Date dateTo) {
+		Criteria criteria = currentSession().createCriteria(TransferInOrder.class, "t")
+				.add(Restrictions.eq("t.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("t.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.eq("t.inBranchNum", inBranchNum))
+				.add(Restrictions.eq("t.branchNum", branchNum));
+		if(dateFrom != null){
+			criteria.add(Restrictions.ge("t.inOrderPaymentDate", DateUtil.getMinOfDate(dateFrom)));
+		}
+		if(dateTo != null){
+			criteria.add(Restrictions.le("t.inOrderPaymentDate", DateUtil.getMaxOfDate(dateTo)));
+		}
+		criteria.setLockMode(LockMode.NONE);
+		
+		return criteria.list();
+	}
+	
+	@Override
+	public List<Object[]> findDueMoney(String systemBookCode, Integer inBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branchNum, sum(inOrderDueMoney - inOrderDiscountMoney - inOrderPaidMoney) ");
+		sb.append("from TransferInOrder where systemBookCode = :systemBookCode and state.stateCode = 3 ");
+		if(inBranchNum != null){
+			sb.append("and inBranchNum = :branchNum ");
+		}
+		if(dateFrom != null){
+			sb.append("and inOrderPaymentDate >= :dateFrom ");
+		}
+		if(dateTo != null){
+			sb.append("and inOrderPaymentDate <= :dateTo ");
+		}
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and branchNum in (:branchNums) ");
+		}
+		sb.append("group by branchNum ");
+		Query query = currentSession().createQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if(inBranchNum != null){
+			query.setInteger("branchNum", inBranchNum);
+		}
+		if(dateFrom != null){
+			query.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		}
+		if(dateTo != null){
+			query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		}
+		if(branchNums != null && branchNums.size() > 0){
+			query.setParameterList("branchNums", branchNums);
+		}
 		return query.list();
 	}
 }
