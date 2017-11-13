@@ -2270,7 +2270,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("p.order_sold_by, detail.item_grade_num, p.order_state_code, detail.order_detail_commission, ");
 		sb.append("detail.order_detail_memo, detail.order_detail_gross_profit, detail.order_detail_cost ");
 
-		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+		sb.append("from pos_order_detail as detail with(nolock, forceseek) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
 		if(queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0){
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
