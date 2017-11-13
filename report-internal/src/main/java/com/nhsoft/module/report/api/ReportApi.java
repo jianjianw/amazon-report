@@ -402,9 +402,30 @@ public class ReportApi {
         //根据账套号查询区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
 
+
+        //创建map,封装每个区域下面的分店
+        Map<Integer,List<BranchDTO>> map = new HashMap<>();
+        //得到所有分店
+        List<BranchDTO> bracnhDTOs = branchRpc.findInCache(systemBookCode);
+        //得到区域下面的分店
+        List<BranchDTO> branchDTORegion = new ArrayList<>();
+        for (int i = 0; i <branchRegions.size() ; i++) {
+            BranchRegionDTO branchRegionDTO = branchRegions.get(i);
+            for (int j = 0; j <bracnhDTOs.size() ; j++) {
+                BranchDTO branchDTO = bracnhDTOs.get(i);
+                if(branchRegionDTO.getBranchRegionNum().equals(branchDTO.getBranchNum())){
+                    branchDTORegion.add(branchDTO);
+                }
+            }
+            map.put(branchRegionDTO.getBranchRegionNum(),branchDTORegion);
+        }
+
+
+
         //先遍历区域，在遍历按分店返回的数据，如果分店号，相等，就将分店的数据封装到区域里面
         for (int i = 0; i < branchRegions.size(); i++) {
-            Integer regionNum = branchRegions.get(i).getBranchRegionNum();
+            BranchRegionDTO branchRegionDTO = branchRegions.get(i);
+            Integer regionNum = branchRegionDTO.getBranchRegionNum();
             //多少个分店号就创建多少个分店
             OperationRegionDTO region = new OperationRegionDTO();
 
@@ -426,7 +447,8 @@ public class ReportApi {
             BigDecimal bigDay = BigDecimal.ONE;
             String areaBranchNums = "[";
             //得到区域下面的所有分店
-            List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
+            //List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
+            List<BranchDTO> branchs = map.get(branchRegionDTO.getBranchRegionNum());
 
             for (int j = 0; j < branchs.size(); j++) {
                 BranchDTO branch = branchs.get(j);
@@ -827,10 +849,23 @@ public class ReportApi {
         List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateFrom, AppConstants.BUSINESS_DATE_SOME_DATE);
         //得到所有区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
-
-       /* //得到区域下面的分店
-        List<BranchDTO> branchs_ = new ArrayList<>();*/
-
+        //封装每个区域下面的分店
+        Map<Integer,List<BranchDTO>> map = new HashMap<>();
+        //得到所有分店
+        List<BranchDTO> branchDTOs = branchRpc.findInCache(systemBookCode);
+        //封装区域下面的分店
+        List<BranchDTO> branchDTORegion = new ArrayList<>();
+        //封装分店到map中
+        for (int j = 0; j <branchRegions.size() ; j++) {
+            BranchRegionDTO branchRegionDTO = branchRegions.get(j);
+            for (int i = 0; i <branchDTOs.size() ; i++) {
+                BranchDTO branchDTO = branchDTOs.get(i);
+                if(branchRegionDTO.getBranchRegionNum().equals(branchDTO.getBranchNum())){
+                    branchDTORegion.add(branchDTO);
+                }
+            }
+            map.put(branchRegionDTO.getBranchRegionNum(),branchDTORegion);
+        }
 
         List<SaleFinishMoneyTopDTO> list = new ArrayList<>();
         for (int i = 0; i < branchRegions.size(); i++) {
@@ -839,7 +874,8 @@ public class ReportApi {
             saleFinishMoneyTopDTO.setName(branchRegionDTO.getBranchRegionName());
             saleFinishMoneyTopDTO.setNum(branchRegionDTO.getBranchRegionNum());
             //得到区域下的所有分店
-            List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionDTO.getBranchRegionNum());
+            //List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionDTO.getBranchRegionNum());
+            List<BranchDTO> branchs = map.get(branchRegionDTO.getBranchRegionNum());
             for (int j = 0; j < branchs.size(); j++) {
                 BranchDTO branchDTO = branchs.get(j);
                 //营业额
