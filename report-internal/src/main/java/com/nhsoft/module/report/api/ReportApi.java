@@ -827,6 +827,11 @@ public class ReportApi {
         List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateFrom, AppConstants.BUSINESS_DATE_SOME_DATE);
         //得到所有区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
+
+       /* //得到区域下面的分店
+        List<BranchDTO> branchs_ = new ArrayList<>();*/
+
+
         List<SaleFinishMoneyTopDTO> list = new ArrayList<>();
         for (int i = 0; i < branchRegions.size(); i++) {
             BranchRegionDTO branchRegionDTO = branchRegions.get(i);
