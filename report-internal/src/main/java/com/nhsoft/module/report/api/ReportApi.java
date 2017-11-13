@@ -47,23 +47,13 @@ public class ReportApi {
     public List<Integer> stringToList(String systemBookCode, String branchNums) {
 
         List<Integer> bannchNumList = new ArrayList<>();
-        //如果传入分店为null,就查询所有分店
-        if (branchNums == null || branchNums.length() == 0 ) {
-            List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
-            for (int i = 0; i < all.size(); i++) {
-                BranchDTO branchDTO = all.get(i);
-                bannchNumList.add(branchDTO.getBranchNum());
-            }
-            return bannchNumList;
+
+        String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
+        String[] split = replace.split(",");
+        for (int i = 0; i < split.length; i++) {
+            bannchNumList.add(Integer.parseInt(split[i]));
         }
-        else {
-            String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
-            String[] split = replace.split(",");
-            for (int i = 0; i < split.length; i++) {
-                bannchNumList.add(Integer.parseInt(split[i]));
-            }
-            return bannchNumList;
-        }
+        return bannchNumList;
 
     }
 
@@ -86,12 +76,26 @@ public class ReportApi {
     public List<OperationStoreDTO> findSaleMoneyByBranch(@RequestHeader("systemBookCode") String systemBookCode,
                                             @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
-        //点击区域跳转到分店，区域下面没有分店，直接一个空的list
+        //点击区域跳转到分店，区域下面没有分店，传递过来的参数是[] 直接返回一个空的list
         if(branchNums != null && branchNums.length() == 2){
             List<OperationStoreDTO>  list = new ArrayList<>();
             return list;
         }
-        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+
+        List<BranchDTO> all = null;
+        List<Integer> bannchNumList = new ArrayList<>();
+        //如果传入分店为null,就查询所有分店
+        if (branchNums == null || branchNums.length() == 0 ) {
+            all = branchRpc.findInCache(systemBookCode);
+            for (int i = 0; i <all.size() ; i++) {
+                BranchDTO branchDTO = all.get(i);
+                bannchNumList.add(branchDTO.getBranchNum());
+            }
+        }else{
+            bannchNumList = stringToList(systemBookCode, branchNums);
+        }
+
+
         //计算环比增长，上期的时间
         Date beforeDateFrom = null;
         Date beforeDateTo = null;
@@ -199,10 +203,13 @@ public class ReportApi {
         for (int i = 0; i < bannchNumList.size(); i++) {
             OperationStoreDTO store = new OperationStoreDTO();
             store.setBranchNum(bannchNumList.get(i));
-            BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, bannchNumList.get(i));
-            store.setBranchName(branchDTO.getBranchName());
+            for (int j = 0; j <all.size() ; j++) {
+                BranchDTO branchDTO = all.get(j);
+                if(store.getBranchNum().equals(branchDTO.getBranchNum())){
+                    store.setBranchName(branchDTO.getBranchName());
+                }
+            }
             store.setBigDay(bigDay);
-            store.setBranchName(branchDTO.getBranchName());
             //上期的营业额
             Iterator before = beforeMoneyByBranch.iterator();
             while (before.hasNext()) {
@@ -395,9 +402,30 @@ public class ReportApi {
         //根据账套号查询区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
 
+
+        //创建map,封装每个区域下面的分店
+        Map<Integer,List<BranchDTO>> map = new HashMap<>();
+        //得到所有分店
+        List<BranchDTO> bracnhDTOs = branchRpc.findInCache(systemBookCode);
+        //得到区域下面的分店
+        List<BranchDTO> branchDTORegion = new ArrayList<>();
+        for (int i = 0; i <branchRegions.size() ; i++) {
+            BranchRegionDTO branchRegionDTO = branchRegions.get(i);
+            for (int j = 0; j <bracnhDTOs.size() ; j++) {
+                BranchDTO branchDTO = bracnhDTOs.get(i);
+                if(branchRegionDTO.getBranchRegionNum().equals(branchDTO.getBranchNum())){
+                    branchDTORegion.add(branchDTO);
+                }
+            }
+            map.put(branchRegionDTO.getBranchRegionNum(),branchDTORegion);
+        }
+
+
+
         //先遍历区域，在遍历按分店返回的数据，如果分店号，相等，就将分店的数据封装到区域里面
         for (int i = 0; i < branchRegions.size(); i++) {
-            Integer regionNum = branchRegions.get(i).getBranchRegionNum();
+            BranchRegionDTO branchRegionDTO = branchRegions.get(i);
+            Integer regionNum = branchRegionDTO.getBranchRegionNum();
             //多少个分店号就创建多少个分店
             OperationRegionDTO region = new OperationRegionDTO();
 
@@ -419,7 +447,8 @@ public class ReportApi {
             BigDecimal bigDay = BigDecimal.ONE;
             String areaBranchNums = "[";
             //得到区域下面的所有分店
-            List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
+            //List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, regionNum);
+            List<BranchDTO> branchs = map.get(branchRegionDTO.getBranchRegionNum());
 
             for (int j = 0; j < branchs.size(); j++) {
                 BranchDTO branch = branchs.get(j);
@@ -711,7 +740,20 @@ public class ReportApi {
     @RequestMapping(method = RequestMethod.GET, value = "/branchTop")
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateBranchTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
-        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+
+        List<BranchDTO> all = null;
+        List<Integer> bannchNumList = new ArrayList<>();
+        //如果传入分店为null,就查询所有分店
+        if (branchNums == null || branchNums.length() == 0 ) {
+            all = branchRpc.findInCache(systemBookCode);
+            for (int i = 0; i <all.size() ; i++) {
+                BranchDTO branchDTO = all.get(i);
+                bannchNumList.add(branchDTO.getBranchNum());
+            }
+        }else{
+            bannchNumList = stringToList(systemBookCode, branchNums);
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dateFrom = null;
         try {
@@ -728,9 +770,14 @@ public class ReportApi {
         List<SaleFinishMoneyTopDTO> list = new ArrayList<>();
         for (int i = 0; i < bannchNumList.size(); i++) {
             SaleFinishMoneyTopDTO saleFinishMoneyTopDTO = new SaleFinishMoneyTopDTO();
-            BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, bannchNumList.get(i));
-            saleFinishMoneyTopDTO.setName(branchDTO.getBranchName());
             saleFinishMoneyTopDTO.setNum(bannchNumList.get(i));
+            for (int j = 0; j <all.size() ; j++) {
+                BranchDTO branchDTO = all.get(j);
+                if(bannchNumList.get(i).equals(branchDTO.getBranchNum())){
+                    saleFinishMoneyTopDTO.setName(branchDTO.getBranchName());
+                }
+            }
+
             //营业额
             for (int j = 0; j < moneyByBranch.size(); j++) {
                 BranchRevenueReport branchRevenueReport = moneyByBranch.get(j);
@@ -775,7 +822,19 @@ public class ReportApi {
     public List<SaleFinishMoneyTopDTO> findMoneyFinishRateRegionTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                                     @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date) {
 
-        List<Integer> bannchNumList = stringToList(systemBookCode, branchNums);
+        List<BranchDTO> all = null;
+        List<Integer> bannchNumList = new ArrayList<>();
+        //如果传入分店为null,就查询所有分店
+        if (branchNums == null || branchNums.length() == 0 ) {
+            all = branchRpc.findInCache(systemBookCode);
+            for (int i = 0; i <all.size() ; i++) {
+                BranchDTO branchDTO = all.get(i);
+                bannchNumList.add(branchDTO.getBranchNum());
+            }
+        }else{
+            bannchNumList = stringToList(systemBookCode, branchNums);
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dateFrom = null;
         try {
@@ -790,6 +849,24 @@ public class ReportApi {
         List<SaleMoneyGoals> saleMoneyGoalsByBranch = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, dateFrom, dateFrom, AppConstants.BUSINESS_DATE_SOME_DATE);
         //得到所有区域
         List<BranchRegionDTO> branchRegions = branchRpc.findBranchRegion(systemBookCode);
+        //封装每个区域下面的分店
+        Map<Integer,List<BranchDTO>> map = new HashMap<>();
+        //得到所有分店
+        List<BranchDTO> branchDTOs = branchRpc.findInCache(systemBookCode);
+        //封装区域下面的分店
+        List<BranchDTO> branchDTORegion = new ArrayList<>();
+        //封装分店到map中
+        for (int j = 0; j <branchRegions.size() ; j++) {
+            BranchRegionDTO branchRegionDTO = branchRegions.get(j);
+            for (int i = 0; i <branchDTOs.size() ; i++) {
+                BranchDTO branchDTO = branchDTOs.get(i);
+                if(branchRegionDTO.getBranchRegionNum().equals(branchDTO.getBranchNum())){
+                    branchDTORegion.add(branchDTO);
+                }
+            }
+            map.put(branchRegionDTO.getBranchRegionNum(),branchDTORegion);
+        }
+
         List<SaleFinishMoneyTopDTO> list = new ArrayList<>();
         for (int i = 0; i < branchRegions.size(); i++) {
             BranchRegionDTO branchRegionDTO = branchRegions.get(i);
@@ -797,7 +874,8 @@ public class ReportApi {
             saleFinishMoneyTopDTO.setName(branchRegionDTO.getBranchRegionName());
             saleFinishMoneyTopDTO.setNum(branchRegionDTO.getBranchRegionNum());
             //得到区域下的所有分店
-            List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionDTO.getBranchRegionNum());
+            //List<BranchDTO> branchs = branchRpc.findBranchByBranchRegionNum(systemBookCode, branchRegionDTO.getBranchRegionNum());
+            List<BranchDTO> branchs = map.get(branchRegionDTO.getBranchRegionNum());
             for (int j = 0; j < branchs.size(); j++) {
                 BranchDTO branchDTO = branchs.get(j);
                 //营业额
@@ -964,30 +1042,6 @@ public class ReportApi {
         return list;
     }
 
-    ///分割线，下面的两个方法是给下面的api用的
-
-    //查询所有分店
-    public List<Integer> findAllBranch(String systemBookCode) {
-
-        List<Integer> bannchNumList = new ArrayList<>();
-        List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
-        for (int i = 0; i < all.size(); i++) {
-            BranchDTO branchDTO = all.get(i);
-            bannchNumList.add(branchDTO.getBranchNum());
-        }
-        return bannchNumList;
-    }
-    //将分店字符串装入集合
-    public List<Integer> subBranchNum(String systemBookCode,String branchNums){
-        List<Integer> bannchNumList = new ArrayList<>();
-        String replace = branchNums.replace("[", "").replace("]", "").replace(" ", "");
-        String[] split = replace.split(",");
-        for (int i = 0; i < split.length; i++) {
-            bannchNumList.add(Integer.parseInt(split[i]));
-        }
-        return bannchNumList;
-    }
-
 
     //门店每日完成率排名(门店业绩完成率排名)    （按分店汇总）
     @RequestMapping(method=RequestMethod.GET ,value="/finishRateTop")
@@ -1013,7 +1067,12 @@ public class ReportApi {
         calendar.add(Calendar.DAY_OF_MONTH,7);//得到这周星期天
         Date sunday = calendar.getTime();
         //为了计算排名，不管传递几个分店都要查询所有
-        List<Integer> bannchNumList = findAllBranch(systemBookCode);
+        List<Integer> bannchNumList = new ArrayList<>();
+        List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+        for (int i = 0; i <all.size() ; i++) {
+            BranchDTO branchDTO = all.get(i);
+            bannchNumList.add(branchDTO.getBranchNum());
+        }
         //星期四
         List<SaleMoneyGoals> thursdayMoneyGoal = branchTransferGoalsRpc.findSaleMoneyGoalsByBranch(systemBookCode, bannchNumList, thursday, thursday, AppConstants.BUSINESS_DATE_SOME_DATE);
         //星期五
@@ -1031,13 +1090,11 @@ public class ReportApi {
 
 
         List<BranchFinishRateTopDTO> list = new ArrayList<>();
-        for (int i = 0; i <bannchNumList.size() ; i++) {
+        for (int i = 0; i <all.size() ; i++) {//一定是所有分店
             BranchFinishRateTopDTO  branchFinishRateTopDTO = new BranchFinishRateTopDTO();
-            Integer branchNum = bannchNumList.get(i);
-            BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, branchNum);
+            Integer branchNum = all.get(i).getBranchNum();
             branchFinishRateTopDTO.setBranchNum(branchNum);
-            branchFinishRateTopDTO.setBranchName(branchDTO.getBranchName());
-
+            branchFinishRateTopDTO.setBranchName(all.get(i).getBranchName());
             branchFinishRateTopDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
             //星期一到星期四
             for (int j = 0; j <thursdayMoneyGoal.size() ; j++) {
@@ -1156,7 +1213,7 @@ public class ReportApi {
         if(branchNums != null && branchNums.length()>=3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
             //创建一个新的list
             List<BranchFinishRateTopDTO> newList = new ArrayList<>();
-            List<Integer> branchNumList = subBranchNum(systemBookCode, branchNums);
+            List<Integer> branchNumList = stringToList(systemBookCode, branchNums);
             for (int i = 0; i <branchNumList.size() ; i++) {
                 Integer integer = branchNumList.get(i);
                 for (int j = 0; j <list.size() ; j++) {
@@ -1188,7 +1245,6 @@ public class ReportApi {
     public List<YearMoneyAddRateDTO> findBeforeAddRateTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                           @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
         String[] arrayDay = {"日","一","二","三","四","五","六"};
-        List<Integer> bannchNumList = stringToList(systemBookCode, null);
         Date dateFrom = DateUtil.getShortDate(date);
         //根据当前日期获得，今天是今年的第几周,周几
         Calendar calendar = Calendar.getInstance();
@@ -1203,6 +1259,13 @@ public class ReportApi {
         Date beforeDateFrom = calendar.getTime();
         String beforeDateStr = DateUtil.getDateStr(beforeDateFrom);
 
+        //为了计算排名，不管传递几个分店都要查询所有
+        List<Integer> bannchNumList = new ArrayList<>();
+        List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+        for (int i = 0; i <all.size() ; i++) {
+            BranchDTO branchDTO = all.get(i);
+            bannchNumList.add(branchDTO.getBranchNum());
+        }
 
         //按分店查询同期营业额
         List<BranchRevenueReport> beforeMoneyByBranch = posOrderRpc.findMoneyBranchSummary(systemBookCode, bannchNumList, AppConstants.BUSINESS_TREND_PAYMENT, beforeDateFrom, beforeDateFrom, false);
@@ -1211,12 +1274,11 @@ public class ReportApi {
 
         List<YearMoneyAddRateDTO> list = new ArrayList<>();
 
-        for (int i = 0; i <bannchNumList.size() ; i++) {
+        for (int i = 0; i <all.size() ; i++) {    //一定是所有分店
             YearMoneyAddRateDTO yearMoneyAddRateDTO = new YearMoneyAddRateDTO();
-            Integer branchNum = bannchNumList.get(i);
-            BranchDTO branchDTO = branchRpc.readWithNolock(systemBookCode, branchNum);
+            Integer branchNum = all.get(i).getBranchNum();
             yearMoneyAddRateDTO.setBranchNum(branchNum);
-            yearMoneyAddRateDTO.setBranchName(branchDTO.getBranchName());
+            yearMoneyAddRateDTO.setBranchName(all.get(i).getBranchName());
             yearMoneyAddRateDTO.setDate(date+"( 星期" + arrayDay[day] + " )");
             yearMoneyAddRateDTO.setLastYearDate(beforeDateStr);
             //同期分店营业额
@@ -1297,7 +1359,7 @@ public class ReportApi {
         List<YearMoneyAddRateDTO> newList = new ArrayList<>();
         //得到分店号,判断要不要过滤其他分店
         if(branchNums != null && branchNums.length()>=3){//查询所有分店传递额参数是"[]" lenth大于3时才会有分店传入
-            List<Integer> branchNumList = subBranchNum(systemBookCode, branchNums);
+            List<Integer> branchNumList = stringToList(systemBookCode, branchNums);
             for (int i = 0; i <branchNumList.size() ; i++) {
                 Integer integer = branchNumList.get(i);
                 for (int j = 0; j <list.size() ; j++) {
