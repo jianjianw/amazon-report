@@ -369,10 +369,7 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal value1;
 		BigDecimal value2;
 		Date dpcLimitTime = DateUtil.addDay(now, -2);
-		if (dpcLimitTime.compareTo(dateFrom) > 0 
-				&& systemBook.getBookReadDpc() != null 
-				&& systemBook.getBookReadDpc() 
-				&& (type != 3 && type != 4)) {
+		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && (type != 3 && type != 4)) {
 			if (dpcLimitTime.compareTo(dateTo) > 0) {
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -1734,18 +1731,18 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal bCount = BigDecimal.ZERO;
 		BigDecimal cCount = BigDecimal.ZERO;
 		Comparator<ABCAnalysis> comparator = new Comparator<ABCAnalysis>() {
-
+			
 			@Override
 			public int compare(ABCAnalysis o1, ABCAnalysis o2) {
 				return -o1.getAnalysisContent().compareTo(o2.getAnalysisContent());
 			}
-
+			
 		};
 		Collections.sort(list, comparator);
 		BigDecimal aRate = null;
 		for (int i = 0; i < list.size(); i++) {
 			ABCAnalysis data = list.get(i);
-
+			
 			data.setTotalMoney(totalMoney);
 			if (totalMoney.compareTo(BigDecimal.ZERO) == 0) {
 				data.setRate(BigDecimal.ZERO);
@@ -1755,7 +1752,7 @@ public class ReportServiceImpl implements ReportService {
 			}
 			data.setTotalRate(totalRate.add(data.getRate()));
 			totalRate = data.getTotalRate();
-
+			
 			if (i == 0 && data.getTotalRate().compareTo(BigDecimal.valueOf(70.0000)) >= 0) {
 				data.setABC("A");
 				aCount = aCount.add(data.getAnalysisContent());
@@ -10351,7 +10348,7 @@ public class ReportServiceImpl implements ReportService {
 		Date dateTo = posItemPriceBandQuery.getDateTo();
 		List<Integer> branchNums = posItemPriceBandQuery.getBranchNums();
 		List<String> categoryCodes = posItemPriceBandQuery.getCategoryCodeList();
-
+		
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 		List<Integer> lowItemNums = new ArrayList<Integer>();
 		List<Integer> cheapItemNums = new ArrayList<Integer>();
@@ -10359,11 +10356,11 @@ public class ReportServiceImpl implements ReportService {
 		List<Integer> suitableItemNums = new ArrayList<Integer>();
 		List<Integer> higherItemNums = new ArrayList<Integer>();
 		List<Integer> highestItemNums = new ArrayList<Integer>();
-
+		
 		BigDecimal comparePrice = null;
 		for (int i = 0; i < posItems.size(); i++) {
 			PosItem posItem = posItems.get(i);
-
+			
 			if (categoryCodes != null && categoryCodes.size() > 0) {
 				if (!categoryCodes.contains(posItem.getItemCategoryCode())) {
 					continue;
@@ -10404,12 +10401,12 @@ public class ReportServiceImpl implements ReportService {
 		list.add(new PosItemPriceBandDTO(3, suitableItemNums.size()));
 		list.add(new PosItemPriceBandDTO(4, higherItemNums.size()));
 		list.add(new PosItemPriceBandDTO(5, highestItemNums.size()));
-
+		
 		List<Object[]> objects = null;
 		if (posItemPriceBandQuery.getType().equals(AppConstants.CHECKBOX_SALE)) {
-
+			
 			objects = posOrderDao.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, null, false);
-
+			
 		} else if (posItemPriceBandQuery.getType().equals(AppConstants.CHECKBOX_OUT)) {
 			if(branchNums == null){
 				branchNums = new ArrayList<Integer>();
@@ -10421,7 +10418,7 @@ public class ReportServiceImpl implements ReportService {
 					dateFrom, dateTo, null);
 			for (int i = 0; i < inObjects.size(); i++) {
 				Object[] inObject = inObjects.get(i);
-
+				
 				boolean find = false;
 				for (int j = 0; j < objects.size(); j++) {
 					Object[] object = objects.get(j);
@@ -10439,16 +10436,16 @@ public class ReportServiceImpl implements ReportService {
 					objects.add(object);
 				}
 			}
-
+			
 		} else {
-	
+			
 			objects = wholesaleOrderDao.findItemSummary(systemBookCode, branchNums, dateFrom, dateTo);
 			List<Object[]> returnObjects = wholesaleReturnDao.findItemSummary(systemBookCode, branchNums, dateFrom,
 					dateTo);
-
+			
 			for (int i = 0; i < returnObjects.size(); i++) {
 				Object[] returnObject = returnObjects.get(i);
-
+				
 				boolean find = false;
 				for (int j = 0; j < objects.size(); j++) {
 					Object[] object = objects.get(j);
@@ -10467,7 +10464,7 @@ public class ReportServiceImpl implements ReportService {
 				}
 			}
 		}
-
+		
 		PosItemPriceBandDTO posItemPriceBandDTO = null;
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
@@ -10486,7 +10483,7 @@ public class ReportServiceImpl implements ReportService {
 //					amount = amount.divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP);
 //				}
 //			}
-
+			
 			if (lowItemNums.contains(itemNum)) {
 				posItemPriceBandDTO = list.get(0);
 			} else if (cheapItemNums.contains(itemNum)) {
@@ -10502,10 +10499,10 @@ public class ReportServiceImpl implements ReportService {
 			} else {
 				continue;
 			}
-
+			
 			posItemPriceBandDTO.setOutMoney(posItemPriceBandDTO.getOutMoney().add(money));
 			posItemPriceBandDTO.setOutNum(posItemPriceBandDTO.getOutNum().add(amount));
-
+			
 		}
 		return list;
 	}

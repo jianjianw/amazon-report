@@ -9,6 +9,37 @@ public class OperationRegionDTO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2185244162837737684L;
+
+
+	public OperationRegionDTO() {
+		this.revenue = BigDecimal.ZERO;
+		this.realizeRate1 = BigDecimal.ZERO;
+		this.memberSalesRealizeRate = BigDecimal.ZERO;
+		this.memeberRevenueOccupy = BigDecimal.ZERO;
+		this.aveBillNums = BigDecimal.ZERO;
+		this.allBillRealizeRate = BigDecimal.ZERO;
+		this.memberBillNums = 0;
+		this.bill = BigDecimal.ZERO;
+		this.memberBill = BigDecimal.ZERO;
+		this.distributionDifferent = BigDecimal.ZERO;
+		this.destroyDefferent = BigDecimal.ZERO;
+		this.adjustAmount = BigDecimal.ZERO;
+		this.grossProfit = BigDecimal.ZERO;
+		this.grossProfitRate = BigDecimal.ZERO;
+		this.incressedMember = 0;
+		this.realizeRate2 = BigDecimal.ZERO;
+		this.cardStorage = BigDecimal.ZERO;
+		this.realizeRate3 = BigDecimal.ZERO;
+		this.cartStorageConsume = BigDecimal.ZERO;
+		this.storageConsumeOccupy = BigDecimal.ZERO;
+		this.growthOf = BigDecimal.ZERO;
+		this.saleMoneyGoal = BigDecimal.ZERO;
+		this.beforeSaleMoney = BigDecimal.ZERO;
+		this.transferOutMoney = BigDecimal.ZERO;
+		this.billNums = 0;
+		this.memberSaleMoney = BigDecimal.ZERO;
+	}
+
 	private String area;                          //区域
 	private String areaBranchNums;                //本区域所包含的分店号
 	private BigDecimal revenue;                   //营业额

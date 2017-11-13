@@ -4,6 +4,16 @@ import java.math.BigDecimal;
 
 public class TrendMonthlyDTO {
 
+
+	public TrendMonthlyDTO() {
+		this.revenue = BigDecimal.ZERO;
+		this.memberRevenue = BigDecimal.ZERO;
+		this.distributionMoney = BigDecimal.ZERO;
+		this.gross = BigDecimal.ZERO;
+		this.billNums = 0;
+		this.memberBillNums = 0;
+	}
+
 	private String month;                         // 月份
 	private BigDecimal revenue;                   // 营业额
 	private BigDecimal memberRevenue;             // 会员营业额

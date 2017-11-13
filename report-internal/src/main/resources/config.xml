@@ -35,13 +35,12 @@
     </tx:advice>
 
 
-    <!--
-    <bean id="serviceCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager" >
-        <constructor-arg index="0" ref="redisTemplate" />
-        <property name="defaultExpiration" value="60" />
+    <bean id="defaultKeyGenerator" class="com.nhsoft.module.report.util.SpringCacheKeyGenerator"/>
+    <bean name="serviceCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+        <constructor-arg name="redisOperations" ref="redisTemplate"/>
+        <!--设置过期时间300s 默认为0,不过期-->
+        <property name="defaultExpiration" value="300"/>
     </bean>
-    <bean id="defaultKeyGenerator" class="com.nhsoft.SpringCacheKeyGenerator"/>
-    <cache:annotation-driven cache-manager="serviceCacheManager" key-generator="defaultKeyGenerator"/>
-    -->
+    <cache:annotation-driven cache-manager="serviceCacheManager"  key-generator="defaultKeyGenerator"/>
 
 </beans>

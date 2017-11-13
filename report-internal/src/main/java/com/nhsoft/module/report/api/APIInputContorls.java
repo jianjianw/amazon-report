@@ -216,7 +216,7 @@ public class APIInputContorls {
 		}*/
 
 
-			List<BranchDTO> branchList = branchRpc.findAll(systemBookCode);
+			List<BranchDTO> branchList = branchRpc.findInCache(systemBookCode);
 			InputControlsBranchDTO dto = new InputControlsBranchDTO();
 		    List<InputControlsBranchDTO> list = new ArrayList<InputControlsBranchDTO>();
 			dto.setBranchName("所有分店");

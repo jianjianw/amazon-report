@@ -10,6 +10,8 @@ import com.dangdang.ddframe.rdb.sharding.api.strategy.database.NoneDatabaseShard
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.sharding.AlipayLogSharding;
 import com.nhsoft.module.report.sharding.PosItemLogSharding;
+import com.nhsoft.module.report.sharding.PosOrderSharding;
+import com.nhsoft.module.report.util.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,28 +20,39 @@ import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
+import redis.clients.jedis.JedisPoolConfig;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by yangqin on 2017/8/26.
  */
 @Configuration
+@PropertySource({"classpath:sharding.properties"})
 public class MultipleDataSourceConfig implements EnvironmentAware {
 	private static final Logger logger = LoggerFactory.getLogger(MultipleDataSourceConfig.class);
 	
 	private Map customDataSources = new HashMap<String, DruidDataSource>();
+	
 	private Map hibernateProperties = new HashMap();
 
 	@Value("${dpc.url}")
 	private String DPC_URL;
+	@Value("${sharding.pos_order.book_codes}")
+	private String posOrderShardingBooks;
 	
 	public static class MultipleDataSource extends AbstractRoutingDataSource {
 		
@@ -51,20 +64,55 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 	
 	@Override
 	public void setEnvironment(Environment environment) {
-		
+		//多数据源
 		RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(environment, "custom.datasource.");
 		String dsPrefixs = propertyResolver.getProperty("names");
 		for (String dsPrefix : dsPrefixs.split(",")) {// 多个数据源
 			Map<String, Object> dsMap = propertyResolver.getSubProperties(dsPrefix + ".");
 			DruidDataSource ds = buildDruidDataSource(dsMap);
 			customDataSources.put(dsPrefix, ds);
-			logger.info("完成初始化数据源" + dsPrefix);
+			logger.info("完成初始化数据源:" + dsPrefix);
 
 		}
-		
+		//多REDIS
+		propertyResolver = new RelaxedPropertyResolver(environment, "custom.redis.");
+		dsPrefixs = propertyResolver.getProperty("names");
+		Map customRedises = new HashMap<String, RedisTemplate>();
+		for (String dsPrefix : dsPrefixs.split(",")) {// 多个数据源
+			Map<String, Object> dsMap = propertyResolver.getSubProperties(dsPrefix + ".");
+			RedisTemplate ds = buildRedisTemplate(dsMap);
+			customRedises.put(dsPrefix, ds);
+			logger.info("完成初始化REDIS:" + dsPrefix);
+			
+		}
+		RedisUtil.setCustomRedises(customRedises);
 		propertyResolver = new RelaxedPropertyResolver(environment, "hibernate.");
 		hibernateProperties = propertyResolver.getSubProperties("");
 		
+	}
+	
+	
+	private RedisTemplate buildRedisTemplate(Map<String, Object> dsMap) {
+		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+		jedisPoolConfig.setMinIdle(10);
+		jedisPoolConfig.setMaxIdle(200);
+		jedisPoolConfig.setMaxTotal(600);
+		jedisPoolConfig.setTestOnBorrow(true);
+		
+		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+		jedisConnectionFactory.setHostName(dsMap.get("redis.host").toString());
+		jedisConnectionFactory.setPort(6379);
+		jedisConnectionFactory.setPassword(dsMap.get("redis.pass").toString());
+		jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
+		jedisConnectionFactory.setTimeout(60000);
+		jedisConnectionFactory.afterPropertiesSet();		//Cannot get Jedis connection
+		
+		RedisTemplate redisTemplate = new RedisTemplate();
+		redisTemplate.setConnectionFactory(jedisConnectionFactory);
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new MyJackson2JsonRedisSerializer());
+		redisTemplate.afterPropertiesSet();
+		return redisTemplate;
 	}
 
 	@Bean(name = "sessionFactory")
@@ -131,10 +179,16 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		
 		TableRule alipayLogTableRule = AlipayLogSharding.createTableRule(dataSourceRule);
 		TableRule posItemLogTableRule = PosItemLogSharding.createTableRule(dataSourceRule);
+		TableRule posOrderTableRule = PosOrderSharding.createTableRule(dataSourceRule, posOrderShardingBooks);
+		TableRule paymentTableRule = PosOrderSharding.createPaymentTableRule(dataSourceRule, posOrderShardingBooks);
+		TableRule posOrderDetailTableRule = PosOrderSharding.createPosOrderDetailTableRule(dataSourceRule, posOrderShardingBooks);
+		TableRule posOrderKitDetailTableRule = PosOrderSharding.createPosOrderKitDetailTableRule(dataSourceRule, posOrderShardingBooks);
 		
 		ShardingRule shardingRule = ShardingRule.builder()
 				.dataSourceRule(dataSourceRule)
-				.tableRules(Arrays.asList(alipayLogTableRule, posItemLogTableRule))
+				.tableRules(Arrays.asList(alipayLogTableRule, posItemLogTableRule
+						,posOrderTableRule, paymentTableRule, posOrderDetailTableRule, posOrderKitDetailTableRule
+				))
 				.databaseShardingStrategy(new DatabaseShardingStrategy("none", new NoneDatabaseShardingAlgorithm()))
 				.build();
 

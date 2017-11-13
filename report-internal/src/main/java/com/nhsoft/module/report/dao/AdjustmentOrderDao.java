@@ -56,7 +56,7 @@ public interface AdjustmentOrderDao {
 	public List<Object[]> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo);
 
 	/**
-	 * 按分店查询报损金额
+	 * 按分店查询盘损金额
 	 * @param systemBookCode
 	 * @param branchNums 分店号
 	 * @param dateFrom 时间起

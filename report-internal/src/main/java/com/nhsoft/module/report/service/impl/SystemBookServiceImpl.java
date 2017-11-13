@@ -41,27 +41,17 @@ public class SystemBookServiceImpl extends BaseManager implements SystemBookServ
 
 	@Override
 	public SystemBook readInCache(String systemBookCode) {
-		if(RedisUtil.isRedisValid()){
-			String key = AppConstants.REDIS_PRE_SYSTEM_BOOK + systemBookCode;
-			Object object = RedisUtil.get(key);
-			if(object == null){
-				SystemBook systemBook = systemBookDao.read(systemBookCode);
-				RedisUtil.put(key, systemBook, AppConstants.REDIS_CACHE_LIVE_SECOND);
-				return systemBook;
-			} else {
-				return (SystemBook) object;
-			}
+		
+		String key = AppConstants.REDIS_PRE_SYSTEM_BOOK + systemBookCode;
+		Object object = RedisUtil.get(key);
+		if(object == null){
+			SystemBook systemBook = systemBookDao.read(systemBookCode);
+			RedisUtil.put(key, systemBook, AppConstants.REDIS_CACHE_LIVE_SECOND);
+			return systemBook;
 		} else {
-			
-			List<SystemBook> systemBooks = findAllInCache();
-			for(int i = 0;i < systemBooks.size();i++){
-				SystemBook systemBook = systemBooks.get(i);
-				if(systemBook.getSystemBookCode().equals(systemBookCode)){
-					return systemBook;
-				}
-			}
-			return null;
+			return (SystemBook) object;
 		}
+		
 		
 	}
 

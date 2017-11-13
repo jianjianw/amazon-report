@@ -166,4 +166,46 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 		return sqlQuery.list();
 	}
 
+	@Override
+	public List<Object[]> findSaleMoneyGoalsByDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_transfer_interval,sum(branch_transfer_sale_value) ");
+		sb.append("from branch_transfer_goals ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_YEAR)){
+			sb.append("and {fn LENGTH(branch_transfer_interval)} = 4 ");
+			if (dateFrom != null) {
+				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateShortStr(dateFrom).substring(0,4) + "' ");
+			}
+			if (dateTo != null) {
+				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,4) + "' ");
+			}
+		}else if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_MONTH)){
+			sb.append("and {fn LENGTH(branch_transfer_interval)} = 6 ");
+			if (dateFrom != null) {
+				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateShortStr(dateFrom).substring(0,6) + "' ");
+			}
+			if (dateTo != null) {
+				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,6) + "' ");
+			}
+
+		}else {
+			sb.append("and {fn LENGTH(branch_transfer_interval)} = 10 ");
+			if (dateFrom != null) {
+				sb.append("and branch_transfer_interval >= '" + DateUtil.getDateStr(dateFrom) + "' ");
+			}
+			if (dateTo != null) {
+				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateStr(dateTo) + "' ");
+			}
+		}
+
+		sb.append("group by branch_transfer_interval order by branch_transfer_interval asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+	}
+
 }

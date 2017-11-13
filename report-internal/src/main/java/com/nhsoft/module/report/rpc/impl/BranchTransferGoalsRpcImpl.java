@@ -32,4 +32,22 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
         }
         return list;
     }
+
+    @Override
+    public List<SaleMoneyGoals> findSaleMoneyGoalsByDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
+        List<Object[]> objects = branchTransferGoalsService.findSaleMoneyGoalsByDate(systemBookCode, branchNums, dateFrom, dateTo, dateType);
+        List<SaleMoneyGoals> list = new ArrayList<SaleMoneyGoals>();
+        if(objects.isEmpty()){
+            return list;
+        }
+        for(int i = 0;i<objects.size();i++){
+            Object[] object = objects.get(i);
+            SaleMoneyGoals saleMoneyGoals = new SaleMoneyGoals();
+            saleMoneyGoals.setDate((String) object[0]);
+            saleMoneyGoals.setSaleMoney((BigDecimal) object[1]);
+            list.add(saleMoneyGoals);
+        }
+        return list;
+
+    }
 }

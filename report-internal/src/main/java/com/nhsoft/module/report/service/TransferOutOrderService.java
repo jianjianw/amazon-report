@@ -1,7 +1,8 @@
 package com.nhsoft.module.report.service;
 
-import com.nhsoft.module.report.dto.TransferOutMoney;
+import com.nhsoft.module.report.model.TransferOutOrder;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -71,5 +72,57 @@ public interface TransferOutOrderService {
 	 * @param dateTo 时间止
 	 */
 	public List<Object[]> findMoneyBymonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	
+	/**
+	 * 查询配送过的商品编码
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @return
+	 */
+	public List<Integer> findTransferedItems(String systemBookCode, Integer branchNum, Integer outBranchNum);
+	
+	
+	/**
+	 * 按调入分店汇总 应付金额
+	 * @param systemBookCode
+	 * @param outBranchNum 调出分店
+	 * @param dateFrom 约定付款日期起
+	 * @param dateTo  约定付款日期止
+	 * @param branchNums 调入分店列表
+	 * @return
+	 */
+	public List<Object[]> findMoneyByBranchNums(String systemBookCode, Integer outBranchNum,
+	                                            Date dateFrom, Date dateTo, List<Integer> branchNums);
+	
+	/**
+	 * 按调入分店汇总未付金额
+	 * @param systemBookCode
+	 * @param outBranchNum 调出分店
+	 * @param branchNums 调入分店列表
+	 * @param dateFrom 约定付款日期起
+	 * @param dateTo 约定付款日期止
+	 * @return
+	 */
+	public List<Object[]> findDueMoney(String systemBookCode, Integer outBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	
+	/**
+	 * 查询未结算金额
+	 * @param systemBookCode
+	 * @param branchNum 调入分店
+	 * @param outBranchNum 调出分店
+	 * @return
+	 */
+	public BigDecimal readBranchUnPaidMoney(String systemBookCode, Integer branchNum, Integer outBranchNum);
+	
+	/**
+	 * 查询
+	 * @param systemBookCode
+	 * @param branchNum 调入分店
+	 * @param outBranchNum 调出分店
+	 * @param dateFrom 约定付款日期起
+	 * @param dateTo 约定付款日期止
+	 * @return
+	 */
+	public List<TransferOutOrder> findBySettleBranch(String systemBookCode, Integer branchNum, Integer outBranchNum, Date dateFrom, Date dateTo);
 
 }

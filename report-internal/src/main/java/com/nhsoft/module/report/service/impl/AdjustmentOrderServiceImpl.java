@@ -4,6 +4,7 @@ package com.nhsoft.module.report.service.impl;
 import com.nhsoft.module.report.dao.AdjustmentOrderDao;
 import com.nhsoft.module.report.service.AdjustmentOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,6 +31,7 @@ public class AdjustmentOrderServiceImpl implements AdjustmentOrderService {
 
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return adjustmentOrderDao.findAdjustmentCauseMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}

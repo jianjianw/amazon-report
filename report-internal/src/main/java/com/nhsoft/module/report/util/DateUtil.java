@@ -839,4 +839,18 @@ public class DateUtil {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日HH时mm分");
 		return sdf.format(date);
 	}
+	
+	public static Date getShortDate(String format){
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			return sdf.parse(format);
+		} catch (ParseException localParseException) {
+		}
+		return null;
+
+	}
+
+
+
 }

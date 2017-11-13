@@ -22,7 +22,7 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 
 @Configuration
-@ImportResource({"classpath:config.xml"})
+@ImportResource({"classpath:config.xml", "classpath:dubbo.xml"})
 public class InitConfig {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InitConfig.class);
@@ -60,6 +60,7 @@ public class InitConfig {
 		jedisConnectionFactory.setPassword(REDIS_PASS);
 		jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
 		jedisConnectionFactory.setTimeout(60000);
+		jedisConnectionFactory.afterPropertiesSet();		//Cannot get Jedis connection
 		
 		RedisTemplate redisTemplate = new RedisTemplate();
 		redisTemplate.setConnectionFactory(jedisConnectionFactory);

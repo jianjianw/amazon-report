@@ -19,8 +19,8 @@ public class BranchRpcImpl implements BranchRpc {
     private BranchService branchService;
 
     @Override
-    public List<BranchDTO> findAll(String systemBookCode) {
-        return CopyUtil.toList(branchService.findAll(systemBookCode), BranchDTO.class);
+    public List<BranchDTO> findInCache(String systemBookCode) {
+        return CopyUtil.toList(branchService.findInCache(systemBookCode), BranchDTO.class);
     }
 
     @Override

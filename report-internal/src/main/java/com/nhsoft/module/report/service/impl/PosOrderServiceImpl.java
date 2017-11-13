@@ -1,15 +1,23 @@
 package com.nhsoft.module.report.service.impl;
 
+import com.nhsoft.amazon.server.dto.OrderQueryDTO;
+import com.nhsoft.amazon.server.dto.OrderReportDTO;
+import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.service.PosOrderService;
+import com.nhsoft.module.report.service.SystemBookService;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
+import com.nhsoft.module.report.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -17,6 +25,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	private static final Logger logger = LoggerFactory.getLogger(PosOrderServiceImpl.class);
 	@Autowired
 	private PosOrderDao posOrderDao;
+
 
 
 	@Override
@@ -105,18 +114,21 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
-
 
 		List<Object[]> objects = null;
 		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
 			objects = posOrderDao.findMoneyBranchSummary(systemBookCode, branchNums, dateFrom, dateTo, isMember);
 		}
 		return objects;
+
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+
 		List<Object[]> objects = null;
 		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
 			objects = posOrderDao.findMoneyBizdaySummary(systemBookCode, branchNums, dateFrom, dateTo, isMember);
@@ -125,19 +137,16 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+
+
 		List<Object[]> objects = null;
-		if(queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)){
+		if (queryBy.equals(AppConstants.BUSINESS_TREND_PAYMENT)) {
 			objects = posOrderDao.findMoneyBizmonthSummary(systemBookCode, branchNums, dateFrom, dateTo, isMember);
 		}
 		return objects;
+
 	}
-
-	@Override
-	public List<Object[]> findMoneyFinishRateBranchTop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return null;
-	}
-
-
 }
 

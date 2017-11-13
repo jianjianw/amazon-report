@@ -33,7 +33,16 @@ public class RequestAnalysisDTO implements Serializable {
 	private String supplierMethod;
 	private String supplierKind;
 	private Integer itemType;
+	private String itemPurchaseScope;
 	private List<RequestAnalysisDTO> details;
+	
+	public String getItemPurchaseScope() {
+		return itemPurchaseScope;
+	}
+	
+	public void setItemPurchaseScope(String itemPurchaseScope) {
+		this.itemPurchaseScope = itemPurchaseScope;
+	}
 	
 	public String getSupplierKind() {
 		return supplierKind;

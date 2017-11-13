@@ -2,8 +2,17 @@ package com.nhsoft.module.report.api.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+/**
+ * 区域或分店，按营业额完成率排名
+ * */
+public class SaleFinishMoneyTopDTO implements Serializable,Comparable<SaleFinishMoneyTopDTO>{
 
-public class SaleFinishMoneyTopDTO implements Serializable{
+
+    public SaleFinishMoneyTopDTO() {
+        this.saleMoney = BigDecimal.ZERO;
+        this.goalMoney = BigDecimal.ZERO;
+        this.finishMoneyRate = BigDecimal.ZERO;
+    }
 
     private Integer num;//分店或区域号
     private String name;//分店或区域名
@@ -60,4 +69,9 @@ public class SaleFinishMoneyTopDTO implements Serializable{
         this.topNum = topNum;
     }
 
+    @Override
+    public int compareTo(SaleFinishMoneyTopDTO top) {
+        int i = this.getFinishMoneyRate().compareTo(top.getFinishMoneyRate());
+        return i;
+    }
 }

@@ -42,6 +42,8 @@ public class InnerSettlement implements java.io.Serializable {
 	private BigDecimal innerSettlementTotalDiscount;
 	private Integer accountBankNum;
 	private Boolean innerSettlementSynchFlag;
+	private BigDecimal innerSettlementInvoiceMoney;
+	private String innerSettlementInvoiceNo;
 	@OneToMany
 	@Fetch(FetchMode.SUBSELECT)
 	@JoinColumn(name = "innerSettlementNo", updatable=false, insertable=false)
@@ -53,7 +55,23 @@ public class InnerSettlement implements java.io.Serializable {
 
 	public InnerSettlement() {
 	}
-
+	
+	public BigDecimal getInnerSettlementInvoiceMoney() {
+		return innerSettlementInvoiceMoney;
+	}
+	
+	public void setInnerSettlementInvoiceMoney(BigDecimal innerSettlementInvoiceMoney) {
+		this.innerSettlementInvoiceMoney = innerSettlementInvoiceMoney;
+	}
+	
+	public String getInnerSettlementInvoiceNo() {
+		return innerSettlementInvoiceNo;
+	}
+	
+	public void setInnerSettlementInvoiceNo(String innerSettlementInvoiceNo) {
+		this.innerSettlementInvoiceNo = innerSettlementInvoiceNo;
+	}
+	
 	public Boolean getInnerSettlementSynchFlag() {
 		return innerSettlementSynchFlag;
 	}

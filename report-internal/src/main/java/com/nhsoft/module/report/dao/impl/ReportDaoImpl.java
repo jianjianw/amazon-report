@@ -2316,6 +2316,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			if (queryData.getSaleMoney() == null) {
 				queryData.setSaleMoney(BigDecimal.ZERO);
 			}
+			
 			String caseSql = "(case when detail.order_detail_state_code = 2 then 0 "
 					+ "when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) ";
 			BigDecimal saleMoney = queryData.getSaleMoney();
@@ -2367,13 +2368,13 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
-				
-				sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-			} else {
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
+				
+				
+			} else {
+				
+				sb.append("and p.order_source = '" + queryData.getSaleType() + "' ");
 			}
 		}
 		if(queryData.getTimeFrom() != null && queryData.getTimeTo() != null){

@@ -12,6 +12,7 @@ import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 
+import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.*;
@@ -880,6 +881,97 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		sqlQuery.setString("systemBookCode",systemBookCode);
 		return sqlQuery.list();
 	}
-
-
+	
+	@Override
+	public List<Integer> findTransferedItems(String systemBookCode, Integer branchNum, Integer outBranchNum) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select distinct d.item_num from transfer_out_order as t with(nolock) inner join out_order_detail as d with(nolock) on t.out_order_fid = d.out_order_fid ");
+		sb.append("where t.system_book_code = '" + systemBookCode + "' and t.branch_num = " + branchNum + " and t.out_branch_num = " + outBranchNum + " and t.out_order_state_code = 3 ");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+	
+	@Override
+	public List<Object[]> findMoneyByBranchNums(String systemBookCode, Integer outBranchNum, Date dateFrom, Date dateTo, List<Integer> branchNums) {
+		Criteria criteria = currentSession().createCriteria(TransferOutOrder.class, "t").add(Restrictions.eq("t.outBranchNum", outBranchNum))
+				.add(Restrictions.eq("t.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE)).add(Restrictions.eq("t.systemBookCode", systemBookCode));
+		if (branchNums != null && branchNums.size() > 0) {
+			criteria.add(Restrictions.in("t.branchNum", branchNums));
+		}
+		if (dateFrom != null) {
+			criteria.add(Restrictions.ge("t.outOrderPaymentDate", dateFrom));
+		}
+		if (dateTo != null) {
+			criteria.add(Restrictions.le("t.outOrderPaymentDate", dateTo));
+			
+		}
+		criteria.setLockMode(LockMode.NONE);
+		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("t.branchNum")).add(Projections.sum("t.outOrderDueMoney")));
+		return criteria.list();
+	}
+	
+	@Override
+	public List<Object[]> findDueMoney(String systemBookCode, Integer outBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branchNum, sum(outOrderDueMoney - outOrderDiscountMoney - outOrderPaidMoney) ");
+		sb.append("from TransferOutOrder where systemBookCode = :systemBookCode and state.stateCode = 3 ");
+		if (outBranchNum != null) {
+			sb.append("and outBranchNum = :branchNum ");
+		}
+		if (dateFrom != null) {
+			sb.append("and outOrderPaymentDate >= :dateFrom ");
+		}
+		if (dateTo != null) {
+			sb.append("and outOrderPaymentDate <= :dateTo ");
+		}
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branchNum in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("group by branchNum ");
+		Query query = currentSession().createQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if (outBranchNum != null) {
+			query.setInteger("branchNum", outBranchNum);
+		}
+		if (dateFrom != null) {
+			query.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		}
+		if (dateTo != null) {
+			query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		}
+		return query.list();
+	}
+	
+	@Override
+	public BigDecimal readBranchUnPaidMoney(String systemBookCode, Integer branchNum, Integer outBranchNum) {
+		Criteria criteria = currentSession().createCriteria(TransferOutOrder.class, "t").add(Restrictions.eq("t.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("t.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE)).add(Restrictions.eq("t.outBranchNum", outBranchNum))
+				.add(Restrictions.sqlRestriction("abs(out_order_due_money - out_order_paid_money - out_order_discount_money) > 0.01")).add(Restrictions.eq("t.branchNum", branchNum));
+		criteria.setProjection(Projections.sqlProjection("sum(out_order_due_money - out_order_paid_money - out_order_discount_money) as unPaid", new String[] { "unPaid" },
+				new Type[] { StandardBasicTypes.BIG_DECIMAL }));
+		criteria.setLockMode(LockMode.NONE);
+		
+		Object object = criteria.uniqueResult();
+		if (object != null) {
+			return (BigDecimal) object;
+		}
+		return BigDecimal.ZERO;
+	}
+	
+	@Override
+	public List<TransferOutOrder> findBySettleBranch(String systemBookCode, Integer branchNum, Integer outBranchNum, Date dateFrom, Date dateTo) {
+		Criteria criteria = currentSession().createCriteria(TransferOutOrder.class, "t").add(Restrictions.eq("t.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("t.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE)).add(Restrictions.eq("t.outBranchNum", outBranchNum)).add(Restrictions.eq("t.branchNum", branchNum));
+		if (dateFrom != null) {
+			criteria.add(Restrictions.ge("t.outOrderPaymentDate", DateUtil.getMinOfDate(dateFrom)));
+		}
+		if (dateTo != null) {
+			criteria.add(Restrictions.le("t.outOrderPaymentDate", DateUtil.getMaxOfDate(dateTo)));
+		}
+		criteria.setLockMode(LockMode.NONE);
+		
+		return criteria.list();
+	}
+	
+	
 }

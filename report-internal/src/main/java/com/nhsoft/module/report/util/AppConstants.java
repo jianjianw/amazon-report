@@ -20,7 +20,7 @@ public class AppConstants {
 	public static final String PAYMENT_DEPOSIT_POINT = "积分"; //积分转储值付款方式
 
 
-	public static final int CACHE_LIVE_DAY = 60 * 60 * 24; //缓存有效时间一天
+	public static final int CACHE_LIVE_DAY = 60 * 60; //缓存有效时间一天
 	public static final String INIT_TIME = "1899-12-30 00:00:00";
 	
 	/**
@@ -292,20 +292,16 @@ public class AppConstants {
 
 
 	public static final int REDIS_CACHE_LIVE_SECOND = 86400; //缓存有效时间一天
-	/**
-	 * redis缓存前缀
-	 */
-	public static final String REDIS_PRE_BOOK_RESOURCE = "AMA_BOOK_RESOURCE";
-	public static final String REDIS_PRE_SYSTEM_BOOK = "AMA_SYSTEM_BOOK";
-	public static final String REDIS_PRE_USER_COLLECT_BRANCH = "AMA_USER_COLLECT_BRANCH";//用户收藏门店
 
 
 	//bookResource
 	public static final String ADJUSTMENT_REASON = "库存调整原因参数";
 	public static final String POS_ITEM_TYPE = "商品类别";
 	public static final String CARD_CATEGORY = "消费卡类型";
-
-
+	public static final String CHAIN_DELIVERY_PARAM = "连锁配送参数";
+	
+	
+	
 	/** 缓存名称 */
 	public static final String CACHE_NAME_POS_CLIENT = "CACHE_POS_CLIENT:";
 	public static final String CACHE_SALE_CEASE_ITEM = "CACHE_SALE_CEASE_ITEM:";
@@ -563,26 +559,41 @@ public class AppConstants {
 	public static final String BRANCH_TYPE_JOIN = "加盟";
 
 	public static final String ONLINE_ORDER_SOURCE_MERCURY= "水星微商城";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
+	
+	
+	
+	
+	/**
+	 * redis缓存前缀
+	 */
+	public static final String REDIS_PRE_OLD_TRANSFER_OUT_DATA_SYNCH = "AMA_OLD_TRANSFER_OUT_DATA_SYNCH"; //调出单历史数据redis同步标记
+	public static final String REDIS_PRE_TRANSFERED_ITEM = "AMA_TRANSFERED_ITEM"; // 已配送商品
+	public static final String REDIS_PRE_BOOK_RESOURCE = "AMA_BOOK_RESOURCE";
+	public static final String REDIS_PRE_BRANCH_RESOURCE = "AMA_BRANCH_RESOURCE";
+	public static final String REDIS_PRE_USER_COLLECT_BRANCH = "AMA_USER_COLLECT_BRANCH";//用户收藏门店
+	public static final String REDIS_PRE_SYSTEM_BOOK = "AMA_SYSTEM_BOOK";
+	
+	
+	
+	//branchResource
+	public static final String BRANCH_EXPRESEE_COMPANY = "货运公司参数";
+	public static final String PARAM_ANALYTICS_MODEL = "C_会员模型分析参数";
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
