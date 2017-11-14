@@ -363,6 +363,13 @@ public interface ReportRpc {
 	 * @return
 	 */
 	public List<RetailDetail> findRetailDetails(String systemBookCode, RetailDetailQueryData retailDetailQueryData);
+	
+	/**
+	 * 零售明细查询
+	 * @param retailDetailQueryData
+	 * @return
+	 */
+	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData);
 
 	/**
 	 * 查询采购商品明细
