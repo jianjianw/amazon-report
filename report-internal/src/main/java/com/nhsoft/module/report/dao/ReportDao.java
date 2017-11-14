@@ -185,7 +185,7 @@ public interface ReportDao {
 	 * @return
 	 */
 	public List<SalerCommissionBrand> findSalerCommissionBrands(String systemBookCode, Date dtFrom,
-																Date dtTo, List<Integer> branchNums, List<String> salerNums);
+                                                                Date dtTo, List<Integer> branchNums, List<String> salerNums);
 
 	/**
 	 * 销售员提成汇总
@@ -197,7 +197,7 @@ public interface ReportDao {
 	 * @return
 	 */
 	public List<SalerCommission> findSalerCommissions(String systemBookCode, Date dtFrom,
-													  Date dtTo, List<Integer> branchNums, List<String> salerNums);
+                                                      Date dtTo, List<Integer> branchNums, List<String> salerNums);
 
 	/**
 	 * 销售员客单金额阶梯汇总
@@ -234,7 +234,7 @@ public interface ReportDao {
 	 * @return
 	 */
 	public List<SalerCommissionDetail> findSalerCommissionDetails(String systemBookCode, Date dtFrom,
-																  Date dtTo, List<Integer> branchNums, List<String> salerNums);
+                                                                  Date dtTo, List<Integer> branchNums, List<String> salerNums);
 
 	/**
 	 * 客单分析 历史客单分析
@@ -829,8 +829,8 @@ public interface ReportDao {
 	 * @param timeTo
 	 * @return
 	 */
-	public Object[] findCustomerAnalysisTimePeriods(String systemBookCode, Date dateFrom, Date dateTo,
-                                                    List<Integer> branchNums, String saleType, String timeFrom, String timeTo);
+	public List<Object[]> findCustomerAnalysisTimePeriods(String systemBookCode, Date dateFrom, Date dateTo,
+                                                          List<Integer> branchNums, String saleType, String timeFrom, String timeTo);
 
 	/**
 	 * 查询商品时段分析
@@ -844,8 +844,8 @@ public interface ReportDao {
 	 * @param timeTo
 	 * @return
 	 */
-	public Object[] findCustomerAnalysisTimePeriodsByItems(String systemBookCode, Date dateFrom, Date dateTo,
-                                                           List<Integer> branchNums, List<Integer> itemNums, String saleType, String timeFrom, String timeTo);
+	public List<Object[]> findCustomerAnalysisTimePeriodsByItems(String systemBookCode, Date dateFrom, Date dateTo,
+                                                                 List<Integer> branchNums, List<Integer> itemNums, String saleType, String timeFrom, String timeTo);
 	
 	/**
 	 * 按分店号、分级明细汇总
@@ -861,7 +861,7 @@ public interface ReportDao {
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData queryData);
+	public List<Object[]> findSaleAnalysisByBranchPosItems(String systemBookCode, SaleAnalysisQueryData queryData);
 
 
 

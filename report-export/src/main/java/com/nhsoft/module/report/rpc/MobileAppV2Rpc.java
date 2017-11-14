@@ -19,7 +19,7 @@ public interface MobileAppV2Rpc {
 	 * @return
 	 */
 	public List<PosItemShowDTO> findPosItemShowByPush(String systemBookCode, Integer centerBranchNum, Integer branchNum,
-	                                                  String keyword, Integer rankFrom, Integer rankTo);
+                                                      String keyword, Integer rankFrom, Integer rankTo);
 	
 	/**
 	 * 查询门店新品提醒
@@ -31,7 +31,7 @@ public interface MobileAppV2Rpc {
 	 * @return
 	 */
 	public List<PosItemShowDTO> findPosItemShowByNew(String systemBookCode, Integer centerBranchNum, Integer branchNum,
-	                                                 String keyword, Integer rankFrom, Integer rankTo);
+                                                     String keyword, Integer rankFrom, Integer rankTo);
 	
 	/**
 	 * 按类别汇总新品提醒数量
@@ -54,7 +54,7 @@ public interface MobileAppV2Rpc {
 	 * @return
 	 */
 	public List<PosItemShowDTO> findNewPosItemShowByCategory(String systemBookCode, Integer centerBranchNum, Integer branchNum,
-	                                                         String categoryCode, String keyword, Integer rankFrom, Integer rankTo);
+                                                             String categoryCode, String keyword, Integer rankFrom, Integer rankTo);
 	
 	/**
 	 * 门店往来账款
@@ -77,7 +77,7 @@ public interface MobileAppV2Rpc {
 	 * @return
 	 */
 	public List<AccountDetailDTO> findAccountDetails(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,
-	                                                 Integer rankFrom, Integer rankTo);
+                                                     Integer rankFrom, Integer rankTo);
 	
 //	/**
 //	 * 门店健康报表
@@ -332,5 +332,5 @@ public interface MobileAppV2Rpc {
 	 * @return
 	 */
 	public List<NameAndTwoValueDTO> findDeptRank(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                             Date dateTo, Integer rankFrom, Integer rankTo, String sortField);
+                                                 Date dateTo, Integer rankFrom, Integer rankTo, String sortField);
 }

@@ -25,7 +25,7 @@ public interface Report2Service {
 	 * @return
 	 */
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranch(String systemBookCode,
-	                                                                              List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                                                                  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 * 按分店、收银员汇总缴款明细

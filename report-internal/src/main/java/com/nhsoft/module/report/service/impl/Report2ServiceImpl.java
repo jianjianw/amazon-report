@@ -731,57 +731,33 @@ public class Report2ServiceImpl implements Report2Service {
 
 	@Override
 	public List<CustomerAnalysisTimePeriod> findCustomerAnalysisTimePeriods(String systemBookCode, Date dateFrom,
-                                                                            Date dateTo, List<Integer> branchNums, List<Integer> itemNums, String saleType, Date timeFrom, Date timeTo) {
-		
-		String begin = "0000";
-		String end = "2359";
-		
+																			Date dateTo, List<Integer> branchNums, List<Integer> itemNums, String saleType, Date timeFrom, Date timeTo) {
+
+
 		String timeFromStr = DateUtil.getHHmmStr2(timeFrom);
 		String timeToStr = DateUtil.getHHmmStr2(timeTo);
 
-		List<String> timeList = new ArrayList<String>();
-		if (timeFrom.compareTo(timeTo) <= 0) {
-			if(!timeFromStr.equals(begin)){
-				timeList.add(begin + "," + timeFromStr);
-			}
-			timeList.add(timeFromStr + "," + timeToStr);
-			if(!timeToStr.equals(end)){
-				timeList.add(timeToStr + "," + end);
-			}
-			
-		} else{
-			timeList.add(timeFromStr + "," + timeToStr);
-		}
-		
+
 		List<CustomerAnalysisTimePeriod> list = new ArrayList<CustomerAnalysisTimePeriod>();
+
+		List<Object[]> objects = null;
+		if (itemNums != null && itemNums.size() > 0) {
+			objects = reportDao.findCustomerAnalysisTimePeriodsByItems(systemBookCode, dateFrom, dateTo, branchNums,
+					itemNums, saleType, timeFromStr, timeToStr);
+		} else {
+			objects = reportDao.findCustomerAnalysisTimePeriods(systemBookCode, dateFrom, dateTo, branchNums,
+					saleType, timeFromStr, timeToStr);
+		}
+
 		Object[] object = null;
-		StringBuffer sb = null;
-		for(int i = 0;i < timeList.size();i++){
-			String[] timeArray = timeList.get(i).split(",");
-			timeFromStr = timeArray[0];
-			timeToStr = timeArray[1];
-			
+		for(int i = 0;i < objects.size();i++){
+
+			object = objects.get(i);
 			CustomerAnalysisTimePeriod data = new CustomerAnalysisTimePeriod();
-						
-			if (itemNums != null && itemNums.size() > 0) {
-				object = reportDao.findCustomerAnalysisTimePeriodsByItems(systemBookCode, dateFrom, dateTo, branchNums,
-						itemNums, saleType, timeFromStr, timeToStr);
-			} else {
-				object = reportDao.findCustomerAnalysisTimePeriods(systemBookCode, dateFrom, dateTo, branchNums,
-						saleType, timeFromStr, timeToStr);
-			}
-			sb = new StringBuffer(timeFromStr);
-			sb.insert(2, ":");
-			timeFromStr = sb.toString();
-			
-			sb = new StringBuffer(timeToStr);
-			sb.insert(2, ":");
-			timeToStr = sb.toString();
-			data.setTimePeroid(timeFromStr + " - " + timeToStr);
-	
-			data.setTotalMoney((BigDecimal) object[0] == null?BigDecimal.ZERO:(BigDecimal)object[0]);
-			data.setCustomerNums(object[1] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer) object[1]));
-			
+			data.setBranchNum((Integer) object[0]);
+			data.setTotalMoney(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+			data.setCustomerNums(object[2] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer) object[2]));
+
 			data.setCustomerAvePrice(BigDecimal.ZERO);
 			if (data.getCustomerNums().compareTo(BigDecimal.ZERO) > 0) {
 				data.setCustomerAvePrice(data.getTotalMoney().divide(data.getCustomerNums(), 4,
@@ -962,6 +938,7 @@ public class Report2ServiceImpl implements Report2Service {
 		List<Branch> branches = branchService.findInCache(systemBookCode);
 		if(branchNums== null || branchNums.size() == 0) {
 			branchNums = branches.stream().filter(b -> b.getBranchActived() != null && b.getBranchActived() && (b.getBranchVirtual() == null || !b.getBranchVirtual())).map(b -> b.getId().getBranchNum()).collect(Collectors.toList());
+			branchNums = branches.stream().map(b -> b.getId().getBranchNum()).collect(Collectors.toList());
 		}
 		ReportUtil<OtherInfoSummaryDTO> reportUtil = new ReportUtil<>(OtherInfoSummaryDTO.class);
 		for(Integer branchNum : branchNums) {

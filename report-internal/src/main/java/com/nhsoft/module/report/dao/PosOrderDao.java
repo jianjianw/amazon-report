@@ -313,7 +313,7 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public BigDecimal getPosCash(String systemBookCode,
-								 List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                 List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 * 查询反结账单据数量和金额
@@ -354,7 +354,7 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public List<Object[]> findPosCashGroupByBranch(String systemBookCode,
-												   List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                                   List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 * 查询反结账明细
@@ -406,7 +406,7 @@ public interface PosOrderDao {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo, Boolean isMember);
+	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember);
 
 
 	/**
@@ -418,7 +418,7 @@ public interface PosOrderDao {
 	 * @param isMember 是否会员
 	 * @return
 	 */
-	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums,Date dateFrom, Date dateTo, Boolean isMember);
+	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember);
 
 
 }

@@ -881,13 +881,12 @@ public class Report2RpcImpl implements Report2Rpc {
 	@Override
 	public List<RequestAnalysisDTO> findRequestAnalysisDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, List<String> itemCategoryCodes) {
 		Integer branchNum = branchNums.get(0);
-		
+
 		PosItemQuery posItemQuery = new PosItemQuery();
 		posItemQuery.setSystemBookCode(systemBookCode);
 		posItemQuery.setBranchNum(branchNum);
 		posItemQuery.setCategoryCodes(itemCategoryCodes);
 		posItemQuery.setIsFindNoStock(false);
-		posItemQuery.setFilterType(AppConstants.ITEM_TYPE_CHAIN);
 		posItemQuery.setPaging(false);
 		posItemQuery.setItemNums(itemNums);
 		List<Integer> chainItemNums = posItemService.findItemNumsByPosItemQuery(posItemQuery, 0, 0);
@@ -901,13 +900,13 @@ public class Report2RpcImpl implements Report2Rpc {
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		query.setCategoryCodeList(itemCategoryCodes);
-		
+
 		List<ABCAnalysis> analysisList = reportService.findABCDatasBySaleV2(query);
 		if(analysisList.isEmpty()){
 			return new ArrayList<RequestAnalysisDTO>();
 		}
 		Set<Integer> innerItemNums = new HashSet<Integer>();
-		
+
 		for(ABCAnalysis analysis : analysisList) {
 			if(!chainItemNums.contains(analysis.getItemNum())) {
 				continue;
@@ -923,13 +922,14 @@ public class Report2RpcImpl implements Report2Rpc {
 		for(int i = 0;i < chainItemNums.size();i++){
 			Integer itemNum = chainItemNums.get(i);
 			innerItemNums.add(itemNum);
-			
+
 			RequestAnalysisDTO dto = reportUtil.getInstance();
 			dto.setItemNum(itemNum);
 			dto.setAbc("C");
 			dto.setSaleQty(BigDecimal.ZERO);
 			reportUtil.add(dto);
 		}
+
 		List<PosItem> posItems = null;
 		List<StoreMatrix> storeMatrices = null;
 		List<StoreItemSupplier> storeItemSuppliers = null;
@@ -971,8 +971,6 @@ public class Report2RpcImpl implements Report2Rpc {
 			}
 			dto.setItemSalePrice(item.getItemRegularPrice());
 			dto.setItemLevel2Price(item.getItemLevel2Price());
-			dto.setItemPurchaseScope(item.getItemPurchaseScope());
-			
 			if(branch.getBranchMatrixPriceActived() && storeMatrix != null
 					&& storeMatrix.getStoreMatrixPriceEnabled() != null && storeMatrix.getStoreMatrixPriceEnabled()) {
 				if(storeMatrix.getStoreMatrixRegularPrice() != null && storeMatrix.getStoreMatrixRegularPrice().compareTo(BigDecimal.ZERO) > 0) {
@@ -986,7 +984,7 @@ public class Report2RpcImpl implements Report2Rpc {
 			dto.setItemTransferUnit(item.getItemTransferUnit());
 			dto.setItemTransferRate(item.getItemTransferRate());
 			dto.setItemType(item.getItemType());
-			
+
 			if(dto.getItemType() == AppConstants.C_ITEM_TYPE_ASSEMBLE){
 				List<PosItemKit> posItemKits = posItemService.findPosItemKits(dto.getItemNum());
 				dto.setDetails(new ArrayList<RequestAnalysisDTO>());
@@ -1001,9 +999,9 @@ public class Report2RpcImpl implements Report2Rpc {
 					detail.setItemTransferUnit(posItemKit.getPosItem().getItemTransferUnit());
 					detail.setItemTransferRate(posItemKit.getPosItem().getItemTransferRate());
 					dto.getDetails().add(detail);
-					
+
 				}
-				
+
 			}
 			StoreItemSupplier storeItemSupplier = StoreItemSupplier.getDefault(storeItemSuppliers, branchNums.get(0), dto.getItemNum());
 			if(storeItemSupplier == null) {

@@ -27,6 +27,7 @@ public class WholesaleProfitByClient implements Serializable {
 	private BigDecimal presentUseQty;
 	private BigDecimal presentCostMoney;
 	private BigDecimal presentMoney;
+	private String clientType; // 客户类别
 
 
 	public BigDecimal getPresentQty() {
@@ -171,5 +172,13 @@ public class WholesaleProfitByClient implements Serializable {
 
 	public void setWholesaleQty(BigDecimal wholesaleQty) {
 		this.wholesaleQty = wholesaleQty;
+	}
+
+	public String getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(String clientType) {
+		this.clientType = clientType;
 	}
 }

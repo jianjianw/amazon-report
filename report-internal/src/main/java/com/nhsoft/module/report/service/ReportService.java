@@ -1119,7 +1119,7 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<CardReportDTO> findCardReportByDay(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-												   Date dateTo, Integer cardUserCardType);
+                                                   Date dateTo, Integer cardUserCardType);
 
 	/**
 	 * 门店配销分析
@@ -1134,8 +1134,8 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<BranchCategoryTransSaleAnalyseDTO> findBranchCategoryTransSaleAnalyseDTOs(String systemBookCode, Integer centerBranchNum,
-																						  List<Integer> branchNums, Date saleDate, Date dateFrom,
-																						  Date dateTo, List<String> categoryCodes, List<Integer> itemNums);
+                                                                                          List<Integer> branchNums, Date saleDate, Date dateFrom,
+                                                                                          Date dateTo, List<String> categoryCodes, List<Integer> itemNums);
 
 	/**
 	 * 门店类别分析
@@ -1147,7 +1147,7 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<BranchCategoryAnalyseDTO> findBranchCategoryAnalyseDTOs(String systemBookCode, Integer centerBranchNum,
-																		List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                                                        List<Integer> branchNums, Date dateFrom, Date dateTo);
 	/**
 	 * 查询item_recording 过期催销商品
 	 * @param bookCode
@@ -1306,7 +1306,7 @@ public interface ReportService {
 	 * @param saleAnalysisQueryData
 	 * @return
 	 */
-	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData saleAnalysisQueryData);
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode, SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 

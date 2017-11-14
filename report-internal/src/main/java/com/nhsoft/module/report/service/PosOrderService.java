@@ -37,7 +37,7 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public List<Object[]> findItemSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-									  List<Integer> itemNums, boolean queryKit);
+                                      List<Integer> itemNums, boolean queryKit);
 	/**
 	 * 按门店汇总明细金额
 	 * @param systemBookCode
@@ -49,7 +49,7 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public List<Object[]> findBranchDetailSum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-											  Date dateTo, List<Integer> itemNums, boolean queryKit);
+                                              Date dateTo, List<Integer> itemNums, boolean queryKit);
 
 
 
@@ -64,7 +64,7 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public List<Object[]> findBranchItemSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-											List<Integer> itemNums, boolean queryKit);
+                                            List<Integer> itemNums, boolean queryKit);
 
 
 	public List<Object[]> findItemSum(ItemQueryDTO itemQueryDTO);
@@ -84,7 +84,7 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public List<Object[]> findBizmonthItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-												  Date dateTo, List<Integer> itemNums);
+                                                  Date dateTo, List<Integer> itemNums);
 
 
 	/**
@@ -110,7 +110,7 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public List<Object[]> findSupplierSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodes, List<Integer> itemNums,
-										  boolean queryKit);
+                                          boolean queryKit);
 
 
 	/**
@@ -123,7 +123,7 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public List<Object[]> findItemSupplierMatrixSum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-													Date dateTo, boolean queryKit);
+                                                    Date dateTo, boolean queryKit);
 
 
 	/**
@@ -138,7 +138,7 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public List<Object[]> findItemSupplierSumByCategory(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-														Date dateTo, List<String> categoryCodes, boolean queryKit, List<Integer> itemNums);
+                                                        Date dateTo, List<String> categoryCodes, boolean queryKit, List<Integer> itemNums);
 
 
 	/**
@@ -152,7 +152,7 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public List<Object[]> findOrderDetailWithSupplier(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-													  Date dateTo, List<String> categoryCodes, boolean queryKit);
+                                                      Date dateTo, List<String> categoryCodes, boolean queryKit);
 
 
 	public List<Object[]> findCustomReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);

@@ -126,7 +126,7 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findShopTimeAnalysis(String systemBookCode,
-	                                           List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                               List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 * 按帐套、门店和时间段查询时段分析（每个门店一个时间段，按门店列表返回）
@@ -138,8 +138,8 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findShopGroupReportsByTime(String systemBookCode,
-	                                                 List<Integer> branchNums, Date dateFrom, Date dateTo,
-	                                                 String timeType);
+                                                     List<Integer> branchNums, Date dateFrom, Date dateTo,
+                                                     String timeType);
 
 	/**
 	 * 按终端统计查询门店一个时间段内的时段分析（将终端名称存到shopName）
@@ -151,8 +151,8 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findShopGroupReportsByTerminal(String systemBookCode,
-	                                                     List<Integer> branchNums, Date dateFrom, Date dateTo,
-	                                                     String timeType);
+                                                         List<Integer> branchNums, Date dateFrom, Date dateTo,
+                                                         String timeType);
 
 	/**
 	 * 按每个终端24个时段统计
@@ -163,7 +163,7 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findTerminalTimeAnalysis(String systemBookCode,
-	                                               List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                                   List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 * 查询商品赠退折扣情况
@@ -177,7 +177,7 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<SalesDiscount> findItemDiscount(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer rankFrom,
-	                                            Integer rankTo, String sortType);
+                                                Integer rankTo, String sortType);
 
 	/**
 	 * 按消费券类型汇总 数量和金额
@@ -188,7 +188,7 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findCouponTypeSummaryByDate(String systemBookCode, Integer branchNum, Date dateFrom,
-	                                                  Date dateTo);
+                                                      Date dateTo);
 	
 	/**
 	 * 查询消费券金额
@@ -199,7 +199,7 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public BigDecimal getCouponMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                 Date dateTo);
+                                     Date dateTo);
 
 	/**
 	 * 按门店汇总消费券金额
@@ -210,7 +210,7 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findShopCouponMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                          Date dateTo);
+                                              Date dateTo);
 	
 	/**
 	 * 新版手机查询用
@@ -221,7 +221,7 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public MobileBusinessDTO findMobileAppBusinessDTO(String systemBookCode, List<Integer> branchNums,
-	                                                  Date dateFrom, Date dateTo);
+                                                      Date dateFrom, Date dateTo);
 
 	/**
 	 * 新版老板查询卡数据汇总

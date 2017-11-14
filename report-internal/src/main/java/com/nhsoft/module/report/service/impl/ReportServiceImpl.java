@@ -3729,6 +3729,7 @@ public class ReportServiceImpl implements ReportService {
 			if (posClient != null) {
 				data.setName(posClient.getClientName());
 				data.setClientCode(posClient.getClientCode());
+				data.setClientType(posClient.getClientType());
 			}
 			data.setWholesaleProfit(data.getWholesaleMoney().subtract(data.getWholesaleCost()));
 			data.setRetailProfit(data.getRetailPrice().subtract(data.getWholesaleMoney()));
@@ -4486,6 +4487,8 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<ExceptInventory> findSingularItem(InventoryExceptQuery inventoryExceptQuery) {
+//		return new ArrayList<ExceptInventory>();
+
 		String systemBookCode = inventoryExceptQuery.getSystemBookCode();
 		Integer branchNum = inventoryExceptQuery.getBranchNum();
 		List<Integer> branchNums = inventoryExceptQuery.getBranchNums();
@@ -4531,7 +4534,8 @@ public class ReportServiceImpl implements ReportService {
 			}
 			map.put(data.getItemNum(), data);
 		}
-
+		dateFrom = DateUtil.getDateStr("20170101");
+		dateTo = Calendar.getInstance().getTime();
 		List<Object[]> objects = inventoryCollectDao.findItemLatestDate(systemBookCode, branchNums, dateFrom, dateTo,
 				null, inventoryExceptQuery.getPosItemLogSummary());
 		for (int i = 0; i < objects.size(); i++) {
@@ -4690,23 +4694,23 @@ public class ReportServiceImpl implements ReportService {
 				continue;
 			}
 			if (inventoryExceptQuery.getCompare().equals("<=")) {
-				if (data.getItemTransfer().multiply(inventoryExceptQuery.getMultiple())
-						.compareTo(data.getItemLogPrice()) > 0) {
+				if (data.getItemTransfer()
+						.compareTo(data.getItemLogPrice().multiply(inventoryExceptQuery.getMultiple())) > 0) {
 					list.remove(data);
 				}
 			} else if (inventoryExceptQuery.getCompare().equals("<")) {
-				if (data.getItemTransfer().multiply(inventoryExceptQuery.getMultiple())
-						.compareTo(data.getItemLogPrice()) >= 0) {
+				if (data.getItemTransfer()
+						.compareTo(data.getItemLogPrice().multiply(inventoryExceptQuery.getMultiple())) >= 0) {
 					list.remove(data);
 				}
 			} else if (inventoryExceptQuery.getCompare().equals(">=")) {
-				if (data.getItemTransfer().multiply(inventoryExceptQuery.getMultiple())
-						.compareTo(data.getItemLogPrice()) < 0) {
+				if (data.getItemTransfer()
+						.compareTo(data.getItemLogPrice().multiply(inventoryExceptQuery.getMultiple())) < 0) {
 					list.remove(data);
 				}
 			} else if (inventoryExceptQuery.getCompare().equals(">")) {
-				if (data.getItemTransfer().multiply(inventoryExceptQuery.getMultiple())
-						.compareTo(data.getItemLogPrice()) <= 0) {
+				if (data.getItemTransfer()
+						.compareTo(data.getItemLogPrice().multiply(inventoryExceptQuery.getMultiple())) <= 0) {
 					list.remove(data);
 				}
 			}
@@ -9000,7 +9004,7 @@ public class ReportServiceImpl implements ReportService {
 				orderDetailCompare.setSaleProfitGrowthRateValue(subSaleProfit
 						.divide(orderDetailCompare.getLastSaleProfit(), 4, BigDecimal.ROUND_HALF_UP).multiply(hundred)
 						.setScale(2));
-				orderDetailCompare.setSaleProfitGrowthRate(orderDetailCompare.getSaleProfitGrowthRate()
+				orderDetailCompare.setSaleProfitGrowthRate(orderDetailCompare.getSaleProfitGrowthRateValue()
 						+ "%");
 			}
 
@@ -9208,11 +9212,10 @@ public class ReportServiceImpl implements ReportService {
 			alipayLogTypes = paymentType;
 		}
 		
+
 		if (StringUtils.isEmpty(type)) {
 			list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
-			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP",
-					alipayLogTypes));
-			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "member",
+			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP,member",
 					alipayLogTypes));
 			if(queryAll){
 				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null,

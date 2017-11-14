@@ -80,7 +80,7 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<NameAndTwoValueDTO> findItemRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-	                                             Integer rankFrom, Integer rankTo, String sortField);
+                                                 Integer rankFrom, Integer rankTo, String sortField);
 	
 	/**
 	 * 查询商品类别排行
@@ -94,7 +94,7 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<NameAndTwoValueDTO> findCategoryRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-	                                                 Integer rankFrom, Integer rankTo, String sortField);
+                                                     Integer rankFrom, Integer rankTo, String sortField);
 	
 	/**
 	 * 查询商品小类别排行
@@ -108,7 +108,7 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<NameAndTwoValueDTO> findSmallCategoryRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-	                                                      Integer rankFrom, Integer rankTo, String sortField);
+                                                          Integer rankFrom, Integer rankTo, String sortField);
 	
 	/**
 	 * 查询时段营业数据
@@ -215,7 +215,7 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<NameAndTwoValueDTO> findBranchPosSummary(String systemBookCode, List<Integer> branchNums,
-	                                                     Integer itemNum, Date dateFrom, Date dateTo);
+                                                         Integer itemNum, Date dateFrom, Date dateTo);
 	
 	/**
 	 * 商品折让统计
@@ -229,7 +229,7 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<SalesDiscountDTO> findSalesDiscount(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                                Date dateTo, Integer rankFrom, Integer rankTo, String sortType);
+                                                    Date dateTo, Integer rankFrom, Integer rankTo, String sortType);
 	
 	/**
 	 * 查询门店发卡量排名  逆序
@@ -242,37 +242,37 @@ public interface MobileAppV2Service {
 	public List<NameAndValueDTO> findBranchCardCountV2(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	public MobileBusinessDTO findMobileBusiness(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                            Date dateTo);
+                                                Date dateTo);
 
 	public List<MobileBusinessDetailDTO> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
                                                             Date dateTo);
 
 	public List<MobileBusinessDetailDTO> findDepositSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                                        Date dateTo);
+                                                            Date dateTo);
 	
 	public List<NameAndValueDTO> findDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                                 Date dateTo);
+                                                     Date dateTo);
 
 	public List<MobileBusinessDTO> findBusinessMoneyGroupByShop(String systemBookCode, List<Integer> branchNums,
-	                                                            Date dateFrom, Date dateTo);
+                                                                Date dateFrom, Date dateTo);
 
 	public List<MobileBusinessDTO> findDiscountGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                                       Date dateTo);
+                                                           Date dateTo);
 
 	public List<MobileBusinessDTO> findBusinessReceiptGroupByShop(String systemBookCode, List<Integer> branchNums,
-	                                                              Date dateFrom, Date dateTo);
+                                                                  Date dateFrom, Date dateTo);
 
 	public List<MobileBusinessDetailDTO> findCashSummaryGroupByShop(String systemBookCode, List<Integer> branchNums,
-	                                                                Date dateFrom, Date dateTo, String cashType);
+                                                                    Date dateFrom, Date dateTo, String cashType);
 
 	public List<MobileBusinessDetailDTO> findDepositSummaryGroupByShop(String systemBookCode, List<Integer> branchNums,
-	                                                                   Date dateFrom, Date dateTo, String cashType);
+                                                                       Date dateFrom, Date dateTo, String cashType);
 
 	public List<MobileBusinessDetailDTO> findPaymentSummaryGroupByShop(String systemBookCode, List<Integer> branchNums,
-	                                                                   Date dateFrom, Date dateTo, String type);
+                                                                       Date dateFrom, Date dateTo, String type);
 
 	public List<MobileBusinessDetailDTO> findCashSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                                     Date dateTo);
+                                                         Date dateTo);
 	
 	/**
 	 * 异动明细
@@ -284,12 +284,12 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode,
-	                                               Integer branchNum,
-	                                               Date dateFrom, Date dateTo, String infoType);
+                                                   Integer branchNum,
+                                                   Date dateFrom, Date dateTo, String infoType);
 	
 	public List<ShipOrderDTO> findShipOrders(String systemBookCode,
-	                                         Integer centerBranchNum,
-	                                         Integer branchNum, Date dateFrom, Date dateTo);
+                                             Integer centerBranchNum,
+                                             Integer branchNum, Date dateFrom, Date dateTo);
 	
 	/**
 	 * 根据分店汇总卡数据
@@ -314,6 +314,6 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<NameAndTwoValueDTO> findDeptRank(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                             Date dateTo, Integer rankFrom, Integer rankTo, String sortField);
+                                                 Date dateTo, Integer rankFrom, Integer rankTo, String sortField);
 
 }

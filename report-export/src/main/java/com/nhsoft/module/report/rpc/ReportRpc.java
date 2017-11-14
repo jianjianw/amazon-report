@@ -64,7 +64,7 @@ public interface ReportRpc {
 	 * @return
 	 */
 	public List<MultipleProfitReportDTO> findMultipleProfitReportDTOs(String systemBookCode, Date dateFrom, Date dateTo,
-																	  List<String> categoryCodes, List<Integer> itemNums);
+                                                                      List<String> categoryCodes, List<Integer> itemNums);
 	
 	/**
 	 * 供应商销售分析 供应商汇总
@@ -1267,7 +1267,7 @@ public interface ReportRpc {
 	 * @param saleAnalysisQueryData
 	 * @return
 	 */
-	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData saleAnalysisQueryData);
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode, SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 

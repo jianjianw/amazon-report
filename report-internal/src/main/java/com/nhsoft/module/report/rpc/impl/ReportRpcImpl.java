@@ -583,7 +583,7 @@ public class ReportRpcImpl implements ReportRpc {
 				multipleProfitReportDTO.setPosSaleProfitRate(BigDecimal.ZERO);
 			} else {
 				multipleProfitReportDTO.setPosSaleProfitRate(multipleProfitReportDTO.getPosSaleProfit().divide(
-						multipleProfitReportDTO.getPosSaleMoney(), 2, BigDecimal.ROUND_HALF_UP).multiply(hundred));
+						multipleProfitReportDTO.getPosSaleMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(hundred));
 			}
 		}
 		List<MultipleProfitReportDTO> multipleProfitReportDTOs = new ArrayList<MultipleProfitReportDTO>();

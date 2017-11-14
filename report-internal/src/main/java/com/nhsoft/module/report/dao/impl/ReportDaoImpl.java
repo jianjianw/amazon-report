@@ -1773,7 +1773,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			String shiftTableBizday = (String) object[1];
 			Integer bizNum = (Integer) object[2];
 			if (bizNum == null) {
-				bizNum = 1;
+				bizNum = 0;
 			}
 			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BusinessCollection data = map.get(branchNum.toString() + shiftTableBizday + bizNum.toString());
@@ -2277,10 +2277,10 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFromShiftTable()) + "' ");
 		sb.append("and '" + DateUtil.getDateShortStr(queryData.getDtToShiftTable()) + "' ");
-		
+
 		if(!StringUtils.equals(queryData.getExceptionConditon(), AppConstants.ANTI_SETTLEMENT)){
 			sb.append("and p.order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
-			
+
 		} else {
 			sb.append("and p.order_state_code = " + AppConstants.POS_ORDER_DETAIL_CREATE_REPAY);
 
@@ -2304,25 +2304,34 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(queryData.getExceptionConditon())) {
 			if (queryData.getExceptionConditon().equals(AppConstants.PRESENT_RECORD)) {
-	
+
 				sb.append("and detail.order_detail_state_code = " + AppConstants.POS_ORDER_DETAIL_STATE_PRESENT + " ");
 			} else if (queryData.getExceptionConditon().equals(AppConstants.RETURN_RECORD)) {
 				sb.append("and detail.order_detail_state_code = " + AppConstants.POS_ORDER_DETAIL_STATE_CANCEL + " ");
 
-				
+
 			}
+//			else if(queryData.getExceptionConditon().equals(AppConstants.ANTI_SETTLEMENT)){
+
+//				sb.append("and exists (select 1 from invoice_change as i with(nolock) where i.order_no = p.order_no and i.system_book_code  = '" + queryData.getSystemBookCode() + "' ");
+//				if(queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0){
+//					sb.append("and i.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
+//				}
+//				sb.append("and i.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFromShiftTable()) + "' ");
+//				sb.append("and '" + DateUtil.getDateShortStr(queryData.getDtToShiftTable()) + "' )");
+
+//			}
 		}
 		if (StringUtils.isNotEmpty(queryData.getSaleMoneyFlag())) {
 			if (queryData.getSaleMoney() == null) {
 				queryData.setSaleMoney(BigDecimal.ZERO);
 			}
-			
 			String caseSql = "(case when detail.order_detail_state_code = 2 then 0 "
 					+ "when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) ";
 			BigDecimal saleMoney = queryData.getSaleMoney();
 			if (queryData.getSaleMoneyFlag().equals(AppConstants.LESS_THAN)) {
 				sb.append("and " + caseSql + " < " + saleMoney + " ");
-				
+
 			} else if (queryData.getSaleMoneyFlag().equals(AppConstants.LESS_THAN_OR_EQUAL)) {
 				sb.append("and " + caseSql + " <= " + saleMoney + " ");
 
@@ -2349,15 +2358,15 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				sb.append("and detail.order_detail_price <= " + price + " ");
 
 			} else if (queryData.getRetailPriceFlag().equals(AppConstants.EQUAL)) {
-				
+
 				sb.append("and detail.order_detail_price = " + price + " ");
 
 			} else if (queryData.getRetailPriceFlag().equals(AppConstants.MORE_THAN)) {
-				
+
 				sb.append("and detail.order_detail_price > " + price + " ");
 
 			} else if (queryData.getRetailPriceFlag().equals(AppConstants.MORE_THAN_OR_EQUAL)) {
-				
+
 				sb.append("and detail.order_detail_price >= " + price + " ");
 
 			}
@@ -2370,25 +2379,12 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-				
-				
+
+
 			} else {
-				
+
 				sb.append("and p.order_source = '" + queryData.getSaleType() + "' ");
 			}
-		}
-		if(queryData.getTimeFrom() != null && queryData.getTimeTo() != null){
-			String timeFrom = DateUtil.getHHmmStr2(queryData.getTimeFrom());
-			String timeTo = DateUtil.getHHmmStr2(queryData.getTimeTo());
-			
-			if(timeFrom.compareTo(timeTo) <= 0){
-				sb.append("and p.order_time_char between '" + timeFrom + "' and '" + timeTo + "' ");
-			} else {
-				sb.append("and (p.order_time_char >= '" + timeFrom + "' or p.order_time_char <= '" + timeTo + "' ) ");
-				
-			}
-			
-			
 		}
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setMaxResults(10000);
@@ -2433,13 +2429,13 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			retailDetail.setSaler((String) object[12]);
 			retailDetail.setItemGradeNum((Integer) object[13]);
-			
+
 			orderStateCode = (Integer) object[14];
 			if(!normalOrderStates.contains(orderStateCode)){
 				retailDetail.setDiscountMoney(BigDecimal.ZERO);
 				retailDetail.setSaleMoney(BigDecimal.ZERO);
 			}
-			
+
 			list.add(retailDetail);
 		}
 		return list;
@@ -5853,7 +5849,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select detail.item_num, sum(detail.out_order_detail_qty) as qty, sum(detail.out_order_detail_sale_subtotal) as money, ");
 		sb.append("sum(case when detail.out_order_detail_std_price is null then out_order_detail_sale_subtotal else (detail.out_order_detail_std_price * detail.out_order_detail_qty) end) as stdMoney ");
-		sb.append("from out_order_detail as detail with(nolock) inner join transfer_out_order as t with(nolock) on detail.out_order_fid = t.out_order_fid ");
+		sb.append("from out_order_detail as detail with(nolock, forceseek) inner join transfer_out_order as t with(nolock, forceseek) on detail.out_order_fid = t.out_order_fid ");
 		sb.append("where t.system_book_code = '" + policyPosItemQuery.getSystemBookCode() + "' ");
 		sb.append("and out_branch_num = " + policyPosItemQuery.getBranchNum() + " ");
 		if(policyPosItemQuery.getBranchNums() != null && policyPosItemQuery.getBranchNums().size() > 0){
@@ -7869,10 +7865,10 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
-	public Object[] findCustomerAnalysisTimePeriods(String systemBookCode, Date dateFrom, Date dateTo,
-			List<Integer> branchNums, String saleType, String timeFrom, String timeTo) {
+	public List<Object[]> findCustomerAnalysisTimePeriods(String systemBookCode, Date dateFrom, Date dateTo,
+														  List<Integer> branchNums, String saleType, String timeFrom, String timeTo) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, count(order_no) as amount ");
+		sb.append("select branch_num, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, count(order_no) as amount ");
 		sb.append("from pos_order with(nolock) where system_book_code = :systemBookCode and shift_table_bizday between '"
 				+ DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		sb.append("and order_state_code in (5,7) ");
@@ -7881,7 +7877,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (timeFrom.compareTo(timeTo) <= 0) {
 			sb.append("and order_time_char >= '" + timeFrom + "' and order_time_char < '" + timeTo + "' ");
-			
+
 		} else {
 			sb.append("and (order_time_char >= '" + timeFrom + "' or order_time_char < '" + timeTo + "') ");
 
@@ -7889,7 +7885,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (StringUtils.isNotEmpty(saleType)) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
-				
+
 				sb.append("and order_source in " + AppUtil.getStringParmeList(weixinSources));
 
 			} else {
@@ -7897,17 +7893,17 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 			}
 		}
-		
+		sb.append("group by branch_num");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		return (Object[]) sqlQuery.uniqueResult();
+		return sqlQuery.list();
 	}
 
 	@Override
-	public Object[] findCustomerAnalysisTimePeriodsByItems(String systemBookCode, Date dateFrom, Date dateTo,
-			List<Integer> branchNums, List<Integer> itemNums, String saleType, String timeFrom, String timeTo) {
+	public List<Object[]> findCustomerAnalysisTimePeriodsByItems(String systemBookCode, Date dateFrom, Date dateTo,
+																 List<Integer> branchNums, List<Integer> itemNums, String saleType, String timeFrom, String timeTo) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
+		sb.append("select branch_num, sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("count(distinct detail.order_no) as amount ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between '"
@@ -7921,7 +7917,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (timeFrom.compareTo(timeTo) <= 0) {
 			sb.append("and p.order_time_char >= '" + timeFrom + "' and p.order_time_char < '" + timeTo + "' ");
-			
+
 		} else {
 			sb.append("and (p.order_time_char >= '" + timeFrom + "' or p.order_time_char < '" + timeTo + "') ");
 
@@ -7930,7 +7926,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (StringUtils.isNotEmpty(saleType)) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
-				
+
 				sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
 			} else {
@@ -7938,9 +7934,10 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 			}
 		}
+		sb.append("group by branch_num");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
-		return (Object[]) sqlQuery.uniqueResult();
+		return sqlQuery.list();
 	}
 
 	@Override

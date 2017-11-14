@@ -15,6 +15,7 @@ public class CustomerAnalysisTimePeriod implements Serializable {
 	private BigDecimal customerAvePrice;//平均客单价
 	private BigDecimal numRate;//数量占比
 	private BigDecimal moenyRate;//金额占比
+	private Integer branchNum;
 
 	public String getTimePeroid() {
 		return timePeroid;
@@ -64,4 +65,11 @@ public class CustomerAnalysisTimePeriod implements Serializable {
 		this.customerAvePrice = customerAvePrice;
 	}
 
+	public Integer getBranchNum() {
+		return branchNum;
+	}
+
+	public void setBranchNum(Integer branchNum) {
+		this.branchNum = branchNum;
+	}
 }
