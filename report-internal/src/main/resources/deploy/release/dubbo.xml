@@ -26,7 +26,7 @@
     <dubbo:service interface="com.nhsoft.module.report.rpc.CardUserRpc" ref="cardUserRpcImpl"/>
     <dubbo:service interface="com.nhsoft.module.report.rpc.PosOrderRpc" ref="posOrderRpcImpl"/>
     <dubbo:service interface="com.nhsoft.module.report.rpc.Report2Rpc" ref="report2RpcImpl"/>
-    <dubbo:service interface="com.nhsoft.module.report.rpc.ReportRpc" ref="reportRpcImpl"/>
+    <dubbo:service interface="com.nhsoft.module.report.rpc.ReportRpc" ref="reportRpcImpl" retries="0"/>
     <dubbo:service interface="com.nhsoft.module.report.rpc.ShipOrderRpc" ref="shipOrderRpcImpl"/>
     <dubbo:service interface="com.nhsoft.module.report.rpc.TransferOutOrderRpc" ref="transferOutOrderRpcImpl"/>
     <dubbo:service interface="com.nhsoft.module.report.rpc.PosItemLogRpc" ref="posItemLogRpcImpl"/>
