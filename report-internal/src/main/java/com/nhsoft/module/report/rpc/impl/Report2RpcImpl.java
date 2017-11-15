@@ -889,6 +889,7 @@ public class Report2RpcImpl implements Report2Rpc {
 		posItemQuery.setIsFindNoStock(false);
 		posItemQuery.setPaging(false);
 		posItemQuery.setItemNums(itemNums);
+		posItemQuery.setFilterType(AppConstants.ITEM_TYPE_CHAIN);
 		List<Integer> chainItemNums = posItemService.findItemNumsByPosItemQuery(posItemQuery, 0, 0);
 		if(chainItemNums.isEmpty()){
 			return new ArrayList<RequestAnalysisDTO>();
