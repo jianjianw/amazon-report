@@ -1,12 +1,14 @@
-/*
 package com.nhsoft.module.report;
 
 import com.nhsoft.module.report.api.ReportApi;
 import com.nhsoft.module.report.api.dto.*;
+import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.ShipDetailDTO;
 import com.nhsoft.module.report.dto.ShipOrderSummary;
 import com.nhsoft.module.report.rpc.*;
+import com.nhsoft.module.report.service.PosOrderService;
+import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,13 +49,13 @@ public class TestSpringBoot {
 
 
 
-    Date dateFrom = null;
-    Date dateTo = null;
+    /*Date dateFrom = null;
+    Date dateTo = null;*/
     List<Integer> branchNums = null;
     String systemBookCode = "4020";
     String branchStr = "[";
 
-    @Before
+    //@Before
     public void date(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -63,7 +65,7 @@ public class TestSpringBoot {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        List<BranchDTO> all = branchRpc.findAll(systemBookCode);
+        List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
         branchNums = new ArrayList<Integer>();
         for (BranchDTO b : all) {
             Integer branchNum = b.getBranchNum();
@@ -81,13 +83,13 @@ public class TestSpringBoot {
 
     @Test
     public void testApiByStore(){           //API：com.nhsoft.module.report.api.ReportApi.byBranch耗时：2350ms
-        List<OperationStoreDTO> test = reportApi.byBranch(systemBookCode, null, "2017-10");
+        List<OperationStoreDTO> test = reportApi.findSaleMoneyByBranch(systemBookCode, null, "2017-10");
         System.out.println();
     }
 
     @Test
     public void testApiByRegion(){          //API：com.nhsoft.module.report.api.ReportApi.byRegion耗时：3119ms
-        List<OperationRegionDTO> list = reportApi.byRegion(systemBookCode, null, "2017-10-30|2017-11-05");
+        List<OperationRegionDTO> list = reportApi.findSaleMoneyByRegion(systemBookCode, null, "2017-10-30|2017-11-05");
         System.out.println();
     }
 
@@ -105,12 +107,6 @@ public class TestSpringBoot {
     @Test
     public void byBizmonth(){   //API：com.nhsoft.module.report.api.ReportApi.byBizmonth耗时：363ms
         List<TrendMonthlyDTO> trendMonthlies = reportApi.byBizmonth(systemBookCode, "|", "2017");
-        System.out.println();
-    }
-
-    @Test
-    public void testAll(){
-        List<BranchDTO> all = branchRpc.findAll("4020");
         System.out.println();
     }
 
@@ -135,7 +131,45 @@ public class TestSpringBoot {
         System.out.println();
     }
 
+    @Autowired
+    private PosOrderDao posOrderDao;
+    @Autowired
+    private PosOrderService posOrderService;
 
+
+    Date dateFrom = null;
+    Date dateTo = null;
+    @Before
+    public void testDate() throws Exception{
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        dateFrom = sdf.parse("2017-10-11");
+        dateTo = sdf.parse("2017-10-30");
+    }
+    @Test
+    public void test2(){
+        CardReportQuery cardReportQuery = new CardReportQuery();
+        cardReportQuery.setSystemBookCode("4344");
+        cardReportQuery.setBranchNum(99);
+        cardReportQuery.setDateFrom(dateFrom);
+        cardReportQuery.setDateTo(dateTo);
+        //cardReportQuery.setQueryDate(true);
+        //List<Object[]> summaryByBizday = posOrderDao.findSummaryByBizday(cardReportQuery);
+        List<Object[]> summaryByBizday = posOrderService.findSummaryByBizday(cardReportQuery);
+        System.out.println();
+    }
+    @Test
+    public void test3(){
+        List<Integer> list = new ArrayList<>();
+        list.add(99);
+        List<Object[]> customReportByBizday = posOrderService.findCustomReportByBizday("4344", list, dateFrom, dateTo);
+        System.out.println();
+    }
+
+    @Test
+    public void test4(){
+        //posOrderService.createByCardReportQuery();
+    }
 
 }
-*/

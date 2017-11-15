@@ -25,7 +25,7 @@ public class PosOrderSharding {
 		actualTables.add("pos_order");
 		String[] bookArray = systemBookCodes.split(",");
 		for(int i = 0;i < bookArray.length;i++){
-			actualTables.add("pos_order" + bookArray[i]);
+			actualTables.add("pos_order_" + bookArray[i]);
 		}
 		PosOrderSharding.PosOrderAlgorithm keyGeneratorAlgorithm = new PosOrderSharding.PosOrderAlgorithm("pos_order");
 		
