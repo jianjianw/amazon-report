@@ -67,8 +67,8 @@ public class ReportApi {
         logQuery.setPaging(false);
         logQuery.setDateFrom(DateUtil.addMonth(Calendar.getInstance().getTime(), -3));
         logQuery.setDateTo(Calendar.getInstance().getTime());
-
-        return alipayLogRpc.findByLogQuery(systemBookCode, 99, logQuery, 0, 0);
+        List<AlipayLogDTO> byLogQuery = alipayLogRpc.findByLogQuery(systemBookCode, 99, logQuery, 0, 0);
+        return byLogQuery;
     }
 
     //按分店汇总                                 (按分店汇总)

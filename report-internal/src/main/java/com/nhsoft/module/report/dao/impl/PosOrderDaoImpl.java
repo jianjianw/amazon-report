@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 @Repository
-public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
+public class PosOrderDaoImpl extends ShardingDaoImpl implements PosOrderDao {
 
 	@Override
 	public List<Object[]> findSummaryByBizday(CardReportQuery cardReportQuery) {
