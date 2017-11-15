@@ -1,16 +1,11 @@
 package com.nhsoft.module.report.service.impl;
 
-import com.nhsoft.amazon.server.dto.OrderQueryDTO;
-import com.nhsoft.amazon.server.dto.OrderReportDTO;
-import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
+
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
-import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.service.PosOrderService;
-import com.nhsoft.module.report.service.SystemBookService;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -22,6 +22,5 @@
             <AppenderRef ref="Stdout" />
         </Root>
         <Logger level="Error" name="org.springframework" />
-        <Logger level="debug" name="org.hibernate.SQL" />
     </Loggers>
 </Configuration>
