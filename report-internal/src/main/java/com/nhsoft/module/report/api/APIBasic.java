@@ -1,15 +1,15 @@
 package com.nhsoft.module.report.api;
 
-import com.nhsoft.module.report.dto.AlipayLogDTO;
-import com.nhsoft.module.report.query.LogQuery;
+import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.rpc.AlipayLogRpc;
+import com.nhsoft.module.report.rpc.PosOrderRpc;
+import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,22 +22,20 @@ public class APIBasic {
 	@Autowired
 	private AlipayLogRpc alipayLogRpc;
 	
+	@Autowired
+	private PosOrderRpc posOrderRpc;
+	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
 		ServiceDeskUtil.clear(systemBookCode);
 		return "success";
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/findAlipayLogs")
-	public @ResponseBody List<AlipayLogDTO> findAlipayLogs (@RequestParam("systemBookCode") String systemBookCode) {
+	@RequestMapping(method = RequestMethod.GET, value = "/test")
+	public @ResponseBody List<BranchBizRevenueSummary> test () {
 		
-		LogQuery logQuery = new LogQuery();
-		logQuery.setSystemBookCode(systemBookCode);
-		Date now = Calendar.getInstance().getTime();
-		logQuery.setDateTo(now);
-		logQuery.setDateFrom(DateUtil.addMonth(now, -9));
-		logQuery.setPaging(false);
-		return alipayLogRpc.findByLogQuery(systemBookCode, 99, logQuery, 0, 0);
+		
+		return posOrderRpc.findMoneyBizdaySummary("4344", Arrays.asList(1,2,99), AppConstants.BUSINESS_TREND_PAYMENT, DateUtil.getDateStr("20170901"), DateUtil.getDateStr("20171101"), false);
 	}
 	
 }
