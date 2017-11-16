@@ -1268,5 +1268,86 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 	public List<NameAndTwoValueDTO> findDeptRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer rankFrom, Integer rankTo, String sortField) {
 		return mobileAppV2Service.findDeptRank(systemBookCode, branchNums, dateFrom, dateTo, rankFrom, rankTo, sortField);
 	}
-	
+
+	@Override
+	public List<NameAndTwoValueDTO> findSmallCategoryRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer rankFrom, Integer rankTo, String sortField) {
+		return mobileAppV2Service.findSmallCategoryRank(systemBookCode, branchNums, dateFrom, dateTo, rankFrom, rankTo, sortField);
+	}
+
+	@Override
+	public List<NameAndValueDTO> findBranchCardCountV2(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findBranchCardCountV2(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public MobileBusinessDTO findMobileBusiness(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findMobileBusiness(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<MobileBusinessDetailDTO> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findPaymentSummary(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<MobileBusinessDetailDTO> findDepositSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findDepositSummary(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<NameAndValueDTO> findDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findDiscountSummary(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<MobileBusinessDTO> findBusinessMoneyGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findBusinessMoneyGroupByShop(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<MobileBusinessDTO> findDiscountGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findDiscountGroupByShop(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<MobileBusinessDTO> findBusinessReceiptGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findBusinessReceiptGroupByShop(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<MobileBusinessDetailDTO> findCashSummaryGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String cashType) {
+		return mobileAppV2Service.findCashSummaryGroupByShop(systemBookCode,branchNums,dateFrom,dateTo,cashType);
+	}
+
+	@Override
+	public List<MobileBusinessDetailDTO> findDepositSummaryGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String cashType) {
+		return mobileAppV2Service.findDepositSummaryGroupByShop(systemBookCode,branchNums,dateFrom,dateTo,cashType);
+	}
+
+	@Override
+	public List<MobileBusinessDetailDTO> findPaymentSummaryGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String type) {
+		return mobileAppV2Service.findPaymentSummaryGroupByShop(systemBookCode,branchNums,dateFrom,dateTo,type);
+	}
+
+	@Override
+	public List<MobileBusinessDetailDTO> findCashSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findCashSummary(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String infoType) {
+		return mobileAppV2Service.findOtherInfoDetails(systemBookCode,branchNum,dateFrom,dateTo,infoType);
+	}
+
+	@Override
+	public List<ShipOrderDTO> findShipOrders(String systemBookCode, Integer centerBranchNum, Integer branchNum, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findShipOrders(systemBookCode,centerBranchNum,branchNum,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<CardReportDTO> findCardReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return mobileAppV2Service.findCardReportByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+
 }

@@ -20,7 +20,7 @@ public interface MobileAppV2Rpc {
 	 */
 	public List<PosItemShowDTO> findPosItemShowByPush(String systemBookCode, Integer centerBranchNum, Integer branchNum,
                                                       String keyword, Integer rankFrom, Integer rankTo);
-	
+
 	/**
 	 * 查询门店新品提醒
 	 * @param systemBookCode
@@ -333,4 +333,90 @@ public interface MobileAppV2Rpc {
 	 */
 	public List<NameAndTwoValueDTO> findDeptRank(String systemBookCode, List<Integer> branchNums, Date dateFrom,
                                                  Date dateTo, Integer rankFrom, Integer rankTo, String sortField);
+
+
+	/**
+	 * 查询商品小类别排行
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param rankFrom 查询起始位
+	 * @param rankTo 查询页大小
+	 * @param sortField 排序方式 amount or money
+	 * @return
+	 */
+	public List<NameAndTwoValueDTO> findSmallCategoryRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
+														  Integer rankFrom, Integer rankTo, String sortField);
+
+	/**
+	 * 查询门店发卡量排名  逆序
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<NameAndValueDTO> findBranchCardCountV2(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public MobileBusinessDTO findMobileBusiness(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+												Date dateTo);
+
+	public List<MobileBusinessDetailDTO> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+															Date dateTo);
+
+	public List<MobileBusinessDetailDTO> findDepositSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+															Date dateTo);
+
+	public List<NameAndValueDTO> findDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+													 Date dateTo);
+
+	public List<MobileBusinessDTO> findBusinessMoneyGroupByShop(String systemBookCode, List<Integer> branchNums,
+																Date dateFrom, Date dateTo);
+
+	public List<MobileBusinessDTO> findDiscountGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+														   Date dateTo);
+
+	public List<MobileBusinessDTO> findBusinessReceiptGroupByShop(String systemBookCode, List<Integer> branchNums,
+																  Date dateFrom, Date dateTo);
+
+	public List<MobileBusinessDetailDTO> findCashSummaryGroupByShop(String systemBookCode, List<Integer> branchNums,
+																	Date dateFrom, Date dateTo, String cashType);
+
+	public List<MobileBusinessDetailDTO> findDepositSummaryGroupByShop(String systemBookCode, List<Integer> branchNums,
+																	   Date dateFrom, Date dateTo, String cashType);
+
+	public List<MobileBusinessDetailDTO> findPaymentSummaryGroupByShop(String systemBookCode, List<Integer> branchNums,
+																	   Date dateFrom, Date dateTo, String type);
+
+	public List<MobileBusinessDetailDTO> findCashSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+														 Date dateTo);
+
+	/**
+	 * 异动明细
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param infoType
+	 * @return
+	 */
+	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode,
+												   Integer branchNum,
+												   Date dateFrom, Date dateTo, String infoType);
+
+	public List<ShipOrderDTO> findShipOrders(String systemBookCode,
+											 Integer centerBranchNum,
+											 Integer branchNum, Date dateFrom, Date dateTo);
+
+	/**
+	 * 根据分店汇总卡数据
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<CardReportDTO> findCardReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+													  Date dateTo);
 }
