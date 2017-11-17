@@ -21,15 +21,15 @@ import java.util.List;
 @Component
 public class PosOrderRpcImpl implements PosOrderRpc {
 
-    @Autowired
-    private PosOrderService posOrderService;
-    @Autowired
-    public SystemBookService systemBookService;
-    @Autowired
-    private PosOrderRemoteService posOrderRemoteService;
+	@Autowired
+	private PosOrderService posOrderService;
+	@Autowired
+	public SystemBookService systemBookService;
+	@Autowired
+	private PosOrderRemoteService posOrderRemoteService;
 
-    @Override
-    public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
+	@Override
+	public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
@@ -85,7 +85,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 					returnList.add(objects);
 				}
 				//前2天的数据到本地查
-				List<Object[]> localObjects = posOrderService.findMoneyBranchSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
+				List<Object[]> localObjects = posOrderService.findMoneyBranchSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, false);
 				boolean find = false;
 				for (int i = 0; i < localObjects.size(); i++) {
 					Object[] localObject = localObjects.get(i);
@@ -105,16 +105,16 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 					}
 				}
 			}
-		}else {
+		} else {
 			//全部数据到本地查，不去大中心
 			returnList = posOrderService.findMoneyBranchSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
 		}
 
 		List<BranchRevenueReport> list = new ArrayList<BranchRevenueReport>();
-		if(returnList.isEmpty()){
+		if (returnList.isEmpty()) {
 			return list;
 		}
-		for (int i = 0; i <returnList.size() ; i++) {
+		for (int i = 0; i < returnList.size(); i++) {
 			Object[] object = returnList.get(i);
 			BranchRevenueReport branchRevenueReport = new BranchRevenueReport();
 			branchRevenueReport.setBranchNum((Integer) object[0]);
@@ -125,28 +125,10 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		}
 		return list;
 
-    }
+	}
 
-    @Override
-    public List<BranchBizRevenueSummary> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
-
-        List<Object[]> objects = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
-        List<BranchBizRevenueSummary> list = new ArrayList<>();
-        if(objects.isEmpty()){
-            return list;
-        }
-        for (int i = 0; i <objects.size() ; i++) {
-            Object[] object = objects.get(i);
-            BranchBizRevenueSummary branchBizRevenueSummary = new BranchBizRevenueSummary();
-            branchBizRevenueSummary.setBiz((String) object[0]);
-            branchBizRevenueSummary.setBizMoney((BigDecimal) object[1]);
-            branchBizRevenueSummary.setOrderCount((Integer) object[2]);
-            branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
-            list.add(branchBizRevenueSummary);
-        }
-        return list;
-
-        /*int type = 0;//暂时解决报错，等会去掉
+	@Override
+	public List<BranchBizRevenueSummary> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
@@ -168,8 +150,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		BigDecimal value1;
 		BigDecimal value2;
 		Date dpcLimitTime = DateUtil.addDay(now, -2);       //当前日期减2天
-		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()) {
-
+		List<Object[]> returnList = new ArrayList<Object[]>();
+		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()&& isMember == false) {
 			if (dpcLimitTime.compareTo(dateTo) > 0) {           //dateTo小于当前日期减2天（3天前的数据）所有数据去大中心查
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -177,55 +159,22 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				orderQueryDTO.setDateFrom(dateFrom);
 				orderQueryDTO.setDateTo(dateTo);
 				List<OrderReportDTO> list = posOrderRemoteService.findDaySummary(orderQueryDTO);
-				List<Object[]> returnList = new ArrayList<Object[]>();
 				for (int i = 0; i < list.size(); i++) {
 					Object[] objects = new Object[4];
 					objects[0] = list.get(i).getBizday();//营业日
-					//objects[0] = list.get(i).getBranchNum();//分店号
-					if(type == 0){
-						objects[1] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
-								.subtract(list.get(i).getMgrDiscount());//营业额
-
-					} else if(type == 1){
-						objects[1] = BigDecimal.valueOf(list.get(i).getOrderCount());
-					} else if(type == 2){
-						value1 = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
-								.subtract(list.get(i).getMgrDiscount());
-						value2 = BigDecimal.valueOf(list.get(i).getOrderCount());
-						if(value2.compareTo(BigDecimal.ZERO) > 0){
-							objects[1] = value1.divide(value2, 2, BigDecimal.ROUND_HALF_UP);
-						} else {
-							objects[1] = BigDecimal.ZERO;
-						}
-
-					} else if(type == 5){
-						objects[1] = list.get(i).getProfit();
-					} else if(type == 6){
-						value1 = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
-								.subtract(list.get(i).getMgrDiscount());
-						value2 = list.get(i).getProfit();
-						if(value1.compareTo(BigDecimal.ZERO) > 0){
-							objects[1] = BigDecimal.ZERO;
-						} else {
-							objects[1] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));;
-						}
-						objects[2] = value1;//客单量
-						objects[3] = value2;//毛利
-
-
-					}
+					objects[1] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
+							.subtract(list.get(i).getMgrDiscount());//营业额
+					objects[2] = list.get(i).getOrderCount();//客单量
+					objects[3] = list.get(i).getProfit();//毛利
 					returnList.add(objects);
 				}
-				return returnList;
 			} else {        //dateTo大于等于当前日期减2天
-
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
 				orderQueryDTO.setBranchNum(branchNums);
 				orderQueryDTO.setDateFrom(dateFrom);
 				orderQueryDTO.setDateTo(DateUtil.addDay(dpcLimitTime, -1));  //(3天前的数据去大中心查）
-				List<OrderReportDTO> list = posOrderRemoteService.findDaySummary(orderQueryDTO);
-				List<Object[]> returnList = new ArrayList<Object[]>();
+				List<OrderReportDTO> list =  posOrderRemoteService.findDaySummary(orderQueryDTO);
 				for (int i = 0; i < list.size(); i++) {
 					Object[] objects = new Object[4];
 					objects[0] = list.get(i).getBizday();
@@ -236,7 +185,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 					returnList.add(objects);
 				}
 				//前2天的数据到本地查
-				List<Object[]> localObjects = posOrderDao.findMoneyBizdaySummary(systemBookCode, branchNums, dpcLimitTime, dateTo, false);
+				List<Object[]> localObjects = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, false);
 				boolean find = false;
 				for (int i = 0; i < localObjects.size(); i++) {
 					Object[] localObject = localObjects.get(i);
@@ -252,110 +201,33 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 							break;
 						}
 					}
-
 					if (!find) {
 						returnList.add(localObject);
 					}
 				}
-				if(type > 0){
-					Object[] object = null;
-					for(int i = 0;i < returnList.size();i++){
-						object = returnList.get(i);
-						if(type == 1){
-							value1 = object[2] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[2]);
-
-							object[1] = value1;
-
-
-						} else if(type == 2){
-							value1 = object[2] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[2]);
-							value2 = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
-
-							if(value1.compareTo(BigDecimal.ZERO) > 0){
-								object[2] = value2.divide(value1, 2, BigDecimal.ROUND_HALF_UP);
-							}
-						} else if(type == 5){
-							object[1] = object[3];
-						} else if(type == 6){
-							value1 = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
-							value2 = object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3];
-
-							if(value1.compareTo(BigDecimal.ZERO) > 0){
-								object[1] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));
-							}
-							object[2] = value1;
-							object[3] = value2;
-						}
-					}
-				}
-				return returnList;
 			}
 		} else {
-			//不去大中心查数据，都到本地查
-			List<Object[]> objects = null;
-			if(type == 3 || type == 4){
-				objects = posOrderDao.findMoneyBizdaySummary(systemBookCode, branchNums,  dpcLimitTime, dateTo, true);
-
-			} else {
-				objects = posOrderDao.findMoneyBizdaySummary(systemBookCode, branchNums, dpcLimitTime, dateTo, false);
-
-			}
-			if(type > 0){
-				Object[] object = null;
-				for(int i = 0;i < objects.size();i++){
-					object = objects.get(i);
-					if(type == 1 || type == 3){
-						value1 = object[2] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[2]);
-
-						object[1] = value1;
-
-					} else if(type == 2 || type == 4){
-						value1 = object[2] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[2]);
-						value2 = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
-
-						if(value1.compareTo(BigDecimal.ZERO) > 0){
-							object[1] = value2.divide(value1, 2, BigDecimal.ROUND_HALF_UP);
-						}
-					} else if(type == 5){
-						object[1] = object[3];
-					} else if(type == 6){
-						value1 = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
-						value2 = object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3];
-
-						if(value1.compareTo(BigDecimal.ZERO) > 0){
-							object[1] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));;
-						}
-						object[2] = value1;
-						object[3] = value2;
-					}
-				}
-			}
-
-			return objects;
-		}*/
-    }
-
-    @Override
-    public List<BranchBizRevenueSummary> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
-        List<Object[]> objects = posOrderService.findMoneyBizmonthSummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
-        List<BranchBizRevenueSummary> list = new ArrayList<>();
-        if(objects.isEmpty()){
-            return list;
-        }
-        for (int i = 0; i <objects.size() ; i++) {
-            Object[] object = objects.get(i);
-            BranchBizRevenueSummary branchBizRevenueSummary = new BranchBizRevenueSummary();
-            branchBizRevenueSummary.setBiz((String) object[0]);
-            branchBizRevenueSummary.setBizMoney((BigDecimal) object[1]);
-            branchBizRevenueSummary.setOrderCount((Integer) object[2]);
-            branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
-            list.add(branchBizRevenueSummary);
-        }
-        return list;
+			returnList = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
+		}
+		List<BranchBizRevenueSummary> list = new ArrayList<>();
+		if (returnList.isEmpty()) {
+			return list;
+		}
+		for (int i = 0; i < returnList.size(); i++) {
+			Object[] object = returnList.get(i);
+			BranchBizRevenueSummary branchBizRevenueSummary = new BranchBizRevenueSummary();
+			branchBizRevenueSummary.setBiz((String) object[0]);
+			branchBizRevenueSummary.setBizMoney((BigDecimal) object[1]);
+			branchBizRevenueSummary.setOrderCount((Integer) object[2]);
+			branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
+			list.add(branchBizRevenueSummary);
+		}
+		return list;
+	}
 
 
-        /*int type = 0;//暂时解决报错，等会去掉
-
+	@Override
+	public List<BranchBizRevenueSummary> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
 		now = DateUtil.getMinOfDate(now);
@@ -376,8 +248,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		BigDecimal value1;
 		BigDecimal value2;
 		Date dpcLimitTime = DateUtil.addDay(now, -2);       //当前日期减2天
+		List<Object[]> returnList = new ArrayList<Object[]>();
 		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()) {
-
 			if (dpcLimitTime.compareTo(dateTo) > 0) {           //dateTo小于当前日期减2天（3天前的数据）所有数据去大中心查
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -385,57 +257,25 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				orderQueryDTO.setDateFrom(dateFrom);
 				orderQueryDTO.setDateTo(dateTo);
 				List<OrderReportDTO> list = posOrderRemoteService.findMonthSummary(orderQueryDTO);
-				List<Object[]> returnList = new ArrayList<Object[]>();
 				for (int i = 0; i < list.size(); i++) {
 					Object[] objects = new Object[4];
-					objects[0] = list.get(i).getBizMonth();//营业月
-					if(type == 0){
-						objects[1] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
-								.subtract(list.get(i).getMgrDiscount());//营业额
-
-					} else if(type == 1){
-						objects[1] = BigDecimal.valueOf(list.get(i).getOrderCount());
-					} else if(type == 2){
-						value1 = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
-								.subtract(list.get(i).getMgrDiscount());
-						value2 = BigDecimal.valueOf(list.get(i).getOrderCount());
-						if(value2.compareTo(BigDecimal.ZERO) > 0){
-							objects[1] = value1.divide(value2, 2, BigDecimal.ROUND_HALF_UP);
-						} else {
-							objects[1] = BigDecimal.ZERO;
-						}
-
-					} else if(type == 5){
-						objects[1] = list.get(i).getProfit();
-					} else if(type == 6){
-						value1 = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
-								.subtract(list.get(i).getMgrDiscount());
-						value2 = list.get(i).getProfit();
-						if(value1.compareTo(BigDecimal.ZERO) > 0){
-							objects[1] = BigDecimal.ZERO;
-						} else {
-							objects[1] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));;
-						}
-						objects[2] = value1;//客单量
-						objects[3] = value2;//毛利
-
-
-					}
+					objects[0] = list.get(i).getBizday();//营业月
+					objects[1] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
+							.subtract(list.get(i).getMgrDiscount());//营业额
+					objects[2] = list.get(i).getOrderCount();//客单量
+					objects[3] = list.get(i).getProfit();//毛利
 					returnList.add(objects);
 				}
-				return returnList;
 			} else {        //dateTo大于等于当前日期减2天
-
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
 				orderQueryDTO.setBranchNum(branchNums);
 				orderQueryDTO.setDateFrom(dateFrom);
 				orderQueryDTO.setDateTo(DateUtil.addDay(dpcLimitTime, -1));  //(3天前的数据去大中心查）
 				List<OrderReportDTO> list = posOrderRemoteService.findMonthSummary(orderQueryDTO);
-				List<Object[]> returnList = new ArrayList<Object[]>();
 				for (int i = 0; i < list.size(); i++) {
 					Object[] objects = new Object[4];
-					objects[0] = list.get(i).getBizMonth();
+					objects[0] = list.get(i).getBizday();
 					objects[1] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
 							.subtract(list.get(i).getMgrDiscount());
 					objects[2] = list.get(i).getOrderCount();
@@ -443,7 +283,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 					returnList.add(objects);
 				}
 				//前2天的数据到本地查
-				List<Object[]> localObjects = posOrderDao.findMoneyBizmonthSummary(systemBookCode, branchNums,dpcLimitTime, dateTo, false);
+				List<Object[]> localObjects = posOrderService.findMoneyBizmonthSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, false);
 				boolean find = false;
 				for (int i = 0; i < localObjects.size(); i++) {
 					Object[] localObject = localObjects.get(i);
@@ -459,87 +299,27 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 							break;
 						}
 					}
-
 					if (!find) {
 						returnList.add(localObject);
 					}
 				}
-				if(type > 0){
-					Object[] object = null;
-					for(int i = 0;i < returnList.size();i++){
-						object = returnList.get(i);
-						if(type == 1){
-							value1 = object[2] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[2]);
-
-							object[1] = value1;
-
-
-						} else if(type == 2){
-							value1 = object[2] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[2]);
-							value2 = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
-
-							if(value1.compareTo(BigDecimal.ZERO) > 0){
-								object[2] = value2.divide(value1, 2, BigDecimal.ROUND_HALF_UP);
-							}
-						} else if(type == 5){
-							object[1] = object[3];
-						} else if(type == 6){
-							value1 = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
-							value2 = object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3];
-
-							if(value1.compareTo(BigDecimal.ZERO) > 0){
-								object[1] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));
-							}
-							object[2] = value1;
-							object[3] = value2;
-						}
-					}
-				}
-				return returnList;
 			}
 		} else {
-			//不去大中心查数据，都到本地查
-			List<Object[]> objects = null;
-			if(type == 3 || type == 4){
-				objects = posOrderDao.findMoneyBizmonthSummary(systemBookCode, branchNums,dpcLimitTime, dateTo, true);
-			} else {
-				objects = posOrderDao.findMoneyBizmonthSummary(systemBookCode, branchNums,dpcLimitTime, dateTo, false);
-
-			}
-			if(type > 0){
-				Object[] object = null;
-				for(int i = 0;i < objects.size();i++){
-					object = objects.get(i);
-					if(type == 1 || type == 3){
-						value1 = object[2] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[2]);
-
-						object[1] = value1;
-
-					} else if(type == 2 || type == 4){
-						value1 = object[2] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[2]);
-						value2 = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
-
-						if(value1.compareTo(BigDecimal.ZERO) > 0){
-							object[1] = value2.divide(value1, 2, BigDecimal.ROUND_HALF_UP);
-						}
-					} else if(type == 5){
-						object[1] = object[3];
-					} else if(type == 6){
-						value1 = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
-						value2 = object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3];
-
-						if(value1.compareTo(BigDecimal.ZERO) > 0){
-							object[1] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));;
-						}
-						object[2] = value1;
-						object[3] = value2;
-					}
-				}
-			}
-
-			return objects;
+			returnList = posOrderService.findMoneyBizmonthSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
 		}
-	}*/
-
-    }
+		List<BranchBizRevenueSummary> list = new ArrayList<>();
+		if (returnList.isEmpty()) {
+			return list;
+		}
+		for (int i = 0; i < returnList.size(); i++) {
+			Object[] object = returnList.get(i);
+			BranchBizRevenueSummary branchBizRevenueSummary = new BranchBizRevenueSummary();
+			branchBizRevenueSummary.setBiz((String) object[0]);
+			branchBizRevenueSummary.setBizMoney((BigDecimal) object[1]);
+			branchBizRevenueSummary.setOrderCount((Integer) object[2]);
+			branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
+			list.add(branchBizRevenueSummary);
+		}
+		return list;
+	}
 }
