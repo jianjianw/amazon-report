@@ -3927,7 +3927,7 @@ public class ReportServiceImpl implements ReportService {
 			presentQty = object[18] == null ? BigDecimal.ZERO : (BigDecimal) object[18];
 			presentCostMoney = presentQty.multiply(object[20] == null ? BigDecimal.ZERO : ((BigDecimal) object[20])).setScale(2, BigDecimal.ROUND_HALF_UP);
 			presentMoney = presentQty.multiply(object[21] == null ? BigDecimal.ZERO : ((BigDecimal) object[21])).setScale(2, BigDecimal.ROUND_HALF_UP);
-			basePrice = object[21] == null ? BigDecimal.ZERO : ((BigDecimal) object[21]).setScale(2, BigDecimal.ROUND_HALF_UP);
+			basePrice = object[21] == null ? BigDecimal.ZERO : (BigDecimal)object[21];
 			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
 			if (posItem == null) {
 				continue;
