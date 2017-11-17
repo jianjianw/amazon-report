@@ -50,7 +50,7 @@ public class RedisUtil {
 	public static void put(String key, Object value){
 		initRedis();
 		try {
-			customRedises.get(DynamicDataSourceContextHolder.getDataSourceType()).opsForValue().set(key, value);
+			customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType())).opsForValue().set(key, value);
 			
 		} catch (Exception e) {
 			logger.warn(e.getMessage(), e);
@@ -63,7 +63,7 @@ public class RedisUtil {
 	public static void put(String key, Object value, int expireTime){
 		initRedis();
 		try {
-			customRedises.get(DynamicDataSourceContextHolder.getDataSourceType()).opsForValue().set(key, value, expireTime, TimeUnit.SECONDS);
+			customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType())).opsForValue().set(key, value, expireTime, TimeUnit.SECONDS);
 			
 		} catch (Exception e) {
 			logger.warn(e.getMessage(), e);
@@ -76,8 +76,9 @@ public class RedisUtil {
 	public static void put(String key, Object value, Date expireTime){
 		initRedis();
 		try {
-			customRedises.get(DynamicDataSourceContextHolder.getDataSourceType()).opsForValue().set(key, value);
-			customRedises.get(DynamicDataSourceContextHolder.getDataSourceType()).expireAt(key, expireTime);
+			RedisTemplate redisTemplate = customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType()));
+			redisTemplate.opsForValue().set(key, value);
+			redisTemplate.expireAt(key, expireTime);
 		} catch (Exception e) {
 			logger.warn(e.getMessage(), e);
 			
@@ -90,7 +91,7 @@ public class RedisUtil {
 		initRedis();
 		try {
 			
-			customRedises.get(DynamicDataSourceContextHolder.getDataSourceType()).opsForSet().add(key, value);
+			customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType())).opsForSet().add(key, value);
 			
 		} catch (Exception e) {
 			logger.warn(e.getMessage(), e);
@@ -107,7 +108,7 @@ public class RedisUtil {
 		initRedis();
 		try {
 			Object[] objects = values.toArray(new Object[values.size()]);
-			customRedises.get(DynamicDataSourceContextHolder.getDataSourceType()).opsForSet().add(key, objects);
+			customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType())).opsForSet().add(key, objects);
 		} catch(Exception e) {
 			logger.warn(e.getMessage(), e);
 		}
@@ -118,7 +119,7 @@ public class RedisUtil {
 		initRedis();
 		try {
 			
-			customRedises.get(DynamicDataSourceContextHolder.getDataSourceType()).opsForSet().remove(key, value);
+			customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType())).opsForSet().remove(key, value);
 			
 		} catch (Exception e) {
 			logger.warn(e.getMessage(), e);
@@ -131,7 +132,7 @@ public class RedisUtil {
 	public static Set setGet(String key){
 		initRedis();
 		try {
-			return customRedises.get(DynamicDataSourceContextHolder.getDataSourceType()).opsForSet().members(key);
+			return customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType())).opsForSet().members(key);
 		} catch (Exception e) {
 			logger.warn(e.getMessage(), e);
 			return null;
@@ -141,7 +142,7 @@ public class RedisUtil {
 		initRedis();
 		try {
 			
-			return customRedises.get(DynamicDataSourceContextHolder.getDataSourceType()).opsForValue().get(key);
+			return customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType())).opsForValue().get(key);
 		} catch (Exception e) {
 			logger.warn(e.getMessage(), e);
 			return null;
