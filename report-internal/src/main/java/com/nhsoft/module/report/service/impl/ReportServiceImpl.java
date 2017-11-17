@@ -3903,6 +3903,7 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal presentQty = null;
 		BigDecimal presentCostMoney = null;
 		BigDecimal presentMoney = null;
+		BigDecimal basePrice = null;
 		for (int i = 0; i < saleObjects.size(); i++) {
 			Object[] object = saleObjects.get(i);
 			String orderFid = (String) object[0];
@@ -3926,7 +3927,7 @@ public class ReportServiceImpl implements ReportService {
 			presentQty = object[18] == null ? BigDecimal.ZERO : (BigDecimal) object[18];
 			presentCostMoney = presentQty.multiply(object[20] == null ? BigDecimal.ZERO : ((BigDecimal) object[20])).setScale(2, BigDecimal.ROUND_HALF_UP);
 			presentMoney = presentQty.multiply(object[21] == null ? BigDecimal.ZERO : ((BigDecimal) object[21])).setScale(2, BigDecimal.ROUND_HALF_UP);
-
+			basePrice = object[21] == null ? BigDecimal.ZERO : ((BigDecimal) object[21]).setScale(2, BigDecimal.ROUND_HALF_UP);
 			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
 			if (posItem == null) {
 				continue;
@@ -3974,6 +3975,7 @@ public class ReportServiceImpl implements ReportService {
 			data.setPresentUnit((String) object[23]);
 			data.setItemValidPeriod(posItem.getItemValidPeriod());
 			data.setProductDate((Date) object[24]);
+			data.setBasePrice(basePrice);
 			list.add(data);
 
 		}

@@ -48,6 +48,7 @@ public class WholesaleProfitByPosItemDetail implements Serializable {
 	private BigDecimal presentQty;
 	private Integer itemValidPeriod;
 	private Date productDate;
+	private BigDecimal basePrice;	//基本价格
 	
 	public WholesaleProfitByPosItemDetail(){
 		setWholesaleNum(BigDecimal.ZERO);
@@ -377,4 +378,11 @@ public class WholesaleProfitByPosItemDetail implements Serializable {
 		this.posItemCategory = posItemCategory;
 	}
 
+	public BigDecimal getBasePrice() {
+		return basePrice;
+	}
+
+	public void setBasePrice(BigDecimal basePrice) {
+		this.basePrice = basePrice;
+	}
 }
