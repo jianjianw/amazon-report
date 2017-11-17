@@ -2386,6 +2386,19 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				sb.append("and p.order_source = '" + queryData.getSaleType() + "' ");
 			}
 		}
+		if(queryData.getTimeFrom() != null && queryData.getTimeTo() != null){
+			String timeFrom = DateUtil.getHHmmStr2(queryData.getTimeFrom());
+			String timeTo = DateUtil.getHHmmStr2(queryData.getTimeTo());
+			
+			if(timeFrom.compareTo(timeTo) <= 0){
+				sb.append("and p.order_time_char between '" + timeFrom + "' and '" + timeTo + "' ");
+			} else {
+				sb.append("and (p.order_time_char >= '" + timeFrom + "' or p.order_time_char <= '" + timeTo + "' ) ");
+				
+			}
+			
+			
+		}
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setMaxResults(10000);
 		List<Object[]> objects = query.list();
