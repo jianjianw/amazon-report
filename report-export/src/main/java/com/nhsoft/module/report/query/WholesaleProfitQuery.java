@@ -9,7 +9,7 @@ public class WholesaleProfitQuery extends QueryBuilder {
 	 * 
 	 */
 	private static final long serialVersionUID = 4786044473108826944L;
-	private String systemBookCode;
+	//private String systemBookCode;
 	private Integer banchNum;           	
 	private List<String> clientFids;						//客户fid List
 	private List<Integer> posItemNums;				//商品Num List
