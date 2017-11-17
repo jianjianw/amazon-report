@@ -151,7 +151,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("sum(l.pos_item_log_item_amount) as amount, sum(l.POS_ITEM_LOG_MONEY) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount,  ");
 		sb.append("sum(l.pos_item_log_use_qty) as useAmount, sum(l.pos_item_log_operate_price * l.pos_item_log_item_amount) as saleMoney, ");
 		sb.append("min(l.pos_item_log_use_unit) as useUnit ");
-	
 		sb.append("from pos_item_log as l with(nolock) ");
 		
 		sb.append("where l.system_book_code = '" + systemBookCode + "' ");
@@ -215,8 +214,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("group by l.item_num, l.pos_item_log_item_matrix_num, l.pos_item_log_inout_flag ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", storeQueryCondition.getSystemBookCode());
-		sqlQuery.setInteger("branchNum", storeQueryCondition.getBranchNum());
-		
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
 		}
@@ -410,7 +407,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("group by l.item_num, l.pos_item_log_date_index, l.pos_item_log_summary, l.pos_item_log_inout_flag ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", storeQueryCondition.getSystemBookCode());
-		sqlQuery.setInteger("branchNum", storeQueryCondition.getBranchNum());
 		
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
@@ -468,7 +464,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("group by l.item_num, l.pos_item_log_inout_flag ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", storeQueryCondition.getSystemBookCode());
-		sqlQuery.setInteger("branchNum", storeQueryCondition.getBranchNum());
 		
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
@@ -526,7 +521,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("group by l.branch_num, l.pos_item_log_inout_flag ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", storeQueryCondition.getSystemBookCode());
-		sqlQuery.setInteger("branchNum", storeQueryCondition.getBranchNum());
 		
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
