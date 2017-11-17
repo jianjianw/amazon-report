@@ -85,7 +85,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 					returnList.add(objects);
 				}
 				//前2天的数据到本地查
-				List<Object[]> localObjects = posOrderService.findMoneyBranchSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, false);
+				List<Object[]> localObjects = posOrderService.findMoneyBranchSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
 				boolean find = false;
 				for (int i = 0; i < localObjects.size(); i++) {
 					Object[] localObject = localObjects.get(i);
@@ -185,7 +185,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 					returnList.add(objects);
 				}
 				//前2天的数据到本地查
-				List<Object[]> localObjects = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, false);
+				List<Object[]> localObjects = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
 				boolean find = false;
 				for (int i = 0; i < localObjects.size(); i++) {
 					Object[] localObject = localObjects.get(i);
@@ -249,7 +249,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		BigDecimal value2;
 		Date dpcLimitTime = DateUtil.addDay(now, -2);       //当前日期减2天
 		List<Object[]> returnList = new ArrayList<Object[]>();
-		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()) {
+		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && isMember == false) {
 			if (dpcLimitTime.compareTo(dateTo) > 0) {           //dateTo小于当前日期减2天（3天前的数据）所有数据去大中心查
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -259,7 +259,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				List<OrderReportDTO> list = posOrderRemoteService.findMonthSummary(orderQueryDTO);
 				for (int i = 0; i < list.size(); i++) {
 					Object[] objects = new Object[4];
-					objects[0] = list.get(i).getBizday();//营业月
+					objects[0] = list.get(i).getBizMonth();//营业月
 					objects[1] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
 							.subtract(list.get(i).getMgrDiscount());//营业额
 					objects[2] = list.get(i).getOrderCount();//客单量
@@ -275,7 +275,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				List<OrderReportDTO> list = posOrderRemoteService.findMonthSummary(orderQueryDTO);
 				for (int i = 0; i < list.size(); i++) {
 					Object[] objects = new Object[4];
-					objects[0] = list.get(i).getBizday();
+					objects[0] = list.get(i).getBizMonth();
 					objects[1] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
 							.subtract(list.get(i).getMgrDiscount());
 					objects[2] = list.get(i).getOrderCount();
@@ -283,7 +283,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 					returnList.add(objects);
 				}
 				//前2天的数据到本地查
-				List<Object[]> localObjects = posOrderService.findMoneyBizmonthSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, false);
+				List<Object[]> localObjects = posOrderService.findMoneyBizmonthSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
 				boolean find = false;
 				for (int i = 0; i < localObjects.size(); i++) {
 					Object[] localObject = localObjects.get(i);
