@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class PosImageDaoHibernate extends DaoImpl implements PosImageDao {
+public class PosImageDaoImpl extends DaoImpl implements PosImageDao {
 
 	
 	@Override

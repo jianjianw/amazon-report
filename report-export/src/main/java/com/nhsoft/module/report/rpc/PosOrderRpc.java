@@ -45,4 +45,5 @@ public interface PosOrderRpc  {
      * @return
      */
     public List<BranchBizRevenueSummary> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
+
 }
