@@ -10,7 +10,6 @@
     <!-- 提供方应用信息，用于计算依赖关系 -->
     <dubbo:application name="amazon-report"  />
 
-
     <dubbo:registry address="zookeeper://csk.nhsoft.cn:2181" />
     <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="20880" />

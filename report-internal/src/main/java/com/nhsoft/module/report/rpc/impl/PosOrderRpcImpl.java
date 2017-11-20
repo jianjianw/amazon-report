@@ -107,7 +107,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			}
 		} else {
 			//全部数据到本地查，不去大中心
-			returnList = posOrderService.findMoneyBranchSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
+			returnList = posOrderService.findMoneyBranchSummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
 		}
 
 		List<BranchRevenueReport> list = new ArrayList<BranchRevenueReport>();
@@ -207,7 +207,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				}
 			}
 		} else {
-			returnList = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
+			returnList = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
 		}
 		List<BranchBizRevenueSummary> list = new ArrayList<>();
 		if (returnList.isEmpty()) {
@@ -223,6 +223,21 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			list.add(branchBizRevenueSummary);
 		}
 		return list;
+	/*	List<Object[]> returnList = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
+		List<BranchBizRevenueSummary> list = new ArrayList<>();
+		if (returnList.isEmpty()) {
+			return list;
+		}
+		for (int i = 0; i < returnList.size(); i++) {
+			Object[] object = returnList.get(i);
+			BranchBizRevenueSummary branchBizRevenueSummary = new BranchBizRevenueSummary();
+			branchBizRevenueSummary.setBiz((String) object[0]);
+			branchBizRevenueSummary.setBizMoney((BigDecimal) object[1]);
+			branchBizRevenueSummary.setOrderCount((Integer) object[2]);
+			branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
+			list.add(branchBizRevenueSummary);
+		}
+		return list;*/
 	}
 
 
@@ -305,7 +320,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				}
 			}
 		} else {
-			returnList = posOrderService.findMoneyBizmonthSummary(systemBookCode, branchNums, queryBy, dpcLimitTime, dateTo, isMember);
+			returnList = posOrderService.findMoneyBizmonthSummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
 		}
 		List<BranchBizRevenueSummary> list = new ArrayList<>();
 		if (returnList.isEmpty()) {
