@@ -4210,6 +4210,7 @@ public class ReportServiceImpl implements ReportService {
 				data.setShipOrderAuditTime(wholesaleOrder.getWholesaleOrderAuditTime());
 				data.setMemo(wholesaleOrder.getWholesaleOrderMemo());
 				data.setClientFid(wholesaleOrder.getClientFid());
+				data.setBranchNum(wholesaleOrder.getBranchNum());
 				list.add(data);
 			}
 		}
@@ -4284,6 +4285,7 @@ public class ReportServiceImpl implements ReportService {
 			data.setMemo(wholesaleOrder.getWholesaleOrderMemo());
 			data.setShipOrderPicker(wholesaleOrder.getWholesaleOrderPicker());
 			data.setClientFid(wholesaleOrder.getClientFid());
+			data.setBranchNum(wholesaleOrder.getBranchNum());
 			list.add(data);
 		}
 		return list;
