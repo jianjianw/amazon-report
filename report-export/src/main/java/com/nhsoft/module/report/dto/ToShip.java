@@ -30,6 +30,7 @@ public class ToShip implements Serializable{
 	private Date orderPickingDate;						//配货时间
 	private String memo;										//备注
 	private String shipOrderPicker;						//配货员
+	private String clientFid;								//客户主键
 	
 	
 	public String getShipOrderPicker() {
@@ -126,4 +127,11 @@ public class ToShip implements Serializable{
 		this.shipOrderAuditorTime = shipOrderAuditorTime;
 	}
 
+	public String getClientFid() {
+		return clientFid;
+	}
+
+	public void setClientFid(String clientFid) {
+		this.clientFid = clientFid;
+	}
 }

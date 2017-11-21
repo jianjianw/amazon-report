@@ -179,16 +179,19 @@ public class TestSpringBoot {
     public void test4(){///pos_order_detail    inner
         //含inner
         CardReportQuery cardReportQuery = new CardReportQuery();
-        cardReportQuery.setQueryDetail(true);
+        //cardReportQuery.setQueryDetail(true);
+        cardReportQuery.setQueryPayment(true);
         cardReportQuery.setSystemBookCode("4344");
         cardReportQuery.setBranchNum(99);
+        cardReportQuery.setDateFrom(dateFrom);
+        cardReportQuery.setDateTo(dateTo);
         List<Object[]> summaryByBranch = posOrderService.findSummaryByBranch(cardReportQuery);
         System.out.println();
         //posOrderService.createByCardReportQuery();
     }
 
     @Test
-    public void test5(){//pos_order_detail   and pos_order_kit_detail
+    public void test5(){//pos_order_detail   and pos_order_kit_detail     ok
 
         List<Integer> items = new ArrayList<>();
         items.add(434400126);
@@ -198,7 +201,7 @@ public class TestSpringBoot {
     }
 
     @Test
-    public void test6(){ // pos_order   查不到数据会报NullPointerException    (含case when)
+    public void test6(){ // pos_order   查不到数据会报NullPointerException    (含case when)                     ok
         List<Object[]> customReportByBizday = posOrderService.findCustomReportByBizday(systemBookCode,branchNums,dateFrom,dateTo);
         System.out.println();
     }

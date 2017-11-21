@@ -73,7 +73,7 @@ public class PosOrderDaoImpl extends ShardingDaoImpl implements PosOrderDao {
 		if (cardReportQuery.isQueryDetail()) {
 			sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
 		} else if (cardReportQuery.isQueryPayment()) {
-			sb.append("from payment as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
+			sb.append("from pos_order as p with(nolock) inner join payment as detail with(nolock) on p.order_no = detail.order_no ");
 		} else {
 			sb.append("from pos_order as p with(nolock) ");
 		}

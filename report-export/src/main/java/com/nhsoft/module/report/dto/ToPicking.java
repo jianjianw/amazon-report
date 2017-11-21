@@ -30,6 +30,7 @@ public class ToPicking implements Serializable{
 	private String  shipOrderAuditor;						//审核人
 	private Date shipOrderAuditTime;					//审核时间
 	private String memo;										//备注
+	private String clientFid;									//客户主键
 	
 	
 	public String getMemo() {
@@ -123,5 +124,11 @@ public class ToPicking implements Serializable{
 		this.storehouseNum = storehouseNum;
 	}
 
+	public String getClientFid() {
+		return clientFid;
+	}
 
+	public void setClientFid(String clientFid) {
+		this.clientFid = clientFid;
+	}
 }
