@@ -81,7 +81,7 @@ public class PosOrderSharding {
 				.actualTables(actualTables)
 				.dataSourceRule(dataSourceRule)
 				.tableShardingStrategy(new TableShardingStrategy("ORDER_DETAIL_BOOK_CODE", keyGeneratorAlgorithm))
-				.databaseShardingStrategy(new DatabaseShardingStrategy("system_book_code", new PosOrderSharding.PosOrderShardingDataBaseAlgorithm()))
+				.databaseShardingStrategy(new DatabaseShardingStrategy("ORDER_DETAIL_BOOK_CODE", new PosOrderSharding.PosOrderShardingDataBaseAlgorithm()))
 				
 				.build();
 	}
@@ -100,7 +100,7 @@ public class PosOrderSharding {
 				.actualTables(actualTables)
 				.dataSourceRule(dataSourceRule)
 				.tableShardingStrategy(new TableShardingStrategy("order_kit_detail_book_code", keyGeneratorAlgorithm))
-				.databaseShardingStrategy(new DatabaseShardingStrategy("system_book_code", new PosOrderSharding.PosOrderShardingDataBaseAlgorithm()))
+				.databaseShardingStrategy(new DatabaseShardingStrategy("order_kit_detail_book_code", new PosOrderSharding.PosOrderShardingDataBaseAlgorithm()))
 				
 				.build();
 	}
