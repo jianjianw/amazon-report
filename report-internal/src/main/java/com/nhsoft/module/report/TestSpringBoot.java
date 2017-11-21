@@ -51,8 +51,8 @@ public class TestSpringBoot {
 
     /*Date dateFrom = null;
     Date dateTo = null;*/
-    List<Integer> branchNums = null;
-    String systemBookCode = "4020";
+   // List<Integer> branchNums = null;
+    //String systemBookCode = "4020";
     String branchStr = "[";
 
     //@Before
@@ -139,13 +139,21 @@ public class TestSpringBoot {
 
     Date dateFrom = null;
     Date dateTo = null;
+    String systemBookCode= "4344";
+    List<Integer> branchNums = null;
     @Before
     public void testDate() throws Exception{
+        List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+        branchNums = new ArrayList<Integer>();
+        for (BranchDTO b : all) {
+            Integer branchNum = b.getBranchNum();
+            branchNums.add(branchNum);
+        }
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        dateFrom = sdf.parse("2017-10-11");
-        dateTo = sdf.parse("2017-10-30");
+        dateFrom = sdf.parse("2017-10-01");
+        dateTo = sdf.parse("2017-10-31");
     }
     @Test
     public void test2(){
@@ -168,8 +176,46 @@ public class TestSpringBoot {
     }
 
     @Test
-    public void test4(){
+    public void test4(){///pos_order_detail    inner
+        //含inner
+        CardReportQuery cardReportQuery = new CardReportQuery();
+        cardReportQuery.setQueryDetail(true);
+        cardReportQuery.setSystemBookCode("4344");
+        cardReportQuery.setBranchNum(99);
+        List<Object[]> summaryByBranch = posOrderService.findSummaryByBranch(cardReportQuery);
+        System.out.println();
         //posOrderService.createByCardReportQuery();
     }
+
+    @Test
+    public void test5(){//pos_order_detail   and pos_order_kit_detail
+
+        List<Integer> items = new ArrayList<>();
+        items.add(434400126);
+        List<Object[]> itemSum = posOrderService.findItemSum(systemBookCode,branchNums,dateFrom,dateTo,items,true);
+        System.out.println();
+
+    }
+
+    @Test
+    public void test6(){ // pos_order   查不到数据会报NullPointerException    (含case when)
+        List<Object[]> customReportByBizday = posOrderService.findCustomReportByBizday(systemBookCode,branchNums,dateFrom,dateTo);
+        System.out.println();
+    }
+
+    @Test
+    public void test7(){
+        CardReportQuery cardReportQuery = new CardReportQuery();
+        cardReportQuery.setQueryDetail(true);
+        cardReportQuery.setSystemBookCode("4344");
+        cardReportQuery.setBranchNum(99);
+        List<Object[]> summaryByBizday = posOrderService.findSummaryByBizday(cardReportQuery);
+        System.out.println();
+    }
+
+
+
+
+
 
 }

@@ -21,8 +21,6 @@ public class PosOrderServiceImpl implements PosOrderService {
 	@Autowired
 	private PosOrderDao posOrderDao;
 
-
-
 	@Override
 	public List<Object[]> findCustomReportByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return posOrderDao.findCustomReportByBizday(systemBookCode, branchNums, dateFrom, dateTo);
