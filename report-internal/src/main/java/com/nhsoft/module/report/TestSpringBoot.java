@@ -179,8 +179,8 @@ public class TestSpringBoot {
     public void test4(){///pos_order_detail    inner
         //含inner
         CardReportQuery cardReportQuery = new CardReportQuery();
-        //cardReportQuery.setQueryDetail(true);
-        cardReportQuery.setQueryPayment(true);
+        cardReportQuery.setQueryDetail(true);
+        //cardReportQuery.setQueryPayment(true);
         cardReportQuery.setSystemBookCode("4344");
         cardReportQuery.setBranchNum(99);
         cardReportQuery.setDateFrom(dateFrom);

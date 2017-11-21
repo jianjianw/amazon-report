@@ -4154,7 +4154,7 @@ public class ReportServiceImpl implements ReportService {
 		String settlementState = queryData.getSettlementState();
 		Integer branchNum = queryData.getBranchNum();
 
-		if (queryData.getIsClientFid() == null || (queryData.getIsClientFid() != null && !queryData.getIsClientFid())) {
+		if (queryData.getIsClientFid() == null || (queryData.getIsClientFid() != null && !queryData.getIsClientFid())) {//按分店查询
 			List<TransferOutOrder> transferOutOrders = transferOutOrderDao.findToPicking(systemBookCode,
 					centerBranchNum, branchNums, storehouseNum);
 			for (int i = 0; i < transferOutOrders.size(); i++) {
@@ -4181,7 +4181,7 @@ public class ReportServiceImpl implements ReportService {
 			}
 		}
 
-		if (clientFids != null) {
+		if (clientFids != null) {//按客户主键查询
 
 			List<WholesaleOrder> wholesaleOrders = wholesaleOrderDao.findToPicking(systemBookCode, branchNum,
 					clientFids, storehouseNum, null);
@@ -4210,7 +4210,6 @@ public class ReportServiceImpl implements ReportService {
 				data.setShipOrderAuditTime(wholesaleOrder.getWholesaleOrderAuditTime());
 				data.setMemo(wholesaleOrder.getWholesaleOrderMemo());
 				data.setClientFid(wholesaleOrder.getClientFid());
-				data.setBranchNum(wholesaleOrder.getBranchNum());
 				list.add(data);
 			}
 		}
@@ -4285,7 +4284,6 @@ public class ReportServiceImpl implements ReportService {
 			data.setMemo(wholesaleOrder.getWholesaleOrderMemo());
 			data.setShipOrderPicker(wholesaleOrder.getWholesaleOrderPicker());
 			data.setClientFid(wholesaleOrder.getClientFid());
-			data.setBranchNum(wholesaleOrder.getBranchNum());
 			list.add(data);
 		}
 		return list;

@@ -2,6 +2,7 @@ package com.nhsoft.module.report;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.dangdang.ddframe.rdb.sharding.api.ShardingDataSourceFactory;
+import com.dangdang.ddframe.rdb.sharding.api.rule.BindingTableRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.DataSourceRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.ShardingRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.TableRule;
@@ -189,8 +190,10 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 				.tableRules(Arrays.asList(alipayLogTableRule, posItemLogTableRule
 						,posOrderTableRule, paymentTableRule, posOrderDetailTableRule, posOrderKitDetailTableRule
 				))
+				//.bindingTableRules(Arrays.asList(new BindingTableRule(Arrays.asList(posOrderTableRule, paymentTableRule))))
 				.databaseShardingStrategy(new DatabaseShardingStrategy("none", new NoneDatabaseShardingAlgorithm()))
 				.build();
+
 
 		DataSource dataSource = null;
 		try {
