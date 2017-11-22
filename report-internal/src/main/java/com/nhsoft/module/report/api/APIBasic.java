@@ -1,10 +1,10 @@
 package com.nhsoft.module.report.api;
 
-import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
-import com.nhsoft.module.report.dto.BranchDTO;
+import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.rpc.AlipayLogRpc;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
+import com.nhsoft.module.report.service.MobileAppV2Service;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
@@ -32,6 +32,8 @@ public class APIBasic {
 	private PosOrderService posOrderService;
 	@Autowired
 	private BranchRpc branchRpc;
+	@Autowired
+	private MobileAppV2Service mobileAppV2Service;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
@@ -79,7 +81,7 @@ public class APIBasic {
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateFrom = sdf.parse("2017-10-01");
 		Date dateTo = sdf.parse("2017-10-31");
 
 		//含inner
@@ -94,5 +96,149 @@ public class APIBasic {
 		System.out.println();
 
 	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test2")
+	public void test2() throws Exception{		//有or没报错
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400126);
+		List<Object[]> itemSum = posOrderService.findItemSum(systemBookCode,branchNums,dateFrom,dateTo,items,true);
+		System.out.println();
+
+	}
+	@RequestMapping(method=RequestMethod.GET,value="/test3")
+	public void test3() throws Exception{			//ok 含 case when
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Object[]> customReportByBizday = posOrderService.findCustomReportByBizday(systemBookCode, branchNums, dateFrom, dateTo);
+		System.out.println();
+	}
+
+
+
+	@RequestMapping(method = RequestMethod.GET, value = "/test4")
+	public void test4() throws Exception{						// error 含or
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400126);
+		List<Object[]> branchItemSum = posOrderService.findBranchItemSum(systemBookCode,branchNums,dateFrom,dateTo,items,true);
+		System.out.println();
+	}
+	@RequestMapping(method=RequestMethod.GET,value="/test5")
+	public void test5() throws Exception{  //ok case   when
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400126);
+		//List<Object[]> branchItemMatrixSummary = posOrderService.findBranchItemMatrixSummary(systemBookCode, branchNums, dateFrom, dateTo, items);
+		System.out.println();
+	}
+	@RequestMapping(method = RequestMethod.GET,value="/test6")
+	public void test6() throws Exception{			//含or没报错
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400126);
+		List<Object[]> itemSupplierSumByCategory = posOrderService.findItemSupplierSumByCategory(systemBookCode, branchNums, dateFrom, dateTo, null, true, items);
+		System.out.println();
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value="/test7")
+	public void test7() throws Exception{
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400126);
+		ItemQueryDTO itemQueryDTO = new ItemQueryDTO();
+		itemQueryDTO.setDateFrom(dateFrom);
+		itemQueryDTO.setDateTo(dateTo);
+		itemQueryDTO.setItemMethod("购销");
+		itemQueryDTO.setBranchNums(branchNums);
+		itemQueryDTO.setQueryKit(true);
+		List<Object[]> itemSum = posOrderService.findItemSum(itemQueryDTO);
+		System.out.println();
+	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test8")
+	public void test8() throws Exception{
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		//List<NameAndValueDTO> discountDetails = mobileAppV2Service.findDiscountDetails(systemBookCode, branchNums, dateFrom, dateTo);
+		List<MobileBusinessDetailDTO> cashSummaryGroupByShop = mobileAppV2Service.findCashSummaryGroupByShop(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.CASH_TYPE_POS);
+
+
+		System.out.println();
+	}
+
 	
 }

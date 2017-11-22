@@ -74,7 +74,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				orderQueryDTO.setBranchNum(branchNums);
 				orderQueryDTO.setDateFrom(dateFrom);
 				orderQueryDTO.setDateTo(DateUtil.addDay(dpcLimitTime, -1));  //(3天前的数据去大中心查）
-				List<OrderReportDTO> list = posOrderRemoteService.findBranchDaySummary(orderQueryDTO);
+				List<OrderReportDTO> list = posOrderRemoteService.findBranchSummary(orderQueryDTO);
 				for (int i = 0; i < list.size(); i++) {
 					Object[] objects = new Object[4];
 					objects[0] = list.get(i).getBranchNum();
@@ -130,7 +130,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public List<BranchBizRevenueSummary> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 
-		/*SystemBook systemBook = systemBookService.readInCache(systemBookCode);
+		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
 		now = DateUtil.getMinOfDate(now);
 		if (dateTo.compareTo(now) >= 0) {       //如果dateTo >= 当前时间，就将当前时间赋给dateTo
@@ -222,8 +222,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
 			list.add(branchBizRevenueSummary);
 		}
-		return list;*/
-		List<Object[]> returnList = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
+		return list;
+		/*List<Object[]> returnList = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
 		List<BranchBizRevenueSummary> list = new ArrayList<>();
 		if (returnList.isEmpty()) {
 			return list;
@@ -237,7 +237,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
 			list.add(branchBizRevenueSummary);
 		}
-		return list;
+		return list;*/
 	}
 
 
@@ -335,6 +335,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
 			list.add(branchBizRevenueSummary);
 		}
+
 		return list;
 	}
 

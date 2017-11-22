@@ -1240,7 +1240,7 @@ public class ReportApi {
         }
     }
 
-    //销售额同比增长排名                     （按分店汇总）
+    //销售额同比增长排名                   （按分店汇总）
     @RequestMapping(method=RequestMethod.GET,value="/moneyAddRateDTO")
     public List<YearMoneyAddRateDTO> findBeforeAddRateTop(@RequestHeader("systemBookCode") String systemBookCode,
                                                           @RequestHeader("branchNums") String branchNums, @RequestHeader("date") String date){
@@ -1256,7 +1256,7 @@ public class ReportApi {
         calendar.add(Calendar.YEAR,-1);//上一年
         calendar.set(Calendar.WEEK_OF_YEAR, weekOfYear); // 设置为2016年的第10周
         calendar.set(Calendar.DAY_OF_WEEK,day+1); // 1表示周日，2表示周一，7表示周六
-        Date beforeDateFrom = calendar.getTime();
+        Date beforeDateFrom = calendar.getTime();//获取去年的第几周的周几
         String beforeDateStr = DateUtil.getDateStr(beforeDateFrom);
 
         //为了计算排名，不管传递几个分店都要查询所有

@@ -4153,8 +4153,10 @@ public class ReportServiceImpl implements ReportService {
 		List<ToPicking> list = new ArrayList<ToPicking>();
 		String settlementState = queryData.getSettlementState();
 		Integer branchNum = queryData.getBranchNum();
+		/*if( (branchNums != null && branchNums.size() > 0) || ((branchNums == null || branchNums.size() == 0) &&(clientFids == null || clientFids.size() == 0)) ){
 
-		if (branchNums != null && branchNums.size()>0) {//按分店查询
+		}*/
+		if ( branchNums.size()>0 || (branchNums.size() == 0 && clientFids.size() == 0) ) {//按分店查询
 			List<TransferOutOrder> transferOutOrders = transferOutOrderDao.findToPicking(systemBookCode,
 					centerBranchNum, branchNums, storehouseNum);
 			for (int i = 0; i < transferOutOrders.size(); i++) {
@@ -4181,7 +4183,7 @@ public class ReportServiceImpl implements ReportService {
 			}
 		}
 
-		if (clientFids != null && clientFids.size() > 0) {//按客户主键查询
+		if (clientFids.size() >0 || (branchNums.size() == 0 && clientFids.size() == 0) ) {//按客户主键查询
 
 			List<WholesaleOrder> wholesaleOrders = wholesaleOrderDao.findToPicking(systemBookCode, branchNum,
 					clientFids, storehouseNum, null);
@@ -4228,7 +4230,7 @@ public class ReportServiceImpl implements ReportService {
 		Integer branchNum = queryData.getBranchNum();
 		List<ToShip> list = new ArrayList<ToShip>();
 
-		if (branchNums != null && branchNums.size()>0) {
+		if (branchNums.size()>0 || (branchNums.size() == 0 && clientFids.size() == 0)) {
 			List<TransferOutOrder> transferOutOrders = transferOutOrderDao.findToShip(systemBookCode, centerBranchNum,
 					branchNums, storehouseNum);
 			for (int i = 0; i < transferOutOrders.size(); i++) {
@@ -4255,7 +4257,7 @@ public class ReportServiceImpl implements ReportService {
 				list.add(data);
 			}
 		}
-		if (clientFids != null && clientFids.size()>0) {
+		if (clientFids.size() >0 || (branchNums.size() == 0 && clientFids.size() == 0)) {
 			List<WholesaleOrder> wholesaleOrders = wholesaleOrderDao.findToShip(systemBookCode, branchNum, clientFids,
                     storehouseNum, null);
 			List<PosClient> posClients = posClientService.findInCache(systemBookCode);
@@ -11955,6 +11957,5 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return list;
 	}
-
 
 }
