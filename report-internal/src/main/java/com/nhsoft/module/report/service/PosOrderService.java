@@ -195,5 +195,7 @@ public interface PosOrderService {
 	 */
 	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
 
+	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+									  Date dateTo, List<String> categoryCodes, Integer offset, Integer limit, String sortField, String sortType);
 }
 

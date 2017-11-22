@@ -13,7 +13,7 @@ public class InventoryExceptQuery extends QueryBuilder {
 
 	private Date dateFrom;
 	private Date dateTo;
-	private String systemBookCode;
+	//private String systemBookCode;
 	private Integer branchNum;
 	private List<String> itemCategorys; // 类别代码
 	private Integer storehouseNum;

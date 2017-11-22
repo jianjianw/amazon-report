@@ -9,7 +9,7 @@ public class PolicyAllowPriftQuery extends QueryBuilder {
 	 * 让利分析
 	 */
 	private static final long serialVersionUID = 8753198611805291922L;
-	private String systemBookCode;
+	//private String systemBookCode;
 	private Integer branchNum;
 	private Date dtFrom;
 	private Date dtTo;

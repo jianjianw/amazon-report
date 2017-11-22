@@ -103,7 +103,7 @@ public interface ReportRpc {
 	 * @param type type 0营业额 1客单量2客单价3会员客单量4会员客单价5毛利6平均毛利率
 	 * @return
 	 */
-	public List<BranchMonthReport> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
+	public List<BranchDayReport> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
 
 	/**
 	 * 月销售报表 按分店、营业月汇总营业额

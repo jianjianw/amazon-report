@@ -1,10 +1,9 @@
 package com.nhsoft.module.report.query;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class OrderQueryDTO implements Serializable {
+public class OrderQueryDTO extends QueryBuilder{
 
 	/**
 	 * 

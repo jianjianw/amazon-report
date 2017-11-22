@@ -141,5 +141,10 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return objects;
 
 	}
+	@Override
+	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
+									  List<String> categoryCodes, Integer offset, Integer limit, String sortField, String sortType) {
+		return posOrderDao.findDetails(systemBookCode,branchNums,dateFrom,dateTo,categoryCodes,offset,limit,sortField,sortType);
+	}
 }
 

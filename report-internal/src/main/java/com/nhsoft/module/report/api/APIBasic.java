@@ -235,8 +235,23 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2017-10-31");
 		//List<NameAndValueDTO> discountDetails = mobileAppV2Service.findDiscountDetails(systemBookCode, branchNums, dateFrom, dateTo);
 		List<MobileBusinessDetailDTO> cashSummaryGroupByShop = mobileAppV2Service.findCashSummaryGroupByShop(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.CASH_TYPE_POS);
-
-
+		System.out.println();
+	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test9")
+	public void test9() throws Exception{
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Object[]> details = posOrderService.findDetails(systemBookCode, branchNums, dateFrom, dateTo, null, null, null, null, null);
 		System.out.println();
 	}
 

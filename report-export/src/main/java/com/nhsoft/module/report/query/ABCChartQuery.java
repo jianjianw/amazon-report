@@ -9,7 +9,6 @@ public class ABCChartQuery extends QueryBuilder {
 	 * 
 	 */
 	private static final long serialVersionUID = 4219192918386299172L;
-	private String systemBookCode;
 	private Integer branchNum;           				//当前店
 	private List<Integer> branchNums;			//分店List
     private Date dateFrom;								//开始时间

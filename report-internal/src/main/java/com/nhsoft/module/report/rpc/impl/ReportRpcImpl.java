@@ -1669,9 +1669,9 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<BranchMonthReport> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
+	public List<BranchDayReport> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
 		List<Object[]> objects = reportService.findDayWholes(systemBookCode,branchNums,dateFrom,dateTo,type);
-		List<BranchMonthReport> list = new ArrayList<BranchMonthReport>();
+		List<BranchDayReport> list = new ArrayList<BranchDayReport>();
 		if(objects.isEmpty()){
 			return list;
 		}
@@ -1679,13 +1679,13 @@ public class ReportRpcImpl implements ReportRpc {
 		Object[] object;
 		for(int i = 0;i < objects.size();i++){
 			object = objects.get(i);
-			BranchMonthReport branchMonthReport = new BranchMonthReport();
-			branchMonthReport.setBranchNum((Integer) object[0]);
-			branchMonthReport.setMonth((String) object[1]);
-			branchMonthReport.setBizMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
-			branchMonthReport.setOrderCount(object[3] == null?0:(Integer) object[3]);
-			branchMonthReport.setProfit(object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4]);
-			list.add(branchMonthReport);
+			BranchDayReport branchDayReport = new BranchDayReport();
+			branchDayReport.setBranchNum((Integer) object[0]);
+			branchDayReport.setDay((String) object[1]);
+			branchDayReport.setBizMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+			branchDayReport.setOrderCount(object[3] == null?0:(Integer) object[3]);
+			branchDayReport.setProfit(object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4]);
+			list.add(branchDayReport);
 			
 		}
 		return list;
