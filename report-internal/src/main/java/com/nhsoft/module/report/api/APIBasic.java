@@ -62,7 +62,7 @@ public class APIBasic {
 		cardReportQuery.setBranchNum(99);
 		cardReportQuery.setDateFrom(dateFrom);
 		cardReportQuery.setDateTo(dateTo);
-		List<Object[]> summaryByBranch = posOrderService.findSummaryByBranch(cardReportQuery);
+		List<Object[]> summaryByBranch = posOrderService.findSummaryByBizday(cardReportQuery);
 		System.out.println();
 		return null;
 		//return posOrderRpc.findMoneyBizdaySummary("4344", Arrays.asList(1,2,99), AppConstants.BUSINESS_TREND_PAYMENT, DateUtil.getDateStr("20170901"), DateUtil.getDateStr("20171101"), false);
@@ -91,7 +91,7 @@ public class APIBasic {
 		cardReportQuery.setBranchNum(99);
 		cardReportQuery.setDateFrom(dateFrom);
 		cardReportQuery.setDateTo(dateTo);
-		List<Object[]> summaryByBranch = posOrderService.findSummaryByBranch(cardReportQuery);
+		List<Object[]> summaryByBranch = posOrderService.findSummaryByBizday(cardReportQuery);
 		System.out.println();
 
 	}

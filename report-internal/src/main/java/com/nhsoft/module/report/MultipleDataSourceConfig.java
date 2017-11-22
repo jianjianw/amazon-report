@@ -190,7 +190,6 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 				.tableRules(Arrays.asList(alipayLogTableRule, posItemLogTableRule
 						,posOrderTableRule, paymentTableRule, posOrderDetailTableRule, posOrderKitDetailTableRule
 				))
-				//.bindingTableRules(Arrays.asList(new BindingTableRule(Arrays.asList(posOrderTableRule, paymentTableRule))))
 				.databaseShardingStrategy(new DatabaseShardingStrategy("none", new NoneDatabaseShardingAlgorithm()))
 				.build();
 
