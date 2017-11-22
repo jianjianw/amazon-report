@@ -4154,7 +4154,7 @@ public class ReportServiceImpl implements ReportService {
 		String settlementState = queryData.getSettlementState();
 		Integer branchNum = queryData.getBranchNum();
 
-		if (queryData.getIsClientFid() == null || (queryData.getIsClientFid() != null && !queryData.getIsClientFid())) {//按分店查询
+		if (branchNums != null && branchNums.size()>0) {//按分店查询
 			List<TransferOutOrder> transferOutOrders = transferOutOrderDao.findToPicking(systemBookCode,
 					centerBranchNum, branchNums, storehouseNum);
 			for (int i = 0; i < transferOutOrders.size(); i++) {
@@ -4181,7 +4181,7 @@ public class ReportServiceImpl implements ReportService {
 			}
 		}
 
-		if (clientFids != null) {//按客户主键查询
+		if (clientFids != null && clientFids.size() > 0) {//按客户主键查询
 
 			List<WholesaleOrder> wholesaleOrders = wholesaleOrderDao.findToPicking(systemBookCode, branchNum,
 					clientFids, storehouseNum, null);
@@ -4228,7 +4228,7 @@ public class ReportServiceImpl implements ReportService {
 		Integer branchNum = queryData.getBranchNum();
 		List<ToShip> list = new ArrayList<ToShip>();
 
-		if (queryData.getIsClientFid() == null || (queryData.getIsClientFid() != null && !queryData.getIsClientFid())) {
+		if (branchNums != null && branchNums.size()>0) {
 			List<TransferOutOrder> transferOutOrders = transferOutOrderDao.findToShip(systemBookCode, centerBranchNum,
 					branchNums, storehouseNum);
 			for (int i = 0; i < transferOutOrders.size(); i++) {
@@ -4255,36 +4255,37 @@ public class ReportServiceImpl implements ReportService {
 				list.add(data);
 			}
 		}
-
-		List<WholesaleOrder> wholesaleOrders = wholesaleOrderDao.findToShip(systemBookCode, branchNum, clientFids,
-				storehouseNum, null);
-		List<PosClient> posClients = posClientService.findInCache(systemBookCode);
-		for (int i = 0; i < wholesaleOrders.size(); i++) {
-			WholesaleOrder wholesaleOrder = wholesaleOrders.get(i);
-			ToShip data = new ToShip();
-			PosClient posClient = AppUtil.getPosClient(wholesaleOrder.getClientFid(), posClients);
-			if (posClient != null) {
-				data.setShipClient(posClient.getClientCode() + "|" + posClient.getClientName());
-			}
-			data.setOrderNo(wholesaleOrder.getWholesaleOrderFid());
-			data.setOrderType(AppConstants.POS_ITEM_LOG_WHOLESALE_ORDER_ORDER);
-			data.setSettlementState(wholesaleOrder.getSettleMentState());
-			if (StringUtils.isNotEmpty(settlementState)) {
-				if (!settlementState.equals(data.getSettlementState())) {
-					continue;
-				}
-			}
-			data.setOrderState(wholesaleOrder.getState().getStateName());
-			data.setShipOrderTotalMoeny(wholesaleOrder.getWholesaleOrderDueMoney());
-			data.setStorehouseNum(wholesaleOrder.getStorehouseNum());
-			data.setShipOrderAuditor(wholesaleOrder.getWholesaleOrderAuditor());
-			data.setShipOrderAuditorTime(wholesaleOrder.getWholesaleOrderAuditTime());
-			data.setShipOrderAuditor(wholesaleOrder.getWholesaleOrderAuditor());
-			data.setOrderPickingDate(wholesaleOrder.getWholesaleOrderPickingTime());
-			data.setMemo(wholesaleOrder.getWholesaleOrderMemo());
-			data.setShipOrderPicker(wholesaleOrder.getWholesaleOrderPicker());
-			data.setClientFid(wholesaleOrder.getClientFid());
-			list.add(data);
+		if (clientFids != null && clientFids.size()>0) {
+			List<WholesaleOrder> wholesaleOrders = wholesaleOrderDao.findToShip(systemBookCode, branchNum, clientFids,
+                    storehouseNum, null);
+			List<PosClient> posClients = posClientService.findInCache(systemBookCode);
+			for (int i = 0; i < wholesaleOrders.size(); i++) {
+                WholesaleOrder wholesaleOrder = wholesaleOrders.get(i);
+                ToShip data = new ToShip();
+                PosClient posClient = AppUtil.getPosClient(wholesaleOrder.getClientFid(), posClients);
+                if (posClient != null) {
+                    data.setShipClient(posClient.getClientCode() + "|" + posClient.getClientName());
+                }
+                data.setOrderNo(wholesaleOrder.getWholesaleOrderFid());
+                data.setOrderType(AppConstants.POS_ITEM_LOG_WHOLESALE_ORDER_ORDER);
+                data.setSettlementState(wholesaleOrder.getSettleMentState());
+                if (StringUtils.isNotEmpty(settlementState)) {
+                    if (!settlementState.equals(data.getSettlementState())) {
+                        continue;
+                    }
+                }
+                data.setOrderState(wholesaleOrder.getState().getStateName());
+                data.setShipOrderTotalMoeny(wholesaleOrder.getWholesaleOrderDueMoney());
+                data.setStorehouseNum(wholesaleOrder.getStorehouseNum());
+                data.setShipOrderAuditor(wholesaleOrder.getWholesaleOrderAuditor());
+                data.setShipOrderAuditorTime(wholesaleOrder.getWholesaleOrderAuditTime());
+                data.setShipOrderAuditor(wholesaleOrder.getWholesaleOrderAuditor());
+                data.setOrderPickingDate(wholesaleOrder.getWholesaleOrderPickingTime());
+                data.setMemo(wholesaleOrder.getWholesaleOrderMemo());
+                data.setShipOrderPicker(wholesaleOrder.getWholesaleOrderPicker());
+                data.setClientFid(wholesaleOrder.getClientFid());
+                list.add(data);
+            }
 		}
 		return list;
 	}
