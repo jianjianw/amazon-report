@@ -10,6 +10,7 @@ import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
+import com.sun.deploy.security.TrustRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -112,6 +113,10 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> items = new ArrayList<>();
 		items.add(434400126);
+		items.add(110010009);
+		items.add(110010007);
+		items.add(110010038);
+		items.add(110010038);
 		List<Object[]> itemSum = posOrderService.findItemSum(systemBookCode,branchNums,dateFrom,dateTo,items,true);
 		System.out.println();
 
@@ -148,11 +153,14 @@ public class APIBasic {
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateFrom = sdf.parse("2016-05-01");
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> items = new ArrayList<>();
 		items.add(434400126);
-		List<Object[]> branchItemSum = posOrderService.findBranchItemSum(systemBookCode,branchNums,dateFrom,dateTo,items,true);
+		items.add(434400126);
+		items.add(110010009);
+		items.add(110010007);
+		List<Object[]> branchItemSum = posOrderService.findBranchItemSum(systemBookCode,branchNums,dateFrom,dateTo,items, true);
 		System.out.println();
 	}
 	@RequestMapping(method=RequestMethod.GET,value="/test5")

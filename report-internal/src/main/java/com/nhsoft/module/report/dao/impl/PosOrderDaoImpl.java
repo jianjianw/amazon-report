@@ -139,13 +139,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("and detail.order_detail_bizday between :dateFrom and :dateTo ");
 		sb.append("and detail.order_detail_order_state in (5, 7) ");
 		sb.append("and detail.order_detail_state_code != 8 ");
+		sb.append("and detail.item_num is not null ");
+
 		if (itemNums != null && itemNums.size() > 0) {
 			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
 		}
 		if (queryKit) {
 			sb.append("and (detail.order_detail_has_kit is null or  detail.order_detail_has_kit = 0) ");
 		}
-		sb.append("and detail.item_num is not null ");
 		sb.append("group by detail.order_detail_branch_num, detail.item_num");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", systemBookCode);
@@ -1133,6 +1134,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("and detail.order_detail_bizday between :dateFrom and :dateTo ");
 		sb.append("and detail.order_detail_order_state in (5, 7) ");
 		sb.append("and detail.order_detail_state_code != 8 ");
+		sb.append("and detail.item_num is not null ");
+
 		if (itemQueryDTO.getItemNums() != null && itemQueryDTO.getItemNums().size() > 0) {
 			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemQueryDTO.getItemNums()));
 		}
@@ -1142,7 +1145,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(StringUtils.isNotEmpty(itemQueryDTO.getItemMethod())) {
 			sb.append("and exists (select 1 from pos_item with(nolock) where item_num = detail.item_num and item_method = '" + itemQueryDTO.getItemMethod() + "') ");
 		}
-		sb.append("and detail.item_num is not null ");
 		sb.append("group by detail.order_detail_branch_num, detail.item_num");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", itemQueryDTO.getSystemBookCode());

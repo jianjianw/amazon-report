@@ -1675,7 +1675,6 @@ public class ReportRpcImpl implements ReportRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
-		
 		Object[] object;
 		for(int i = 0;i < objects.size();i++){
 			object = objects.get(i);
@@ -1686,7 +1685,6 @@ public class ReportRpcImpl implements ReportRpc {
 			branchDayReport.setOrderCount(object[3] == null?0:(Integer) object[3]);
 			branchDayReport.setProfit(object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4]);
 			list.add(branchDayReport);
-			
 		}
 		return list;
 	}
