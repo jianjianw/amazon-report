@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -1974,6 +1975,26 @@ public class ReportRpcImpl implements ReportRpc {
 			profitByBranchAndItemSummary.setMoney((BigDecimal) object[5]);
 			profitByBranchAndItemSummary.setCost((BigDecimal) object[6]);
 			list.add(profitByBranchAndItemSummary);
+		}
+		return list;
+	}
+
+	@Override
+	public List<ProfitAnalysisByItemSummary> findProfitAnalysisByItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+		List<Object[]> objects = reportService.findProfitAnalysisByItem(profitAnalysisQueryData);
+		List<ProfitAnalysisByItemSummary> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for(int i = 0 ;i<objects.size(); i++){
+			Object[] object = objects.get(i);
+			ProfitAnalysisByItemSummary profitAnalysisByItemSummary = new ProfitAnalysisByItemSummary();
+			profitAnalysisByItemSummary.setItemNum((Integer) object[0]);
+			profitAnalysisByItemSummary.setProfit((BigDecimal) object[1]);
+			profitAnalysisByItemSummary.setPayment((BigDecimal) object[2]);
+			profitAnalysisByItemSummary.setCost((BigDecimal) object[3]);
+			list.add(profitAnalysisByItemSummary);
 		}
 		return list;
 	}

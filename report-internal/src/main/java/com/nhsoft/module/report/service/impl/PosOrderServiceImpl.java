@@ -3,6 +3,7 @@ package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.model.PosOrderDetail;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
@@ -141,10 +142,13 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return objects;
 
 	}
+	////////////////////////////一下都是测试
 	@Override
 	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
 									  List<String> categoryCodes, Integer offset, Integer limit, String sortField, String sortType) {
 		return posOrderDao.findDetails(systemBookCode,branchNums,dateFrom,dateTo,categoryCodes,offset,limit,sortField,sortType);
 	}
+
+
 }
 

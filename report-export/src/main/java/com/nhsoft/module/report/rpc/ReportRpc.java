@@ -421,6 +421,13 @@ public interface ReportRpc {
 	public List<ProfitByBranchAndItemSummary> findProfitAnalysisByBranchAndItem(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 	/**
+	 * 毛利分析 商品毛利汇总
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<ProfitAnalysisByItemSummary> findProfitAnalysisByItem(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
 	 * 销售员提成 按品牌汇总
 	 * @param systemBookCode
 	 * @param dateFrom 营业日起

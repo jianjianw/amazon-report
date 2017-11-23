@@ -19,6 +19,7 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.CopyUtil;
 import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.SQLQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -226,8 +227,7 @@ public class ReportServiceImpl implements ReportService {
 						}
 						objects[3] = value1;
 						objects[4] = value2;
-								
-						
+
 					}
 					returnList.add(objects);
 				}
@@ -281,8 +281,8 @@ public class ReportServiceImpl implements ReportService {
 							value1 = object[3] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[3]);
 							
 							object[2] = value1;
-							
-							
+
+
 						} else if(type == 2){
 							value1 = object[3] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[3]);
 							value2 = object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2];
@@ -338,7 +338,7 @@ public class ReportServiceImpl implements ReportService {
 						value2 = object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4];
 						
 						if(value1.compareTo(BigDecimal.ZERO) > 0){
-							object[2] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));;
+							object[2] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));
 						} 
 						object[3] = value1;
 						object[4] = value2;
@@ -415,7 +415,7 @@ public class ReportServiceImpl implements ReportService {
 						if(value1.compareTo(BigDecimal.ZERO) > 0){
 							objects[2] = BigDecimal.ZERO;
 						} else {
-							objects[2] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));;
+							objects[2] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));
 						}
 						
 					}
@@ -1242,7 +1242,7 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasBySale' + #p0.getKey()")
+	//@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasBySale' + #p0.getKey()")
 	public List<ABCAnalysis> findABCDatasBySale(ABCListQuery abcListQuery) {
 
 		String systemBookCode = abcListQuery.getSystemBookCode();
@@ -11957,5 +11957,6 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return list;
 	}
+
 
 }

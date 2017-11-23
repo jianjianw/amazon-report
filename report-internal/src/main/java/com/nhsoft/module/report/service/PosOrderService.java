@@ -3,6 +3,7 @@ package com.nhsoft.module.report.service;
 
 import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.model.PosOrderDetail;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 
 import java.util.Date;
@@ -195,7 +196,10 @@ public interface PosOrderService {
 	 */
 	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
 
+
+	////////////////////////////////下面都是测试用的
 	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 									  Date dateTo, List<String> categoryCodes, Integer offset, Integer limit, String sortField, String sortType);
+
 }
 
