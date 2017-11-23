@@ -6,6 +6,7 @@ import com.nhsoft.module.report.service.ReceiveOrderService;
 import com.nhsoft.module.report.util.BaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,11 +14,9 @@ import java.util.*;
 public class ReceiveOrderServiceImpl extends BaseManager implements ReceiveOrderService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReceiveOrderServiceImpl.class);
+	@Autowired
 	private ReceiveOrderDao receiveOrderDao;
 
-	public void setReceiveOrderDao(ReceiveOrderDao receiveOrderDao) {
-		this.receiveOrderDao = receiveOrderDao;
-	}
 
 	@Override
 	public List<Object[]> findDetailBySupplierNum(String systemBookCode, List<Integer> branchNums, Integer supplierNum,
