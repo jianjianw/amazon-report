@@ -1,16 +1,18 @@
 package com.nhsoft.module.report.api;
 
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.model.PosOrderDetail;
+import com.nhsoft.module.report.query.ABCListQuery;
+import com.nhsoft.module.report.query.SupplierSaleQuery;
 import com.nhsoft.module.report.rpc.AlipayLogRpc;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.MobileAppV2Service;
 import com.nhsoft.module.report.service.PosOrderService;
+import com.nhsoft.module.report.service.ReportService;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.DateUtil;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
-import com.sun.deploy.security.TrustRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +37,8 @@ public class APIBasic {
 	private BranchRpc branchRpc;
 	@Autowired
 	private MobileAppV2Service mobileAppV2Service;
+	@Autowired
+	private ReportService reportService;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
@@ -142,7 +146,7 @@ public class APIBasic {
 
 
 	@RequestMapping(method = RequestMethod.GET, value = "/test4")
-	public void test4() throws Exception{						// error 含or
+	public void test4() throws Exception{						// ok 含or
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -194,7 +198,7 @@ public class APIBasic {
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateFrom = sdf.parse("2017-05-10");
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> items = new ArrayList<>();
 		items.add(434400126);
@@ -263,5 +267,68 @@ public class APIBasic {
 		System.out.println();
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value="/test10")
+	public void test10() throws Exception{
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+
+		List<Integer> items = new ArrayList<>();
+		items.add(434400126);
+		items.add(434400126);
+		items.add(110010009);
+		items.add(110010007);
+
+		SupplierSaleQuery supplierSaleQuery = new SupplierSaleQuery();
+		supplierSaleQuery.setSystemBookCode(systemBookCode);
+		supplierSaleQuery.setBranchNums(branchNums);
+		supplierSaleQuery.setDateFrom(dateFrom);
+		supplierSaleQuery.setDateTo(dateTo);
+		supplierSaleQuery.setItemNums(items);
+
+
+		List<SupplierLianYing> supplierLianYing = reportService.findSupplierLianYing(supplierSaleQuery);
+		System.out.println();
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value="/test11")
+	public void test11() throws Exception{	//子查询
+
+		String systemBookCode= "4344";
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<Integer> branchNums = new ArrayList<Integer>();
+		for (BranchDTO b : all) {
+			Integer branchNum = b.getBranchNum();
+			branchNums.add(branchNum);
+		}
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-05");
+		Date dateTo = sdf.parse("2017-10-31");
+
+		ABCListQuery abc = new ABCListQuery();
+		abc.setSystemBookCode(systemBookCode);
+		abc.setDateFrom(dateFrom);
+		abc.setDateTo(dateTo);
+		abc.setBranchNums(branchNums);
+		List<String> list = new ArrayList<>();
+		list.add("10");
+		//abc.setCategoryCodeList(list);
+		List<String> list1 = new ArrayList<>();
+		list1.add(AppConstants.CHECKBOX_SALE);
+		abc.setTypes(list1);
+		List<ABCAnalysis> abcDatasBySale1 = reportService.findABCDatasBySale(abc);
+		System.out.println();
+	}
 	
 }
