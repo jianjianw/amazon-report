@@ -14,7 +14,6 @@ public class PolicyPosItemQuery extends QueryBuilder {
 	 * 
 	 */
 	private static final long serialVersionUID = 903300107300938904L;
-	private String systemBookCode;
 	private Integer branchNum;
 	private Date dtFrom;
 	private Date dtTo;
@@ -124,15 +123,6 @@ public class PolicyPosItemQuery extends QueryBuilder {
 
 	public void setPolicyType(String policyType) {
 		this.policyType = policyType;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 
 

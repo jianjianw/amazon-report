@@ -9,7 +9,6 @@ public class PolicyAllowPriftQuery extends QueryBuilder {
 	 * 让利分析
 	 */
 	private static final long serialVersionUID = 8753198611805291922L;
-	//private String systemBookCode;
 	private Integer branchNum;
 	private Date dtFrom;
 	private Date dtTo;
@@ -46,14 +45,6 @@ public class PolicyAllowPriftQuery extends QueryBuilder {
 
 	public void setPolicyOrderFid(String policyOrderFid) {
 		this.policyOrderFid = policyOrderFid;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
 	}
 
 	public Integer getBranchNum() {

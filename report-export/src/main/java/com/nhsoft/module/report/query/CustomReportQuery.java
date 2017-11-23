@@ -1,16 +1,14 @@
 package com.nhsoft.module.report.query;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class CustomReportQuery implements Serializable {
+public class CustomReportQuery extends QueryBuilder {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5081656248352401300L;
-	private String systemBookCode;
 	private List<Integer> centerBranchNums;
 	private List<Integer> branchNums;
 	private Date dateFrom;
@@ -28,14 +26,6 @@ public class CustomReportQuery implements Serializable {
 	private boolean queryCardDeposit = false;// 是否查询卡存款
 	private boolean queryCardConsume = false;// 是否查询卡消费
 	private boolean queryAdjust = false; //是否查询损益统计
-	
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-	
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
 	
 	public List<Integer> getCenterBranchNums() {
 		return centerBranchNums;

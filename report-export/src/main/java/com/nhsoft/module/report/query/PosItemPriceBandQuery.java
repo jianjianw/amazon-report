@@ -11,7 +11,6 @@ public class PosItemPriceBandQuery extends QueryBuilder {
 	 * 
 	 */
 	private static final long serialVersionUID = 6030091841456729185L;
-	private String systemBookCode;
 	private Integer branchNum;           		//当前店
 	private List<Integer> branchNums;			//查询分店列表
     private Date dateFrom;							//开始时间
@@ -32,7 +31,15 @@ public class PosItemPriceBandQuery extends QueryBuilder {
 		}
 		return true;
 	}
-
+	
+	public BigDecimal getHighest() {
+		return highest;
+	}
+	
+	public void setHighest(BigDecimal highest) {
+		this.highest = highest;
+	}
+	
 	public String getType() {
 		return type;
 	}
@@ -113,21 +120,7 @@ public class PosItemPriceBandQuery extends QueryBuilder {
 		this.higher = higher;
 	}
 
-	public BigDecimal getHighest() {
-		return highest;
-	}
 
-	public void setHighest(BigDecimal highest) {
-		this.highest = highest;
-	}
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
 
 	public List<Integer> getBranchNums() {
 		return branchNums;

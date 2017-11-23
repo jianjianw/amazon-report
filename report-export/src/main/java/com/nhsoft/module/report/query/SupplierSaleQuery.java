@@ -9,8 +9,6 @@ public class SupplierSaleQuery extends QueryBuilder {
 	 * 
 	 */
 	private static final long serialVersionUID = 4929397470384141156L;
-
-	private String systemBookCode;
 	private Integer branchNum;
 	private Date dateFrom;
 	private Date dateTo;
@@ -23,14 +21,6 @@ public class SupplierSaleQuery extends QueryBuilder {
 	public SupplierSaleQuery(){}
 	
 	public SupplierSaleQuery(String systemBookCode){
-		this.systemBookCode = systemBookCode;
-	}
-	
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
 		this.systemBookCode = systemBookCode;
 	}
 

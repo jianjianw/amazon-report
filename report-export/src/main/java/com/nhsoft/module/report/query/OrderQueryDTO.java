@@ -3,13 +3,12 @@ package com.nhsoft.module.report.query;
 import java.util.Date;
 import java.util.List;
 
-public class OrderQueryDTO extends QueryBuilder{
+public class OrderQueryDTO extends  QueryBuilder {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1550982251448141706L;
-	private String systemBookCode;
 	private List<Integer> branchNums;
 	private Date dateFrom;
 	private Date dateTo;
