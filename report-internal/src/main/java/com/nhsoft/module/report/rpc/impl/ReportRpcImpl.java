@@ -1681,9 +1681,7 @@ public class ReportRpcImpl implements ReportRpc {
 			BranchDayReport branchDayReport = new BranchDayReport();
 			branchDayReport.setBranchNum((Integer) object[0]);
 			branchDayReport.setDay((String) object[1]);
-			branchDayReport.setBizMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
-			branchDayReport.setOrderCount(object[3] == null?0:(Integer) object[3]);
-			branchDayReport.setProfit(object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4]);
+			branchDayReport.setValue(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
 			list.add(branchDayReport);
 		}
 		return list;
@@ -1697,7 +1695,6 @@ public class ReportRpcImpl implements ReportRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
-		
 		Object[] object;
 		for(int i = 0;i < objects.size();i++){
 			object = objects.get(i);
@@ -2112,8 +2109,8 @@ public class ReportRpcImpl implements ReportRpc {
 			SaleByCategoryBranchSummary saleByCategoryBranchSummary = new SaleByCategoryBranchSummary();
 			saleByCategoryBranchSummary.setOrderDetailBranchNum((Integer) object[0]);
 			saleByCategoryBranchSummary.setItemCategory((String) object[1]);
-			saleByCategoryBranchSummary.setItemCategoryCode((int)object[2]);
-			saleByCategoryBranchSummary.setOrderDetailStateCode((int)object[3]);
+			saleByCategoryBranchSummary.setItemCategoryCode((Integer) object[2]);
+			saleByCategoryBranchSummary.setOrderDetailStateCode((Integer)object[3]);
 			saleByCategoryBranchSummary.setOrderDetailAmount((BigDecimal) object[4]);
 			saleByCategoryBranchSummary.setOrderDetailPaymentMoney((BigDecimal) object[5]);
 			saleByCategoryBranchSummary.setOrderDetailAssistAmount((BigDecimal) object[6]);
