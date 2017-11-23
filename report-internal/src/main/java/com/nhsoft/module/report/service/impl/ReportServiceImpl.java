@@ -1242,7 +1242,7 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	//@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasBySale' + #p0.getKey()")
+	@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasBySale' + #p0.getKey()")
 	public List<ABCAnalysis> findABCDatasBySale(ABCListQuery abcListQuery) {
 
 		String systemBookCode = abcListQuery.getSystemBookCode();

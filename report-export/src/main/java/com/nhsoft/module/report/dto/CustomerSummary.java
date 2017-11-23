@@ -7,9 +7,9 @@ public class CustomerSummary implements Serializable {
 
 
     private BigDecimal money;
-    private Integer orderNo;
+    private Long orderNo;
     private BigDecimal profit;
-    private Integer shiftCount;
+    private Long shiftCount;
 
     public BigDecimal getMoney() {
         return money;
@@ -19,11 +19,11 @@ public class CustomerSummary implements Serializable {
         this.money = money;
     }
 
-    public Integer getOrderNo() {
+    public Long getOrderNo() {
         return orderNo;
     }
 
-    public void setOrderNo(Integer orderNo) {
+    public void setOrderNo(Long orderNo) {
         this.orderNo = orderNo;
     }
 
@@ -35,11 +35,11 @@ public class CustomerSummary implements Serializable {
         this.profit = profit;
     }
 
-    public Integer getShiftCount() {
+    public Long getShiftCount() {
         return shiftCount;
     }
 
-    public void setShiftCount(Integer shiftCount) {
+    public void setShiftCount(Long shiftCount) {
         this.shiftCount = shiftCount;
     }
 }

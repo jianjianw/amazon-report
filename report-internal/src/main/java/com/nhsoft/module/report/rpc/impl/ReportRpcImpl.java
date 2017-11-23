@@ -2061,9 +2061,9 @@ public class ReportRpcImpl implements ReportRpc {
 		Object[] object = reportService.sumCustomerAnalysis(systemBookCode, dtFrom, dtTo, branchNums, branchType);
 		CustomerSummary customerSummary = new CustomerSummary();
 		customerSummary.setMoney((BigDecimal) object[0]);
-		customerSummary.setOrderNo((Integer) object[1]);
+		customerSummary.setOrderNo((Long) object[1]);
 		customerSummary.setProfit((BigDecimal) object[2]);
-		customerSummary.setShiftCount((Integer) object[3]);
+		customerSummary.setShiftCount((Long) object[3]);
 		return customerSummary;
 	}
 

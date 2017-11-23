@@ -47,7 +47,7 @@ public class APIBasic {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/test/report")
-	public  List<BranchBizRevenueSummary> test () throws Exception {//不走sharding
+	public  List<BranchBizRevenueSummary> test () throws Exception {
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -75,7 +75,7 @@ public class APIBasic {
 		//return posOrderRpc.findMoneyBizdaySummary("4344", Arrays.asList(1,2,99), AppConstants.BUSINESS_TREND_PAYMENT, DateUtil.getDateStr("20170901"), DateUtil.getDateStr("20171101"), false);
 	}
 	@RequestMapping(method = RequestMethod.GET,value = "/test1")
-	public void test1()throws Exception{//走sharding
+	public void test1()throws Exception{
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -163,7 +163,7 @@ public class APIBasic {
 		items.add(434400126);
 		items.add(434400126);
 		items.add(110010009);
-		items.add(110010007);
+		items.add(110010007);		//修改sql中的 detail.order_detail_has_kit = 0   数据改变
 		List<Object[]> branchItemSum = posOrderService.findBranchItemSum(systemBookCode,branchNums,dateFrom,dateTo,items, true);
 		System.out.println();
 	}
@@ -249,7 +249,7 @@ public class APIBasic {
 		List<MobileBusinessDetailDTO> cashSummaryGroupByShop = mobileAppV2Service.findCashSummaryGroupByShop(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.CASH_TYPE_POS);
 		System.out.println();
 	}
-	@RequestMapping(method = RequestMethod.GET,value = "/test9")
+	@RequestMapping(method = RequestMethod.GET,value = "/test9")  //三张表  findDetails
 	public void test9() throws Exception{
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
@@ -301,7 +301,7 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value="/test11")
-	public void test11() throws Exception{	//子查询
+	public void test11() throws Exception{	//子查询    ok带  exists  也ok
 
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
@@ -323,12 +323,17 @@ public class APIBasic {
 		abc.setBranchNums(branchNums);
 		List<String> list = new ArrayList<>();
 		list.add("10");
-		//abc.setCategoryCodeList(list);
+		abc.setCategoryCodeList(list);
 		List<String> list1 = new ArrayList<>();
 		list1.add(AppConstants.CHECKBOX_SALE);
 		abc.setTypes(list1);
 		List<ABCAnalysis> abcDatasBySale1 = reportService.findABCDatasBySale(abc);
 		System.out.println();
+	}
+
+	@RequestMapping(method=RequestMethod.GET,value="/test12")
+	public void test12(){
+
 	}
 	
 }

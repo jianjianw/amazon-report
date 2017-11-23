@@ -582,7 +582,7 @@ public class PosOrderDaoImpl extends ShardingDaoImpl implements PosOrderDao {
 		sb.append("sum(case when detail.order_detail_state_code = 4 then detail.order_detail_payment_money end) as cancel, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then detail.order_detail_gross_profit end) as cancelProfit ");
-		sb.append("from  %s as detail with(nolock)");
+		sb.append("from %s as detail with(nolock) ");
 		sb.append("where detail.order_detail_book_code = :systemBookCode and detail.order_detail_bizday between :dateFrom and :dateTo and detail.item_num is not null ");
 		if (branchNums != null && branchNums.size() > 0) {
 			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
@@ -641,6 +641,7 @@ public class PosOrderDaoImpl extends ShardingDaoImpl implements PosOrderDao {
 		sb.append("from pos_order as p with(nolock) inner join pos_order_detail as detail with(nolock) on p.order_no = detail.order_no ");
 		sb.append("inner join pos_item as t with(nolock) on t.item_num = detail.item_num ");
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between :dateFrom and :dateTo and detail.item_num is not null ");
+
 		if (branchNums != null && branchNums.size() > 0) {
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
