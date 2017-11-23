@@ -7,7 +7,7 @@ public class SaleByCategoryBranchSummary implements Serializable {
 
     private Integer orderDetailBranchNum;
     private String itemCategory;
-    private int itemCategoryCode;
+    private String itemCategoryCode;
     private int orderDetailStateCode;
     private BigDecimal orderDetailAmount;
     private BigDecimal orderDetailPaymentMoney;
@@ -30,11 +30,11 @@ public class SaleByCategoryBranchSummary implements Serializable {
         this.itemCategory = itemCategory;
     }
 
-    public int getItemCategoryCode() {
+    public String getItemCategoryCode() {
         return itemCategoryCode;
     }
 
-    public void setItemCategoryCode(int itemCategoryCode) {
+    public void setItemCategoryCode(String itemCategoryCode) {
         this.itemCategoryCode = itemCategoryCode;
     }
 

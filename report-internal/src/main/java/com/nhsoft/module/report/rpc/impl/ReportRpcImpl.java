@@ -2130,7 +2130,7 @@ public class ReportRpcImpl implements ReportRpc {
 			SaleByCategoryBranchSummary saleByCategoryBranchSummary = new SaleByCategoryBranchSummary();
 			saleByCategoryBranchSummary.setOrderDetailBranchNum((Integer) object[0]);
 			saleByCategoryBranchSummary.setItemCategory((String) object[1]);
-			saleByCategoryBranchSummary.setItemCategoryCode((Integer) object[2]);
+			saleByCategoryBranchSummary.setItemCategoryCode((String) object[2]);
 			saleByCategoryBranchSummary.setOrderDetailStateCode((Integer)object[3]);
 			saleByCategoryBranchSummary.setOrderDetailAmount((BigDecimal) object[4]);
 			saleByCategoryBranchSummary.setOrderDetailPaymentMoney((BigDecimal) object[5]);
