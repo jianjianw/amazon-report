@@ -10272,8 +10272,7 @@ public class ReportServiceImpl implements ReportService {
 			branchNum = (Integer) object[0];
 			itemNum = (Integer) object[1];
 			money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = BranchCategoryAnalyseDTO.get(list, branchNum);
-			branchCategoryAnalyseDTO.setSaleMoney(branchCategoryAnalyseDTO.getSaleMoney().add(money));
+
 			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
 			if (posItem == null) {
 				departmentName = "";
@@ -10285,13 +10284,15 @@ public class ReportServiceImpl implements ReportService {
 				categoryCode = posItem.getItemCategoryCode();
 			}
 
+			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = BranchCategoryAnalyseDTO.get(list, branchNum);
 			//添加过滤条件
 			if(categoryCodes != null && categoryCodes.size()>0){
 				if(!categoryCodes.contains(categoryCode)){
-					list.remove(branchCategoryAnalyseDTO);
+
 					continue;
 				}
 			}
+			branchCategoryAnalyseDTO.setSaleMoney(branchCategoryAnalyseDTO.getSaleMoney().add(money));
 
 			// 类别明细
 			typeAndTwoValuesDTO = branchCategoryAnalyseDTO.getCategoryValue(category);
@@ -10302,7 +10303,6 @@ public class ReportServiceImpl implements ReportService {
 			}
 			typeAndTwoValuesDTO.setMoney(typeAndTwoValuesDTO.getMoney().add(money));
 
-
 			// 部门明细
 			typeAndTwoValuesDTO = branchCategoryAnalyseDTO.getDepartmentValue(departmentName);
 			if (typeAndTwoValuesDTO == null) {
@@ -10311,12 +10311,6 @@ public class ReportServiceImpl implements ReportService {
 				branchCategoryAnalyseDTO.getDepartmentValueDTOs().add(typeAndTwoValuesDTO);
 			}
 			typeAndTwoValuesDTO.setMoney(typeAndTwoValuesDTO.getMoney().add(money));
-			/*//添加过滤条件
-			if(categoryCodes != null && categoryCodes.size()>0){
-				if(!categoryCodes.contains(categoryCode)){
-					list.remove(branchCategoryAnalyseDTO);
-				}
-			}*/
 		}
 
 		for (int i = 0; i < outObjects.size(); i++) {
@@ -10324,8 +10318,6 @@ public class ReportServiceImpl implements ReportService {
 			branchNum = (Integer) object[0];
 			itemNum = (Integer) object[1];
 			money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = BranchCategoryAnalyseDTO.get(list, branchNum);
-			branchCategoryAnalyseDTO.setTransferMoney(branchCategoryAnalyseDTO.getTransferMoney().add(money));
 
 			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
 			if (posItem == null) {
@@ -10338,14 +10330,14 @@ public class ReportServiceImpl implements ReportService {
 				categoryCode = posItem.getItemCategoryCode();
 			}
 
+			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = BranchCategoryAnalyseDTO.get(list, branchNum);
 			//添加过滤条件
 			if(categoryCodes != null && categoryCodes.size()>0){
 				if(!categoryCodes.contains(categoryCode)){
-					list.remove(branchCategoryAnalyseDTO);
 					continue;
 				}
 			}
-
+			branchCategoryAnalyseDTO.setTransferMoney(branchCategoryAnalyseDTO.getTransferMoney().add(money));
 			// 类别明细
 			typeAndTwoValuesDTO = branchCategoryAnalyseDTO.getCategoryValue(category);
 			if (typeAndTwoValuesDTO == null) {
@@ -10363,15 +10355,6 @@ public class ReportServiceImpl implements ReportService {
 				branchCategoryAnalyseDTO.getDepartmentValueDTOs().add(typeAndTwoValuesDTO);
 			}
 			typeAndTwoValuesDTO.setAmount(typeAndTwoValuesDTO.getAmount().add(money));
-
-			/*//添加过滤条件
-			if(categoryCodes != null && categoryCodes.size()>0){
-				if(!categoryCodes.contains(categoryCode)){
-					list.remove(branchCategoryAnalyseDTO);
-					break;
-				}
-			}*/
-
 		}
 		return list;
 	}
