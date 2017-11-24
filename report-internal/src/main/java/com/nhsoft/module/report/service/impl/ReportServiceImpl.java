@@ -10283,15 +10283,13 @@ public class ReportServiceImpl implements ReportService {
 				category = posItem.getItemCategoryCode() + "|" + posItem.getItemCategory();
 				categoryCode = posItem.getItemCategoryCode();
 			}
-
-			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = BranchCategoryAnalyseDTO.get(list, branchNum);
 			//添加过滤条件
-			if(categoryCodes != null && categoryCodes.size()>0){
+			if(categoryCodes != null && !categoryCodes.isEmpty()){
 				if(!categoryCodes.contains(categoryCode)){
-
 					continue;
 				}
 			}
+			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = BranchCategoryAnalyseDTO.get(list, branchNum);
 			branchCategoryAnalyseDTO.setSaleMoney(branchCategoryAnalyseDTO.getSaleMoney().add(money));
 
 			// 类别明细
@@ -10329,14 +10327,13 @@ public class ReportServiceImpl implements ReportService {
 				category = posItem.getItemCategoryCode() + "|" + posItem.getItemCategory();
 				categoryCode = posItem.getItemCategoryCode();
 			}
-
-			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = BranchCategoryAnalyseDTO.get(list, branchNum);
 			//添加过滤条件
-			if(categoryCodes != null && categoryCodes.size()>0){
+			if(categoryCodes != null && !categoryCodes.isEmpty()){
 				if(!categoryCodes.contains(categoryCode)){
 					continue;
 				}
 			}
+			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = BranchCategoryAnalyseDTO.get(list, branchNum);
 			branchCategoryAnalyseDTO.setTransferMoney(branchCategoryAnalyseDTO.getTransferMoney().add(money));
 			// 类别明细
 			typeAndTwoValuesDTO = branchCategoryAnalyseDTO.getCategoryValue(category);
