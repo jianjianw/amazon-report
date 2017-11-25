@@ -1,7 +1,6 @@
 package com.nhsoft.module.report.api;
 
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.model.PosOrderDetail;
 import com.nhsoft.module.report.query.ABCListQuery;
 import com.nhsoft.module.report.query.SupplierSaleQuery;
 import com.nhsoft.module.report.rpc.AlipayLogRpc;

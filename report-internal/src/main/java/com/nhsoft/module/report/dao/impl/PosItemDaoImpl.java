@@ -332,6 +332,12 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 			sb.append("left join item_bar as bar with(nolock) on p.item_num = bar.item_num ");
 		}
 		sb.append("where p.system_book_code = '" + posItemQuery.getSystemBookCode() + "' ");
+		if(posItemQuery.getItemNums() != null && posItemQuery.getItemNums().size() > 0){
+			sb.append("and p.item_num in " + AppUtil.getIntegerParmeList(posItemQuery.getItemNums()));
+		}
+		if(posItemQuery.isQueryAll()){
+			return sb.toString();
+		}
 		if(posItemQuery.getIsFindWeedOut() == null || !posItemQuery.getIsFindWeedOut()){
 			sb.append("and p.item_eliminative_flag = 0 ");
 		}
@@ -347,15 +353,13 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 				sb.append("and p.item_type not in " + AppUtil.getIntegerParmeList(unstoreItemTypes));
 			}
 		}
-		if(posItemQuery.getItemNums() != null && posItemQuery.getItemNums().size() > 0){
-			sb.append("and p.item_num in " + AppUtil.getIntegerParmeList(posItemQuery.getItemNums()));
-		}
+		
 		if (StringUtils.isNotEmpty(posItemQuery.getFilterType())) {
 			if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_PURCHASE)) {
 				if(posItemQuery.getItemTypes().size() == 0 || !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_KIT)){
 					sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_KIT + " ");
 				}
-
+				
 				if(posItemQuery.getItemTypes().size() == 0
 						|| !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_ASSEMBLE)){
 					sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_ASSEMBLE + " ");
@@ -363,30 +367,30 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 				}
 				//采购订单过滤停购 AMA-9547
 				if(StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_PURCHASE_ORDER)){
-
+					
 					if(posItemQuery.getBranchNum() != null && posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
-
+						
 						sb.append("and p.item_stock_cease_flag = 0 ");
-
+						
 					} else {
 						sb.append("and ( ");
-						sb.append("(p.item_stock_cease_flag = 0 and not exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and s.store_matrix_stock_cease_flag = 1 )) ");
+						sb.append("(p.item_stock_cease_flag = 0 and not exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and (s.store_matrix_stock_enabled is null or s.store_matrix_stock_enabled = 1) and s.store_matrix_stock_cease_flag = 1 )) ");
 						sb.append("or ");
-						sb.append("(p.item_stock_cease_flag = 1 and exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and s.store_matrix_stock_cease_flag = 0 )) ");
+						sb.append("(p.item_stock_cease_flag = 1 and exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and s.store_matrix_stock_enabled = 0 and s.store_matrix_stock_cease_flag = 0 )) ");
 						sb.append(")");
-
+						
 					}
-
+					
 				}
 				if(posItemQuery.getItemMethod() == null || !posItemQuery.getItemMethod().equals(AppConstants.BUSINESS_TYPE_SHOP)){
 					sb.append("and p.item_method != '" + AppConstants.BUSINESS_TYPE_SHOP + "' ");
-
+					
 				}
 				if(posItemQuery.isRdc()){
 					sb.append("and p.item_purchase_scope != '" + AppConstants.ITEM_PURCHASE_SCOPE_BRANCH + "' ");
-
+					
 				}
-
+				
 			} else if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_INVENTORY)) {
 				if (!posItemQuery.isRdc()) {
 					sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_ELEMENT + " ");
@@ -410,12 +414,12 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 				if(posItemQuery.getItemTypes().size() == 0
 						|| !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_KIT)){
 					sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_KIT + " ");
-
+					
 				}
 			} else if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_CHAIN)) {
 				if(!AppUtil.checkMaoXiongBookCode(posItemQuery.getSystemBookCode())){
 					sb.append("and p.item_purchase_scope != '" + AppConstants.ITEM_PURCHASE_SCOPE_SELFPRODUCT + "' ");
-
+					
 				}
 				sb.append("and p.item_purchase_scope != '" + AppConstants.ITEM_PURCHASE_SCOPE_BRANCH + "' ");
 				//调出单门店查询不过滤休眠商品
@@ -428,14 +432,14 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 					sb.append("and (p.item_status is null or p.item_status = " + AppConstants.ITEM_STATUS_NORMAL + " ) ");
 				}
 				sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_KIT + " ");
-
+				
 			} else if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_ONLINE)) {
 				sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_MATRIX + " ");
 			} else if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_SALE)) {
-
+				
 				if(posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
 					sb.append("and p.item_sale_cease_flag = 0 ");
-
+					
 				} else {
 					sb.append("and ( ");
 					sb.append("(p.item_sale_cease_flag = 0 and not exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and s.store_matrix_sale_cease_flag = 1 and store_matrix_sale_enabled = 1)) ");
@@ -443,24 +447,24 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 					sb.append("(p.item_sale_cease_flag = 1 and exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and s.store_matrix_sale_cease_flag = 0 and store_matrix_sale_enabled = 1)) ");
 					sb.append(")");
 				}
-
+				
 			}
 		}
-
+		
 		if (StringUtils.isNotEmpty(posItemQuery.getVar())) {
-
+			
 			posItemQuery.setVar(AppUtil.filterDangerousQuery(posItemQuery.getVar()));
 			sb.append("and (");
 			sb.append("p.item_code like '%" + posItemQuery.getVar() + "%' or ");
 			sb.append("p.item_name like '%" + posItemQuery.getVar() + "%' or ");
 			sb.append("p.store_item_pinyin like '%" + posItemQuery.getVar().toUpperCase() + "%' or ");
 			sb.append("bar.item_bar_code like '%" + posItemQuery.getVar() + "%' ");
-
+			
 			Integer cardUserNum = null;
 			try{
 				cardUserNum = Integer.parseInt(posItemQuery.getVar());
 			} catch (Exception e) {
-
+			
 			}
 			if(cardUserNum != null){
 				sb.append(" or p.item_num = " + cardUserNum + " ");
@@ -479,8 +483,11 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		if (StringUtils.isNotEmpty(posItemQuery.getItemDepartment())) {
 			sb.append("and p.item_department = '" + posItemQuery.getItemDepartment() + "' ");
 		}
+		if(posItemQuery.getItemDepartments() != null && posItemQuery.getItemDepartments().size() > 0) {
+			sb.append("and p.item_department in " + AppUtil.getStringParmeList(posItemQuery.getItemDepartments()));
+		}
 		if (posItemQuery.getSupplierNum() != null) {
-
+			
 			StringBuffer supplierSb = new StringBuffer();
 			supplierSb.append("select 1 from store_item_supplier as s with(nolock) where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' ");
 			if(posItemQuery.getBranchNum() != null){
@@ -488,11 +495,11 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 			}
 			if(posItemQuery.getDefaultSupplier() != null){
 				supplierSb.append("and s.store_item_supplier_default = 1 ");
-
+				
 			}
 			supplierSb.append("and s.supplier_num = " + posItemQuery.getSupplierNum() + " and s.item_num = p.item_num ");
 			sb.append("and exists (").append(supplierSb.toString()).append(") ");
-
+			
 		}
 		if (StringUtils.isNotEmpty(posItemQuery.getItemCode())) {
 			if(posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_GRADE){
@@ -501,7 +508,7 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 				sb.append(")) ");
 			} else {
 				sb.append("and p.item_code like '%" + posItemQuery.getItemCode() + "%' ");
-
+				
 			}
 		}
 		if (StringUtils.isNotEmpty(posItemQuery.getItemBarCode())) {
@@ -511,7 +518,7 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 				sb.append(")) ");
 			} else {
 				sb.append("and bar.item_bar_code like '%" + posItemQuery.getItemBarCode() + "%' ");
-
+				
 			}
 		}
 		if (StringUtils.isNotEmpty(posItemQuery.getItemName())) {
@@ -520,7 +527,7 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 				sb.append("or exists (select 1 from pos_item_grade as grade where grade.item_num = p.item_num and item_grade_name like '%" + posItemQuery.getItemName() + "%' ");
 				sb.append(")) ");
 			} else {
-
+				
 				sb.append("and p.item_name like '%" + posItemQuery.getItemName() + "%' ");
 			}
 		}
@@ -529,11 +536,11 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		}
 		if (posItemQuery.getItemType() != null) {
 			sb.append("and p.item_type = " + posItemQuery.getItemType() + " ");
-
+			
 		}
 		if (StringUtils.isNotEmpty(posItemQuery.getCategoryCode())) {
 			sb.append("and p.item_category_code in " + AppUtil.getStringParmeArray(posItemQuery.getCategoryCode().split(",")));
-
+			
 		}
 		if (StringUtils.isNotEmpty(posItemQuery.getItemBrand())) {
 			sb.append("and p.item_brand = '" + posItemQuery.getItemBrand() + "' ");
@@ -543,7 +550,7 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		}
 		if (posItemQuery.getRegularPriceTo() != null) {
 			sb.append("and p.item_regular_price < " + posItemQuery.getRegularPriceTo() + " ");
-
+			
 		}
 		if (posItemQuery.getMinPriceFrom() != null) {
 			sb.append("and p.item_min_price > " + posItemQuery.getMinPriceFrom() + " ");
@@ -557,14 +564,14 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		if (posItemQuery.getTransferPriceTo() != null) {
 			sb.append("and p.item_transfer_price < " + posItemQuery.getTransferPriceTo() + " ");
 		}
-
+		
 		if (posItemQuery.getPurchasePriceFrom() != null) {
 			sb.append("and p.item_cost_price > " + posItemQuery.getPurchasePriceFrom() + " ");
 		}
 		if (posItemQuery.getPurchasePriceTo() != null) {
 			sb.append("and p.item_cost_price < " + posItemQuery.getPurchasePriceTo() + " ");
 		}
-
+		
 		if (posItemQuery.getWholePriceFrom() != null) {
 			sb.append("and p.item_wholesale_price > " + posItemQuery.getWholePriceFrom() + " ");
 		}
@@ -603,26 +610,25 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		}
 		if (posItemQuery.getItemManufactureFlag() != null) {
 			sb.append("and (p.item_manufacture_flag = " + BooleanUtils.toString(posItemQuery.getItemManufactureFlag(), "1", "0") + " or p.item_type = " + AppConstants.C_ITEM_TYPE_ASSEMBLE + ") ");
-
+			
 		}
-
 		if (posItemQuery.getFilterInElementKit() != null && posItemQuery.getFilterInElementKit()) {
 			if(posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_MATERIAL){
 				sb.append("and not exists (select 1 from item_element_kit with(nolock) where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and item_element_kit.element_item_num = p.item_num ) ");
-
+				
 			} else {
 				sb.append("and not exists (select 1 from item_element_kit with(nolock) where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and item_element_kit.item_num = p.item_num ) ");
-
+				
 			}
 		}
 		if (posItemQuery.getFilterInCategoryProfit() != null) {
 			if(posItemQuery.getFilterInCategoryProfit()){
-
+				
 				sb.append("and not exists (select 1 from category_profit with(nolock) where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and category_profit.item_num = p.item_num ) ");
-
+				
 			} else {
 				sb.append("and exists (select 1 from category_profit with(nolock) where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and category_profit.item_num = p.item_num ) ");
-
+				
 			}
 		}
 		StringBuffer orBuffer = new StringBuffer();
@@ -632,7 +638,7 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 			haveOr = true;
 			orBuffer.append("p.item_create_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(DateUtil.addDay(Calendar.getInstance().getTime(), -newDay))) + "' ");
 		}
-
+		
 		if (posItemQuery.getDromCrease() != null) {
 			if(haveOr){
 				orBuffer.append("or ");

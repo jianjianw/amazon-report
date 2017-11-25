@@ -16,7 +16,7 @@ public class PosItemQuery extends QueryBuilder {
 	private String categoryCode;// 类别
 	private Integer supplierNum;// 供应商
 	private Boolean defaultSupplier;// 是否主供应商
-
+	
 	private Boolean isSenior;// true 查询var. false 是查询下面的。
 	private String itemCode; // 代码
 	private String itemBarCode;// 条码
@@ -66,11 +66,29 @@ public class PosItemQuery extends QueryBuilder {
 	private Boolean isFindItemGrade = false; //是否查询分级
 	private Integer managementTemplateNum; //经营范围
 	private String itemDepartment; //部门
+	private List<String> itemDepartments;
 	private Boolean itemManufactureFlag;
 	private Boolean queryKit;//是否查询组合商品明细
 	private Boolean filterInElementKit;//过滤已存在ItemElementKit中的商品
 	private Boolean filterInCategoryProfit;//过滤已存在毛利率调整中的商品
 	private List<String> queryProperties;
+	private boolean queryAll = false;//是否查询所有商品 主要用于报表
+	
+	public List<String> getItemDepartments() {
+		return itemDepartments;
+	}
+	
+	public void setItemDepartments(List<String> itemDepartments) {
+		this.itemDepartments = itemDepartments;
+	}
+	
+	public boolean isQueryAll() {
+		return queryAll;
+	}
+	
+	public void setQueryAll(boolean queryAll) {
+		this.queryAll = queryAll;
+	}
 	
 	public Boolean getSenior() {
 		return isSenior;

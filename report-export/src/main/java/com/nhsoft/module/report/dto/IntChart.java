@@ -9,7 +9,7 @@ public class IntChart implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 5904925597644195039L;
-
+	private Integer itemNum;
 	private String name;
 	private Integer intValue;
 	private BigDecimal bigDecimalValue;
@@ -20,7 +20,15 @@ public class IntChart implements Serializable {
 		bigDecimalValue2 = BigDecimal.ZERO;
 		intValue = 0;
 	}
-
+	
+	public Integer getItemNum() {
+		return itemNum;
+	}
+	
+	public void setItemNum(Integer itemNum) {
+		this.itemNum = itemNum;
+	}
+	
 	public BigDecimal getBigDecimalValue2() {
 		return bigDecimalValue2;
 	}

@@ -5401,21 +5401,21 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	public List<IntChart> findItemRelatedItemRanks(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo, Integer itemNum, Integer selectCount) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select order_detail_item, count(order_no) as orderNo, ");
+		sb.append("select item_num, count(order_no) as orderNo, ");
 		sb.append("sum(case when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as amount, ");
 		sb.append("sum(case when order_detail_state_code = 4 then -order_detail_payment_money when order_detail_state_code = 1 then order_detail_payment_money end) as money ");
 		sb.append("from pos_order_detail with(nolock) ");
 		sb.append("where order_no in (");
-			sb.append("select order_no from pos_order_detail with(nolock) where order_detail_book_code = :systemBookCode ");
-			if (branchNums != null && branchNums.size() > 0) {
-				sb.append("and order_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-			}
-			sb.append("and order_detail_bizday between '" + DateUtil.getDateShortStr(dateFrom)
-					+ "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
-			sb.append("and order_detail_order_state in (5, 7) and item_num = :itemNum ");
+		sb.append("select order_no from pos_order_detail with(nolock) where order_detail_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and order_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and order_detail_bizday between '" + DateUtil.getDateShortStr(dateFrom)
+				+ "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		sb.append("and order_detail_order_state in (5, 7) and item_num = :itemNum ");
 		sb.append(") and item_num != :itemNum and item_num is not null ");
 		sb.append("and order_detail_state_code != 8 ");
-		sb.append("group by order_detail_item  ");
+		sb.append("group by item_num  ");
 		sb.append("order by count(order_no) desc ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", systemBookCode);
@@ -5428,7 +5428,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		for(int i = 0;i < objects.size();i++){
 			Object[] object = objects.get(i);
 			IntChart intChart = new IntChart();
-			intChart.setName((String)object[0]);
+			intChart.setItemNum((Integer)object[0]);
 			intChart.setIntValue((Integer)object[1]);
 			intChart.setBigDecimalValue(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
 			intChart.setBigDecimalValue2(object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3]);

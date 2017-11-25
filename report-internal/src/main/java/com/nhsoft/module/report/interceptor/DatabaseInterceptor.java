@@ -78,6 +78,10 @@ public class DatabaseInterceptor {
 			
 		}
 		SystemBookProxy systemBookProxy = ServiceDeskUtil.getSystemBookProxy(systemBookCode);
+		if(systemBookProxy == null){
+			logger.info("systemBookProxy == null " + systemBookCode);
+			
+		}
 		String rds = rdsNameMap.get(systemBookProxy.getBookProxyName());
 		if(rds == null){
 			throw new RuntimeException("rds not found");

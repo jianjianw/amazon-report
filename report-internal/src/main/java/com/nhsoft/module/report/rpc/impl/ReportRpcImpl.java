@@ -7,6 +7,7 @@ import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.rpc.BookResourceRpc;
 import com.nhsoft.module.report.rpc.ReportRpc;
 import com.nhsoft.module.report.service.*;
+import com.nhsoft.module.report.shared.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.DateUtil;
@@ -18,7 +19,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -2978,7 +2978,30 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<IntChart> findItemRelatedItemRanks(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer itemNum, Integer selectCount) {
-		return reportService.findItemRelatedItemRanks(systemBookCode,branchNums,dateFrom,dateTo,itemNum,selectCount);
+		List<IntChart> list = reportService.findItemRelatedItemRanks(systemBookCode,branchNums,dateFrom,dateTo,itemNum,selectCount);
+		if(list.isEmpty()){
+			return list;
+		}
+		List<Integer> itemNums = new ArrayList<Integer>();
+		for(IntChart intChart : list){
+			itemNums.add(intChart.getItemNum());
+		}
+		
+		PosItemQuery posItemQuery = new PosItemQuery();
+		posItemQuery.setSystemBookCode(systemBookCode);
+		posItemQuery.setQueryAll(true);
+		posItemQuery.setItemNums(itemNums);
+		posItemQuery.setPaging(false);
+		posItemQuery.setQueryProperties(new ArrayList<String>());
+		posItemQuery.getQueryProperties().add("itemNum");
+		posItemQuery.getQueryProperties().add("itemName");
+		
+		List<PosItem> posItems = posItemService.findByPosItemQuery(posItemQuery, null, null, 0, 0);
+		for(IntChart intChart : list){
+			PosItem posItem = AppUtil.getPosItem(intChart.getItemNum(), posItems);
+			intChart.setName(posItem.getItemName());
+		}
+		return list;
 	}
 
 	@Override
