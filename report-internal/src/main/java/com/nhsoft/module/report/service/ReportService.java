@@ -1147,7 +1147,7 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<BranchCategoryAnalyseDTO> findBranchCategoryAnalyseDTOs(String systemBookCode, Integer centerBranchNum,
-                                                                        List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                                                        List<Integer> branchNums, Date dateFrom, Date dateTo,List<String> categoryCodes);
 	/**
 	 * 查询item_recording 过期催销商品
 	 * @param bookCode

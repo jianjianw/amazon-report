@@ -3057,8 +3057,8 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<BranchCategoryAnalyseDTO> findBranchCategoryAnalyseDTOs(String systemBookCode, Integer centerBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportService.findBranchCategoryAnalyseDTOs(systemBookCode,centerBranchNum,branchNums,dateFrom,dateTo);
+	public List<BranchCategoryAnalyseDTO> findBranchCategoryAnalyseDTOs(String systemBookCode, Integer centerBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo,List<String> categoryCodes) {
+		return reportService.findBranchCategoryAnalyseDTOs(systemBookCode,centerBranchNum,branchNums,dateFrom,dateTo,categoryCodes);
 	}
 
 	@Override

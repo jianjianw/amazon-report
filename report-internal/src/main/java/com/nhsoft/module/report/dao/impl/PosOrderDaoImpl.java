@@ -664,7 +664,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return query.list();
 	}
 
-
 	@Override
 	public List<PosOrderDetail> findDetails(String orderNo) {
 		String sql = "select * from pos_order_detail with(nolock) where order_no = '" + orderNo + "' ";
