@@ -11,10 +11,11 @@ import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
-public class InvoiceChangeDaoHibernate extends HibernateDaoSupport implements InvoiceChangeDao {
+@Repository
+public class InvoiceChangeDaoImpl extends HibernateDaoSupport implements InvoiceChangeDao {
 
 	@Override
 	public InvoiceChange readByOrderNo(String systemBookCode, String orderNo) {

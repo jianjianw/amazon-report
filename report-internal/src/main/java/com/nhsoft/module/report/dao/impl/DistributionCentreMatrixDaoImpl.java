@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class DistributionCentreMatrixDaoHibernate extends DaoImpl implements DistributionCentreMatrixDao {
+public class DistributionCentreMatrixDaoImpl extends DaoImpl implements DistributionCentreMatrixDao {
 	
 
 	@Override
