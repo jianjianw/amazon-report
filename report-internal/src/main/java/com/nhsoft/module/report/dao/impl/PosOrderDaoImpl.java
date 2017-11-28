@@ -3259,4 +3259,43 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return query.list();
 	}
 
+	@Override
+	public List<PosOrder> findOrderByExternalNo(String systemBookCode, Integer branchNum, String orderExternalNo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select * from pos_order with(nolock, forceseek) where system_book_code = '" + systemBookCode + "' ");
+		if(branchNum != null) {
+			sb.append("and branch_num = " + branchNum + " ");
+		}
+		if(StringUtils.isNotEmpty(orderExternalNo)) {
+			sb.append("and order_external_no = '" + orderExternalNo + "' ");
+		}
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.addEntity(PosOrder.class);
+		return query.list();
+	}
+
+	@Override
+	public List<PosOrder> findByShiftTables(List<ShiftTable> shiftTables) {
+		if (shiftTables == null || shiftTables.size() == 0) {
+			return new ArrayList<PosOrder>();
+		}
+		String systemBookCode = shiftTables.get(0).getId().getSystemBookCode();
+		Integer branchNum = shiftTables.get(0).getId().getBranchNum();
+		Criteria criteria = currentSession().createCriteria(PosOrder.class, "p")
+				.add(Restrictions.eq("p.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("p.branchNum", branchNum));
+		Disjunction disjunction = Restrictions.disjunction();
+		for (int i = 0; i < shiftTables.size(); i++) {
+			ShiftTable shiftTable = shiftTables.get(i);
+			disjunction.add(Restrictions.and(
+					Restrictions.eq("p.shiftTableBizday", shiftTable.getId().getShiftTableBizday()),
+					Restrictions.eq("p.shiftTableNum", shiftTable.getId().getShiftTableNum())));
+		}
+		criteria.add(disjunction);
+		criteria.addOrder(Order.asc("p.orderNo"));
+		criteria.setMaxResults(10000);
+		criteria.setLockMode(LockMode.NONE);
+		return criteria.list();
+	}
+
 }

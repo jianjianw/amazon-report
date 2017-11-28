@@ -1575,7 +1575,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums,
-			Date dateFrom, Date dateTo, String casher) {
+																	   Date dateFrom, Date dateTo, String casher) {
 		Criteria criteria = currentSession()
 				.createCriteria(ShiftTable.class, "s")
 				.add(Restrictions.eq("s.id.systemBookCode", systemBookCode))
@@ -1583,7 +1583,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 						DateUtil.getDateShortStr(dateTo)));
 		if (branchNums != null && branchNums.size() > 0) {
 			criteria.add(Restrictions.in("s.id.branchNum", branchNums));
-		}		
+		}
 		if (StringUtils.isNotEmpty(casher)) {
 			criteria.add(Restrictions.in("s.shiftTableUserName", casher.split(",")));
 		}
@@ -1687,8 +1687,8 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			data.setRePaidMoney(money);
 		}
-		
-		
+
+
 		//卡回收金额
 		sb = new StringBuffer();
 		sb.append("select branch_num, shift_table_bizday, shift_table_num, sum(card_user_revoke_money) ");
@@ -1722,7 +1722,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			String shiftTableBizday = (String) object[1];
 			Integer bizNum = (Integer) object[2];
 			if (bizNum == null) {
-				bizNum = 0;
+				bizNum = 1;
 			}
 			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BusinessCollection data = map.get(branchNum.toString() + shiftTableBizday + bizNum.toString());
@@ -1735,7 +1735,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			data.setCardRevokeMoney(money);
 		}
-		
+
 		sb = new StringBuffer();
 		sb.append("select branch_num, shift_table_bizday, shift_table_num, deposit_payment_type_name, sum(deposit_cash) ");
 		sb.append("from card_deposit with(nolock) ");
@@ -1773,7 +1773,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			String type = (String) object[3];
 			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-			
+
 			if(money.compareTo(BigDecimal.ZERO) == 0 && type.equals(AppConstants.PAYMENT_DEPOSIT_POINT)){
 				continue;
 			}
@@ -1794,7 +1794,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				data.setAllBankMoney(data.getAllBankMoney().add(money));
 			}
 		}
-		
+
 		sb = new StringBuffer();
 		sb.append("select branch_num, shift_table_bizday, shift_table_num, sum(deposit_money) ");
 		sb.append("from card_deposit with(nolock) ");
@@ -1828,7 +1828,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			String bizDay = (String) object[1];
 			Integer bizNum = (Integer) object[2];
 			if (bizNum == null) {
-				bizNum = 1;
+				bizNum = 0;
 			}
 			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BusinessCollection data = map.get(branchNum.toString() + bizDay + bizNum.toString());
@@ -1840,9 +1840,9 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				map.put(branchNum.toString() + bizDay + bizNum.toString(), data);
 			}
 			data.setOldCardChangeMoney(data.getOldCardChangeMoney().add(money));
-			
+
 		}
-		
+
 		sb = new StringBuffer();
 		sb.append("select branch_num, shift_table_bizday, shift_table_num, sum(card_change_money) ");
 		sb.append("from card_change with(nolock) ");
@@ -1876,7 +1876,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			String bizDay = (String) object[1];
 			Integer bizNum = (Integer) object[2];
 			if (bizNum == null) {
-				bizNum = 1;
+				bizNum = 0;
 			}
 			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BusinessCollection data = map.get(branchNum.toString() + bizDay + bizNum.toString());
@@ -1888,9 +1888,9 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				map.put(branchNum.toString() + bizDay + bizNum.toString(), data);
 			}
 			data.setCardChangeInMoney(money);
-			
+
 		}
-		
+
 		criteria = currentSession().createCriteria(OtherInout.class, "o")
 				.add(Restrictions.eq("o.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
 				.add(Restrictions.eq("o.systemBookCode", systemBookCode));
@@ -1914,7 +1914,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				.add(Projections.groupProperty("o.otherInoutPaymentType"))
 				.add(Projections.sqlProjection("sum(case when other_inout_flag = 0 then -other_inout_money else other_inout_money end) as money"
 						, new String[]{"money"}, new Type[]{StandardBasicTypes.BIG_DECIMAL}))
-				);
+		);
 		objects = criteria.list();
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
@@ -1988,7 +1988,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 		}
 		// 换卡收入
-
 		criteria = currentSession().createCriteria(ReplaceCard.class, "r").add(
 				Restrictions.eq("r.systemBookCode", systemBookCode));
 		if (branchNums != null && branchNums.size() > 0) {
@@ -2544,13 +2543,13 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
-				
-				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-			} else {
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 
+
+			} else {
+
+				sb.append("and detail.order_source = '" + queryData.getSaleType() + "' ");
 			}
 		}
 		if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
@@ -2565,7 +2564,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				}
 				sb.append("(item_extend_attribute.attribute_name = '" + twoStringValueData.getKey() + "' and item_extend_attribute.attribute_value like '%" + twoStringValueData.getValue() + "%') ");
 			}
-			
+
 			sb.append(")) ");
 		}
 		sb.append("group by detail.order_detail_branch_num, item.item_category, item.item_category_code, detail.order_detail_state_code ");
@@ -2598,13 +2597,13 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
-					
-					sb.append("and kitDetail.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-				} else {
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					sb.append("and (kitDetail.order_source is null or kitDetail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 
+
+				} else {
+
+					sb.append("and kitDetail.order_source = '" + queryData.getSaleType() + "' ");
 				}
 			}
 			if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
@@ -2619,7 +2618,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 					}
 					sb.append("(item_extend_attribute.attribute_name = '" + twoStringValueData.getKey() + "' and item_extend_attribute.attribute_value like '%" + twoStringValueData.getValue() + "%') ");
 				}
-				
+
 				sb.append(")) ");
 			}
 			sb.append("group by kitDetail.order_kit_detail_branch_num, item.item_category, item.item_category_code, kitDetail.order_kit_detail_state_code ");

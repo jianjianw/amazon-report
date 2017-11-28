@@ -687,4 +687,20 @@ public interface PosOrderDao {
 	public List<PosOrder> findByShiftTable(ShiftTable shiftTable);
 
 	public List<Payment> findPaymentsByOrderNos(List<String> orderNos);
+
+	/**
+	 * 按第三方单据号查询销售单据
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param orderExternalNo
+	 * @return
+	 */
+	public List<PosOrder> findOrderByExternalNo(String systemBookCode, Integer branchNum, String orderExternalNo);
+
+	/**
+	 * 根据班次查询
+	 * @param shiftTables
+	 * @return
+	 */
+	public List<PosOrder> findByShiftTables(List<ShiftTable> shiftTables);
 }
