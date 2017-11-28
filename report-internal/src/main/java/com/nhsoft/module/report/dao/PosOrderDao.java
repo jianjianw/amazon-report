@@ -1,8 +1,11 @@
 package com.nhsoft.module.report.dao;
 
 
-import com.nhsoft.module.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.PosOrderDetail;
+import com.nhsoft.module.report.query.ProfitAnalysisQueryData;
+import com.nhsoft.module.report.query.RetailDetailQueryData;
+import com.nhsoft.module.report.query.SaleAnalysisQueryData;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 
 import java.math.BigDecimal;
@@ -421,4 +424,255 @@ public interface PosOrderDao {
 	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Boolean isMember);
 
 
+	//以下都是从ReportDao移过来的
+	/**
+	 * 日销售报表
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @parma isMember 是否会员
+	 * @return
+	 */
+	public List<Object[]> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
+
+	/**
+	 * 月销售报表
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isMember 是否会员
+	 * @return
+	 */
+	public List<Object[]> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember);
+
+	/**
+	 * 类别同比 环比
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findCategoryMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 销售明细对比
+	 * @param loadConfig
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param oderItemCodeList
+	 * @param lastDateFrom
+	 * @param lastDateTo
+	 * @param thisDateFrom
+	 * @param thisDateTo
+	 * @return
+	 */
+	public List<Object[]> findOrderDetailCompareDatas(String systemBookCode,
+													  List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
+
+
+	/**
+	 * 零售明细查询
+	 * @param retailDetailQueryData
+	 * @return
+	 */
+	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData);
+
+	/**
+	 * 毛利分析 日毛利汇总
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object[]> findProfitAnalysisDays(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
+	 * 毛利分析 客户毛利汇总
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object[]> findProfitAnalysisByClientAndItem(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
+	 * 毛利分析 商品毛利汇总
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object[]> findProfitAnalysisByBranchAndItem(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
+	 * 毛利分析 商品毛利汇总
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object[]> findProfitAnalysisByItem(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+
+	/**
+	 * 毛利分析 商品毛利汇总(成分商品)
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object[]> findKitProfitAnalysisByBranchAndItem(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+
+	/**
+	 * 销售员提成 按品牌汇总
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param salerNums
+	 * @return
+	 */
+	public List<SalerCommissionBrand> findSalerCommissionBrands(String systemBookCode, Date dtFrom,
+																Date dtTo, List<Integer> branchNums, List<String> salerNums);
+
+	/**
+	 * 销售员提成汇总
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param salerNums
+	 * @return
+	 */
+	public List<SalerCommission> findSalerCommissions(String systemBookCode, Date dtFrom,
+													  Date dtTo, List<Integer> branchNums, List<String> salerNums);
+
+
+	/**
+	 * 销售员客单金额阶梯汇总
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param salerNums
+	 * @param interval
+	 * @return
+	 */
+	public List<Object[]> findSalerCommissionsByMoney(String systemBookCode, Date dtFrom,
+													  Date dtTo, List<Integer> branchNums, List<String> salerNums, BigDecimal interval);
+
+
+	/**
+	 * 销售员总合计
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param salerNums
+	 * @return
+	 */
+	public Object[] findSalerSummary(String systemBookCode, Date dtFrom,
+									 Date dtTo, List<Integer> branchNums, List<String> salerNums);
+
+
+	/**
+	 * 销售员提成明细
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param salerNums
+	 * @return
+	 */
+	public List<SalerCommissionDetail> findSalerCommissionDetails(String systemBookCode, Date dtFrom,
+																  Date dtTo, List<Integer> branchNums, List<String> salerNums);
+
+
+	/**
+	 * 客单分析 历史客单分析
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param saleType
+	 * @return
+	 */
+	public List<Object[]> findCustomerAnalysisHistorys(String systemBookCode,
+													   Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
+
+
+	/**
+	 * 客单分析 客单范围分析
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param rangeFrom
+	 * @param rangeTo
+	 * @param saleType
+	 * @return
+	 */
+	public Object[] findCustomerAnalysisRanges(
+			String systemBookCode, Date dtFrom, Date dtTo,
+			List<Integer> branchNums, Integer rangeFrom, Integer rangeTo, String saleType);
+
+
+	/**
+	 * 客单分析 日客单分析
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param saleType
+	 * @return
+	 */
+	public List<Object[]> findCustomerAnalysisDays(String systemBookCode,
+												   Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
+
+	/**
+	 * 客单分析 分店汇总
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param saleType
+	 * @return
+	 */
+	public List<Object[]> findCustomerAnalysisBranch(String systemBookCode,
+													 Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
+
+
+	/**
+	 * 客单分析 时段分析
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param saleType
+	 * @return
+	 */
+	public List<Object[]> findCustomerAnalysisTimePeriods(String systemBookCode,
+														  Date dtFrom, Date dtTo, List<Integer> branchNums, Integer space, String saleType);
+
+
+	/**
+	 * 金额 客单量汇总
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param branchType
+	 * @return
+	 */
+	public Object[] sumCustomerAnalysis(String systemBookCode,
+										Date dtFrom, Date dtTo, List<Integer> branchNums, String branchType);
+
+	/**
+	 * 销售分析 -- 类别 部门 品牌汇总公用
+	 * @param queryData
+	 * @return
+	 */
+	public List<Object[]>  findSaleAnalysisCommon(SaleAnalysisQueryData queryData);
+
+
+	/**
+	 * 销售分析 -- 商品汇总
+	 * @param queryData
+	 * @return
+	 */
+	public List<Object[]>  findSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData);
 }
