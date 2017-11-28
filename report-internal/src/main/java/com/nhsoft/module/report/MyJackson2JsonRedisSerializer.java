@@ -115,6 +115,10 @@ public class MyJackson2JsonRedisSerializer implements RedisSerializer<Object> {
 				json = StringUtils.replace(json, "module.base.export.dto", "module.report.dto");
 				
 			}
+			if(json.contains("module.base.model")){
+				json = StringUtils.replace(json, "module.base.model", "module.report.model");
+				
+			}
 			return mapper.readValue(json, type);
 		} catch (Exception ex) {
 			throw new SerializationException("Could not read JSON: " + ex.getMessage(), ex);
