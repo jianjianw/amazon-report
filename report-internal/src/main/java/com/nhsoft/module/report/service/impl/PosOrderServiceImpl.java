@@ -1,9 +1,10 @@
 package com.nhsoft.module.report.service.impl;
 
 
+import com.nhsoft.module.report.dao.InvoiceChangeDao;
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
-import com.nhsoft.module.report.model.PosOrderDetail;
+import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
@@ -21,6 +22,8 @@ public class PosOrderServiceImpl implements PosOrderService {
 	private static final Logger logger = LoggerFactory.getLogger(PosOrderServiceImpl.class);
 	@Autowired
 	private PosOrderDao posOrderDao;
+	@Autowired
+	private InvoiceChangeDao invoiceChangeDao;
 
 	@Override
 	public List<Object[]> findCustomReportByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
@@ -142,11 +145,42 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return objects;
 
 	}
-	////////////////////////////一下都是测试
+
 	@Override
-	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-									  List<String> categoryCodes, Integer offset, Integer limit, String sortField, String sortType) {
-		return posOrderDao.findDetails(systemBookCode,branchNums,dateFrom,dateTo,categoryCodes,offset,limit,sortField,sortType);
+	public List<PosOrder> findByShiftTableWithDetails(ShiftTable shiftTable) {
+		List<PosOrder> posOrders = posOrderDao.findByShiftTable(shiftTable);
+		if(posOrders.isEmpty()){
+			return posOrders;
+		}
+		List<String> orderNos = new ArrayList<String>();
+		for (int i = 0; i < posOrders.size(); i++) {
+			PosOrder posOrder = posOrders.get(i);
+			orderNos.add(posOrder.getOrderNo());
+
+		}
+		List<Payment> payments = posOrderDao.findPaymentsByOrderNos(orderNos);
+		List<InvoiceChange> invoiceChanges = invoiceChangeDao.find(orderNos);
+		List<PosOrderDetail> posOrderDetails = posOrderDao.findDetails(orderNos);
+		for (int i = 0; i < posOrders.size(); i++) {
+			PosOrder posOrder = posOrders.get(i);
+
+			posOrder.setPayments(Payment.find(payments, posOrder.getOrderNo()));
+			posOrder.setInvoiceChanges(InvoiceChange.find(invoiceChanges, posOrder.getOrderNo()));
+			posOrder.setPosOrderDetails(PosOrderDetail.find(posOrderDetails, posOrder.getOrderNo()));
+
+			List<PosOrderDetail> orderDetails = posOrder.getPosOrderDetails();
+			for (int j = 0; j < orderDetails.size(); j++) {
+				PosOrderDetail posOrderDetail = orderDetails.get(j);
+				if(posOrderDetail.getOrderDetailHasKit() != null && posOrderDetail.getOrderDetailHasKit()){
+					posOrderDetail.getPosOrderKitDetails().size();
+
+				} else {
+					posOrderDetail.setPosOrderKitDetails(new ArrayList<PosOrderKitDetail>());
+
+				}
+			}
+		}
+		return posOrders;
 	}
 
 

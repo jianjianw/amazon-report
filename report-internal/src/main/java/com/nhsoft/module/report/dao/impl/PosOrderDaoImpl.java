@@ -4,10 +4,7 @@ package com.nhsoft.module.report.dao.impl;
 
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.model.Payment;
-import com.nhsoft.module.report.model.PosItem;
-import com.nhsoft.module.report.model.PosOrder;
-import com.nhsoft.module.report.model.PosOrderDetail;
+import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.ProfitAnalysisQueryData;
 import com.nhsoft.module.report.query.RetailDetailQueryData;
 import com.nhsoft.module.report.query.SaleAnalysisQueryData;
@@ -3240,6 +3237,26 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         return objects;
     }
 
+	@Override
+	public List<PosOrder> findByShiftTable(ShiftTable shiftTable) {
+		Criteria criteria = currentSession().createCriteria(PosOrder.class, "p")
+				.add(Restrictions.eq("p.systemBookCode", shiftTable.getId().getSystemBookCode()))
+				.add(Restrictions.eq("p.branchNum", shiftTable.getId().getBranchNum()))
+				.add(Restrictions.in("p.orderStateCode", AppUtil.getNormalPosOrderState()));
 
+		criteria.add(Restrictions.and(Restrictions.eq("p.shiftTableBizday", shiftTable.getId().getShiftTableBizday()),
+				Restrictions.eq("p.shiftTableNum", shiftTable.getId().getShiftTableNum())));
+		criteria = criteria.setLockMode("p", LockMode.READ);
+		return criteria.list();
+	}
+
+	@Override
+	public List<Payment> findPaymentsByOrderNos(List<String> orderNos) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select * from payment with(nolock) where order_no in " + AppUtil.getStringParmeList(orderNos) + " ");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.addEntity(Payment.class);
+		return query.list();
+	}
 
 }

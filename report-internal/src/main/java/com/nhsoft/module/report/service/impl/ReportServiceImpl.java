@@ -9196,7 +9196,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<AlipayDetailDTO> findAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-                                                      Date dateTo, String type, String paymentType, Boolean queryAll) {
+													  Date dateTo, String type, String paymentType, Boolean queryAll) {
 		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>();
 		String paymentTypes = paymentType;
 		if (StringUtils.isEmpty(paymentTypes)) {
@@ -9218,7 +9218,6 @@ public class ReportServiceImpl implements ReportService {
 		} else {
 			alipayLogTypes = paymentType;
 		}
-		
 
 		if (StringUtils.isEmpty(type)) {
 			list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
@@ -9234,7 +9233,7 @@ public class ReportServiceImpl implements ReportService {
 				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "POS",
 						alipayLogTypes));
 			}
-			
+
 		} else if (type.equals("POS存款")) {
 			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP",
 					alipayLogTypes));
@@ -9250,14 +9249,14 @@ public class ReportServiceImpl implements ReportService {
 						alipayLogTypes));
 			}
 		}
-		
+
 		if (list.size() == 0) {
 			return list;
 		}
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		for (int i = 0; i < list.size(); i++) {
 			AlipayDetailDTO alipayDetailDTO = list.get(i);
-			
+
 			Branch branch = AppUtil.getBranch(branchs, alipayDetailDTO.getBranchNum());
 			if (branch != null) {
 				alipayDetailDTO.setBranchName(branch.getBranchName());

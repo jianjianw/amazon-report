@@ -2,7 +2,10 @@ package com.nhsoft.module.report.dao;
 
 
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.model.Payment;
+import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.PosOrderDetail;
+import com.nhsoft.module.report.model.ShiftTable;
 import com.nhsoft.module.report.query.ProfitAnalysisQueryData;
 import com.nhsoft.module.report.query.RetailDetailQueryData;
 import com.nhsoft.module.report.query.SaleAnalysisQueryData;
@@ -675,4 +678,13 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public List<Object[]>  findSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData);
+
+	/**
+	 * 按班次查询POS单据 包含明细
+	 * @param shiftTable
+	 * @return
+	 */
+	public List<PosOrder> findByShiftTable(ShiftTable shiftTable);
+
+	public List<Payment> findPaymentsByOrderNos(List<String> orderNos);
 }
