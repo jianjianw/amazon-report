@@ -3,17 +3,17 @@ package com.nhsoft.module.report.rpc.impl;
 import com.nhsoft.amazon.server.dto.OrderQueryDTO;
 import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
-import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
-import com.nhsoft.module.report.dto.BranchRevenueReport;
-import com.nhsoft.module.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.service.SystemBookService;
 import com.nhsoft.module.report.util.DateUtil;
+import org.hibernate.secure.spi.IntegrationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -341,16 +341,52 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 	@Override
-	public List<Object[]> findItemSum(String systemBookCode,ItemQueryDTO itemQueryDTO) {
+	public List<ItemSummary> findItemSum(String systemBookCode, ItemQueryDTO itemQueryDTO) {
 		itemQueryDTO.setSystemBookCode(systemBookCode);
-		return posOrderService.findItemSum(itemQueryDTO);
+		List<Object[]> objects = posOrderService.findItemSum(itemQueryDTO);
+		List<ItemSummary> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			ItemSummary itemSummary = new ItemSummary();
+			itemSummary.setItemNnum((Integer)object[0]);
+			itemSummary.setAmount((BigDecimal) object[1]);
+			itemSummary.setMoney((BigDecimal) object[2]);
+			itemSummary.setProfit((BigDecimal) object[3]);
+			itemSummary.setSaleCount((BigDecimal) object[4]);
+			itemSummary.setCost((BigDecimal) object[5]);
+			list.add(itemSummary);
+		}
+
+		return list;
 	}
 
 
 	@Override
-	public List<Object[]> findBranchItemSum(String systemBookCode,ItemQueryDTO itemQueryDTO) {
+	public List<BranchItemSummaryDTO> findBranchItemSum(String systemBookCode,ItemQueryDTO itemQueryDTO) {
+
 		itemQueryDTO.setSystemBookCode(systemBookCode);
-		return posOrderService.findBranchItemSum(itemQueryDTO);
+		List<Object[]> objects = posOrderService.findBranchItemSum(itemQueryDTO);
+		List<BranchItemSummaryDTO> list = new ArrayList();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			BranchItemSummaryDTO branchItemSummaryDTO = new BranchItemSummaryDTO();
+			branchItemSummaryDTO.setBranchNum((Integer) object[0]);
+			branchItemSummaryDTO.setItemNum((Integer) object[1]);
+			branchItemSummaryDTO.setAmount((BigDecimal) object[2]);
+			branchItemSummaryDTO.setMoney((BigDecimal) object[3]);
+			branchItemSummaryDTO.setProfit((BigDecimal) object[4]);
+			branchItemSummaryDTO.setSaleCount((BigDecimal) object[5]);
+			branchItemSummaryDTO.setCommission((BigDecimal) object[6]);
+			branchItemSummaryDTO.setCost((BigDecimal) object[7]);
+			list.add(branchItemSummaryDTO);
+		}
+		return list;
 	}
 
 

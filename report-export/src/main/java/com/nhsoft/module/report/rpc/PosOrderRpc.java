@@ -1,8 +1,6 @@
 package com.nhsoft.module.report.rpc;
 
-import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
-import com.nhsoft.module.report.dto.BranchRevenueReport;
-import com.nhsoft.module.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.dto.*;
 
 import java.util.Date;
 import java.util.List;
@@ -48,8 +46,8 @@ public interface PosOrderRpc  {
     public List<BranchBizRevenueSummary> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember);
 
 
-    public List<Object[]> findItemSum(String systemBookCode,ItemQueryDTO itemQueryDTO);
+    public List<ItemSummary> findItemSum(String systemBookCode, ItemQueryDTO itemQueryDTO);
 
 
-    public List<Object[]> findBranchItemSum(String systemBookCode,ItemQueryDTO itemQueryDTO);
+    public List<BranchItemSummaryDTO> findBranchItemSum(String systemBookCode, ItemQueryDTO itemQueryDTO);
 }
