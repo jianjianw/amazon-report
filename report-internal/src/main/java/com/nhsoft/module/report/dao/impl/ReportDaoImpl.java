@@ -2218,7 +2218,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			sb.append("and detail.item_grade_num is not null and detail.item_grade_num != 0 ");
 			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					
 					sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
 					
@@ -2264,7 +2264,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			sb.append("and detail.item_grade_num is not null and detail.item_grade_num != 0 ");
 			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					
 					sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 					
@@ -2345,7 +2345,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					
 					sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -2409,7 +2409,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					
 					sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -2474,7 +2474,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					
 					sb.append("and kitDetail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -3271,7 +3271,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			sb.append("and p.client_fid in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getClientFids()) + " ");			
 			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					
 					sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -3322,7 +3322,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			
 			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					
 					sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -3548,7 +3548,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(saleType)) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				
 				sb.append("and order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -3591,7 +3591,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(saleType)) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				
 				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -3951,7 +3951,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+			if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				
 				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -4016,7 +4016,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+				if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					
 					sb.append("and kitDetail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -5011,7 +5011,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+			if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				
 				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -5124,7 +5124,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+			if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				
 				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -6267,7 +6267,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		if (StringUtils.isNotEmpty(saleType)) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 
 				sb.append("and order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -6308,7 +6308,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 		if (StringUtils.isNotEmpty(saleType)) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 
 				sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
 
@@ -6346,7 +6346,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		 
 		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_WCHAT)){
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				
 				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
 				

@@ -262,7 +262,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2017-05-01");
 		Date dateTo = sdf.parse("2017-10-31");
-		List<Object[]> details = posOrderService.findDetails(systemBookCode, branchNums, dateFrom, dateTo, null, null, null, null, null);
+		//List<Object[]> details = posOrderService.findDetails(systemBookCode, branchNums, dateFrom, dateTo, null, null, null, null, null);
 		System.out.println();
 	}
 

@@ -5,6 +5,7 @@ import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.BranchRevenueReport;
+import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.PosOrderService;
@@ -339,6 +340,18 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		return list;
 	}
 
+	@Override
+	public List<Object[]> findItemSum(String systemBookCode,ItemQueryDTO itemQueryDTO) {
+		itemQueryDTO.setSystemBookCode(systemBookCode);
+		return posOrderService.findItemSum(itemQueryDTO);
+	}
+
+
+	@Override
+	public List<Object[]> findBranchItemSum(String systemBookCode,ItemQueryDTO itemQueryDTO) {
+		itemQueryDTO.setSystemBookCode(systemBookCode);
+		return posOrderService.findBranchItemSum(itemQueryDTO);
+	}
 
 
 
