@@ -1898,17 +1898,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if (profitAnalysisQueryData.isQueryClient()) {
                 sb.append("and p.client_fid != '' ");
             }
-            if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-                List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-                if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                    sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-                } else {
-                    sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-                }
-            }
+			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				} else {
+					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+				}
+			}
             if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
                 sb.append("and p.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
             }
@@ -1949,17 +1946,15 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
                             + AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
                 }
             }
-            if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-                List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-                if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				} else {
+					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+				}
+			}
 
-                    sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-                } else {
-                    sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-                }
-            }
             if (profitAnalysisQueryData.getIsQueryCF()) {
                 sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
             }
@@ -2074,17 +2069,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         if (profitAnalysisQueryData.getIsQueryCF()) {
             sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
         }
-        if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-            List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-            if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-            } else {
-                sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-            }
-        }
+		if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+			}
+		}
         if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
             sb.append("and p.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
         }
@@ -2152,17 +2144,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if (profitAnalysisQueryData.getIsQueryCF()) {
                 sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
             }
-            if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-                List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-                if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                    sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-                } else {
-                    sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-                }
-            }
+			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				} else {
+					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+				}
+			}
             if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
                 sb.append("and p.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
             }
@@ -2208,17 +2197,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if (profitAnalysisQueryData.getIsQueryCF()) {
                 sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
             }
-            if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-                List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-                if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                    sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-                } else {
-                    sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-                }
-            }
+			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				} else {
+					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+				}
+			}
             if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
                 sb.append("and detail.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
             }
@@ -2285,17 +2271,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if (profitAnalysisQueryData.isQueryClient()) {
                 sb.append("and p.client_fid != '' ");
             }
-            if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-                List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-                if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                    sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-                } else {
-                    sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-                }
-            }
+			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				} else {
+					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+				}
+			}
             if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
                 sb.append("and p.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
             }
@@ -2336,17 +2319,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
                             + AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
                 }
             }
-            if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-                List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-                if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                    sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-                } else {
-                    sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-                }
-            }
+			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				} else {
+					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+				}
+			}
             if (profitAnalysisQueryData.getIsQueryCF()) {
                 sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
             }
@@ -2696,17 +2676,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dtFrom) + "' and '" + DateUtil.getDateShortStr(dtTo) + "' ");
         sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
 
-        if (StringUtils.isNotEmpty(saleType)) {
-            List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-            if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                sb.append("and order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-            } else {
-                sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-            }
-        }
+		if (StringUtils.isNotEmpty(saleType)) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + saleType + "' ");
+			}
+		}
         sb.append("group by branch_num, order_machine, shift_table_bizday ");
         SQLQuery query = currentSession().createSQLQuery(sb.toString());
         query.addScalar("branchNum", StandardBasicTypes.INTEGER)
@@ -2739,17 +2716,15 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("and (order_payment_money + order_coupon_total_money - order_mgr_discount_money) <= " + rangeTo + " ");
 
         }
-        if (StringUtils.isNotEmpty(saleType)) {
-            List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-            if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+		if (StringUtils.isNotEmpty(saleType)) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + saleType + "' ");
+			}
+		}
 
-                sb.append("and order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-            } else {
-                sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-            }
-        }
         SQLQuery query = currentSession().createSQLQuery(sb.toString());
         query.addScalar("paymentMoney", StandardBasicTypes.BIG_DECIMAL)
                 .addScalar("orderNo", StandardBasicTypes.LONG)
@@ -2772,17 +2747,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dtFrom) + "' and '" + DateUtil.getDateShortStr(dtTo) + "' ");
         sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
 
-        if (StringUtils.isNotEmpty(saleType)) {
-            List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-            if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                sb.append("and order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-            } else {
-                sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-            }
-        }
+		if (StringUtils.isNotEmpty(saleType)) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + saleType + "' ");
+			}
+		}
         sb.append("group by shift_table_bizday ");
         SQLQuery query = currentSession().createSQLQuery(sb.toString());
         query.addScalar("bizday", StandardBasicTypes.STRING)
@@ -2811,17 +2783,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dtFrom) + "' and '" + DateUtil.getDateShortStr(dtTo) + "' ");
         sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
 
-        if (StringUtils.isNotEmpty(saleType)) {
-            List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-            if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                sb.append("and order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-            } else {
-                sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-            }
-        }
+		if (StringUtils.isNotEmpty(saleType)) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + saleType + "' ");
+			}
+		}
         sb.append("group by branch_num ");
         SQLQuery query = currentSession().createSQLQuery(sb.toString());
         query.addScalar("branchNum", StandardBasicTypes.INTEGER)
@@ -2854,17 +2823,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
         }
 
-        if (StringUtils.isNotEmpty(saleType)) {
-            List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-            if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-                sb.append("and order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-            } else {
-                sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-            }
-        }
+		if (StringUtils.isNotEmpty(saleType)) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + saleType + "' ");
+			}
+		}
 
         sb.append(" group by ((DATEDIFF(mi, '00:00:00',convert(varchar(8),order_time,108)))/(:gap) )");
 
@@ -4067,12 +4033,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-					sb.append("and p.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 				} else {
-					sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
+					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
 				}
 			}
 			if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
@@ -4118,12 +4081,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-					sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-				} else {
 					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
+				} else {
+					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
 				}
 			}
 			if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
@@ -4293,12 +4253,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if (StringUtils.isNotEmpty(saleType)) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-				sb.append("and order_source in " + AppUtil.getStringParmeList(weixinSources));
-
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 			} else {
-				sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
+				sb.append("and detail.order_source = '" + saleType + "' ");
 			}
 		}
 		sb.append("group by branch_num, shift_table_bizday,shift_table_num ");
@@ -4333,17 +4290,16 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if (itemNums != null && itemNums.size() > 0) {
 			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
 		}
+
 		if (StringUtils.isNotEmpty(saleType)) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-			} else {
 				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
+			} else {
+				sb.append("and detail.order_source = '" + saleType + "' ");
 			}
 		}
+
 		sb.append(" group by ((DATEDIFF(mi, '00:00:00',convert(varchar(8),p.order_time,108)))/(:gap) )");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
