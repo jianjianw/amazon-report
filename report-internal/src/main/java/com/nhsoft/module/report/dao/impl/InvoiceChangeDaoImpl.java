@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-public class InvoiceChangeDaoImpl extends HibernateDaoSupport implements InvoiceChangeDao {
+public class InvoiceChangeDaoImpl extends DaoImpl implements InvoiceChangeDao {
 
 	@Override
 	public InvoiceChange readByOrderNo(String systemBookCode, String orderNo) {
@@ -54,12 +54,13 @@ public class InvoiceChangeDaoImpl extends HibernateDaoSupport implements Invoice
 
 	@Override
 	public InvoiceChange read(InvoiceChangeId id) {
-		return getHibernateTemplate().get(InvoiceChange.class, id);
+		return currentSession().get(InvoiceChange.class,id);
+
 	}
 
 	@Override
 	public void save(InvoiceChange invoiceChange) {
-		getHibernateTemplate().save(invoiceChange);
+		currentSession().save(invoiceChange);
 		
 	}
 

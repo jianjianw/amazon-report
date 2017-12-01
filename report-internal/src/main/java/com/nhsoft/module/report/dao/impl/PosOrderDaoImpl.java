@@ -2944,7 +2944,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if (queryData.getIsQueryGrade()) {
                 sb.append("and (detail.item_grade_num is null or detail.item_grade_num = 0 ) ");
             }
-            if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+            /*if (StringUtils.isNotEmpty(queryData.getSaleType())) {
                 List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
                 if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 
@@ -2954,7 +2954,16 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
                     sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 
                 }
-            }
+            }*/
+
+			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				} else {
+					sb.append("and detail.order_source = '" + queryData.getSaleType() + "' ");
+				}
+			}
             if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
                 sb.append("and p.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
             }
@@ -3100,7 +3109,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if (queryData.getIsQueryGrade()) {
                 sb.append("and (detail.item_grade_num is null or detail.item_grade_num = 0 ) ");
             }
-            if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+            /*if (StringUtils.isNotEmpty(queryData.getSaleType())) {
                 List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
                 if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 
@@ -3110,7 +3119,17 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
                     sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 
                 }
-            }
+            }*/
+			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				} else {
+					sb.append("and detail.order_source = '" + queryData.getSaleType() + "' ");
+				}
+			}
+
+
             if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
                 sb.append("and p.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
             }

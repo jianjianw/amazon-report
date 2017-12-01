@@ -2343,7 +2343,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 					sb.append("and item.item_department in " + AppUtil.getStringParmeArray(queryData.getItemDepartments().split(",")));
 				}
 			}
-			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+			/*if (StringUtils.isNotEmpty(queryData.getSaleType())) {
 				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 					
@@ -2353,7 +2353,19 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 					sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 
 				}
+			}*/
+			if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+				if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+
+
+				} else {
+
+					sb.append("and detail.order_source = '" + queryData.getSaleType() + "' ");
+				}
 			}
+
 			if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
 				sb.append("and p.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
 			}
@@ -2541,7 +2553,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
 			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null ) ");
 		}
-		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+		if (StringUtils.isNotEmpty(queryData.getSaleType())) {/////
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
@@ -3949,7 +3961,8 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (saleAnalysisQueryData.getIsQueryCF() != null && saleAnalysisQueryData.getIsQueryCF()) {
 			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
 		}
-		if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSaleType())) {
+
+		/*if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 			if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
 				
@@ -3958,6 +3971,14 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			} else {
 				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 
+			}
+		}*/
+		if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + saleAnalysisQueryData.getSaleType() + "' ");
 			}
 		}
 		if (saleAnalysisQueryData.getOrderSources() != null && saleAnalysisQueryData.getOrderSources().size() > 0) {
