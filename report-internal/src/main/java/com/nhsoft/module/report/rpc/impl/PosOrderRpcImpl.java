@@ -382,7 +382,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			branchItemSummaryDTO.setMoney((BigDecimal) object[3]);
 			branchItemSummaryDTO.setProfit((BigDecimal) object[4]);
 			branchItemSummaryDTO.setSaleCount((BigDecimal) object[5]);
-			branchItemSummaryDTO.setCommission((BigDecimal) object[6]);
 			branchItemSummaryDTO.setCost((BigDecimal) object[7]);
 			list.add(branchItemSummaryDTO);
 		}

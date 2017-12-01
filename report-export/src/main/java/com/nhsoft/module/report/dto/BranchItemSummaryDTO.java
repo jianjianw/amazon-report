@@ -11,7 +11,6 @@ public class BranchItemSummaryDTO implements Serializable {
     private BigDecimal money;
     private BigDecimal profit;
     private BigDecimal saleCount;
-    private BigDecimal commission;
     private BigDecimal cost;
 
     public Integer getBranchNum() {
@@ -60,14 +59,6 @@ public class BranchItemSummaryDTO implements Serializable {
 
     public void setSaleCount(BigDecimal saleCount) {
         this.saleCount = saleCount;
-    }
-
-    public BigDecimal getCommission() {
-        return commission;
-    }
-
-    public void setCommission(BigDecimal commission) {
-        this.commission = commission;
     }
 
     public BigDecimal getCost() {
