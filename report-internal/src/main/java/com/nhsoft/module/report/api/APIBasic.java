@@ -391,8 +391,8 @@ public class APIBasic {
 		queryData.setIsQueryGrade(false);
 		queryData.setItemDepartments(null);
 		queryData.setItemFlagNum(null);
-		queryData.setSaleType("实体店");
-		queryData.setIsQueryCardUser(false);
+		queryData.setSaleType("实体店");//水星微商城   实体店
+		queryData.setIsQueryCardUser(true);
 		queryData.setOrderSources(null);
 		queryData.setTwoStringValueDatas(null);
 		queryData.setAppUserNum(null);
