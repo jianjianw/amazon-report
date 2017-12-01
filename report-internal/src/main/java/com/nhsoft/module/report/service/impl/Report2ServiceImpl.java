@@ -55,6 +55,8 @@ public class Report2ServiceImpl implements Report2Service {
 	public OtherInoutDao otherInoutDao;
 	@Autowired
 	public SystemBookService systemBookService;
+	@Autowired
+	public PosOrderDao posOrderDao;
 
 
 
@@ -335,7 +337,7 @@ public class Report2ServiceImpl implements Report2Service {
 //				}
 //			}
 //		} else {
-			objects = reportDao.findSaleAnalysisByBranchDayItem(saleAnalysisQueryData);
+			objects = posOrderDao.findSaleAnalysisByBranchDayItem(saleAnalysisQueryData);
 			
 //		}
 		if(objects.size() == 0){
@@ -467,7 +469,7 @@ public class Report2ServiceImpl implements Report2Service {
 	@Override
     public List<Object[]> findProfitAnalysisByBranchDayItem(
             ProfitAnalysisQueryData profitAnalysisQueryData) {
-		List<Object[]> objects = reportDao.findProfitAnalysisByBranchDayItem(profitAnalysisQueryData);
+		List<Object[]> objects = posOrderDao.findProfitAnalysisByBranchDayItem(profitAnalysisQueryData);
 		return objects;
     }
 

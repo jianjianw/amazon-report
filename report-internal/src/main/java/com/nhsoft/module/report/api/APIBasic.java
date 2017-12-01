@@ -2,10 +2,12 @@ package com.nhsoft.module.report.api;
 
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.query.ABCListQuery;
+import com.nhsoft.module.report.query.SaleAnalysisQueryData;
 import com.nhsoft.module.report.query.SupplierSaleQuery;
 import com.nhsoft.module.report.rpc.AlipayLogRpc;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
+import com.nhsoft.module.report.rpc.ReportRpc;
 import com.nhsoft.module.report.service.MobileAppV2Service;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.service.ReportService;
@@ -38,6 +40,9 @@ public class APIBasic {
 	private MobileAppV2Service mobileAppV2Service;
 	@Autowired
 	private ReportService reportService;
+	@Autowired
+	private ReportRpc reportRpc;
+
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
@@ -185,7 +190,7 @@ public class APIBasic {
 		//List<Object[]> branchItemMatrixSummary = posOrderService.findBranchItemMatrixSummary(systemBookCode, branchNums, dateFrom, dateTo, items);
 		System.out.println();
 	}
-	@RequestMapping(method = RequestMethod.GET,value="/test6")
+	/*@RequestMapping(method = RequestMethod.GET,value="/test6")
 	public void test6() throws Exception{			//含or没报错
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
@@ -203,7 +208,7 @@ public class APIBasic {
 		items.add(434400126);
 		List<Object[]> itemSupplierSumByCategory = posOrderService.findItemSupplierSumByCategory(systemBookCode, branchNums, dateFrom, dateTo, null, true, items);
 		System.out.println();
-	}
+	}*/
 
 	@RequestMapping(method = RequestMethod.GET,value="/test7")
 	public void test7() throws Exception{
@@ -330,8 +335,104 @@ public class APIBasic {
 		System.out.println();
 	}
 
+	/**
+
+	 类别-门店：reportService.findSaleAnalysisByCategoryBranchs(queryData);
+	 类别汇总：reportService.findSaleAnalysisByCategorys(queryData);
+	 门店汇总：reportService.findSaleAnalysisByBranchs(queryData);
+	 商品汇总：reportService.findSaleAnalysisByPosItems(queryData)
+	 部门汇总：reportService.findSaleAnalysisByDepartments(queryData);
+	 营业日汇总：reportService.findSaleAnalysisByBranchBizday(queryData);
+	 品牌汇总：reportService.findSaleAnalysisByBrands(queryData);
+	 对应属性：private String saleType;//销售方式：微商城、实体店（SaleAnalysisQueryData）
+
+	 public static final String ONLINE_ORDER_SOURCE_YOUZAN = "有赞";
+	 public static final String ONLINE_ORDER_SOURCE_MEITUAN = "美团外卖";
+	 public static final String ONLINE_ORDER_SOURCE_ELE = "饿了么外卖";
+	 public static final String ONLINE_ORDER_SOURCE_MERCURY= "水星微商城";
+	 public static final String POS_ORDER_SALE_TYPE_BRANCH = "实体店";
+	 * */
+
+
+	//类别汇总
 	@RequestMapping(method=RequestMethod.GET,value="/test12")
-	public void test12(){
+	public void test12() throws Exception{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar instance = Calendar.getInstance();
+		Date dateFrom = sdf.parse("2017-10-01");
+		Date dateTo = sdf.parse("2017-10-31");
+
+
+		SaleAnalysisQueryData queryData = new SaleAnalysisQueryData();
+		queryData.setDtFrom(dateFrom);
+		queryData.setDtTo(dateTo);
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+		branchNums.add(4);
+		branchNums.add(5);
+		branchNums.add(6);
+		branchNums.add(7);
+		branchNums.add(8);
+		branchNums.add(9);
+		branchNums.add(10);
+		branchNums.add(11);
+		branchNums.add(12);
+		branchNums.add(99);
+		queryData.setBranchNums(branchNums);
+		queryData.setSystemBookCode("4020");
+		queryData.setQueryItemExtendAttribute(true);
+		queryData.setBrandCodes(null);
+		queryData.setPosItemTypeCodes(null);
+		queryData.setPosItemNums(null);
+		queryData.setIsQueryChild(false);
+		queryData.setIsQueryCF(false);
+		queryData.setIsQueryGrade(false);
+		queryData.setItemDepartments(null);
+		queryData.setItemFlagNum(null);
+		queryData.setSaleType("实体店");
+		queryData.setIsQueryCardUser(false);
+		queryData.setOrderSources(null);
+		queryData.setTwoStringValueDatas(null);
+		queryData.setAppUserNum(null);
+		List<SaleByBranchSummary> saleAnalysisByBranchs = reportRpc.findSaleAnalysisByBranchs(queryData);
+		//List<Object[]> saleAnalysisByCategorys = reportService.findSaleAnalysisByBranchs(queryData);
+		System.out.println();
+
+	}
+
+	@RequestMapping(method=RequestMethod.GET,value="/test13")
+	public void test13(){
+
+		//reportService.
+
+	}
+	@RequestMapping(method=RequestMethod.GET,value="/test14")
+	public void test14(){
+
+		//reportService.
+
+	}
+
+	@RequestMapping(method=RequestMethod.GET,value="/test15")
+	public void test15(){
+
+		//reportService.
+
+	}
+
+	@RequestMapping(method=RequestMethod.GET,value="/test6")
+	public void test16(){
+
+		//reportService.
+
+	}
+
+	@RequestMapping(method=RequestMethod.GET,value="/test17")
+	public void test17(){
+
+		//reportService.
 
 	}
 

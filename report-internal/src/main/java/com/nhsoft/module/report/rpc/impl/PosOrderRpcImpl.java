@@ -377,8 +377,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		Map<String,BranchItemSummaryDTO> map = new HashMap<>();
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
-			if(map.containsKey((String)object[0] + (String) object[1])){
-				BranchItemSummaryDTO branchItemSummaryDTO = map.get((String) object[0] + (String) object[1]);
+			String key = (Integer)object[0] + (Integer) object[1]+"";
+			if(map.containsKey(key)){
+				BranchItemSummaryDTO branchItemSummaryDTO = map.get(key);
 				branchItemSummaryDTO.setAmount(branchItemSummaryDTO.getAmount().add((BigDecimal) object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2] ));
 				branchItemSummaryDTO.setMoney(branchItemSummaryDTO.getMoney().add((BigDecimal) object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]));
 				branchItemSummaryDTO.setProfit(branchItemSummaryDTO.getProfit().add((BigDecimal) object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]));
@@ -393,7 +394,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				branchItemSummaryDTO.setProfit((BigDecimal) object[4]);
 				branchItemSummaryDTO.setSaleCount((Integer) object[5]);
 				branchItemSummaryDTO.setCost((BigDecimal) object[6]);
-				map.put((String) object[0]+(String)object[1],branchItemSummaryDTO);
+				map.put(key,branchItemSummaryDTO);
 			}
 		}
 		Set<String> keys = map.keySet();

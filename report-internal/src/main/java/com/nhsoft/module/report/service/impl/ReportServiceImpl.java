@@ -6078,7 +6078,7 @@ public class ReportServiceImpl implements ReportService {
 			Date dateTo, List<Integer> branchNums, Integer space, List<Integer> itemNums, String saleType) {
 		List<Object[]> objects = null;
 		if (itemNums != null && itemNums.size() > 0) {
-			objects = reportDao.findCustomerAnalysisTimePeriodsByItems(systemBookCode, dateFrom, dateTo, branchNums,
+			objects = posOrderDao.findCustomerAnalysisTimePeriodsByItems(systemBookCode, dateFrom, dateTo, branchNums,
 					space, itemNums, saleType);
 		} else {
 			objects = posOrderDao.findCustomerAnalysisTimePeriods(systemBookCode, dateFrom, dateTo, branchNums, space,
@@ -6327,7 +6327,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 		List<PosItemGrade> posItemGrades = new ArrayList<PosItemGrade>();
 		if (saleAnalysisQueryData.getIsQueryGrade()) {
-			objects = reportDao.findSaleAnalysisCommonItemGrade(saleAnalysisQueryData);
+			objects = posOrderDao.findSaleAnalysisCommonItemGrade(saleAnalysisQueryData);
 			List<Integer> gradeItemNums = new ArrayList<Integer>();
 			for (int i = 0; i < objects.size(); i++) {
 				Object[] object = objects.get(i);
@@ -6480,7 +6480,7 @@ public class ReportServiceImpl implements ReportService {
 	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchs' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByBranchs(SaleAnalysisQueryData saleAnalysisQueryData) {
 
-		List<Object[]> objects = reportDao.findSaleAnalysisByBranchs(saleAnalysisQueryData);
+		List<Object[]> objects = posOrderDao.findSaleAnalysisByBranchs(saleAnalysisQueryData);
 		return objects;
 	}
 
@@ -6605,7 +6605,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByCategoryBranchs' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData saleAnalysisQueryData) {
-		return reportDao.findSaleAnalysisByCategoryBranchs(saleAnalysisQueryData);
+		return posOrderDao.findSaleAnalysisByCategoryBranchs(saleAnalysisQueryData);
 	}
 
 	@Override
@@ -6911,17 +6911,17 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<Object[]> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return reportDao.findItemRebates(policyAllowPriftQuery);
+		return posOrderDao.findItemRebates(policyAllowPriftQuery);
 	}
 
 	@Override
 	public List<Object[]> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return reportDao.findRebatesDetail(policyAllowPriftQuery);
+		return posOrderDao.findRebatesDetail(policyAllowPriftQuery);
 	}
 
 	@Override
 	public Object[] findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return reportDao.findRebatesSum(policyAllowPriftQuery);
+		return posOrderDao.findRebatesSum(policyAllowPriftQuery);
 	}
 
 	@Override
@@ -6988,7 +6988,7 @@ public class ReportServiceImpl implements ReportService {
 			Date dpcLimitTime = DateUtil.addDay(now, -2);
 
 			if (dpcLimitTime.compareTo(dateFrom) <= 0) {
-				return reportDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
+				return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
 			} else if (dpcLimitTime.compareTo(dateTo) > 0) {
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -7047,7 +7047,7 @@ public class ReportServiceImpl implements ReportService {
 							.subtract(list.get(i).getMgrDiscount());
 					returnList.add(objects);
 				}
-				List<Object[]> localObjects = reportDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums,
+				List<Object[]> localObjects = posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums,
 						dpcLimitTime, dateTo, dateType);
 				Object[] objects = null;
 				boolean find = false;
@@ -7071,7 +7071,7 @@ public class ReportServiceImpl implements ReportService {
 				return returnList;
 			}
 		} else {
-			return reportDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
+			return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
 		}
 	}
 
@@ -7282,7 +7282,7 @@ public class ReportServiceImpl implements ReportService {
 		cardConsumeAnalysis.setMoneyTo(null);
 		consumeMoneyTotal = consumeMoneyTotal.add(cardConsumeAnalysis.getConsumeMoney());
 		list.add(cardConsumeAnalysis);
-		BigDecimal posMoneyTotal = reportDao.sumPosMoneyByCardConsuemAnalysisQuery(cardConsuemAnalysisQuery);
+		BigDecimal posMoneyTotal = posOrderDao.sumPosMoneyByCardConsuemAnalysisQuery(cardConsuemAnalysisQuery);
 
 		for (int i = 0; i < list.size(); i++) {
 			cardConsumeAnalysis = list.get(i);
@@ -7612,7 +7612,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,
 			List<PosItem> posItems) {
-		List<PosItemRank> posItemRanks = reportDao.findPosItemRanks(systemBookCode, branchNum, dateFrom, dateTo);
+		List<PosItemRank> posItemRanks = posOrderDao.findPosItemRanks(systemBookCode, branchNum, dateFrom, dateTo);
 		for (int i = 0; i < posItemRanks.size(); i++) {
 			PosItemRank posItemRank = posItemRanks.get(i);
 			PosItem posItem = AppUtil.getPosItem(posItemRank.getItemNum(), posItems);
@@ -7783,27 +7783,27 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<Object[]> findPosGroupByBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom,
 			Date dateTo) {
-		return reportDao.findPosGroupByBranchRegionType(systemBookCode, branchNum, dateFrom, dateTo);
+		return posOrderDao.findPosGroupByBranchRegionType(systemBookCode, branchNum, dateFrom, dateTo);
 	}
 
 	@Override
 	public List<Object[]> findPosGroupByHourAndBranchRegionType(String systemBookCode, Integer branchNum,
 			Date dateFrom, Date dateTo) {
-		return reportDao.findPosGroupByHourAndBranchRegionType(systemBookCode, branchNum, dateFrom, dateTo);
+		return posOrderDao.findPosGroupByHourAndBranchRegionType(systemBookCode, branchNum, dateFrom, dateTo);
 	}
 
 	@Override
 	public List<Object[]> findPosGroupByHour(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
-		return reportDao.findPosGroupByHour(systemBookCode, branchNum, dateFrom, dateTo);
+		return posOrderDao.findPosGroupByHour(systemBookCode, branchNum, dateFrom, dateTo);
 	}
 
 	@Override
 	public List<Object[]> findSummaryGroupByItem(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo, List<Integer> itemNums, boolean kitFlag) {
-		List<Object[]> objects = reportDao.findSummaryGroupByItem(systemBookCode, branchNums, dateFrom, dateTo,
+		List<Object[]> objects = posOrderDao.findSummaryGroupByItem(systemBookCode, branchNums, dateFrom, dateTo,
 				itemNums, kitFlag);
 		if (kitFlag) {
-			objects.addAll(reportDao.findSummaryGroupByKitItem(systemBookCode, branchNums, dateFrom, dateTo, itemNums));
+			objects.addAll(posOrderDao.findSummaryGroupByKitItem(systemBookCode, branchNums, dateFrom, dateTo, itemNums));
 		}
 		return objects;
 	}
@@ -8838,7 +8838,7 @@ public class ReportServiceImpl implements ReportService {
 		if(profitAnalysisQueryData.getIsQueryCF() == null){
 			profitAnalysisQueryData.setIsQueryCF(true);
 		}
-		return reportDao.findProfitAnalysisBranchs(profitAnalysisQueryData);
+		return posOrderDao.findProfitAnalysisBranchs(profitAnalysisQueryData);
 	}
 
 	@Override
@@ -9191,7 +9191,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<ElecTicketDTO> findElecTicketDTOs(ElecTicketQueryDTO elecTicketQueryDTO) {
-		return reportDao.findElecTicketDTOs(elecTicketQueryDTO);
+		return posOrderDao.findElecTicketDTOs(elecTicketQueryDTO);
 	}
 
 	@Override
@@ -9268,7 +9268,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<CustomerAnalysisDay> findCustomerAnalysisShiftTables(String systemBookCode, Date dateFrom, Date dateTo,
 			List<Integer> branchNums, String appUserName, String saleType) {
-		List<Object[]> objects = reportDao.findCustomerAnalysisShiftTables(systemBookCode, dateFrom, dateTo,
+		List<Object[]> objects = posOrderDao.findCustomerAnalysisShiftTables(systemBookCode, dateFrom, dateTo,
 				branchNums, appUserName, saleType);
 		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>();
 		List<String> shiftTableBizdays = new ArrayList<String>();
@@ -9487,7 +9487,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<TicketUseAnalysisDTO> findTicketUseAnalysisDTOs(ElecTicketQueryDTO elecTicketQueryDTO) {
-		List<TicketUseAnalysisDTO> list = reportDao.findTicketUseAnalysisDTOs(elecTicketQueryDTO);
+		List<TicketUseAnalysisDTO> list = posOrderDao.findTicketUseAnalysisDTOs(elecTicketQueryDTO);
 		List<Branch> branchs = branchService.findInCache(elecTicketQueryDTO.getSystemBookCode());
 		for (int i = 0; i < list.size(); i++) {
 			TicketUseAnalysisDTO ticketUseAnalysisDTO = list.get(i);
@@ -9521,7 +9521,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<IntChart> findItemRelatedItemRanks(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo, Integer itemNum, Integer selectCount) {
-		return reportDao.findItemRelatedItemRanks(systemBookCode, branchNums, dateFrom, dateTo, itemNum, selectCount);
+		return posOrderDao.findItemRelatedItemRanks(systemBookCode, branchNums, dateFrom, dateTo, itemNum, selectCount);
 	}
 
 	@Override
@@ -9723,7 +9723,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchBizday' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData) {
-		return reportDao.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
+		return posOrderDao.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
 	}
 
 	@Override

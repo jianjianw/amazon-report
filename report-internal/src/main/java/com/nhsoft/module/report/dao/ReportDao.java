@@ -86,82 +86,6 @@ public interface ReportDao {
                                                      List<Integer> branchNums, Date dateFrom, Date dateTo,
                                                      String dateType);
 
-
-
-
-
-
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * 销售分析 -- 商品 分级码汇总
-	 * @param queryData
-	 * @return
-	 */
-	public List<Object[]>  findSaleAnalysisCommonItemGrade(SaleAnalysisQueryData queryData);
-
-	/**
-	 * 销售分析 -- 分店汇总
-	 * @param queryData
-	 * @return
-	 */
-	public List<Object[]>  findSaleAnalysisByBranchs(SaleAnalysisQueryData queryData);
-
-
-	/**
-	 * 销售分析 -- 类别-分店汇总
-	 * @param queryData
-	 * @return
-	 */
-	public List<Object[]> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData queryData);
-
-	/**
-	 * 返利分析 按商品汇总
-	 * @param policyAllowPriftQuery
-	 * @return
-	 */
-	public List<Object[]> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery);
-
-	/**
-	 * 返利分析 明细
-	 * @param policyAllowPriftQuery
-	 * @return
-	 */
-	public List<Object[]> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery);
-
-	/**
-	 * 返利分析总合计
-	 * @param policyAllowPriftQuery
-	 * @return
-	 */
-	public Object[] findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery);
-
 	/**
 	 * 按时间类型查询订单数量和金额
 	 * @param systemBookCode
@@ -233,18 +157,6 @@ public interface ReportDao {
 	public List<Object[]> findWholesaleReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType);
 
 	/**
-	 * 按营业日汇总前台销售金额
-	 * @param systemBookCode
-	 * @param branchNums
-	 * @param dateFrom
-	 * @param dateTo
-	 * @param type
-	 * @return
-	 */
-	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode,
-                                                    List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
-
-	/**
 	 * 按时间类型查询采购收货单数量和金额
 	 * @param systemBookCode
 	 * @param centerBranchNum
@@ -287,12 +199,7 @@ public interface ReportDao {
 	 */
 	public List<Object[]> findCustomerConusmeByCardConsuemAnalysisQuery(CardConsuemAnalysisQuery cardConsuemAnalysisQuery);
 
-	/**
-	 * 卡消费 收入汇总
-	 * @param cardConsuemAnalysisQuery
-	 * @return
-	 */
-	public BigDecimal sumPosMoneyByCardConsuemAnalysisQuery(CardConsuemAnalysisQuery cardConsuemAnalysisQuery);
+
 
 	/**
 	 * 会员指标消费分析 明细
@@ -300,70 +207,6 @@ public interface ReportDao {
 	 * @return
 	 */
 	public List<Object[]> findCardConsumeAnalysisDetails(CardConsuemAnalysisQuery cardConsuemAnalysisQuery);
-
-	/**
-	 * 查询门店商品销售排行 前100
-	 * @param systemBookCode
-	 * @param branchNum
-	 * @param dateFrom
-	 * @param dateTo
-	 * @return
-	 */
-	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
-
-	/**
-	 * 按门店类型汇总 前台销售金额 客单量
-	 * @param systemBookCode
-	 * @param branchNums
-	 * @param dateFrom
-	 * @param dateTo
-	 * @return
-	 */
-	public List<Object[]> findPosGroupByBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
-
-	/**
-	 * 按小时和门店区域类型汇总客单量 和金额
-	 * @param systemBookCode
-	 * @param branchNum
-	 * @param dateFrom
-	 * @param dateTo
-	 * @return
-	 */
-	public List<Object[]> findPosGroupByHourAndBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
-
-	/**
-	 * 按小时汇总客单量 和金额
-	 * @param systemBookCode
-	 * @param branchNum
-	 * @param dateFrom
-	 * @param dateTo
-	 * @return
-	 */
-	public List<Object[]> findPosGroupByHour(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
-
-	/**
-	 * 按商品汇总POS销售毛利 数量 金额 成本
-	 * @param systemBookCode
-	 * @param branchNums
-	 * @param dateFrom
-	 * @param dateTo
-	 * @param itemNums
-	 * @param kitFlag
-	 * @return
-	 */
-	public List<Object[]> findSummaryGroupByItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, boolean kitFlag);
-
-	/**
-	 * 按成分商品汇总POS销售毛利 数量 金额 成本
-	 * @param systemBookCode
-	 * @param branchNums
-	 * @param dateFrom
-	 * @param dateTo
-	 * @param itemNums
-	 * @param kitFlag
-	 * @return
-	 */
-	public List<Object[]> findSummaryGroupByKitItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 	/**
 	 * 按客户商品汇总缺货信息
@@ -379,20 +222,6 @@ public interface ReportDao {
                                                                 Date dateTo, List<String> clientFids, List<Integer> itemNums);
 
 	/**
-	 * 毛利分析 按分店汇总
-	 * @param profitAnalysisQueryData
-	 * @return
-	 */
-	public List<Object[]> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData);
-
-	/**
-	 * 查询消费券明细
-	 * @param elecTicketQueryDTO
-	 * @return
-	 */
-	public List<ElecTicketDTO> findElecTicketDTOs(ElecTicketQueryDTO elecTicketQueryDTO);
-
-	/**
 	 * 查询线上支付报表明细
 	 * @param systemBookCode
 	 * @param branchNums 分店列表
@@ -404,32 +233,6 @@ public interface ReportDao {
 	public List<AlipayDetailDTO> findAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom,
                                                       Date dateTo, String paymentTypes);
 
-	/**
-	 * 客单分析 按班次客单分析
-	 * @param systemBookCode
-	 * @param dateFrom 营业日起
-	 * @param dateTo 营业日止
-	 * @param branchNums 分店列表
-	 * @param appUserName 收银员
-	 * @param saleType
-	 * @return
-	 */
-	public List<Object[]> findCustomerAnalysisShiftTables(String systemBookCode, Date dateFrom, Date dateTo,
-                                                          List<Integer> branchNums, String appUserName, String saleType);
-
-	/**
-	 * 查询商品时段分析
-	 * @param systemBookCode
-	 * @param dateFrom
-	 * @param dateTo
-	 * @param branchNums
-	 * @param space
-	 * @param itemNums
-	 * @param saleType
-	 * @return
-	 */
-	public List<Object[]> findCustomerAnalysisTimePeriodsByItems(String systemBookCode, Date dateFrom, Date dateTo,
-                                                                 List<Integer> branchNums, Integer space, List<Integer> itemNums, String saleType);
 
 	/**
 	 * 生成自定义报表
@@ -439,12 +242,7 @@ public interface ReportDao {
 	 */
 	public List<Object[]> findReportDTOs(ReportDTO queryReportDTO, CustomReport customReport);
 
-	/**
-	 * 消费券分析报表
-	 * @param elecTicketQueryDTO
-	 * @return
-	 */
-	public List<TicketUseAnalysisDTO> findTicketUseAnalysisDTOs(ElecTicketQueryDTO elecTicketQueryDTO);
+
 
 	/**
 	 * 查询进出筐 按商品汇总
@@ -458,18 +256,7 @@ public interface ReportDao {
 	public List<PackageSumDTO> findPackageSum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
                                               Date dateTo);
 
-	/**
-	 * 查询商品连带商品次数排行
-	 * @param systemBookCode
-	 * @param branchNums
-	 * @param dateFrom
-	 * @param dateTo
-	 * @param itemNum
-	 * @param selectCount
-	 * @return
-	 */
-	public List<IntChart> findItemRelatedItemRanks(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-                                                   Date dateTo, Integer itemNum, Integer selectCount);
+
 
 	/**
 	 * 查询中心筐数据
@@ -481,12 +268,7 @@ public interface ReportDao {
 	 */
 	public List<CenterBoxReportDTO> findCenterBoxReportDTOs(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 
-	/**
-	 * 销售分析 -- 分店 营业日汇总
-	 * @param saleAnalysisQueryData
-	 * @return
-	 */
-	public List<Object[]> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData);
+
 
 	/**
 	 * 查询item_recording 过期催销商品
@@ -552,21 +334,24 @@ public interface ReportDao {
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode,
                                                                                         List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	/**
-	 * 销售分析 按分店 营业日 商品汇总
-	 * @param saleAnalysisQueryData
-	 * @return
-	 */
-	public List<Object[]> findSaleAnalysisByBranchDayItem(
-            SaleAnalysisQueryData saleAnalysisQueryData);
 
-	/**
-	 * 按分店、营业日 商品汇总数据
-	 * @param profitAnalysisQueryData
-	 * @return
-	 */
-	public List<Object[]> findProfitAnalysisByBranchDayItem(
-            ProfitAnalysisQueryData profitAnalysisQueryData);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/**
 	 * 按班次汇总缴款明细
