@@ -9,7 +9,7 @@ public class ItemSummary implements Serializable {
     private BigDecimal amount;
     private BigDecimal money;
     private BigDecimal profit;
-    private BigDecimal saleCount;
+    private Integer saleCount;
     private BigDecimal cost;
 
 
@@ -45,11 +45,11 @@ public class ItemSummary implements Serializable {
         this.profit = profit;
     }
 
-    public BigDecimal getSaleCount() {
+    public Integer getSaleCount() {
         return saleCount;
     }
 
-    public void setSaleCount(BigDecimal saleCount) {
+    public void setSaleCount(Integer saleCount) {
         this.saleCount = saleCount;
     }
 

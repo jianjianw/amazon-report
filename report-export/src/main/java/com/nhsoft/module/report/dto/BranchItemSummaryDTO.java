@@ -5,12 +5,22 @@ import java.math.BigDecimal;
 
 public class BranchItemSummaryDTO implements Serializable {
 
+
+    public BranchItemSummaryDTO() {
+        this.amount = BigDecimal.ZERO;
+        this.money = BigDecimal.ZERO;
+        this.profit = BigDecimal.ZERO;
+        this.saleCount = 0;
+        this.cost = BigDecimal.ZERO;
+    }
+
+
     private Integer branchNum;
     private Integer itemNum;
     private BigDecimal amount;
     private BigDecimal money;
     private BigDecimal profit;
-    private BigDecimal saleCount;
+    private Integer saleCount;
     private BigDecimal cost;
 
     public Integer getBranchNum() {
@@ -53,11 +63,11 @@ public class BranchItemSummaryDTO implements Serializable {
         this.profit = profit;
     }
 
-    public BigDecimal getSaleCount() {
+    public Integer getSaleCount() {
         return saleCount;
     }
 
-    public void setSaleCount(BigDecimal saleCount) {
+    public void setSaleCount(Integer saleCount) {
         this.saleCount = saleCount;
     }
 

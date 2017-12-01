@@ -4,6 +4,7 @@ import com.nhsoft.amazon.server.dto.OrderQueryDTO;
 import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.PosOrderService;
@@ -15,10 +16,10 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static javafx.scene.input.KeyCode.H;
+
 @Component
 public class PosOrderRpcImpl implements PosOrderRpc {
 
@@ -355,7 +356,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			itemSummary.setAmount((BigDecimal) object[1]);
 			itemSummary.setMoney((BigDecimal) object[2]);
 			itemSummary.setProfit((BigDecimal) object[3]);
-			itemSummary.setSaleCount((BigDecimal) object[4]);
+			itemSummary.setSaleCount((Integer) object[4]);
 			itemSummary.setCost((BigDecimal) object[5]);
 			list.add(itemSummary);
 		}
@@ -373,18 +374,34 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
+		Map<String,BranchItemSummaryDTO> map = new HashMap<>();
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
-			BranchItemSummaryDTO branchItemSummaryDTO = new BranchItemSummaryDTO();
-			branchItemSummaryDTO.setBranchNum((Integer) object[0]);
-			branchItemSummaryDTO.setItemNum((Integer) object[1]);
-			branchItemSummaryDTO.setAmount((BigDecimal) object[2]);
-			branchItemSummaryDTO.setMoney((BigDecimal) object[3]);
-			branchItemSummaryDTO.setProfit((BigDecimal) object[4]);
-			branchItemSummaryDTO.setSaleCount((BigDecimal) object[5]);
-			branchItemSummaryDTO.setCost((BigDecimal) object[7]);
+			if(map.containsKey((String)object[0] + (String) object[1])){
+				BranchItemSummaryDTO branchItemSummaryDTO = map.get((String) object[0] + (String) object[1]);
+				branchItemSummaryDTO.setAmount(branchItemSummaryDTO.getAmount().add((BigDecimal) object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2] ));
+				branchItemSummaryDTO.setMoney(branchItemSummaryDTO.getMoney().add((BigDecimal) object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]));
+				branchItemSummaryDTO.setProfit(branchItemSummaryDTO.getProfit().add((BigDecimal) object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]));
+				branchItemSummaryDTO.setSaleCount(branchItemSummaryDTO.getSaleCount() + ((Integer) object[5] == null ? 0 : (Integer) object[5]));
+				branchItemSummaryDTO.setCost(branchItemSummaryDTO.getCost().add((BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]));
+			}else{
+				BranchItemSummaryDTO branchItemSummaryDTO = new BranchItemSummaryDTO();
+				branchItemSummaryDTO.setBranchNum((Integer) object[0]);
+				branchItemSummaryDTO.setItemNum((Integer) object[1]);
+				branchItemSummaryDTO.setAmount((BigDecimal) object[2]);
+				branchItemSummaryDTO.setMoney((BigDecimal) object[3]);
+				branchItemSummaryDTO.setProfit((BigDecimal) object[4]);
+				branchItemSummaryDTO.setSaleCount((Integer) object[5]);
+				branchItemSummaryDTO.setCost((BigDecimal) object[6]);
+				map.put((String) object[0]+(String)object[1],branchItemSummaryDTO);
+			}
+		}
+		Set<String> keys = map.keySet();
+		for (String key : keys) {
+			BranchItemSummaryDTO branchItemSummaryDTO = map.get(key);
 			list.add(branchItemSummaryDTO);
 		}
+
 		return list;
 	}
 
