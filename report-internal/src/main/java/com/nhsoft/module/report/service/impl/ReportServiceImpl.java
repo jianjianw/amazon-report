@@ -10714,7 +10714,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<Object[]> findCustomerAnalysisBranchItem(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, List<Integer> itemNums) {
-		return reportDao.findCustomerAnalysisBranchItem(systemBookCode, dtFrom, dtTo, branchNums, itemNums);
+		return posOrderDao.findCustomerAnalysisBranchItem(systemBookCode, dtFrom, dtTo, branchNums, itemNums);
 	}
 
 	@Override
@@ -11823,7 +11823,7 @@ public class ReportServiceImpl implements ReportService {
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode,SaleAnalysisQueryData saleAnalysisQueryData) {
 
 
-		List<Object[]> objects = reportDao.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
+		List<Object[]> objects = posOrderDao.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
 		
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		Integer branchNum;

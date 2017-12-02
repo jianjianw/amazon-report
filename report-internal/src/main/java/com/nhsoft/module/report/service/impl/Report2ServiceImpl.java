@@ -744,10 +744,10 @@ public class Report2ServiceImpl implements Report2Service {
 
 		List<Object[]> objects = null;
 		if (itemNums != null && itemNums.size() > 0) {
-			objects = reportDao.findCustomerAnalysisTimePeriodsByItems(systemBookCode, dateFrom, dateTo, branchNums,
+			objects = posOrderDao.findCustomerAnalysisTimePeriodsByItems(systemBookCode, dateFrom, dateTo, branchNums,
 					itemNums, saleType, timeFromStr, timeToStr);
 		} else {
-			objects = reportDao.findCustomerAnalysisTimePeriods(systemBookCode, dateFrom, dateTo, branchNums,
+			objects = posOrderDao.findCustomerAnalysisTimePeriods(systemBookCode, dateFrom, dateTo, branchNums,
 					saleType, timeFromStr, timeToStr);
 		}
 
@@ -856,7 +856,7 @@ public class Report2ServiceImpl implements Report2Service {
 		if(posItemGrades.size() == 0){
 			return new ArrayList<SaleAnalysisBranchItemGradeDTO>();
 		}		
-		List<Object[]> objects = reportDao.findBranchGradeSummary(saleAnalysisQueryData);
+		List<Object[]> objects = posOrderDao.findBranchGradeSummary(saleAnalysisQueryData);
 		if(objects.size() == 0){
 			return new ArrayList<SaleAnalysisBranchItemGradeDTO>();
 		}

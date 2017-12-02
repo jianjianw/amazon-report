@@ -2,6 +2,7 @@ package com.nhsoft.module.report.api;
 
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.query.ABCListQuery;
+import com.nhsoft.module.report.query.ProfitAnalysisQueryData;
 import com.nhsoft.module.report.query.SaleAnalysisQueryData;
 import com.nhsoft.module.report.query.SupplierSaleQuery;
 import com.nhsoft.module.report.rpc.AlipayLogRpc;
@@ -403,15 +404,85 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method=RequestMethod.GET,value="/test13")
-	public void test13(){
+	public void test13()throws Exception{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar instance = Calendar.getInstance();
+		Date dateFrom = sdf.parse("2017-10-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		ProfitAnalysisQueryData queryData = new ProfitAnalysisQueryData();
+		/*private Date shiftTableFrom;//营业日起
+		private Date shiftTableTo;//营业日止
+		private List<Integer> branchNums;//分店
+		private List<String> brandCodes;//品牌
+		private List<String> posItemTypeCodes;//商品类别
+		private List<Integer> posItemNums;//商品
+		private List<String> clientFids;//客户
+		private Boolean isQueryCF;//组合商品按成分统计
+		private Boolean isQueryChild;//统计类别包含子类
+		private Date checkFrom;//盘点时间起 只在毛利分析里使用
+		private Date checkTo;//盘点时间止 只在毛利分析里使用
+		private boolean isQueryClient = false; //是否查询客户
+		private Integer itemFlagNum;
+		private boolean isQueryPresent = false; //是否查询赠品
+		private String saleType;//销售方式：微商城、实体店
+		private List<String> orderSources;*/
+		queryData.setShiftTableFrom(dateFrom);
+		queryData.setShiftTableTo(dateTo);
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+		branchNums.add(4);
+		branchNums.add(5);
+		branchNums.add(6);
+		branchNums.add(7);
+		branchNums.add(8);
+		branchNums.add(9);
+		branchNums.add(10);
+		branchNums.add(11);
+		branchNums.add(12);
+		branchNums.add(99);
+		queryData.setBranchNums(branchNums);
+		queryData.setSystemBookCode("4020");
+		queryData.setBrandCodes(null);
+		queryData.setPosItemTypeCodes(null);
+		queryData.setPosItemNums(null);
+		queryData.setIsQueryChild(false);
+		queryData.setIsQueryCF(false);
+		queryData.setItemFlagNum(null);
+		queryData.setSaleType("实体店");//水星微商城   实体店
+		queryData.setOrderSources(null);
 
+		List<BranchBizSummary> profitAnalysisDays = reportRpc.findProfitAnalysisDays(queryData);
+		System.out.println();
 		//reportService.
 
 	}
 	@RequestMapping(method=RequestMethod.GET,value="/test14")
-	public void test14(){
+	public void test14() throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar instance = Calendar.getInstance();
+		Date dateFrom = sdf.parse("2017-10-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		String systemBookCode = "4020";
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+		branchNums.add(4);
+		branchNums.add(5);
+		branchNums.add(6);
+		branchNums.add(7);
+		branchNums.add(8);
+		branchNums.add(9);
+		branchNums.add(10);
+		branchNums.add(11);
+		branchNums.add(12);
+		branchNums.add(99);
+		String saleType = "水星微商城";//水星微商城   实体店
 
-		//reportService.
+		List<CustomerAnalysisHistory> customerAnalysisHistorys = reportRpc.findCustomerAnalysisHistorys(systemBookCode, dateFrom, dateTo, branchNums, saleType);
+		System.out.println();
 
 	}
 

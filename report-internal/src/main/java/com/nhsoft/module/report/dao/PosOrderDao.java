@@ -922,4 +922,54 @@ public interface PosOrderDao {
 	 */
 	public List<Object[]> findProfitAnalysisByBranchDayItem(
 			ProfitAnalysisQueryData profitAnalysisQueryData);
+
+
+	/**
+	 * 客单分析 时段分析
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @param saleType
+	 * @param timeFrom
+	 * @param timeTo
+	 * @return
+	 */
+	public List<Object[]> findCustomerAnalysisTimePeriods(String systemBookCode, Date dateFrom, Date dateTo,
+														  List<Integer> branchNums, String saleType, String timeFrom, String timeTo);
+
+
+	/**
+	 * 查询商品时段分析
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @param itemNums
+	 * @param saleType
+	 * @param timeFrom
+	 * @param timeTo
+	 * @return
+	 */
+	public List<Object[]> findCustomerAnalysisTimePeriodsByItems(String systemBookCode, Date dateFrom, Date dateTo,
+																 List<Integer> branchNums, List<Integer> itemNums, String saleType, String timeFrom, String timeTo);
+
+
+	/**
+	 * 按分店号、分级明细汇总
+	 * @param saleAnalysisQueryData
+	 * @return
+	 */
+	public List<Object[]> findBranchGradeSummary(SaleAnalysisQueryData saleAnalysisQueryData);
+
+
+	public List<Object[]> findCustomerAnalysisBranchItem(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, List<Integer> itemNums);
+
+
+	/**
+	 * 销售分析 -- 按分店汇总商品信息
+	 * @param queryData
+	 * @return
+	 */
+	public List<Object[]> findSaleAnalysisByBranchPosItems(String systemBookCode, SaleAnalysisQueryData queryData);
 }
