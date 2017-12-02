@@ -4454,18 +4454,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if (saleAnalysisQueryData.getIsQueryCF() != null && saleAnalysisQueryData.getIsQueryCF()) {
 			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
 		}
-
-		/*if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSaleType())) {
-			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-
-				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(weixinSources));
-
-			} else {
-				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-
-			}
-		}*/
 		if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSaleType())) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 			if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
