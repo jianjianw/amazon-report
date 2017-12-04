@@ -4788,9 +4788,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if (StringUtils.isNotEmpty(saleType)) {
 			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
 			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+				sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
 			} else {
-				sb.append("and detail.order_source = '" + saleType + "' ");
+				sb.append("and order_source = '" + saleType + "' ");
 			}
 		}
 		sb.append("group by branch_num");
