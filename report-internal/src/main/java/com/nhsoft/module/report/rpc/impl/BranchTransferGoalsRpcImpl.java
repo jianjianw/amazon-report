@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 @Component
 public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
 
@@ -17,7 +18,7 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
     private BranchTransferGoalsService branchTransferGoalsService;
 
     @Override
-    public List<SaleMoneyGoals> findSaleMoneyGoalsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,String dateType) {
+    public List<SaleMoneyGoals> findSaleMoneyGoalsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
         List<Object[]> objects = branchTransferGoalsService.findSaleMoneyGoalsByBranch(systemBookCode, branchNums, dateFrom, dateTo,dateType);
         List<SaleMoneyGoals> list = new ArrayList<SaleMoneyGoals>();
         if(objects.isEmpty()){
@@ -49,5 +50,25 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
         }
         return list;
 
+    }
+
+    @Override
+    public List<SaleMoneyGoals> findGoalsByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = branchTransferGoalsService.findGoalsByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo);
+        List<SaleMoneyGoals> list = new ArrayList<>();
+        if(objects.isEmpty()){
+            return list;
+        }
+        for (int i = 0; i <objects.size() ; i++) {
+            Object[] object = objects.get(i);
+            SaleMoneyGoals saleMoneyGoals = new SaleMoneyGoals();
+            saleMoneyGoals.setBranchNum((Integer) object[0]);
+            saleMoneyGoals.setDate((String) object[1]);
+            saleMoneyGoals.setSaleMoney((BigDecimal) object[2]);
+            saleMoneyGoals.setSystemBookCode(systemBookCode);
+            list.add(saleMoneyGoals);
+        }
+
+        return list;
     }
 }

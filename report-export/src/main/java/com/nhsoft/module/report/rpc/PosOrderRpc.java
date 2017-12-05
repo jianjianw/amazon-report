@@ -1,6 +1,9 @@
 package com.nhsoft.module.report.rpc;
 
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.dto.azure.BranchDaily;
+import com.nhsoft.module.report.dto.azure.ItemDaily;
+import com.nhsoft.module.report.dto.azure.ItemDailyDetail;
 
 import java.util.Date;
 import java.util.List;
@@ -50,4 +53,21 @@ public interface PosOrderRpc  {
 
 
     public List<BranchItemSummaryDTO> findBranchItemSum(String systemBookCode, ItemQueryDTO itemQueryDTO);
+
+    /**
+     *	bi 分店日销售汇总表
+     * */
+    public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
+
+    /*
+	*
+	*  bi  商品日销售汇总
+	* */
+    public List<ItemDaily> findItemDailySummary(String systemBookCode);
+
+
+    /**
+     * 商品日时段销售汇总
+     * */
+    public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo);
 }

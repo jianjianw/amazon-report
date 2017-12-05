@@ -8,6 +8,7 @@ public class SaleMoneyGoals implements Serializable {
     private Integer branchNum;
     private BigDecimal saleMoney;//营业额目标
     private String date;        //日期
+    private String systemBookCode;
 
     public Integer getBranchNum() {
         return branchNum;
@@ -31,5 +32,13 @@ public class SaleMoneyGoals implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getSystemBookCode() {
+        return systemBookCode;
+    }
+
+    public void setSystemBookCode(String systemBookCode) {
+        this.systemBookCode = systemBookCode;
     }
 }

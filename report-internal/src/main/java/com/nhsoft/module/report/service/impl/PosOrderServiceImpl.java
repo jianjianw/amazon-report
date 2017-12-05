@@ -14,8 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class PosOrderServiceImpl implements PosOrderService {
@@ -183,6 +184,21 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return posOrders;
 	}
 
+
+	public List<Object[]> findBranchDailySummary(String systemBookCode,Date dateFrom,Date dateTo){
+		List<Object[]> branchDailySummary = posOrderDao.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
+		return branchDailySummary;
+	}
+
+
+	public List<Object[]> findItemDailySummary(String systemBookCode){
+		return posOrderDao.findItemDailySummary(systemBookCode);
+	}
+
+
+	public List<Object[]> findItemDailyDetailSummary(String systemBookCode,Date dateFrom,Date dateTo){
+		return posOrderDao.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo);
+	}
 
 }
 

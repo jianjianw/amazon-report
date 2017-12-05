@@ -1,10 +1,8 @@
 package com.nhsoft.module.report.service;
 
 
-import com.nhsoft.module.report.dto.BranchBizRevenueSummary;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.PosOrder;
-import com.nhsoft.module.report.model.PosOrderDetail;
 import com.nhsoft.module.report.model.ShiftTable;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 
@@ -205,6 +203,21 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public List<PosOrder> findByShiftTableWithDetails(ShiftTable shiftTable);
+
+	/**
+	 *	bi 分店日销售汇总表
+	 * */
+	public List<Object[]> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
+
+	/**
+	 * bi  商品日销售汇总
+	 * */
+	public List<Object[]> findItemDailySummary(String systemBookCode);
+
+	/**
+	 * 商品日时段销售汇总
+	 * */
+	public List<Object[]> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo);
 
 }
 

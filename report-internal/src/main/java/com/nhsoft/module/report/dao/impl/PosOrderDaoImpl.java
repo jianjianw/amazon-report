@@ -1,7 +1,6 @@
 package com.nhsoft.module.report.dao.impl;
 
 
-
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
@@ -11,7 +10,10 @@ import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.*;
+import org.hibernate.Criteria;
+import org.hibernate.LockMode;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.*;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
@@ -21,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 @Repository
 public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
@@ -4377,7 +4380,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	@Override
 	public List<IntChart> findItemRelatedItemRanks(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-												   Date dateTo, Integer itemNum, Integer selectCount) {
+                                                   Date dateTo, Integer itemNum, Integer selectCount) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select item_num, count(order_no) as orderNo, ");
 		sb.append("sum(case when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as amount, ");
@@ -4652,7 +4655,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	@Override
 	public List<Object[]> findProfitAnalysisByBranchDayItem(
-			ProfitAnalysisQueryData profitAnalysisQueryData) {
+			ProfitAnalysisQueryData profitAnalysisQueryData) {//////////
 		StringBuffer sb = new StringBuffer();
 		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
@@ -5012,4 +5015,62 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		return objects;
 	}
+
+
+	public List<Object[]> findBranchDailySummary(String systemBookCode,Date dateFrom,Date dateTo){
+
+		StringBuffer sb = new StringBuffer();//findMoneyBizdaySummary
+		sb.append("select branch_num,shift_table_bizday, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
+		sb.append("count(order_no) as count ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code in (5, 7) ");
+		sb.append("group by branch_num,shift_table_bizday order by branch_num,shift_table_bizday asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
+	public List<Object[]> findItemDailySummary(String systemBookCode){
+
+		StringBuffer sb = new StringBuffer();//findSaleAnalysisByBranchPosItems
+		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+		sb.append("from pos_order_detail as detail with(nolock) ");
+		sb.append("where detail.order_detail_book_code = :systemBookCode ");
+		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
+		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
+		sb.append("and detail.order_detail_state_code != 8 ");
+		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		/*query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
+		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));*/
+		List<Object[]> objects = query.list();
+		return objects;
+	}
+
+	public List<Object[]> findItemDailyDetailSummary(String systemBookCode,Date dateFrom,Date dateTo){
+		StringBuffer sb = new StringBuffer();		//findCustomerAnalysisTimePeriodsByItems
+		sb.append("select p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num, sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
+		sb.append("count(distinct detail.order_no) as amount ");
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between '"
+				+ DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		sb.append("and p.order_state_code in (5,7) ");
+
+		sb.append("group by p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+
+	}
+
 }

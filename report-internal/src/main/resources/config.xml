@@ -23,7 +23,7 @@
     <aop:aspectj-autoproxy />
     <aop:config>
         <aop:advisor id="managerTx" advice-ref="txAdvice"
-                     pointcut="execution(* com.nhsoft.module.report.service..*.*(..))" order="1"/>
+                     pointcut="execution(* com.nhsoft.module.*.service..*.*(..))" order="1"/>
     </aop:config>
     <tx:advice id="txAdvice" transaction-manager="transactionManager" >
         <tx:attributes>

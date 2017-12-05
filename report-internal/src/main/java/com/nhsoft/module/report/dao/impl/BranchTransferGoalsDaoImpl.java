@@ -12,15 +12,15 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-
 import java.util.Date;
 import java.util.List;
+
 @Repository
 public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransferGoalsDao {
 
 	@Override
 	public List<BranchTransferGoals> find(String systemBookCode,
-										  Integer branchNum) {
+                                          Integer branchNum) {
 		Criteria criteria = currentSession().createCriteria(BranchTransferGoals.class, "g")
 				.add(Restrictions.eq("g.id.systemBookCode", systemBookCode));
 		if(branchNum != null){
@@ -33,7 +33,7 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 
 	@Override
 	public List<BranchTransferGoals> findByDate(String systemBookCode,
-												List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
+                                                List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
 		Criteria criteria = currentSession().createCriteria(BranchTransferGoals.class, "g")
 				.add(Restrictions.eq("g.id.systemBookCode", systemBookCode));
 		if(branchNums != null && branchNums.size() != 0){
@@ -127,7 +127,7 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 	@Override
 	public List<Object[]> findSaleMoneyGoalsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,String dateType) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num,sum(branch_transfer_sale_value) ");
+		sb.append("select branch_num,sum(branch_transfer_sale_value), ");
 		sb.append("from branch_transfer_goals ");
 		sb.append("where system_book_code = :systemBookCode ");
 		if(branchNums != null && branchNums.size()>0){
@@ -148,8 +148,8 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 				sb.append("and branch_transfer_interval <= '" + DateUtil.getDateShortStr(dateTo).substring(0,6) + "' ");
 			}
 		}else if(dateType.equals(AppConstants.BUSINESS_DATE_SOME_WEEK)){
-			sb.append("and branch_transfer_start between  '"+DateUtil.getDateShortStr(dateFrom)+"' and  '"+DateUtil.getDateShortStr(dateTo)+"' ");
-			sb.append("and branch_transfer_end between  '"+DateUtil.getDateShortStr(dateFrom)+"' and  '"+DateUtil.getDateShortStr(dateTo)+"' ");
+			sb.append("and branch_transfer_start between  '"+ DateUtil.getDateShortStr(dateFrom)+"' and  '"+ DateUtil.getDateShortStr(dateTo)+"' ");
+			sb.append("and branch_transfer_end between  '"+ DateUtil.getDateShortStr(dateFrom)+"' and  '"+ DateUtil.getDateShortStr(dateTo)+"' ");
 
 		}else {
 			if (dateFrom != null) {
@@ -203,6 +203,28 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 		}
 
 		sb.append("group by branch_transfer_interval order by branch_transfer_interval asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+	}
+
+	public List<Object[]> findGoalsByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo){
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, branch_transfer_interval, sum(branch_transfer_sale_value) ");
+		sb.append("from branch_transfer_goals ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and {fn LENGTH(branch_transfer_interval)} = 10 ");
+		if (dateFrom != null) {
+			sb.append("and branch_transfer_interval >= '" + DateUtil.getDateStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and branch_transfer_interval <= '" + DateUtil.getDateStr(dateTo) + "' ");
+		}
+
+		sb.append("group by branch_num, branch_transfer_interval order by branch_num, branch_transfer_interval asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode",systemBookCode);
 		return sqlQuery.list();

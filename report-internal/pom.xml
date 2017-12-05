@@ -183,6 +183,12 @@
             <artifactId>amazon-report-export</artifactId>
             <version>0.0.2-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.nhsoft</groupId>
+            <artifactId>report-azure</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

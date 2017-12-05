@@ -11,6 +11,9 @@
     <modules>
         <module>report-export</module>
         <module>report-internal</module>
+        <module>repor-tazure</module>
+		<module>report-azure</module>
+        <module>report-timer</module>
     </modules>
 
 

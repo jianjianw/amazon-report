@@ -3,22 +3,23 @@ package com.nhsoft.module.report.rpc.impl;
 import com.nhsoft.amazon.server.dto.OrderQueryDTO;
 import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
+import com.nhsoft.module.report.dto.azure.BranchDaily;
+import com.nhsoft.module.report.dto.azure.ItemDaily;
+import com.nhsoft.module.report.dto.azure.ItemDailyDetail;
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.SystemBook;
+import com.nhsoft.module.report.rpc.BranchTransferGoalsRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.service.SystemBookService;
 import com.nhsoft.module.report.util.DateUtil;
-import org.hibernate.secure.spi.IntegrationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static javafx.scene.input.KeyCode.H;
+import static java.math.BigDecimal.ROUND_HALF_UP;
 
 @Component
 public class PosOrderRpcImpl implements PosOrderRpc {
@@ -29,6 +30,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public SystemBookService systemBookService;
 	@Autowired
 	private PosOrderRemoteService posOrderRemoteService;
+	@Autowired
+	private BranchTransferGoalsRpc branchTransferGoalsRpc;
 
 	@Override
 	public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
@@ -366,7 +369,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 
 	@Override
-	public List<BranchItemSummaryDTO> findBranchItemSum(String systemBookCode,ItemQueryDTO itemQueryDTO) {
+	public List<BranchItemSummaryDTO> findBranchItemSum(String systemBookCode, ItemQueryDTO itemQueryDTO) {
 
 		itemQueryDTO.setSystemBookCode(systemBookCode);
 		List<Object[]> objects = posOrderService.findBranchItemSum(itemQueryDTO);
@@ -405,6 +408,99 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 		return list;
 	}
+
+	public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo){
+
+		List<Object[]> objects = posOrderService.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
+		List<SaleMoneyGoals> goals = branchTransferGoalsRpc.findGoalsByBranchBizday(systemBookCode, null, dateFrom, dateTo);
+
+		List<BranchDaily> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			BranchDaily branchDaily = new BranchDaily();
+			branchDaily.setSystemBookCode(systemBookCode);
+			branchDaily.setBranchNum((Integer) object[0]);
+			branchDaily.setBizday((String) object[1]);
+			branchDaily.setMoney((BigDecimal) object[2]);
+			branchDaily.setQty((BigDecimal) object[3]);
+			branchDaily.setDate(DateUtil.getDateTimeHMS(branchDaily.getBizday()));
+			if(branchDaily.getQty().compareTo(BigDecimal.ZERO) == 0){
+				branchDaily.setPrice(BigDecimal.ZERO);
+			}else{
+				branchDaily.setPrice(branchDaily.getMoney().divide(branchDaily.getQty(),4,ROUND_HALF_UP));
+			}
+			//将营业额目标封装到分店日汇总中
+			for (int j = 0; j <goals.size() ; j++) {
+				SaleMoneyGoals saleMoneyGoals = goals.get(i);
+				if (saleMoneyGoals.getSystemBookCode().equals(branchDaily.getSystemBookCode()) && saleMoneyGoals.getBranchNum().equals(branchDaily.getBranchNum()) &&
+						saleMoneyGoals.getDate().replace("-","").equals(branchDaily.getBizday())){
+					branchDaily.setTargertMoney(saleMoneyGoals.getSaleMoney());
+				}
+			}
+			list.add(branchDaily);
+		}
+		return list;
+	}
+	public List<ItemDaily> findItemDailySummary(String systemBookCode){
+
+		List<Object[]> objects = posOrderService.findItemDailySummary(systemBookCode);
+		List<ItemDaily> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			ItemDaily itemDaily = new ItemDaily();
+			itemDaily.setSystemBookCode(systemBookCode);
+			itemDaily.setBranchNum((Integer) object[0]);
+			itemDaily.setBizday((String) object[1]);
+			itemDaily.setItemNum((Integer) object[2]);
+			itemDaily.setMoney((BigDecimal) object[3]);
+			itemDaily.setAmout((BigDecimal) object[4]);
+			itemDaily.setDate(DateUtil.getDateTimeHMS(itemDaily.getBizday()));
+			list.add(itemDaily);
+		}
+		return list;
+	}
+
+
+
+	public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo){
+		List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode,dateFrom,dateTo);
+		List<ItemDailyDetail> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+
+		for (int i = 0; i < objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			ItemDailyDetail itemDailyDetail = new ItemDailyDetail();
+			itemDailyDetail.setSystemBookCode(systemBookCode);
+			itemDailyDetail.setBranchNum((Integer) object[0]);
+			itemDailyDetail.setBizday((String) object[1]);
+			itemDailyDetail.setPeriod((String) object[2]);
+			itemDailyDetail.setSource((String) object[3]);
+			itemDailyDetail.setItemNum((Integer) object[4]);
+			itemDailyDetail.setMoney((BigDecimal) object[5]);
+			itemDailyDetail.setAmout((BigDecimal) object[6]);
+			itemDailyDetail.setDate(DateUtil.getDateTimeHMS(itemDailyDetail.getBizday()));
+			list.add(itemDailyDetail);
+		}
+		return list;
+
+	}
+
+
+
+
+
+
+
 
 
 
