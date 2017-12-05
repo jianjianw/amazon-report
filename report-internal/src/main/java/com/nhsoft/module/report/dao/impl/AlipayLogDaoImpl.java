@@ -10,13 +10,14 @@ import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
-import org.hibernate.SQLQuery;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -167,7 +168,33 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				.add(Projections.property("a.alipayLogReceiptMoney"))
 				.add(Projections.property("a.alipayLogBuyerMoney"))
 		);
+		criteria.setLockMode(LockMode.NONE);
+		
 		List<Object[]> objects = criteria.list();
+		if(StringUtils.isNotEmpty(orderNoPre)){
+			
+			String[] array = orderNoPre.split(",");
+			for(int i = 0;i < array.length;i++){
+				Criteria subCriteria = criteria;
+				String pre = array[i];
+				if(pre.equals("member")){
+					
+					//微会员存款时关联单据号为空
+					subCriteria.add(Restrictions.eq("a.alipayLogOrderNo", ""));
+					
+				} else {
+					subCriteria.add(Restrictions.like("a.alipayLogOrderNo", pre, MatchMode.START));
+					
+				}
+				
+				objects.addAll(subCriteria.list());
+			}
+			
+		
+		
+		} else {
+			objects = criteria.list();
+		}
 		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>();
 		BigDecimal buyerMoney = null;
 		for (int i = 0; i < objects.size(); i++) {
@@ -253,6 +280,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				.add(Projections.property("a.alipayLogReceiptMoney"))
 				.add(Projections.property("a.alipayLogBuyerMoney"))
 		);
+		criteria.setLockMode(LockMode.NONE);
 		List<Object[]> objects = criteria.list();
 		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>();
 		BigDecimal buyerMoney = null;
@@ -310,6 +338,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				.add(Projections.sum("a.alipayLogMoney"))
 				.add(Projections.count("a.alipayLogId"))
 		);
+		criteria.setLockMode(LockMode.NONE);
 		List<Object[]> objects = criteria.list();
 		
 		
@@ -332,6 +361,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				.add(Projections.sum("a.alipayLogMoney"))
 				.add(Projections.count("a.alipayLogId"))
 		);
+		criteria.setLockMode(LockMode.NONE);
 		objects.addAll(criteria.list());
 		return objects;
 	}
