@@ -12,13 +12,15 @@
     <artifactId>report-timer</artifactId>
 
 
-    <!--<dependencies>
-        <dependency>
-            <artifactId>report-azure</artifactId>
+    <dependencies>
+        <!--<dependency>
+            <artifactId>amazon-report-internal</artifactId>
             <groupId>com.nhsoft</groupId>
             <version>0.0.2-SNAPSHOT</version>
         </dependency>
-    </dependencies>-->
+-->
+
+    </dependencies>
 
 
 </project>
