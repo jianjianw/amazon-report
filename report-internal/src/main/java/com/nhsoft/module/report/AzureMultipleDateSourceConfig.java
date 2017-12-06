@@ -49,6 +49,8 @@ public class AzureMultipleDateSourceConfig implements EnvironmentAware {
             logger.info("完成初始化数据源:" + dsPrefix);
 
         }
+        propertyResolver = new RelaxedPropertyResolver(environment, "hibernate.");
+        hibernateProperties = propertyResolver.getSubProperties("");
 
     }
 

@@ -1,5 +1,7 @@
 package com.nhsoft.module.azure.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -7,15 +9,21 @@ import java.util.Date;
 /**
  * 商品日销售汇总
  * */
+@Entity
 public class ItemDaily implements Serializable {
 
+
+    @Id
     private String systemBookCode;
+    @Id
     private Integer branchNum;
-    private String bizday;
+    @Id
+    private String shiftTableBizday;
+    @Id
     private Integer itemNum;
-    private Date date;
-    private BigDecimal money;
-    private BigDecimal amout;   //销售数量
+    private Date shiftTableDate;
+    private BigDecimal itemMoney;
+    private BigDecimal itemAmount;   //销售数量
 
     public String getSystemBookCode() {
         return systemBookCode;
@@ -33,12 +41,12 @@ public class ItemDaily implements Serializable {
         this.branchNum = branchNum;
     }
 
-    public String getBizday() {
-        return bizday;
+    public String getShiftTableBizday() {
+        return shiftTableBizday;
     }
 
-    public void setBizday(String bizday) {
-        this.bizday = bizday;
+    public void setShiftTableBizday(String shiftTableBizday) {
+        this.shiftTableBizday = shiftTableBizday;
     }
 
     public Integer getItemNum() {
@@ -49,27 +57,27 @@ public class ItemDaily implements Serializable {
         this.itemNum = itemNum;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getShiftTableDate() {
+        return shiftTableDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setShiftTableDate(Date shiftTableDate) {
+        this.shiftTableDate = shiftTableDate;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public BigDecimal getItemMoney() {
+        return itemMoney;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public void setItemMoney(BigDecimal itemMoney) {
+        this.itemMoney = itemMoney;
     }
 
-    public BigDecimal getAmout() {
-        return amout;
+    public BigDecimal getItemAmount() {
+        return itemAmount;
     }
 
-    public void setAmout(BigDecimal amout) {
-        this.amout = amout;
+    public void setItemAmount(BigDecimal itemAmount) {
+        this.itemAmount = itemAmount;
     }
 }

@@ -212,7 +212,7 @@ public interface PosOrderService {
 	/**
 	 * bi  商品日销售汇总
 	 * */
-	public List<Object[]> findItemDailySummary(String systemBookCode);
+	public List<Object[]> findItemDailySummary(String systemBookCode,Date dateFrom, Date dateTo);
 
 	/**
 	 * 商品日时段销售汇总

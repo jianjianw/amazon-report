@@ -1,13 +1,17 @@
 package com.nhsoft.module.azure.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
  *商品纬度
  * */
+@Entity
 public class PosItemLat implements Serializable {
-
+    @Id
     private String systemBookCode;
+    @Id
     private Integer itemNum;
     private String category;
 

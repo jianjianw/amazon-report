@@ -1,5 +1,7 @@
 package com.nhsoft.module.azure.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -7,9 +9,11 @@ import java.util.Date;
 /**
  * 分店表
  * */
+@Entity
 public class Branch implements Serializable {
-
+    @Id
     private String systemBookCode;
+    @Id
     private Integer branchNum;
     private String branchCode;
     private String branchName;

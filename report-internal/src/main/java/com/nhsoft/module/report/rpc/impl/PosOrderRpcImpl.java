@@ -6,6 +6,7 @@ import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.azure.model.BranchDaily;
 import com.nhsoft.module.azure.model.ItemDaily;
 import com.nhsoft.module.azure.model.ItemDailyDetail;
+import com.nhsoft.module.report.api.dto.BranchFinishRateTopDTO;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.rpc.BranchTransferGoalsRpc;
@@ -424,45 +425,51 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			BranchDaily branchDaily = new BranchDaily();
 			branchDaily.setSystemBookCode(systemBookCode);
 			branchDaily.setBranchNum((Integer) object[0]);
-			branchDaily.setBizday((String) object[1]);
-			branchDaily.setMoney((BigDecimal) object[2]);
-			branchDaily.setQty((BigDecimal) object[3]);
-			branchDaily.setDate(DateUtil.getDateTimeHMS(branchDaily.getBizday()));
-			if(branchDaily.getQty().compareTo(BigDecimal.ZERO) == 0){
-				branchDaily.setPrice(BigDecimal.ZERO);
+			branchDaily.setShiftTableBizday((String) object[1]);
+			branchDaily.setDailyMoney((BigDecimal) object[2]);
+			branchDaily.setDailyQty((Integer) object[3]);
+			branchDaily.setShiftTableDate(DateUtil.getDateStr(branchDaily.getShiftTableBizday()));
+			if(branchDaily.getDailyQty() == 0){
+				branchDaily.setDailyPrice(BigDecimal.ZERO);
 			}else{
-				branchDaily.setPrice(branchDaily.getMoney().divide(branchDaily.getQty(),4,ROUND_HALF_UP));
+				Integer qty = branchDaily.getDailyQty();
+				branchDaily.setDailyPrice(branchDaily.getDailyMoney().divide(new BigDecimal(qty),4,ROUND_HALF_UP));
 			}
 			//将营业额目标封装到分店日汇总中
 			for (int j = 0; j <goals.size() ; j++) {
 				SaleMoneyGoals saleMoneyGoals = goals.get(i);
 				if (saleMoneyGoals.getSystemBookCode().equals(branchDaily.getSystemBookCode()) && saleMoneyGoals.getBranchNum().equals(branchDaily.getBranchNum()) &&
-						saleMoneyGoals.getDate().replace("-","").equals(branchDaily.getBizday())){
-					branchDaily.setTargertMoney(saleMoneyGoals.getSaleMoney());
+						saleMoneyGoals.getDate().replace("-","").equals(branchDaily.getShiftTableBizday())){
+					branchDaily.setTargetMoney(saleMoneyGoals.getSaleMoney());
 				}
 			}
 			list.add(branchDaily);
 		}
+
+		//排序
+		Comparator<BranchDaily> comparing = Comparator.comparing(BranchDaily::getShiftTableBizday);
+		list.sort(comparing);//comparing.reversed()
 		return list;
 	}
-	public List<ItemDaily> findItemDailySummary(String systemBookCode){
 
-		List<Object[]> objects = posOrderService.findItemDailySummary(systemBookCode);
+
+	public List<ItemDaily> findItemDailySummary(String systemBookCode,Date dateFrom, Date dateTo){
+
+		List<Object[]> objects = posOrderService.findItemDailySummary(systemBookCode,dateFrom,dateTo);
 		List<ItemDaily> list = new ArrayList<>();
 		if(objects.isEmpty()){
 			return list;
 		}
-
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
 			ItemDaily itemDaily = new ItemDaily();
 			itemDaily.setSystemBookCode(systemBookCode);
 			itemDaily.setBranchNum((Integer) object[0]);
-			itemDaily.setBizday((String) object[1]);
+			itemDaily.setShiftTableBizday((String) object[1]);
 			itemDaily.setItemNum((Integer) object[2]);
-			itemDaily.setMoney((BigDecimal) object[3]);
-			itemDaily.setAmout((BigDecimal) object[4]);
-			itemDaily.setDate(DateUtil.getDateTimeHMS(itemDaily.getBizday()));
+			itemDaily.setItemMoney((BigDecimal) object[3]);
+			itemDaily.setItemAmount((BigDecimal) object[4]);
+			itemDaily.setShiftTableDate(DateUtil.getDateStr(itemDaily.getShiftTableBizday()));
 			list.add(itemDaily);
 		}
 		return list;
@@ -476,19 +483,18 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
-
 		for (int i = 0; i < objects.size() ; i++) {
 			Object[] object = objects.get(i);
 			ItemDailyDetail itemDailyDetail = new ItemDailyDetail();
 			itemDailyDetail.setSystemBookCode(systemBookCode);
 			itemDailyDetail.setBranchNum((Integer) object[0]);
-			itemDailyDetail.setBizday((String) object[1]);
-			itemDailyDetail.setPeriod((String) object[2]);
-			itemDailyDetail.setSource((String) object[3]);
+			itemDailyDetail.setShiftTableBizday((String) object[1]);
+			itemDailyDetail.setItemPeriod((String) object[2]);
+			itemDailyDetail.setItemSource((String) object[3]);
 			itemDailyDetail.setItemNum((Integer) object[4]);
-			itemDailyDetail.setMoney((BigDecimal) object[5]);
-			itemDailyDetail.setAmout((BigDecimal) object[6]);
-			itemDailyDetail.setDate(DateUtil.getDateTimeHMS(itemDailyDetail.getBizday()));
+			itemDailyDetail.setItemMoney((BigDecimal) object[5]);
+			itemDailyDetail.setItemAmout((Integer) object[6]);
+			itemDailyDetail.setShiftTableDate(DateUtil.getDateStr(itemDailyDetail.getShiftTableBizday()));
 			list.add(itemDailyDetail);
 		}
 		return list;

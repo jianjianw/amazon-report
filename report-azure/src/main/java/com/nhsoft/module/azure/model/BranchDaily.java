@@ -1,5 +1,6 @@
 package com.nhsoft.module.azure.model;
-
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -7,22 +8,26 @@ import java.util.Date;
 /**
  * 分店日销售汇总表
  * */
+@Entity
 public class BranchDaily implements Serializable {
 
     public BranchDaily() {
-        this.money = BigDecimal.ZERO;
-        this.qty = BigDecimal.ZERO;
-        this.price = BigDecimal.ZERO;
+        this.dailyMoney = BigDecimal.ZERO;
+        this.dailyQty = 0;
+        this.dailyPrice = BigDecimal.ZERO;
+        this.targetMoney = BigDecimal.ZERO;
     }
-
+    @Id
     private String systemBookCode;
+    @Id
     private Integer branchNum;
-    private String bizday;                  //营业日
-    private Date date;                      //营业日期（和营业日一致）
-    private BigDecimal money;               //营业额
-    private BigDecimal qty;                 //客单量
-    private BigDecimal price;               //客单价
-    private BigDecimal targertMoney;       //营业额目标
+    @Id
+    private String shiftTableBizday;                  //营业日
+    private Date shiftTableDate;                      //营业日期（和营业日一致）
+    private BigDecimal dailyMoney;               //营业额
+    private Integer dailyQty;                 //客单量
+    private BigDecimal dailyPrice;               //客单价
+    private BigDecimal targetMoney;       //营业额目标
 
 
     public String getSystemBookCode() {
@@ -41,51 +46,51 @@ public class BranchDaily implements Serializable {
         this.branchNum = branchNum;
     }
 
-    public String getBizday() {
-        return bizday;
+    public String getShiftTableBizday() {
+        return shiftTableBizday;
     }
 
-    public void setBizday(String bizday) {
-        this.bizday = bizday;
+    public void setShiftTableBizday(String shiftTableBizday) {
+        this.shiftTableBizday = shiftTableBizday;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getShiftTableDate() {
+        return shiftTableDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setShiftTableDate(Date shiftTableDate) {
+        this.shiftTableDate = shiftTableDate;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public BigDecimal getDailyMoney() {
+        return dailyMoney;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public void setDailyMoney(BigDecimal dailyMoney) {
+        this.dailyMoney = dailyMoney;
     }
 
-    public BigDecimal getQty() {
-        return qty;
+    public Integer getDailyQty() {
+        return dailyQty;
     }
 
-    public void setQty(BigDecimal qty) {
-        this.qty = qty;
+    public void setDailyQty(Integer dailyQty) {
+        this.dailyQty = dailyQty;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getDailyPrice() {
+        return dailyPrice;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setDailyPrice(BigDecimal dailyPrice) {
+        this.dailyPrice = dailyPrice;
     }
 
-    public BigDecimal getTargertMoney() {
-        return targertMoney;
+    public BigDecimal getTargetMoney() {
+        return targetMoney;
     }
 
-    public void setTargertMoney(BigDecimal targertMoney) {
-        this.targertMoney = targertMoney;
+    public void setTargetMoney(BigDecimal targetMoney) {
+        this.targetMoney = targetMoney;
     }
 }

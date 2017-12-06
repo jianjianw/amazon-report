@@ -66,6 +66,7 @@ public class AzureDateBaseInterceptor {
             logger.info("systemBookProxy == null " + systemBookCode);
 
         }
+        //String bookProxyName = systemBookProxy.getBookProxyName();
         String rds = rdsNameMap.get(systemBookProxy.getBookProxyName());
         if(rds == null){
             throw new RuntimeException("rds not found");

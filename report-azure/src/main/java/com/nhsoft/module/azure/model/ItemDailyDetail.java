@@ -1,5 +1,7 @@
 package com.nhsoft.module.azure.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -7,17 +9,25 @@ import java.util.Date;
 /**
  * 商品日时段销售汇总
  * */
+@Entity
 public class ItemDailyDetail implements Serializable {
 
+
+
+    @Id
     private Integer branchNum;
-    private String bizday;      //营业日期
+    @Id
+    private String shiftTableBizday;      //营业日期
+    @Id
     private Integer itemNum;
+    @Id
     private String systemBookCode;
-    private String period;      //时段
-    private Date date;          //营业日期
-    private BigDecimal amout;   //销售数量
-    private BigDecimal money;   //销售金额
-    private String source;      //销售来源
+    @Id
+    private String itemPeriod;      //时段
+    private Date shiftTableDate;          //营业日期
+    private Integer itemAmout;   //销售数量
+    private BigDecimal itemMoney;   //销售金额
+    private String itemSource;      //销售来源
 
     public Integer getBranchNum() {
         return branchNum;
@@ -27,12 +37,12 @@ public class ItemDailyDetail implements Serializable {
         this.branchNum = branchNum;
     }
 
-    public String getBizday() {
-        return bizday;
+    public String getShiftTableBizday() {
+        return shiftTableBizday;
     }
 
-    public void setBizday(String bizday) {
-        this.bizday = bizday;
+    public void setShiftTableBizday(String shiftTableBizday) {
+        this.shiftTableBizday = shiftTableBizday;
     }
 
     public Integer getItemNum() {
@@ -51,43 +61,43 @@ public class ItemDailyDetail implements Serializable {
         this.systemBookCode = systemBookCode;
     }
 
-    public String getPeriod() {
-        return period;
+    public String getItemPeriod() {
+        return itemPeriod;
     }
 
-    public void setPeriod(String period) {
-        this.period = period;
+    public void setItemPeriod(String itemPeriod) {
+        this.itemPeriod = itemPeriod;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getShiftTableDate() {
+        return shiftTableDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setShiftTableDate(Date shiftTableDate) {
+        this.shiftTableDate = shiftTableDate;
     }
 
-    public BigDecimal getAmout() {
-        return amout;
+    public Integer getItemAmout() {
+        return itemAmout;
     }
 
-    public void setAmout(BigDecimal amout) {
-        this.amout = amout;
+    public void setItemAmout(Integer itemAmout) {
+        this.itemAmout = itemAmout;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public BigDecimal getItemMoney() {
+        return itemMoney;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public void setItemMoney(BigDecimal itemMoney) {
+        this.itemMoney = itemMoney;
     }
 
-    public String getSource() {
-        return source;
+    public String getItemSource() {
+        return itemSource;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setItemSource(String itemSource) {
+        this.itemSource = itemSource;
     }
 }

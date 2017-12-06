@@ -1,14 +1,18 @@
 package com.nhsoft.module.azure.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
  * 分店纬度
  * */
+@Entity
 public class BranchLat implements Serializable {
 
-
+    @Id
     private String systemBookCode;
+    @Id
     private Integer branchNum;
     private String branchName;
     private String location;            //商圈分类

@@ -5037,12 +5037,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sqlQuery.list();
 	}
 
-	public List<Object[]> findItemDailySummary(String systemBookCode){
+	public List<Object[]> findItemDailySummary(String systemBookCode,Date dateFrom, Date dateTo){
 
 		StringBuffer sb = new StringBuffer();//findSaleAnalysisByBranchPosItems
 		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
 		sb.append("from pos_order_detail as detail with(nolock) ");
 		sb.append("where detail.order_detail_book_code = :systemBookCode ");
 		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
@@ -5051,8 +5051,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", systemBookCode);
-		/*query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
-		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));*/
+		query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
+		query.setString("bizTo", DateUtil.getDateShortStr(dateTo));
 		List<Object[]> objects = query.list();
 		return objects;
 	}

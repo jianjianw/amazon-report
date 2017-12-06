@@ -19,16 +19,18 @@
             <version>4.3.10.RELEASE</version>
         </dependency>
 
-       <!-- <dependency>
-            <groupId>com.nhsoft</groupId>
-            <artifactId>amazon-report-export</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
-        </dependency>-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.2.10.Final</version>
+            <version>5.0.12.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.0.Final</version>
+        </dependency>
+
 
         <!-- <dependency>
              <groupId>com.nhsoft</groupId>
