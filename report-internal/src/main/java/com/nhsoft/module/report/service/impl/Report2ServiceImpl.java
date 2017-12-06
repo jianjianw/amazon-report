@@ -344,7 +344,6 @@ public class Report2ServiceImpl implements Report2Service {
 			return new ArrayList<SaleAnalysisByPosItemDTO>();
 		}
 		
-		List<PosItem> posItems = posItemService.findShortItems(saleAnalysisQueryData.getSystemBookCode());
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		Integer branchNum;
 		String bizday;
@@ -355,6 +354,8 @@ public class Report2ServiceImpl implements Report2Service {
 		BigDecimal assistAmount;
 		BigDecimal count_;
 		BigDecimal discount;
+		StringBuilder key;
+		List<Integer> itemNums = new ArrayList<Integer>();
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			branchNum = (Integer) object[0];
@@ -377,15 +378,16 @@ public class Report2ServiceImpl implements Report2Service {
 			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
 				continue;
 			}
-
-			SaleAnalysisByPosItemDTO data = map.get(branchNum + "|" + bizday + "|" + itemNum);
+			key = new StringBuilder();
+			key.append(branchNum).append("|").append(bizday).append("|").append(itemNum);
+			SaleAnalysisByPosItemDTO data = map.get(key.toString());
 			if (data == null) {
 				data = new SaleAnalysisByPosItemDTO();
 				data.setBranchNum(branchNum);
 				data.setItemNum(itemNum);
 				data.setBranchNum(branchNum);
 				data.setBizday(bizday);
-				map.put(branchNum + "|" + bizday + "|" + itemNum, data);
+				map.put(key.toString(), data);
 			}
 			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
 				data.setTotalNum(data.getTotalNum().subtract(amount));
@@ -395,7 +397,7 @@ public class Report2ServiceImpl implements Report2Service {
 				data.setReturnMoney(data.getReturnMoney().add(money));
 				data.setReturnAssist(data.getReturnAssist().add(assistAmount));
 				data.setItemDiscount(data.getItemDiscount().subtract(discount));
-
+				
 			}
 			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_PRESENT)) {
 				data.setPresentNum(data.getPresentNum().add(amount));
@@ -413,21 +415,40 @@ public class Report2ServiceImpl implements Report2Service {
 				data.setSaleAssist(data.getSaleAssist().add(assistAmount));
 				data.setItemDiscount(data.getItemDiscount().add(discount));
 			}
-
+			if(!itemNums.contains(itemNum)){
+				itemNums.add(itemNum);
+			}
+			
 		}
 		List<PosItemTypeParam> posItemTypeParams = bookResourceService.findPosItemTypeParamsInCache(saleAnalysisQueryData.getSystemBookCode());
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
 		List<SaleAnalysisByPosItemDTO> list = new ArrayList<SaleAnalysisByPosItemDTO>(map.values());
 		PosItemTypeParam topCategory;
+		
+		
+		Collections.sort(list, new Comparator<SaleAnalysisByPosItemDTO>() {
+			@Override
+			public int compare(SaleAnalysisByPosItemDTO o1, SaleAnalysisByPosItemDTO o2) {
+				return o1.getItemNum().compareTo(o2.getItemNum());
+			}
+		});
+		Integer preItemNum = null;
+		PosItem posItem = null;
 		for (int i = list.size() - 1; i >= 0; i--) {
 			SaleAnalysisByPosItemDTO data = list.get(i);
-
+			
 			Integer posItemNum = data.getItemNum();
-
-			PosItem posItem = AppUtil.getPosItem(posItemNum, posItems);
-			if (posItem == null) {
-				list.remove(i);
-				continue;
+			
+			if(preItemNum == null || !preItemNum.equals(posItemNum)){
+				
+				posItem = AppUtil.getPosItem(posItemNum, posItems);
+				if (posItem == null) {
+					list.remove(i);
+					continue;
+				}
+				preItemNum = posItemNum;
 			}
+			
 			if (saleAnalysisQueryData.getBrandCodes() != null && saleAnalysisQueryData.getBrandCodes().size() > 0) {
 				if (!saleAnalysisQueryData.getBrandCodes().contains(posItem.getItemBrand())) {
 					list.remove(i);
@@ -460,7 +481,6 @@ public class Report2ServiceImpl implements Report2Service {
 				data.setTopCategoryCode(data.getCategoryCode());
 				data.setTopCategoryName(data.getCategoryName());
 			}
-
 			
 		}
 		return list;
