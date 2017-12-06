@@ -487,8 +487,32 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method=RequestMethod.GET,value="/test15")
-	public void test15(){
+	public void test15() throws Exception{
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar instance = Calendar.getInstance();
+		Date dateFrom = sdf.parse("2016-10-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+		branchNums.add(4);
+		branchNums.add(5);
+		branchNums.add(6);
+		branchNums.add(7);
+		branchNums.add(8);
+		branchNums.add(9);
+		branchNums.add(10);
+		branchNums.add(11);
+		branchNums.add(12);
+		branchNums.add(99);
+		ItemQueryDTO itemQueryDTO = new ItemQueryDTO();
+		itemQueryDTO.setBranchNums(branchNums);
+		itemQueryDTO.setDateFrom(dateFrom);
+		itemQueryDTO.setDateTo(dateTo);
+		List<BranchItemSummaryDTO> branchItemSum = posOrderRpc.findBranchItemSum("4020",itemQueryDTO);
+		System.out.println();
 		//reportService.
 
 	}

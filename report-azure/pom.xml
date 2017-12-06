@@ -19,17 +19,22 @@
             <version>4.3.10.RELEASE</version>
         </dependency>
 
-        <dependency>
+       <!-- <dependency>
             <groupId>com.nhsoft</groupId>
             <artifactId>amazon-report-export</artifactId>
             <version>0.0.2-SNAPSHOT</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.2.10.Final</version>
         </dependency>
 
-       <!-- <dependency>
-            <groupId>com.nhsoft</groupId>
-            <artifactId>amazon-report-internal</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
-        </dependency>-->
+        <!-- <dependency>
+             <groupId>com.nhsoft</groupId>
+             <artifactId>amazon-report-internal</artifactId>
+             <version>0.0.2-SNAPSHOT</version>
+         </dependency>-->
     </dependencies>
 
 </project>

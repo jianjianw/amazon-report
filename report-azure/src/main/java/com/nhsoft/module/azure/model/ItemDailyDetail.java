@@ -1,4 +1,4 @@
-package com.nhsoft.module.report.dto.azure;
+package com.nhsoft.module.azure.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

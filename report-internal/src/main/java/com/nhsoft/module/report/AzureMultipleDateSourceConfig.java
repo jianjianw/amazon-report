@@ -91,19 +91,19 @@ public class AzureMultipleDateSourceConfig implements EnvironmentAware {
         return druidDataSource;
     }
 
-    @Bean(name = "sessionFactory")
+    @Bean(name = "azureSessionFactory")
     public LocalSessionFactoryBean sessionFactory(){
 
-        logger.info("开始初始化sessionFactory");
+        logger.info("开始初始化azureSessionFactory");
         MultipleDataSourceConfig.MultipleDataSource multipleDataSource = new MultipleDataSourceConfig.MultipleDataSource();
         multipleDataSource.setTargetDataSources(customDataSources);
-        multipleDataSource.setDefaultTargetDataSource(customDataSources.get("cs"));
+        multipleDataSource.setDefaultTargetDataSource(customDataSources.get("4344"));
         multipleDataSource.afterPropertiesSet();
 
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(multipleDataSource);
         sessionFactory.getHibernateProperties().putAll(hibernateProperties);
-        sessionFactory.setPackagesToScan("com.nhsoft.module.report.model");
+        sessionFactory.setPackagesToScan("com.nhsoft.module.azure.model");
         sessionFactory.setPhysicalNamingStrategy(new SpringPhysicalNamingStrategy());
         return sessionFactory;
 

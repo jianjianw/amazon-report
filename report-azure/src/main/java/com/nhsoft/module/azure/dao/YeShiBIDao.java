@@ -1,6 +1,7 @@
 package com.nhsoft.module.azure.dao;
 
-import com.nhsoft.module.report.dto.azure.*;
+
+import com.nhsoft.module.azure.model.*;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface YeShiBIDao {
     /**
      * 分店表
      * */
-    public void insertBranch(List<BranchAzure> branchAzures);
+    public void insertBranch(List<Branch> branches);
 
     /**
      *分店日销售汇总表

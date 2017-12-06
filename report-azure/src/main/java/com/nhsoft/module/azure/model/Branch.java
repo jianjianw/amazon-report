@@ -1,4 +1,4 @@
-package com.nhsoft.module.report.dto.azure;
+package com.nhsoft.module.azure.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * 分店表
  * */
-public class BranchAzure implements Serializable {
+public class Branch implements Serializable {
 
     private String systemBookCode;
     private Integer branchNum;

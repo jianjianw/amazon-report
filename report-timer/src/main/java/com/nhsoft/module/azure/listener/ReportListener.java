@@ -1,3 +1,4 @@
+/*
 package com.nhsoft.module.azure.listener;
 
 import com.nhsoft.module.azure.timer.AzureTask;
@@ -15,8 +16,11 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
         Timer timer = new Timer();
         timer.schedule(new AzureTask(),1000,1000*60*30);
         System.out.println("所有bean初始化完成");
-        /*ThreadPoolTaskExecutor thread = new ThreadPoolTaskExecutor();
+        */
+/*ThreadPoolTaskExecutor thread = new ThreadPoolTaskExecutor();
         thread.execute(new AzureTask());
-        thread.shutdown();*/
+        thread.shutdown();*//*
+
     }
 }
+*/

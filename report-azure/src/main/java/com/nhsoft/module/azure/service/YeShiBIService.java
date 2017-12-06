@@ -1,6 +1,7 @@
 package com.nhsoft.module.azure.service;
 
-import com.nhsoft.module.report.dto.azure.*;
+
+import com.nhsoft.module.azure.model.*;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface YeShiBIService {
     /**
      * 分店表
      * */
-    public void insertBranch(List<BranchAzure> branchs);
+    public void insertBranch(List<Branch> branchs);
 
     /**
      *分店日销售汇总表

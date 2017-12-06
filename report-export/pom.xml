@@ -19,7 +19,11 @@
 
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.nhsoft</groupId>
+            <artifactId>report-azure</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

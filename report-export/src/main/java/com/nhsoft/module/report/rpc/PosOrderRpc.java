@@ -1,9 +1,9 @@
 package com.nhsoft.module.report.rpc;
 
+import com.nhsoft.module.azure.model.BranchDaily;
+import com.nhsoft.module.azure.model.ItemDaily;
+import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.dto.azure.BranchDaily;
-import com.nhsoft.module.report.dto.azure.ItemDaily;
-import com.nhsoft.module.report.dto.azure.ItemDailyDetail;
 
 import java.util.Date;
 import java.util.List;
