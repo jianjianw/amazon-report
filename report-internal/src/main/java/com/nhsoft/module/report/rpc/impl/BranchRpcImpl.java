@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.rpc.impl;
 
+import com.nhsoft.module.azure.model.BranchLat;
 import com.nhsoft.module.report.dto.BranchArea;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.BranchRegionDTO;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Component
 public class BranchRpcImpl implements BranchRpc {
@@ -54,5 +56,6 @@ public class BranchRpcImpl implements BranchRpc {
     public BranchDTO readWithNolock(String systemBookCode, Integer branchNum) {
         return CopyUtil.to(branchService.readWithNolock(systemBookCode,branchNum),BranchDTO.class);
     }
+
 
 }

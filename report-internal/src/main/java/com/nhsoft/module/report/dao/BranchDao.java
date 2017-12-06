@@ -3,9 +3,11 @@ package com.nhsoft.module.report.dao;
 
 
 
+import com.nhsoft.module.azure.model.BranchLat;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.BranchRegion;
 
+import java.util.Date;
 import java.util.List;
 
 public interface BranchDao {
@@ -44,6 +46,22 @@ public interface BranchDao {
 	 * @param branchNums 分店号
 	 */
 	public List<Object[]> findBranchArea(String systemBookCode,List<Integer> branchNums);
+
+	/**
+	 * bi 查询分店维度
+	 *  @param systemBookCode
+	 *  @param dateFrom
+	 *  @param dateTo
+	 * */
+	public List<BranchLat> findBranchLat(String systemBookCode, Date dateFrom, Date dateTo);
+
+	/**
+	 * bi 查询分店
+	 *  @param systemBookCode
+	 *  @param dateFrom
+	 *  @param dateTo
+	 * */
+	public List<com.nhsoft.module.azure.model.Branch> findBranch(String systemBookCode, Date dateFrom, Date dateTo);
 
 
 

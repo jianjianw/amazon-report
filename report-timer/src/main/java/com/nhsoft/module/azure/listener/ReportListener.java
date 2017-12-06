@@ -1,7 +1,9 @@
 package com.nhsoft.module.azure.listener;
 
 import com.nhsoft.module.azure.model.ItemDailyDetail;
+import com.nhsoft.module.azure.model.PosItemLat;
 import com.nhsoft.module.azure.service.AzureService;
+import com.nhsoft.module.report.rpc.PosItemRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -22,6 +24,8 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
     private PosOrderRpc posOrderRpc;
     @Autowired
     private AzureService azureService;
+    @Autowired
+    private PosItemRpc posItemRpc;
 
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         System.out.println("所有bean初始化完成");
@@ -29,8 +33,8 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
         Date dateFrom = null;
         Date dateTo = null;
         try {
-            dateFrom = sdf.parse("2016-01-01");
-            dateTo = sdf.parse("2016-06-30");
+            dateFrom = sdf.parse("2017-01-01");
+            dateTo = sdf.parse("2017-03-31");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -41,16 +45,23 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
         azureService.insertBranchDaily("4344",branchDailySummary);*/
 
 
-       /*//商品日销售汇总
-        List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary("4344", dateFrom, dateTo);
-        azureService.insertItemDaily("4344",itemDailySummary);*/
-
+       //商品日销售汇总
+        /*List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary("4344", dateFrom, dateTo);
+        azureService.insertItemDaily("4344",itemDailySummary);
+*/
 
 
        //findItemDailyDetailSummary
         //商品日时段销售汇总
-        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary("4344", dateFrom, dateTo);
-        azureService.insertItemDailyDetail("4344",itemDailyDetailSummary);
+        /*List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary("4344", dateFrom, dateTo);
+        azureService.insertItemDailyDetail("4344",itemDailyDetailSummary);*/
+
+        /*//导入商品维度
+        List<PosItemLat> itemLat = posItemRpc.findItemLat("4344");
+        azureService.insertPosItemLat("4344",itemLat);*/
+
+
+
 
        /* Timer timer = new Timer();
         timer.schedule(new AzureTask(),1000,1000*60*30);

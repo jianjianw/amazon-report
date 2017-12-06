@@ -69,7 +69,7 @@ public interface PosOrderRpc  {
 	*
 	*  bi  商品日销售汇总
 	* */
-    public List<ItemDaily> findItemDailySummary(String systemBookCode,Date dateFrom, Date dateTo);
+    public List<ItemDaily> findItemDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 
 
     /**

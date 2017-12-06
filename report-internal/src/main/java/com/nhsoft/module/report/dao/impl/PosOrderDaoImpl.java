@@ -5048,6 +5048,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
 		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
 		sb.append("and detail.order_detail_state_code != 8 ");
+		sb.append("and detail.item_num is not null ");
 		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", systemBookCode);
@@ -5065,12 +5066,13 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between '"
 				+ DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		sb.append("and p.order_state_code in (5,7) ");
-
+		sb.append("and detail.item_num is not null ");
 		sb.append("group by p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
 
 	}
+
 
 }

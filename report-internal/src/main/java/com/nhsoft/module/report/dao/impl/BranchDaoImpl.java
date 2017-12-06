@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.dao.impl;
 
 
+import com.nhsoft.module.azure.model.BranchLat;
 import com.nhsoft.module.report.dao.BranchDao;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.BranchRegion;
@@ -12,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 
+import java.util.Date;
 import java.util.List;
 @Repository
 public class BranchDaoImpl extends DaoImpl implements BranchDao {
@@ -87,4 +89,19 @@ public class BranchDaoImpl extends DaoImpl implements BranchDao {
 		List list = sqlQuery.list();
 		return list;
 	}
+
+	@Override
+	public List<BranchLat> findBranchLat(String systemBookCode, Date dateFrom, Date dateTo) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select branch_num,banch_name");
+		return null;
+	}
+
+	@Override
+	public List<com.nhsoft.module.azure.model.Branch> findBranch(String systemBookCode, Date dateFrom, Date dateTo) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select branch_num,branch_code,branch_name,");
+		return null;
+	}
+
 }

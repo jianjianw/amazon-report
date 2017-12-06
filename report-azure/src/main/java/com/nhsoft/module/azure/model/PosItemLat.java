@@ -13,7 +13,7 @@ public class PosItemLat implements Serializable {
     private String systemBookCode;
     @Id
     private Integer itemNum;
-    private String category;
+    private String item_category;
 
     public String getSystemBookCode() {
         return systemBookCode;
@@ -31,11 +31,11 @@ public class PosItemLat implements Serializable {
         this.itemNum = itemNum;
     }
 
-    public String getCategory() {
-        return category;
+    public String getItem_category() {
+        return item_category;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setItem_category(String item_category) {
+        this.item_category = item_category;
     }
 }

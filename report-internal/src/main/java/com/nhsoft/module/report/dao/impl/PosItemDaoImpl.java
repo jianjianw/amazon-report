@@ -321,6 +321,8 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 
 	}
 
+
+
 	private String createByPosItemQueryString(PosItemQuery posItemQuery){
 		if(posItemQuery.getItemTypes() == null){
 			posItemQuery.setItemTypes(new ArrayList<Integer>());
@@ -682,5 +684,14 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		SQLQuery query = currentSession().createSQLQuery(sql);
 		query.addEntity(ItemBar.class);
 		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findItemLat(String systemBookCode) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select item_num, item_category ");
+		sb.append("from pos_item where system_book_code = '" + systemBookCode+  "' ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
 	}
 }

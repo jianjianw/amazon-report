@@ -987,7 +987,8 @@ public interface PosOrderDao {
 	public List<Object[]> findItemDailySummary(String systemBookCode,Date dateFrom, Date dateTo);
 
 	/**
-	 * 商品日时段销售汇总
+	 * bi 商品日时段销售汇总
 	 * */
 	public List<Object[]> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo);
+
 }
