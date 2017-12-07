@@ -88,7 +88,6 @@ public class BranchRpcImpl implements BranchRpc {
             branch.setBranchCreateTime(DateUtil.getDateTimeHMS((String)object[8]));
             list.add(branch);
         }
-
         return list;
     }
 
