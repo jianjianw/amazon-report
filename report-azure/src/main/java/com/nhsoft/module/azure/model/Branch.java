@@ -11,18 +11,19 @@ import java.util.Date;
  * */
 @Entity
 public class Branch implements Serializable {
+
     @Id
     private String systemBookCode;
     @Id
     private Integer branchNum;
     private String branchCode;
     private String branchName;
-    private boolean actived;        //是否启用
-    private boolean rdc;            //是否配送区域
-    private String type;            //门店类型
-    private BigDecimal area;
-    private Integer employeeCount;  //门店人数
-    private Date createTime;
+    private boolean branchActived;        //是否启用
+    private boolean ranchRdc;            //是否配送区域
+    private String branchType;            //门店类型
+    private BigDecimal branchArea;
+    private Integer branchEmployeeCount;  //门店人数
+    private Date branchCreateTime;
 
 
     public String getSystemBookCode() {
@@ -57,51 +58,51 @@ public class Branch implements Serializable {
         this.branchName = branchName;
     }
 
-    public boolean isActived() {
-        return actived;
+    public boolean isBranchActived() {
+        return branchActived;
     }
 
-    public void setActived(boolean actived) {
-        this.actived = actived;
+    public void setBranchActived(boolean branchActived) {
+        this.branchActived = branchActived;
     }
 
-    public boolean isRdc() {
-        return rdc;
+    public boolean isRanchRdc() {
+        return ranchRdc;
     }
 
-    public void setRdc(boolean rdc) {
-        this.rdc = rdc;
+    public void setRanchRdc(boolean ranchRdc) {
+        this.ranchRdc = ranchRdc;
     }
 
-    public String getType() {
-        return type;
+    public String getBranchType() {
+        return branchType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setBranchType(String branchType) {
+        this.branchType = branchType;
     }
 
-    public BigDecimal getArea() {
-        return area;
+    public BigDecimal getBranchArea() {
+        return branchArea;
     }
 
-    public void setArea(BigDecimal area) {
-        this.area = area;
+    public void setBranchArea(BigDecimal branchArea) {
+        this.branchArea = branchArea;
     }
 
-    public Integer getEmployeeCount() {
-        return employeeCount;
+    public Integer getBranchEmployeeCount() {
+        return branchEmployeeCount;
     }
 
-    public void setEmployeeCount(Integer employeeCount) {
-        this.employeeCount = employeeCount;
+    public void setBranchEmployeeCount(Integer branchEmployeeCount) {
+        this.branchEmployeeCount = branchEmployeeCount;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public Date getBranchCreateTime() {
+        return branchCreateTime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setBranchCreateTime(Date branchCreateTime) {
+        this.branchCreateTime = branchCreateTime;
     }
 }

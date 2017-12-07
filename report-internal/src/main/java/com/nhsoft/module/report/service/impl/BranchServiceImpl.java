@@ -118,6 +118,10 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 		return branchDao.readWithNolock(systemBookCode,branchNum);
 	}
 
+	@Override
+	public List<Object[]> findBranch(String systemBookCode) {
+		return branchDao.findBranch(systemBookCode);
+	}
 
 
 }

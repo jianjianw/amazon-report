@@ -49,4 +49,10 @@ public interface BranchRpc {
      * */
     public BranchDTO readWithNolock(String systemBookCode, Integer branchNum);
 
+    /**
+     * bi 查询分店
+     *  @param systemBookCode
+     * */
+    public List<com.nhsoft.module.azure.model.Branch> findBranch(String systemBookCode);
+
 }

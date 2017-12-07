@@ -34,6 +34,6 @@ public class AzureTask extends TimerTask {
         Date time = calendar.getTime();
         System.out.println("task运行了");
         List<BranchDaily> branchDailySummary =  posOrderRpc.findBranchDailySummary("4344", dateFrom, daetTo);
-        yeShiBIService.insertBranchDaily("4344",branchDailySummary);
+        System.out.println("task运行了.....");
     }
 }

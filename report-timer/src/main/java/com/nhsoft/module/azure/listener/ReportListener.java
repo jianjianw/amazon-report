@@ -1,8 +1,10 @@
 package com.nhsoft.module.azure.listener;
 
+import com.nhsoft.module.azure.model.BranchDaily;
 import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.azure.model.PosItemLat;
 import com.nhsoft.module.azure.service.AzureService;
+import com.nhsoft.module.azure.timer.AzureTask;
 import com.nhsoft.module.report.rpc.PosItemRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class ReportListener implements ApplicationListener<ContextRefreshedEvent> {
@@ -28,21 +28,50 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
     private PosItemRpc posItemRpc;
 
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+
         System.out.println("所有bean初始化完成");
         SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd");
         Date dateFrom = null;
         Date dateTo = null;
         try {
-            dateFrom = sdf.parse("2017-01-01");
-            dateTo = sdf.parse("2017-03-31");
+            dateFrom = sdf.parse("2017-06-01");
+            dateTo = sdf.parse("2017-12-04");
         } catch (ParseException e) {
             e.printStackTrace();
         }
         Calendar calendar = Calendar.getInstance();
         Date time = calendar.getTime();
-      /*  //分店日销售汇总表
-        List<BranchDaily> branchDailySummary =  posOrderRpc.findBranchDailySummary("4344", dateFrom, dateTo);
-        azureService.insertBranchDaily("4344",branchDailySummary);*/
+
+
+
+
+       /* Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd");
+                Date dateFrom = null;
+                Date dateTo = null;
+                try {
+                    dateFrom = sdf.parse("2017-06-01");
+                    dateTo = sdf.parse("2017-12-04");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary("4020", dateFrom, dateTo);
+                System.out.println(branchDailySummary.toString());
+            }
+        },1000*30,1000*60*30);
+
+        System.out.println("所有bean初始化完成..........");*/
+
+
+
+
+
+        //分店日销售汇总表
+        List<BranchDaily> branchDailySummary =  posOrderRpc.findBranchDailySummary("4410", dateFrom, dateTo);
+        azureService.insertBranchDaily("4410",branchDailySummary);
 
 
        //商品日销售汇总
@@ -50,11 +79,11 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
         azureService.insertItemDaily("4344",itemDailySummary);
 */
 
-
        //findItemDailyDetailSummary
         //商品日时段销售汇总
         /*List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary("4344", dateFrom, dateTo);
         azureService.insertItemDailyDetail("4344",itemDailyDetailSummary);*/
+
 
         /*//导入商品维度
         List<PosItemLat> itemLat = posItemRpc.findItemLat("4344");
@@ -63,9 +92,8 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
 
 
 
-       /* Timer timer = new Timer();
+        Timer timer = new Timer();
         timer.schedule(new AzureTask(),1000,1000*60*30);
-        System.out.println("所有bean初始化完成");*/
         /*ThreadPoolTaskExecutor thread = new ThreadPoolTaskExecutor();
                 thread.execute(new AzureTask());
                 thread.shutdown();*/

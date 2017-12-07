@@ -47,21 +47,12 @@ public interface BranchDao {
 	 */
 	public List<Object[]> findBranchArea(String systemBookCode,List<Integer> branchNums);
 
-	/**
-	 * bi 查询分店维度
-	 *  @param systemBookCode
-	 *  @param dateFrom
-	 *  @param dateTo
-	 * */
-	public List<BranchLat> findBranchLat(String systemBookCode, Date dateFrom, Date dateTo);
 
 	/**
 	 * bi 查询分店
 	 *  @param systemBookCode
-	 *  @param dateFrom
-	 *  @param dateTo
 	 * */
-	public List<com.nhsoft.module.azure.model.Branch> findBranch(String systemBookCode, Date dateFrom, Date dateTo);
+	public List<Object[]> findBranch(String systemBookCode);
 
 
 
