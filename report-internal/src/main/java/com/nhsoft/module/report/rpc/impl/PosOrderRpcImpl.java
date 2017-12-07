@@ -483,21 +483,236 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
+		Map<String,ItemDailyDetail> map = new HashMap<>();
 		for (int i = 0; i < objects.size() ; i++) {
 			Object[] object = objects.get(i);
-			ItemDailyDetail itemDailyDetail = new ItemDailyDetail();
-			itemDailyDetail.setSystemBookCode(systemBookCode);
-			itemDailyDetail.setBranchNum((Integer) object[0]);
-			itemDailyDetail.setShiftTableBizday((String) object[1]);
-			itemDailyDetail.setItemPeriod((String) object[2]);
-			itemDailyDetail.setItemSource((String) object[3]);
-			itemDailyDetail.setItemNum((Integer) object[4]);
-			itemDailyDetail.setItemMoney((BigDecimal) object[5]);
-			itemDailyDetail.setItemAmout((Integer) object[6]);
-			itemDailyDetail.setShiftTableDate(DateUtil.getDateStr(itemDailyDetail.getShiftTableBizday()));
-			list.add(itemDailyDetail);
-		}
-		return list;
+			//向map添加数据
+			StringBuilder sb = new StringBuilder();
+			StringBuilder append = sb.append((Integer) object[0]).append((String) object[1]).append((String) object[3]).append((Integer) object[4]);
+			String key = append.toString();
+			ItemDailyDetail itemDailyDetail = map.get(key);
+			if(itemDailyDetail != null){
+				Integer period = Integer.valueOf(itemDailyDetail.getItemPeriod());
+				if(period>= 0 && period<=30){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0030");
+				}else if(period>= 0 && period<=100){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0100");
+				}else if(period>= 0 && period<=130){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0130");
+				}else if(period>= 0 && period<=200){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0200");
+				}else if(period>= 0 && period<=230){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0230");
+				}else if(period>= 0 && period<=300){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0030");
+				}else if(period>= 0 && period<=330){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0330");
+				}else if(period>= 0 && period<=400){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0400");
+				}else if(period>= 0 && period<=430){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0430");
+				}else if(period>= 0 && period<=500){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0500");
+				}else if(period>= 0 && period<=530){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0530");
+				}else if(period>= 0 && period<=600){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0600");
+				}else if(period>= 0 && period<=630){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0630");
+				}else if(period>= 0 && period<=700){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0700");
+				}else if(period>= 0 && period<=730){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("730");
+				}else if(period>= 0 && period<=800 ){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("800");
+				}else if(period>= 0 && period<=830){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("830");
+				}else if(period>= 0 && period<=900){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("900");
+				}else if(period>= 0 && period<=930){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("930");
+				}else if(period>= 0 && period<=1000){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1000");
+				}else if(period>= 0 && period<=1030){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1030");
+				}else if(period>= 0 && period<=1100){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1100");
+				}else if(period>= 0 && period<=1130){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1130");
+				}else if(period>= 0 && period<=1200){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1200");
+				}else if(period>= 0 && period<=1230){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1230");
+				}else if(period>= 0 && period<=1300){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1300");
+				}else if(period>= 0 && period<=1330){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1330");
+				}else if(period>= 0 && period<=1400){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1400");
+				}else if(period>= 0 && period<=1430){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1430");
+				}else if(period>= 0 && period<=1500){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1500");
+				}else if(period>= 0 && period<=1530){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1530");
+				}else if(period>= 0 && period<=1600){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1600");
+				}else if(period>= 0 && period<=1630){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1630");
+				}else if(period>= 0 && period<=1700){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1700");
+				}else if(period>= 0 && period<=1730){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1730");
+				}else if(period>= 0 && period<=1800){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1800");
+				}else if(period>= 0 && period<=1830){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1830");
+				}else if(period>= 0 && period<=1900){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1900");
+				}else if(period>= 0 && period<=1930){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("1930");
+				}else if(period>= 0 && period<=2000){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("2000");
+				}else if(period>= 0 && period<=2030){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("2030");
+				}else if(period>= 0 && period<=2100){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("2100");
+				}else if(period>= 0 && period<=2130){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("2130");
+				}else if(period>= 0 && period<=2200){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("2200");
+				}else if(period>= 0 && period<=2230){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("2230");
+				}else if(period>= 0 && period<=2300){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("2300");
+				}else if(period>= 0 && period<=2330){
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("2330");
+				}else{//2400
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO :(BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 :(Integer) object[6]));
+					itemDailyDetail.setItemPeriod("0000");
+				}
+			}else{
+				ItemDailyDetail dailyDetail = new ItemDailyDetail();
+				dailyDetail.setSystemBookCode(systemBookCode);
+				dailyDetail.setBranchNum((Integer) object[0]);
+				dailyDetail.setShiftTableBizday((String) object[1]);
+				dailyDetail.setItemPeriod((String) object[2]);
+				dailyDetail.setItemSource((String) object[3]);
+				dailyDetail.setItemNum((Integer) object[4]);
+				dailyDetail.setItemMoney((BigDecimal) object[5]);
+				dailyDetail.setItemAmout((Integer) object[6]);
+				dailyDetail.setShiftTableDate(DateUtil.getDateStr(dailyDetail.getShiftTableBizday()));
+				map.put(key,dailyDetail);
+			}
+			List<ItemDailyDetail> resultList = new ArrayList<>();
+			Set<String> keys = map.keySet();
+			for (String mapKey : keys) {
+				ItemDailyDetail itemDailyDetail1 = map.get(mapKey);
+				resultList.add(itemDailyDetail1);
+			}
+
+		return resultList;
+
+
+
+
+
+
 
 	}
 
