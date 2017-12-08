@@ -379,17 +379,22 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
+		Integer branchNum;
+		Integer itemNum;
 		Map<String,BranchItemSummaryDTO> map = new HashMap<>();
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
-			String key = (Integer)object[0] + (Integer) object[1]+"";
-			if(map.containsKey(key)){
-				BranchItemSummaryDTO branchItemSummaryDTO = map.get(key);
-				branchItemSummaryDTO.setAmount(branchItemSummaryDTO.getAmount().add((BigDecimal) object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2] ));
-				branchItemSummaryDTO.setMoney(branchItemSummaryDTO.getMoney().add((BigDecimal) object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]));
-				branchItemSummaryDTO.setProfit(branchItemSummaryDTO.getProfit().add((BigDecimal) object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]));
-				branchItemSummaryDTO.setSaleCount(branchItemSummaryDTO.getSaleCount() + ((Integer) object[5] == null ? 0 : (Integer) object[5]));
-				branchItemSummaryDTO.setCost(branchItemSummaryDTO.getCost().add((BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]));
+			branchNum = (Integer)object[0];
+			itemNum = (Integer) object[1];
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(itemNum).toString();
+			BranchItemSummaryDTO branchItemSummary = map.get(key);
+			if(branchItemSummary != null){
+				branchItemSummary.setAmount(branchItemSummary.getAmount().add((BigDecimal) object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2] ));
+				branchItemSummary.setMoney(branchItemSummary.getMoney().add((BigDecimal) object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]));
+				branchItemSummary.setProfit(branchItemSummary.getProfit().add((BigDecimal) object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]));
+				branchItemSummary.setSaleCount(branchItemSummary.getSaleCount() + ((Integer) object[5] == null ? 0 : (Integer) object[5]));
+				branchItemSummary.setCost(branchItemSummary.getCost().add((BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]));
 			}else{
 				BranchItemSummaryDTO branchItemSummaryDTO = new BranchItemSummaryDTO();
 				branchItemSummaryDTO.setBranchNum((Integer) object[0]);
@@ -402,13 +407,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				map.put(key,branchItemSummaryDTO);
 			}
 		}
-		Set<String> keys = map.keySet();
-		for (String key : keys) {
-			BranchItemSummaryDTO branchItemSummaryDTO = map.get(key);
-			list.add(branchItemSummaryDTO);
-		}
-
-		return list;
+		return new ArrayList<BranchItemSummaryDTO>(map.values());
 	}
 
 	public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo){
