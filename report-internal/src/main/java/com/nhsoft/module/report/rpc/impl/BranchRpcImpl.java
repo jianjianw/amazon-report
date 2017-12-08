@@ -72,7 +72,9 @@ public class BranchRpcImpl implements BranchRpc {
             branch.setBranchNum((Integer) object[0]);
             branch.setBranchCode((String) object[1]);
             branch.setBranchName((String) object[2]);
-            if((int)object[3] == 1){
+            branch.setBranchActived((boolean) object[3]);
+            branch.setRanchRdc((boolean) object[4]);
+           /* if((int)object[3] == 1){
                 branch.setBranchActived(true);
             }else{
                 branch.setBranchActived(false);
@@ -81,11 +83,15 @@ public class BranchRpcImpl implements BranchRpc {
                 branch.setRanchRdc(true);
             }else{
                 branch.setRanchRdc(false);
-            }
+            }*/
             branch.setBranchType((String) object[5]);
             branch.setBranchArea((BigDecimal) object[6]);
             branch.setBranchEmployeeCount((Integer) object[7]);
-            branch.setBranchCreateTime(DateUtil.getDateTimeHMS((String)object[8]));
+            if((String)object[8] == null){
+                branch.setBranchCreateTime(null);
+            }else{
+                branch.setBranchCreateTime(DateUtil.getDateTimeHMS((String)object[8]));
+            }
             list.add(branch);
         }
         return list;
