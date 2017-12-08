@@ -149,6 +149,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.0.24</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.nhsoft</groupId>
             <artifactId>amazon-phone</artifactId>
             <version>1.0</version>
@@ -210,12 +216,6 @@
             <version>4.3.10.RELEASE</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.0.24</version>
-        </dependency>
 
 
     </dependencies>
