@@ -1,5 +1,6 @@
 package com.nhsoft.module.report;
 
+import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.report.api.ReportApi;
 import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dao.PosOrderDao;
@@ -9,6 +10,7 @@ import com.nhsoft.module.report.dto.ShipOrderSummary;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.util.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -217,7 +220,63 @@ public class TestSpringBoot {
     }
 
 
+    public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo);
+        List<ItemDailyDetail> list = new ArrayList<>();
+        if (objects.isEmpty()) {
+            return list;
+        }
+        Map<String, ItemDailyDetail> map = new HashMap<>();
+        for (int i = 0; i < objects.size(); i++) {
+            Object[] object = objects.get(i);
+            //向map添加数据
+            StringBuilder sb = new StringBuilder();
+            StringBuilder append = sb.append((Integer) object[0]).append((String) object[1]).append((String) object[3]).append((Integer) object[4]);
+            String key = append.toString();
+            ItemDailyDetail itemDailyDetail = map.get(key);
+            if (itemDailyDetail != null) {
+                String itemPeriod = itemDailyDetail.getItemPeriod();
+                String hour = itemPeriod.substring(0, 2);
+                Integer intHour = Integer.valueOf(itemPeriod.substring(0, 2));
+                String min = itemPeriod.substring(2, 4);
+                Integer intMin = Integer.valueOf(itemPeriod.substring(2, 4));
 
+                if (intMin >= 0 && intMin <= 30) {
+                    itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]));
+                    itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 : (Integer) object[6]));
+                    itemDailyDetail.setItemPeriod(itemPeriod);
+                } else {
+                    itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]));
+                    itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() + ((Integer) object[6] == null ? 0 : (Integer) object[6]));
+                    int hourCount = intHour + 1;
+                    StringBuilder stringBuilder = new StringBuilder();
+                    StringBuilder append1 = stringBuilder.append(hourCount).append(intMin);
+                    itemDailyDetail.setItemPeriod(append1.toString());
+                }
+            } else {
+                ItemDailyDetail dailyDetail = new ItemDailyDetail();
+                dailyDetail.setSystemBookCode(systemBookCode);
+                dailyDetail.setBranchNum((Integer) object[0]);
+                dailyDetail.setShiftTableBizday((String) object[1]);
+                dailyDetail.setItemPeriod((String) object[2]);
+                dailyDetail.setItemSource((String) object[3]);
+                dailyDetail.setItemNum((Integer) object[4]);
+                dailyDetail.setItemMoney((BigDecimal) object[5]);
+                dailyDetail.setItemAmout((Integer) object[6]);
+                dailyDetail.setShiftTableDate(DateUtil.getDateStr(dailyDetail.getShiftTableBizday()));
+                map.put(key, dailyDetail);
+            }
+
+        }
+        List<ItemDailyDetail> resultList = new ArrayList<>();
+        Set<String> keys = map.keySet();
+        for (String mapKey : keys) {
+            ItemDailyDetail itemDailyDetail1 = map.get(mapKey);
+            resultList.add(itemDailyDetail1);
+        }
+
+        return resultList;
+    }
 
 
 
