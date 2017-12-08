@@ -30,7 +30,5 @@ public class AzureTask extends TimerTask {
         System.out.println("task运行了");
         List<BranchDaily> branchDailySummary =  posOrderRpc.findBranchDailySummary("4344", dateFrom, daetTo);
         System.out.println("task运行了.....");*/
-       AzureTest azureTest = new AzureTest();
-       azureTest.test();
     }
 }

@@ -14,6 +14,11 @@ public class ItemDailyDetail implements Serializable {
 
 
 
+    public ItemDailyDetail() {
+        this.itemAmout = 0;
+        this.itemMoney = BigDecimal.ZERO;
+    }
+
     @Id
     private Integer branchNum;
     @Id

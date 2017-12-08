@@ -38,4 +38,37 @@ public class InitApi {
         azureService.insertBranchDaily(systemBookCode,branchDailySummary);
         return "SUCCESS";
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/init2016")
+    public String init2016(){
+        SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateFrom = null;
+        Date dateTo = null;
+        try {
+            dateFrom = sdf.parse("2016-01-01");
+            dateTo = sdf.parse("2016-12-31");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String systembookCode = "4410";
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systembookCode, dateFrom, dateTo);
+        azureService.insertBranchDaily(systembookCode,branchDailySummary);
+        return "SUCCESS";
+    }
+    @RequestMapping(method = RequestMethod.POST, value = "/init2017")
+    public String init2017(){
+        SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateFrom = null;
+        Date dateTo = null;
+        try {
+            dateFrom = sdf.parse("2017-01-01");
+            dateTo = sdf.parse("2017-12-07");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String systembookCode = "4410";
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systembookCode, dateFrom, dateTo);
+        azureService.insertBranchDaily(systembookCode,branchDailySummary);
+        return "SUCCESS";
+    }
 }

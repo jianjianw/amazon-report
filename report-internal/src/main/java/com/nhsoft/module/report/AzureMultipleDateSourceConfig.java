@@ -27,7 +27,7 @@ public class AzureMultipleDateSourceConfig implements EnvironmentAware {
 
     private Map hibernateProperties = new HashMap();
 
-    public static class MultipleDataSource extends AbstractRoutingDataSource {
+    public static class AzureMultipleDataSource extends AbstractRoutingDataSource {
 
         @Override
         protected Object determineCurrentLookupKey() {
@@ -97,7 +97,7 @@ public class AzureMultipleDateSourceConfig implements EnvironmentAware {
     public LocalSessionFactoryBean sessionFactory(){
 
         logger.info("开始初始化azureSessionFactory");
-        MultipleDataSourceConfig.MultipleDataSource multipleDataSource = new MultipleDataSourceConfig.MultipleDataSource();
+        AzureMultipleDateSourceConfig.AzureMultipleDataSource multipleDataSource = new AzureMultipleDateSourceConfig.AzureMultipleDataSource();
         multipleDataSource.setTargetDataSources(customDataSources);
         multipleDataSource.setDefaultTargetDataSource(customDataSources.get("4344"));
         multipleDataSource.afterPropertiesSet();

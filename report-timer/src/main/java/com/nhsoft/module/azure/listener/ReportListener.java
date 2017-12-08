@@ -1,3 +1,4 @@
+/*
 package com.nhsoft.module.azure.listener;
 
 import com.nhsoft.module.azure.model.BranchDaily;
@@ -44,7 +45,8 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
 
         Timer timer = new Timer();
         //timer.schedule(new AzureTask(),1000);
-       /* //每半个小时更新数据
+       */
+/* //每半个小时更新数据
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -75,10 +77,12 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
                 List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary("4020", dateFrom, dateTo);
                 azureService.insertBranchDaily(systembookCode,branchDailySummary);
             }
-        },date);*/
+        },date);*//*
 
 
-      /* //每半个小时更新数据  (商品时段信息)
+
+      */
+/* //每半个小时更新数据  (商品时段信息)
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -87,35 +91,49 @@ public class ReportListener implements ApplicationListener<ContextRefreshedEvent
                 List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systembookCode, date, date);
                 azureService.insertItemDailyDetail(systembookCode,itemDailyDetailSummary);
             }
-        },1000*60*5,1000*60*30);*/
+        },1000*60*5,1000*60*30);*//*
 
 
 
 
 
-        /*//分店日销售汇总表
+
+        */
+/*//*
+/分店日销售汇总表
         List<BranchDaily> branchDailySummary =  posOrderRpc.findBranchDailySummary("4410", dateFrom, dateTo);
-        azureService.insertBranchDaily("4410",branchDailySummary);*/
+        azureService.insertBranchDaily("4410",branchDailySummary);*//*
+
 
 
        //商品日销售汇总
-        /*List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary("4344", dateFrom, dateTo);
+        */
+/*List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary("4344", dateFrom, dateTo);
         azureService.insertItemDaily("4344",itemDailySummary);
-*/
+*//*
+
 
        //findItemDailyDetailSummary
         //商品日时段销售汇总
-        /*List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary("4344", dateFrom, dateTo);
-        azureService.insertItemDailyDetail("4344",itemDailyDetailSummary);*/
+        */
+/*List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary("4344", dateFrom, dateTo);
+        azureService.insertItemDailyDetail("4344",itemDailyDetailSummary);*//*
 
 
-        /*//导入商品维度
+
+        */
+/*//*
+/导入商品维度
         List<PosItemLat> itemLat = posItemRpc.findItemLat("4344");
-        azureService.insertPosItemLat("4344",itemLat);*/
+        azureService.insertPosItemLat("4344",itemLat);*//*
 
-        /*ThreadPoolTaskExecutor thread = new ThreadPoolTaskExecutor();
+
+        */
+/*ThreadPoolTaskExecutor thread = new ThreadPoolTaskExecutor();
                 thread.execute(new AzureTask());
-                thread.shutdown();*/
+                thread.shutdown();*//*
+
 
     }
 }
+*/
