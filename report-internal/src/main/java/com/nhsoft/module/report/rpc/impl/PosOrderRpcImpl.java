@@ -506,6 +506,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			} else {
 				itemPeriod = StringUtils.leftPad((intHour + 1) + "", 2, "0") + "00";
 			}
+
 			//向map添加数据
 			StringBuilder append = new StringBuilder();
 			append.append(branchNum).append(bizday).append(source).append(itemNum).append(itemPeriod);

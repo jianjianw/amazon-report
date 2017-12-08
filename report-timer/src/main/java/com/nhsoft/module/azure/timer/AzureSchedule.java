@@ -49,6 +49,16 @@ public class AzureSchedule {
         azureService.insertBranchDaily(systemBookCode,branchDailySummary);
     }
 
+    @Scheduled(cron="0 0,30 * * * *")
+    public void insertItem(){                 //从凌晨开始，每个小时的0分和30分执行一次 (商品日汇总)
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        String systemBookCode = "4410";
+        List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary(systemBookCode, date, date);
+        azureService.insertItemDaily(systemBookCode,itemDailySummary);
+    }
+
+
 
     @Scheduled(cron="0 0,30 * * * *")
     public void itemDailyDetailMinute(){        //商品日时段销售汇总(从凌晨开始，每个小时的0分和30分执行一次)
@@ -59,14 +69,7 @@ public class AzureSchedule {
         azureService.insertItemDailyDetail(systemBookCode,itemDailyDetailSummary);
     }
 
-    @Scheduled(cron="0 */30 * * * *")
-    public void insertItem(){                 //每30分钟执行一次  (商品日汇总)
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        String systemBookCode = "4410";
-        List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary(systemBookCode, date, date);
-        azureService.insertItemDaily(systemBookCode,itemDailySummary);
-    }
+
 
 
     @Scheduled(cron="0 0 2-4 * * *")
