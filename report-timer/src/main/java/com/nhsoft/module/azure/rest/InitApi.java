@@ -1,6 +1,8 @@
 package com.nhsoft.module.azure.rest;
 
 import com.nhsoft.module.azure.model.BranchDaily;
+import com.nhsoft.module.azure.model.ItemDaily;
+import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,8 @@ public class InitApi {
         return "SUCCESS";
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/init2016")
+
+    @RequestMapping(method = RequestMethod.GET, value = "/init2016")
     public String init2016(){
         SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd");
         Date dateFrom = null;
@@ -55,7 +58,8 @@ public class InitApi {
         azureService.insertBranchDaily(systembookCode,branchDailySummary);
         return "SUCCESS";
     }
-    @RequestMapping(method = RequestMethod.POST, value = "/init2017")
+
+    @RequestMapping(method = RequestMethod.GET, value = "/init2017")
     public String init2017(){
         SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd");
         Date dateFrom = null;
@@ -69,6 +73,24 @@ public class InitApi {
         String systembookCode = "4410";
         List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systembookCode, dateFrom, dateTo);
         azureService.insertBranchDaily(systembookCode,branchDailySummary);
+        return "SUCCESS";
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/itemDetail")
+    public String itemDetail(){
+        SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateFrom = null;
+        Date dateTo = null;
+        try {
+            dateFrom = sdf.parse("2017-01-01");
+            dateTo = sdf.parse("2017-10-01");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String systembookCode = "4344";
+        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systembookCode, dateFrom, dateTo);
+        azureService.insertItemDailyDetail(systembookCode,itemDailyDetailSummary);
         return "SUCCESS";
     }
 }
