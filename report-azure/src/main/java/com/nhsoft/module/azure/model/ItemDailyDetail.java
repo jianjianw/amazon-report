@@ -11,13 +11,23 @@ import java.util.Date;
  * */
 @Entity
 public class ItemDailyDetail implements Serializable {
-
-
-
     public ItemDailyDetail() {
+        this.branchNum = 0;
+        this.shiftTableBizday = "";
+        this.itemNum = 0;
+        this.systemBookCode = "";
+        this.itemPeriod = "";
         this.itemAmout = BigDecimal.ZERO;
         this.itemMoney = BigDecimal.ZERO;
+        this.itemSource = "";
     }
+
+
+
+    /*public ItemDailyDetail() {
+        this.itemAmout = BigDecimal.ZERO;
+        this.itemMoney = BigDecimal.ZERO;
+    }*/
 
     @Id
     private Integer branchNum;

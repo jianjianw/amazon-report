@@ -437,7 +437,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			}
 			//将营业额目标封装到分店日汇总中
 			for (int j = 0; j <goals.size() ; j++) {
-				SaleMoneyGoals saleMoneyGoals = goals.get(i);
+				SaleMoneyGoals saleMoneyGoals = goals.get(j);
 				if (saleMoneyGoals.getSystemBookCode().equals(branchDaily.getSystemBookCode()) && saleMoneyGoals.getBranchNum().equals(branchDaily.getBranchNum()) &&
 						saleMoneyGoals.getDate().replace("-","").equals(branchDaily.getShiftTableBizday())){
 					branchDaily.setTargetMoney(saleMoneyGoals.getSaleMoney());
