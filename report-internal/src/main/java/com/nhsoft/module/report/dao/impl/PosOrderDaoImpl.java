@@ -5061,7 +5061,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findItemDailyDetailSummary(String systemBookCode,Date dateFrom,Date dateTo){
 		StringBuffer sb = new StringBuffer();		//findCustomerAnalysisTimePeriodsByItems
 		sb.append("select p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num, sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
-		sb.append("count(distinct detail.order_no) as amount ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between '"
 				+ DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");

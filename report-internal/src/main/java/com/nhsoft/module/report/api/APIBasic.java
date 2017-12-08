@@ -491,7 +491,7 @@ public class APIBasic {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar instance = Calendar.getInstance();
-		Date dateFrom = sdf.parse("2016-10-01");
+		Date dateFrom = sdf.parse("2017-01-28");
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> branchNums = new ArrayList();
 		branchNums.add(1);

@@ -149,6 +149,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.0.24</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.nhsoft</groupId>
             <artifactId>amazon-phone</artifactId>
             <version>1.0</version>
@@ -170,6 +176,12 @@
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
             <version>3.4.9</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.sgroschupf</groupId>
@@ -184,11 +196,11 @@
             <version>0.0.2-SNAPSHOT</version>
         </dependency>
 
-       <!-- <dependency>
+        <dependency>
             <groupId>com.nhsoft</groupId>
             <artifactId>report-azure</artifactId>
             <version>0.0.2-SNAPSHOT</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>com.nhsoft</groupId>
             <artifactId>report-timer</artifactId>
@@ -210,12 +222,6 @@
             <version>4.3.10.RELEASE</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.0.24</version>
-        </dependency>
 
 
     </dependencies>

@@ -11,8 +11,23 @@ import java.util.Date;
  * */
 @Entity
 public class ItemDailyDetail implements Serializable {
+    public ItemDailyDetail() {
+        this.branchNum = 0;
+        this.shiftTableBizday = "";
+        this.itemNum = 0;
+        this.systemBookCode = "";
+        this.itemPeriod = "";
+        this.itemAmout = BigDecimal.ZERO;
+        this.itemMoney = BigDecimal.ZERO;
+        this.itemSource = "";
+    }
 
 
+
+    /*public ItemDailyDetail() {
+        this.itemAmout = BigDecimal.ZERO;
+        this.itemMoney = BigDecimal.ZERO;
+    }*/
 
     @Id
     private Integer branchNum;
@@ -25,7 +40,7 @@ public class ItemDailyDetail implements Serializable {
     @Id
     private String itemPeriod;      //时段
     private Date shiftTableDate;          //营业日期
-    private Integer itemAmout;   //销售数量
+    private BigDecimal itemAmout;   //销售数量
     private BigDecimal itemMoney;   //销售金额
     private String itemSource;      //销售来源
 
@@ -77,11 +92,11 @@ public class ItemDailyDetail implements Serializable {
         this.shiftTableDate = shiftTableDate;
     }
 
-    public Integer getItemAmout() {
+    public BigDecimal getItemAmout() {
         return itemAmout;
     }
 
-    public void setItemAmout(Integer itemAmout) {
+    public void setItemAmout(BigDecimal itemAmout) {
         this.itemAmout = itemAmout;
     }
 

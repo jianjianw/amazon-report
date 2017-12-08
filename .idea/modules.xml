@@ -3,8 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/amazon-report.iml" filepath="$PROJECT_DIR$/amazon-report.iml" />
+      <module fileurl="file://$PROJECT_DIR$/repor-tazure/repor-tazure.iml" filepath="$PROJECT_DIR$/repor-tazure/repor-tazure.iml" />
+      <module fileurl="file://$PROJECT_DIR$/report-azure/report-azure.iml" filepath="$PROJECT_DIR$/report-azure/report-azure.iml" />
       <module fileurl="file://$PROJECT_DIR$/report-export/report-export.iml" filepath="$PROJECT_DIR$/report-export/report-export.iml" />
       <module fileurl="file://$PROJECT_DIR$/report-internal/report-internal.iml" filepath="$PROJECT_DIR$/report-internal/report-internal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/report-timer/report-timer.iml" filepath="$PROJECT_DIR$/report-timer/report-timer.iml" />
     </modules>
   </component>
 </project>
