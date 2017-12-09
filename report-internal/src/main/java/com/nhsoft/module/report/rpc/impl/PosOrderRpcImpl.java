@@ -545,16 +545,16 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			list.addAll(itemDailyDetails);
 		}
 
-		/*//移除数据
+
 		Iterator<ItemDailyDetail> it = list.iterator();
 		while (it.hasNext()) {
 			ItemDailyDetail next = it.next();
 			BigDecimal dailyMoney = next.getItemMoney();
 			BigDecimal itemAmout = next.getItemAmout();
-			if((dailyMoney == null ||dailyMoney.compareTo(BigDecimal.ZERO) == 0) && (itemAmout == null || itemAmout.compareTo(BigDecimal.ZERO) == 0)){
+			if((dailyMoney.compareTo(BigDecimal.ZERO) == 0) && (itemAmout.compareTo(BigDecimal.ZERO) == 0)){
 				iterator.remove();
 			}
-		}*/
+		}
 		return list;
 
 	}

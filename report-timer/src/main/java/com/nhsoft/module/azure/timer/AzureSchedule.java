@@ -69,15 +69,25 @@ public class AzureSchedule {
         azureService.insertItemDailyDetail(systemBookCode,itemDailyDetailSummary);
     }
 
+    @Scheduled(cron="0 0 2-3 * * *")
+    public void itemDailyDetailHour(){        //商品日时段销售汇总(从凌晨开始，每个小时的0分和30分执行一次)
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
+        Date date = calendar.getTime();
+        String systemBookCode = "4410";
+        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date);
+        azureService.insertItemDailyDetail(systemBookCode,itemDailyDetailSummary);
+    }
 
-    @Scheduled(cron="0 0 2-4 * * *")
+
+    @Scheduled(cron="0 0 2-3 * * *")
     public void insertBranch(){                 //每天凌晨2店-4点 每个小时执行一次
         String systemBookCode = "4410";
         List<Branch> branch = branchRpc.findBranch(systemBookCode);
         azureService.insertBranch(systemBookCode,branch);
     }
 
-    @Scheduled(cron = "0 0 2-4 * * *")
+    @Scheduled(cron = "0 0 2-3 * * *")
     public void deleteBranchDaily(){
         String systemBookCode = "4410";
         Calendar calendar = Calendar.getInstance();
@@ -85,10 +95,11 @@ public class AzureSchedule {
         azureService.deleteBranchDaily(systemBookCode,date,date);
     }
 
-    @Scheduled(cron = "0 0 2-4 * * *")
-    public void deleteItemDetailDaily(){
+    @Scheduled(cron = "0 0 2-3 * * *")
+    public void deleteItemDetailDaily(){//7
         String systemBookCode = "4410";
         Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH,-7);
         Date date = calendar.getTime();
         azureService.deleteItemDetailDaily(systemBookCode,date,date);
     }
