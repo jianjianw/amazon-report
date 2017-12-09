@@ -31,12 +31,6 @@
             <version>1.0.0.Final</version>
         </dependency>
 
-
-        <!-- <dependency>
-             <groupId>com.nhsoft</groupId>
-             <artifactId>amazon-report-internal</artifactId>
-             <version>0.0.2-SNAPSHOT</version>
-         </dependency>-->
     </dependencies>
 
 </project>
