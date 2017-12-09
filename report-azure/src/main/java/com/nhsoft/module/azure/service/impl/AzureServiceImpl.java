@@ -6,6 +6,7 @@ import com.nhsoft.module.azure.service.AzureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,5 +37,13 @@ public class AzureServiceImpl implements AzureService {
 
     public void insertBranchDaily(String systemBookCode, List<BranchDaily> branchDailys) {
         azureDao.insertBranchDaily(branchDailys);
+    }
+
+    public void deleteBranchDaily(String systemBookCode, Date dateFrom, Date dateTo) {
+        azureDao.deleteBranchDaily(systemBookCode,dateFrom,dateTo);
+    }
+
+    public void deleteItemDetailDaily(String systemBookCode, Date dateFrom, Date dateTo) {
+
     }
 }

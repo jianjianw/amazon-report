@@ -220,7 +220,7 @@ public class TestSpringBoot {
     }
 
 
-    public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo) {
+   /* public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo) {
         List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo);
         List<ItemDailyDetail> list = new ArrayList<>();
         if (objects.isEmpty()) {
@@ -276,7 +276,7 @@ public class TestSpringBoot {
         }
 
         return resultList;
-    }
+    }*/
 
 
 

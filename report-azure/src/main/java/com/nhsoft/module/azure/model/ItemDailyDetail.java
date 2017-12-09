@@ -4,7 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 商品日时段销售汇总
@@ -20,6 +22,16 @@ public class ItemDailyDetail implements Serializable {
         this.itemAmout = BigDecimal.ZERO;
         this.itemMoney = BigDecimal.ZERO;
         this.itemSource = "";
+
+        this.amount = new BigDecimal[48];
+        this.money = new BigDecimal[48];
+        this.period = new String[48];
+        for (int i = 0; i <48 ; i++) {
+            amount[i] = BigDecimal.ZERO;
+            money[i] = BigDecimal.ZERO;
+            period[i] = "";
+        }
+
     }
 
 
@@ -43,6 +55,12 @@ public class ItemDailyDetail implements Serializable {
     private BigDecimal itemAmout;   //销售数量
     private BigDecimal itemMoney;   //销售金额
     private String itemSource;      //销售来源
+
+    //为了封装数据
+    private BigDecimal[] money ;
+    private BigDecimal[] amount ;
+    private String[] period ;
+
 
     public Integer getBranchNum() {
         return branchNum;
@@ -114,5 +132,55 @@ public class ItemDailyDetail implements Serializable {
 
     public void setItemSource(String itemSource) {
         this.itemSource = itemSource;
+    }
+
+    public BigDecimal[] getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal[] money) {
+        this.money = money;
+    }
+
+    public BigDecimal[] getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal[] amount) {
+        this.amount = amount;
+    }
+
+    public void append(BigDecimal itemMoney, BigDecimal itemAmount,String periodStr){
+
+        Integer index;
+        Integer hour = Integer.valueOf(periodStr.substring(0, 2));
+        Integer min = Integer.valueOf(periodStr.substring(2, 4));
+        if(min == 0 && hour == 0){
+            index = 0;
+        }else if(min == 0){
+            index = hour * 2;
+        }else{
+            index = hour * 2 + 1;
+        }
+        money[index] = money[index-1].add(money[index].add(itemMoney));
+        amount[index] = amount[index-1].add(amount[index].add(itemAmount));
+        period[index] = periodStr;
+    }
+
+    public List<ItemDailyDetail> toArray(){
+        List<ItemDailyDetail> itemDailyDetails = new ArrayList<ItemDailyDetail>();
+        for (int i = 0; i <period.length ; i++) {
+            ItemDailyDetail itemDailyDetail  = new ItemDailyDetail();
+            itemDailyDetail.setSystemBookCode(systemBookCode);
+            itemDailyDetail.setBranchNum(branchNum);
+            itemDailyDetail.setShiftTableBizday(shiftTableBizday);
+            itemDailyDetail.setItemNum(itemNum);
+            itemDailyDetail.setItemSource(itemSource);
+            itemDailyDetail.setShiftTableDate(shiftTableDate);
+            itemDailyDetail.setItemPeriod(period[i]);
+            itemDailyDetail.setItemMoney(money[i]);
+            itemDailyDetail.setItemAmout(amount[i]);
+        }
+        return itemDailyDetails;
     }
 }

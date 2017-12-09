@@ -3,6 +3,7 @@ package com.nhsoft.module.azure.service;
 
 import com.nhsoft.module.azure.model.*;
 
+import java.util.Date;
 import java.util.List;
 
 public interface AzureService {
@@ -36,4 +37,14 @@ public interface AzureService {
      *分店日销售汇总表
      * */
     public void insertBranchDaily(String systemBookCode, List<BranchDaily> branchDailys);
+
+    /**
+     *删除分店日销售汇总
+     * */
+    public void deleteBranchDaily(String systemBookCode, Date dateFrom,Date dateTo);
+
+    /**
+     *删除商品日分段汇总
+     * */
+    public void deleteItemDetailDaily(String systemBookCode, Date dateFrom,Date dateTo);
 }

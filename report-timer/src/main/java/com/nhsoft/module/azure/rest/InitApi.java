@@ -45,24 +45,6 @@ public class InitApi {
         return "SUCCESS";
     }
 
-
-    @RequestMapping(method = RequestMethod.GET, value = "/itemDetail")
-    public String itemDetail() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateFrom = null;
-        Date dateTo = null;
-        try {
-            dateFrom = sdf.parse("2017-01-01");
-            dateTo = sdf.parse("2017-10-01");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        String systembookCode = "4344";
-        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systembookCode, dateFrom, dateTo);
-        azureService.insertItemDailyDetail(systembookCode, itemDailyDetailSummary);
-        return "SUCCESS";
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/init/branch/{systemBookCode}")
     public String insertBranch(@PathVariable("systemBookCode") String systemBookCode) {//@PathVariable("systemBookCode")
         List<Branch> branch = branchRpc.findBranch(systemBookCode);
@@ -101,6 +83,36 @@ public class InitApi {
         }
         List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary(systemBookCode, from, to);
         azureService.insertItemDaily(systemBookCode, itemDailySummary);
+        return "SUCCESS";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/delete/branchDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String deleteBranchDaily(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+        Date from = null;
+        Date to = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            from = sdf.parse(dateFrom);
+            to = sdf.parse(dateTo);
+        } catch (ParseException e) {
+            throw new RuntimeException("日期解析失败");
+        }
+        azureService.deleteBranchDaily(systemBookCode,from,to);
+        return "SUCCESS";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/delete/itemDetail/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String deleteItemDetailDaily(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+        Date from = null;
+        Date to = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            from = sdf.parse(dateFrom);
+            to = sdf.parse(dateTo);
+        } catch (ParseException e) {
+            throw new RuntimeException("日期解析失败");
+        }
+        azureService.deleteItemDetailDaily(systemBookCode,from,to);
         return "SUCCESS";
     }
 }

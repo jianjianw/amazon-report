@@ -5067,7 +5067,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				+ DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		sb.append("and p.order_state_code in (5,7) ");
 		sb.append("and detail.item_num is not null ");
-		sb.append("group by p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num");
+		sb.append("group by p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num order by p.order_time_char asc ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();

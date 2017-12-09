@@ -6,24 +6,11 @@ import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public class AzureDaoImpl extends DaoImpl implements AzureDao {
-
-
-
-    /**
-     *  system_book_code     dm_code              not null,
-     branch_num           dm_num               not null,
-     shift_table_bizday   dm_bizday            not null,
-     item_num             dm_num               not null,
-     shift_table_date     dm_date              null,
-     item_money           dm_money             null,
-     item_amount          dm_amount            null,
-     *
-     *
-     * */
 
     public void insertItemDaily(String systemBookCode, List<ItemDaily> itemDailys) {
 
@@ -39,21 +26,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
 
     public void insertItemDailyDetail(String systemBookCode, List<ItemDailyDetail> itemDailyDetails) {
 
-       /* for (int i = 0; i <itemDailyDetails.size() ; i++) {
-            ItemDailyDetail itemDailyDetail = itemDailyDetails.get(i);
-            String sql = "insert into item_daily_detail values (?,?,?,?,?,?,?,?,?)";
-            SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-            sqlQuery.setInteger(0,itemDailyDetail.getBranchNum());
-            sqlQuery.setString(1,itemDailyDetail.getShiftTableBizday());
-            sqlQuery.setInteger(2,itemDailyDetail.getItemNum());
-            sqlQuery.setString(3,itemDailyDetail.getSystemBookCode());
-            sqlQuery.setString(4,itemDailyDetail.getItemPeriod());
-            sqlQuery.setDate(5,itemDailyDetail.getShiftTableDate());
-            sqlQuery.setInteger(6,itemDailyDetail.getItemAmout());
-            sqlQuery.setBigDecimal(7,itemDailyDetail.getItemMoney());
-            sqlQuery.setString(8,itemDailyDetail.getItemSource());
-            sqlQuery.executeUpdate();
-        }*/
         for (int i = 0; i <itemDailyDetails.size() ; i++) {
             ItemDailyDetail itemDailyDetail = itemDailyDetails.get(i);
             currentSession().saveOrUpdate(itemDailyDetail);
@@ -98,5 +70,18 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         }
         System.out.println("插入分店日销售汇总表");
 
+    }
+
+    public void deleteBranchDaily(String systemBookCode, Date dateFrom, Date dateTo) {
+
+        String sql = "delete from branch_daily where shift_table_date < " + dateFrom;
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+        sqlQuery.executeUpdate();
+    }
+
+    public void deleteItemDetailDaily(String systemBookCode, Date dateFrom, Date dateTo) {
+        String sql = "delete from item_daily_detail where shift_table_date < " + dateFrom;
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+        sqlQuery.executeUpdate();
     }
 }

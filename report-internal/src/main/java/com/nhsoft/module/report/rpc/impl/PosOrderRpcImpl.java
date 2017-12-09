@@ -506,10 +506,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			} else {
 				itemPeriod = StringUtils.leftPad((intHour + 1) + "", 2, "0") + "00";
 			}
-
 			//向map添加数据
 			StringBuilder append = new StringBuilder();
-			append.append(branchNum).append(bizday).append(source).append(itemNum).append(itemPeriod);
+			append.append(branchNum).append(bizday).append(source).append(itemNum);
 			String key = append.toString();
 			ItemDailyDetail itemDailyDetail = map.get(key);
 			if (itemDailyDetail == null) {
@@ -517,23 +516,76 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				itemDailyDetail.setSystemBookCode(systemBookCode);
 				itemDailyDetail.setBranchNum(branchNum);
 				itemDailyDetail.setShiftTableBizday(bizday);
-				itemDailyDetail.setItemPeriod(itemPeriod);
 				itemDailyDetail.setItemSource(source);
 				itemDailyDetail.setItemNum(itemNum);
-				itemDailyDetail.setItemMoney(BigDecimal.ZERO);
-				itemDailyDetail.setItemAmout(BigDecimal.ZERO);
+				itemDailyDetail.setItemMoney((BigDecimal) object[5]);
+				itemDailyDetail.setItemAmout((BigDecimal) object[6]);
 				itemDailyDetail.setShiftTableDate(DateUtil.getDateStr(itemDailyDetail.getShiftTableBizday()));
 				map.put(key, itemDailyDetail);
-			} else {
-				itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]));
-				itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout().add((BigDecimal) object[6]) == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
 			}
-			list.add(itemDailyDetail);
+			itemDailyDetail.append((BigDecimal) object[5], (BigDecimal) object[6] , itemPeriod);
+		}
+
+		Collection<ItemDailyDetail> values = map.values();
+		Iterator<ItemDailyDetail> iterator = values.iterator();
+		while(iterator.hasNext()){
+			ItemDailyDetail next = iterator.next();
+			List<ItemDailyDetail> itemDailyDetails = next.toArray();
+			list.addAll(itemDailyDetails);
 		}
 		return list;
 
 	}
 
+	public List<ItemDailyDetail> findItemDailyDetail(String systemBookCode, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo);
+		List<ItemDailyDetail> list = new ArrayList<>();
+		if (objects.isEmpty()) {
+			return list;
+		}
+		Map<String, ItemDailyDetail> map = new HashMap<>();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			//向map添加数据
+			StringBuilder sb = new StringBuilder();
+			StringBuilder append = sb.append((Integer) object[0]).append((String) object[1]).append((String) object[3]).append((Integer) object[4]);
+			String key = append.toString();
+			ItemDailyDetail itemDailyDetail = map.get(key);
+			if (itemDailyDetail != null) {
+				String itemPeriod = itemDailyDetail.getItemPeriod();
+				String hour = itemPeriod.substring(0, 2);
+				Integer intHour = Integer.valueOf(itemPeriod.substring(0, 2));
+				String min = itemPeriod.substring(2, 4);
+				Integer intMin = Integer.valueOf(itemPeriod.substring(2, 4));
 
+				if (intMin >= 0 && intMin <= 30) {
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout() .add((BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]));
+					itemDailyDetail.setItemPeriod(itemPeriod);
+				} else {
+					itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add((BigDecimal) object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]));
+					itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout().add((BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]));
+					int hourCount = intHour + 1;
+					StringBuilder stringBuilder = new StringBuilder();
+					StringBuilder append1 = stringBuilder.append(hourCount).append(intMin);
+					itemDailyDetail.setItemPeriod(append1.toString());
+				}
+			} else {
+				ItemDailyDetail dailyDetail = new ItemDailyDetail();
+				dailyDetail.setSystemBookCode(systemBookCode);
+				dailyDetail.setBranchNum((Integer) object[0]);
+				dailyDetail.setShiftTableBizday((String) object[1]);
+				dailyDetail.setItemPeriod((String) object[2]);
+				dailyDetail.setItemSource((String) object[3]);
+				dailyDetail.setItemNum((Integer) object[4]);
+				dailyDetail.setItemMoney((BigDecimal) object[5]);
+				dailyDetail.setItemAmout((BigDecimal) object[6]);
+				dailyDetail.setShiftTableDate(DateUtil.getDateStr(dailyDetail.getShiftTableBizday()));
+				map.put(key, dailyDetail);
+			}
+
+		}
+		return new ArrayList<>(map.values());
+	}
 
 }
