@@ -2,6 +2,7 @@ package com.nhsoft.module.azure.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class ItemDailyDetail implements Serializable {
         this.amount = new BigDecimal[48];
         this.money = new BigDecimal[48];
         this.period = new String[48];
-        for (int i = 0; i <48 ; i++) {
+        for (int i = 0; i < 48 ; i++) {
             amount[i] = BigDecimal.ZERO;
             money[i] = BigDecimal.ZERO;
             period[i] = "";
@@ -57,8 +58,12 @@ public class ItemDailyDetail implements Serializable {
     private String itemSource;      //销售来源
 
     //为了封装数据
+
+    @Transient
     private BigDecimal[] money ;
+    @Transient
     private BigDecimal[] amount ;
+    @Transient
     private String[] period ;
 
 
@@ -155,21 +160,26 @@ public class ItemDailyDetail implements Serializable {
         Integer index;
         Integer hour = Integer.valueOf(periodStr.substring(0, 2));
         Integer min = Integer.valueOf(periodStr.substring(2, 4));
-        if(min == 0 && hour == 0){
+        if(hour == 0){
             index = 0;
         }else if(min == 0){
-            index = hour * 2;
+            index = hour * 2 -1;
         }else{
-            index = hour * 2 + 1;
+            index = hour * 2;
         }
-        money[index] = money[index-1].add(money[index].add(itemMoney));
-        amount[index] = amount[index-1].add(amount[index].add(itemAmount));
+
+        money[index] = money[index].add(itemMoney);
+        amount[index] = amount[index].add(itemAmount);
         period[index] = periodStr;
+
     }
 
     public List<ItemDailyDetail> toArray(){
         List<ItemDailyDetail> itemDailyDetails = new ArrayList<ItemDailyDetail>();
         for (int i = 0; i <period.length ; i++) {
+            if (period[i].equals("")){
+                continue;
+            }
             ItemDailyDetail itemDailyDetail  = new ItemDailyDetail();
             itemDailyDetail.setSystemBookCode(systemBookCode);
             itemDailyDetail.setBranchNum(branchNum);
@@ -178,8 +188,11 @@ public class ItemDailyDetail implements Serializable {
             itemDailyDetail.setItemSource(itemSource);
             itemDailyDetail.setShiftTableDate(shiftTableDate);
             itemDailyDetail.setItemPeriod(period[i]);
-            itemDailyDetail.setItemMoney(money[i]);
-            itemDailyDetail.setItemAmout(amount[i]);
+            for(int j = 0; j < (i + 1) ; j++){
+                itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout().add(amount[j]));
+                itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add(money[j]));
+            }
+            itemDailyDetails.add(itemDailyDetail);
         }
         return itemDailyDetails;
     }

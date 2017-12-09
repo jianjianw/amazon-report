@@ -44,6 +44,6 @@ public class AzureServiceImpl implements AzureService {
     }
 
     public void deleteItemDetailDaily(String systemBookCode, Date dateFrom, Date dateTo) {
-
+        azureDao.deleteItemDetailDaily(systemBookCode,dateFrom,dateTo);
     }
 }

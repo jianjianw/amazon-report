@@ -6,6 +6,7 @@ import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -54,7 +55,15 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
     }
 
     public void insertBranch(String systemBookCode, List<Branch> branches) {
-
+        for (int i = 0; i <branches.size() ; i++) {
+            Branch branch = branches.get(i);
+            currentSession().saveOrUpdate(branch);
+            if(i % 10 == 0){
+                currentSession().flush();
+                currentSession().clear();
+            }
+        }
+        System.out.println("插入分店");
     }
 
 
@@ -73,15 +82,27 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
     }
 
     public void deleteBranchDaily(String systemBookCode, Date dateFrom, Date dateTo) {
-
-        String sql = "delete from branch_daily where shift_table_date < " + dateFrom;
+        String date = formatDate(dateFrom);
+        String sql = "delete from branch_daily where shift_table_bizday < '" + date + "' ";
         SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
         sqlQuery.executeUpdate();
     }
 
     public void deleteItemDetailDaily(String systemBookCode, Date dateFrom, Date dateTo) {
-        String sql = "delete from item_daily_detail where shift_table_date < " + dateFrom;
+        String date = formatDate(dateFrom);
+        String sql = "delete from item_daily_detail where shift_table_bizday < '" + date + "' ";
         SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
         sqlQuery.executeUpdate();
+    }
+
+    public String formatDate(Date date){
+        if(date != null){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String format = sdf.format(date);
+            return format;
+        }else{
+            return null;
+        }
+
     }
 }
