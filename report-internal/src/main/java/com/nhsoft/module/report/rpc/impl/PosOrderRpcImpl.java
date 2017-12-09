@@ -552,7 +552,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			BigDecimal dailyMoney = next.getItemMoney();
 			BigDecimal itemAmout = next.getItemAmout();
 			if((dailyMoney.compareTo(BigDecimal.ZERO) == 0) && (itemAmout.compareTo(BigDecimal.ZERO) == 0)){
-				iterator.remove();
+				it.remove();
 			}
 		}
 		return list;

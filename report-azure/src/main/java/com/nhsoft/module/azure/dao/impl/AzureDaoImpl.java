@@ -18,7 +18,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         for (int i = 0; i <itemDailys.size() ; i++) {
             ItemDaily itemDaily = itemDailys.get(i);
             currentSession().saveOrUpdate(itemDaily);
-            if(i % 10 == 0){
+            if(i % 30 == 0){
                 currentSession().flush();
                 currentSession().clear();
             }
@@ -30,7 +30,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         for (int i = 0; i <itemDailyDetails.size() ; i++) {
             ItemDailyDetail itemDailyDetail = itemDailyDetails.get(i);
             currentSession().saveOrUpdate(itemDailyDetail);
-            if(i % 10 == 0){
+            if(i % 30 == 0){
                 currentSession().flush();
                 currentSession().clear();
             }
@@ -43,7 +43,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         for (int i = 0; i <posItemLats.size() ; i++) {
             PosItemLat posItemLat = posItemLats.get(i);
             currentSession().saveOrUpdate(posItemLat);
-            if(i % 10 == 0){
+            if(i % 30 == 0){
                 currentSession().flush();
                 currentSession().clear();
             }
@@ -58,7 +58,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         for (int i = 0; i <branches.size() ; i++) {
             Branch branch = branches.get(i);
             currentSession().saveOrUpdate(branch);
-            if(i % 10 == 0){
+            if(i % 30 == 0){
                 currentSession().flush();
                 currentSession().clear();
             }
@@ -72,7 +72,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         for (int i = 0; i <branchDailys.size() ; i++) {
             BranchDaily branchDaily = branchDailys.get(i);
             currentSession().saveOrUpdate(branchDaily);
-            if(i % 10 == 0){
+            if(i % 30 == 0){
                 currentSession().flush();
                 currentSession().clear();
             }
