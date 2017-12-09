@@ -7,6 +7,8 @@ import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -15,8 +17,8 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import java.util.HashMap;
 import java.util.Map;
 
-//@Configuration
-//@PropertySource({"classpath:azure.properties"})
+@Configuration
+@PropertySource({"classpath:azure.properties"})
 public class AzureMultipleDateSourceConfig implements EnvironmentAware {
 
     private static final Logger logger = LoggerFactory.getLogger(AzureMultipleDateSourceConfig.class);
