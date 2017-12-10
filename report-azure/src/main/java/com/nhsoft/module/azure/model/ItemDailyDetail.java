@@ -32,58 +32,23 @@ public class ItemDailyDetail implements Serializable {
         for (int i = 0; i < 48 ; i++) {
             amount[i] = BigDecimal.ZERO;
             money[i] = BigDecimal.ZERO;
+            if(i == 0){
+                period[i] = "00:30";
+            }else if(i % 2 == 0){
+                if(i<19){
+                    period[i] = "0"+ (i/2) +":30";  //偶数
+                }else{
+                    period[i] = (i/2) +":30";
+                }
+            }else if(i % 2 != 0){      //基数
+                if(i<19){
+                    period[i] = "0" + ((i+1)/2) + ":00";
+                }else{
+                    period[i] = ((i+1)/2) + ":00";
+                }
+            }
+
         }
-
-        period[0] = "0030" ;
-        period[1] = "0100" ;
-        period[2] = "0130" ;
-        period[3] = "0200" ;
-        period[4] = "0230" ;
-        period[5] = "0300" ;
-        period[6] = "0330" ;
-        period[7] = "0400" ;
-        period[8] = "0430" ;
-        period[9] = "0500" ;
-        period[10] = "0530" ;
-        period[11] = "0600" ;
-        period[12] = "0630" ;
-        period[13] = "0700" ;
-        period[14] = "0730" ;
-        period[15] = "0800" ;
-        period[16] = "0830" ;
-        period[17] = "0900" ;
-        period[18] = "0930" ;
-        period[19] = "1000" ;
-        period[20] = "1030" ;
-        period[21] = "1100" ;
-        period[22] = "1130" ;
-        period[23] = "1200" ;
-        period[24] = "1230" ;
-        period[25] = "1300" ;
-        period[26] = "1330" ;
-        period[27] = "1400" ;
-        period[28] = "1430" ;
-        period[29] = "1500" ;
-        period[30] = "1530" ;
-        period[31] = "1600" ;
-        period[32] = "1630" ;
-        period[33] = "1700" ;
-        period[34] = "1730" ;
-        period[35] = "1800" ;
-        period[36] = "1830" ;
-        period[37] = "1900" ;
-        period[38] = "1930" ;
-        period[39] = "2000" ;
-        period[40] = "2030" ;
-        period[41] = "2100" ;
-        period[42] = "2130" ;
-        period[43] = "2200" ;
-        period[44] = "2230" ;
-        period[45] = "2300" ;
-        period[46] = "2330" ;
-        period[47] = "2400" ;
-
-
     }
 
 
@@ -227,7 +192,7 @@ public class ItemDailyDetail implements Serializable {
     public List<ItemDailyDetail> toArray(){
         List<ItemDailyDetail> itemDailyDetails = new ArrayList<ItemDailyDetail>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String format = sdf.format(Calendar.getInstance().getTime());
 
         SimpleDateFormat dayadf = new SimpleDateFormat("yyyyMMdd");
