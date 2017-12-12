@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import java.util.HashMap;
@@ -111,12 +112,12 @@ public class AzureMultipleDateSourceConfig implements EnvironmentAware {
 
     }
 
-//    @Bean(name = "azureTransactionManager")
-//    public HibernateTransactionManager azureTransactionManager() {
-//        HibernateTransactionManager transactionManager =
-//                new HibernateTransactionManager();
-//        transactionManager.setSessionFactory(sessionFactory().getObject());
-//        return transactionManager;
-//    }
+    @Bean(name = "azureTransactionManager")
+    public HibernateTransactionManager azureTransactionManager() {
+        HibernateTransactionManager transactionManager =
+                new HibernateTransactionManager();
+        transactionManager.setSessionFactory(sessionFactory().getObject());
+        return transactionManager;
+    }
 
 }

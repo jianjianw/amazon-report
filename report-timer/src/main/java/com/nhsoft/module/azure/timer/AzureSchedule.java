@@ -3,7 +3,6 @@ package com.nhsoft.module.azure.timer;
 import com.nhsoft.module.azure.model.Branch;
 import com.nhsoft.module.azure.model.BranchDaily;
 import com.nhsoft.module.azure.model.ItemDaily;
-import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
@@ -67,8 +66,8 @@ public class AzureSchedule {
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         String systemBookCode = "4410";
-        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date);
-        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
+//       // List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date);
+//        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
     }
 
     @Scheduled(cron="0 0 2-3 * * *")
@@ -78,11 +77,11 @@ public class AzureSchedule {
         calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date date = calendar.getTime();
         String systemBookCode = "4410";
-        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date);
-        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
-        long afterTime = System.currentTimeMillis();
-        long time = (afterTime - preTime)/1000;
-        logger.info("插入商品日时段销售汇总耗时：" +time+"秒");
+//        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date);
+//        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
+//        long afterTime = System.currentTimeMillis();
+//        long time = (afterTime - preTime)/1000;
+//        logger.info("插入商品日时段销售汇总耗时：" +time+"秒");
     }
 
 
