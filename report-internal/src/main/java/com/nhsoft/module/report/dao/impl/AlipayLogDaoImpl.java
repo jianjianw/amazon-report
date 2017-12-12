@@ -140,6 +140,19 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 			
 			criteria.add(Restrictions.in("a.branchNum", branchNums));
 		}
+		if(StringUtils.isNotEmpty(orderNoPre)){
+			
+			if(orderNoPre.equals("member")){
+				
+				//微会员存款时关联单据号为空
+				criteria.add(Restrictions.eq("a.alipayLogOrderNo", ""));
+				
+			} else {
+				criteria.add(Restrictions.like("a.alipayLogOrderNo", orderNoPre, MatchMode.START));
+				
+			}
+		
+		}
 		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
 		criteria.add(Restrictions.eq("a.alipayLogTradeState", true))
 				.add(Restrictions.eq("a.alipayLogTradeValid", true))
@@ -155,32 +168,9 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				.add(Projections.property("a.alipayLogBuyerMoney"))
 		);
 		criteria.setLockMode(LockMode.NONE);
-		List<Object[]> objects = new ArrayList<Object[]>();
-		if(StringUtils.isNotEmpty(orderNoPre)){
-			
-			String[] array = orderNoPre.split(",");
-			for(int i = 0;i < array.length;i++){
-				Criteria subCriteria = criteria;
-				String pre = array[i];
-				if(pre.equals("member")){
-					
-					//微会员存款时关联单据号为空
-					subCriteria.add(Restrictions.eq("a.alipayLogOrderNo", ""));
-					
-				} else {
-					subCriteria.add(Restrictions.like("a.alipayLogOrderNo", pre, MatchMode.START));
-					
-				}
-				objects.addAll(subCriteria.list());
-			}
-			
-		
-		
-		} else {
-			objects = criteria.list();
-		}
+		List<Object[]> objects = criteria.list();
 		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>();
-		BigDecimal buyerMoney = null;
+		BigDecimal buyerMoney;
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			
