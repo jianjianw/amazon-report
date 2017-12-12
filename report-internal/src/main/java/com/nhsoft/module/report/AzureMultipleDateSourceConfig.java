@@ -8,10 +8,10 @@ import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import java.util.HashMap;
@@ -19,6 +19,7 @@ import java.util.Map;
 
 @Configuration
 @PropertySource({"classpath:azure.properties"})
+@ImportResource({"classpath:azureTransaction.xml"})
 public class AzureMultipleDateSourceConfig implements EnvironmentAware {
 
     private static final Logger logger = LoggerFactory.getLogger(AzureMultipleDateSourceConfig.class);
@@ -110,12 +111,12 @@ public class AzureMultipleDateSourceConfig implements EnvironmentAware {
 
     }
 
-    @Bean(name = "azureTransactionManager")
-    public HibernateTransactionManager azureTransactionManager() {
-        HibernateTransactionManager transactionManager =
-                new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactory().getObject());
-        return transactionManager;
-    }
+//    @Bean(name = "azureTransactionManager")
+//    public HibernateTransactionManager azureTransactionManager() {
+//        HibernateTransactionManager transactionManager =
+//                new HibernateTransactionManager();
+//        transactionManager.setSessionFactory(sessionFactory().getObject());
+//        return transactionManager;
+//    }
 
 }
