@@ -1,11 +1,15 @@
 package com.nhsoft.module.report.interceptor;
 
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Event;
 import com.nhsoft.module.report.DynamicDataSourceContextHolder;
 import com.nhsoft.module.report.dto.SystemBookProxy;
 import com.nhsoft.module.report.query.QueryBuilder;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -51,4 +55,26 @@ public class AzureDateBaseInterceptor {
         String name = jp.getTarget().getClass().getName() + "." + jp.getSignature().getName();
         logger.info(String.format("systemBookCode = %s database = %s name = %s", systemBookCode, systemBookCode, name));
     }
+
+    @Around("azureService()")
+    public Object around(ProceedingJoinPoint jp) throws Throwable  {
+
+        String name = null;
+        Object object;
+        long diff = 0;
+        try {
+            name = jp.getTarget().getClass().getName() + "." + jp.getSignature().getName();
+            long preTime = System.currentTimeMillis();
+            object = jp.proceed(jp.getArgs());
+            long afterTime = System.currentTimeMillis();
+            diff = (afterTime - preTime)/1000;
+            return object;
+        } catch (Throwable throwable) {
+            logger.error(throwable.getMessage(),throwable);
+            throw throwable;
+        } finally {
+            logger.info("接口：" + name + "耗时：" + diff + "秒");
+        }
+    }
+
 }

@@ -30,7 +30,11 @@
             <artifactId>amazon-report-export</artifactId>
             <version>0.0.2-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.21</version>
+        </dependency>
     </dependencies>
 
 

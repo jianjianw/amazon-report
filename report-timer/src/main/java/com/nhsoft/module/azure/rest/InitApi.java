@@ -41,14 +41,14 @@ public class InitApi {
             throw new RuntimeException("日期解析失败");
         }
         List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, form, to);
-        azureService.insertBranchDaily(systemBookCode, branchDailySummary);
+        azureService.batchSaveBranchDailies(systemBookCode, branchDailySummary);
         return "SUCCESS";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/init/branch/{systemBookCode}")
     public String insertBranch(@PathVariable("systemBookCode") String systemBookCode) {//@PathVariable("systemBookCode")
         List<Branch> branch = branchRpc.findBranch(systemBookCode);
-        azureService.insertBranch(systemBookCode, branch);
+        azureService.batchSaveBranchs(systemBookCode, branch);
         return "SUCCESS";
     }
 
@@ -65,7 +65,7 @@ public class InitApi {
             throw new RuntimeException("日期解析失败");
         }
         List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, form, to);
-        azureService.insertItemDailyDetail(systemBookCode, itemDailyDetailSummary);
+        azureService.batchSaveItemDailyDetails(systemBookCode, itemDailyDetailSummary);
         return "SUCCESS";
     }
 
@@ -82,7 +82,7 @@ public class InitApi {
             throw new RuntimeException("日期解析失败");
         }
         List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary(systemBookCode, from, to);
-        azureService.insertItemDaily(systemBookCode, itemDailySummary);
+        azureService.batchSaveItemDailies(systemBookCode, itemDailySummary);
         return "SUCCESS";
     }
 
@@ -97,7 +97,7 @@ public class InitApi {
         } catch (ParseException e) {
             throw new RuntimeException("日期解析失败");
         }
-        azureService.deleteBranchDaily(systemBookCode,from,to);
+        azureService.batchDeleteBranchDailies(systemBookCode,from,to);
         return "SUCCESS";
     }
 
@@ -112,7 +112,7 @@ public class InitApi {
         } catch (ParseException e) {
             throw new RuntimeException("日期解析失败");
         }
-        azureService.deleteItemDetailDaily(systemBookCode,from,to);
+        azureService.batchDeleteItemDetailDailies(systemBookCode,from,to);
         return "SUCCESS";
     }
 }

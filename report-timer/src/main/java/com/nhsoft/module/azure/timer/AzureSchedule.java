@@ -7,6 +7,8 @@ import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Component
 public class AzureSchedule {
+
+    private static final Logger logger = LoggerFactory.getLogger(AzureSchedule.class);
 
     @Autowired
     private PosOrderRpc posOrderRpc;
@@ -32,7 +36,7 @@ public class AzureSchedule {
         Date date = calendar.getTime();
         String systemBookCode = "4410";
         List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, date, date);
-        azureService.insertBranchDaily(systemBookCode,branchDailySummary);
+        azureService.batchSaveBranchDailies(systemBookCode,branchDailySummary);
     }
 
 
@@ -44,7 +48,7 @@ public class AzureSchedule {
         Date dateFrom = calendar.getTime();
         String systemBookCode = "4410";
         List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, dateFrom, dateTo);
-        azureService.insertBranchDaily(systemBookCode,branchDailySummary);
+        azureService.batchSaveBranchDailies(systemBookCode,branchDailySummary);
     }
 
     @Scheduled(cron="0 0,30 * * * *")
@@ -53,7 +57,7 @@ public class AzureSchedule {
         Date date = calendar.getTime();
         String systemBookCode = "4410";
         List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary(systemBookCode, date, date);
-        azureService.insertItemDaily(systemBookCode,itemDailySummary);
+        azureService.batchSaveItemDailies(systemBookCode,itemDailySummary);
     }
 
 
@@ -64,17 +68,21 @@ public class AzureSchedule {
         Date date = calendar.getTime();
         String systemBookCode = "4410";
         List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date);
-        azureService.insertItemDailyDetail(systemBookCode,itemDailyDetailSummary);
+        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
     }
 
     @Scheduled(cron="0 0 2-3 * * *")
     public void itemDailyDetailHour(){        //商品日时段销售汇总(从凌晨开始，每个小时的0分和30分执行一次)
+        long preTime = System.currentTimeMillis();
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date date = calendar.getTime();
         String systemBookCode = "4410";
         List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date);
-        azureService.insertItemDailyDetail(systemBookCode,itemDailyDetailSummary);
+        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
+        long afterTime = System.currentTimeMillis();
+        long time = (afterTime - preTime)/1000;
+        logger.info("插入商品日时段销售汇总耗时：" +time+"秒");
     }
 
 
@@ -82,16 +90,16 @@ public class AzureSchedule {
     public void insertBranch(){                 //每天凌晨2店-4点 每个小时执行一次
         String systemBookCode = "4410";
         List<Branch> branch = branchRpc.findBranch(systemBookCode);
-        azureService.insertBranch(systemBookCode,branch);
+        azureService.batchSaveBranchs(systemBookCode,branch);
     }
 
-    @Scheduled(cron = "0 0 2-3 * * *")
+   /* @Scheduled(cron = "0 0 2-3 * * *")
     public void deleteBranchDaily(){
         String systemBookCode = "4410";
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         azureService.deleteBranchDaily(systemBookCode,date,date);
-    }
+    }*/
 
     @Scheduled(cron = "0 0 2-3 * * *")
     public void deleteItemDetailDaily(){//7
@@ -99,7 +107,7 @@ public class AzureSchedule {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-7);
         Date date = calendar.getTime();
-        azureService.deleteItemDetailDaily(systemBookCode,date,date);
+        azureService.batchDeleteItemDetailDailies(systemBookCode,date,date);
     }
 
 

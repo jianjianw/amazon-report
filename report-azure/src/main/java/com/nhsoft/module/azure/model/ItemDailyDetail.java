@@ -25,6 +25,9 @@ public class ItemDailyDetail implements Serializable {
         this.itemAmout = BigDecimal.ZERO;
         this.itemMoney = BigDecimal.ZERO;
         this.itemSource = "";
+        this.itemPeriodAmout = BigDecimal.ZERO;
+        this.itemPeriodMoney = BigDecimal.ZERO;
+
 
         this.amount = new BigDecimal[48];
         this.money = new BigDecimal[48];
@@ -52,12 +55,6 @@ public class ItemDailyDetail implements Serializable {
     }
 
 
-
-    /*public ItemDailyDetail() {
-        this.itemAmout = BigDecimal.ZERO;
-        this.itemMoney = BigDecimal.ZERO;
-    }*/
-
     @Id
     private Integer branchNum;
     @Id
@@ -71,7 +68,10 @@ public class ItemDailyDetail implements Serializable {
     private Date shiftTableDate;          //营业日期
     private BigDecimal itemAmout;   //销售数量
     private BigDecimal itemMoney;   //销售金额
+    @Id
     private String itemSource;      //销售来源
+    private BigDecimal itemPeriodAmout;    //当前时段销售数量
+    private BigDecimal itemPeriodMoney;    //当前时段销售金额
 
     //为了封装数据
 
@@ -171,7 +171,23 @@ public class ItemDailyDetail implements Serializable {
         this.amount = amount;
     }
 
-    public void append(BigDecimal itemMoney, BigDecimal itemAmount,String periodStr){
+    public BigDecimal getItemPeriodAmout() {
+        return itemPeriodAmout;
+    }
+
+    public void setItemPeriodAmout(BigDecimal itemPeriodAmout) {
+        this.itemPeriodAmout = itemPeriodAmout;
+    }
+
+    public BigDecimal getItemPeriodMoney() {
+        return itemPeriodMoney;
+    }
+
+    public void setItemPeriodMoney(BigDecimal itemPeriodMoney) {
+        this.itemPeriodMoney = itemPeriodMoney;
+    }
+
+    public void append(BigDecimal itemMoney, BigDecimal itemAmount, String periodStr){
 
         Integer index;
         Integer hour = Integer.valueOf(periodStr.substring(0, 2));
@@ -214,6 +230,8 @@ public class ItemDailyDetail implements Serializable {
                 itemDailyDetail.setItemAmout(itemDailyDetail.getItemAmout().add(amount[j]));
                 itemDailyDetail.setItemMoney(itemDailyDetail.getItemMoney().add(money[j]));
             }
+            itemDailyDetail.setItemPeriodAmout(amount[i]);
+            itemDailyDetail.setItemPeriodMoney(money[i]);
             itemDailyDetails.add(itemDailyDetail);
         }
         return itemDailyDetails;

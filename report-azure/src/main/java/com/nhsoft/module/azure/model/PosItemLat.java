@@ -13,6 +13,7 @@ public class PosItemLat implements Serializable {
     private String systemBookCode;
     @Id
     private Integer itemNum;
+
     private String item_category;
 
     public String getSystemBookCode() {

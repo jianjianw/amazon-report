@@ -110,8 +110,8 @@ public class AzureMultipleDateSourceConfig implements EnvironmentAware {
 
     }
 
-    @Bean
-    public HibernateTransactionManager transactionManager() {
+    @Bean(name = "azureTransactionManager")
+    public HibernateTransactionManager azureTransactionManager() {
         HibernateTransactionManager transactionManager =
                 new HibernateTransactionManager();
         transactionManager.setSessionFactory(sessionFactory().getObject());

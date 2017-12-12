@@ -30,13 +30,13 @@ public class ApiInterceptor {
             object = point.proceed();
             long afterTime = System.currentTimeMillis();
             diff = (afterTime - preTime)/1000;
+            return object;
         } catch (Throwable throwable) {
+            logger.error(throwable.getMessage(),throwable);
             throw throwable;
         } finally {
             logger.info("API：" + name + "耗时：" + diff + "秒");
         }
-        return object;
-
     }
 
 }

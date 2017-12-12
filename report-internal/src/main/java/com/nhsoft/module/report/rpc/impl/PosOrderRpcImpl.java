@@ -230,21 +230,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			list.add(branchBizRevenueSummary);
 		}
 		return list;
-		/*List<Object[]> returnList = posOrderService.findMoneyBizdaySummary(systemBookCode, branchNums, queryBy, dateFrom, dateTo, isMember);
-		List<BranchBizRevenueSummary> list = new ArrayList<>();
-		if (returnList.isEmpty()) {
-			return list;
-		}
-		for (int i = 0; i < returnList.size(); i++) {
-			Object[] object = returnList.get(i);
-			BranchBizRevenueSummary branchBizRevenueSummary = new BranchBizRevenueSummary();
-			branchBizRevenueSummary.setBiz((String) object[0]);
-			branchBizRevenueSummary.setBizMoney((BigDecimal) object[1]);
-			branchBizRevenueSummary.setOrderCount((Integer) object[2]);
-			branchBizRevenueSummary.setProfit((BigDecimal) object[3]);
-			list.add(branchBizRevenueSummary);
-		}
-		return list;*/
 	}
 
 
@@ -446,7 +431,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			list.add(branchDaily);
 		}
 
-		//移除数据
+		//移除数据营业额为0的数据
 		Iterator<BranchDaily> iterator = list.iterator();
 		while (iterator.hasNext()) {
 			BranchDaily next = iterator.next();
@@ -545,7 +530,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			list.addAll(itemDailyDetails);
 		}
 
-
+		//移出营业额和数量为0的数据
 		Iterator<ItemDailyDetail> it = list.iterator();
 		while (it.hasNext()) {
 			ItemDailyDetail next = it.next();

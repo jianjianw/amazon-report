@@ -11,40 +11,40 @@ public interface AzureDao {
     /**
      *商品日销售汇总
      * */
-    public void insertItemDaily(String systemBookCode, List<ItemDaily> itemDailys);
+    public void batchSaveItemDailies(String systemBookCode, List<ItemDaily> itemDailys);
 
     /**
      *商品日时段销售汇总
      * */
-    public void insertItemDailyDetail(String systemBookCode, List<ItemDailyDetail> itemDailyDetails);
+    public void batchSaveItemDailyDetails(String systemBookCode, List<ItemDailyDetail> itemDailyDetails);
 
     /**
      *商品纬度
      * */
-    public void insertPosItemLat(String systemBookCode, List<PosItemLat> posItemLats);
+    public void batchSavePosItemLats(String systemBookCode, List<PosItemLat> posItemLats);
 
     /**
      *分店纬度
      **/
-    public void insertBranchLat(String systemBookCode, List<BranchLat> branchLats);
+    public void batchSaveBranchLats(String systemBookCode, List<BranchLat> branchLats);
 
     /**
      * 分店表
      * */
-    public void insertBranch(String systemBookCode, List<Branch> branches);
+    public void batchSaveBranchs(String systemBookCode, List<Branch> branches);
 
     /**
      *分店日销售汇总表
      * */
-    public void insertBranchDaily(List<BranchDaily> branchDailys);
+    public void batchSaveBranchDailies(List<BranchDaily> branchDailys);
 
     /**
      *删除分店日销售汇总
      * */
-    public void deleteBranchDaily(String systemBookCode, Date dateFrom, Date dateTo);
+    public void batchDeleteBranchDailies(String systemBookCode, Date dateFrom, Date dateTo);
 
     /**
      *删除商品日分段汇总
      * */
-    public void deleteItemDetailDaily(String systemBookCode, Date dateFrom,Date dateTo);
+    public void batchDeleteItemDetailDailies(String systemBookCode, Date dateFrom,Date dateTo);
 }

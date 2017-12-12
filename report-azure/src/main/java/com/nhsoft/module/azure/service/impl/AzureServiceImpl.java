@@ -5,6 +5,7 @@ import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -15,35 +16,35 @@ public class AzureServiceImpl implements AzureService {
     @Autowired
     private AzureDao azureDao;
 
-    public void insertItemDaily(String systemBookCode, List<ItemDaily> itemDailys) {
-        azureDao.insertItemDaily(systemBookCode,itemDailys);
+    public void batchSaveItemDailies(String systemBookCode, List<ItemDaily> itemDailys) {
+        azureDao.batchSaveItemDailies(systemBookCode,itemDailys);
     }
 
-    public void insertItemDailyDetail(String systemBookCode, List<ItemDailyDetail> itemDailyDetails) {
-        azureDao.insertItemDailyDetail(systemBookCode,itemDailyDetails);
+    public void batchSaveItemDailyDetails(String systemBookCode, List<ItemDailyDetail> itemDailyDetails) {
+        azureDao.batchSaveItemDailyDetails(systemBookCode,itemDailyDetails);
     }
 
-    public void insertPosItemLat(String systemBookCode, List<PosItemLat> posItemLats) {
-        azureDao.insertPosItemLat(systemBookCode,posItemLats);
+    public void batchSavePosItemLats(String systemBookCode, List<PosItemLat> posItemLats) {
+        azureDao.batchSavePosItemLats(systemBookCode,posItemLats);
     }
 
-    public void insertBranchLat(String systemBookCode, List<BranchLat> branchLats) {
-        azureDao.insertBranchLat(systemBookCode,branchLats);
+    public void batchSaveBranchLats(String systemBookCode, List<BranchLat> branchLats) {
+        azureDao.batchSaveBranchLats(systemBookCode,branchLats);
     }
 
-    public void insertBranch(String systemBookCode, List<Branch> branchs) {
-        azureDao.insertBranch(systemBookCode,branchs);
+    public void batchSaveBranchs(String systemBookCode, List<Branch> branchs) {
+        azureDao.batchSaveBranchs(systemBookCode,branchs);
     }
 
-    public void insertBranchDaily(String systemBookCode, List<BranchDaily> branchDailys) {
-        azureDao.insertBranchDaily(branchDailys);
+    public void batchSaveBranchDailies(String systemBookCode, List<BranchDaily> branchDailys) {
+        azureDao.batchSaveBranchDailies(branchDailys);
     }
 
-    public void deleteBranchDaily(String systemBookCode, Date dateFrom, Date dateTo) {
-        azureDao.deleteBranchDaily(systemBookCode,dateFrom,dateTo);
+    public void batchDeleteBranchDailies(String systemBookCode, Date dateFrom, Date dateTo) {
+        azureDao.batchDeleteBranchDailies(systemBookCode,dateFrom,dateTo);
     }
 
-    public void deleteItemDetailDaily(String systemBookCode, Date dateFrom, Date dateTo) {
-        azureDao.deleteItemDetailDaily(systemBookCode,dateFrom,dateTo);
+    public void batchDeleteItemDetailDailies(String systemBookCode, Date dateFrom, Date dateTo) {
+        azureDao.batchDeleteItemDetailDailies(systemBookCode,dateFrom,dateTo);
     }
 }
