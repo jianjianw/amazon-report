@@ -39,4 +39,26 @@ public class PosItemLat implements Serializable {
     public void setItem_category(String item_category) {
         this.item_category = item_category;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PosItemLat that = (PosItemLat) o;
+
+        if (systemBookCode != null ? !systemBookCode.equals(that.systemBookCode) : that.systemBookCode != null)
+            return false;
+        if (itemNum != null ? !itemNum.equals(that.itemNum) : that.itemNum != null) return false;
+        return item_category != null ? item_category.equals(that.item_category) : that.item_category == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = systemBookCode != null ? systemBookCode.hashCode() : 0;
+        result = 31 * result + (itemNum != null ? itemNum.hashCode() : 0);
+        result = 31 * result + (item_category != null ? item_category.hashCode() : 0);
+        return result;
+    }
 }

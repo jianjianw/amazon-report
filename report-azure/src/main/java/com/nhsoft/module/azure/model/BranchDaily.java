@@ -93,4 +93,38 @@ public class BranchDaily implements Serializable {
     public void setTargetMoney(BigDecimal targetMoney) {
         this.targetMoney = targetMoney;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BranchDaily that = (BranchDaily) o;
+
+        if (systemBookCode != null ? !systemBookCode.equals(that.systemBookCode) : that.systemBookCode != null)
+            return false;
+        if (branchNum != null ? !branchNum.equals(that.branchNum) : that.branchNum != null) return false;
+        if (shiftTableBizday != null ? !shiftTableBizday.equals(that.shiftTableBizday) : that.shiftTableBizday != null)
+            return false;
+        if (shiftTableDate != null ? !shiftTableDate.equals(that.shiftTableDate) : that.shiftTableDate != null)
+            return false;
+        if (dailyMoney != null ? !dailyMoney.equals(that.dailyMoney) : that.dailyMoney != null) return false;
+        if (dailyQty != null ? !dailyQty.equals(that.dailyQty) : that.dailyQty != null) return false;
+        if (dailyPrice != null ? !dailyPrice.equals(that.dailyPrice) : that.dailyPrice != null) return false;
+        return targetMoney != null ? targetMoney.equals(that.targetMoney) : that.targetMoney == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = systemBookCode != null ? systemBookCode.hashCode() : 0;
+        result = 31 * result + (branchNum != null ? branchNum.hashCode() : 0);
+        result = 31 * result + (shiftTableBizday != null ? shiftTableBizday.hashCode() : 0);
+        result = 31 * result + (shiftTableDate != null ? shiftTableDate.hashCode() : 0);
+        result = 31 * result + (dailyMoney != null ? dailyMoney.hashCode() : 0);
+        result = 31 * result + (dailyQty != null ? dailyQty.hashCode() : 0);
+        result = 31 * result + (dailyPrice != null ? dailyPrice.hashCode() : 0);
+        result = 31 * result + (targetMoney != null ? targetMoney.hashCode() : 0);
+        return result;
+    }
 }

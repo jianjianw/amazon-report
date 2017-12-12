@@ -3,6 +3,7 @@ package com.nhsoft.module.azure.rest;
 import com.nhsoft.module.azure.model.Branch;
 import com.nhsoft.module.azure.model.BranchDaily;
 import com.nhsoft.module.azure.model.ItemDaily;
+import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
@@ -63,8 +64,9 @@ public class InitApi {
         } catch (ParseException e) {
             throw new RuntimeException("日期解析失败");
         }
-//        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, form, to);
-//        azureService.batchSaveItemDailyDetails(systemBookCode, itemDailyDetailSummary);
+        List<Integer> posItemNums = azureService.findPosItemNums(systemBookCode);
+        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, form, to,posItemNums);
+        azureService.batchSaveItemDailyDetails(systemBookCode, itemDailyDetailSummary);
         return "SUCCESS";
     }
 

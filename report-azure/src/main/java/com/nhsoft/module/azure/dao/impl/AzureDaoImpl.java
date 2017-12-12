@@ -49,7 +49,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
                 currentSession().flush();
             }
         }
-        System.out.println("插入商品日时段销售汇总");
 
     }
 
@@ -118,7 +117,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sqlQuery.executeUpdate();
     }
 
-    public List<Object[]> findPosItemNums(String systemBookCode) {
+    public List<Object> findPosItemNums(String systemBookCode) {
         String sql = "select item_num from pos_item_lat where system_book_code = '"+systemBookCode+"'";
         SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
         return sqlQuery.list();

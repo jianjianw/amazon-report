@@ -6,10 +6,7 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 商品日时段销售汇总
@@ -171,6 +168,14 @@ public class ItemDailyDetail implements Serializable {
         this.amount = amount;
     }
 
+    public String[] getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String[] period) {
+        this.period = period;
+    }
+
     public BigDecimal getItemPeriodAmout() {
         return itemPeriodAmout;
     }
@@ -235,5 +240,56 @@ public class ItemDailyDetail implements Serializable {
             itemDailyDetails.add(itemDailyDetail);
         }
         return itemDailyDetails;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ItemDailyDetail that = (ItemDailyDetail) o;
+
+        if (branchNum != null ? !branchNum.equals(that.branchNum) : that.branchNum != null) return false;
+        if (shiftTableBizday != null ? !shiftTableBizday.equals(that.shiftTableBizday) : that.shiftTableBizday != null)
+            return false;
+        if (itemNum != null ? !itemNum.equals(that.itemNum) : that.itemNum != null) return false;
+        if (systemBookCode != null ? !systemBookCode.equals(that.systemBookCode) : that.systemBookCode != null)
+            return false;
+        if (itemPeriod != null ? !itemPeriod.equals(that.itemPeriod) : that.itemPeriod != null) return false;
+        if (shiftTableDate != null ? !shiftTableDate.equals(that.shiftTableDate) : that.shiftTableDate != null)
+            return false;
+        if (itemAmout != null ? !itemAmout.equals(that.itemAmout) : that.itemAmout != null) return false;
+        if (itemMoney != null ? !itemMoney.equals(that.itemMoney) : that.itemMoney != null) return false;
+        if (itemSource != null ? !itemSource.equals(that.itemSource) : that.itemSource != null) return false;
+        if (itemPeriodAmout != null ? !itemPeriodAmout.equals(that.itemPeriodAmout) : that.itemPeriodAmout != null)
+            return false;
+        if (itemPeriodMoney != null ? !itemPeriodMoney.equals(that.itemPeriodMoney) : that.itemPeriodMoney != null)
+            return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(money, that.money)) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(amount, that.amount)) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        return Arrays.equals(period, that.period);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = branchNum != null ? branchNum.hashCode() : 0;
+        result = 31 * result + (shiftTableBizday != null ? shiftTableBizday.hashCode() : 0);
+        result = 31 * result + (itemNum != null ? itemNum.hashCode() : 0);
+        result = 31 * result + (systemBookCode != null ? systemBookCode.hashCode() : 0);
+        result = 31 * result + (itemPeriod != null ? itemPeriod.hashCode() : 0);
+        result = 31 * result + (shiftTableDate != null ? shiftTableDate.hashCode() : 0);
+        result = 31 * result + (itemAmout != null ? itemAmout.hashCode() : 0);
+        result = 31 * result + (itemMoney != null ? itemMoney.hashCode() : 0);
+        result = 31 * result + (itemSource != null ? itemSource.hashCode() : 0);
+        result = 31 * result + (itemPeriodAmout != null ? itemPeriodAmout.hashCode() : 0);
+        result = 31 * result + (itemPeriodMoney != null ? itemPeriodMoney.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(money);
+        result = 31 * result + Arrays.hashCode(amount);
+        result = 31 * result + Arrays.hashCode(period);
+        return result;
     }
 }

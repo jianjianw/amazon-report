@@ -3,6 +3,7 @@ package com.nhsoft.module.azure.timer;
 import com.nhsoft.module.azure.model.Branch;
 import com.nhsoft.module.azure.model.BranchDaily;
 import com.nhsoft.module.azure.model.ItemDaily;
+import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -66,24 +68,23 @@ public class AzureSchedule {
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         String systemBookCode = "4410";
-//       // List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date);
-//        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
+        List<Integer> posItemNums = azureService.findPosItemNums(systemBookCode);
+        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date,posItemNums);
+        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
     }
 
     @Scheduled(cron="0 0 2-3 * * *")
-    public void itemDailyDetailHour(){        //商品日时段销售汇总(从凌晨开始，每个小时的0分和30分执行一次)
-        long preTime = System.currentTimeMillis();
+    public void itemDailyDetailHour(){        //商品日时段销售汇总(汇总昨天的数据)
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date date = calendar.getTime();
         String systemBookCode = "4410";
-//        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date);
-//        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
-//        long afterTime = System.currentTimeMillis();
-//        long time = (afterTime - preTime)/1000;
-//        logger.info("插入商品日时段销售汇总耗时：" +time+"秒");
-    }
+        List<Integer> posItemNums = azureService.findPosItemNums(systemBookCode);
+        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, date, date,posItemNums);
+        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary);
 
+
+    }
 
     @Scheduled(cron="0 0 2-3 * * *")
     public void insertBranch(){                 //每天凌晨2店-4点 每个小时执行一次
@@ -91,14 +92,6 @@ public class AzureSchedule {
         List<Branch> branch = branchRpc.findBranch(systemBookCode);
         azureService.batchSaveBranchs(systemBookCode,branch);
     }
-
-   /* @Scheduled(cron = "0 0 2-3 * * *")
-    public void deleteBranchDaily(){
-        String systemBookCode = "4410";
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        azureService.deleteBranchDaily(systemBookCode,date,date);
-    }*/
 
     @Scheduled(cron = "0 0 2-3 * * *")
     public void deleteItemDetailDaily(){//7

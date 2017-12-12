@@ -105,4 +105,43 @@ public class Branch implements Serializable {
     public void setBranchCreateTime(Date branchCreateTime) {
         this.branchCreateTime = branchCreateTime;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Branch branch = (Branch) o;
+
+        if (branchActived != branch.branchActived) return false;
+        if (ranchRdc != branch.ranchRdc) return false;
+        if (systemBookCode != null ? !systemBookCode.equals(branch.systemBookCode) : branch.systemBookCode != null)
+            return false;
+        if (branchNum != null ? !branchNum.equals(branch.branchNum) : branch.branchNum != null) return false;
+        if (branchCode != null ? !branchCode.equals(branch.branchCode) : branch.branchCode != null) return false;
+        if (branchName != null ? !branchName.equals(branch.branchName) : branch.branchName != null) return false;
+        if (branchType != null ? !branchType.equals(branch.branchType) : branch.branchType != null) return false;
+        if (branchArea != null ? !branchArea.equals(branch.branchArea) : branch.branchArea != null) return false;
+        if (branchEmployeeCount != null ? !branchEmployeeCount.equals(branch.branchEmployeeCount) : branch.branchEmployeeCount != null)
+            return false;
+        return branchCreateTime != null ? branchCreateTime.equals(branch.branchCreateTime) : branch.branchCreateTime == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = systemBookCode != null ? systemBookCode.hashCode() : 0;
+        result = 31 * result + (branchNum != null ? branchNum.hashCode() : 0);
+        result = 31 * result + (branchCode != null ? branchCode.hashCode() : 0);
+        result = 31 * result + (branchName != null ? branchName.hashCode() : 0);
+        result = 31 * result + (branchActived ? 1 : 0);
+        result = 31 * result + (ranchRdc ? 1 : 0);
+        result = 31 * result + (branchType != null ? branchType.hashCode() : 0);
+        result = 31 * result + (branchArea != null ? branchArea.hashCode() : 0);
+        result = 31 * result + (branchEmployeeCount != null ? branchEmployeeCount.hashCode() : 0);
+        result = 31 * result + (branchCreateTime != null ? branchCreateTime.hashCode() : 0);
+        return result;
+    }
+
+
 }

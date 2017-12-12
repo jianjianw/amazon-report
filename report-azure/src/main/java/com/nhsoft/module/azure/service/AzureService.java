@@ -51,6 +51,6 @@ public interface AzureService {
     /**
      * 查找商品维度表里面的商品编号
      * */
-    public List<Object[]> findPosItemNums(String systemBookCode);
+    public List<Integer> findPosItemNums(String systemBookCode);
 
 }

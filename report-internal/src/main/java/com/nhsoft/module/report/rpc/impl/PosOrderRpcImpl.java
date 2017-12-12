@@ -35,6 +35,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	private PosOrderRemoteService posOrderRemoteService;
 	@Autowired
 	private BranchTransferGoalsRpc branchTransferGoalsRpc;
+	@Autowired
+	private AzureService azureService;
 
 	@Override
 	public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
@@ -469,5 +471,81 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		}
 		return list;
 	}
-	
+
+
+
+	public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
+
+		List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo ,itemNums);
+		List<ItemDailyDetail> list = new ArrayList<>();
+		if (objects.isEmpty()) {
+			return list;
+		}
+		Map<String, ItemDailyDetail> map = new HashMap<>();
+		Integer branchNum;
+		String bizday;
+		Integer itemNum;
+		String source;
+		String itemPeriod;
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			branchNum = (Integer) object[0];
+			bizday = (String) object[1];
+			itemPeriod = (String) object[2];
+			source = (String) object[3];
+			itemNum = (Integer) object[4];
+
+			String hour = itemPeriod.substring(0, 2);
+			Integer intHour = Integer.valueOf(hour);
+			Integer intMin = Integer.valueOf(itemPeriod.substring(2, 4));
+
+			if(intMin >= 0 && intMin <= 30){
+				itemPeriod = hour + "30";
+			} else {
+				itemPeriod = StringUtils.leftPad((intHour + 1) + "", 2, "0") + "00";
+			}
+			//向map添加数据
+			StringBuilder append = new StringBuilder();
+			append.append(branchNum).append(bizday).append(source).append(itemNum);
+			String key = append.toString();
+			ItemDailyDetail itemDailyDetail = map.get(key);
+			if (itemDailyDetail == null) {
+				itemDailyDetail = new ItemDailyDetail();
+				itemDailyDetail.setSystemBookCode(systemBookCode);
+				itemDailyDetail.setBranchNum(branchNum);
+				itemDailyDetail.setShiftTableBizday(bizday);
+				itemDailyDetail.setItemSource(source);
+				itemDailyDetail.setItemNum(itemNum);
+				itemDailyDetail.setItemMoney(BigDecimal.ZERO);
+				itemDailyDetail.setItemAmout(BigDecimal.ZERO);
+				itemDailyDetail.setShiftTableDate(DateUtil.getDateStr(itemDailyDetail.getShiftTableBizday()));
+				map.put(key, itemDailyDetail);
+			}
+			BigDecimal money = (BigDecimal) object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BigDecimal amount = (BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+			itemDailyDetail.append(money,amount,itemPeriod);
+		}
+
+		Collection<ItemDailyDetail> values = map.values();
+		Iterator<ItemDailyDetail> iterator = values.iterator();
+		while(iterator.hasNext()){
+			ItemDailyDetail next = iterator.next();
+			List<ItemDailyDetail> itemDailyDetails = next.toArray();
+			list.addAll(itemDailyDetails);
+		}
+
+		//移出营业额和数量为0的数据
+		Iterator<ItemDailyDetail> it = list.iterator();
+		while (it.hasNext()) {
+			ItemDailyDetail next = it.next();
+			BigDecimal dailyMoney = next.getItemMoney();
+			BigDecimal itemAmout = next.getItemAmout();
+			if((dailyMoney.compareTo(BigDecimal.ZERO) == 0) && (itemAmout.compareTo(BigDecimal.ZERO) == 0)){
+				it.remove();
+			}
+		}
+		return list;
+
+	}
+
 }
