@@ -45,7 +45,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         for (int i = 0; i <itemDailyDetails.size() ; i++) {
             ItemDailyDetail itemDailyDetail = itemDailyDetails.get(i);
             currentSession().save(itemDailyDetail);
-            if(i % 50 == 0){
+            if(i % 30 == 0){
                 currentSession().flush();
             }
         }
@@ -116,6 +116,12 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         String sql = "delete from item_daily_detail where shift_table_bizday < '" + date + "' ";
         SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
         sqlQuery.executeUpdate();
+    }
+
+    public List<Object[]> findPosItemNums(String systemBookCode) {
+        String sql = "select item_num from pos_item_lat where system_book_code = '"+systemBookCode+"'";
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+        return sqlQuery.list();
     }
 
     public String formatDate(Date date){

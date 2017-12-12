@@ -47,4 +47,8 @@ public class AzureServiceImpl implements AzureService {
     public void batchDeleteItemDetailDailies(String systemBookCode, Date dateFrom, Date dateTo) {
         azureDao.batchDeleteItemDetailDailies(systemBookCode,dateFrom,dateTo);
     }
+
+    public List<Object[]> findPosItemNums(String systemBookCode) {
+        return azureDao.findPosItemNums(systemBookCode);
+    }
 }

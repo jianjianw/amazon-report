@@ -5058,7 +5058,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return objects;
 	}
 
-	public List<Object[]> findItemDailyDetailSummary(String systemBookCode,Date dateFrom,Date dateTo){
+	public List<Object[]> findItemDailyDetailSummary(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums){
 		StringBuffer sb = new StringBuffer();		//findCustomerAnalysisTimePeriodsByItems
 		sb.append("select p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num, sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
@@ -5067,6 +5067,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				+ DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		sb.append("and p.order_state_code in (5,7) ");
 		sb.append("and detail.item_num is not null ");
+		if(itemNums != null && itemNums.size() > 0){
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
 		sb.append("group by p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num order by p.order_time_char asc ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);

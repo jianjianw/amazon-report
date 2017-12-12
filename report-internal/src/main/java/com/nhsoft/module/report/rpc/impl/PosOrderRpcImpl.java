@@ -6,6 +6,7 @@ import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.azure.model.BranchDaily;
 import com.nhsoft.module.azure.model.ItemDaily;
 import com.nhsoft.module.azure.model.ItemDailyDetail;
+import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.api.dto.BranchFinishRateTopDTO;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.SystemBook;
@@ -34,6 +35,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	private PosOrderRemoteService posOrderRemoteService;
 	@Autowired
 	private BranchTransferGoalsRpc branchTransferGoalsRpc;
+	@Autowired
+	private AzureService azureService;
 
 	@Override
 	public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
@@ -472,7 +475,18 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 
 	public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo) {
-		List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo);
+
+		List<Object[]> itemList = azureService.findPosItemNums(systemBookCode);
+		List<Integer> itemNums = new ArrayList<>();
+		if(itemList != null){
+			for (int i = 0; i <itemList.size() ; i++) {
+				Object[] object = itemList.get(i);
+				itemNums.add((Integer) object[0]);
+			}
+		}
+
+
+		List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo ,itemNums);
 		List<ItemDailyDetail> list = new ArrayList<>();
 		if (objects.isEmpty()) {
 			return list;

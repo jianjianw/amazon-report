@@ -217,7 +217,7 @@ public interface PosOrderService {
 	/**
 	 * 商品日时段销售汇总
 	 * */
-	public List<Object[]> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo);
+	public List<Object[]> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo ,List<Integer> itemNums);
 
 }
 

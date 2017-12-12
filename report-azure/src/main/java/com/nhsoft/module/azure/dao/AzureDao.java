@@ -47,4 +47,10 @@ public interface AzureDao {
      *删除商品日分段汇总
      * */
     public void batchDeleteItemDetailDailies(String systemBookCode, Date dateFrom,Date dateTo);
+
+    /**
+     * 查找商品维度表里面的商品编号
+     * */
+    public List<Object[]> findPosItemNums(String systemBookCode);
+
 }
