@@ -35,10 +35,19 @@ public class SystemBookProxy implements java.io.Serializable {
 	private String bookProxySynchRemoteServer;
 	private String bookProxyCardServer;
 	private String bookProxyCardRemoteServer;
+	private String bookProxyRdsName;
 	
 	public SystemBookProxy() {
 	}
-
+	
+	public String getBookProxyRdsName() {
+		return bookProxyRdsName;
+	}
+	
+	public void setBookProxyRdsName(String bookProxyRdsName) {
+		this.bookProxyRdsName = bookProxyRdsName;
+	}
+	
 	public String getBookProxyRegion() {
 		return bookProxyRegion;
 	}

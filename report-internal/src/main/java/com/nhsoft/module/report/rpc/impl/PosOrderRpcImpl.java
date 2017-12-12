@@ -35,8 +35,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	private PosOrderRemoteService posOrderRemoteService;
 	@Autowired
 	private BranchTransferGoalsRpc branchTransferGoalsRpc;
-	@Autowired
-	private AzureService azureService;
 
 	@Override
 	public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {

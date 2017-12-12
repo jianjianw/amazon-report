@@ -1283,6 +1283,13 @@ public interface ReportRpc {
 	 * @return
 	 */
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode, SaleAnalysisQueryData saleAnalysisQueryData);
+	
+	/**
+	 * 销售分析 -- 按分店汇总商品信息
+	 * @param saleAnalysisQueryData
+	 * @return
+	 */
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 
