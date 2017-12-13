@@ -595,6 +595,142 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 	@Override
+	public List<BusinessCollection> findBusinessCollectionByBranchToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchToDetail(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String type = (String) object[1];
+			BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BusinessCollection data = map.get(branchNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				map.put(branchNum, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+		list.addAll(map.values());
+		return list;
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByBranchToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> list = new ArrayList<>();
+		if (objects.isEmpty()) {
+			return list;
+		}
+		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			BigDecimal money = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
+			BusinessCollection data = map.get(branchNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				map.put(branchNum, data);
+			}
+			data.setAllDiscountMoney(money);
+		}
+		list.addAll(map.values());
+		return list;
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByBranchDayToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchDayToDetail(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			String type = (String) object[2];
+			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BusinessCollection data = map.get(branchNum + shiftTableBizday);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				map.put(branchNum + shiftTableBizday, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+
+		list.addAll(map.values());
+		return list;
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByBranchDayToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+
+		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchDayToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
+
+		List<BusinessCollection> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BusinessCollection data = map.get(branchNum + shiftTableBizday);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				map.put(branchNum + shiftTableBizday, data);
+			}
+			data.setAllDiscountMoney(money);
+		}
+		list.addAll(map.values());
+		return list;
+	}
+
+	@Override
 	public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		List<Object[]> objects = posOrderService.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
 		List<BusinessCollection> list = new ArrayList<>();
@@ -638,9 +774,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 	@Override
-	public List<BusinessCollection> findBusinessCollectionByPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+	public List<BusinessCollection> findBusinessCollectionByShiftTableToPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 
-		List<Object[]> objects = posOrderService.findBusinessCollectionByPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<Object[]> objects = posOrderService.findBusinessCollectionByShiftTableToPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		List<BusinessCollection> list = new ArrayList<>();
 		if(objects.isEmpty()){
 			return list;
@@ -680,9 +816,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 	@Override
-	public List<BusinessCollection> findBusinessCollectionByDetailItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+	public List<BusinessCollection> findBusinessCollectionByShiftTableToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 
-		List<Object[]> objects = posOrderService.findBusinessCollectionByDetailItem(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<Object[]> objects = posOrderService.findBusinessCollectionByShiftTableToPosOrder(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		List<BusinessCollection> list = new ArrayList<>();
 		if(objects.isEmpty()){
 			return list;
@@ -721,6 +857,100 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			detail.setMoney(detail.getMoney().add(money));
 		}
 		list.addAll(map.values());
+		return list;
+	}
+
+	@Override
+	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+		List<Object[]> objects = posOrderService.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
+		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		Integer branchNum = null;
+		String operator = null;
+		String type = null;
+		BigDecimal money = null;
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			branchNum = (Integer) object[0];
+			operator = (String) object[1];
+			type = (String) object[2];
+			money = (BigDecimal) object[3];
+
+			PosReceiveDiffMoneySumDTO dto = PosReceiveDiffMoneySumDTO.getByBranchCashier(list, branchNum, operator);
+			if (dto == null) {
+				dto = new PosReceiveDiffMoneySumDTO();
+				dto.setBranchNum(branchNum);
+				dto.setCasher(operator);
+				list.add(dto);
+			}
+			dto.setTotalSaleMoney(dto.getTotalSaleMoney().add(money));
+
+			TypeAndTwoValuesDTO typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), type);
+			if (typeAndTwoValuesDTO == null) {
+				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				typeAndTwoValuesDTO.setType(type);
+				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
+			}
+			typeAndTwoValuesDTO.setAmount(typeAndTwoValuesDTO.getAmount().add(money));
+
+			TypeAndTwoValuesDTO saleTypeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTotalSaleMoneyDetails(), type);
+			if (saleTypeAndTwoValuesDTO == null) {
+				saleTypeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				saleTypeAndTwoValuesDTO.setType(type);
+				dto.getTotalSaleMoneyDetails().add(saleTypeAndTwoValuesDTO);
+			}
+			saleTypeAndTwoValuesDTO.setAmount(saleTypeAndTwoValuesDTO.getAmount().add(money));
+		}
+
+		return list;
+	}
+
+	@Override
+	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		List<Object[]> objects = posOrderService.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<PosReceiveDiffMoneySumDTO>();
+		Integer branchNum = null;
+		String bizday = null;
+		Integer biznum = null;
+		String type = null;
+		BigDecimal money = null;
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			branchNum = (Integer) object[0];
+			bizday = (String) object[1];
+			biznum = (Integer) object[2];
+			type = (String) object[3];
+			money = (BigDecimal) object[4];
+
+			PosReceiveDiffMoneySumDTO dto = PosReceiveDiffMoneySumDTO.getByShift(list, branchNum, bizday, biznum);
+			if (dto == null) {
+				dto = new PosReceiveDiffMoneySumDTO();
+				dto.setBranchNum(branchNum);
+				dto.setShiftTableBizday(bizday);
+				dto.setShiftTableNum(biznum);
+				list.add(dto);
+			}
+			dto.setTotalSaleMoney(dto.getTotalSaleMoney().add(money));
+
+			TypeAndTwoValuesDTO typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), type);
+			if (typeAndTwoValuesDTO == null) {
+				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				typeAndTwoValuesDTO.setType(type);
+				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
+			}
+			typeAndTwoValuesDTO.setAmount(typeAndTwoValuesDTO.getAmount().add(money));
+
+			TypeAndTwoValuesDTO saleTypeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTotalSaleMoneyDetails(), type);
+			if (saleTypeAndTwoValuesDTO == null) {
+				saleTypeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				saleTypeAndTwoValuesDTO.setType(type);
+				dto.getTotalSaleMoneyDetails().add(saleTypeAndTwoValuesDTO);
+			}
+			saleTypeAndTwoValuesDTO.setAmount(saleTypeAndTwoValuesDTO.getAmount().add(money));
+		}
 		return list;
 	}
 

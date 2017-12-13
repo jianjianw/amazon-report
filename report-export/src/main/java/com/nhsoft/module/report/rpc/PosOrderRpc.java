@@ -78,14 +78,37 @@ public interface PosOrderRpc  {
     public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums);
 
 
+
+    public List<BusinessCollection> findBusinessCollectionByBranchToDetail(String systemBookCode,
+                                                         List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+    public List<BusinessCollection> findBusinessCollectionByBranchToPosOrder(String systemBookCode,
+                                                                   List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+    public List<BusinessCollection> findBusinessCollectionByBranchDayToDetail(String systemBookCode,
+                                                            List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+    public List<BusinessCollection> findBusinessCollectionByBranchDayToPosOrder(String systemBookCode,
+                                                                      List<Integer> branchNums, Date dateFrom, Date dateTo);
+
     public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums,
                                                            Date dateFrom, Date dateTo);
 
-    public List<BusinessCollection> findBusinessCollectionByPayment(String systemBookCode, List<Integer> branchNums,
+    public List<BusinessCollection> findBusinessCollectionByShiftTableToPayment(String systemBookCode, List<Integer> branchNums,
                                                           Date dateFrom, Date dateTo, String casher);
-    //消费券
-    public List<BusinessCollection> findBusinessCollectionByDetailItem(String systemBookCode, List<Integer> branchNums,
+
+    public List<BusinessCollection> findBusinessCollectionByShiftTableToPosOrder(String systemBookCode, List<Integer> branchNums,
                                                              Date dateFrom, Date dateTo, String casher);
+
+    public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode,
+                                                                       List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+    public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode,
+                                                                     List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
+
+
+
 
 
 

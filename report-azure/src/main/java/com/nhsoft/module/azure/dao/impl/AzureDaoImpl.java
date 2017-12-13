@@ -24,6 +24,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
             currentSession().save(itemDaily);
             if(i % 30 == 0){
                 currentSession().flush();
+                currentSession().clear();
             }
         }
     }
@@ -39,6 +40,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
             currentSession().save(itemDailyDetail);
             if(i % 30 == 0){
                 currentSession().flush();
+                currentSession().clear();
             }
         }
 
@@ -72,15 +74,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
 
 
     public void batchSaveBranchDailies(List<BranchDaily> branchDailys) {
-
-        /*//先删除
-        Calendar calendar = Calendar.getInstance();
-        Date time = calendar.getTime();
-        String date = formatDate(time);
-        String sql = "delete from branch_daily where shift_table_bizday = '" + date + "' ";//branch_daily
-        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-        sqlQuery.executeUpdate();*/
-
 
         String tableName = "branch_daily";
         deleteCurrentData(tableName);

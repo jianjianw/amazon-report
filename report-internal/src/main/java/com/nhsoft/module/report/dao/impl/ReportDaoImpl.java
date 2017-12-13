@@ -373,53 +373,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 		}
 
-		// 消费券
-		sb = new StringBuffer();
-		sb.append("select detail.order_detail_branch_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
-		sb.append("from pos_order_detail as detail with(nolock) ");
-		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' ");
-		if (branchNums != null && branchNums.size() > 0) {
-			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and detail.order_detail_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and detail.order_detail_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is null ");
-		sb.append("and detail.order_detail_state_code = 1 ");
-		sb.append("group by detail.order_detail_branch_num, detail.order_detail_item order by detail.order_detail_branch_num asc ");
-		query = currentSession().createSQLQuery(sb.toString());
-		objects = query.list();
-		for (int i = 0; i < objects.size(); i++) {
-			Object[] object = objects.get(i);
-			Integer branchNum = (Integer) object[0];
-			String type = (String) object[1];
-			BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-			BusinessCollection data = map.get(branchNum);
-			if (data == null) {
-				data = new BusinessCollection();
-				data.setBranchNum(branchNum);
-				map.put(branchNum, data);
-			}
-			BusinessCollectionIncome detail = new BusinessCollectionIncome();
-			detail.setName(type);
-			detail.setMoney(money);
-			detail.setQty(amount);
-			data.getTicketIncomes().add(detail);
-
-			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-			if (detail == null) {
-				detail = new BusinessCollectionIncome();
-				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-				detail.setMoney(BigDecimal.ZERO);
-				data.getPosIncomes().add(detail);
-			}
-			detail.setMoney(detail.getMoney().add(money));
-		}
-
 		sb = new StringBuffer();
 		sb.append("select c.branchNum, sum(detail.clientSettlementDetailMoney), sum(detail.clientSettlementDetailDiscount) ");
 		sb.append("from ClientSettlement as c inner join c.clientSettlementDetails as detail ");
@@ -459,38 +412,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 		}
 
-
-		sb = new StringBuffer();
-		sb.append("select branch_num, sum(order_discount_money + order_round + order_mgr_discount_money) as money ");
-		sb.append("from pos_order with(nolock) ");
-		sb.append("where system_book_code = '" + systemBookCode + "' ");
-		if (branchNums != null && branchNums.size() > 0) {
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("and order_state_code in (5, 7) ");
-		sb.append("group by branch_num order by branch_num asc");
-
-		sqlQuery = currentSession().createSQLQuery(sb.toString());
-		objects = sqlQuery.list();
-		for (int i = 0; i < objects.size(); i++) {
-			Object[] object = objects.get(i);
-			Integer branchNum = (Integer) object[0];
-			BigDecimal money = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
-			BusinessCollection data = map.get(branchNum);
-			if (data == null) {
-				data = new BusinessCollection();
-				data.setBranchNum(branchNum);
-				map.put(branchNum, data);
-			}
-			data.setAllDiscountMoney(money);
-		}
-				
 		sb = new StringBuffer();
 		sb.append("select branch_num, sum(card_change_money) ");
 		sb.append("from card_change with(nolock) ");
@@ -920,55 +841,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 		}
 
-		// 消费券
-		sb = new StringBuffer();
-		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
-		sb.append("from pos_order_detail as detail with(nolock) ");
-		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' ");
-		if (branchNums != null && branchNums.size() > 0) {
-			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and detail.order_detail_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and detail.order_detail_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is null ");
-		sb.append("and detail.order_detail_state_code = 1 ");
-		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.order_detail_item order by detail.order_detail_branch_num asc ");
-		query = currentSession().createSQLQuery(sb.toString());
-		objects = query.list();
-		for (int i = 0; i < objects.size(); i++) {
-			Object[] object = objects.get(i);
-			Integer branchNum = (Integer) object[0];
-			String shiftTableBizday = (String) object[1];
-			String type = (String) object[2];
-			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-			BusinessCollection data = map.get(branchNum + shiftTableBizday);
-			if (data == null) {
-				data = new BusinessCollection();
-				data.setBranchNum(branchNum);
-				data.setShiftTableBizday(shiftTableBizday);
-				map.put(branchNum + shiftTableBizday, data);
-			}
-			BusinessCollectionIncome detail = new BusinessCollectionIncome();
-			detail.setName(type);
-			detail.setMoney(money);
-			detail.setQty(amount);
-			data.getTicketIncomes().add(detail);
-
-			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-			if (detail == null) {
-				detail = new BusinessCollectionIncome();
-				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-				detail.setMoney(BigDecimal.ZERO);
-				data.getPosIncomes().add(detail);
-			}
-			detail.setMoney(detail.getMoney().add(money));
-		}
-
 		sb = new StringBuffer();
 		sb.append("select c.branch_num, convert(varchar(8), c.client_settlement_audit_time, 112) as biz, sum(detail.client_settlement_detail_money) as money, ");
 		sb.append("sum(detail.client_settlement_detail_discount) as discount  ");
@@ -1006,43 +878,8 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			data.setSignInMoney(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
 			data.setSignInDiscountMoney(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
-
-			
 		}
 
-		sb = new StringBuffer();
-		sb.append("select branch_num, shift_table_bizday, sum(order_discount_money + order_round + order_mgr_discount_money) as money ");
-		sb.append("from pos_order with(nolock) ");
-		sb.append("where system_book_code = '" + systemBookCode + "' ");
-		if (branchNums != null && branchNums.size() > 0) {
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("and order_state_code in (5, 7) ");
-		sb.append("group by branch_num, shift_table_bizday order by branch_num asc");
-
-		sqlQuery = currentSession().createSQLQuery(sb.toString());
-		objects = sqlQuery.list();
-		for (int i = 0; i < objects.size(); i++) {
-			Object[] object = objects.get(i);
-			Integer branchNum = (Integer) object[0];
-			String shiftTableBizday = (String) object[1];
-			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-			BusinessCollection data = map.get(branchNum + shiftTableBizday);
-			if (data == null) {
-				data = new BusinessCollection();
-				data.setBranchNum(branchNum);
-				data.setShiftTableBizday(shiftTableBizday);
-				map.put(branchNum + shiftTableBizday, data);
-			}
-			data.setAllDiscountMoney(money);
-		}
-		
 		sb = new StringBuffer();
 		sb.append("select branch_num, shift_table_bizday, sum(card_change_money) as money ");
 		sb.append("from card_change with(nolock) ");
@@ -3186,62 +3023,8 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	@Override
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode,
 			List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select pos_order.branch_num, order_operator, payment_pay_by, sum(payment_money) as money ");
-		sb.append("from payment with(nolock) inner join pos_order on payment.order_no = pos_order.order_no ");
-		sb.append("where pos_order.system_book_code = '" + systemBookCode + "' ");
-		if (branchNums != null && branchNums.size() > 0) {
-			sb.append("and pos_order.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and pos_order.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and pos_order.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		sb.append("group by pos_order.branch_num, order_operator, payment_pay_by ");
 
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		List<Object[]> objects = sqlQuery.list();
-		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<PosReceiveDiffMoneySumDTO>();
-		Integer branchNum = null;
-		String operator = null;
-		String type = null;
-		BigDecimal money = null;
-		for(int i = 0;i < objects.size();i++){
-			Object[] object = objects.get(i);
-			branchNum = (Integer)object[0];
-			operator = (String) object[1];
-			type = (String)object[2];
-			money = (BigDecimal)object[3];
-			
-			PosReceiveDiffMoneySumDTO dto = PosReceiveDiffMoneySumDTO.getByBranchCashier(list, branchNum, operator);
-			if(dto == null){
-				dto = new PosReceiveDiffMoneySumDTO();
-				dto.setBranchNum(branchNum);
-				dto.setCasher(operator);
-				list.add(dto);
-			}
-			dto.setTotalSaleMoney(dto.getTotalSaleMoney().add(money));
-			
-			TypeAndTwoValuesDTO typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), type);
-			if(typeAndTwoValuesDTO == null){
-				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
-				typeAndTwoValuesDTO.setType(type);
-				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
-			}
-			typeAndTwoValuesDTO.setAmount(typeAndTwoValuesDTO.getAmount().add(money));
-			
-			TypeAndTwoValuesDTO saleTypeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTotalSaleMoneyDetails(), type);
-			if(saleTypeAndTwoValuesDTO == null){
-				saleTypeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
-				saleTypeAndTwoValuesDTO.setType(type);
-				dto.getTotalSaleMoneyDetails().add(saleTypeAndTwoValuesDTO);
-			}
-			saleTypeAndTwoValuesDTO.setAmount(saleTypeAndTwoValuesDTO.getAmount().add(money));
-			
-		}
-		sb = new StringBuffer();
+		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, deposit_operator, deposit_payment_type_name, sum(deposit_cash) ");
 		sb.append("from card_deposit with(nolock) ");
 		sb.append("where system_book_code = :systemBookCode ");
@@ -3256,7 +3039,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		sb.append("and deposit_payment_type_name != '" + AppConstants.PAYMENT_ORI + "' ");
 		sb.append("group by branch_num, deposit_operator, deposit_payment_type_name ");
-		sqlQuery = currentSession().createSQLQuery(sb.toString());
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		if (dateFrom != null) {
 			sqlQuery.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
@@ -3264,7 +3047,12 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (dateTo != null) {
 			sqlQuery.setString("bizTo", DateUtil.getDateShortStr(dateTo));
 		}
-		objects = sqlQuery.list();
+		Integer branchNum = null;
+		String operator = null;
+		String type = null;
+		BigDecimal money = null;
+		List<Object[]> objects = sqlQuery.list();
+		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<PosReceiveDiffMoneySumDTO>();
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			branchNum = (Integer)object[0];
@@ -3560,67 +3348,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode,
 			List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select pos_order.branch_num, pos_order.shift_table_bizday, pos_order.shift_table_num, payment_pay_by, sum(payment_money) as money ");
-		sb.append("from payment with(nolock) inner join pos_order on payment.order_no = pos_order.order_no ");
-		sb.append("where pos_order.system_book_code = '" + systemBookCode + "' ");
-		if (branchNums != null && branchNums.size() > 0) {
-			sb.append("and pos_order.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and pos_order.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and pos_order.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		if(StringUtils.isNotEmpty(casher)){
-			sb.append("and order_operator = '" + casher + "' ");
-		}
-		sb.append("group by pos_order.branch_num, pos_order.shift_table_bizday, pos_order.shift_table_num, payment_pay_by ");
-
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		List<Object[]> objects = sqlQuery.list();
-		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<PosReceiveDiffMoneySumDTO>();
-		Integer branchNum = null;
-		String bizday = null;
-		Integer biznum = null;
-		String type = null;
-		BigDecimal money = null;
-		for(int i = 0;i < objects.size();i++){
-			Object[] object = objects.get(i);
-			branchNum = (Integer)object[0];
-			bizday = (String) object[1];
-			biznum = (Integer)object[2];
-			type = (String)object[3];
-			money = (BigDecimal)object[4];
-			
-			PosReceiveDiffMoneySumDTO dto = PosReceiveDiffMoneySumDTO.getByShift(list, branchNum, bizday, biznum);
-			if(dto == null){
-				dto = new PosReceiveDiffMoneySumDTO();
-				dto.setBranchNum(branchNum);
-				dto.setShiftTableBizday(bizday);
-				dto.setShiftTableNum(biznum);
-				list.add(dto);
-			}
-			dto.setTotalSaleMoney(dto.getTotalSaleMoney().add(money));
-			
-			TypeAndTwoValuesDTO typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), type);
-			if(typeAndTwoValuesDTO == null){
-				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
-				typeAndTwoValuesDTO.setType(type);
-				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
-			}
-			typeAndTwoValuesDTO.setAmount(typeAndTwoValuesDTO.getAmount().add(money));
-			
-			TypeAndTwoValuesDTO saleTypeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTotalSaleMoneyDetails(), type);
-			if(saleTypeAndTwoValuesDTO == null){
-				saleTypeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
-				saleTypeAndTwoValuesDTO.setType(type);
-				dto.getTotalSaleMoneyDetails().add(saleTypeAndTwoValuesDTO);
-			}
-			saleTypeAndTwoValuesDTO.setAmount(saleTypeAndTwoValuesDTO.getAmount().add(money));
-			
-		}
-		sb = new StringBuffer();
 		sb.append("select branch_num, shift_table_bizday, shift_table_num, deposit_payment_type_name, sum(deposit_cash) ");
 		sb.append("from card_deposit with(nolock) ");
 		sb.append("where system_book_code = :systemBookCode ");
@@ -3638,7 +3365,8 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		sb.append("and deposit_payment_type_name != '" + AppConstants.PAYMENT_ORI + "' ");
 		sb.append("group by branch_num, shift_table_bizday, shift_table_num, deposit_payment_type_name  ");
-		sqlQuery = currentSession().createSQLQuery(sb.toString());
+
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		if (dateFrom != null) {
 			sqlQuery.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
@@ -3646,7 +3374,13 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		if (dateTo != null) {
 			sqlQuery.setString("bizTo", DateUtil.getDateShortStr(dateTo));
 		}
-		objects = sqlQuery.list();
+		List<Object[]> objects = sqlQuery.list();
+		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<PosReceiveDiffMoneySumDTO>();
+		Integer branchNum = null;
+		String bizday = null;
+		Integer biznum = null;
+		String type = null;
+		BigDecimal money = null;
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			branchNum = (Integer)object[0];

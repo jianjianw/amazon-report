@@ -5,6 +5,7 @@ package com.nhsoft.module.report.rpc.impl;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.*;
+import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.rpc.Report2Rpc;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
@@ -78,6 +79,8 @@ public class Report2RpcImpl implements Report2Rpc {
 	private StoreItemSupplierService storeItemSupplierService;
 	@Autowired
 	private MobileAppV2Service mobileAppV2Service;
+	@Autowired
+	private PosOrderRpc posOrderRpc;
 
 	
 	@Override
@@ -92,7 +95,26 @@ public class Report2RpcImpl implements Report2Rpc {
 
 	@Override
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return report2Service.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode,branchNums,dateFrom,dateTo);
+
+		List<PosReceiveDiffMoneySumDTO> list = report2Service.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
+		List<PosReceiveDiffMoneySumDTO> posList = posOrderRpc.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
+		if(posList != null && posList.size() > 0){
+			list.addAll(posList);
+		}
+		List<Branch> branchs = branchService.findInCache(systemBookCode);
+		for(int i = 0;i < list.size();i++){
+			PosReceiveDiffMoneySumDTO dto = list.get(i);
+			dto.setTotalReceiveDiff(dto.getTotalReceiveMoney().subtract(dto.getTotalSaleMoney())
+					.subtract(dto.getTotalCardDeposit()).subtract(dto.getTotalOtherMoney()).subtract(dto.getTotalRelatMoney()).subtract(dto.getTotalReplaceMoney()));
+
+			Branch branch = AppUtil.getBranch(branchs, dto.getBranchNum());
+			if(branch != null){
+				dto.setBranchCode(branch.getBranchCode());
+				dto.setBranchName(branch.getBranchName());
+
+			}
+		}
+		return list;
 	}
 
 	@Override
@@ -149,7 +171,25 @@ public class Report2RpcImpl implements Report2Rpc {
 
 	@Override
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
-		return report2Service.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode,branchNums,dateFrom,dateTo,casher);
+		List<PosReceiveDiffMoneySumDTO> list = report2Service.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<PosReceiveDiffMoneySumDTO> posList = posOrderRpc.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		if(posList != null && posList.size()>0){
+			list.addAll(posList);
+		}
+
+		List<Branch> branchs = branchService.findInCache(systemBookCode);
+		for(int i = 0;i < list.size();i++){
+			PosReceiveDiffMoneySumDTO dto = list.get(i);
+			dto.setTotalReceiveDiff(dto.getTotalReceiveMoney().subtract(dto.getTotalSaleMoney())
+					.subtract(dto.getTotalCardDeposit()).subtract(dto.getTotalOtherMoney()).subtract(dto.getTotalRelatMoney()).subtract(dto.getTotalReplaceMoney()));
+
+			Branch branch = AppUtil.getBranch(branchs, dto.getBranchNum());
+			if(branch != null){
+				dto.setBranchCode(branch.getBranchCode());
+				dto.setBranchName(branch.getBranchName());
+			}
+		}
+		return list;
 	}
 
 	@Override

@@ -135,19 +135,6 @@ public class Report2ServiceImpl implements Report2Service {
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode,
 			List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		List<PosReceiveDiffMoneySumDTO> list = reportDao.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
-		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		for(int i = 0;i < list.size();i++){
-			PosReceiveDiffMoneySumDTO dto = list.get(i);
-			dto.setTotalReceiveDiff(dto.getTotalReceiveMoney().subtract(dto.getTotalSaleMoney())
-					.subtract(dto.getTotalCardDeposit()).subtract(dto.getTotalOtherMoney()).subtract(dto.getTotalRelatMoney()).subtract(dto.getTotalReplaceMoney()));
-			
-			Branch branch = AppUtil.getBranch(branchs, dto.getBranchNum());
-			if(branch != null){
-				dto.setBranchCode(branch.getBranchCode());
-				dto.setBranchName(branch.getBranchName());
-				
-			}			
-		}	
 		return list;
 	}
 	////
@@ -498,21 +485,6 @@ public class Report2ServiceImpl implements Report2Service {
 			List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		
 		List<PosReceiveDiffMoneySumDTO> list = reportDao.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
-
-		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		for(int i = 0;i < list.size();i++){
-			PosReceiveDiffMoneySumDTO dto = list.get(i);
-			dto.setTotalReceiveDiff(dto.getTotalReceiveMoney().subtract(dto.getTotalSaleMoney())
-					.subtract(dto.getTotalCardDeposit()).subtract(dto.getTotalOtherMoney()).subtract(dto.getTotalRelatMoney()).subtract(dto.getTotalReplaceMoney()));
-			
-			Branch branch = AppUtil.getBranch(branchs, dto.getBranchNum());
-			if(branch != null){
-				dto.setBranchCode(branch.getBranchCode());
-				dto.setBranchName(branch.getBranchName());
-				
-				
-			}			
-		}		
 		return list;
 	}
 

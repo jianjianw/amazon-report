@@ -1717,12 +1717,32 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportService.findBusinessCollectionByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+
+		List<BusinessCollection> list = reportService.findBusinessCollectionByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> detailList = posOrderRpc.findBusinessCollectionByBranchToDetail(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> posList = posOrderRpc.findBusinessCollectionByBranchToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
+		if(detailList != null && detailList.size()>0){
+			list.addAll(detailList);
+		}
+		if(posList != null && posList.size()>0){
+			list.addAll(posList);
+		}
+		return list;
 	}
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportService.findBusinessCollectionByBranchDay(systemBookCode,branchNums,dateFrom,dateTo);
+
+		List<BusinessCollection> list = reportService.findBusinessCollectionByBranchDay(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> posList = posOrderRpc.findBusinessCollectionByBranchDayToDetail(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> detailList = posOrderRpc.findBusinessCollectionByBranchDayToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
+		if(posList != null && posList.size() > 0){
+			list.addAll(posList);
+		}
+		if(detailList != null && posList.size() > 0){
+			list.addAll(detailList);
+		}
+		return list;
 	}
 
 	@Override
@@ -1738,11 +1758,11 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override/////
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		List<BusinessCollection> businessCollections = reportService.findBusinessCollectionByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		List<BusinessCollection> payment = posOrderRpc.findBusinessCollectionByPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<BusinessCollection> payment = posOrderRpc.findBusinessCollectionByShiftTableToPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		if(payment != null && payment.size()>0){
 			businessCollections.addAll(payment);
 		}
-		List<BusinessCollection> detailItem = posOrderRpc.findBusinessCollectionByDetailItem(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<BusinessCollection> detailItem = posOrderRpc.findBusinessCollectionByShiftTableToPosOrder(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		if(detailItem != null && payment.size()>0){
 			businessCollections.addAll(detailItem);
 		}

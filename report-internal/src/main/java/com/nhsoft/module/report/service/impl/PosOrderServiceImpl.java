@@ -202,18 +202,48 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
+	public List<Object[]> findBusinessCollectionByBranchToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBusinessCollectionByBranchToDetail(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<Object[]> findBusinessCollectionByBranchToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBusinessCollectionByBranchToPosOrder(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<Object[]> findBusinessCollectionByBranchDayToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBusinessCollectionByBranchDayToDetail(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<Object[]> findBusinessCollectionByBranchDayToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBusinessCollectionByBranchDayToPosOrder(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
 	public List<Object[]> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return posOrderDao.findBusinessCollectionByTerminal(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findBusinessCollectionByPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
-		return posOrderDao.findBusinessCollectionByPayment(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	public List<Object[]> findBusinessCollectionByShiftTableToPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		return posOrderDao.findBusinessCollectionByShiftTableToPayment(systemBookCode,branchNums,dateFrom,dateTo,casher);
 	}
 
 	@Override
-	public List<Object[]> findBusinessCollectionByDetailItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
-		return posOrderDao.findBusinessCollectionByDetailItem(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	public List<Object[]> findBusinessCollectionByShiftTableToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		return posOrderDao.findBusinessCollectionByShiftTableToPosOrder(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	}
+
+	@Override
+	public List<Object[]> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<Object[]> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		return posOrderDao.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode,branchNums,dateFrom,dateTo,casher);
 	}
 
 

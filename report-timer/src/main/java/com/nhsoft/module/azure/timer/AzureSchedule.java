@@ -113,8 +113,6 @@ public class AzureSchedule {
     }
 
 
-
-
     @Scheduled(cron="0 0 2-3 * * *")
     public void insertBranch(){                 //每天凌晨2店-4点 每个小时执行一次
         String systemBookCode = "4410";
