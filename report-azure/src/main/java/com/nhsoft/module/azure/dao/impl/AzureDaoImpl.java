@@ -15,24 +15,32 @@ import java.util.List;
 public class AzureDaoImpl extends DaoImpl implements AzureDao {
 
     public void batchSaveItemDailies(String systemBookCode, List<ItemDaily> itemDailys) {
-        //先删除当前数据
-        String tableName = "item_daily";
-        deleteCurrentData(tableName);
+        //先删除
+        Calendar calendar = Calendar.getInstance();
+        Date time = calendar.getTime();
+        String date = formatDate(time);
+        String sql = "delete from item_daily where shift_table_bizday = '" + date + "' ";
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+        sqlQuery.executeUpdate();
 
         for (int i = 0; i <itemDailys.size() ; i++) {
             ItemDaily itemDaily = itemDailys.get(i);
             currentSession().save(itemDaily);
             if(i % 30 == 0){
                 currentSession().flush();
-                currentSession().clear();
             }
         }
     }
 
     public void batchSaveItemDailyDetails(String systemBookCode, List<ItemDailyDetail> itemDailyDetails) {
 
-        String tableName = "item_daily_detail";
-        deleteCurrentData(tableName);
+        //先删除
+        Calendar calendar = Calendar.getInstance();
+        Date time = calendar.getTime();
+        String date = formatDate(time);
+        String sql = "delete from item_daily_detail where shift_table_bizday = '" + date + "' ";
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+        sqlQuery.executeUpdate();
 
         //再插入
         for (int i = 0; i <itemDailyDetails.size() ; i++) {
@@ -75,8 +83,14 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
 
     public void batchSaveBranchDailies(List<BranchDaily> branchDailys) {
 
-        String tableName = "branch_daily";
-        deleteCurrentData(tableName);
+        //先删除
+        Calendar calendar = Calendar.getInstance();
+        Date time = calendar.getTime();
+        String date = formatDate(time);
+        String sql = "delete from branch_daily where shift_table_bizday = '" + date + "' ";//branch_daily
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+        sqlQuery.executeUpdate();
+
 
         for (int i = 0; i <branchDailys.size() ; i++) {
             BranchDaily branchDaily = branchDailys.get(i);
@@ -90,13 +104,17 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
     }
 
     public void batchDeleteBranchDailies(String systemBookCode, Date dateFrom, Date dateTo) {
-        String tableName = "branch_daily";
-        deleteHistoryData(tableName,dateFrom,dateTo);
+        String date = formatDate(dateFrom);
+        String sql = "delete from branch_daily where shift_table_bizday < '" + date + "' ";
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+        sqlQuery.executeUpdate();
     }
 
     public void batchDeleteItemDetailDailies(String systemBookCode, Date dateFrom, Date dateTo) {
-        String tableName = "item_daily_detail";
-        deleteHistoryData(tableName,dateFrom,dateTo);
+        String date = formatDate(dateFrom);
+        String sql = "delete from item_daily_detail where shift_table_bizday < '" + date + "' ";
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+        sqlQuery.executeUpdate();
     }
 
     public List<Object> findPosItemNums(String systemBookCode) {
@@ -107,8 +125,13 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
 
     public void batchSaveBranchDailyDirects(String systemBookCode, List<BranchDailyDirect> branchDailyDirects) {
 
-        String tableName="branch_daily_direct";
-        deleteCurrentData(tableName);
+        //先删除
+        Calendar calendar = Calendar.getInstance();
+        Date time = calendar.getTime();
+        String date = formatDate(time);
+        String sql = "delete from branch_daily_direct where shift_table_bizday = '" + date + "' ";
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+        sqlQuery.executeUpdate();
 
         for (int i = 0; i <branchDailyDirects.size() ; i++) {
             BranchDailyDirect branchDailyDirect = branchDailyDirects.get(i);
@@ -122,25 +145,9 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
     }
 
     public void batchDeleteBranchDailyDirects(String systemBookCode, Date dateFrom, Date dateTo) {
-        String tableName = "branch_daily_direct";
-        deleteHistoryData(tableName,dateFrom,dateTo);
-    }
 
-
-
-
-    public void deleteHistoryData(String tableName, Date dateFrom, Date dateTo){
         String date = formatDate(dateFrom);
-        String sql = "delete from "+ tableName +" shift_table_bizday < '" + date + "' ";
-        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-        sqlQuery.executeUpdate();
-    }
-
-    public void deleteCurrentData(String tableName){
-        Calendar calendar = Calendar.getInstance();
-        Date time = calendar.getTime();
-        String date = formatDate(time);
-        String sql = "delete from "+ tableName +" shift_table_bizday = '" + date + "' ";
+        String sql = "delete from branch_daily_direct where shift_table_bizday < '" + date + "' ";
         SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
         sqlQuery.executeUpdate();
     }
