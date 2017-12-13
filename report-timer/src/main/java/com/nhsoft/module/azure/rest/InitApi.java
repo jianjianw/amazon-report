@@ -1,9 +1,6 @@
 package com.nhsoft.module.azure.rest;
 
-import com.nhsoft.module.azure.model.Branch;
-import com.nhsoft.module.azure.model.BranchDaily;
-import com.nhsoft.module.azure.model.ItemDaily;
-import com.nhsoft.module.azure.model.ItemDailyDetail;
+import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
@@ -114,6 +111,39 @@ public class InitApi {
             throw new RuntimeException("日期解析失败");
         }
         azureService.batchDeleteItemDetailDailies(systemBookCode,from,to);
+        return "SUCCESS";
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/init/branchDailyDirect/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String initBranchDailyDirect(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+        Date from = null;
+        Date to = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            from = sdf.parse(dateFrom);
+            to = sdf.parse(dateTo);
+        } catch (ParseException e) {
+            throw new RuntimeException("日期解析失败");
+        }
+        List<BranchDailyDirect> branchDailyDirectSummary = posOrderRpc.findBranchDailyDirectSummary(systemBookCode, from, to);
+        azureService.batchSaveBranchDailyDirects(systemBookCode,branchDailyDirectSummary);
+        return "SUCCESS";
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/delete/branchDailyDirect/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String deleteBranchDailyDirect(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+        Date from = null;
+        Date to = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            from = sdf.parse(dateFrom);
+            to = sdf.parse(dateTo);
+        } catch (ParseException e) {
+            throw new RuntimeException("日期解析失败");
+        }
+        azureService.batchDeleteBranchDailyDirects(systemBookCode,from,to);
         return "SUCCESS";
     }
 }
