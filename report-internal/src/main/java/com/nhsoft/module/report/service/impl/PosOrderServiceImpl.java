@@ -3,6 +3,7 @@ package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.InvoiceChangeDao;
 import com.nhsoft.module.report.dao.PosOrderDao;
+import com.nhsoft.module.report.dto.BusinessCollection;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.service.PosOrderService;
@@ -199,6 +200,22 @@ public class PosOrderServiceImpl implements PosOrderService {
 	public List<Object[]> findItemDailyDetailSummary(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums){
 		return posOrderDao.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo,itemNums);
 	}
+
+	@Override
+	public List<Object[]> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBusinessCollectionByTerminal(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<Object[]> findBusinessCollectionByPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		return posOrderDao.findBusinessCollectionByPayment(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	}
+
+	@Override
+	public List<Object[]> findBusinessCollectionByDetailItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		return posOrderDao.findBusinessCollectionByDetailItem(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	}
+
 
 }
 

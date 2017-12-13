@@ -4,6 +4,7 @@ import com.nhsoft.amazon.server.dto.OrderQueryDTO;
 import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.azure.model.BranchDaily;
+import com.nhsoft.module.azure.model.BranchDailyDirect;
 import com.nhsoft.module.azure.model.ItemDaily;
 import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.azure.service.AzureService;
@@ -14,6 +15,7 @@ import com.nhsoft.module.report.rpc.BranchTransferGoalsRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.service.SystemBookService;
+import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -447,6 +449,52 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		return list;
 	}
 
+	@Override
+	public List<BranchDailyDirect> findBranchDailyDirectSummary(String systemBookCode, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = posOrderService.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
+		List<SaleMoneyGoals> goals = branchTransferGoalsRpc.findGoalsByBranchBizday(systemBookCode, null, dateFrom, dateTo);
+		List<BranchDailyDirect> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			BranchDailyDirect branchDailyDirect = new BranchDailyDirect();
+			branchDailyDirect.setSystemBookCode(systemBookCode);
+			branchDailyDirect.setBranchNum((Integer) object[0]);
+			branchDailyDirect.setShiftTableBizday((String) object[1]);
+			branchDailyDirect.setDailyMoney((BigDecimal) object[2]);
+			branchDailyDirect.setDailyQty((Integer) object[3]);
+			branchDailyDirect.setShiftTableDate(DateUtil.getDateStr(branchDailyDirect.getShiftTableBizday()));
+			if(branchDailyDirect.getDailyQty() == 0){
+				branchDailyDirect.setDailyPrice(BigDecimal.ZERO);
+			}else{
+				Integer qty = branchDailyDirect.getDailyQty();
+				branchDailyDirect.setDailyPrice(branchDailyDirect.getDailyMoney().divide(new BigDecimal(qty),4,ROUND_HALF_UP));
+			}
+			//将营业额目标封装到分店日汇总中
+			for (int j = 0; j <goals.size() ; j++) {
+				SaleMoneyGoals saleMoneyGoals = goals.get(j);
+				if (saleMoneyGoals.getSystemBookCode().equals(branchDailyDirect.getSystemBookCode()) && saleMoneyGoals.getBranchNum().equals(branchDailyDirect.getBranchNum()) &&
+						saleMoneyGoals.getDate().replace("-","").equals(branchDailyDirect.getShiftTableBizday())){
+					branchDailyDirect.setTargetMoney(saleMoneyGoals.getSaleMoney());
+				}
+			}
+			list.add(branchDailyDirect);
+		}
+
+		//移除数据营业额为0的数据
+		Iterator<BranchDailyDirect> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			BranchDailyDirect next = iterator.next();
+			BigDecimal dailyMoney = next.getDailyMoney();
+			if(dailyMoney == null ||dailyMoney.compareTo(BigDecimal.ZERO) == 0){
+				iterator.remove();
+			}
+		}
+		return list;
+	}
+
 
 	public List<ItemDaily> findItemDailySummary(String systemBookCode,Date dateFrom, Date dateTo){
 
@@ -544,6 +592,148 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		}
 		return list;
 
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = posOrderService.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> list = new ArrayList<>();
+		if (objects.isEmpty()) {
+			return list;
+		}
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			String machineName = object[2] == null ? "" : (String) object[2];
+			String type = (String) object[3];
+			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal money = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BusinessCollection data = map.get(branchNum + shiftTableBizday + machineName);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setPosMachineName(machineName);
+				data.setBranchNum(branchNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				map.put(branchNum + shiftTableBizday + machineName, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+		list.addAll(map.values());
+		return list;
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+
+		List<Object[]> objects = posOrderService.findBusinessCollectionByPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<BusinessCollection> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String bizDay = (String) object[1];
+			Integer bizNum = (Integer) object[2];
+			String type = (String) object[3];
+			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal unPaidMoney = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BusinessCollection data = map.get(branchNum.toString() + bizDay + bizNum.toString());
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				data.setShiftTableBizday(bizDay);
+				data.setShiftTableNum(bizNum);
+				data.setUnPaidMoney(BigDecimal.ZERO);
+				map.put(branchNum.toString() + bizDay + bizNum.toString(), data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			if (type.equals(AppConstants.PAYMENT_GIFTCARD)) {
+				data.setUnPaidMoney(data.getUnPaidMoney().add(unPaidMoney));
+
+			}
+			if (type.equals(AppConstants.PAYMENT_YINLIAN)) {
+				data.setAllBankMoney(data.getAllBankMoney().add(money));
+			}
+			data.getPosIncomes().add(detail);
+		}
+		list.addAll(map.values());
+		return list;
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByDetailItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+
+		List<Object[]> objects = posOrderService.findBusinessCollectionByDetailItem(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<BusinessCollection> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String bizDay = (String) object[1];
+			Integer bizNum = (Integer) object[2];
+			String type = (String) object[3];
+			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal money = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BusinessCollection data = map.get(branchNum.toString() + bizDay + bizNum.toString());
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setShiftTableBizday(bizDay);
+				data.setShiftTableNum(bizNum);
+				data.setBranchNum(branchNum);
+				map.put(branchNum.toString() + bizDay + bizNum.toString(), data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+		list.addAll(map.values());
+		return list;
+	}
+
+
+	private BusinessCollectionIncome getBusinessCollectionIncome(
+			List<BusinessCollectionIncome> businessCollectionIncomes, String name) {
+		for (int i = 0; i < businessCollectionIncomes.size(); i++) {
+			BusinessCollectionIncome businessCollectionIncome = businessCollectionIncomes.get(i);
+			if (businessCollectionIncome.getName().equals(name)) {
+				return businessCollectionIncome;
+			}
+		}
+		return null;
 	}
 
 }

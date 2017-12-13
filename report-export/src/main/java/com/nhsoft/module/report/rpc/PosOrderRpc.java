@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.rpc;
 
 import com.nhsoft.module.azure.model.BranchDaily;
+import com.nhsoft.module.azure.model.BranchDailyDirect;
 import com.nhsoft.module.azure.model.ItemDaily;
 import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.report.dto.*;
@@ -59,6 +60,11 @@ public interface PosOrderRpc  {
      * */
     public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 
+
+    /**
+     * bi 分店日销售汇总 direct
+     * */
+    public List<BranchDailyDirect> findBranchDailyDirectSummary(String systemBookCode, Date dateFrom, Date dateTo);
     /*
 	*
 	*  bi  商品日销售汇总
@@ -67,7 +73,23 @@ public interface PosOrderRpc  {
 
 
     /**
-     * 商品日时段销售汇总
+     * bi  商品日时段销售汇总
      * */
     public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums);
+
+
+    public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums,
+                                                           Date dateFrom, Date dateTo);
+
+    public List<BusinessCollection> findBusinessCollectionByPayment(String systemBookCode, List<Integer> branchNums,
+                                                          Date dateFrom, Date dateTo, String casher);
+    //消费券
+    public List<BusinessCollection> findBusinessCollectionByDetailItem(String systemBookCode, List<Integer> branchNums,
+                                                             Date dateFrom, Date dateTo, String casher);
+
+
+
+
+
+
 }

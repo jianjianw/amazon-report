@@ -5,6 +5,7 @@ import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.rpc.BookResourceRpc;
+import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.rpc.ReportRpc;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.shared.queryBuilder.PosItemQuery;
@@ -56,6 +57,8 @@ public class ReportRpcImpl implements ReportRpc {
 	private StorehouseService storehouseService;
 	@Autowired
 	private BookResourceRpc bookResourceRpc;
+	@Autowired
+	private PosOrderRpc posOrderRpc;
 	
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -1724,12 +1727,26 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return reportService.findBusinessCollectionByTerminal(systemBookCode,branchNums,dateFrom,dateTo);
+		List<BusinessCollection> businessCollections = reportService.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> list = posOrderRpc.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
+		if(list != null && list.size()>0){
+			businessCollections.addAll(list);
+		}
+		return businessCollections;
 	}
 
-	@Override
+	@Override/////
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
-		return reportService.findBusinessCollectionByShiftTable(systemBookCode,branchNums,dateFrom,dateTo,casher);
+		List<BusinessCollection> businessCollections = reportService.findBusinessCollectionByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<BusinessCollection> payment = posOrderRpc.findBusinessCollectionByPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		if(payment != null && payment.size()>0){
+			businessCollections.addAll(payment);
+		}
+		List<BusinessCollection> detailItem = posOrderRpc.findBusinessCollectionByDetailItem(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		if(detailItem != null && payment.size()>0){
+			businessCollections.addAll(detailItem);
+		}
+		return businessCollections;
 	}
 
 	@Override

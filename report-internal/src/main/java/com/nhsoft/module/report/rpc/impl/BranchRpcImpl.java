@@ -74,16 +74,6 @@ public class BranchRpcImpl implements BranchRpc {
             branch.setBranchName((String) object[2]);
             branch.setBranchActived((boolean) object[3]);
             branch.setRanchRdc((boolean) object[4]);
-           /* if((int)object[3] == 1){
-                branch.setBranchActived(true);
-            }else{
-                branch.setBranchActived(false);
-            }
-            if((int)object[4] == 1){
-                branch.setRanchRdc(true);
-            }else{
-                branch.setRanchRdc(false);
-            }*/
             branch.setBranchType((String) object[5]);
             branch.setBranchArea((BigDecimal) object[6]);
             branch.setBranchEmployeeCount((Integer) object[7]);

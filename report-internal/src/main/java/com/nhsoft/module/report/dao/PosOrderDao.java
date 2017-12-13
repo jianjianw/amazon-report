@@ -991,4 +991,13 @@ public interface PosOrderDao {
 	 * */
 	public List<Object[]> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums);
 
+
+	public List<Object[]> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums,
+														   Date dateFrom, Date dateTo);
+
+	public List<Object[]> findBusinessCollectionByPayment(String systemBookCode, List<Integer> branchNums,
+																	   Date dateFrom, Date dateTo, String casher);
+
+	public List<Object[]> findBusinessCollectionByDetailItem(String systemBookCode, List<Integer> branchNums,
+														  Date dateFrom, Date dateTo, String casher);
 }

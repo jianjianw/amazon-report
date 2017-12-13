@@ -61,4 +61,13 @@ public class AzureServiceImpl implements AzureService {
         }
         return list;
     }
+
+    public void batchSaveBranchDailyDirects(String systemBookCode, List<BranchDailyDirect> branchDailyDirects) {
+        azureDao.batchSaveBranchDailyDirects(systemBookCode,branchDailyDirects);
+    }
+
+    public void batchDeleteBranchDailyDirects(String systemBookCode, Date dateFrom, Date dateTo) {
+
+    }
+
 }

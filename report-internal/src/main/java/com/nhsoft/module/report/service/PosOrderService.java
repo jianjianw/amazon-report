@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.service;
 
 
+import com.nhsoft.module.report.dto.BusinessCollection;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.ShiftTable;
@@ -215,9 +216,17 @@ public interface PosOrderService {
 	public List<Object[]> findItemDailySummary(String systemBookCode,Date dateFrom, Date dateTo);
 
 	/**
-	 * 商品日时段销售汇总
+	 * bi 商品日时段销售汇总
 	 * */
 	public List<Object[]> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo ,List<Integer> itemNums);
 
+	public List<Object[]> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums,
+														   Date dateFrom, Date dateTo);
+
+	public List<Object[]> findBusinessCollectionByPayment(String systemBookCode, List<Integer> branchNums,
+														  Date dateFrom, Date dateTo, String casher);
+
+	public List<Object[]> findBusinessCollectionByDetailItem(String systemBookCode, List<Integer> branchNums,
+															 Date dateFrom, Date dateTo, String casher);
 }
 

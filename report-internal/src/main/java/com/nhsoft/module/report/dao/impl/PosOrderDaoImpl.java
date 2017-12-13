@@ -20,9 +20,7 @@ import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
@@ -5074,8 +5072,79 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
+	}
+
+
+	public List<Object[]> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums,
+														   Date dateFrom, Date dateTo){
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+		StringBuilder sb = new StringBuilder();
+		sb.append("select p.branch_num, p.shift_table_bizday, p.order_machine, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
+		sb.append("where p.system_book_code = '" + systemBookCode + "' ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and p.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and p.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and p.order_state_code in (5, 7) and detail.item_num is null ");
+		sb.append("and detail.order_detail_state_code = 1 ");
+		sb.append("group by p.branch_num, p.shift_table_bizday, p.order_machine, detail.order_detail_item order by p.branch_num asc ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
 
 	}
 
+	@Override
+	public List<Object[]> findBusinessCollectionByPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select o.branch_num, o.shift_table_bizday, o.shift_table_num, p.payment_pay_by, sum(p.payment_money) as money, sum(p.payment_balance) as balance ");
+		sb.append("from payment as p with(nolock) inner join pos_order as o with(nolock) on p.order_no = o.order_no ");
+		sb.append("where o.system_book_code = '" + systemBookCode + "' ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and o.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and o.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and o.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		if (StringUtils.isNotEmpty(casher)) {
+			sb.append("and o.order_operator in " + AppUtil.getStringParmeArray(casher.split(",")));
+		}
+		sb.append("group by o.branch_num, o.shift_table_bizday, o.shift_table_num, p.payment_pay_by ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+
+	}
+
+	public List<Object[]> findBusinessCollectionByDetailItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher){
+		StringBuilder sb = new StringBuilder();
+		sb.append("select p.branch_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
+		sb.append("where p.system_book_code = '" + systemBookCode + "' ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and p.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and p.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		if (StringUtils.isNotEmpty(casher)) {
+			sb.append("and p.order_operator in " + AppUtil.getStringParmeArray(casher.split(",")));
+		}
+		sb.append("and p.order_state_code in (5, 7) and detail.item_num is null ");
+		sb.append("and detail.order_detail_state_code = 1 ");
+		sb.append("group by p.branch_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item order by p.branch_num asc ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+	}
 
 }

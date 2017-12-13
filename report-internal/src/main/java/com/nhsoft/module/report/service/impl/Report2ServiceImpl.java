@@ -498,6 +498,7 @@ public class Report2ServiceImpl implements Report2Service {
 			List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		
 		List<PosReceiveDiffMoneySumDTO> list = reportDao.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
+
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		for(int i = 0;i < list.size();i++){
 			PosReceiveDiffMoneySumDTO dto = list.get(i);

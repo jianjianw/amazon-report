@@ -53,4 +53,14 @@ public interface AzureDao {
      * */
     public List<Object> findPosItemNums(String systemBookCode);
 
+    /**
+     * 分店日销售汇总表 direct 保存前两天的数据
+     * */
+    public void batchSaveBranchDailyDirects(String systemBookCode,List<BranchDailyDirect> branchDailyDirects);
+
+    /**
+     * 删除分店日销售汇总   direct
+     * */
+    public void batchDeleteBranchDailyDirects(String systemBookCode,Date dateFrom,Date dateTo);
+
 }
