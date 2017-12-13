@@ -12,8 +12,6 @@ import org.springframework.stereotype.Repository;
 public class ShardingDaoImpl {
 	
 	public static final Logger logger = LoggerFactory.getLogger(ShardingDaoImpl.class);
-	
-	
 	@Autowired
 	@Qualifier("shardingSessionFactory")
 	private SessionFactory sessionFactory;

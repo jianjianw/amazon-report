@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Created by yangqin on 2017/10/30.
  */
-@RestController()
+@RestController
 @RequestMapping("/basic")
 public class APIBasic {
 	
@@ -107,7 +107,7 @@ public class APIBasic {
 
 	}
 	@RequestMapping(method = RequestMethod.GET,value = "/test2")
-	public void test2() throws Exception{		//有or没报错
+	public List<Object[]> test2() throws Exception{		//有or没报错
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -118,7 +118,7 @@ public class APIBasic {
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateFrom = sdf.parse("2017-01-01");
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> items = new ArrayList<>();
 		items.add(434400126);
@@ -127,12 +127,12 @@ public class APIBasic {
 		items.add(110010038);
 		items.add(110010038);
 		List<Object[]> itemSum = posOrderService.findItemSum(systemBookCode,branchNums,dateFrom,dateTo,items,true);
-		System.out.println();
+		return itemSum;
 
 	}
-	@RequestMapping(method=RequestMethod.GET,value="/test3")
-	public void test3() throws Exception{			//ok 含 case when
-		String systemBookCode= "4344";
+	@RequestMapping(method=RequestMethod.GET,value="/test3/{systemBookCode}/{dateFrom}/{dateTo}")
+	public List<Object[]> test3(@PathVariable("systemBookCode") String systemBookCode,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{			//ok 含 case when
+
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
 		for (BranchDTO b : all) {
@@ -141,11 +141,11 @@ public class APIBasic {
 		}
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-01");
-		Date dateTo = sdf.parse("2017-10-31");
-		List<Object[]> customReportByBizday = posOrderService.findCustomReportByBizday(systemBookCode, branchNums, dateFrom, dateTo);
-		System.out.println();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		Date from = sdf.parse(dateFrom);
+		Date to = sdf.parse(dateTo);
+		List<Object[]> customReportByBizday = posOrderService.findCustomReportByBizday(systemBookCode, branchNums, from, to);
+		return customReportByBizday;
 	}
 
 

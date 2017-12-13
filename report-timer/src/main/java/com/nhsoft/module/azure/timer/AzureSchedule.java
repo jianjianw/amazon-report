@@ -42,24 +42,24 @@ public class AzureSchedule {
 
 
     @Scheduled(cron="0 0 2-4 * * *")
-    public void BranchDailyHour(){     //分店销售汇总(每天凌晨2点执行,更新前三天的数据)
+    public void BranchDailyHour(){     //分店销售汇总(每天凌晨2点执行,更新前七天的数据)
         Calendar calendar = Calendar.getInstance();
         Date dateTo = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_MONTH,-3);
+        calendar.add(Calendar.DAY_OF_MONTH,-7);
         Date dateFrom = calendar.getTime();
         String systemBookCode = "4410";
         List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, dateFrom, dateTo);
         azureService.batchSaveBranchDailies(systemBookCode,branchDailySummary);
     }
 
-    @Scheduled(cron="0 0,30 * * * *")
+    /*@Scheduled(cron="0 0,30 * * * *")//商品目前没用
     public void insertItem(){                 //从凌晨开始，每个小时的0分和30分执行一次 (商品日汇总)
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         String systemBookCode = "4410";
         List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary(systemBookCode, date, date);
         azureService.batchSaveItemDailies(systemBookCode,itemDailySummary);
-    }
+    }*/
 
 
 

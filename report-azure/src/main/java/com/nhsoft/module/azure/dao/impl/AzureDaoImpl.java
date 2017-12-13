@@ -76,7 +76,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
                 currentSession().clear();
             }
         }
-        System.out.println("插入分店");
     }
 
 
@@ -99,7 +98,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
                 currentSession().clear();
             }
         }
-        System.out.println("插入分店日销售汇总表");
 
     }
 
