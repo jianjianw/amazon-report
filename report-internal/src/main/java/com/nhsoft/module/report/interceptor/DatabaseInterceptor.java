@@ -82,7 +82,10 @@ public class DatabaseInterceptor {
 			logger.info("systemBookProxy == null " + systemBookCode);
 			
 		}
-		String rds = rdsNameMap.get(systemBookProxy.getBookProxyName());
+		if(systemBookProxy.getBookProxyRdsName() == null){
+			throw new RuntimeException("RdsName is null");
+		}
+		String rds = rdsNameMap.get(systemBookProxy.getBookProxyRdsName());
 		if(rds == null){
 			throw new RuntimeException("rds not found");
 		}
