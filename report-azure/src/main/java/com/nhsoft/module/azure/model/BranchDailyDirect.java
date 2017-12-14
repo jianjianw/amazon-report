@@ -1,14 +1,18 @@
 package com.nhsoft.module.azure.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
+@Entity
 public class BranchDailyDirect implements Serializable {
 
-
+    @Id
     private String systemBookCode;
+    @Id
     private Integer branchNum;
+    @Id
     private String shiftTableBizday;                  //营业日
     private Date shiftTableDate;                      //营业日期（和营业日一致）
     private BigDecimal dailyMoney;               //营业额
