@@ -38,15 +38,28 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Autowired
 	private BranchTransferGoalsRpc branchTransferGoalsRpc;
 
+
+	public boolean isToCenterData(String systemBookCode, Date dateFrom){
+		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
+		Date now = Calendar.getInstance().getTime();
+		now = DateUtil.getMinOfDate(now);
+		Date dpcLimitTime = DateUtil.addDay(now, -2);       //当前日期减2天
+		if(dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	@Override
 	public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
-
-		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
+		/*SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
 		now = DateUtil.getMinOfDate(now);
 		if (dateTo.compareTo(now) >= 0) {       //如果dateTo >= 当前时间，就将当前时间赋给dateTo
 			dateTo = now;
 		}
+
 		Date deleteDate = systemBook.getDeleteDate();       //获取业务库数据删除截止日期
 		if (dateFrom != null) {
 			dateFrom = DateUtil.getMinOfDate(dateFrom);
@@ -57,11 +70,15 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			dateFrom = deleteDate;      //如果截止日期不等于null 且 dateFrom<deleteDate ,就将数据删除截止日期赋给 dateFrom
 		}
 		dateTo = DateUtil.getMaxOfDate(dateTo);
-		Date dpcLimitTime = DateUtil.addDay(now, -2);       //当前日期减2天
+		Date dpcLimitTime = DateUtil.addDay(now, -2);       //当前日期减2天*/
 
+
+
+		Date now = Calendar.getInstance().getTime();
+		boolean toCenterData = isToCenterData(systemBookCode, dateFrom);
+		Date dpcLimitTime = DateUtil.addDay(now, -2);
 		List<Object[]> returnList = new ArrayList<Object[]>();
-		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && isMember == false) {
-
+		if (toCenterData && isMember == false ) {//去大中心查
 			if (dpcLimitTime.compareTo(dateTo) > 0) {           //dateTo小于当前日期减2天（3天前的数据）所有数据去大中心查
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -157,11 +174,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			dateFrom = deleteDate;      //如果截止日期不等于null 且 dateFrom<deleteDate ,就将数据删除截止日期赋给 dateFrom
 		}
 		dateTo = DateUtil.getMaxOfDate(dateTo);
-		BigDecimal value1;
-		BigDecimal value2;
 		Date dpcLimitTime = DateUtil.addDay(now, -2);       //当前日期减2天
 		List<Object[]> returnList = new ArrayList<Object[]>();
-		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()&& isMember == false) {
+		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && isMember == false) {
 			if (dpcLimitTime.compareTo(dateTo) > 0) {           //dateTo小于当前日期减2天（3天前的数据）所有数据去大中心查
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -255,8 +270,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			dateFrom = deleteDate;      //如果截止日期不等于null 且 dateFrom<deleteDate ,就将数据删除截止日期赋给 dateFrom
 		}
 		dateTo = DateUtil.getMaxOfDate(dateTo);
-		BigDecimal value1;
-		BigDecimal value2;
 		Date dpcLimitTime = DateUtil.addDay(now, -2);       //当前日期减2天
 		List<Object[]> returnList = new ArrayList<Object[]>();
 		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && isMember == false) {
@@ -338,6 +351,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<ItemSummary> findItemSum(String systemBookCode, ItemQueryDTO itemQueryDTO) {
 		itemQueryDTO.setSystemBookCode(systemBookCode);
 		List<Object[]> objects = posOrderService.findItemSum(itemQueryDTO);
+		//封装数据
 		List<ItemSummary> list = new ArrayList<>();
 		if(objects.isEmpty()){
 			return list;
@@ -353,14 +367,12 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			itemSummary.setCost((BigDecimal) object[5]);
 			list.add(itemSummary);
 		}
-
 		return list;
 	}
 
 
 	@Override
 	public List<BranchItemSummaryDTO> findBranchItemSum(String systemBookCode, ItemQueryDTO itemQueryDTO) {
-
 		itemQueryDTO.setSystemBookCode(systemBookCode);
 		List<Object[]> objects = posOrderService.findBranchItemSum(itemQueryDTO);
 		List<BranchItemSummaryDTO> list = new ArrayList();

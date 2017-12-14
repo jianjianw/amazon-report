@@ -19,7 +19,7 @@ public class Branch implements Serializable {
     private String branchCode;
     private String branchName;
     private boolean branchActived;        //是否启用
-    private boolean ranchRdc;            //是否配送区域
+    private boolean branchRdc;            //是否配送区域
     private String branchType;            //门店类型
     private BigDecimal branchArea;
     private Integer branchEmployeeCount;  //门店人数
@@ -66,12 +66,12 @@ public class Branch implements Serializable {
         this.branchActived = branchActived;
     }
 
-    public boolean isRanchRdc() {
-        return ranchRdc;
+    public boolean isBranchRdc() {
+        return branchRdc;
     }
 
-    public void setRanchRdc(boolean ranchRdc) {
-        this.ranchRdc = ranchRdc;
+    public void setBranchRdc(boolean branchRdc) {
+        this.branchRdc = branchRdc;
     }
 
     public String getBranchType() {
@@ -115,7 +115,7 @@ public class Branch implements Serializable {
         Branch branch = (Branch) o;
 
         if (branchActived != branch.branchActived) return false;
-        if (ranchRdc != branch.ranchRdc) return false;
+        if (branchRdc != branch.branchRdc) return false;
         if (systemBookCode != null ? !systemBookCode.equals(branch.systemBookCode) : branch.systemBookCode != null)
             return false;
         if (branchNum != null ? !branchNum.equals(branch.branchNum) : branch.branchNum != null) return false;
@@ -135,7 +135,7 @@ public class Branch implements Serializable {
         result = 31 * result + (branchCode != null ? branchCode.hashCode() : 0);
         result = 31 * result + (branchName != null ? branchName.hashCode() : 0);
         result = 31 * result + (branchActived ? 1 : 0);
-        result = 31 * result + (ranchRdc ? 1 : 0);
+        result = 31 * result + (branchRdc ? 1 : 0);
         result = 31 * result + (branchType != null ? branchType.hashCode() : 0);
         result = 31 * result + (branchArea != null ? branchArea.hashCode() : 0);
         result = 31 * result + (branchEmployeeCount != null ? branchEmployeeCount.hashCode() : 0);

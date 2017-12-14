@@ -4653,7 +4653,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	@Override
 	public List<Object[]> findProfitAnalysisByBranchDayItem(
-			ProfitAnalysisQueryData profitAnalysisQueryData) {//////////
+			ProfitAnalysisQueryData profitAnalysisQueryData) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
