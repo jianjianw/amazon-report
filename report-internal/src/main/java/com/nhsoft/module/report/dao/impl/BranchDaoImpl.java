@@ -90,13 +90,4 @@ public class BranchDaoImpl extends DaoImpl implements BranchDao {
 		return list;
 	}
 
-	@Override
-	public List<Object[]> findBranch(String systemBookCode) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("select branch_num,branch_code,branch_name,branch_actived,branch_rdc,branch_type,branch_area,branch_employee_count,branch_create_time ");
-		sb.append("from branch where system_book_code = '" + systemBookCode+  "' ");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		return sqlQuery.list();
-	}
-
 }

@@ -48,11 +48,6 @@ public interface BranchDao {
 	public List<Object[]> findBranchArea(String systemBookCode,List<Integer> branchNums);
 
 
-	/**
-	 * bi 查询分店
-	 *  @param systemBookCode
-	 * */
-	public List<Object[]> findBranch(String systemBookCode);
 
 
 

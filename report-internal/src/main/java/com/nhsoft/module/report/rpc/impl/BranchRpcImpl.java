@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.rpc.impl;
 
 import com.nhsoft.module.azure.model.Branch;
+import com.nhsoft.module.azure.model.BranchLat;
 import com.nhsoft.module.report.dto.BranchArea;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.BranchRegionDTO;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Component
 public class BranchRpcImpl implements BranchRpc {
@@ -57,33 +59,6 @@ public class BranchRpcImpl implements BranchRpc {
         return CopyUtil.to(branchService.readWithNolock(systemBookCode,branchNum),BranchDTO.class);
     }
 
-    @Override
-    public List<Branch> findBranch(String systemBookCode) {
-        List<Object[]> objects = branchService.findBranch(systemBookCode);
-        List<Branch> list = new ArrayList<>();
-        if(objects.isEmpty()){
-            return list;
-        }
-        for (int i = 0; i <objects.size() ; i++) {
-            Object[] object = objects.get(i);
-            Branch branch = new Branch();
-            branch.setBranchNum((Integer) object[0]);
-            branch.setBranchCode((String) object[1]);
-            branch.setBranchName((String) object[2]);
-            branch.setBranchActived((boolean) object[3]);
-            branch.setBranchRdc((boolean) object[4]);
-            branch.setBranchType((String) object[5]);
-            branch.setBranchArea((BigDecimal) object[6]);
-            branch.setBranchEmployeeCount((Integer) object[7]);
-            if((String)object[8] == null){
-                branch.setBranchCreateTime(null);
-            }else{
-                branch.setBranchCreateTime(DateUtil.getDateTimeHMS((String)object[8]));
-            }
-            list.add(branch);
-        }
-        return list;
-    }
 
 
 }

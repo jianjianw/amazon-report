@@ -21,8 +21,8 @@ public class AzureServiceImpl implements AzureService {
         azureDao.batchSaveItemDailies(systemBookCode,itemDailys);
     }
 
-    public void batchSaveItemDailyDetails(String systemBookCode, List<ItemDailyDetail> itemDailyDetails) {
-        azureDao.batchSaveItemDailyDetails(systemBookCode,itemDailyDetails);
+    public void batchSaveItemDailyDetails(String systemBookCode, List<ItemDailyDetail> itemDailyDetails,Date dateFrom,Date dateTo) {
+        azureDao.batchSaveItemDailyDetails(systemBookCode,itemDailyDetails,dateFrom,dateTo);
     }
 
     public void batchSavePosItemLats(String systemBookCode, List<PosItemLat> posItemLats) {
@@ -37,8 +37,8 @@ public class AzureServiceImpl implements AzureService {
         azureDao.batchSaveBranchs(systemBookCode,branchs);
     }
 
-    public void batchSaveBranchDailies(String systemBookCode, List<BranchDaily> branchDailys) {
-        azureDao.batchSaveBranchDailies(branchDailys);
+    public void batchSaveBranchDailies(String systemBookCode, List<BranchDaily> branchDailys,Date dateFrom,Date dateTo) {
+        azureDao.batchSaveBranchDailies(systemBookCode,branchDailys,dateFrom,dateTo);
     }
 
     public void batchDeleteBranchDailies(String systemBookCode, Date dateFrom, Date dateTo) {
@@ -62,8 +62,8 @@ public class AzureServiceImpl implements AzureService {
         return list;
     }
 
-    public void batchSaveBranchDailyDirects(String systemBookCode, List<BranchDailyDirect> branchDailyDirects) {
-        azureDao.batchSaveBranchDailyDirects(systemBookCode,branchDailyDirects);
+    public void batchSaveBranchDailyDirects(String systemBookCode, List<BranchDailyDirect> branchDailyDirects,Date dateFrom,Date dateTo) {
+        azureDao.batchSaveBranchDailyDirects(systemBookCode,branchDailyDirects,dateFrom,dateTo);
     }
 
     public void batchDeleteBranchDailyDirects(String systemBookCode, Date dateFrom, Date dateTo) {

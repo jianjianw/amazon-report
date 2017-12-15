@@ -81,11 +81,6 @@ public interface BranchService {
 	 * */
 	public Branch readWithNolock(String systemBookCode, Integer branchNum);
 
-	/**
-	 * bi 查询分店
-	 *  @param systemBookCode
-	 * */
-	public List<Object[]> findBranch(String systemBookCode);
 
 
 

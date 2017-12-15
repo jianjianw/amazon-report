@@ -16,7 +16,7 @@ public interface AzureDao {
     /**
      *商品日时段销售汇总
      * */
-    public void batchSaveItemDailyDetails(String systemBookCode, List<ItemDailyDetail> itemDailyDetails);
+    public void batchSaveItemDailyDetails(String systemBookCode, List<ItemDailyDetail> itemDailyDetails,Date dateFrom,Date dateTo);
 
     /**
      *商品纬度
@@ -36,7 +36,7 @@ public interface AzureDao {
     /**
      *分店日销售汇总表
      * */
-    public void batchSaveBranchDailies(List<BranchDaily> branchDailys);
+    public void batchSaveBranchDailies(String systemBookCode,List<BranchDaily> branchDailys,Date dateFrom,Date dateTo);
 
     /**
      *删除分店日销售汇总
@@ -56,7 +56,7 @@ public interface AzureDao {
     /**
      * 分店日销售汇总表 direct 保存前两天的数据
      * */
-    public void batchSaveBranchDailyDirects(String systemBookCode,List<BranchDailyDirect> branchDailyDirects);
+    public void batchSaveBranchDailyDirects(String systemBookCode,List<BranchDailyDirect> branchDailyDirects,Date dateFrom,Date dateTo);
 
     /**
      * 删除分店日销售汇总   direct

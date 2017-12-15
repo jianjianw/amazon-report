@@ -2,6 +2,7 @@ package com.nhsoft.module.azure.rest;
 
 import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
+import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +30,12 @@ public class InitApi {
     @Autowired
     private BranchRpc branchRpc;
 
+    @RequestMapping(method = RequestMethod.GET,value = "/echo")
+    public String echo(){
+        Date time = Calendar.getInstance().getTime();
+        return time.toString();
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/init/{systemBookCode}/{dateFrom}/{dateTo}")
     public String initAzure(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
         Date form = null;
@@ -38,14 +48,29 @@ public class InitApi {
             throw new RuntimeException("日期解析失败");
         }
         List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, form, to);
-        azureService.batchSaveBranchDailies(systemBookCode, branchDailySummary);
+        azureService.batchSaveBranchDailies(systemBookCode, branchDailySummary,form,to);
         return "SUCCESS";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/init/branch/{systemBookCode}")
     public String insertBranch(@PathVariable("systemBookCode") String systemBookCode) {//@PathVariable("systemBookCode")
-        List<Branch> branch = branchRpc.findBranch(systemBookCode);
-        azureService.batchSaveBranchs(systemBookCode, branch);
+        List<BranchDTO> brachDTO = branchRpc.findInCache(systemBookCode);
+        List<Branch> list = new ArrayList<Branch>();
+        for (int i = 0; i < brachDTO.size(); i++) {
+            BranchDTO branchDTO = brachDTO.get(i);
+            Branch branch = new Branch();
+            branch.setBranchNum(branchDTO.getBranchNum());
+            branch.setBranchCode(branchDTO.getBranchCode());
+            branch.setBranchName(branchDTO.getBranchName());
+            branch.setBranchActived(branchDTO.getBranchActived());
+            branch.setBranchRdc(branchDTO.getBranchRdc());
+            branch.setBranchType(branchDTO.getBranchType());
+            branch.setBranchArea(branchDTO.getBranchArea());
+            branch.setBranchEmployeeCount(branchDTO.getBranchEmployeeCount());
+            branch.setBranchCreateTime(branchDTO.getBranchCreateTime());
+
+        }
+        azureService.batchSaveBranchs(systemBookCode, list);
         return "SUCCESS";
     }
 
@@ -63,7 +88,7 @@ public class InitApi {
         }
         List<Integer> posItemNums = azureService.findPosItemNums(systemBookCode);
         List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, form, to,posItemNums);
-        azureService.batchSaveItemDailyDetails(systemBookCode, itemDailyDetailSummary);
+        azureService.batchSaveItemDailyDetails(systemBookCode, itemDailyDetailSummary,form,to);
         return "SUCCESS";
     }
 
@@ -127,7 +152,7 @@ public class InitApi {
             throw new RuntimeException("日期解析失败");
         }
         List<BranchDailyDirect> branchDailyDirectSummary = posOrderRpc.findBranchDailyDirectSummary(systemBookCode, from, to);
-        azureService.batchSaveBranchDailyDirects(systemBookCode,branchDailyDirectSummary);
+        azureService.batchSaveBranchDailyDirects(systemBookCode,branchDailyDirectSummary,from,to);
         return "SUCCESS";
     }
 
