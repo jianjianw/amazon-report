@@ -1,7 +1,6 @@
 package com.nhsoft.module.report.rpc.impl;
 
 import com.nhsoft.module.azure.model.Branch;
-import com.nhsoft.module.azure.model.BranchLat;
 import com.nhsoft.module.report.dto.BranchArea;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.BranchRegionDTO;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 @Component
 public class BranchRpcImpl implements BranchRpc {
@@ -73,7 +71,7 @@ public class BranchRpcImpl implements BranchRpc {
             branch.setBranchCode((String) object[1]);
             branch.setBranchName((String) object[2]);
             branch.setBranchActived((boolean) object[3]);
-            branch.setRanchRdc((boolean) object[4]);
+            branch.setBranchRdc((boolean) object[4]);
             branch.setBranchType((String) object[5]);
             branch.setBranchArea((BigDecimal) object[6]);
             branch.setBranchEmployeeCount((Integer) object[7]);
