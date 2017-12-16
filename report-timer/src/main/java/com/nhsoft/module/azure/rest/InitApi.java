@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,7 +35,7 @@ public class InitApi {
         return time.toString();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/init/{systemBookCode}/{dateFrom}/{dateTo}")
+    @RequestMapping(method = RequestMethod.GET, value = "/init/branchDaily/{systemBookCode}/{dateFrom}/{dateTo}")
     public String initAzure(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
         Date form = null;
         Date to = null;
@@ -56,9 +55,10 @@ public class InitApi {
     public String insertBranch(@PathVariable("systemBookCode") String systemBookCode) {//@PathVariable("systemBookCode")
         List<BranchDTO> brachDTO = branchRpc.findInCache(systemBookCode);
         List<Branch> list = new ArrayList<Branch>();
-        for (int i = 0; i < brachDTO.size(); i++) {
+       /* for (int i = 0; i < brachDTO.size(); i++) {
             BranchDTO branchDTO = brachDTO.get(i);
             Branch branch = new Branch();
+            branch.setSystemBookCode(systemBookCode);
             branch.setBranchNum(branchDTO.getBranchNum());
             branch.setBranchCode(branchDTO.getBranchCode());
             branch.setBranchName(branchDTO.getBranchName());
@@ -68,13 +68,27 @@ public class InitApi {
             branch.setBranchArea(branchDTO.getBranchArea());
             branch.setBranchEmployeeCount(branchDTO.getBranchEmployeeCount());
             branch.setBranchCreateTime(branchDTO.getBranchCreateTime());
+            list.add(branch);
+        }*/
+        Branch branch = new Branch();
+        branch.setSystemBookCode(systemBookCode);
+        branch.setBranchNum(99);
+        branch.setBranchCode("01");
+        branch.setBranchName("中心");
+        branch.setBranchActived(true);
+        //branch.setBranchRdc(true);
+       /* branch.setBranchType();
+        branch.setBranchArea();
+        branch.setBranchEmployeeCount();
+        branch.setBranchCreateTime();*/
+        list.add(branch);
 
-        }
+
         azureService.batchSaveBranchs(systemBookCode, list);
         return "SUCCESS";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/init/itemdetail/{systemBookCode}/{dateFrom}/{dateTo}")
+    @RequestMapping(method = RequestMethod.GET, value = "/init/itemDetail/{systemBookCode}/{dateFrom}/{dateTo}")
     public String initItemDeatil(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
 
         Date form = null;
@@ -151,8 +165,22 @@ public class InitApi {
         } catch (ParseException e) {
             throw new RuntimeException("日期解析失败");
         }
-        List<BranchDailyDirect> branchDailyDirectSummary = posOrderRpc.findBranchDailyDirectSummary(systemBookCode, from, to);
-        azureService.batchSaveBranchDailyDirects(systemBookCode,branchDailyDirectSummary,from,to);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, from, to);
+        List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>();
+        for (int i = 0; i <branchDailySummary.size() ; i++) {
+            BranchDaily branchDaily = branchDailySummary.get(i);
+            BranchDailyDirect branchDailyDirect = new BranchDailyDirect();
+            branchDailyDirect.setSystemBookCode(branchDaily.getSystemBookCode());
+            branchDailyDirect.setBranchNum(branchDaily.getBranchNum());
+            branchDailyDirect.setShiftTableBizday(branchDaily.getShiftTableBizday());
+            branchDailyDirect.setDailyMoney(branchDaily.getDailyMoney());
+            branchDailyDirect.setDailyQty(branchDaily.getDailyQty());
+            branchDailyDirect.setShiftTableDate(branchDaily.getShiftTableDate());
+            branchDailyDirect.setDailyPrice(branchDaily.getDailyPrice());
+            branchDailyDirect.setTargetMoney(branchDaily.getTargetMoney());
+            list.add(branchDailyDirect);
+        }
+        azureService.batchSaveBranchDailyDirects(systemBookCode,list,from,to);
         return "SUCCESS";
     }
 
@@ -171,4 +199,5 @@ public class InitApi {
         azureService.batchDeleteBranchDailyDirects(systemBookCode,from,to);
         return "SUCCESS";
     }
+
 }

@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,13 +31,12 @@ public class AzureSchedule {
     @Autowired
     private BranchRpc branchRpc;
 
-    String systemBook = "4344";
+    String systemBook = "4410";
 
     @Scheduled(cron="0 */30 * * * *")
     public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
-        String systemBookCode = "4410";
         List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBook, date, date);
         azureService.batchSaveBranchDailies(systemBook,branchDailySummary,date,date);
     }
@@ -45,7 +47,6 @@ public class AzureSchedule {
         Date dateTo = calendar.getTime();
         calendar.add(Calendar.DAY_OF_MONTH,-7);
         Date dateFrom = calendar.getTime();
-        String systemBookCode = "4410";
         List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBook, dateFrom, dateTo);
         azureService.batchSaveBranchDailies(systemBook,branchDailySummary,dateFrom,dateTo);
     }
@@ -57,26 +58,51 @@ public class AzureSchedule {
     public void saveBranchDailyDirectMinute(){
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
-        String systemBookCode = "4410";
-        List<BranchDailyDirect> branchDailyDirectSummary = posOrderRpc.findBranchDailyDirectSummary(systemBook, date, date);
-        azureService.batchSaveBranchDailyDirects(systemBook,branchDailyDirectSummary,date,date);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBook, date, date);
+        List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>();
+        for (int i = 0; i <branchDailySummary.size() ; i++) {
+            BranchDaily branchDaily = branchDailySummary.get(i);
+            BranchDailyDirect branchDailyDirect = new BranchDailyDirect();
+            branchDailyDirect.setSystemBookCode(branchDaily.getSystemBookCode());
+            branchDailyDirect.setBranchNum(branchDaily.getBranchNum());
+            branchDailyDirect.setShiftTableBizday(branchDaily.getShiftTableBizday());
+            branchDailyDirect.setDailyMoney(branchDaily.getDailyMoney());
+            branchDailyDirect.setDailyQty(branchDaily.getDailyQty());
+            branchDailyDirect.setShiftTableDate(branchDaily.getShiftTableDate());
+            branchDailyDirect.setDailyPrice(branchDaily.getDailyPrice());
+            branchDailyDirect.setTargetMoney(branchDaily.getTargetMoney());
+            list.add(branchDailyDirect);
+        }
+        azureService.batchSaveBranchDailyDirects(systemBook,list,date,date);
     }
 
     @Scheduled(cron="0 0 2-4 * * *")     ////更新历史2
     public void saveBranchDailyDirectHour(){    //每天凌晨更新前2天的数据
         Calendar calendar = Calendar.getInstance();
         Date dateTo = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date dateFrom = calendar.getTime();
-        String systemBookCode = "4410";
-        List<BranchDailyDirect> branchDailyDirectSummary = posOrderRpc.findBranchDailyDirectSummary(systemBook, dateFrom, dateTo);
-        azureService.batchSaveBranchDailyDirects(systemBook,branchDailyDirectSummary,dateFrom,dateTo);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBook, dateFrom, dateTo);
+        List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>();
+        for (int i = 0; i <branchDailySummary.size() ; i++) {
+            BranchDaily branchDaily = branchDailySummary.get(i);
+            BranchDailyDirect branchDailyDirect = new BranchDailyDirect();
+            branchDailyDirect.setSystemBookCode(branchDaily.getSystemBookCode());
+            branchDailyDirect.setBranchNum(branchDaily.getBranchNum());
+            branchDailyDirect.setShiftTableBizday(branchDaily.getShiftTableBizday());
+            branchDailyDirect.setDailyMoney(branchDaily.getDailyMoney());
+            branchDailyDirect.setDailyQty(branchDaily.getDailyQty());
+            branchDailyDirect.setShiftTableDate(branchDaily.getShiftTableDate());
+            branchDailyDirect.setDailyPrice(branchDaily.getDailyPrice());
+            branchDailyDirect.setTargetMoney(branchDaily.getTargetMoney());
+            list.add(branchDailyDirect);
+        }
+        azureService.batchSaveBranchDailyDirects(systemBook,list,dateFrom,dateTo);
     }
     @Scheduled(cron="0 0 2-3 * * *")
-    public void deleteBranchDailyDirect(){      //每天凌晨删除2天以前的数据
-        String systemBookCode = "4410";
+    public void deleteBranchDailyDirect(){      //保留两天数据
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date date = calendar.getTime();
         azureService.batchDeleteBranchDailyDirects(systemBook,date,date);
     }
@@ -85,7 +111,6 @@ public class AzureSchedule {
     public void saveItemDailyDetailMinute(){        //商品日时段销售汇总(从凌晨开始，每个小时的0分和30分执行一次)
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
-        String systemBookCode = "4410";
         List<Integer> posItemNums = azureService.findPosItemNums(systemBook);
         List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBook, date, date,posItemNums);
         azureService.batchSaveItemDailyDetails(systemBook,itemDailyDetailSummary,date,date);
@@ -96,7 +121,6 @@ public class AzureSchedule {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date date = calendar.getTime();
-        String systemBookCode = "4410";
         //在商品维度表里面查询商品编码
         List<Integer> posItemNums = azureService.findPosItemNums(systemBook);
         List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBook, date, date,posItemNums);
@@ -105,9 +129,8 @@ public class AzureSchedule {
 
     @Scheduled(cron = "0 0 2-3 * * *")
     public void deleteItemDetailDaily(){        //删除2天前的数据（保存两天的数据）
-        String systemBookCode = "4410";
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date date = calendar.getTime();
         azureService.batchDeleteItemDetailDailies(systemBook,date,date);
     }
@@ -115,7 +138,6 @@ public class AzureSchedule {
 
     @Scheduled(cron="0 0 2-3 * * *")
     public void insertBranch(){                 //每天凌晨2店-4点 每个小时执行一次
-        String systemBookCode = "4410";
         List<BranchDTO> brachDTO = branchRpc.findInCache(systemBook);
         List<Branch> list = new ArrayList<Branch>();
         if (brachDTO.isEmpty()) {
@@ -133,10 +155,11 @@ public class AzureSchedule {
             branch.setBranchArea(branchDTO.getBranchArea());
             branch.setBranchEmployeeCount(branchDTO.getBranchEmployeeCount());
             branch.setBranchCreateTime(branchDTO.getBranchCreateTime());
-
+            list.add(branch);
         }
-        azureService.batchSaveBranchs(systemBookCode, list);
+        azureService.batchSaveBranchs(systemBook, list);
     }
+
 
 
 
