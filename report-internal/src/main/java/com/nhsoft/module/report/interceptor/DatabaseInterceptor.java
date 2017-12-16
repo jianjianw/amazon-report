@@ -142,7 +142,7 @@ public class DatabaseInterceptor {
 					condition.append(DateUtil.getDateShortStr((Date)paramObject));
 				} else {
 					Class c = paramObject.getClass();
-					if(c.getName().startsWith("com.nhsoft.pos3.shared.queryBuilder")){
+					if(c.getName().startsWith("com.nhsoft.module.report.query")){
 						Field[] fields = null;
 						StringBuffer queryBuffer = new StringBuffer();
 						Class superClass = c.getSuperclass();
@@ -188,8 +188,8 @@ public class DatabaseInterceptor {
 			t.setStatus(Transaction.SUCCESS);
 			throw  e;
 		} catch (Throwable throwable) {
-			t.setStatus(Transaction.SUCCESS);
 			t.setStatus(throwable);
+			Cat.logError(throwable);
 			logger.error(throwable.getMessage(), throwable);
 			throw throwable;
 		} finally {
