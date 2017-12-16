@@ -34,15 +34,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
 
     public void batchSaveItemDailyDetails(String systemBookCode, List<ItemDailyDetail> itemDailyDetails,Date dateFrom,Date dateTo) {
 
-       /* //先删除
-        Calendar calendar = Calendar.getInstance();
-        Date time = calendar.getTime();
-        String date = formatDate(time);
-        String sql = "delete from item_daily_detail where shift_table_bizday = '" + date + "' ";
-        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-        sqlQuery.executeUpdate();*/
-
-
         StringBuilder sb  =  new StringBuilder();
         sb.append("delete from item_daily_detail ");
         sb.append("where shift_table_bizday >= '" + formatDate(dateFrom) + "' ");
@@ -91,14 +82,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
 
     public void batchSaveBranchDailies(String systemBookCode,List<BranchDaily> branchDailys,Date dateFrom,Date dateTo) {
 
-      /*  //先删除
-        Calendar calendar = Calendar.getInstance();
-        Date time = calendar.getTime();
-        String date = formatDate(time);
-        String sql = "delete from branch_daily where shift_table_bizday = '" + date + "' ";//branch_daily
-        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-        sqlQuery.executeUpdate();*/
-
         StringBuilder sb  =  new StringBuilder();
         sb.append("delete from branch_daily ");
         sb.append("where shift_table_bizday >= '" + formatDate(dateFrom) + "' ");
@@ -118,10 +101,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
     }
 
     public void batchDeleteBranchDailies(String systemBookCode, Date dateFrom, Date dateTo) {
-       /* String date = formatDate(dateFrom);
-        String sql = "delete from branch_daily where shift_table_bizday < '" + date + "' ";
-        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-        sqlQuery.executeUpdate();*/
 
         StringBuilder sb  =  new StringBuilder();
         sb.append("delete from branch_daily ");
@@ -132,11 +111,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
     }
 
     public void batchDeleteItemDetailDailies(String systemBookCode, Date dateFrom, Date dateTo) {
-       /* String date = formatDate(dateFrom);
-        String sql = "delete from item_daily_detail where shift_table_bizday < '" + date + "' ";
-        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-        sqlQuery.executeUpdate();*/
-
         StringBuilder sb  =  new StringBuilder();
         sb.append("delete from item_daily_detail ");
         sb.append("where shift_table_bizday < '" + formatDate(dateFrom) + "' ");
@@ -153,20 +127,9 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         return sqlQuery.list();
 
-       /* String sql = "select item_num from pos_item_lat where system_book_code = '"+systemBookCode+"' ";
-        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-        return sqlQuery.list();*/
     }
 
     public void batchSaveBranchDailyDirects(String systemBookCode, List<BranchDailyDirect> branchDailyDirects,Date dateFrom,Date dateTo) {
-
-       /* //先删除
-        Calendar calendar = Calendar.getInstance();
-        Date time = calendar.getTime();
-        String date = formatDate(time);
-        String sql = "delete from branch_daily_direct where shift_table_bizday = '" + date + "' ";
-        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-        sqlQuery.executeUpdate();*/
 
         StringBuilder sb  =  new StringBuilder();
         sb.append("delete from branch_daily_direct ");
@@ -187,11 +150,6 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
     }
 
     public void batchDeleteBranchDailyDirects(String systemBookCode, Date dateFrom, Date dateTo) {
-
-       /* String date = formatDate(dateFrom);
-        String sql = "delete from branch_daily_direct where shift_table_bizday < '" + date + "' ";
-        SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
-        sqlQuery.executeUpdate();*/
 
         StringBuilder sb  =  new StringBuilder();
         sb.append("delete from branch_daily_direct ");

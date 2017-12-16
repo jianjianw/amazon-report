@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.rpc;
 
+import com.nhsoft.module.azure.model.Branch;
 import com.nhsoft.module.azure.model.BranchLat;
 import com.nhsoft.module.report.dto.BranchArea;
 import com.nhsoft.module.report.dto.BranchDTO;
@@ -48,6 +49,7 @@ public interface BranchRpc {
      * @param branchNum 分店号
      * */
     public BranchDTO readWithNolock(String systemBookCode, Integer branchNum);
+
 
 
 }
