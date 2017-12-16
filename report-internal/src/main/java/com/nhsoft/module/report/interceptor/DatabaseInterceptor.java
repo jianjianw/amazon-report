@@ -189,6 +189,7 @@ public class DatabaseInterceptor {
 			throw  e;
 		} catch (Throwable throwable) {
 			t.setStatus(throwable);
+			Cat.logError(throwable);
 			logger.error(throwable.getMessage(), throwable);
 			throw throwable;
 		} finally {
