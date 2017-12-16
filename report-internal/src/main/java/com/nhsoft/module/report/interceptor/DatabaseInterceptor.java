@@ -188,7 +188,6 @@ public class DatabaseInterceptor {
 			t.setStatus(Transaction.SUCCESS);
 			throw  e;
 		} catch (Throwable throwable) {
-			t.setStatus(Transaction.SUCCESS);
 			t.setStatus(throwable);
 			logger.error(throwable.getMessage(), throwable);
 			throw throwable;
