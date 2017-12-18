@@ -517,20 +517,23 @@ public class APIBasic {
 
 	}
 
-	@RequestMapping(method=RequestMethod.GET,value="/test6")
-	public void test16(){
-
-		//reportService.
-
+	public List<Integer> getBranchNums(){
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+		branchNums.add(4);
+		branchNums.add(5);
+		branchNums.add(6);
+		branchNums.add(7);
+		branchNums.add(8);
+		branchNums.add(9);
+		branchNums.add(10);
+		branchNums.add(11);
+		branchNums.add(12);
+		branchNums.add(99);
+		return branchNums;
 	}
-
-	@RequestMapping(method=RequestMethod.GET,value="/test17")
-	public void test17(){
-
-		//reportService.
-
-	}
-
 
 
 	

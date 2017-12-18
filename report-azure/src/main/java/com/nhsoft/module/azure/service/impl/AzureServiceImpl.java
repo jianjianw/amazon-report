@@ -70,4 +70,8 @@ public class AzureServiceImpl implements AzureService {
         azureDao.batchDeleteBranchDailyDirects(systemBookCode,dateFrom,dateTo);
     }
 
+    public void batchSaveBizday(String systemBookCode, List<Bizday> bizdays) {
+        azureDao.batchSaveBizday(systemBookCode,bizdays);
+    }
+
 }

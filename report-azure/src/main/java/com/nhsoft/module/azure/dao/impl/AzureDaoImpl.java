@@ -158,6 +158,22 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sqlQuery.executeUpdate();
     }
 
+    public void batchSaveBizday(String systemBookCode, List<Bizday> bizdays) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("delete from bizday ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.executeUpdate();
+
+        for (int i = 0; i <bizdays.size() ; i++) {
+            Bizday bizday = bizdays.get(i);
+            currentSession().save(bizday);
+            if(i % 30 == 0){
+                currentSession().flush();
+                currentSession().clear();
+            }
+        }
+    }
+
     public String formatDate(Date date){
         if(date != null){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");

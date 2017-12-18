@@ -3,8 +3,10 @@ package com.nhsoft.module.azure.rest;
 import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.dto.BranchDTO;
+import com.nhsoft.module.report.dto.BranchMonthReport;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
+import com.nhsoft.module.report.rpc.ReportRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -185,5 +187,127 @@ public class InitApi {
         azureService.batchDeleteBranchDailyDirects(systemBookCode,from,to);
         return "SUCCESS";
     }
+
+    @RequestMapping(method = RequestMethod.GET,value="/init/bizday/{systemBookCode}")
+    public String saveBizday(@PathVariable("systemBookCode") String systemBookCode){
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
+        Calendar calendar = Calendar.getInstance();
+        Date day = calendar.getTime();
+        calendar.setTime(day);
+
+        Integer thisYear = calendar.get(Calendar.YEAR);             //本年
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        Integer thisWeek = calendar.get(Calendar.WEEK_OF_YEAR);     //本周
+        List<Bizday> list = new ArrayList<Bizday>();
+        for(int i = 0; i < 735; i++) {
+            calendar.setFirstDayOfWeek(Calendar.MONDAY);
+            String date = sdf.format(calendar.getTime());                  //bizday_date
+            String year = sdf.format(calendar.getTime()).substring(0, 4);  //bizday_year
+            Integer quarter = (Integer.valueOf(sdf.format(calendar.getTime()).substring(5, 7))+2)/3;//bizday_quater
+            String yearAndMonth = sdf.format(calendar.getTime()).substring(0, 4)+sdf.format(calendar.getTime()).substring(5, 7);//bizday_year_month
+            Integer month = Integer.valueOf(sdf.format(calendar.getTime()).substring(5, 7));        //bizday_month
+            Integer dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);    //bizday_dayofyear
+            Integer weeknumOfYear = calendar.get(Calendar.WEEK_OF_YEAR); //bizday_week_of_year
+            String yearAndWeek = null; //bizday_year_week
+            if(weeknumOfYear < 10) {
+                yearAndWeek = year + "0" + weeknumOfYear;
+            } else {
+                yearAndWeek = year + weeknumOfYear;
+            }
+            Integer weekDay = null;
+            if(calendar.get(Calendar.DAY_OF_WEEK) == 1) {
+                weekDay = 7;
+            } else {
+                weekDay = calendar.get(Calendar.DAY_OF_WEEK)-1;
+            }
+            String yearName = "Y" + year;       //bizday_year_name
+            String quarterName = "Q" + quarter; //bizday_quarter_name
+            String monthName = null;            //bizday_month_name
+            switch(month) {
+                case 1: monthName = "一月";
+                    break;
+                case 2: monthName = "二月";
+                    break;
+                case 3: monthName = "三月";
+                    break;
+                case 4: monthName = "四月";
+                    break;
+                case 5: monthName = "五月";
+                    break;
+                case 6: monthName = "六月";
+                    break;
+                case 7: monthName = "七月";
+                    break;
+                case 8: monthName = "八月";
+                    break;
+                case 9: monthName = "九月";
+                    break;
+                case 10: monthName = "十月";
+                    break;
+                case 11: monthName = "十一月";
+                    break;
+                case 12: monthName = "十二月";
+                    break;
+            }
+            String weekOfYearName = "W" + weeknumOfYear; //bizday_weekOfYear_name
+            String dayOfMonthName = "D" + dayOfMonth;    //bizday_day_name
+            String dayOfWeekName = null;                 //bizday_dayofweek_name
+            switch(weekDay) {
+                case 1: dayOfWeekName = "星期一";
+                    break;
+                case 2: dayOfWeekName = "星期二";
+                    break;
+                case 3: dayOfWeekName = "星期三";
+                    break;
+                case 4: dayOfWeekName = "星期四";
+                    break;
+                case 5: dayOfWeekName = "星期五";
+                    break;
+                case 6: dayOfWeekName = "星期六";
+                    break;
+                case 7: dayOfWeekName = "星期日";
+                    break;
+            }
+            String yearmonth = year+"年"+month+"月";              //bizday_yearandmonth_name
+            String yearweek = year+"年"+" 第"+weeknumOfYear+"周"; //bizday_yearandweek_name
+            Integer isThisWeek = null;                          //bizday_isthisweek
+            if(Integer.valueOf(year).equals(thisYear) && weeknumOfYear == thisWeek) {
+                isThisWeek = 1;
+            } else {
+                isThisWeek = 0;
+            }
+            calendar.add(Calendar.DAY_OF_MONTH, -1);
+            Bizday bizday = new Bizday();
+            bizday.setBizdayDate(date);
+            bizday.setBizdayYear(year);
+            bizday.setBizdayQuarter(quarter);
+
+            bizday.setBizdayYearMonth(yearAndMonth);
+            bizday.setBizdayMonth(month);
+            bizday.setBizdayDayofYear(dayOfMonth);
+
+            bizday.setBizdayYearWeek(yearAndWeek);
+            bizday.setBizdayWeekofYear(weeknumOfYear);
+            bizday.setBizdayDayofweek(weekDay);
+
+            bizday.setBizdayYearName(yearName);
+            bizday.setBizdayQuarterName(quarterName);
+            bizday.setBizdayMonthName(monthName);
+
+            bizday.setBizdayWeekofYearName(weekOfYearName);
+            bizday.setBizdayDayName(dayOfMonthName);
+            bizday.setBizdayDayofweekName(dayOfWeekName);
+
+            bizday.setBizdayYearandmonthName(yearmonth);
+            bizday.setBizdayYearandweekName(yearweek);
+            bizday.setBizdayIsthisweek(isThisWeek);
+            list.add(bizday);
+        }
+        azureService.batchSaveBizday(systemBookCode,list);
+        return "Success";
+    }
+
+
 
 }

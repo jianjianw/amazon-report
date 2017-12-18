@@ -63,4 +63,9 @@ public interface AzureDao {
      * */
     public void batchDeleteBranchDailyDirects(String systemBookCode,Date dateFrom,Date dateTo);
 
+    /**
+     * 批量保存营业日
+     * */
+    public void batchSaveBizday(String systemBookCode,List<Bizday> bizdays);
+
 }
