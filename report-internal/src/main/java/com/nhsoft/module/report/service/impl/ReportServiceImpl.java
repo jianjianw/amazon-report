@@ -6124,133 +6124,133 @@ public class ReportServiceImpl implements ReportService {
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByPosItems(SaleAnalysisQueryData saleAnalysisQueryData) {
 		List<Object[]> objects = new ArrayList<Object[]>();
 
-		SystemBook systemBook = systemBookService.readInCache(saleAnalysisQueryData.getSystemBookCode());
-		Date now = Calendar.getInstance().getTime();
-		now = DateUtil.getMinOfDate(now);
-
-		Date dateFrom = saleAnalysisQueryData.getDtFrom();
-		Date dateTo = saleAnalysisQueryData.getDtTo();
-		if (dateTo.compareTo(now) >= 0) {
-			dateTo = now;
-		}
-
-		Date deleteDate = systemBook.getDeleteDate();
-		dateFrom = DateUtil.getMinOfDate(dateFrom);
-		if (deleteDate != null && dateFrom.compareTo(deleteDate) < 0) {
-			dateFrom = deleteDate;
-		}
-		if (saleAnalysisQueryData.getIsQueryCF() == null) {
-			saleAnalysisQueryData.setIsQueryCF(false);
-		}
-		if (saleAnalysisQueryData.getIsQueryGrade() == null) {
-			saleAnalysisQueryData.setIsQueryGrade(false);
-		}
-		if (saleAnalysisQueryData.getIsQueryCardUser() == null) {
-			saleAnalysisQueryData.setIsQueryCardUser(false);
-		}
-		dateTo = DateUtil.getMaxOfDate(dateTo);
-		if (systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()
-				&& StringUtils.isEmpty(saleAnalysisQueryData.getSaleType()) && !saleAnalysisQueryData.getIsQueryCF()
-				&& !saleAnalysisQueryData.getIsQueryGrade() && !saleAnalysisQueryData.getIsQueryCardUser()) {
-			Date dpcLimitTime = DateUtil.addDay(now, -2);
-
-			if (dpcLimitTime.compareTo(dateFrom) <= 0) {
-				objects = posOrderDao.findSaleAnalysisCommonItemMatrix(saleAnalysisQueryData);
-			} else if (dpcLimitTime.compareTo(dateTo) > 0) {
-				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
-				orderQueryDTO.setSystemBookCode(saleAnalysisQueryData.getSystemBookCode());
-				orderQueryDTO.setBranchNum(saleAnalysisQueryData.getBranchNums());
-				orderQueryDTO.setDateFrom(dateFrom);
-				orderQueryDTO.setDateTo(dateTo);
-				orderQueryDTO.setQueryKit(saleAnalysisQueryData.getIsQueryCF());
-				orderQueryDTO.setItemNums(saleAnalysisQueryData.getPosItemNums());
-
-				List<OrderDetailReportDTO> list = posOrderRemoteService.findItemMatrixStateSummaryDetail(orderQueryDTO);
-				Object[] object = null;
-				for (int i = 0; i < list.size(); i++) {
-					object = new Object[9];
-					object[0] = list.get(i).getItemNum();
-					object[1] = list.get(i).getItemMatrixNum();
-					object[2] = list.get(i).getStateCode();
-					object[3] = list.get(i).getAmount();
-					object[4] = list.get(i).getPaymentMoney();
-					object[5] = list.get(i).getAssistAmount();
-					object[6] = list.get(i).getItemCount();
-					object[7] = list.get(i).getDiscount();
-					object[8] = list.get(i).getBranchCount();
-					objects.add(object);
-				}
-			} else {
-
-				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
-				orderQueryDTO.setSystemBookCode(saleAnalysisQueryData.getSystemBookCode());
-				orderQueryDTO.setBranchNum(saleAnalysisQueryData.getBranchNums());
-				orderQueryDTO.setDateFrom(dateFrom);
-				orderQueryDTO.setItemNums(saleAnalysisQueryData.getPosItemNums());
-				orderQueryDTO.setDateTo(DateUtil.addDay(dpcLimitTime, -1));
-				if (saleAnalysisQueryData.getIsQueryCF() != null) {
-					orderQueryDTO.setQueryKit(saleAnalysisQueryData.getIsQueryCF());
-
-				}
-				List<OrderDetailReportDTO> list = posOrderRemoteService.findItemMatrixStateSummaryDetail(orderQueryDTO);
-				Object[] object = null;
-				for (int i = 0; i < list.size(); i++) {
-					object = new Object[9];
-					object[0] = list.get(i).getItemNum();
-					object[1] = list.get(i).getItemMatrixNum();
-					object[2] = list.get(i).getStateCode();
-					object[3] = list.get(i).getAmount();
-					object[4] = list.get(i).getPaymentMoney();
-					object[5] = list.get(i).getAssistAmount();
-					object[6] = list.get(i).getItemCount();
-					object[7] = list.get(i).getDiscount();
-					object[8] = list.get(i).getBranchCount() == null?0:list.get(i).getBranchCount();
-					objects.add(object);
-				}
-
-				saleAnalysisQueryData.setDtFrom(dpcLimitTime);
-				List<Object[]> localObjects = posOrderDao.findSaleAnalysisCommonItemMatrix(saleAnalysisQueryData);
-				boolean find = false;
-				for (int i = 0; i < localObjects.size(); i++) {
-					Object[] localObject = localObjects.get(i);
-					if (localObject[1] == null) {
-						localObject[1] = 0;
-					}
-					if (localObject[8] == null) {
-						localObject[8] = 0;
-					}
-					find = false;
-					for (int j = 0; j < objects.size(); j++) {
-						object = objects.get(j);
-						if (object[0].equals(localObject[0]) && object[1].equals(localObject[1])
-								&& object[2].equals(localObject[2])) {
-							object[3] = ((BigDecimal) object[3]).add(localObject[3] == null ? BigDecimal.ZERO
-									: (BigDecimal) localObject[3]);
-							object[4] = ((BigDecimal) object[4]).add(localObject[4] == null ? BigDecimal.ZERO
-									: (BigDecimal) localObject[4]);
-							object[5] = ((BigDecimal) object[5]).add(localObject[5] == null ? BigDecimal.ZERO
-									: (BigDecimal) localObject[5]);
-							object[6] = ((Integer) object[6]) + (localObject[6] == null ? 0 : (Integer) localObject[6]);
-							object[7] = ((BigDecimal) object[7]).add(localObject[7] == null ? BigDecimal.ZERO
-									: (BigDecimal) localObject[7]);
-							
-							if((Integer) localObject[8] > (Integer) object[8]){
-								object[8] = localObject[8];
-							}
-							find = true;
-							break;
-						}
-					}
-
-					if (!find) {
-						objects.add(localObject);
-					}
-				}
-			}
-		} else {
+//		SystemBook systemBook = systemBookService.readInCache(saleAnalysisQueryData.getSystemBookCode());
+//		Date now = Calendar.getInstance().getTime();
+//		now = DateUtil.getMinOfDate(now);
+//
+//		Date dateFrom = saleAnalysisQueryData.getDtFrom();
+//		Date dateTo = saleAnalysisQueryData.getDtTo();
+//		if (dateTo.compareTo(now) >= 0) {
+//			dateTo = now;
+//		}
+//
+//		Date deleteDate = systemBook.getDeleteDate();
+//		dateFrom = DateUtil.getMinOfDate(dateFrom);
+//		if (deleteDate != null && dateFrom.compareTo(deleteDate) < 0) {
+//			dateFrom = deleteDate;
+//		}
+//		if (saleAnalysisQueryData.getIsQueryCF() == null) {
+//			saleAnalysisQueryData.setIsQueryCF(false);
+//		}
+//		if (saleAnalysisQueryData.getIsQueryGrade() == null) {
+//			saleAnalysisQueryData.setIsQueryGrade(false);
+//		}
+//		if (saleAnalysisQueryData.getIsQueryCardUser() == null) {
+//			saleAnalysisQueryData.setIsQueryCardUser(false);
+//		}
+//		dateTo = DateUtil.getMaxOfDate(dateTo);
+//		if (systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()
+//				&& StringUtils.isEmpty(saleAnalysisQueryData.getSaleType()) && !saleAnalysisQueryData.getIsQueryCF()
+//				&& !saleAnalysisQueryData.getIsQueryGrade() && !saleAnalysisQueryData.getIsQueryCardUser()) {
+//			Date dpcLimitTime = DateUtil.addDay(now, -2);
+//
+//			if (dpcLimitTime.compareTo(dateFrom) <= 0) {
+//				objects = posOrderDao.findSaleAnalysisCommonItemMatrix(saleAnalysisQueryData);
+//			} else if (dpcLimitTime.compareTo(dateTo) > 0) {
+//				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
+//				orderQueryDTO.setSystemBookCode(saleAnalysisQueryData.getSystemBookCode());
+//				orderQueryDTO.setBranchNum(saleAnalysisQueryData.getBranchNums());
+//				orderQueryDTO.setDateFrom(dateFrom);
+//				orderQueryDTO.setDateTo(dateTo);
+//				orderQueryDTO.setQueryKit(saleAnalysisQueryData.getIsQueryCF());
+//				orderQueryDTO.setItemNums(saleAnalysisQueryData.getPosItemNums());
+//
+//				List<OrderDetailReportDTO> list = posOrderRemoteService.findItemMatrixStateSummaryDetail(orderQueryDTO);
+//				Object[] object = null;
+//				for (int i = 0; i < list.size(); i++) {
+//					object = new Object[9];
+//					object[0] = list.get(i).getItemNum();
+//					object[1] = list.get(i).getItemMatrixNum();
+//					object[2] = list.get(i).getStateCode();
+//					object[3] = list.get(i).getAmount();
+//					object[4] = list.get(i).getPaymentMoney();
+//					object[5] = list.get(i).getAssistAmount();
+//					object[6] = list.get(i).getItemCount();
+//					object[7] = list.get(i).getDiscount();
+//					object[8] = list.get(i).getBranchCount();
+//					objects.add(object);
+//				}
+//			} else {
+//
+//				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
+//				orderQueryDTO.setSystemBookCode(saleAnalysisQueryData.getSystemBookCode());
+//				orderQueryDTO.setBranchNum(saleAnalysisQueryData.getBranchNums());
+//				orderQueryDTO.setDateFrom(dateFrom);
+//				orderQueryDTO.setItemNums(saleAnalysisQueryData.getPosItemNums());
+//				orderQueryDTO.setDateTo(DateUtil.addDay(dpcLimitTime, -1));
+//				if (saleAnalysisQueryData.getIsQueryCF() != null) {
+//					orderQueryDTO.setQueryKit(saleAnalysisQueryData.getIsQueryCF());
+//
+//				}
+//				List<OrderDetailReportDTO> list = posOrderRemoteService.findItemMatrixStateSummaryDetail(orderQueryDTO);
+//				Object[] object = null;
+//				for (int i = 0; i < list.size(); i++) {
+//					object = new Object[9];
+//					object[0] = list.get(i).getItemNum();
+//					object[1] = list.get(i).getItemMatrixNum();
+//					object[2] = list.get(i).getStateCode();
+//					object[3] = list.get(i).getAmount();
+//					object[4] = list.get(i).getPaymentMoney();
+//					object[5] = list.get(i).getAssistAmount();
+//					object[6] = list.get(i).getItemCount();
+//					object[7] = list.get(i).getDiscount();
+//					object[8] = list.get(i).getBranchCount() == null?0:list.get(i).getBranchCount();
+//					objects.add(object);
+//				}
+//
+//				saleAnalysisQueryData.setDtFrom(dpcLimitTime);
+//				List<Object[]> localObjects = posOrderDao.findSaleAnalysisCommonItemMatrix(saleAnalysisQueryData);
+//				boolean find = false;
+//				for (int i = 0; i < localObjects.size(); i++) {
+//					Object[] localObject = localObjects.get(i);
+//					if (localObject[1] == null) {
+//						localObject[1] = 0;
+//					}
+//					if (localObject[8] == null) {
+//						localObject[8] = 0;
+//					}
+//					find = false;
+//					for (int j = 0; j < objects.size(); j++) {
+//						object = objects.get(j);
+//						if (object[0].equals(localObject[0]) && object[1].equals(localObject[1])
+//								&& object[2].equals(localObject[2])) {
+//							object[3] = ((BigDecimal) object[3]).add(localObject[3] == null ? BigDecimal.ZERO
+//									: (BigDecimal) localObject[3]);
+//							object[4] = ((BigDecimal) object[4]).add(localObject[4] == null ? BigDecimal.ZERO
+//									: (BigDecimal) localObject[4]);
+//							object[5] = ((BigDecimal) object[5]).add(localObject[5] == null ? BigDecimal.ZERO
+//									: (BigDecimal) localObject[5]);
+//							object[6] = ((Integer) object[6]) + (localObject[6] == null ? 0 : (Integer) localObject[6]);
+//							object[7] = ((BigDecimal) object[7]).add(localObject[7] == null ? BigDecimal.ZERO
+//									: (BigDecimal) localObject[7]);
+//
+//							if((Integer) localObject[8] > (Integer) object[8]){
+//								object[8] = localObject[8];
+//							}
+//							find = true;
+//							break;
+//						}
+//					}
+//
+//					if (!find) {
+//						objects.add(localObject);
+//					}
+//				}
+//			}
+//		} else {
 			objects = posOrderDao.findSaleAnalysisCommonItemMatrix(saleAnalysisQueryData);
 
-		}
+//		}
 		
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		Integer itemNum;
