@@ -55,7 +55,7 @@ public class InitApi {
     public String insertBranch(@PathVariable("systemBookCode") String systemBookCode) {//@PathVariable("systemBookCode")
         List<BranchDTO> brachDTO = branchRpc.findInCache(systemBookCode);
         List<Branch> list = new ArrayList<Branch>();
-       /* for (int i = 0; i < brachDTO.size(); i++) {
+        for (int i = 0; i < brachDTO.size(); i++) {
             BranchDTO branchDTO = brachDTO.get(i);
             Branch branch = new Branch();
             branch.setSystemBookCode(systemBookCode);
@@ -69,21 +69,7 @@ public class InitApi {
             branch.setBranchEmployeeCount(branchDTO.getBranchEmployeeCount());
             branch.setBranchCreateTime(branchDTO.getBranchCreateTime());
             list.add(branch);
-        }*/
-        Branch branch = new Branch();
-        branch.setSystemBookCode(systemBookCode);
-        branch.setBranchNum(99);
-        branch.setBranchCode("01");
-        branch.setBranchName("中心");
-        branch.setBranchActived(true);
-        //branch.setBranchRdc(true);
-       /* branch.setBranchType();
-        branch.setBranchArea();
-        branch.setBranchEmployeeCount();
-        branch.setBranchCreateTime();*/
-        list.add(branch);
-
-
+        }
         azureService.batchSaveBranchs(systemBookCode, list);
         return "SUCCESS";
     }

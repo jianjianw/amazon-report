@@ -51,6 +51,18 @@ public class AzureSchedule {
         azureService.batchSaveBranchDailies(systemBook,branchDailySummary,dateFrom,dateTo);
     }
 
+    @Scheduled(cron="0 0,30 * * * *")
+    public void test1(){
+        logger.info("我是定时器1");
+        System.out.println("我是定时器1");
+    }
+
+    @Scheduled(cron="0 0,30 * * * *")
+    public void test2(){
+        logger.info("我是定时器2");
+        System.out.println("我是定时器2");
+    }
+
 
 
 
@@ -76,7 +88,7 @@ public class AzureSchedule {
         azureService.batchSaveBranchDailyDirects(systemBook,list,date,date);
     }
 
-    @Scheduled(cron="0 0 2-4 * * *")     ////更新历史2
+    @Scheduled(cron="0 0 2-3 * * *")     ////更新历史2
     public void saveBranchDailyDirectHour(){    //每天凌晨更新前2天的数据
         Calendar calendar = Calendar.getInstance();
         Date dateTo = calendar.getTime();
