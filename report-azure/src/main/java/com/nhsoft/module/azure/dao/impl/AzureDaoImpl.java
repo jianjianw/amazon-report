@@ -158,7 +158,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sqlQuery.executeUpdate();
     }
 
-    public void batchSaveBizday(String systemBookCode, List<Bizday> bizdays) {
+    public void batchSaveBizdays(String systemBookCode, List<Bizday> bizdays) {
         StringBuilder sb = new StringBuilder();
         sb.append("delete from bizday ");
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
@@ -173,6 +173,86 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
             }
         }
     }
+
+    public void batchSaveItemSaleDailies(String systemBookCode, List<ItemSaleDaily> itemSaleDailies,Date dateFrom, Date dateTo) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("delete from item_sale_daily ");
+        sb.append("where shift_table_bizday >= '" + formatDate(dateFrom) + "' ");
+        sb.append("and shift_table_bizday <= '" + formatDate(dateTo) +"' ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.executeUpdate();
+
+        for (int i = 0; i <itemSaleDailies.size() ; i++) {
+            ItemSaleDaily itemSaleDaily = itemSaleDailies.get(i);
+            currentSession().save(itemSaleDaily);
+            if(i % 30 == 0){
+                currentSession().flush();
+                currentSession().clear();
+            }
+        }
+    }
+
+    public void batchDeleteItemSaleDailies(String systemBookCode,Date dateFrom, Date dateTo) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("delete from item_sale_daily ");
+        sb.append("where shift_table_bizday < '" + formatDate(dateFrom) + "' ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.executeUpdate();
+    }
+
+    public void batchSaveItemLossDailies(String systemBookCode, List<ItemLossDaily> itemLossDailies, Date dateFrom, Date dateTo) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("delete from item_loss_daily ");
+        sb.append("where shift_table_bizday >= '" + formatDate(dateFrom) + "' ");
+        sb.append("and shift_table_bizday <= '" + formatDate(dateTo) +"' ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.executeUpdate();
+
+        for (int i = 0; i <itemLossDailies.size() ; i++) {
+            ItemLossDaily itemLossDaily = itemLossDailies.get(i);
+            currentSession().save(itemLossDaily);
+            if(i % 30 == 0){
+                currentSession().flush();
+                currentSession().clear();
+            }
+        }
+    }
+
+    public void batchDeleteItemLossDailies(String systemBookCode, Date dateFrom, Date dateTo) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("delete from item_loss_daily ");
+        sb.append("where shift_table_bizday < '" + formatDate(dateFrom) + "' ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.executeUpdate();
+    }
+
+    public void batchSaveCardDailies(String systemBookCode, List<CardDaily> CardDailies, Date dateFrom, Date dateTo) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("delete from card_daily ");
+        sb.append("where shift_table_bizday >= '" + formatDate(dateFrom) + "' ");
+        sb.append("and shift_table_bizday <= '" + formatDate(dateTo) +"' ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.executeUpdate();
+
+        for (int i = 0; i <CardDailies.size() ; i++) {
+            CardDaily cardDaily = CardDailies.get(i);
+            currentSession().save(cardDaily);
+            if(i % 30 == 0){
+                currentSession().flush();
+                currentSession().clear();
+            }
+        }
+    }
+    public void batchDeleteCardDailies(String systemBookCode, Date dateFrom, Date dateTo) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("delete from card_daily ");
+        sb.append("where shift_table_bizday < '" + formatDate(dateFrom) + "' ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.executeUpdate();
+    }
+
+
 
     public String formatDate(Date date){
         if(date != null){

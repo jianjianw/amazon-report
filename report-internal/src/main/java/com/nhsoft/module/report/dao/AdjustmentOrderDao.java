@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.dao;
 
+import com.nhsoft.module.report.dto.ItemLossDailyDTO;
+
 import java.util.Date;
 import java.util.List;
 
@@ -72,4 +74,11 @@ public interface AdjustmentOrderDao {
 	 * @param dateTo 时间止
 	 * */
 	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+	/**
+	 * bi 商品日报损汇总
+	 *
+	 * */
+	public List<Object[]> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 }

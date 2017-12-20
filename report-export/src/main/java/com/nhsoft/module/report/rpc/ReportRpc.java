@@ -1292,6 +1292,12 @@ public interface ReportRpc {
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData saleAnalysisQueryData);
 
 
+	/**
+	 *	bi 会员统计--按分店和营业日
+	 * */
+	public List<CardDailyDTO> findCardDailyByBranchBizday(String systemBookCode,List<Integer> branchNums, Date dateFrom,Date dateTo);
+
+
 
 
 

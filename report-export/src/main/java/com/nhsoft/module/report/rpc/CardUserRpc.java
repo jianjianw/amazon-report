@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.rpc;
 
+import com.nhsoft.module.report.dto.BranchBizdayCardCountSummary;
+import com.nhsoft.module.report.dto.BranchBizdayCardReturnSummary;
 import com.nhsoft.module.report.dto.CardUserCount;
 
 import java.util.Date;
@@ -15,4 +17,28 @@ public interface CardUserRpc  {
      * @param dateTo 时间止
      * */
     public List<CardUserCount> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+    /**
+     * 按分店、营业日查找发卡数
+     * @param systemBookCode
+     * @param branchNums
+     * @param dateFrom
+     * @param dateTo
+     * @param cardUserCardType
+     * @return
+     */
+    public List<BranchBizdayCardCountSummary> findCardCountByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+                                                                          Date dateTo, Integer cardUserCardType);
+
+    /**
+     * 按分店、营业日查找退卡数
+     * @param systemBookCode
+     * @param branchNums
+     * @param dateFrom
+     * @param dateTo
+     * @param cardUserCardType
+     * @return
+     */
+    public List<BranchBizdayCardReturnSummary> findRevokeCardCountByBranchBizday(String systemBookCode, List<Integer> branchNums,
+                                                                                 Date dateFrom, Date dateTo, Integer cardUserCardType);
 }

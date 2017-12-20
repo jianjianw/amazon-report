@@ -27,4 +27,16 @@ public interface CardConsumeService {
 	 * @return
 	 */
 	public List<Object[]> findSumByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 根据分店、营业日汇总金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param cardUserCardType
+	 * @return
+	 */
+	public List<Object[]> findBranchBizdaySum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+											  Date dateTo, Integer cardUserCardType);
 }

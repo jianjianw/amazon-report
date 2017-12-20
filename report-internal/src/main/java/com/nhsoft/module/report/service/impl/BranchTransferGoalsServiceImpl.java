@@ -39,4 +39,14 @@ public class BranchTransferGoalsServiceImpl implements BranchTransferGoalsServic
 	public List<Object[]> findGoalsByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return branchTransferGoalsDao.findGoalsByBranchBizday(systemBookCode,branchNums,dateFrom,dateTo);
 	}
+
+	@Override
+	public List<Object[]> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return branchTransferGoalsDao.findDepositGoalsByBizdayBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<Object[]> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return branchTransferGoalsDao.findNewCardGoalsByBizdayBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	}
 }

@@ -2,6 +2,7 @@ package com.nhsoft.module.report.rpc;
 
 import com.nhsoft.module.report.dto.AdjustmentCauseMoney;
 import com.nhsoft.module.report.dto.CheckMoney;
+import com.nhsoft.module.report.dto.ItemLossDailyDTO;
 import com.nhsoft.module.report.dto.LossMoneyReport;
 
 import java.util.Date;
@@ -36,5 +37,10 @@ public interface AdjustmentOrderRpc {
      * */
     public List<AdjustmentCauseMoney> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
+    /**
+     * bi 商品日报损汇总
+     *
+     * */
+    public List<ItemLossDailyDTO> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 
 }

@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.rpc.impl;
 
+import com.nhsoft.module.report.dto.DepositGoalsDTO;
+import com.nhsoft.module.report.dto.NewCardGoalsDTO;
 import com.nhsoft.module.report.dto.SaleMoneyGoals;
 import com.nhsoft.module.report.rpc.BranchTransferGoalsRpc;
 import com.nhsoft.module.report.service.BranchTransferGoalsService;
@@ -68,7 +70,48 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
             saleMoneyGoals.setSystemBookCode(systemBookCode);
             list.add(saleMoneyGoals);
         }
-
         return list;
     }
+
+    @Override
+    public List<DepositGoalsDTO> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = branchTransferGoalsService.findDepositGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<DepositGoalsDTO> list = new ArrayList<>();
+        if(objects.isEmpty()){
+            return list;
+        }
+        String biz = null;
+        for (int i = 0; i <objects.size() ; i++) {
+            Object[] object = objects.get(i);
+            DepositGoalsDTO depositGoalsDTO = new DepositGoalsDTO();
+            depositGoalsDTO.setBranchNum((Integer) object[0]);
+            biz = (String) object[1];
+            depositGoalsDTO.setBizday(biz.replace("-",""));
+            depositGoalsDTO.setDepositGoals((BigDecimal) object[2]);
+            list.add(depositGoalsDTO);
+        }
+        return list;
+    }
+
+    @Override
+    public List<NewCardGoalsDTO> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = branchTransferGoalsService.findNewCardGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<NewCardGoalsDTO> list = new ArrayList<>();
+        if(objects.isEmpty()){
+            return list;
+        }
+        String biz = null;
+        for (int i = 0; i <objects.size() ; i++) {
+            Object[] object = objects.get(i);
+            NewCardGoalsDTO newCardGoalsDTO = new NewCardGoalsDTO();
+            newCardGoalsDTO.setBranchNum((Integer) object[0]);
+            biz = (String) object[1];
+            newCardGoalsDTO.setBizday(biz.replace("-",""));
+            newCardGoalsDTO.setNewCard((Integer) object[2]);
+            list.add(newCardGoalsDTO);
+        }
+        return list;
+    }
+
+
 }

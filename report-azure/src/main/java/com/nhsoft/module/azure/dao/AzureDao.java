@@ -66,6 +66,36 @@ public interface AzureDao {
     /**
      * 批量保存营业日
      * */
-    public void batchSaveBizday(String systemBookCode,List<Bizday> bizdays);
+    public void batchSaveBizdays(String systemBookCode,List<Bizday> bizdays);
+
+    /**
+     * 批量保存 商品日销售汇总
+     * */
+    public void batchSaveItemSaleDailies(String systemBookCode,List<ItemSaleDaily> itemSaleDailies,Date dateFrom, Date dateTo);
+
+    /**
+     * 批量删除 商品日销售汇总
+     * */
+    public void batchDeleteItemSaleDailies(String systemBookCode,Date dateFrom, Date dateTo);
+
+    /**
+     * 批量保存 商品日报损汇总
+     **/
+    public void batchSaveItemLossDailies(String systemBookCode,List<ItemLossDaily> itemLossDailies,Date dateFrom, Date dateTo);
+
+    /**
+     * 批量删除 商品日报损汇总
+     * */
+    public void batchDeleteItemLossDailies(String systemBookCode,Date dateFrom, Date dateTo);
+
+    /**
+     * 批量保存 会员统计
+     * */
+    public void batchSaveCardDailies(String systemBookCode,List<CardDaily> CardDailies,Date dateFrom, Date dateTo);
+
+    /**
+     * 批量删除 会员统计
+     * */
+    public void batchDeleteCardDailies(String systemBookCode,Date dateFrom, Date dateTo);
 
 }

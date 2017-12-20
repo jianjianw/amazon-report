@@ -11,14 +11,14 @@ public class Bizday implements Serializable{
     private Integer bizdayQuarter;
     private String bizdayYearMonth;
     private Integer bizdayMonth;
-    private Integer bizdayDayofYear;
-    private String bizdayYearWeek;
+    private Integer bizdayDayofyear;
+    private String bizdayYearweek;
     private Integer bizdayWeekofYear;
     private Integer bizdayDayofweek;
     private String bizdayYearName;
     private String bizdayQuarterName;
     private String bizdayMonthName;
-    private String bizdayWeekofYearName;
+    private String bizdayWeekofyearName;
     private String bizdayDayName;
     private String bizdayDayofweekName;
     private String bizdayYearandmonthName;
@@ -66,20 +66,20 @@ public class Bizday implements Serializable{
         this.bizdayMonth = bizdayMonth;
     }
 
-    public Integer getBizdayDayofYear() {
-        return bizdayDayofYear;
+    public Integer getBizdayDayofyear() {
+        return bizdayDayofyear;
     }
 
-    public void setBizdayDayofYear(Integer bizdayDayofYear) {
-        this.bizdayDayofYear = bizdayDayofYear;
+    public void setBizdayDayofyear(Integer bizdayDayofyear) {
+        this.bizdayDayofyear = bizdayDayofyear;
     }
 
-    public String getBizdayYearWeek() {
-        return bizdayYearWeek;
+    public String getBizdayYearweek() {
+        return bizdayYearweek;
     }
 
-    public void setBizdayYearWeek(String bizdayYearWeek) {
-        this.bizdayYearWeek = bizdayYearWeek;
+    public void setBizdayYearweek(String bizdayYearweek) {
+        this.bizdayYearweek = bizdayYearweek;
     }
 
     public Integer getBizdayWeekofYear() {
@@ -122,12 +122,12 @@ public class Bizday implements Serializable{
         this.bizdayMonthName = bizdayMonthName;
     }
 
-    public String getBizdayWeekofYearName() {
-        return bizdayWeekofYearName;
+    public String getBizdayWeekofyearName() {
+        return bizdayWeekofyearName;
     }
 
-    public void setBizdayWeekofYearName(String bizdayWeekofYearName) {
-        this.bizdayWeekofYearName = bizdayWeekofYearName;
+    public void setBizdayWeekofyearName(String bizdayWeekofyearName) {
+        this.bizdayWeekofyearName = bizdayWeekofyearName;
     }
 
     public String getBizdayDayName() {
@@ -185,9 +185,9 @@ public class Bizday implements Serializable{
         if (bizdayYearMonth != null ? !bizdayYearMonth.equals(bizday.bizdayYearMonth) : bizday.bizdayYearMonth != null)
             return false;
         if (bizdayMonth != null ? !bizdayMonth.equals(bizday.bizdayMonth) : bizday.bizdayMonth != null) return false;
-        if (bizdayDayofYear != null ? !bizdayDayofYear.equals(bizday.bizdayDayofYear) : bizday.bizdayDayofYear != null)
+        if (bizdayDayofyear != null ? !bizdayDayofyear.equals(bizday.bizdayDayofyear) : bizday.bizdayDayofyear != null)
             return false;
-        if (bizdayYearWeek != null ? !bizdayYearWeek.equals(bizday.bizdayYearWeek) : bizday.bizdayYearWeek != null)
+        if (bizdayYearweek != null ? !bizdayYearweek.equals(bizday.bizdayYearweek) : bizday.bizdayYearweek != null)
             return false;
         if (bizdayWeekofYear != null ? !bizdayWeekofYear.equals(bizday.bizdayWeekofYear) : bizday.bizdayWeekofYear != null)
             return false;
@@ -199,7 +199,7 @@ public class Bizday implements Serializable{
             return false;
         if (bizdayMonthName != null ? !bizdayMonthName.equals(bizday.bizdayMonthName) : bizday.bizdayMonthName != null)
             return false;
-        if (bizdayWeekofYearName != null ? !bizdayWeekofYearName.equals(bizday.bizdayWeekofYearName) : bizday.bizdayWeekofYearName != null)
+        if (bizdayWeekofyearName != null ? !bizdayWeekofyearName.equals(bizday.bizdayWeekofyearName) : bizday.bizdayWeekofyearName != null)
             return false;
         if (bizdayDayName != null ? !bizdayDayName.equals(bizday.bizdayDayName) : bizday.bizdayDayName != null)
             return false;
@@ -217,14 +217,14 @@ public class Bizday implements Serializable{
         result = 31 * result + (bizdayQuarter != null ? bizdayQuarter.hashCode() : 0);
         result = 31 * result + (bizdayYearMonth != null ? bizdayYearMonth.hashCode() : 0);
         result = 31 * result + (bizdayMonth != null ? bizdayMonth.hashCode() : 0);
-        result = 31 * result + (bizdayDayofYear != null ? bizdayDayofYear.hashCode() : 0);
-        result = 31 * result + (bizdayYearWeek != null ? bizdayYearWeek.hashCode() : 0);
+        result = 31 * result + (bizdayDayofyear != null ? bizdayDayofyear.hashCode() : 0);
+        result = 31 * result + (bizdayYearweek != null ? bizdayYearweek.hashCode() : 0);
         result = 31 * result + (bizdayWeekofYear != null ? bizdayWeekofYear.hashCode() : 0);
         result = 31 * result + (bizdayDayofweek != null ? bizdayDayofweek.hashCode() : 0);
         result = 31 * result + (bizdayYearName != null ? bizdayYearName.hashCode() : 0);
         result = 31 * result + (bizdayQuarterName != null ? bizdayQuarterName.hashCode() : 0);
         result = 31 * result + (bizdayMonthName != null ? bizdayMonthName.hashCode() : 0);
-        result = 31 * result + (bizdayWeekofYearName != null ? bizdayWeekofYearName.hashCode() : 0);
+        result = 31 * result + (bizdayWeekofyearName != null ? bizdayWeekofyearName.hashCode() : 0);
         result = 31 * result + (bizdayDayName != null ? bizdayDayName.hashCode() : 0);
         result = 31 * result + (bizdayDayofweekName != null ? bizdayDayofweekName.hashCode() : 0);
         result = 31 * result + (bizdayYearandmonthName != null ? bizdayYearandmonthName.hashCode() : 0);

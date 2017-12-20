@@ -2,11 +2,8 @@ package com.nhsoft.module.azure.rest;
 
 import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
-import com.nhsoft.module.report.dto.BranchDTO;
-import com.nhsoft.module.report.dto.BranchMonthReport;
-import com.nhsoft.module.report.rpc.BranchRpc;
-import com.nhsoft.module.report.rpc.PosOrderRpc;
-import com.nhsoft.module.report.rpc.ReportRpc;
+import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.rpc.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +27,11 @@ public class InitApi {
     private AzureService azureService;
     @Autowired
     private BranchRpc branchRpc;
+    @Autowired
+    private AdjustmentOrderRpc adjustmentOrderRpc;
+    @Autowired
+    private ReportRpc reportRpc;
+
 
     @RequestMapping(method = RequestMethod.GET,value = "/echo")
     public String echo(){
@@ -91,23 +93,6 @@ public class InitApi {
         List<Integer> posItemNums = azureService.findPosItemNums(systemBookCode);
         List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, form, to,posItemNums);
         azureService.batchSaveItemDailyDetails(systemBookCode, itemDailyDetailSummary,form,to);
-        return "SUCCESS";
-    }
-
-
-    @RequestMapping(method = RequestMethod.GET, value = "/init/item/{systemBookCode}/{dateFrom}/{dateTo}")
-    public String initItem(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
-        Date from = null;
-        Date to = null;
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            from = sdf.parse(dateFrom);
-            to = sdf.parse(dateTo);
-        } catch (ParseException e) {
-            throw new RuntimeException("日期解析失败");
-        }
-        List<ItemDaily> itemDailySummary = posOrderRpc.findItemDailySummary(systemBookCode, from, to);
-        azureService.batchSaveItemDailies(systemBookCode, itemDailySummary);
         return "SUCCESS";
     }
 
@@ -285,9 +270,9 @@ public class InitApi {
 
             bizday.setBizdayYearMonth(yearAndMonth);
             bizday.setBizdayMonth(month);
-            bizday.setBizdayDayofYear(dayOfMonth);
+            bizday.setBizdayDayofyear(dayOfMonth);
 
-            bizday.setBizdayYearWeek(yearAndWeek);
+            bizday.setBizdayYearweek(yearAndWeek);
             bizday.setBizdayWeekofYear(weeknumOfYear);
             bizday.setBizdayDayofweek(weekDay);
 
@@ -295,7 +280,7 @@ public class InitApi {
             bizday.setBizdayQuarterName(quarterName);
             bizday.setBizdayMonthName(monthName);
 
-            bizday.setBizdayWeekofYearName(weekOfYearName);
+            bizday.setBizdayWeekofyearName(weekOfYearName);
             bizday.setBizdayDayName(dayOfMonthName);
             bizday.setBizdayDayofweekName(dayOfWeekName);
 
@@ -304,10 +289,117 @@ public class InitApi {
             bizday.setBizdayIsthisweek(isThisWeek);
             list.add(bizday);
         }
-        azureService.batchSaveBizday(systemBookCode,list);
+        azureService.batchSaveBizdays(systemBookCode,list);
         return "Success";
     }
 
 
+    //商品日销售
+    @RequestMapping(method = RequestMethod.GET,value = "/init/saleDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String initSaleDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBookCode, from, to);
+        List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
+
+        for(int i = 0; i<itemSaleDailySummary.size(); i++){
+            ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
+            ItemSaleDaily itemSaleDaily = new ItemSaleDaily();
+            itemSaleDaily.setSystemBookCode(systemBookCode);
+            itemSaleDaily.setBranchNum(itemSaleDailyDTO.getBranchNum());
+            itemSaleDaily.setShiftTableBizday(itemSaleDailyDTO.getShiftTableBizday());
+            itemSaleDaily.setItemNum(itemSaleDailyDTO.getItemNum());
+            itemSaleDaily.setShiftTableDate(itemSaleDailyDTO.getShiftTableDate());
+            itemSaleDaily.setItemMoney(itemSaleDailyDTO.getItemMoney());
+            itemSaleDaily.setItemAmount(itemSaleDailyDTO.getItemAmount());
+            itemSaleDaily.setItemCount(itemSaleDailyDTO.getItemCount());
+            itemSaleDaily.setItemSource(itemSaleDailyDTO.getItemSource());
+            itemSaleDaily.setItemMemberTag(itemSaleDailyDTO.getItemMemberTag());
+            list.add(itemSaleDaily);
+        }
+        azureService.batchSaveItemSaleDailies(systemBookCode,list,from,to);
+        return "SUCCESS";
+    }
+    @RequestMapping(method=RequestMethod.GET,value="/delete/saleDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String deleteSaleDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo)throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        azureService.batchDeleteItemSaleDailies(systemBookCode,from,to);
+        return "SUCCESS";
+    }
+
+    //商品日报损
+    @RequestMapping(method = RequestMethod.GET,value = "/init/lossDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String initLossDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        List<ItemLossDailyDTO> itemLossDailySummary = adjustmentOrderRpc.findItemLossDailySummary(systemBookCode, from, to);
+        List<ItemLossDaily> list = new ArrayList<ItemLossDaily>();
+        for (int i = 0; i <itemLossDailySummary.size() ; i++) {
+            ItemLossDailyDTO itemLossDailyDTO = itemLossDailySummary.get(i);
+            ItemLossDaily itemLossDaily = new ItemLossDaily();
+            itemLossDaily.setSystemBookCode(itemLossDailyDTO.getSystemBookCode());
+            itemLossDaily.setBranchNum(itemLossDailyDTO.getBranchNum());
+            itemLossDaily.setShiftTableBizday(itemLossDailyDTO.getShiftTableBizday());
+            itemLossDaily.setItemNum(itemLossDailyDTO.getItemNum());
+            itemLossDaily.setItemLossReason(itemLossDailyDTO.getItemLossReason());
+            itemLossDaily.setShiftTableDate(itemLossDailyDTO.getShiftTableDate());
+            itemLossDaily.setItemMoney(itemLossDailyDTO.getItemMoney());
+            itemLossDaily.setItemAmount(itemLossDailyDTO.getItemAmount());
+            list.add(itemLossDaily);
+        }
+        azureService.batchSaveItemLossDailies(systemBookCode,list,from,to);
+        return "SUCCESS";
+    }
+    @RequestMapping(method=RequestMethod.GET,value="/delete/lossDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String deleteLossDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo)throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        azureService.batchDeleteItemLossDailies(systemBookCode,from,to);
+        return "SUCCESS";
+    }
+
+    //会员统计
+    @RequestMapping(method = RequestMethod.GET,value = "/init/cardDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String  initCardDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        List<CardDailyDTO> CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, from, to);
+        List<CardDaily> list = new ArrayList<CardDaily>();
+
+        for (int i = 0; i <CardDailyDTOs.size() ; i++) {
+            CardDailyDTO cardDailyDTO = CardDailyDTOs.get(i);
+            CardDaily cardDaily = new CardDaily();
+            cardDaily.setSystemBookCode(cardDailyDTO.getSystemBookCode());
+            cardDaily.setBranchNum(cardDailyDTO.getBranchNum());
+            cardDaily.setShiftTableBizday(cardDailyDTO.getShiftTableBizday());
+            cardDaily.setShiftTableDate(cardDailyDTO.getShiftTableDate());
+            cardDaily.setCardDeliverCount(cardDailyDTO.getCardDeliverCount());
+            cardDaily.setCardReturnCount(cardDailyDTO.getCardReturnCount());
+            cardDaily.setCardDeliverTarget(cardDailyDTO.getCardDeliverTarget());
+            cardDaily.setCardDepositCash(cardDailyDTO.getCardDepositCash());
+            cardDaily.setCardDepositMoney(cardDailyDTO.getCardDepositMoney());
+            cardDaily.setCardDepositTarget(cardDailyDTO.getCardDepositTarget());
+            cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
+            list.add(cardDaily);
+        }
+        azureService.batchSaveCardDailies(systemBookCode,list,from,to);
+        return "SUCCESS";
+    }
+
+    @RequestMapping(method=RequestMethod.GET,value="/delete/cardDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String deleteCardDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo)throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        azureService.batchDeleteCardDailies(systemBookCode,from,to);
+        return "SUCCESS";
+    }
 
 }

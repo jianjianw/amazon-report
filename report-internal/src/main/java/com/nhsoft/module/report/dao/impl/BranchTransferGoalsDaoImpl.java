@@ -230,4 +230,50 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 		return sqlQuery.list();
 	}
 
+	@Override
+	public List<Object[]> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, branch_transfer_interval, sum(branch_transfer_card_deposit) ");
+		sb.append("from branch_transfer_goals ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and {fn LENGTH(branch_transfer_interval)} = 10 ");
+		if (dateFrom != null) {
+			sb.append("and branch_transfer_interval >= '" + DateUtil.getDateStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and branch_transfer_interval <= '" + DateUtil.getDateStr(dateTo) + "' ");
+		}
+
+		sb.append("group by branch_num, branch_transfer_interval order by branch_num, branch_transfer_interval asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, branch_transfer_interval, sum(branch_transfer_new_card) ");
+		sb.append("from branch_transfer_goals ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if(branchNums != null && branchNums.size()>0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and {fn LENGTH(branch_transfer_interval)} = 10 ");
+		if (dateFrom != null) {
+			sb.append("and branch_transfer_interval >= '" + DateUtil.getDateStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and branch_transfer_interval <= '" + DateUtil.getDateStr(dateTo) + "' ");
+		}
+
+		sb.append("group by branch_num, branch_transfer_interval order by branch_num, branch_transfer_interval asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode",systemBookCode);
+		return sqlQuery.list();
+	}
+
 }

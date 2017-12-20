@@ -36,4 +36,9 @@ public class AdjustmentOrderServiceImpl implements AdjustmentOrderService {
 	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return adjustmentOrderDao.findAdjustmentCauseMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
+
+	@Override
+	public List<Object[]> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+		return adjustmentOrderDao.findItemLossDailySummary(systemBookCode,dateFrom,dateTo);
+	}
 }

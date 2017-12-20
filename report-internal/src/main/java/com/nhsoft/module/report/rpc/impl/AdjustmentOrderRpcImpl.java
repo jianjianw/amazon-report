@@ -2,10 +2,12 @@ package com.nhsoft.module.report.rpc.impl;
 
 import com.nhsoft.module.report.dto.AdjustmentCauseMoney;
 import com.nhsoft.module.report.dto.CheckMoney;
+import com.nhsoft.module.report.dto.ItemLossDailyDTO;
 import com.nhsoft.module.report.dto.LossMoneyReport;
 import com.nhsoft.module.report.rpc.AdjustmentOrderRpc;
 
 import com.nhsoft.module.report.service.AdjustmentOrderService;
+import com.nhsoft.module.report.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -76,4 +78,31 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
         }
         return list;
     }
+
+    @Override
+    public List<ItemLossDailyDTO> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+
+        List<Object[]> objects = adjustmentOrderService.findItemLossDailySummary(systemBookCode, dateFrom, dateTo);
+        List<ItemLossDailyDTO> list = new ArrayList<>();
+        if(objects.isEmpty()){
+            return list;
+        }
+        Date date = null;
+        for (int i = 0; i <objects.size() ; i++) {
+            Object[] object = objects.get(i);
+            ItemLossDailyDTO itemLossDailyDTO = new ItemLossDailyDTO();
+            itemLossDailyDTO.setSystemBookCode(systemBookCode);
+            itemLossDailyDTO.setBranchNum((Integer) object[0]);
+            itemLossDailyDTO.setShiftTableDate((Date) object[1]);
+            itemLossDailyDTO.setItemLossReason((String) object[2]);
+            itemLossDailyDTO.setItemNum((Integer) object[3]);
+            itemLossDailyDTO.setItemMoney((BigDecimal) object[4]);
+            itemLossDailyDTO.setItemAmount((BigDecimal) object[5]);
+            itemLossDailyDTO.setShiftTableBizday(DateUtil.getDateShortStr(itemLossDailyDTO.getShiftTableDate()));
+            list.add(itemLossDailyDTO);
+        }
+        return list;
+    }
+
+
 }

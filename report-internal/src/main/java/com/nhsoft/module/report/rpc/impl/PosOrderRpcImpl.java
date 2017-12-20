@@ -461,77 +461,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		return list;
 	}
 
-	@Override
-	public List<BranchDailyDirect> findBranchDailyDirectSummary(String systemBookCode, Date dateFrom, Date dateTo) {
-		List<Object[]> objects = posOrderService.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
-		List<SaleMoneyGoals> goals = branchTransferGoalsRpc.findGoalsByBranchBizday(systemBookCode, null, dateFrom, dateTo);
-		List<BranchDailyDirect> list = new ArrayList<>();
-		if(objects.isEmpty()){
-			return list;
-		}
-		for (int i = 0; i <objects.size() ; i++) {
-			Object[] object = objects.get(i);
-			BranchDailyDirect branchDailyDirect = new BranchDailyDirect();
-			branchDailyDirect.setSystemBookCode(systemBookCode);
-			branchDailyDirect.setBranchNum((Integer) object[0]);
-			branchDailyDirect.setShiftTableBizday((String) object[1]);
-			branchDailyDirect.setDailyMoney((BigDecimal) object[2]);
-			branchDailyDirect.setDailyQty((Integer) object[3]);
-			branchDailyDirect.setShiftTableDate(DateUtil.getDateStr(branchDailyDirect.getShiftTableBizday()));
-			if(branchDailyDirect.getDailyQty() == 0){
-				branchDailyDirect.setDailyPrice(BigDecimal.ZERO);
-			}else{
-				Integer qty = branchDailyDirect.getDailyQty();
-				branchDailyDirect.setDailyPrice(branchDailyDirect.getDailyMoney().divide(new BigDecimal(qty),4,ROUND_HALF_UP));
-			}
-			//将营业额目标封装到分店日汇总中
-			for (int j = 0; j <goals.size() ; j++) {
-				SaleMoneyGoals saleMoneyGoals = goals.get(j);
-				if (saleMoneyGoals.getSystemBookCode().equals(branchDailyDirect.getSystemBookCode()) && saleMoneyGoals.getBranchNum().equals(branchDailyDirect.getBranchNum()) &&
-						saleMoneyGoals.getDate().replace("-","").equals(branchDailyDirect.getShiftTableBizday())){
-					branchDailyDirect.setTargetMoney(saleMoneyGoals.getSaleMoney());
-				}
-			}
-			list.add(branchDailyDirect);
-		}
-
-		//移除数据营业额为0的数据
-		Iterator<BranchDailyDirect> iterator = list.iterator();
-		while (iterator.hasNext()) {
-			BranchDailyDirect next = iterator.next();
-			BigDecimal dailyMoney = next.getDailyMoney();
-			if(dailyMoney == null ||dailyMoney.compareTo(BigDecimal.ZERO) == 0){
-				iterator.remove();
-			}
-		}
-		return list;
-	}
-
-
-	public List<ItemDaily> findItemDailySummary(String systemBookCode,Date dateFrom, Date dateTo){
-
-		List<Object[]> objects = posOrderService.findItemDailySummary(systemBookCode,dateFrom,dateTo);
-		List<ItemDaily> list = new ArrayList<>();
-		if(objects.isEmpty()){
-			return list;
-		}
-		for (int i = 0; i <objects.size() ; i++) {
-			Object[] object = objects.get(i);
-			ItemDaily itemDaily = new ItemDaily();
-			itemDaily.setSystemBookCode(systemBookCode);
-			itemDaily.setBranchNum((Integer) object[0]);
-			itemDaily.setShiftTableBizday((String) object[1]);
-			itemDaily.setItemNum((Integer) object[2]);
-			itemDaily.setItemMoney((BigDecimal) object[3]);
-			itemDaily.setItemAmount((BigDecimal) object[4]);
-			itemDaily.setShiftTableDate(DateUtil.getDateStr(itemDaily.getShiftTableBizday()));
-			list.add(itemDaily);
-		}
-		return list;
-	}
-
-
-
 	public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
 
 		List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo ,itemNums);
@@ -604,6 +533,32 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		}
 		return list;
 
+	}
+
+	@Override
+	public List<ItemSaleDailyDTO> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+		List<Object[]> objects = posOrderService.findItemSaleDailySummary(systemBookCode, dateFrom, dateTo);
+		List<ItemSaleDailyDTO> list = new ArrayList<>();
+		if(objects.isEmpty()){
+			return list;
+		}
+
+		for (int i = 0; i <objects.size() ; i++) {
+			Object[] object = objects.get(i);
+			ItemSaleDailyDTO itemSaleDailyDTO = new ItemSaleDailyDTO();
+			itemSaleDailyDTO.setSystemBookCode(systemBookCode);
+			itemSaleDailyDTO.setBranchNum((Integer) object[0]);
+			itemSaleDailyDTO.setShiftTableBizday((String) object[1]);
+			itemSaleDailyDTO.setItemNum((Integer) object[2]);
+			itemSaleDailyDTO.setItemSource((String) object[3]);
+			itemSaleDailyDTO.setItemMemberTag((Integer) object[4]);
+			itemSaleDailyDTO.setItemMoney((BigDecimal) object[5]);
+			itemSaleDailyDTO.setItemAmount((BigDecimal) object[6]);
+			itemSaleDailyDTO.setItemCount((Integer) object[7]);
+			itemSaleDailyDTO.setShiftTableDate(DateUtil.getDateStr(itemSaleDailyDTO.getShiftTableBizday()));
+			list.add(itemSaleDailyDTO);
+		}
+		return list;
 	}
 
 	@Override
