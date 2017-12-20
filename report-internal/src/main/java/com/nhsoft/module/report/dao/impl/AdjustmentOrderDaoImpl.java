@@ -264,4 +264,27 @@ public class AdjustmentOrderDaoImpl extends DaoImpl implements AdjustmentOrderDa
 		return sqlQuery.list();
 	}
 
+	@Override
+	public List<Object[]> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("select bs.branch_num, a.adjustment_order_audit_time, a.adjustment_order_cause, detail.item_num, ");
+		sb.append("sum(detail.adjustment_order_detail_subtotal) as money, sum(detail.adjustment_order_detail_qty) as amount ");
+		sb.append("from adjustment_order_detail as detail with(nolock) inner join adjustment_order as a with(nolock) on detail.adjustment_order_fid = a.adjustment_order_fid ");
+		sb.append("inner join branch_storehouse as bs with(nolock) on a.system_book_code = bs.system_book_code and a.storehouse_num = bs.storehouse_num ");
+		sb.append("where a.system_book_code = :systemBookCode ");
+		sb.append("and a.adjustment_order_direction = '出库' ");
+		if (dateFrom != null) {
+			sb.append("and adjustment_order_audit_time >= '" +  DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and adjustment_order_audit_time <= '" +  DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateFrom)) + "' ");
+		}
+		sb.append("and adjustment_order_state_code = '3' ");
+		sb.append("group by bs.branch_num, a.adjustment_order_audit_time, a.adjustment_order_cause, detail.item_num ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
 }

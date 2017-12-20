@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.rpc;
 
+import com.nhsoft.module.report.dto.BranchBizdayConsumeSummary;
 import com.nhsoft.module.report.dto.BranchConsumeReport;
 
 import java.util.Date;
@@ -15,5 +16,18 @@ public interface CardConsumeRpc {
      * @return
      */
     public List<BranchConsumeReport> findBranchSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+    /**
+     * 根据分店、营业日汇总金额
+     * @param systemBookCode
+     * @param branchNums
+     * @param dateFrom
+     * @param dateTo
+     * @param cardUserCardType
+     * @return
+     */
+    public List<BranchBizdayConsumeSummary> findBranchBizdaySum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+                                                                Date dateTo, Integer cardUserCardType);
 
 }

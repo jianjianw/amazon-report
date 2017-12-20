@@ -51,4 +51,26 @@ public interface BranchTransferGoalsService {
 	 * */
 	public List<Object[]> findGoalsByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
+
+	/**
+	 * bi 按分店和营业日查询 存款目标
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * */
+	public List<Object[]> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+
+	/**
+	 *  bi 按分店和营业日查询 发卡目标
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * */
+	public List<Object[]> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
 }

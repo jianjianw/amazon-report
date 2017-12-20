@@ -5014,7 +5014,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return objects;
 	}
 
-
 	public List<Object[]> findBranchDailySummary(String systemBookCode,Date dateFrom,Date dateTo){
 
 		StringBuilder sb = new StringBuilder();//findMoneyBizdaySummary
@@ -5035,26 +5034,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sqlQuery.list();
 	}
 
-	public List<Object[]> findItemDailySummary(String systemBookCode,Date dateFrom, Date dateTo){
-
-		StringBuilder sb = new StringBuilder();//findSaleAnalysisByBranchPosItems
-		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
-		sb.append("from pos_order_detail as detail with(nolock) ");
-		sb.append("where detail.order_detail_book_code = :systemBookCode ");
-		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
-		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
-		sb.append("and detail.order_detail_state_code != 8 ");
-		sb.append("and detail.item_num is not null ");
-		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num");
-		Query query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", systemBookCode);
-		query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
-		query.setString("bizTo", DateUtil.getDateShortStr(dateTo));
-		List<Object[]> objects = query.list();
-		return objects;
-	}
 
 	public List<Object[]> findItemDailyDetailSummary(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums){
 		StringBuilder sb = new StringBuilder();		//findCustomerAnalysisTimePeriodsByItems
@@ -5072,6 +5051,30 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+
+
+		StringBuilder sb = new StringBuilder();//findProfitAnalysisByBranchDayItem
+		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, detail.order_source, p.order_card_user_num, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+		sb.append("count(detail.item_num) as count ");
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+		sb.append("where detail.order_detail_book_code = :systemBookCode ");
+		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
+		sb.append("and detail.order_detail_order_state in (5, 7) ");
+		sb.append("and detail.order_detail_state_code != 8 ");
+		sb.append("and detail.item_num is not null ");
+		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, detail.order_source, p.order_card_user_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
+		query.setString("bizTo", DateUtil.getDateShortStr(dateTo));
+		List<Object[]> objects = query.list();
+		return objects;
 	}
 
 	@Override

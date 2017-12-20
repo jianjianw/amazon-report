@@ -144,4 +144,16 @@ public interface CardDepositDao {
 	 */
 	public List<Object[]> findCashGroupByBranch(String systemBookCode,
 												List<Integer> branchNums, Date dateFrom, Date dateTo, String type);
+
+	/**
+	 * bi 按分店和营业日查询   付款金额 存款金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * */
+	public List<Object[]> findSumByBizdayBranch(String systemBookCode,
+												List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
 }

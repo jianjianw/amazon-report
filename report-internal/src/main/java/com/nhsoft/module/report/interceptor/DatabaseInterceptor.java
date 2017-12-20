@@ -89,6 +89,7 @@ public class DatabaseInterceptor {
 		if(rds == null){
 			throw new RuntimeException("rds not found");
 		}
+		//String rds = "cs";
 		DynamicDataSourceContextHolder.setDataSourceType(rds);
 		String name = jp.getTarget().getClass().getName() + "." + jp.getSignature().getName();
 		logger.info(String.format("systemBookCode = %s database = %s name = %s", systemBookCode, rds, name));

@@ -1,9 +1,11 @@
 package com.nhsoft.module.report.rpc.impl;
 
 
+import com.nhsoft.module.report.dto.BranchBizdayDepositSummary;
 import com.nhsoft.module.report.dto.BranchDepositReport;
 import com.nhsoft.module.report.rpc.CardDepositRpc;
 import com.nhsoft.module.report.service.CardDepositService;
+import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,5 +35,26 @@ public class CardDepositRpcImpl implements CardDepositRpc{
         }
         return list;
     }
+
+    @Override
+    public List<BranchBizdayDepositSummary> findSumByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+        List<Object[]> objects = cardDepositService.findSumByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+        List<BranchBizdayDepositSummary> list = new ArrayList<>();
+        if(objects.isEmpty()){
+            return list;
+        }
+        for (int i = 0; i <objects.size() ; i++) {
+            Object[] object = objects.get(i);
+            BranchBizdayDepositSummary summary = new BranchBizdayDepositSummary();
+            summary.setBranchNum((Integer) object[0]);
+            summary.setBizday((String) object[1]);
+            summary.setDepositCash((BigDecimal) object[2]);
+            summary.setDeposit((BigDecimal) object[3]);
+            list.add(summary);
+        }
+        return list;
+    }
+
 
 }

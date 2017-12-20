@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.rpc;
 
+import com.nhsoft.module.report.dto.DepositGoalsDTO;
+import com.nhsoft.module.report.dto.NewCardGoalsDTO;
 import com.nhsoft.module.report.dto.SaleMoneyGoals;
 
 import java.util.Date;
@@ -36,4 +38,24 @@ public interface BranchTransferGoalsRpc {
      * @param dateTo 时间止
      * */
     public List<SaleMoneyGoals> findGoalsByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+    /**
+     * bi 按分店和营业日查询 存款目标
+     * @param systemBookCode
+     * @param branchNums
+     * @param dateFrom
+     * @param dateTo
+     * */
+    public List<DepositGoalsDTO> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+    /**
+     *  bi 按分店和营业日查询 发卡目标
+     * @param systemBookCode
+     * @param branchNums
+     * @param dateFrom
+     * @param dateTo
+     * */
+    public List<NewCardGoalsDTO> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
 }

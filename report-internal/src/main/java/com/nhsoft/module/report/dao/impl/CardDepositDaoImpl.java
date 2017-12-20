@@ -380,6 +380,25 @@ public class CardDepositDaoImpl extends  DaoImpl implements CardDepositDao {
 		return criteria.list();
 	}
 
+	@Override
+	public List<Object[]> findSumByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num,shift_table_bizday, sum(deposit_cash) as cash, sum(deposit_money) as money from card_deposit with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' ");
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(dateFrom != null){
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if(dateTo != null){
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by branch_num, shift_table_bizday ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
 
 	private Criteria createByType(String systemBookCode,
 								  List<Integer> branchNums, Date dateFrom, Date dateTo, String type){

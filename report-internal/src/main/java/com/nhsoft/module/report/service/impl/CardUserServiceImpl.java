@@ -42,4 +42,14 @@ public class CardUserServiceImpl implements CardUserService {
 	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return cardUserDao.findCardUserCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 	}
+
+	@Override
+	public List<Object[]> findCardCountByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {
+		return cardUserDao.findCardCountByBranchBizday(systemBookCode,branchNums,dateFrom,dateTo,cardUserCardType);
+	}
+
+	@Override
+	public List<Object[]> findRevokeCardCountByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {
+		return cardUserDao.findRevokeCardCountByBranchBizday(systemBookCode,branchNums,dateFrom,dateTo,cardUserCardType);
+	}
 }

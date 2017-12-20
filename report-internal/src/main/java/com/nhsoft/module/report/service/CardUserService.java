@@ -51,4 +51,29 @@ public interface CardUserService {
 	 * @param dateTo 时间止
 	 * */
 	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+	/**
+	 * 按分店、营业日查找发卡数
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param cardUserCardType
+	 * @return
+	 */
+	public List<Object[]> findCardCountByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+													  Date dateTo, Integer cardUserCardType);
+
+	/**
+	 * 按分店、营业日查找退卡数
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param cardUserCardType
+	 * @return
+	 */
+	public List<Object[]> findRevokeCardCountByBranchBizday(String systemBookCode, List<Integer> branchNums,
+															Date dateFrom, Date dateTo, Integer cardUserCardType);
 }

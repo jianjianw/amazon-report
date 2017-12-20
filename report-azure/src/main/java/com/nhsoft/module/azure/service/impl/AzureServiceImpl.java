@@ -70,4 +70,34 @@ public class AzureServiceImpl implements AzureService {
         azureDao.batchDeleteBranchDailyDirects(systemBookCode,dateFrom,dateTo);
     }
 
+    public void batchSaveBizdays(String systemBookCode, List<Bizday> bizdays) {
+        azureDao.batchSaveBizdays(systemBookCode,bizdays);
+    }
+
+    public void batchSaveItemSaleDailies(String systemBookCode, List<ItemSaleDaily> itemSaleDailies,Date dateFrom, Date dateTo) {
+        azureDao.batchSaveItemSaleDailies(systemBookCode,itemSaleDailies,dateFrom,dateTo);
+    }
+
+    public void batchDeleteItemSaleDailies(String systemBookCode,Date dateFrom, Date dateTo) {
+        azureDao.batchDeleteItemSaleDailies(systemBookCode,dateFrom,dateTo);
+    }
+
+    public void batchSaveItemLossDailies(String systemBookCode, List<ItemLossDaily> itemLossDailies, Date dateFrom, Date dateTo) {
+        azureDao.batchSaveItemLossDailies(systemBookCode,itemLossDailies,dateFrom,dateTo);
+    }
+
+    public void batchDeleteItemLossDailies(String systemBookCode, Date dateFrom, Date dateTo) {
+        azureDao.batchDeleteItemLossDailies(systemBookCode,dateFrom,dateTo);
+    }
+
+    public void batchSaveCardDailies(String systemBookCode, List<CardDaily> CardDailies, Date dateFrom, Date dateTo) {
+        azureDao.batchSaveCardDailies(systemBookCode,CardDailies,dateFrom,dateTo);
+    }
+
+
+    public void batchDeleteCardDailies(String systemBookCode, Date dateFrom, Date dateTo) {
+        azureDao.batchDeleteCardDailies(systemBookCode,dateFrom,dateTo);
+    }
+
+
 }

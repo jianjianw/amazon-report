@@ -1,12 +1,11 @@
 package com.nhsoft.module.report.rpc.impl;
 
 
+import com.nhsoft.module.azure.model.CardDaily;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.*;
-import com.nhsoft.module.report.rpc.BookResourceRpc;
-import com.nhsoft.module.report.rpc.PosOrderRpc;
-import com.nhsoft.module.report.rpc.ReportRpc;
+import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.shared.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
@@ -59,6 +58,18 @@ public class ReportRpcImpl implements ReportRpc {
 	private BookResourceRpc bookResourceRpc;
 	@Autowired
 	private PosOrderRpc posOrderRpc;
+
+
+	@Autowired
+	private CardUserRpc cardUserRpc;
+	@Autowired
+	private CardDepositRpc cardDepositRpc;
+	@Autowired
+	private BranchTransferGoalsRpc branchTransferGoalsRpc;
+	@Autowired
+	private CardConsumeRpc cardConsumeRpc;
+	@Autowired
+	private BranchRpc branchRpc;
 	
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -3204,6 +3215,83 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return reportService.findSaleAnalysisByBranchPosItems(saleAnalysisQueryData.getSystemBookCode() ,saleAnalysisQueryData);
 	}
-	
-	
+
+	@Override
+	public List<CardDailyDTO> findCardDailyByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+		//新增会员数   Date   yyyy-MM-dd HH:mm:ss		(已改为 为yyyyMMdd)
+		List<BranchBizdayCardCountSummary> cardCounts = cardUserRpc.findCardCountByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo, null);
+		//退卡数       String yyyy-MM-dd HH:mm:ss		(已改为 为yyyyMMdd)
+		List<BranchBizdayCardReturnSummary> revokeCards= cardUserRpc.findRevokeCardCountByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo, null);
+		//付款金额，存款金额
+		List<BranchBizdayDepositSummary> depositSummarys = cardDepositRpc.findSumByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		//存款目标    (日期格式为yyyy-MM-dd)  			已改为 为yyyyMMdd
+		List<DepositGoalsDTO> depositGoals = branchTransferGoalsRpc.findDepositGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		//发卡目标    (日期格式为yyyy-MM-dd) 				已改为 为yyyyMMdd
+		List<NewCardGoalsDTO> newCardGoals= branchTransferGoalsRpc.findNewCardGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		//卡消费
+		List<BranchBizdayConsumeSummary> consumeSummarys = cardConsumeRpc.findBranchBizdaySum(systemBookCode, branchNums, dateFrom, dateTo, null);
+
+		List<CardDailyDTO> returnList = new ArrayList<CardDailyDTO>();
+		//查询所有分店
+		List<BranchDTO> branchs = branchRpc.findInCache(systemBookCode);
+		String biz = DateUtil.getDateShortStr(dateFrom);
+		for (int i = 0; i <branchs.size() ; i++) {
+			BranchDTO branchDTO = branchs.get(i);
+			CardDailyDTO cardDailyDTO = new CardDailyDTO();
+			cardDailyDTO.setSystemBookCode(systemBookCode);
+			cardDailyDTO.setBranchNum(branchDTO.getBranchNum());
+			cardDailyDTO.setShiftTableBizday(biz);
+			cardDailyDTO.setShiftTableDate(dateFrom);
+			Integer branchNum = cardDailyDTO.getBranchNum();
+			//新增会员数(发卡数)
+			for (int j = 0; j <cardCounts.size() ; j++) {
+				BranchBizdayCardCountSummary countSummary = cardCounts.get(j);
+				if(branchNum.equals(countSummary.getBranchNum()) && biz.equals(countSummary.getBizday())){
+
+					cardDailyDTO.setCardDeliverCount(countSummary.getCount().intValue());
+				}
+			}
+			//退卡数
+			for (int j = 0; j <revokeCards.size() ; j++) {
+				BranchBizdayCardReturnSummary returnSummary = revokeCards.get(j);
+				if(branchNum.equals(returnSummary.getBranchNum()) && biz.equals(returnSummary.getBizday())){
+					cardDailyDTO.setCardReturnCount(returnSummary.getReturnCount().intValue());
+				}
+			}
+			//付款金额，存款金额
+			for (int j = 0; j <depositSummarys.size() ; j++) {
+				BranchBizdayDepositSummary depositSummary = depositSummarys.get(j);
+				if(branchNum.equals(depositSummary.getBranchNum()) && biz.equals(depositSummary.getBizday())){
+					cardDailyDTO.setCardDepositCash(depositSummary.getDepositCash());
+					cardDailyDTO.setCardDepositMoney(depositSummary.getDeposit());
+				}
+			}
+			//存款目标
+			for (int j = 0; j <depositGoals.size() ; j++) {
+				DepositGoalsDTO depositGoalsDTO = depositGoals.get(j);
+				if(branchNum.equals(depositGoalsDTO.getBranchNum()) && biz.equals(depositGoalsDTO.getBizday())){
+					cardDailyDTO.setCardDepositTarget(depositGoalsDTO.getDepositGoals());
+				}
+			}
+			//发卡目标
+			for (int j = 0; j <newCardGoals.size() ; j++) {
+				NewCardGoalsDTO newCardGoalsDTO = newCardGoals.get(j);
+				if(branchNum.equals(newCardGoalsDTO.getBranchNum()) && biz.equals(newCardGoalsDTO.getBizday())){
+					cardDailyDTO.setCardDeliverTarget(newCardGoalsDTO.getNewCard());
+				}
+			}
+			//卡消费
+			for (int j = 0; j <consumeSummarys.size() ; j++) {
+				BranchBizdayConsumeSummary consumeSummary = consumeSummarys.get(j);
+				if(branchNum.equals(consumeSummary.getBranchNum()) && biz.equals(consumeSummary.getBizday())){
+					cardDailyDTO.setCardConsumeMoney(consumeSummary.getMoney());
+				}
+			}
+			returnList.add(cardDailyDTO);
+		}
+		return returnList;
+	}
+
+
 }

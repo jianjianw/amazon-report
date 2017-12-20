@@ -27,4 +27,9 @@ public class CardDepositServiceImpl implements CardDepositService {
 	public List<Object[]> findSumByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return cardDepositDao.findSumByBizday(systemBookCode, branchNums, dateFrom, dateTo);
 	}
+
+	@Override
+	public List<Object[]> findSumByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return cardDepositDao.findSumByBizdayBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	}
 }

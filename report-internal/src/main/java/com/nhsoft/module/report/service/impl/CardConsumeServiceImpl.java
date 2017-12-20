@@ -28,4 +28,9 @@ public class CardConsumeServiceImpl implements CardConsumeService {
 	public List<Object[]> findSumByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return cardConsumeDao.findSumByBizday(systemBookCode, branchNums, dateFrom, dateTo);
 	}
+
+	@Override
+	public List<Object[]> findBranchBizdaySum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {
+		return cardConsumeDao.findBranchBizdaySum(systemBookCode,branchNums,dateFrom,dateTo,cardUserCardType);
+	}
 }
