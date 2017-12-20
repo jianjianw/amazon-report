@@ -2,7 +2,7 @@
 <!DOCTYPE config>
 <config mode="client" xmlns:xsi="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="config.xsd">
 <servers>
-	<server ip="118.31.171.66" port="2280"  />
+	<server ip="10.80.112.91" port="2280"  />
 	<domain id="AmazonReport" enabled="true"/>
 </servers>
 </config>
