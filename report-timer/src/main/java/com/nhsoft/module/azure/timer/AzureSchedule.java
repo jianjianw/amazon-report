@@ -269,8 +269,8 @@ public class AzureSchedule {
             bizday.setBizdayMonth(month);
             bizday.setBizdayDayofyear(dayOfMonth);
 
-            bizday.setBizdayYearweek(yearAndWeek);
-            bizday.setBizdayWeekofYear(weeknumOfYear);
+            bizday.setBizdayYearWeek(yearAndWeek);
+            bizday.setBizdayWeekofyear(weeknumOfYear);
             bizday.setBizdayDayofweek(weekDay);
 
             bizday.setBizdayYearName(yearName);
@@ -346,10 +346,14 @@ public class AzureSchedule {
         azureService.batchSaveItemSaleDailies(systemBook,list,dateFrom,dateTo);
     }
 
-    @Scheduled(cron="0 0 2-3 * * *")        //删除2天以前的数据     商品日销售汇总
+    @Scheduled(cron="0 0 2-3 * * *")        //每天凌晨2-3点删除三个月前的数据     商品日销售汇总
     public void deleteItemSaleDaily(){
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.MONTH,-3);
+        Date time = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        String format = sdf.format(time);
+        calendar.add(Calendar.DAY_OF_MONTH,-Integer.valueOf(format)+1);
         Date date = calendar.getTime();
         azureService.batchDeleteItemSaleDailies(systemBook,date,date);
     }
@@ -409,10 +413,15 @@ public class AzureSchedule {
         azureService.batchSaveItemLossDailies(systemBook,list,dateFrom,dateFrom);
     }
 
-    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除两天前的数据   商品日报损汇总
+    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除三个月前的数据   商品日报损汇总
     public void deleteItemLossDaily(){
+
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.MONTH,-3);
+        Date time = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        String format = sdf.format(time);
+        calendar.add(Calendar.DAY_OF_MONTH,-Integer.valueOf(format)+1);
         Date date = calendar.getTime();
         azureService.batchDeleteItemLossDailies(systemBook,date,date);
     }
@@ -482,15 +491,18 @@ public class AzureSchedule {
     }
 
 
-
-
-
-    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除两天前的数据   会员统计
+    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除三个月前的数据   会员统计
     public void deleteCardDaily(){
+
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.MONTH,-3);
+        Date time = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        String format = sdf.format(time);
+        calendar.add(Calendar.DAY_OF_MONTH,-Integer.valueOf(format)+1);
         Date date = calendar.getTime();
         azureService.batchDeleteCardDailies(systemBook,date,date);
+
     }
 
 

@@ -182,6 +182,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sb.append("and shift_table_bizday <= '" + formatDate(dateTo) +"' ");
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
+        currentSession().flush();
 
         for (int i = 0; i <itemSaleDailies.size() ; i++) {
             ItemSaleDaily itemSaleDaily = itemSaleDailies.get(i);

@@ -5056,9 +5056,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
 
-
 		StringBuilder sb = new StringBuilder();//findProfitAnalysisByBranchDayItem
-		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, detail.order_source, p.order_card_user_num, ");
+		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, detail.order_source, ");//case when
+		sb.append("case when p.order_card_user_num > 0 then 1 else 0 end, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
 		sb.append("count(detail.item_num) as count ");
@@ -5068,7 +5068,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("and detail.order_detail_order_state in (5, 7) ");
 		sb.append("and detail.order_detail_state_code != 8 ");
 		sb.append("and detail.item_num is not null ");
-		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, detail.order_source, p.order_card_user_num ");
+		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, detail.order_source, case when p.order_card_user_num > 0 then 1 else 0 end ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", systemBookCode);
 		query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));

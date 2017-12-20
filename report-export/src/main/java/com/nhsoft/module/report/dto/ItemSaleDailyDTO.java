@@ -15,7 +15,7 @@ public class ItemSaleDailyDTO implements Serializable {
     private BigDecimal itemAmount;  //销售数量
     private Integer itemCount;      //销售次数
     private String itemSource;      //单据来源
-    private Integer itemMemberTag;  //会员标记
+    private String itemMemberTag;  //会员标记
 
 
     public String getSystemBookCode() {
@@ -90,11 +90,11 @@ public class ItemSaleDailyDTO implements Serializable {
         this.itemSource = itemSource;
     }
 
-    public Integer getItemMemberTag() {
+    public String getItemMemberTag() {
         return itemMemberTag;
     }
 
-    public void setItemMemberTag(Integer itemMemberTag) {
+    public void setItemMemberTag(String itemMemberTag) {
         this.itemMemberTag = itemMemberTag;
     }
 }

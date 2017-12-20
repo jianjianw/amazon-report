@@ -1,5 +1,6 @@
 package com.nhsoft.module.azure.rest;
 
+import com.google.gson.Gson;
 import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.dto.*;
@@ -272,8 +273,8 @@ public class InitApi {
             bizday.setBizdayMonth(month);
             bizday.setBizdayDayofyear(dayOfMonth);
 
-            bizday.setBizdayYearweek(yearAndWeek);
-            bizday.setBizdayWeekofYear(weeknumOfYear);
+            bizday.setBizdayYearWeek(yearAndWeek);
+            bizday.setBizdayWeekofyear(weeknumOfYear);
             bizday.setBizdayDayofweek(weekDay);
 
             bizday.setBizdayYearName(yearName);
@@ -318,6 +319,9 @@ public class InitApi {
             itemSaleDaily.setItemMemberTag(itemSaleDailyDTO.getItemMemberTag());
             list.add(itemSaleDaily);
         }
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        System.out.println(json);
         azureService.batchSaveItemSaleDailies(systemBookCode,list,from,to);
         return "SUCCESS";
     }
@@ -401,5 +405,45 @@ public class InitApi {
         azureService.batchDeleteCardDailies(systemBookCode,from,to);
         return "SUCCESS";
     }
+
+
+    @RequestMapping(method = RequestMethod.GET,value = "/init/batch/cardDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String  initBatchCardDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        List<CardDailyDTO> list = new ArrayList<CardDailyDTO>();
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(to);
+        List<CardDailyDTO> CardDailyDTOs = null;
+        for (int i = 1; i <130 ; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH,-1);
+            Date time = calendar.getTime();
+            CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, time, time);
+        }
+        list.addAll(CardDailyDTOs);
+        List<CardDaily> returnList = new ArrayList<CardDaily>();
+        for (int i = 0; i <list.size() ; i++) {
+            CardDailyDTO cardDailyDTO = list.get(i);
+            CardDaily cardDaily = new CardDaily();
+            cardDaily.setSystemBookCode(cardDailyDTO.getSystemBookCode());
+            cardDaily.setBranchNum(cardDailyDTO.getBranchNum());
+            cardDaily.setShiftTableBizday(cardDailyDTO.getShiftTableBizday());
+            cardDaily.setShiftTableDate(cardDailyDTO.getShiftTableDate());
+            cardDaily.setCardDeliverCount(cardDailyDTO.getCardDeliverCount());
+            cardDaily.setCardReturnCount(cardDailyDTO.getCardReturnCount());
+            cardDaily.setCardDeliverTarget(cardDailyDTO.getCardDeliverTarget());
+            cardDaily.setCardDepositCash(cardDailyDTO.getCardDepositCash());
+            cardDaily.setCardDepositMoney(cardDailyDTO.getCardDepositMoney());
+            cardDaily.setCardDepositTarget(cardDailyDTO.getCardDepositTarget());
+            cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
+            returnList.add(cardDaily);
+        }
+        azureService.batchSaveCardDailies(systemBookCode,returnList,from,to);
+        return "SUCCESS";
+    }
+
 
 }
