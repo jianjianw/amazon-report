@@ -93,12 +93,12 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
             ItemLossDailyDTO itemLossDailyDTO = new ItemLossDailyDTO();
             itemLossDailyDTO.setSystemBookCode(systemBookCode);
             itemLossDailyDTO.setBranchNum((Integer) object[0]);
-            itemLossDailyDTO.setShiftTableDate((Date) object[1]);
+            itemLossDailyDTO.setShiftTableBizday((String) object[1]);
             itemLossDailyDTO.setItemLossReason((String) object[2]);
             itemLossDailyDTO.setItemNum((Integer) object[3]);
             itemLossDailyDTO.setItemMoney((BigDecimal) object[4]);
             itemLossDailyDTO.setItemAmount((BigDecimal) object[5]);
-            itemLossDailyDTO.setShiftTableBizday(DateUtil.getDateShortStr(itemLossDailyDTO.getShiftTableDate()));
+            itemLossDailyDTO.setShiftTableDate(DateUtil.getDateStr(itemLossDailyDTO.getShiftTableBizday()));
             list.add(itemLossDailyDTO);
         }
         return list;

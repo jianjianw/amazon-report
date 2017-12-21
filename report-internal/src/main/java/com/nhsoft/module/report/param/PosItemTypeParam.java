@@ -229,4 +229,31 @@ public class PosItemTypeParam implements Serializable{
 		}
 		return null;
 	}
+
+
+	public static PosItemTypeParam getTopCategory(List<PosItemTypeParam> posItemTypeParams, String categoryCode) {
+		boolean isSubCategory = true;
+		String topCode = categoryCode;
+
+		while(true) {
+			while(isSubCategory) {
+				isSubCategory = false;
+
+				for(int i = 0; i < posItemTypeParams.size(); ++i) {
+					PosItemTypeParam param = (PosItemTypeParam)posItemTypeParams.get(i);
+					if (param.getPosItemTypeCode().equals(topCode)) {
+						if (!StringUtils.isNotEmpty(param.getPosItemTypeFatherCode()) || param.getPosItemTypeFatherCode().equals(param.getPosItemTypeCode())) {
+							return param;
+						}
+
+						topCode = param.getPosItemTypeFatherCode();
+						isSubCategory = true;
+						break;
+					}
+				}
+			}
+
+			return null;
+		}
+	}
 }

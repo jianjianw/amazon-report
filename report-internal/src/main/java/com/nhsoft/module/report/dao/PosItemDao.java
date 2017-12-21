@@ -2,6 +2,7 @@ package com.nhsoft.module.report.dao;
 
 
 
+import com.nhsoft.module.report.dto.PosItemDTO;
 import com.nhsoft.module.report.model.ItemBar;
 import com.nhsoft.module.report.model.ItemMatrix;
 import com.nhsoft.module.report.model.PosItem;
@@ -110,4 +111,9 @@ public interface PosItemDao {
 	 * bi 商品维度
 	 * */
 	public List<Object[]> findItemLat(String systemBookCode);
+
+	/**
+	 * bi 商品资料
+	 * */
+	public List<Object[]> findPosItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 }

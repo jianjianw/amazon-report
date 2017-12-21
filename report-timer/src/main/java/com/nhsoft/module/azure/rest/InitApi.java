@@ -32,10 +32,13 @@ public class InitApi {
     private AdjustmentOrderRpc adjustmentOrderRpc;
     @Autowired
     private ReportRpc reportRpc;
+    @Autowired
+    private PosItemRpc posItemRpc;
 
 
     @RequestMapping(method = RequestMethod.GET,value = "/echo")
     public String echo(){
+
         Date time = Calendar.getInstance().getTime();
         return time.toString();
     }
@@ -443,6 +446,191 @@ public class InitApi {
         }
         azureService.batchSaveCardDailies(systemBookCode,returnList,from,to);
         return "SUCCESS";
+    }
+    @RequestMapping(method = RequestMethod.GET,value = "/init/item/{systemBookCode}")
+    public String initItem(@PathVariable("systemBookCode") String systemBookCode){
+        List<PosItemDTO> all = posItemRpc.findAll(systemBookCode);
+        List<PosItem> list = new ArrayList<PosItem>();
+        for (int i = 0; i < all.size() ; i++) {
+            PosItemDTO posItemDTO = all.get(i);
+            PosItem posItem = new PosItem();
+            posItem.setSystemBookCode(posItemDTO.getSystemBookCode());
+            posItem.setItemNum(posItemDTO.getItemNum());
+            posItem.setItemName(posItemDTO.getItemName());
+            posItem.setItemCategory(posItemDTO.getItemCategoryCode());//
+            posItem.setItemSubCategory(posItemDTO.getItemCategory());
+            list.add(posItem);
+        }
+        azureService.batchSaveItem(systemBookCode,list);
+        return "SUCCESS";
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET,value = "/init/batch/cardDaily-nine/{systemBookCode}")
+    public String  initBatchCardDailyNine(@PathVariable("systemBookCode") String systemBookCode) throws Exception{
+        String date = "20170901";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date dateFrom = sdf.parse(date);
+        List<CardDailyDTO> list = new ArrayList<CardDailyDTO>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateFrom);
+
+        List<CardDailyDTO> CardDailyDTOs = null;
+        CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, dateFrom, dateFrom);
+        list.addAll(CardDailyDTOs);
+        for (int i = 0; i <29 ; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            Date time = calendar.getTime();
+            CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, time, time);
+            list.addAll(CardDailyDTOs);
+        }
+        List<CardDaily> returnList = new ArrayList<CardDaily>();
+        for (int i = 0; i <list.size() ; i++) {
+            CardDailyDTO cardDailyDTO = list.get(i);
+            CardDaily cardDaily = new CardDaily();
+            cardDaily.setSystemBookCode(cardDailyDTO.getSystemBookCode());
+            cardDaily.setBranchNum(cardDailyDTO.getBranchNum());
+            cardDaily.setShiftTableBizday(cardDailyDTO.getShiftTableBizday());
+            cardDaily.setShiftTableDate(cardDailyDTO.getShiftTableDate());
+            cardDaily.setCardDeliverCount(cardDailyDTO.getCardDeliverCount());
+            cardDaily.setCardReturnCount(cardDailyDTO.getCardReturnCount());
+            cardDaily.setCardDeliverTarget(cardDailyDTO.getCardDeliverTarget());
+            cardDaily.setCardDepositCash(cardDailyDTO.getCardDepositCash());
+            cardDaily.setCardDepositMoney(cardDailyDTO.getCardDepositMoney());
+            cardDaily.setCardDepositTarget(cardDailyDTO.getCardDepositTarget());
+            cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
+            returnList.add(cardDaily);
+        }
+        String date_ = "20170930";
+        Date dateTo = sdf.parse(date_);
+        azureService.batchSaveCardDailies(systemBookCode,returnList,dateFrom,dateTo);
+        return "SUCCESS";
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/init/batch/cardDaily-ten/{systemBookCode}")
+    public String  initBatchCardDailyTen(@PathVariable("systemBookCode") String systemBookCode) throws Exception{
+
+        String date = "20171001";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        List<CardDailyDTO> list = new ArrayList<CardDailyDTO>();
+        Date dateFrom = sdf.parse(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateFrom);
+        List<CardDailyDTO> CardDailyDTOs = null;
+        CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, dateFrom, dateFrom);
+        list.addAll(CardDailyDTOs);
+        for (int i = 0; i <30 ; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            Date time = calendar.getTime();
+            CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, time, time);
+            list.addAll(CardDailyDTOs);
+        }
+        List<CardDaily> returnList = new ArrayList<CardDaily>();
+        for (int i = 0; i <list.size() ; i++) {
+            CardDailyDTO cardDailyDTO = list.get(i);
+            CardDaily cardDaily = new CardDaily();
+            cardDaily.setSystemBookCode(cardDailyDTO.getSystemBookCode());
+            cardDaily.setBranchNum(cardDailyDTO.getBranchNum());
+            cardDaily.setShiftTableBizday(cardDailyDTO.getShiftTableBizday());
+            cardDaily.setShiftTableDate(cardDailyDTO.getShiftTableDate());
+            cardDaily.setCardDeliverCount(cardDailyDTO.getCardDeliverCount());
+            cardDaily.setCardReturnCount(cardDailyDTO.getCardReturnCount());
+            cardDaily.setCardDeliverTarget(cardDailyDTO.getCardDeliverTarget());
+            cardDaily.setCardDepositCash(cardDailyDTO.getCardDepositCash());
+            cardDaily.setCardDepositMoney(cardDailyDTO.getCardDepositMoney());
+            cardDaily.setCardDepositTarget(cardDailyDTO.getCardDepositTarget());
+            cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
+            returnList.add(cardDaily);
+        }
+        String date_ = "20171031";
+        Date dateTo = sdf.parse(date_);
+        azureService.batchSaveCardDailies(systemBookCode,returnList,dateFrom,dateTo);
+        return "SUCCESS";
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/init/batch/cardDaily-eleven/{systemBookCode}")
+    public String  initBatchCardDailyEleven(@PathVariable("systemBookCode") String systemBookCode ) throws Exception{
+
+
+        String date = "20171101";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        List<CardDailyDTO> list = new ArrayList<CardDailyDTO>();
+        Date dateFrom = sdf.parse(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateFrom);
+        List<CardDailyDTO> CardDailyDTOs = null;
+        CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, dateFrom, dateFrom);
+        list.addAll(CardDailyDTOs);
+        for (int i = 0; i <29 ; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            Date time = calendar.getTime();
+            CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, time, time);
+            list.addAll(CardDailyDTOs);
+        }
+        List<CardDaily> returnList = new ArrayList<CardDaily>();
+        for (int i = 0; i <list.size() ; i++) {
+            CardDailyDTO cardDailyDTO = list.get(i);
+            CardDaily cardDaily = new CardDaily();
+            cardDaily.setSystemBookCode(cardDailyDTO.getSystemBookCode());
+            cardDaily.setBranchNum(cardDailyDTO.getBranchNum());
+            cardDaily.setShiftTableBizday(cardDailyDTO.getShiftTableBizday());
+            cardDaily.setShiftTableDate(cardDailyDTO.getShiftTableDate());
+            cardDaily.setCardDeliverCount(cardDailyDTO.getCardDeliverCount());
+            cardDaily.setCardReturnCount(cardDailyDTO.getCardReturnCount());
+            cardDaily.setCardDeliverTarget(cardDailyDTO.getCardDeliverTarget());
+            cardDaily.setCardDepositCash(cardDailyDTO.getCardDepositCash());
+            cardDaily.setCardDepositMoney(cardDailyDTO.getCardDepositMoney());
+            cardDaily.setCardDepositTarget(cardDailyDTO.getCardDepositTarget());
+            cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
+            returnList.add(cardDaily);
+        }
+        String date_ = "20171130";
+        Date dateTo = sdf.parse(date_);
+        azureService.batchSaveCardDailies(systemBookCode,returnList,dateFrom,dateTo);
+        return "SUCCESS";
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/init/batch/cardDaily-twelve/{systemBookCode}")
+    public String  initBatchCardDailyTwelve(@PathVariable("systemBookCode") String systemBookCode) throws Exception{
+
+
+        String date = "20171201";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        List<CardDailyDTO> list = new ArrayList<CardDailyDTO>();
+        Date dateFrom = sdf.parse(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateFrom);
+        List<CardDailyDTO> CardDailyDTOs = null;
+        CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, dateFrom, dateFrom);
+        list.addAll(CardDailyDTOs);
+        for (int i = 0; i <30 ; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            Date time = calendar.getTime();
+            CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, time, time);
+            list.addAll(CardDailyDTOs);
+        }
+        List<CardDaily> returnList = new ArrayList<CardDaily>();
+        for (int i = 0; i <list.size() ; i++) {
+            CardDailyDTO cardDailyDTO = list.get(i);
+            CardDaily cardDaily = new CardDaily();
+            cardDaily.setSystemBookCode(cardDailyDTO.getSystemBookCode());
+            cardDaily.setBranchNum(cardDailyDTO.getBranchNum());
+            cardDaily.setShiftTableBizday(cardDailyDTO.getShiftTableBizday());
+            cardDaily.setShiftTableDate(cardDailyDTO.getShiftTableDate());
+            cardDaily.setCardDeliverCount(cardDailyDTO.getCardDeliverCount());
+            cardDaily.setCardReturnCount(cardDailyDTO.getCardReturnCount());
+            cardDaily.setCardDeliverTarget(cardDailyDTO.getCardDeliverTarget());
+            cardDaily.setCardDepositCash(cardDailyDTO.getCardDepositCash());
+            cardDaily.setCardDepositMoney(cardDailyDTO.getCardDepositMoney());
+            cardDaily.setCardDepositTarget(cardDailyDTO.getCardDepositTarget());
+            cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
+            returnList.add(cardDaily);
+        }
+        String date_ = "20171231";
+        Date dateTo = sdf.parse(date_);
+        azureService.batchSaveCardDailies(systemBookCode,returnList,dateFrom,dateTo);
+        return "SUCCESS";
+
     }
 
 

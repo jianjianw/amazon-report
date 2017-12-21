@@ -38,6 +38,11 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 
 
 	@Override
+	public List<PosItem> findAll(String systemBookCode) {
+		return posItemDao.findAll(systemBookCode);
+	}
+
+	@Override
 	public List<PosItemKit> findPosItemKits(Integer itemNum) {
 		List<PosItemKit> posItemKits = posItemDao.findPosItemKits(itemNum);
 		for (int i = 0; i < posItemKits.size(); i++) {

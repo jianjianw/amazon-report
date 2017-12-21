@@ -33,13 +33,7 @@ public class AzureSchedule {
     @Autowired
     private AdjustmentOrderRpc adjustmentOrderRpc;
     @Autowired
-    private CardUserRpc cardUserRpc;
-    @Autowired
-    private CardDepositRpc cardDepositRpc;
-    @Autowired
-    private BranchTransferGoalsRpc branchTransferGoalsRpc;
-    @Autowired
-    private CardConsumeRpc cardConsumeRpc;
+    private PosItemRpc posItemRpc;
 
     @Autowired
     private ReportRpc reportRpc;
@@ -503,6 +497,23 @@ public class AzureSchedule {
         Date date = calendar.getTime();
         azureService.batchDeleteCardDailies(systemBook,date,date);
 
+    }
+
+    @Scheduled(cron="0 0 2-3 * * *")    //每天更新商品资料
+    public void saveItem(){
+        List<PosItemDTO> all = posItemRpc.findAll(systemBook);
+        List<PosItem> list = new ArrayList<PosItem>();
+        for (int i = 0; i < all.size() ; i++) {
+            PosItemDTO posItemDTO = all.get(i);
+            PosItem posItem = new PosItem();
+            posItem.setSystemBookCode(posItemDTO.getSystemBookCode());
+            posItem.setItemNum(posItemDTO.getItemNum());
+            posItem.setItemName(posItemDTO.getItemName());
+            posItem.setItemCategory(posItemDTO.getItemCategoryCode());
+            posItem.setItemSubCategory(posItemDTO.getItemCategory());
+            list.add(posItem);
+        }
+        azureService.batchSaveItem(systemBook,list);
     }
 
 

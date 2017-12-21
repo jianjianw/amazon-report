@@ -19,7 +19,6 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.CopyUtil;
 import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.SQLQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -379,7 +378,7 @@ public class ReportServiceImpl implements ReportService {
 				List<OrderReportDTO> list = posOrderRemoteService.findBranchMonthSummary(orderQueryDTO);
 				List<Object[]> returnList = new ArrayList<Object[]>();
 				for (int i = 0; i < list.size(); i++) {
-					Object[] objects = new Object[3];
+					Object[] objects = new Object[6];
 					objects[0] = list.get(i).getBranchNum();
 					objects[1] = list.get(i).getBizMonth();
 					if(type == 0){

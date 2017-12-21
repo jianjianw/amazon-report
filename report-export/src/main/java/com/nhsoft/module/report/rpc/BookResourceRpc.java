@@ -12,4 +12,7 @@ public interface BookResourceRpc {
      * @return
      */
     public List<AdjustmentReason> findAdjustmentReasons(String systemBookCode);
+
+
+
 }
