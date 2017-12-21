@@ -419,6 +419,9 @@ public class ReportServiceImpl implements ReportService {
 						}
 						
 					}
+					objects[3] = list.get(i).getOrderCount();
+					objects[4] = list.get(i).getProfit();
+					objects[5] =  list.get(i).getBizCount();
 					returnList.add(objects);
 				}
 				return returnList;
@@ -548,7 +551,7 @@ public class ReportServiceImpl implements ReportService {
 			
 			return objects;
 		}
-	}
+    }
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums,

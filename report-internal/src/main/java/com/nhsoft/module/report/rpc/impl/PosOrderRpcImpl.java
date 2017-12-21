@@ -543,7 +543,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
-		Integer isMember = null;
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
 			ItemSaleDailyDTO itemSaleDailyDTO = new ItemSaleDailyDTO();
@@ -552,8 +551,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			itemSaleDailyDTO.setShiftTableBizday((String) object[1]);
 			itemSaleDailyDTO.setItemNum((Integer) object[2]);
 			itemSaleDailyDTO.setItemSource((String) object[3]);
-			//isMember = (Integer) object[4];
-			if((Integer) object[4] != null && (Integer) object[4] > 0){
+			if((Integer) object[4] > 0){
 				itemSaleDailyDTO.setItemMemberTag("会员");
 			}else{
 				itemSaleDailyDTO.setItemMemberTag("非会员");
