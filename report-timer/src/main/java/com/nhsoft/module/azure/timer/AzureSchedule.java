@@ -450,6 +450,11 @@ public class AzureSchedule {
         }
         azureService.batchSaveItemSaleDailies(systemBook,list,time,time);
     }
+    @Scheduled(cron="0 0,50 * 22 12 ?")
+    public void saveItemSaleDailyMin(){
+        logger.info("定时器测试");
+        System.out.println("定时器测试");
+    }
 
 
 
