@@ -3234,6 +3234,8 @@ public class ReportRpcImpl implements ReportRpc {
 		//查询所有分店
 		List<BranchDTO> branchs = branchRpc.findInCache(systemBookCode);
 		String biz = DateUtil.getDateShortStr(dateFrom);
+
+
 		for (int i = 0; i <branchs.size() ; i++) {
 			BranchDTO branchDTO = branchs.get(i);
 			CardDailyDTO cardDailyDTO = new CardDailyDTO();
@@ -3246,7 +3248,6 @@ public class ReportRpcImpl implements ReportRpc {
 			for (int j = 0; j <cardCounts.size() ; j++) {
 				BranchBizdayCardCountSummary countSummary = cardCounts.get(j);
 				if(branchNum.equals(countSummary.getBranchNum()) && biz.equals(countSummary.getBizday())){
-
 					cardDailyDTO.setCardDeliverCount(countSummary.getCount().intValue());
 				}
 			}

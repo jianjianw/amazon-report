@@ -646,5 +646,10 @@ public class InitApi {
         return "SUCCESS";
     }
 
+    @RequestMapping(method = RequestMethod.GET,value = "/nimei")
+    public String nimei(){
+        return "nimei";
+    }
+
 
 }
