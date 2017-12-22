@@ -1,7 +1,6 @@
 package com.nhsoft.module.report.rpc.impl;
 
 
-import com.nhsoft.module.azure.model.CardDaily;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.*;
