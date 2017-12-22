@@ -632,6 +632,19 @@ public class InitApi {
         return "SUCCESS";
 
     }
+    @RequestMapping(method = RequestMethod.GET,value = "/delete/{systemBookCode}")
+    public String deleteMonth(@PathVariable("systemBookCode") String systemBookCode){
+        //删除三个月前的数据
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH,-3);
+        Date time = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        String format = sdf.format(time);
+        calendar.add(Calendar.DAY_OF_MONTH,-Integer.valueOf(format)+1);
+        Date date = calendar.getTime();
+        azureService.batchDeleteItemSaleDailies(systemBookCode,date,date);
+        return "SUCCESS";
+    }
 
 
 }
