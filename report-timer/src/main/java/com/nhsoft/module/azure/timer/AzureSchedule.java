@@ -423,9 +423,8 @@ public class AzureSchedule {
 
     }
 
-    @Scheduled(cron="0 0,30 * 22 12 ?")
+    @Scheduled(cron="0 0,30 * * * *")
     public void saveItem(){
-        System.out.println("12月22日更新当天数据");
         Calendar calendar = Calendar.getInstance();
         Date time = calendar.getTime();
         List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, time, time);
@@ -450,10 +449,39 @@ public class AzureSchedule {
         }
         azureService.batchSaveItemSaleDailies(systemBook,list,time,time);
     }
-    @Scheduled(cron="0 0,50 * 22 12 ?")
+    @Scheduled(cron="0 * * * 12 ?")
     public void saveItemSaleDailyMin(){
         logger.info("定时器测试");
-        System.out.println("定时器测试");
+    }
+
+    @Scheduled(cron="0 */30 * * * *")
+    public void test(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
+        Date dateTo = calendar.getTime();   //昨天
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
+        Date dateFrom = calendar.getTime(); //前天
+        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, dateFrom, dateTo);
+        if(itemSaleDailySummary.isEmpty()){
+            return;
+        }
+        List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
+        for (int i = 0; i <itemSaleDailySummary.size() ; i++) {
+            ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
+            ItemSaleDaily itemSaleDaily = new ItemSaleDaily();
+            itemSaleDaily.setSystemBookCode(systemBook);
+            itemSaleDaily.setBranchNum(itemSaleDailyDTO.getItemNum());
+            itemSaleDaily.setShiftTableBizday(itemSaleDailyDTO.getShiftTableBizday());
+            itemSaleDaily.setItemNum(itemSaleDailyDTO.getItemNum());
+            itemSaleDaily.setShiftTableDate(itemSaleDailyDTO.getShiftTableDate());
+            itemSaleDaily.setItemMoney(itemSaleDailyDTO.getItemMoney());
+            itemSaleDaily.setItemAmount(itemSaleDailyDTO.getItemAmount());
+            itemSaleDaily.setItemCount(itemSaleDailyDTO.getItemCount());
+            itemSaleDaily.setItemSource(itemSaleDailyDTO.getItemSource());
+            itemSaleDaily.setItemMemberTag(itemSaleDailyDTO.getItemMemberTag());
+            list.add(itemSaleDaily);
+        }
+        azureService.batchSaveItemSaleDailies(systemBook,list,dateFrom,dateTo);
     }
 
 }

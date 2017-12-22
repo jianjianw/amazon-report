@@ -322,9 +322,6 @@ public class InitApi {
             itemSaleDaily.setItemMemberTag(itemSaleDailyDTO.getItemMemberTag());
             list.add(itemSaleDaily);
         }
-        Gson gson = new Gson();
-        String json = gson.toJson(list);
-        System.out.println(json);
         azureService.batchSaveItemSaleDailies(systemBookCode,list,from,to);
         return "SUCCESS";
     }
