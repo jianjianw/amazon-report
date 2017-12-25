@@ -98,4 +98,9 @@ public interface AzureDao {
      * */
     public void batchDeleteCardDailies(String systemBookCode,Date dateFrom, Date dateTo);
 
+    /**
+     * 批量保存商品资料
+     * */
+    public void batchSaveItem(String systemBookCode,List<PosItem> posItems);
+
 }

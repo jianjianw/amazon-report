@@ -537,12 +537,12 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 	@Override
 	public List<ItemSaleDailyDTO> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+
 		List<Object[]> objects = posOrderService.findItemSaleDailySummary(systemBookCode, dateFrom, dateTo);
 		List<ItemSaleDailyDTO> list = new ArrayList<>();
 		if(objects.isEmpty()){
 			return list;
 		}
-
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
 			ItemSaleDailyDTO itemSaleDailyDTO = new ItemSaleDailyDTO();
@@ -551,7 +551,11 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			itemSaleDailyDTO.setShiftTableBizday((String) object[1]);
 			itemSaleDailyDTO.setItemNum((Integer) object[2]);
 			itemSaleDailyDTO.setItemSource((String) object[3]);
-			itemSaleDailyDTO.setItemMemberTag((Integer) object[4]);
+			if((Integer) object[4] > 0){
+				itemSaleDailyDTO.setItemMemberTag("会员");
+			}else{
+				itemSaleDailyDTO.setItemMemberTag("非会员");
+			}
 			itemSaleDailyDTO.setItemMoney((BigDecimal) object[5]);
 			itemSaleDailyDTO.setItemAmount((BigDecimal) object[6]);
 			itemSaleDailyDTO.setItemCount((Integer) object[7]);

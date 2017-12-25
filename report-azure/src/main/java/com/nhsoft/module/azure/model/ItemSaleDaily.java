@@ -25,7 +25,7 @@ public class ItemSaleDaily implements Serializable {
     @Id
     private String itemSource;      //单据来源
     @Id
-    private Integer itemMemberTag;  //会员标记
+    private String itemMemberTag;  //会员标记
 
 
     public String getSystemBookCode() {
@@ -100,11 +100,11 @@ public class ItemSaleDaily implements Serializable {
         this.itemSource = itemSource;
     }
 
-    public Integer getItemMemberTag() {
+    public String getItemMemberTag() {
         return itemMemberTag;
     }
 
-    public void setItemMemberTag(Integer itemMemberTag) {
+    public void setItemMemberTag(String itemMemberTag) {
         this.itemMemberTag = itemMemberTag;
     }
 

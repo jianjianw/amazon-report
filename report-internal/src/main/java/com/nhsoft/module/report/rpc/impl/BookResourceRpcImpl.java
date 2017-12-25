@@ -21,4 +21,6 @@ public class BookResourceRpcImpl implements BookResourceRpc {
 	public List<AdjustmentReason> findAdjustmentReasons(String systemBookCode) {
 		return bookResourceService.findAdjustmentReasons(systemBookCode);
 	}
+
+
 }

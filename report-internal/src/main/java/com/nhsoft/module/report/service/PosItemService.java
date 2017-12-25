@@ -14,6 +14,18 @@ import java.util.List;
  */
 public interface PosItemService {
 
+
+
+
+
+
+	/**
+	 * 查询所有商品
+	 * @param systemBookCode
+	 * @return
+	 */
+	public List<PosItem> findAll(String systemBookCode);
+
 	/**
 	 * 查询成分商品
 	 * @param itemNum 商品主键

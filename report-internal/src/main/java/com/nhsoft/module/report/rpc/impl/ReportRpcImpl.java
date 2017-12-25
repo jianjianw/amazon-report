@@ -1,7 +1,6 @@
 package com.nhsoft.module.report.rpc.impl;
 
 
-import com.nhsoft.module.azure.model.CardDaily;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.*;
@@ -2731,7 +2730,6 @@ public class ReportRpcImpl implements ReportRpc {
             branchProfitSummary.setCost((BigDecimal) object[3]);
             list.add(branchProfitSummary);
         }
-
         return list;
 	}
 
@@ -3219,15 +3217,15 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<CardDailyDTO> findCardDailyByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
-		//新增会员数   Date   yyyy-MM-dd HH:mm:ss		(已改为 为yyyyMMdd)
+		//新增会员数
 		List<BranchBizdayCardCountSummary> cardCounts = cardUserRpc.findCardCountByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo, null);
-		//退卡数       String yyyy-MM-dd HH:mm:ss		(已改为 为yyyyMMdd)
+		//退卡数
 		List<BranchBizdayCardReturnSummary> revokeCards= cardUserRpc.findRevokeCardCountByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo, null);
 		//付款金额，存款金额
 		List<BranchBizdayDepositSummary> depositSummarys = cardDepositRpc.findSumByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
-		//存款目标    (日期格式为yyyy-MM-dd)  			已改为 为yyyyMMdd
+		//存款目标
 		List<DepositGoalsDTO> depositGoals = branchTransferGoalsRpc.findDepositGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
-		//发卡目标    (日期格式为yyyy-MM-dd) 				已改为 为yyyyMMdd
+		//发卡目标
 		List<NewCardGoalsDTO> newCardGoals= branchTransferGoalsRpc.findNewCardGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		//卡消费
 		List<BranchBizdayConsumeSummary> consumeSummarys = cardConsumeRpc.findBranchBizdaySum(systemBookCode, branchNums, dateFrom, dateTo, null);
@@ -3236,6 +3234,8 @@ public class ReportRpcImpl implements ReportRpc {
 		//查询所有分店
 		List<BranchDTO> branchs = branchRpc.findInCache(systemBookCode);
 		String biz = DateUtil.getDateShortStr(dateFrom);
+
+
 		for (int i = 0; i <branchs.size() ; i++) {
 			BranchDTO branchDTO = branchs.get(i);
 			CardDailyDTO cardDailyDTO = new CardDailyDTO();
@@ -3248,7 +3248,6 @@ public class ReportRpcImpl implements ReportRpc {
 			for (int j = 0; j <cardCounts.size() ; j++) {
 				BranchBizdayCardCountSummary countSummary = cardCounts.get(j);
 				if(branchNum.equals(countSummary.getBranchNum()) && biz.equals(countSummary.getBizday())){
-
 					cardDailyDTO.setCardDeliverCount(countSummary.getCount().intValue());
 				}
 			}

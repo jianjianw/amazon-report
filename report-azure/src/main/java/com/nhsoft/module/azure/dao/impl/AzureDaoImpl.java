@@ -182,6 +182,7 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sb.append("and shift_table_bizday <= '" + formatDate(dateTo) +"' ");
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
+        currentSession().flush();
 
         for (int i = 0; i <itemSaleDailies.size() ; i++) {
             ItemSaleDaily itemSaleDaily = itemSaleDailies.get(i);
@@ -252,6 +253,23 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sqlQuery.executeUpdate();
     }
 
+    public void batchSaveItem(String systemBookCode, List<PosItem> posItems) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("delete from pos_item ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.executeUpdate();
+        currentSession().flush();
+
+        for (int i = 0; i <posItems.size() ; i++) {
+            PosItem posItem = posItems.get(i);
+            currentSession().save(posItem);
+            if(i % 30 == 0){
+                currentSession().flush();
+                currentSession().clear();
+            }
+        }
+    }
 
 
     public String formatDate(Date date){

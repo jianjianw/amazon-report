@@ -33,18 +33,12 @@ public class AzureSchedule {
     @Autowired
     private AdjustmentOrderRpc adjustmentOrderRpc;
     @Autowired
-    private CardUserRpc cardUserRpc;
-    @Autowired
-    private CardDepositRpc cardDepositRpc;
-    @Autowired
-    private BranchTransferGoalsRpc branchTransferGoalsRpc;
-    @Autowired
-    private CardConsumeRpc cardConsumeRpc;
-
+    private PosItemRpc posItemRpc;
     @Autowired
     private ReportRpc reportRpc;
 
     String systemBook = "4410";
+
 
     @Scheduled(cron="0 */30 * * * *")
     public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
@@ -64,7 +58,7 @@ public class AzureSchedule {
         azureService.batchSaveBranchDailies(systemBook,branchDailySummary,dateFrom,dateTo);
     }
 
-    @Scheduled(cron="* */30 * * * *")       //每30分钟更新一次当天的额数据
+    @Scheduled(cron="0 */30 * * * *")       //每30分钟更新一次当天的额数据
     public void saveBranchDailyDirectMinute(){
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
@@ -83,6 +77,7 @@ public class AzureSchedule {
             branchDailyDirect.setTargetMoney(branchDaily.getTargetMoney());
             list.add(branchDailyDirect);
         }
+
         azureService.batchSaveBranchDailyDirects(systemBook,list,date,date);
     }
 
@@ -117,7 +112,7 @@ public class AzureSchedule {
         azureService.batchDeleteBranchDailyDirects(systemBook,date,date);
     }
 
-    @Scheduled(cron="0 0,30 * * * *")
+    @Scheduled(cron="0 */30 * * * *")       //    @Scheduled(cron="0 0,30 * * * *")
     public void saveItemDailyDetailMinute(){        //商品日时段销售汇总(从凌晨开始，每个小时的0分和30分执行一次)
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
@@ -137,7 +132,7 @@ public class AzureSchedule {
         azureService.batchSaveItemDailyDetails(systemBook,itemDailyDetailSummary,date,date);
     }
 
-    @Scheduled(cron = "0 0 2-3 * * *")
+    @Scheduled(cron="0 0 2-3 * * *")
     public void deleteItemDetailDaily(){        //删除2天前的数据（保存两天的数据）
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-2);
@@ -269,8 +264,8 @@ public class AzureSchedule {
             bizday.setBizdayMonth(month);
             bizday.setBizdayDayofyear(dayOfMonth);
 
-            bizday.setBizdayYearweek(yearAndWeek);
-            bizday.setBizdayWeekofYear(weeknumOfYear);
+            bizday.setBizdayYearWeek(yearAndWeek);
+            bizday.setBizdayWeekofyear(weeknumOfYear);
             bizday.setBizdayDayofweek(weekDay);
 
             bizday.setBizdayYearName(yearName);
@@ -290,43 +285,17 @@ public class AzureSchedule {
 
     }
 
-    @Scheduled(cron="0 */30 * * * *")       //每30分钟，更新一次当天数据    商品日销售汇总
-    public void saveItemSaleDailyMin(){
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, date, date);
-        if(itemSaleDailySummary.isEmpty()){
-            return;
-        }
-        List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
-        for (int i = 0; i <itemSaleDailySummary.size() ; i++) {
-            ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
-            ItemSaleDaily itemSaleDaily = new ItemSaleDaily();
-            itemSaleDaily.setSystemBookCode(systemBook);
-            itemSaleDaily.setBranchNum(itemSaleDailyDTO.getItemNum());
-            itemSaleDaily.setShiftTableBizday(itemSaleDailyDTO.getShiftTableBizday());
-            itemSaleDaily.setItemNum(itemSaleDailyDTO.getItemNum());
-            itemSaleDaily.setShiftTableDate(itemSaleDailyDTO.getShiftTableDate());
-            itemSaleDaily.setItemMoney(itemSaleDailyDTO.getItemMoney());
-            itemSaleDaily.setItemAmount(itemSaleDailyDTO.getItemAmount());
-            itemSaleDaily.setItemCount(itemSaleDailyDTO.getItemCount());
-            itemSaleDaily.setItemSource(itemSaleDailyDTO.getItemSource());
-            itemSaleDaily.setItemMemberTag(itemSaleDailyDTO.getItemMemberTag());
-            list.add(itemSaleDaily);
-        }
-        azureService.batchSaveItemSaleDailies(systemBook,list,date,date);
-    }
 
-    @Scheduled(cron="0 0 2-3 * * *")       //每天凌晨2-3点更新前两天的数据     商品日销售汇总
-    public void saveItemSaleDailyHour(){
+    //新加的表
+    @Scheduled(cron="0 0 2-3 * * *")//@Scheduled(cron="0 0 2-3 * * *")       //每天凌晨2-3点更新前两天的数据     商品日销售汇总  (不需要今天的数据)
+    public void saveItemSaleDaily(){
         Calendar calendar = Calendar.getInstance();
-        Date dateTo = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
-        Date dateFrom = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
+        Date dateTo = calendar.getTime();   //昨天
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
+        Date dateFrom = calendar.getTime(); //前天
         List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, dateFrom, dateTo);
-        if(itemSaleDailySummary.isEmpty()){
-            return;
-        }
+
         List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
         for (int i = 0; i <itemSaleDailySummary.size() ; i++) {
             ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
@@ -346,52 +315,30 @@ public class AzureSchedule {
         azureService.batchSaveItemSaleDailies(systemBook,list,dateFrom,dateTo);
     }
 
-    @Scheduled(cron="0 0 2-3 * * *")        //删除2天以前的数据     商品日销售汇总
+
+    @Scheduled(cron="0 0 2-3 * * *")        //每天凌晨2-3点删除三个月前的数据     商品日销售汇总
     public void deleteItemSaleDaily(){
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.MONTH,-3);
+        Date time = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        String format = sdf.format(time);
+        calendar.add(Calendar.DAY_OF_MONTH,-Integer.valueOf(format)+1);
         Date date = calendar.getTime();
         azureService.batchDeleteItemSaleDailies(systemBook,date,date);
     }
 
 
-    @Scheduled(cron="0 */30 * * * *")       //每30分钟，更新一次当天数据    商品日报损汇总
-    public void saveItemLossDailyMin(){
-
-        Date date = Calendar.getInstance().getTime();
-        List<ItemLossDailyDTO> itemLossDailySummary = adjustmentOrderRpc.findItemLossDailySummary(systemBook, date, date);
-        if(itemLossDailySummary.isEmpty()){
-            return;
-        }
-        List<ItemLossDaily> list = new ArrayList<ItemLossDaily>();
-        for (int i = 0; i <itemLossDailySummary.size() ; i++) {
-            ItemLossDailyDTO itemLossDailyDTO = itemLossDailySummary.get(i);
-            ItemLossDaily itemLossDaily = new ItemLossDaily();
-            itemLossDaily.setSystemBookCode(itemLossDailyDTO.getSystemBookCode());
-            itemLossDaily.setBranchNum(itemLossDailyDTO.getBranchNum());
-            itemLossDaily.setShiftTableBizday(itemLossDailyDTO.getShiftTableBizday());
-            itemLossDaily.setItemNum(itemLossDailyDTO.getItemNum());
-            itemLossDaily.setItemLossReason(itemLossDailyDTO.getItemLossReason());
-            itemLossDaily.setShiftTableDate(itemLossDailyDTO.getShiftTableDate());
-            itemLossDaily.setItemMoney(itemLossDailyDTO.getItemMoney());
-            itemLossDaily.setItemAmount(itemLossDailyDTO.getItemAmount());
-            list.add(itemLossDaily);
-        }
-        azureService.batchSaveItemLossDailies(systemBook,list,date,date);
-    }
-
-
-    @Scheduled(cron="0 0 2-3 * * *")       //每天凌晨2-3点更新一次前两天的数据   商品日报损汇总
-    public void saveItemLossDailyHour(){
+    @Scheduled(cron="0 0 2-3 * * *")//@Scheduled(cron="0 0 2-3 * * *")       //每天凌晨2-3点更新一次前两天的数据   商品日报损汇总
+    public void saveItemLossDaily(){
 
         Calendar calendar = Calendar.getInstance();
-        Date dateTo = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
-        Date dateFrom = calendar.getTime();
-        List<ItemLossDailyDTO> itemLossDailySummary = adjustmentOrderRpc.findItemLossDailySummary(systemBook, dateFrom, dateFrom);
-        if(itemLossDailySummary.isEmpty()){
-            return;
-        }
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
+        Date dateTo = calendar.getTime();   //昨天
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
+        Date dateFrom = calendar.getTime(); //前天
+        List<ItemLossDailyDTO> itemLossDailySummary = adjustmentOrderRpc.findItemLossDailySummary(systemBook, dateFrom, dateTo);
+
         List<ItemLossDaily> list = new ArrayList<ItemLossDaily>();
         for (int i = 0; i <itemLossDailySummary.size() ; i++) {
             ItemLossDailyDTO itemLossDailyDTO = itemLossDailySummary.get(i);
@@ -406,58 +353,35 @@ public class AzureSchedule {
             itemLossDaily.setItemAmount(itemLossDailyDTO.getItemAmount());
             list.add(itemLossDaily);
         }
-        azureService.batchSaveItemLossDailies(systemBook,list,dateFrom,dateFrom);
+        azureService.batchSaveItemLossDailies(systemBook,list,dateFrom,dateTo);
     }
 
-    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除两天前的数据   商品日报损汇总
+    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除三个月前的数据   商品日报损汇总
     public void deleteItemLossDaily(){
+
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.MONTH,-3);
+        Date time = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        String format = sdf.format(time);
+        calendar.add(Calendar.DAY_OF_MONTH,-Integer.valueOf(format)+1);
         Date date = calendar.getTime();
         azureService.batchDeleteItemLossDailies(systemBook,date,date);
     }
 
 
-    @Scheduled(cron = "0 */30 * * * *")     //每30分钟跟新一次当天的数据      会员统计
-    public void saveCardDailyMin(){
-        Date date = Calendar.getInstance().getTime();
-        List<CardDailyDTO> CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBook, null, date, date);
-        List<CardDaily> list = new ArrayList<CardDaily>();
-        for (int i = 0; i <CardDailyDTOs.size() ; i++) {
-            CardDailyDTO cardDailyDTO = CardDailyDTOs.get(i);
-            CardDaily cardDaily = new CardDaily();
-            cardDaily.setSystemBookCode(cardDailyDTO.getSystemBookCode());
-            cardDaily.setBranchNum(cardDailyDTO.getBranchNum());
-            cardDaily.setShiftTableBizday(cardDailyDTO.getShiftTableBizday());
-            cardDaily.setShiftTableDate(cardDailyDTO.getShiftTableDate());
-            cardDaily.setCardDeliverCount(cardDailyDTO.getCardDeliverCount());
-            cardDaily.setCardReturnCount(cardDailyDTO.getCardReturnCount());
-            cardDaily.setCardDeliverTarget(cardDailyDTO.getCardDeliverTarget());
-            cardDaily.setCardDepositCash(cardDailyDTO.getCardDepositCash());
-            cardDaily.setCardDepositMoney(cardDailyDTO.getCardDepositMoney());
-            cardDaily.setCardDepositTarget(cardDailyDTO.getCardDepositTarget());
-            cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
-            list.add(cardDaily);
-        }
-        azureService.batchSaveCardDailies(systemBook,list,date,date);
-
-    }
-
-
-    @Scheduled(cron="0 0 2-3 * * *")     //每天凌晨2-3点更新前两天的数据         会员统计
+    @Scheduled(cron="0 0 2-3 * * *") //每天凌晨2-3点更新前两天的数据         会员统计
     public void saveCardDailyHour(){
+
         Calendar calendar = Calendar.getInstance();
-        Date today = calendar.getTime();
         calendar.add(Calendar.DAY_OF_MONTH,-1);
-        Date yesterday = calendar.getTime();
+        Date yesterday = calendar.getTime();   //昨天
         calendar.add(Calendar.DAY_OF_MONTH,-1);
-        Date beforeYesterday = calendar.getTime();
+        Date beforeYesterday = calendar.getTime(); //前天
 
         List<CardDailyDTO> CardDailyDTOs = new ArrayList<CardDailyDTO>();
-        List<CardDailyDTO> todays = reportRpc.findCardDailyByBranchBizday(systemBook, null, today, today);
         List<CardDailyDTO> yesterdays = reportRpc.findCardDailyByBranchBizday(systemBook, null, yesterday, yesterday);
         List<CardDailyDTO> beforeYesterdays = reportRpc.findCardDailyByBranchBizday(systemBook, null, beforeYesterday, beforeYesterday);
-        CardDailyDTOs.addAll(todays);
         CardDailyDTOs.addAll(yesterdays);
         CardDailyDTOs.addAll(beforeYesterdays);
 
@@ -478,27 +402,63 @@ public class AzureSchedule {
             cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
             list.add(cardDaily);
         }
-        azureService.batchSaveCardDailies(systemBook,list,beforeYesterday,today);
+        azureService.batchSaveCardDailies(systemBook,list,beforeYesterday,yesterday);
     }
 
-
-
-
-
-    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除两天前的数据   会员统计
+    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除三个月前的数据   会员统计
     public void deleteCardDaily(){
+
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.MONTH,-3);
+        Date time = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        String format = sdf.format(time);
+        calendar.add(Calendar.DAY_OF_MONTH,-Integer.valueOf(format)+1);
         Date date = calendar.getTime();
         azureService.batchDeleteCardDailies(systemBook,date,date);
+
+    }
+
+    @Scheduled(cron="0 0 2-3 * * *")    //每天更新商品资料
+    public void saveItem(){
+        List<PosItemDTO> all = posItemRpc.findAll(systemBook);
+        List<PosItem> list = new ArrayList<PosItem>();
+        for (int i = 0; i < all.size() ; i++) {
+            PosItemDTO posItemDTO = all.get(i);
+            PosItem posItem = new PosItem();
+            posItem.setSystemBookCode(posItemDTO.getSystemBookCode());
+            posItem.setItemNum(posItemDTO.getItemNum());
+            posItem.setItemName(posItemDTO.getItemName());
+            posItem.setItemCategory(posItemDTO.getItemCategoryCode());
+            posItem.setItemSubCategory(posItemDTO.getItemCategory());
+            list.add(posItem);
+        }
+        azureService.batchSaveItem(systemBook,list);
     }
 
 
-
-
-
-
-
-
-
+    @Scheduled(cron="0 */30 * * * *")   //test//每30分钟执行一次当天的数据
+    public void testSaveItem(){
+        Calendar calendar = Calendar.getInstance();
+        Date time = calendar.getTime();
+        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, time, time);
+        List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
+        for (int i = 0; i <itemSaleDailySummary.size() ; i++) {
+            ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
+            ItemSaleDaily itemSaleDaily = new ItemSaleDaily();
+            itemSaleDaily.setSystemBookCode(systemBook);
+            itemSaleDaily.setBranchNum(itemSaleDailyDTO.getItemNum());
+            itemSaleDaily.setShiftTableBizday(itemSaleDailyDTO.getShiftTableBizday());
+            itemSaleDaily.setItemNum(itemSaleDailyDTO.getItemNum());
+            itemSaleDaily.setShiftTableDate(itemSaleDailyDTO.getShiftTableDate());
+            itemSaleDaily.setItemMoney(itemSaleDailyDTO.getItemMoney());
+            itemSaleDaily.setItemAmount(itemSaleDailyDTO.getItemAmount());
+            itemSaleDaily.setItemCount(itemSaleDailyDTO.getItemCount());
+            itemSaleDaily.setItemSource(itemSaleDailyDTO.getItemSource());
+            itemSaleDaily.setItemMemberTag(itemSaleDailyDTO.getItemMemberTag());
+            list.add(itemSaleDaily);
+        }
+        azureService.batchSaveItemSaleDailies(systemBook,list,time,time);
+        logger.info("test每30分钟执行一次，更新当天的ItemSaleDaily");
+    }
 }
