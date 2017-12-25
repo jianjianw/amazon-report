@@ -170,7 +170,7 @@
                     <artifactId>spring</artifactId>
                 </exclusion>
             </exclusions>
-            <version>2.5.6</version>
+            <version>2.5.8</version>
         </dependency>
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
@@ -188,7 +188,6 @@
             <artifactId>zkclient</artifactId>
             <version>0.1</version>
         </dependency>
-
 
         <dependency>
             <groupId>com.nhsoft</groupId>

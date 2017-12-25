@@ -28,6 +28,15 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.8.10" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba:dubbo:2.5.6" level="project" />
+    <orderEntry type="library" name="Maven: jaxen:jaxen:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
+    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.6.2" level="project" />
+    <orderEntry type="library" name="Maven: xom:xom:1.0" level="project" />
+    <orderEntry type="library" name="Maven: xerces:xmlParserAPIs:2.6.2" level="project" />
+    <orderEntry type="library" name="Maven: xalan:xalan:2.6.0" level="project" />
+    <orderEntry type="library" name="Maven: com.ibm.icu:icu4j:2.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:1.5.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:1.5.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:1.5.6.RELEASE" level="project" />
@@ -88,7 +97,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.alibaba:jconsole:1.8.0">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_144/lib/jconsole.jar!/" />
+          <root url="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home/lib/jconsole.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -97,7 +106,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.alibaba:tools:1.8.0">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_144/lib/tools.jar!/" />
+          <root url="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -125,14 +134,13 @@
     <orderEntry type="library" name="Maven: com.nhsoft:amazon-datacenter:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.dianping.cat:cat-client:1.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.unidal.framework:foundation-service:2.5.0" level="project" />
-    <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.8.10" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-all:4.0.24.Final" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-container-default:1.6" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-classworlds:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.xbean:xbean-reflect:3.7" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.0.24" level="project" />
     <orderEntry type="library" name="Maven: com.nhsoft:amazon-phone:1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.alibaba:dubbo:2.5.6" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba:dubbo:2.5.8" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:4.3.10.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-beans:4.3.10.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.21.0-GA" level="project" />
