@@ -11787,7 +11787,7 @@ public class ReportServiceImpl implements ReportService {
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
 			BigDecimal saleMoney = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			if (supplierNum == null || (supplierSaleQuery.getSupplierNums() != null && supplierSaleQuery.getSupplierNums().size() > 0 && !supplierSaleQuery.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
