@@ -40,11 +40,12 @@ public class BranchRpcImpl implements BranchRpc {
     @Override
     public List<BranchArea> findBranchArea(String systemBookCode, List<Integer> branchNums) {
         List<Object[]> objects = branchService.findBranchArea(systemBookCode, branchNums);
-        List<BranchArea> list = new ArrayList<BranchArea>();
+        int size = objects.size();
+        List<BranchArea> list = new ArrayList<BranchArea>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             BranchArea branchArea = new BranchArea();
             branchArea.setBranchNum((Integer) object[0]);

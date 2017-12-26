@@ -7,6 +7,7 @@ import com.nhsoft.module.report.rpc.PosItemRpc;
 import com.nhsoft.module.report.service.BookResourceService;
 import com.nhsoft.module.report.service.PosItemService;
 import com.nhsoft.module.report.util.CopyUtil;
+import jdk.nashorn.internal.runtime.regexp.joni.constants.OPSize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,11 +23,12 @@ public class PosItemRpcImpl implements PosItemRpc {
     @Override
     public List<PosItemLat> findItemLat(String systemBookCode) {
         List<Object[]> objects = posItemService.findItemLat(systemBookCode);
-        List<PosItemLat> list = new ArrayList<>();
+        int size = objects.size();
+        List<PosItemLat> list = new ArrayList<>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i < size; i++) {
             Object[] object = objects.get(i);
             PosItemLat PosItemLat  = new PosItemLat();
             PosItemLat.setSystemBookCode(systemBookCode);
@@ -42,15 +44,15 @@ public class PosItemRpcImpl implements PosItemRpc {
     public List<PosItemDTO> findAll(String systemBookCode) {
 
         List<PosItemTypeParam> posItemTypeParams = bookResourceService.findPosItemTypeParamsInCache(systemBookCode);
-
         List<PosItemDTO> posItemDTOS = CopyUtil.toList(posItemService.findAll(systemBookCode), PosItemDTO.class);
-        for (int i = 0; i <posItemDTOS.size() ; i++) {
+        int size = posItemDTOS.size();
+        for (int i = 0; i <size ; i++) {
             PosItemDTO posItemDTO = posItemDTOS.get(i);
             PosItemTypeParam topCategory = PosItemTypeParam.getTopCategory(posItemTypeParams, posItemDTO.getItemCategoryCode());
+
             if(topCategory != null ){
                 posItemDTO.setItemCategoryCode(topCategory.getPosItemTypeName());
             }
-
         }
         return posItemDTOS;
     }

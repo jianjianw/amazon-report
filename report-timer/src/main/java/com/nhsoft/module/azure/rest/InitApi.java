@@ -44,7 +44,7 @@ public class InitApi {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/init/branchDaily/{systemBookCode}/{dateFrom}/{dateTo}")
-    public String initAzure(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+    public String initBranchDaily(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
         Date form = null;
         Date to = null;
         try {
@@ -200,6 +200,11 @@ public class InitApi {
             Integer month = Integer.valueOf(sdf.format(calendar.getTime()).substring(5, 7));        //bizday_month
             Integer dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);    //bizday_dayofyear
             Integer weeknumOfYear = calendar.get(Calendar.WEEK_OF_YEAR); //bizday_week_of_year
+            if(weeknumOfYear == 1 && month > 11) {      //为了匹配微软的周 运算结果
+                calendar.add(Calendar.DAY_OF_MONTH, -7);
+                weeknumOfYear = calendar.get(Calendar.WEEK_OF_YEAR) + 1;
+                calendar.add(Calendar.DAY_OF_MONTH, 7);
+            }
             String yearAndWeek = null; //bizday_year_week
             if(weeknumOfYear < 10) {
                 yearAndWeek = year + "0" + weeknumOfYear;
@@ -308,7 +313,6 @@ public class InitApi {
         Date to = sdf.parse(dateTo);
         List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBookCode, from, to);
         List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
-
         for(int i = 0; i<itemSaleDailySummary.size(); i++){
             ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
             ItemSaleDaily itemSaleDaily = new ItemSaleDaily();
@@ -424,8 +428,8 @@ public class InitApi {
             calendar.add(Calendar.DAY_OF_MONTH,-1);
             Date time = calendar.getTime();
             CardDailyDTOs = reportRpc.findCardDailyByBranchBizday(systemBookCode, null, time, time);
+            list.addAll(CardDailyDTOs);
         }
-        list.addAll(CardDailyDTOs);
         List<CardDaily> returnList = new ArrayList<CardDaily>();
         for (int i = 0; i <list.size() ; i++) {
             CardDailyDTO cardDailyDTO = list.get(i);
@@ -458,6 +462,7 @@ public class InitApi {
             posItem.setItemName(posItemDTO.getItemName());
             posItem.setItemCategory(posItemDTO.getItemCategoryCode());//顶级父类
             posItem.setItemSubCategory(posItemDTO.getItemCategory());
+            posItem.setItemCode(posItemDTO.getItemCode());
             list.add(posItem);
         }
         azureService.batchSaveItem(systemBookCode,list);

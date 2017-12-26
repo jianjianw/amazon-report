@@ -84,8 +84,8 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 		List<Integer> recommendItemNums = distributionCentreMatrixService
 				.findRecommend(systemBookCode, centerBranchNum);
 		List<PosItemShowDTO> list = new ArrayList<PosItemShowDTO>();
-
-		for (int i = 0; i < posItems.size(); i++) {
+		int posItemSize = posItems.size();
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			if (posItem.getItemDelTag() != null && posItem.getItemDelTag()) {
 				continue;
@@ -189,7 +189,9 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 		// 门店配送价 零售价
 		List<StoreMatrix> storeMatrixs = storeMatrixService.findByBranch(systemBookCode, branchNum, itemNums);
 		List<PosImage> posImages = posImageService.find(systemBookCode, itemNums);
-		for (int i = 0; i < returnList.size(); i++) {
+		int returnSize = returnList.size();
+		int posImageSize = posImages.size();
+		for (int i = 0; i < returnSize; i++) {
 			PosItemShowDTO posItemShow = returnList.get(i);
 			StoreMatrix storeMatrix = AppUtil.getStoreMatrix(systemBookCode, branchNum, posItemShow.getItemNum(),
 					storeMatrixs);
@@ -207,7 +209,7 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 				}
 			}
 
-			for (int j = 0; j < posImages.size(); j++) {
+			for (int j = 0; j < posImageSize; j++) {
 				PosImage posImage = posImages.get(j);
 				if (posImage.getItemNum().equals(posItemShow.getItemNum())) {
 
@@ -258,7 +260,8 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 			}
 		};
 		Collections.sort(posItems, comparator);
-		for (int i = 0; i < posItems.size(); i++) {
+		int posItemSize = posItems.size();
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			if (posItem.getItemDelTag() != null && posItem.getItemDelTag()) {
 				continue;
@@ -337,7 +340,9 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 		// 门店配送价 零售价
 		List<StoreMatrix> storeMatrixs = storeMatrixService.findByBranch(systemBookCode, branchNum, itemNums);
 		List<PosImage> posImages = posImageService.find(systemBookCode, itemNums);
-		for (int i = 0; i < returnList.size(); i++) {
+		int returnSize = returnList.size();
+		int posImageSize = posImages.size();
+		for (int i = 0; i < returnSize; i++) {
 			PosItemShowDTO posItemShow = returnList.get(i);
 			StoreMatrix storeMatrix = AppUtil.getStoreMatrix(systemBookCode, branchNum, posItemShow.getItemNum(),
 					storeMatrixs);
@@ -355,7 +360,7 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 				}
 			}
 
-			for (int j = 0; j < posImages.size(); j++) {
+			for (int j = 0; j < posImageSize; j++) {
 				PosImage posImage = posImages.get(j);
 				if (posImage.getItemNum().equals(posItemShow.getItemNum())) {
 					if (StringUtils.isEmpty(posImage.getPosImageUrl())) {
@@ -383,8 +388,9 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 		Map<String, TwoTypeAndTwoValue> map = new HashMap<String, TwoTypeAndTwoValue>();
 		List<PosItemTypeParam> posItemTypeParams = bookResourceService.findPosItemTypeParamsInCache(systemBookCode);
 		List<Integer> requestItemNums = branchItemService.findItemNums(systemBookCode, centerBranchNum);
-		
-		for(int i = 0;i < posItemTypeParams.size();i++){
+		int typeParamSize = posItemTypeParams.size();
+		int posItemSize = posItems.size();
+		for(int i = 0;i < typeParamSize;i++){
 			
 			PosItemTypeParam param = posItemTypeParams.get(i);
 			if(param.getPosItemTypeFatherCode() == null){
@@ -396,7 +402,7 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 				
 			}
 		}
-		for (int i = 0; i < posItems.size(); i++) {
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			if (posItem.getItemDelTag() != null && posItem.getItemDelTag()) {
 				continue;

@@ -26,9 +26,10 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 	public List<PosItemLogSummaryDTO> findBranchItemFlagSummary(StoreQueryCondition storeQueryCondition) {
 		List<Object[]> objects = posItemLogService.findBranchItemFlagSummary(storeQueryCondition.getSystemBookCode(), storeQueryCondition.getBranchNums(),
 				storeQueryCondition.getDateStart(), storeQueryCondition.getDateEnd(), storeQueryCondition.getPosItemLogSummary(), storeQueryCondition.getItemNums(), storeQueryCondition.getStorehouseNum());
-		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>();
+		int size = objects.size();
+		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
 		Object[] object = null;
-		for(int i = 0;i < objects.size();i++){
+		for(int i = 0;i < size;i++){
 			object = objects.get(i);
 			
 			PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
@@ -50,9 +51,10 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 	@Override
 	public List<PosItemLogSummaryDTO> findItemBizTypeFlagSummary(StoreQueryCondition storeQueryCondition) {
 		List<Object[]> objects = posItemLogService.findItemBizTypeFlagSummary(storeQueryCondition);
-		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>();
+		int size = objects.size();
+		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
 		Object[] object = null;
-		for(int i = 0;i < objects.size();i++){
+		for(int i = 0;i < size;i++){
 			object = objects.get(i);
 			
 			PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
@@ -74,9 +76,10 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 		List<Object[]> objects = posItemLogService.findSumByItemFlag(storeQueryCondition.getSystemBookCode(), storeQueryCondition.getBranchNums(),
 				storeQueryCondition.getDateStart(), storeQueryCondition.getDateEnd(), storeQueryCondition.getPosItemLogSummary(), storeQueryCondition.getItemNums(),
 				storeQueryCondition.getStorehouseNum(),storeQueryCondition.getMemos());
-		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>();
+		int size = objects.size();
+		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
 		Object[] object = null;
-		for(int i = 0;i < objects.size();i++){
+		for(int i = 0;i < size;i++){
 			object = objects.get(i);
 			
 			PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
@@ -98,9 +101,10 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 	@Override
 	public List<PosItemLogSummaryDTO> findItemFlagSummary(StoreQueryCondition storeQueryCondition) {
 		List<Object[]> objects = posItemLogService.findItemFlagSummary(storeQueryCondition);
-		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>();
+		int size = objects.size();
+		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
 		Object[] object = null;
-		for(int i = 0;i < objects.size();i++){
+		for(int i = 0;i < size;i++){
 			object = objects.get(i);
 			
 			PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
@@ -118,9 +122,10 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 	@Override
 	public List<PosItemLogSummaryDTO> findBranchFlagSummary(StoreQueryCondition storeQueryCondition) {
 		List<Object[]> objects = posItemLogService.findBranchFlagSummary(storeQueryCondition);
-		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>();
+		int size = objects.size();
+		List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
 		Object[] object = null;
-		for(int i = 0;i < objects.size();i++){
+		for(int i = 0;i < size;i++){
 			object = objects.get(i);
 			
 			PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();

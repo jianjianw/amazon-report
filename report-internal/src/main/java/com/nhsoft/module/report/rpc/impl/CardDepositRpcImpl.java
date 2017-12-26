@@ -21,11 +21,12 @@ public class CardDepositRpcImpl implements CardDepositRpc{
     @Override
     public List<BranchDepositReport> findBranchSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
         List<Object[]> objects = cardDepositService.findBranchSum(systemBookCode, branchNums, dateFrom, dateTo);
-        List<BranchDepositReport> list = new ArrayList<>();
+        int size = objects.size();
+        List<BranchDepositReport> list = new ArrayList<>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size; i++) {
             Object[] object = objects.get(i);
             BranchDepositReport branchDepositReport = new BranchDepositReport();
             branchDepositReport.setBranchNum((Integer) object[0]);
@@ -40,11 +41,12 @@ public class CardDepositRpcImpl implements CardDepositRpc{
     public List<BranchBizdayDepositSummary> findSumByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
         List<Object[]> objects = cardDepositService.findSumByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
-        List<BranchBizdayDepositSummary> list = new ArrayList<>();
+        int size = objects.size();
+        List<BranchBizdayDepositSummary> list = new ArrayList<>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             BranchBizdayDepositSummary summary = new BranchBizdayDepositSummary();
             summary.setBranchNum((Integer) object[0]);
