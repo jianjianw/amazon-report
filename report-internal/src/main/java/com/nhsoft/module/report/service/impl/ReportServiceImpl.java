@@ -376,8 +376,9 @@ public class ReportServiceImpl implements ReportService {
 				orderQueryDTO.setDateFrom(dateFrom);
 				orderQueryDTO.setDateTo(dateTo);
 				List<OrderReportDTO> list = posOrderRemoteService.findBranchMonthSummary(orderQueryDTO);
-				List<Object[]> returnList = new ArrayList<Object[]>();
-				for (int i = 0; i < list.size(); i++) {
+				int size = list.size();
+				List<Object[]> returnList = new ArrayList<Object[]>(size);
+				for (int i = 0; i < size; i++) {
 					Object[] objects = new Object[6];
 					objects[0] = list.get(i).getBranchNum();
 					objects[1] = list.get(i).getBizMonth();
@@ -433,8 +434,9 @@ public class ReportServiceImpl implements ReportService {
 				orderQueryDTO.setDateFrom(dateFrom);
 				orderQueryDTO.setDateTo(lDpcLimitTime);
 				List<OrderReportDTO> list = posOrderRemoteService.findBranchMonthSummary(orderQueryDTO);
-				List<Object[]> returnList = new ArrayList<Object[]>();
-				for (int i = 0; i < list.size(); i++) {
+				int size = list.size();
+				List<Object[]> returnList = new ArrayList<Object[]>(size);
+				for (int i = 0; i < size; i++) {
 					Object[] objects = new Object[6];
 					objects[0] = list.get(i).getBranchNum();
 					objects[1] = list.get(i).getBizMonth();
@@ -448,12 +450,13 @@ public class ReportServiceImpl implements ReportService {
 
 				List<Object[]> localObjects = posOrderDao.findMonthWholes(systemBookCode, branchNums, dpcLimitTime,
 						dateTo, false);
+				int localSize = localObjects.size();
 				boolean find = false;
-				for (int i = 0; i < localObjects.size(); i++) {
+				for (int i = 0; i < localSize; i++) {
 					Object[] localObject = localObjects.get(i);
 
 					find = false;
-					for (int j = 0; j < returnList.size(); j++) {
+					for (int j = 0; j < size; j++) {
 						Object[] objects = returnList.get(j);
 						if (objects[0].equals(localObject[0]) && objects[1].equals(localObject[1])) {
 							objects[2] = ((BigDecimal) objects[2]).add((BigDecimal) localObject[2]);
@@ -514,9 +517,10 @@ public class ReportServiceImpl implements ReportService {
 				objects = posOrderDao.findMonthWholes(systemBookCode, branchNums, dateFrom, dateTo, false);
 
 			}
+			int size = objects.size();
 			if(type > 0){
 				Object[] object = null;
-				for(int i = 0;i < objects.size();i++){
+				for(int i = 0;i < size;i++){
 					object = objects.get(i);
 					if(type == 1 || type == 3){
 						value1 = object[3] == null?BigDecimal.ZERO:BigDecimal.valueOf((Integer)object[3]);
@@ -3898,7 +3902,7 @@ public class ReportServiceImpl implements ReportService {
 			WholesaleProfitQuery wholesaleProfitQuery) {
 		String systemBookCode = wholesaleProfitQuery.getSystemBookCode();
 
-		List<WholesaleProfitByPosItemDetail> list = new ArrayList<WholesaleProfitByPosItemDetail>();
+
 		List<PosClient> posClients = posClientService.findInCache(systemBookCode);
 		List<Object[]> saleObjects = wholesaleOrderDao.findDetail(wholesaleProfitQuery);
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
@@ -3906,7 +3910,9 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal presentCostMoney = null;
 		BigDecimal presentMoney = null;
 		BigDecimal basePrice = null;
-		for (int i = 0; i < saleObjects.size(); i++) {
+		int size = saleObjects.size();
+		List<WholesaleProfitByPosItemDetail> list = new ArrayList<WholesaleProfitByPosItemDetail>(size);
+		for (int i = 0; i < size; i++) {
 			Object[] object = saleObjects.get(i);
 			String orderFid = (String) object[0];
 			Date saleDate = (Date) object[1];
@@ -3983,7 +3989,8 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		List<Object[]> returnObjects = wholesaleReturnDao.findDetail(wholesaleProfitQuery);
-		for (int i = 0; i < returnObjects.size(); i++) {
+		int returnSize = returnObjects.size();
+		for (int i = 0; i < returnSize; i++) {
 			Object[] object = returnObjects.get(i);
 			String orderFid = (String) object[0];
 			Date saleDate = (Date) object[1];
@@ -4993,18 +5000,19 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData) {
 		List<RetailDetail> retailDetails = posOrderDao.findRetailDetails(retailDetailQueryData);
-		if (retailDetails.size() == 0) {
+		int size = retailDetails.size();
+		if (size == 0) {
 			return retailDetails;
 		}
 		List<Branch> branchs = branchService.findInCache(retailDetailQueryData.getSystemBookCode());
 		List<Integer> itemNums = new ArrayList<Integer>();
-		for (int i = retailDetails.size() - 1; i >= 0; i--) {
+		for (int i = size - 1; i >= 0; i--) {
 			itemNums.add(retailDetails.get(i).getItemNum());
 		}
 		List<PosItem> posItems = posItemDao.findByItemNums(itemNums);
 
 		List<Integer> itemGradeNums = new ArrayList<Integer>();
-		for (int i = retailDetails.size() - 1; i >= 0; i--) {
+		for (int i = size - 1; i >= 0; i--) {
 			RetailDetail retailDetail = retailDetails.get(i);
 			PosItem posItem = AppUtil.getPosItem(retailDetail.getItemNum(), posItems);
 			if (posItem == null) {
@@ -5946,10 +5954,11 @@ public class ReportServiceImpl implements ReportService {
 
 		List<Object[]> objects = posOrderDao.findCustomerAnalysisHistorys(systemBookCode, dtFrom, dtTo, branchNums,
 				saleType);
-		List<CustomerAnalysisHistory> list = new ArrayList<CustomerAnalysisHistory>();
+		int size = objects.size();
+		List<CustomerAnalysisHistory> list = new ArrayList<CustomerAnalysisHistory>(size);
 		List<PosMachine> posMachines = posMachineDao.findByBranchs(systemBookCode, branchNums, null);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			BigDecimal couponMoney = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			BigDecimal mgrDiscount = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
@@ -6042,8 +6051,9 @@ public class ReportServiceImpl implements ReportService {
 	public List<CustomerAnalysisDay> findCustomerAnalysisDays(String systemBookCode, Date dtFrom, Date dtTo,
 			List<Integer> branchNums, String saleType) {
 		List<Object[]> objects = posOrderDao.findCustomerAnalysisDays(systemBookCode, dtFrom, dtTo, branchNums, saleType);
-		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>();
-		for (int i = 0; i < objects.size(); i++) {
+		int size = objects.size();
+		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>(size);
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			BigDecimal couponMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BigDecimal mgrDiscount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
@@ -6265,7 +6275,8 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal discount;
 		Integer itemGradeNum;
 		Integer saleBranchCount;
-		for (int i = 0; i < objects.size(); i++) {
+		int size = objects.size();
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			itemNum = (Integer) object[0];
 			itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -6330,8 +6341,9 @@ public class ReportServiceImpl implements ReportService {
 		List<PosItemGrade> posItemGrades = new ArrayList<PosItemGrade>();
 		if (saleAnalysisQueryData.getIsQueryGrade()) {
 			objects = posOrderDao.findSaleAnalysisCommonItemGrade(saleAnalysisQueryData);
+			int objectSize = objects.size();
 			List<Integer> gradeItemNums = new ArrayList<Integer>();
-			for (int i = 0; i < objects.size(); i++) {
+			for (int i = 0; i < objectSize; i++) {
 				Object[] object = objects.get(i);
 				itemNum = (Integer) object[0];
 				itemGradeNum = (Integer) object[1];
@@ -6530,9 +6542,9 @@ public class ReportServiceImpl implements ReportService {
 				orderQueryDTO.setItemNums(saleAnalysisQueryData.getPosItemNums());
 
 				List<OrderDetailReportDTO> list = posOrderRemoteService.findItemStateSummaryDetail(orderQueryDTO);
+				int size = list.size();
 				List<Object[]> returnList = new ArrayList<Object[]>();
-
-				for (int i = 0; i < list.size(); i++) {
+				for (int i = 0; i < size; i++) {
 					Object[] objects = new Object[7];
 					objects[0] = list.get(i).getItemNum();
 					objects[1] = list.get(i).getStateCode();
@@ -6558,8 +6570,9 @@ public class ReportServiceImpl implements ReportService {
 
 				}
 				List<OrderDetailReportDTO> list = posOrderRemoteService.findItemStateSummaryDetail(orderQueryDTO);
-				List<Object[]> returnList = new ArrayList<Object[]>();
-				for (int i = 0; i < list.size(); i++) {
+				int size = list.size();
+				List<Object[]> returnList = new ArrayList<Object[]>(size);
+				for (int i = 0; i < size; i++) {
 					Object[] objects = new Object[7];
 					objects[0] = list.get(i).getItemNum();
 					objects[1] = list.get(i).getStateCode();
@@ -6573,12 +6586,13 @@ public class ReportServiceImpl implements ReportService {
 				saleAnalysisQueryData.setDtFrom(dpcLimitTime);
 				saleAnalysisQueryData.setDtTo(dateTo);
 				List<Object[]> localObjects = posOrderDao.findSaleAnalysisCommon(saleAnalysisQueryData);
+				int localSize = localObjects.size();
 				boolean find = false;
-				for (int i = 0; i < localObjects.size(); i++) {
+				for (int i = 0; i < localSize; i++) {
 					Object[] localObject = localObjects.get(i);
 
 					find = false;
-					for (int j = 0; j < returnList.size(); j++) {
+					for (int j = 0; j < size; j++) {
 						Object[] objects = returnList.get(j);
 						if (objects[0].equals(localObject[0]) && objects[1].equals(localObject[1])) {
 							objects[2] = ((BigDecimal) objects[2]).add((BigDecimal) localObject[2]);
@@ -8433,8 +8447,9 @@ public class ReportServiceImpl implements ReportService {
 		List<Object[]> objects = posOrderDao.findCustomerAnalysisBranch(systemBookCode, dateFrom, dateTo, branchNums,
 				saleType);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>();
-		for (int i = 0; i < objects.size(); i++) {
+		int size = objects.size();
+		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>(size);
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			BigDecimal couponMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BigDecimal mgrDiscount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
@@ -8601,7 +8616,8 @@ public class ReportServiceImpl implements ReportService {
                                                 Date dateTo, String payType) {
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		Map<Integer, AlipaySumDTO> map = new LinkedHashMap<Integer, AlipaySumDTO>();
-		for (int i = 0; i < branchNums.size(); i++) {
+		int size = branchNums.size();
+		for (int i = 0; i < size; i++) {
 			Integer branchNum = branchNums.get(i);
 			Branch branch = AppUtil.getBranch(branchs, branchNum);
 

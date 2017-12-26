@@ -743,9 +743,9 @@ public class Report2ServiceImpl implements Report2Service {
 			objects = posOrderDao.findCustomerAnalysisTimePeriods(systemBookCode, dateFrom, dateTo, branchNums,
 					saleType, timeFromStr, timeToStr);
 		}
-
+		int size = objects.size();
 		Object[] object = null;
-		for(int i = 0;i < objects.size();i++){
+		for(int i = 0;i < size;i++){
 
 			object = objects.get(i);
 			CustomerAnalysisTimePeriod data = new CustomerAnalysisTimePeriod();

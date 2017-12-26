@@ -1705,12 +1705,13 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<BranchMonthReport> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
 		
 		List<Object[]> objects = reportService.findMonthWholes(systemBookCode,branchNums,dateFrom,dateTo,type);
-		List<BranchMonthReport> list = new ArrayList<BranchMonthReport>();
+		int size = objects.size();
+		List<BranchMonthReport> list = new ArrayList<BranchMonthReport>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 		Object[] object;
-		for(int i = 0;i < objects.size();i++){
+		for(int i = 0;i < size;i++){
 			object = objects.get(i);
 			BranchMonthReport branchMonthReport = new BranchMonthReport();
 			branchMonthReport.setBranchNum((Integer) object[0]);
@@ -1962,11 +1963,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BranchBizSummary> findProfitAnalysisDays(ProfitAnalysisQueryData profitAnalysisQueryData) {
 		List<Object[]> objects = reportService.findProfitAnalysisDays(profitAnalysisQueryData);
-		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>();
+		int size = objects.size();
+		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			BranchBizSummary branchBizSummary = new BranchBizSummary();
 			branchBizSummary.setBranchNum((Integer) object[0]);
@@ -2007,11 +2009,12 @@ public class ReportRpcImpl implements ReportRpc {
 
 
 		List<Object[]> objects = reportService.findProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
-		List<ProfitByBranchAndItemSummary> list = new ArrayList<ProfitByBranchAndItemSummary>();
+		int size = objects.size();
+		List<ProfitByBranchAndItemSummary> list = new ArrayList<ProfitByBranchAndItemSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();
 			profitByBranchAndItemSummary.setBranchNum((Integer) object[0]);
@@ -2030,11 +2033,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<ProfitAnalysisByItemSummary> findProfitAnalysisByItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
 		List<Object[]> objects = reportService.findProfitAnalysisByItem(profitAnalysisQueryData);
-		List<ProfitAnalysisByItemSummary> list = new ArrayList<>();
+		int size = objects.size();
+		List<ProfitAnalysisByItemSummary> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0 ;i<objects.size(); i++){
+		for(int i = 0 ;i<size; i++){
 			Object[] object = objects.get(i);
 			ProfitAnalysisByItemSummary profitAnalysisByItemSummary = new ProfitAnalysisByItemSummary();
 			profitAnalysisByItemSummary.setItemNum((Integer) object[0]);
@@ -2123,11 +2127,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<SaleByBranchSummary> findSaleAnalysisByBranchs(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByBranchs(queryData);
-		List<SaleByBranchSummary> list = new ArrayList<SaleByBranchSummary>();
+		int size = objects.size();
+		List<SaleByBranchSummary> list = new ArrayList<SaleByBranchSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			SaleByBranchSummary saleByBranchSummary = new SaleByBranchSummary();
 			saleByBranchSummary.setBranchNum((Integer) object[0]);
@@ -2168,11 +2173,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<SaleByCategoryBranchSummary> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByCategoryBranchs(queryData);
-		List<SaleByCategoryBranchSummary> list = new ArrayList<SaleByCategoryBranchSummary>();
+		int size = objects.size();
+		List<SaleByCategoryBranchSummary> list = new ArrayList<SaleByCategoryBranchSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			SaleByCategoryBranchSummary saleByCategoryBranchSummary = new SaleByCategoryBranchSummary();
 			saleByCategoryBranchSummary.setOrderDetailBranchNum((Integer) object[0]);
@@ -2193,11 +2199,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByDepartments(queryData);
-		List<SaleByDepartmentSummary> list = new ArrayList<SaleByDepartmentSummary>();
+		int size = objects.size();
+		List<SaleByDepartmentSummary> list = new ArrayList<SaleByDepartmentSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0; i<objects.size(); i++){
+		for(int i = 0; i<size; i++){
 			Object[] object = objects.get(i);
 			SaleByDepartmentSummary saleByDepartmentSummary = new SaleByDepartmentSummary();
 			saleByDepartmentSummary.setItemNum((Integer) object[0]);
@@ -2717,11 +2724,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BranchProfitSummary> findProfitAnalysisBranchs(ProfitAnalysisQueryData profitAnalysisQueryData) {
         List<Object[]> objects = reportService.findProfitAnalysisBranchs(profitAnalysisQueryData);
-        List<BranchProfitSummary> list = new ArrayList<BranchProfitSummary>();
+		int size = objects.size();
+		List<BranchProfitSummary> list = new ArrayList<BranchProfitSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-        for(int i = 0; i<objects.size();i++){
+        for(int i = 0; i<size;i++){
             Object[] object = objects.get(i);
             BranchProfitSummary branchProfitSummary = new BranchProfitSummary();
             branchProfitSummary.setBranchNum((Integer) object[0]);

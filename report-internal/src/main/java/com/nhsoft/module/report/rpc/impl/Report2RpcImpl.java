@@ -959,7 +959,8 @@ public class Report2RpcImpl implements Report2Rpc {
 			reportUtil.add(dto);
 			chainItemNums.remove(analysis.getItemNum());
 		}
-		for(int i = 0;i < chainItemNums.size();i++){
+		int size = chainItemNums.size();
+		for(int i = 0;i < size;i++){
 			Integer itemNum = chainItemNums.get(i);
 			innerItemNums.add(itemNum);
 
@@ -991,8 +992,9 @@ public class Report2RpcImpl implements Report2Rpc {
 		}
 		List<Supplier> suppliers = supplierService.findInCache(systemBookCode);
 		List<RequestAnalysisDTO> dtos = reportUtil.toList();
+		int dtoSize = dtos.size();
 		Branch branch = branchService.readInCache(systemBookCode, branchNum);
-		for(int i = dtos.size()-1;i>=0;i--) {
+		for(int i = dtoSize-1;i>=0;i--) {
 			RequestAnalysisDTO dto = dtos.get(i);
 			PosItem item = AppUtil.getPosItem(dto.getItemNum(), posItems);
 			if(item == null) {
@@ -1028,7 +1030,8 @@ public class Report2RpcImpl implements Report2Rpc {
 			if(dto.getItemType() == AppConstants.C_ITEM_TYPE_ASSEMBLE){
 				List<PosItemKit> posItemKits = posItemService.findPosItemKits(dto.getItemNum());
 				dto.setDetails(new ArrayList<RequestAnalysisDTO>());
-				for(int j = 0;j < posItemKits.size();j++){
+				int kitSize = posItemKits.size();
+				for(int j = 0;j < kitSize;j++){
 					PosItemKit posItemKit = posItemKits.get(j);
 					RequestAnalysisDTO detail = new RequestAnalysisDTO();
 					detail.setItemNum(posItemKit.getPosItem().getItemNum());
