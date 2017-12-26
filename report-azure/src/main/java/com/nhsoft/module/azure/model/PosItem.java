@@ -16,6 +16,7 @@ public class PosItem implements Serializable {
     private String itemName;
     private String itemCategory;        //商品顶级类
     private String itemSubCategory;     //商品小类
+    private String itemCode;            //商品代码   25号新加
 
     public String getSystemBookCode() {
         return systemBookCode;
@@ -57,6 +58,14 @@ public class PosItem implements Serializable {
         this.itemSubCategory = itemSubCategory;
     }
 
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,7 +79,9 @@ public class PosItem implements Serializable {
         if (itemName != null ? !itemName.equals(posItem.itemName) : posItem.itemName != null) return false;
         if (itemCategory != null ? !itemCategory.equals(posItem.itemCategory) : posItem.itemCategory != null)
             return false;
-        return itemSubCategory != null ? itemSubCategory.equals(posItem.itemSubCategory) : posItem.itemSubCategory == null;
+        if (itemSubCategory != null ? !itemSubCategory.equals(posItem.itemSubCategory) : posItem.itemSubCategory != null)
+            return false;
+        return itemCode != null ? itemCode.equals(posItem.itemCode) : posItem.itemCode == null;
     }
 
     @Override
@@ -80,6 +91,7 @@ public class PosItem implements Serializable {
         result = 31 * result + (itemName != null ? itemName.hashCode() : 0);
         result = 31 * result + (itemCategory != null ? itemCategory.hashCode() : 0);
         result = 31 * result + (itemSubCategory != null ? itemSubCategory.hashCode() : 0);
+        result = 31 * result + (itemCode != null ? itemCode.hashCode() : 0);
         return result;
     }
 }

@@ -47,10 +47,10 @@ public class PosItemRpcImpl implements PosItemRpc {
         for (int i = 0; i <posItemDTOS.size() ; i++) {
             PosItemDTO posItemDTO = posItemDTOS.get(i);
             PosItemTypeParam topCategory = PosItemTypeParam.getTopCategory(posItemTypeParams, posItemDTO.getItemCategoryCode());
+
             if(topCategory != null ){
                 posItemDTO.setItemCategoryCode(topCategory.getPosItemTypeName());
             }
-
         }
         return posItemDTOS;
     }

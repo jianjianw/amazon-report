@@ -37,8 +37,8 @@ public class AzureSchedule {
     @Autowired
     private ReportRpc reportRpc;
 
-    String systemBook = "4410";
-
+    //String systemBook = "4410";
+    String systemBook = "4344";
 
     @Scheduled(cron="0 */30 * * * *")
     public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
@@ -186,6 +186,11 @@ public class AzureSchedule {
             Integer month = Integer.valueOf(sdf.format(calendar.getTime()).substring(5, 7));        //bizday_month
             Integer dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);    //bizday_dayofyear
             Integer weeknumOfYear = calendar.get(Calendar.WEEK_OF_YEAR); //bizday_week_of_year
+            if(weeknumOfYear == 1 && month > 11) {      //为了匹配微软的周 运算结果
+                calendar.add(Calendar.DAY_OF_MONTH, -7);
+                weeknumOfYear = calendar.get(Calendar.WEEK_OF_YEAR) + 1;
+                calendar.add(Calendar.DAY_OF_MONTH, 7);
+            }
             String yearAndWeek = null; //bizday_year_week
             if(weeknumOfYear < 10) {
                 yearAndWeek = year + "0" + weeknumOfYear;
@@ -429,36 +434,13 @@ public class AzureSchedule {
             posItem.setSystemBookCode(posItemDTO.getSystemBookCode());
             posItem.setItemNum(posItemDTO.getItemNum());
             posItem.setItemName(posItemDTO.getItemName());
-            posItem.setItemCategory(posItemDTO.getItemCategoryCode());
+            posItem.setItemCategory(posItemDTO.getItemCategoryCode());//顶级弗雷
             posItem.setItemSubCategory(posItemDTO.getItemCategory());
+            posItem.setItemCode(posItemDTO.getItemCode());//新加字段
             list.add(posItem);
         }
         azureService.batchSaveItem(systemBook,list);
     }
 
 
-    @Scheduled(cron="0 */30 * * * *")   //test//每30分钟执行一次当天的数据
-    public void testSaveItem(){
-        Calendar calendar = Calendar.getInstance();
-        Date time = calendar.getTime();
-        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, time, time);
-        List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
-        for (int i = 0; i <itemSaleDailySummary.size() ; i++) {
-            ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
-            ItemSaleDaily itemSaleDaily = new ItemSaleDaily();
-            itemSaleDaily.setSystemBookCode(systemBook);
-            itemSaleDaily.setBranchNum(itemSaleDailyDTO.getItemNum());
-            itemSaleDaily.setShiftTableBizday(itemSaleDailyDTO.getShiftTableBizday());
-            itemSaleDaily.setItemNum(itemSaleDailyDTO.getItemNum());
-            itemSaleDaily.setShiftTableDate(itemSaleDailyDTO.getShiftTableDate());
-            itemSaleDaily.setItemMoney(itemSaleDailyDTO.getItemMoney());
-            itemSaleDaily.setItemAmount(itemSaleDailyDTO.getItemAmount());
-            itemSaleDaily.setItemCount(itemSaleDailyDTO.getItemCount());
-            itemSaleDaily.setItemSource(itemSaleDailyDTO.getItemSource());
-            itemSaleDaily.setItemMemberTag(itemSaleDailyDTO.getItemMemberTag());
-            list.add(itemSaleDaily);
-        }
-        azureService.batchSaveItemSaleDailies(systemBook,list,time,time);
-        logger.info("test每30分钟执行一次，更新当天的ItemSaleDaily");
-    }
 }

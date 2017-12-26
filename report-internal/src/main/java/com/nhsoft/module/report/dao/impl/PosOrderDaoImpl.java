@@ -5019,7 +5019,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		StringBuilder sb = new StringBuilder();//findMoneyBizdaySummary
 		sb.append("select branch_num,shift_table_bizday, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
 		sb.append("count(order_no) as count ");
+		//sb.append("count(detail.item_num) as item_count ");//客单购买数
 		sb.append("from pos_order with(nolock) ");
+		//sb.append("inner join pos_order_detail as detail with(nolock) on p.order_no = detail.order_no ");
 		sb.append("where system_book_code = :systemBookCode ");
 		if (dateFrom != null) {
 			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");

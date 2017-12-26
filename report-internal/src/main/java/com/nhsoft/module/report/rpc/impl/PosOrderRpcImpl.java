@@ -482,6 +482,10 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			source = (String) object[3];
 			itemNum = (Integer) object[4];
 
+			if(source == null || source.length() == 0){
+				source = "线下门店";
+			}
+
 			String hour = itemPeriod.substring(0, 2);
 			Integer intHour = Integer.valueOf(hour);
 			Integer intMin = Integer.valueOf(itemPeriod.substring(2, 4));
@@ -543,6 +547,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
+		String source;
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
 			ItemSaleDailyDTO itemSaleDailyDTO = new ItemSaleDailyDTO();
@@ -550,7 +555,13 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			itemSaleDailyDTO.setBranchNum((Integer) object[0]);
 			itemSaleDailyDTO.setShiftTableBizday((String) object[1]);
 			itemSaleDailyDTO.setItemNum((Integer) object[2]);
-			itemSaleDailyDTO.setItemSource((String) object[3]);
+			source = (String) object[3];
+			if(source == null || source.length() == 0){
+				itemSaleDailyDTO.setItemSource("线下门店");
+			}else{
+				itemSaleDailyDTO.setItemSource(source);
+			}
+
 			if((Integer) object[4] > 0){
 				itemSaleDailyDTO.setItemMemberTag("会员");
 			}else{

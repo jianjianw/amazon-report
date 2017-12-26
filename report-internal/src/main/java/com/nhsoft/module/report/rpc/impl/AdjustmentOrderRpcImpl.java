@@ -87,7 +87,6 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
         if(objects.isEmpty()){
             return list;
         }
-        Date date = null;
         for (int i = 0; i <objects.size() ; i++) {
             Object[] object = objects.get(i);
             ItemLossDailyDTO itemLossDailyDTO = new ItemLossDailyDTO();
