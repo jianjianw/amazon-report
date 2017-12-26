@@ -37,8 +37,8 @@ public class AzureSchedule {
     @Autowired
     private ReportRpc reportRpc;
 
-    String systemBook = "4410";
-    //String systemBook = "4344";
+    //String systemBook = "4410";
+    String systemBook = "4344";
 
     @Scheduled(cron="0 */30 * * * *")
     public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
@@ -179,6 +179,14 @@ public class AzureSchedule {
         Integer thisYear = calendar.get(Calendar.YEAR);             //本年
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
         Integer thisWeek = calendar.get(Calendar.WEEK_OF_YEAR);     //本周
+
+        Integer thisMonth = Integer.valueOf(sdf.format(calendar.getTime()).substring(5, 7)); //为了匹配微软的周 运算结果
+        if(thisWeek == 1 && thisMonth > 11) {
+            calendar.add(Calendar.DAY_OF_MONTH, -7);
+            thisWeek = calendar.get(Calendar.WEEK_OF_YEAR) + 1;
+            calendar.add(Calendar.DAY_OF_MONTH, 7);
+        }
+
         List<Bizday> list = new ArrayList<Bizday>();
         for(int i = 0; i < 735; i++) {
             calendar.setFirstDayOfWeek(Calendar.MONDAY);
@@ -448,6 +456,8 @@ public class AzureSchedule {
 
     @Scheduled(cron="0 */30 * * * *")   //test//每30分钟执行一次当天的数据
     public void testSaveItemSaleDaily(){
+
+        logger.info("半点一次测试ItemSaleDaily定时器执行了");
         Calendar calendar = Calendar.getInstance();
         Date time = calendar.getTime();
         List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, time, time);
@@ -457,7 +467,7 @@ public class AzureSchedule {
             ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
             ItemSaleDaily itemSaleDaily = new ItemSaleDaily();
             itemSaleDaily.setSystemBookCode(systemBook);
-            itemSaleDaily.setBranchNum(itemSaleDailyDTO.getItemNum());
+            itemSaleDaily.setBranchNum(itemSaleDailyDTO.getBranchNum());
             itemSaleDaily.setShiftTableBizday(itemSaleDailyDTO.getShiftTableBizday());
             itemSaleDaily.setItemNum(itemSaleDailyDTO.getItemNum());
             itemSaleDaily.setShiftTableDate(itemSaleDailyDTO.getShiftTableDate());
@@ -471,4 +481,5 @@ public class AzureSchedule {
         azureService.batchSaveItemSaleDailies(systemBook,list,time,time);
         logger.info("test每30分钟执行一次，更新当天的ItemSaleDaily");
     }
+
 }
