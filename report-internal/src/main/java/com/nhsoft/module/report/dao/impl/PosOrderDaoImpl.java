@@ -634,7 +634,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
 									  List<String> categoryCodes, Integer offset, Integer limit, String sortField, String sortType) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select p.branch_num, p.order_operate_time as saleDate, detail.item_num, t.item_name as itemName, t.item_code as itemCode ,");
+		sb.append("select p.branch_num, p.order_time as saleDate, detail.item_num, t.item_name as itemName, t.item_code as itemCode ,");
 		sb.append("(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as saleMoney, ");
 		sb.append("(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as marginMoney, ");
 		sb.append("(case when detail.order_detail_state_code = 8 then 0 when detail.order_detail_state_code = 4 then -(detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as costMoney ");
@@ -2817,7 +2817,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             space = 60;
         }
         StringBuffer sb = new StringBuffer();
-        sb.append("select max(order_operate_time), sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, count(order_no) as amount ");
+        sb.append("select max(order_time), sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, count(order_no) as amount ");
         sb.append("from pos_order with(nolock) where system_book_code = :systemBookCode and shift_table_bizday between '"
                 + DateUtil.getDateShortStr(dtFrom) + "' and '" + DateUtil.getDateShortStr(dtTo) + "' ");
         sb.append("and order_state_code in (5,7) ");
@@ -2834,7 +2834,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			}
 		}
 
-        sb.append(" group by ((DATEDIFF(mi, '00:00:00',convert(varchar(8),order_operate_time,108)))/(:gap) )");
+        sb.append(" group by ((DATEDIFF(mi, '00:00:00',convert(varchar(8),order_time,108)))/(:gap) )");
 
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.setString("systemBookCode", systemBookCode);
