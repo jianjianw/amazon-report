@@ -295,7 +295,7 @@ public class AzureSchedule {
 
 
     //新加的表
-    @Scheduled(cron="0 0 2-3 * * *")//@Scheduled(cron="0 0 2-3 * * *")       //每天凌晨2-3点更新前两天的数据     商品日销售汇总  (不需要今天的数据)
+    @Scheduled(cron="0 0 2-3 * * *") //每天凌晨2-3点更新前两天的数据     商品日销售汇总  (不需要今天的数据)
     public void saveItemSaleDaily(){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-1);
@@ -337,7 +337,7 @@ public class AzureSchedule {
     }
 
 
-    @Scheduled(cron="0 0 2-3 * * *")//@Scheduled(cron="0 0 2-3 * * *")       //每天凌晨2-3点更新一次前两天的数据   商品日报损汇总
+    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点更新一次前两天的数据   商品日报损汇总
     public void saveItemLossDaily(){
 
         Calendar calendar = Calendar.getInstance();
@@ -447,7 +447,7 @@ public class AzureSchedule {
     }
 
     @Scheduled(cron="0 */30 * * * *")   //test//每30分钟执行一次当天的数据
-    public void testSaveItem(){
+    public void testSaveItemSaleDaily(){
         Calendar calendar = Calendar.getInstance();
         Date time = calendar.getTime();
         List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, time, time);
