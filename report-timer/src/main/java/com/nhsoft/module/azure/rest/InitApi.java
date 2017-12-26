@@ -44,7 +44,7 @@ public class InitApi {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/init/branchDaily/{systemBookCode}/{dateFrom}/{dateTo}")
-    public String initAzure(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+    public String initBranchDaily(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
         Date form = null;
         Date to = null;
         try {
@@ -313,7 +313,6 @@ public class InitApi {
         Date to = sdf.parse(dateTo);
         List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBookCode, from, to);
         List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
-
         for(int i = 0; i<itemSaleDailySummary.size(); i++){
             ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
             ItemSaleDaily itemSaleDaily = new ItemSaleDaily();

@@ -16,7 +16,8 @@ public class PosItem implements Serializable {
     private String itemName;
     private String itemCategory;        //商品顶级类
     private String itemSubCategory;     //商品小类
-    private String itemCode;            //商品代码   25号新加
+    //新加字段
+    private String itemCode;            //商品代码
 
     public String getSystemBookCode() {
         return systemBookCode;

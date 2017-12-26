@@ -29,6 +29,9 @@ public class BranchDaily implements Serializable {
     private BigDecimal dailyPrice;               //客单价
     private BigDecimal targetMoney;       //营业额目标
 
+    //新加字段
+    private Integer dailyCount;  //客单购买数
+
 
     public String getSystemBookCode() {
         return systemBookCode;
@@ -94,8 +97,13 @@ public class BranchDaily implements Serializable {
         this.targetMoney = targetMoney;
     }
 
+    public Integer getDailyCount() {
+        return dailyCount;
+    }
 
-
+    public void setDailyCount(Integer dailyCount) {
+        this.dailyCount = dailyCount;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -114,7 +122,8 @@ public class BranchDaily implements Serializable {
         if (dailyMoney != null ? !dailyMoney.equals(that.dailyMoney) : that.dailyMoney != null) return false;
         if (dailyQty != null ? !dailyQty.equals(that.dailyQty) : that.dailyQty != null) return false;
         if (dailyPrice != null ? !dailyPrice.equals(that.dailyPrice) : that.dailyPrice != null) return false;
-        return targetMoney != null ? targetMoney.equals(that.targetMoney) : that.targetMoney == null;
+        if (targetMoney != null ? !targetMoney.equals(that.targetMoney) : that.targetMoney != null) return false;
+        return dailyCount != null ? dailyCount.equals(that.dailyCount) : that.dailyCount == null;
     }
 
     @Override
@@ -127,6 +136,7 @@ public class BranchDaily implements Serializable {
         result = 31 * result + (dailyQty != null ? dailyQty.hashCode() : 0);
         result = 31 * result + (dailyPrice != null ? dailyPrice.hashCode() : 0);
         result = 31 * result + (targetMoney != null ? targetMoney.hashCode() : 0);
+        result = 31 * result + (dailyCount != null ? dailyCount.hashCode() : 0);
         return result;
     }
 }

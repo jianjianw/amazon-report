@@ -22,11 +22,12 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
     @Override
     public List<SaleMoneyGoals> findSaleMoneyGoalsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
         List<Object[]> objects = branchTransferGoalsService.findSaleMoneyGoalsByBranch(systemBookCode, branchNums, dateFrom, dateTo,dateType);
-        List<SaleMoneyGoals> list = new ArrayList<SaleMoneyGoals>();
+        int size = objects.size();
+        List<SaleMoneyGoals> list = new ArrayList<SaleMoneyGoals>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for(int i = 0;i<objects.size();i++){
+        for(int i = 0;i<size;i++){
             Object[] object = objects.get(i);
             SaleMoneyGoals saleMoneyGoals = new SaleMoneyGoals();
             saleMoneyGoals.setBranchNum((Integer) object[0]);
@@ -39,11 +40,12 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
     @Override
     public List<SaleMoneyGoals> findSaleMoneyGoalsByDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
         List<Object[]> objects = branchTransferGoalsService.findSaleMoneyGoalsByDate(systemBookCode, branchNums, dateFrom, dateTo, dateType);
-        List<SaleMoneyGoals> list = new ArrayList<SaleMoneyGoals>();
+        int size = objects.size();
+        List<SaleMoneyGoals> list = new ArrayList<SaleMoneyGoals>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for(int i = 0;i<objects.size();i++){
+        for(int i = 0;i<size;i++){
             Object[] object = objects.get(i);
             SaleMoneyGoals saleMoneyGoals = new SaleMoneyGoals();
             saleMoneyGoals.setDate((String) object[0]);
@@ -57,11 +59,13 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
     @Override
     public List<SaleMoneyGoals> findGoalsByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
         List<Object[]> objects = branchTransferGoalsService.findGoalsByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo);
-        List<SaleMoneyGoals> list = new ArrayList<>();
+
+        int size = objects.size();
+        List<SaleMoneyGoals> list = new ArrayList<>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             SaleMoneyGoals saleMoneyGoals = new SaleMoneyGoals();
             saleMoneyGoals.setBranchNum((Integer) object[0]);
@@ -76,12 +80,13 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
     @Override
     public List<DepositGoalsDTO> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
         List<Object[]> objects = branchTransferGoalsService.findDepositGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
-        List<DepositGoalsDTO> list = new ArrayList<>();
+        int size = objects.size();
+        List<DepositGoalsDTO> list = new ArrayList<>(size);
         if(objects.isEmpty()){
             return list;
         }
         String biz = null;
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             DepositGoalsDTO depositGoalsDTO = new DepositGoalsDTO();
             depositGoalsDTO.setBranchNum((Integer) object[0]);
@@ -96,12 +101,14 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
     @Override
     public List<NewCardGoalsDTO> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
         List<Object[]> objects = branchTransferGoalsService.findNewCardGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
-        List<NewCardGoalsDTO> list = new ArrayList<>();
+
+        int size = objects.size();
+        List<NewCardGoalsDTO> list = new ArrayList<>(size);
         if(objects.isEmpty()){
             return list;
         }
         String biz = null;
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             NewCardGoalsDTO newCardGoalsDTO = new NewCardGoalsDTO();
             newCardGoalsDTO.setBranchNum((Integer) object[0]);

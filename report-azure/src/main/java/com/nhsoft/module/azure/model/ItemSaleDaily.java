@@ -18,14 +18,16 @@ public class ItemSaleDaily implements Serializable {
     private String shiftTableBizday;
     @Id
     private Integer itemNum;
-    private Date shiftTableDate;
-    private BigDecimal itemMoney;   //销售金额
-    private BigDecimal itemAmount;  //销售数量
-    private Integer itemCount;      //销售次数
     @Id
     private String itemSource;      //单据来源
     @Id
     private String itemMemberTag;  //会员标记
+
+    private Date shiftTableDate;
+    private BigDecimal itemMoney;   //销售金额
+    private BigDecimal itemAmount;  //销售数量
+    private Integer itemCount;      //销售次数
+
 
 
     public String getSystemBookCode() {

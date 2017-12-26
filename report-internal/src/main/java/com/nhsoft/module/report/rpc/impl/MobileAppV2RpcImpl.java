@@ -84,8 +84,8 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 		List<Integer> recommendItemNums = distributionCentreMatrixService
 				.findRecommend(systemBookCode, centerBranchNum);
 		List<PosItemShowDTO> list = new ArrayList<PosItemShowDTO>();
-
-		for (int i = 0; i < posItems.size(); i++) {
+		int posItemSize = posItems.size();
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			if (posItem.getItemDelTag() != null && posItem.getItemDelTag()) {
 				continue;

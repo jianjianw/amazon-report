@@ -352,11 +352,12 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		itemQueryDTO.setSystemBookCode(systemBookCode);
 		List<Object[]> objects = posOrderService.findItemSum(itemQueryDTO);
 		//封装数据
-		List<ItemSummary> list = new ArrayList<>();
+		int size = objects.size();
+		List<ItemSummary> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			ItemSummary itemSummary = new ItemSummary();
 			itemSummary.setItemNnum((Integer)object[0]);
@@ -375,14 +376,15 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<BranchItemSummaryDTO> findBranchItemSum(String systemBookCode, ItemQueryDTO itemQueryDTO) {
 		itemQueryDTO.setSystemBookCode(systemBookCode);
 		List<Object[]> objects = posOrderService.findBranchItemSum(itemQueryDTO);
-		List<BranchItemSummaryDTO> list = new ArrayList();
+		int size = objects.size();
+		List<BranchItemSummaryDTO> list = new ArrayList(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 		Integer branchNum;
 		Integer itemNum;
 		Map<String,BranchItemSummaryDTO> map = new HashMap<>();
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			branchNum = (Integer)object[0];
 			itemNum = (Integer) object[1];
@@ -414,20 +416,25 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 		List<Object[]> objects = posOrderService.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
 		List<SaleMoneyGoals> goals = branchTransferGoalsRpc.findGoalsByBranchBizday(systemBookCode, null, dateFrom, dateTo);
-
-		List<BranchDaily> list = new ArrayList<>();
+		int size = objects.size();
+		List<BranchDaily> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-
-		for (int i = 0; i <objects.size() ; i++) {
+		int goalsSize = goals.size();
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			BranchDaily branchDaily = new BranchDaily();
 			branchDaily.setSystemBookCode(systemBookCode);
 			branchDaily.setBranchNum((Integer) object[0]);
 			branchDaily.setShiftTableBizday((String) object[1]);
 			branchDaily.setDailyMoney((BigDecimal) object[2]);
+			//移除数据营业额为0的数据
+			if(branchDaily.getDailyMoney() == null ||branchDaily.getDailyMoney().compareTo(BigDecimal.ZERO) == 0){
+				continue;
+			}
 			branchDaily.setDailyQty((Integer) object[3]);
+			branchDaily.setDailyCount((Integer) object[4]);
 			branchDaily.setShiftTableDate(DateUtil.getDateStr(branchDaily.getShiftTableBizday()));
 			if(branchDaily.getDailyQty() == 0){
 				branchDaily.setDailyPrice(BigDecimal.ZERO);
@@ -436,7 +443,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				branchDaily.setDailyPrice(branchDaily.getDailyMoney().divide(new BigDecimal(qty),4,ROUND_HALF_UP));
 			}
 			//将营业额目标封装到分店日汇总中
-			for (int j = 0; j <goals.size() ; j++) {
+			for (int j = 0; j <goalsSize ; j++) {
 				SaleMoneyGoals saleMoneyGoals = goals.get(j);
 				if (saleMoneyGoals.getSystemBookCode().equals(branchDaily.getSystemBookCode()) && saleMoneyGoals.getBranchNum().equals(branchDaily.getBranchNum()) &&
 						saleMoneyGoals.getDate().replace("-","").equals(branchDaily.getShiftTableBizday())){
@@ -445,8 +452,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			}
 			list.add(branchDaily);
 		}
-
-		//移除数据营业额为0的数据
+		/*//移除数据营业额为0的数据
 		Iterator<BranchDaily> iterator = list.iterator();
 		while (iterator.hasNext()) {
 			BranchDaily next = iterator.next();
@@ -454,17 +460,15 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			if(dailyMoney == null ||dailyMoney.compareTo(BigDecimal.ZERO) == 0){
 				iterator.remove();
 			}
-		}
-		//排序
-		Comparator<BranchDaily> comparing = Comparator.comparing(BranchDaily::getShiftTableBizday);
-		list.sort(comparing);//comparing.reversed()
+		}*/
 		return list;
 	}
 
 	public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
 
 		List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo ,itemNums);
-		List<ItemDailyDetail> list = new ArrayList<>();
+		int size = objects.size();
+		List<ItemDailyDetail> list = new ArrayList<>(size);
 		if (objects.isEmpty()) {
 			return list;
 		}
@@ -474,7 +478,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		Integer itemNum;
 		String source;
 		String itemPeriod;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			branchNum = (Integer) object[0];
 			bizday = (String) object[1];
@@ -482,9 +486,13 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			source = (String) object[3];
 			itemNum = (Integer) object[4];
 
-			if(source == null || source.length() == 0){
+			/*if(source == null || source.length() == 0){
+				source = "线下门店";
+			}*/
+			if(source != null && source.length() == 0){
 				source = "线下门店";
 			}
+
 
 			String hour = itemPeriod.substring(0, 2);
 			Integer intHour = Integer.valueOf(hour);
@@ -524,7 +532,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			List<ItemDailyDetail> itemDailyDetails = next.toArray();
 			list.addAll(itemDailyDetails);
 		}
-
 		//移出营业额和数量为0的数据
 		Iterator<ItemDailyDetail> it = list.iterator();
 		while (it.hasNext()) {
@@ -543,12 +550,13 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<ItemSaleDailyDTO> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
 
 		List<Object[]> objects = posOrderService.findItemSaleDailySummary(systemBookCode, dateFrom, dateTo);
-		List<ItemSaleDailyDTO> list = new ArrayList<>();
+		int size = objects.size();
+		List<ItemSaleDailyDTO> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 		String source;
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i < size ; i++) {
 			Object[] object = objects.get(i);
 			ItemSaleDailyDTO itemSaleDailyDTO = new ItemSaleDailyDTO();
 			itemSaleDailyDTO.setSystemBookCode(systemBookCode);
@@ -556,7 +564,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			itemSaleDailyDTO.setShiftTableBizday((String) object[1]);
 			itemSaleDailyDTO.setItemNum((Integer) object[2]);
 			source = (String) object[3];
-			if(source == null || source.length() == 0){
+			if(source != null && source.length() == 0){
 				itemSaleDailyDTO.setItemSource("线下门店");
 			}else{
 				itemSaleDailyDTO.setItemSource(source);
@@ -580,12 +588,13 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<BusinessCollection> findBusinessCollectionByBranchToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchToDetail(systemBookCode, branchNums, dateFrom, dateTo);
-		List<BusinessCollection> list = new ArrayList<>();
+		int size = objects.size();
+		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>();
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String type = (String) object[1];
@@ -619,12 +628,14 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
-		List<BusinessCollection> list = new ArrayList<>();
+
+		int size = objects.size();
+		List<BusinessCollection> list = new ArrayList<>(size);
 		if (objects.isEmpty()) {
 			return list;
 		}
 		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>();
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size ; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			BigDecimal money = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -644,12 +655,13 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<BusinessCollection> findBusinessCollectionByBranchDayToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchDayToDetail(systemBookCode, branchNums, dateFrom, dateTo);
-		List<BusinessCollection> list = new ArrayList<>();
+		int size = objects.size();
+		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
@@ -688,13 +700,13 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 
 		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchDayToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
-
-		List<BusinessCollection> list = new ArrayList<>();
+		int size = objects.size();
+		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
@@ -715,13 +727,14 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		List<Object[]> objects = posOrderService.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
-		List<BusinessCollection> list = new ArrayList<>();
+		int size = objects.size();
+		List<BusinessCollection> list = new ArrayList<>(size);
 		if (objects.isEmpty()) {
 			return list;
 		}
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
 
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
@@ -759,12 +772,13 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<BusinessCollection> findBusinessCollectionByShiftTableToPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 
 		List<Object[]> objects = posOrderService.findBusinessCollectionByShiftTableToPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		List<BusinessCollection> list = new ArrayList<>();
+		int size = objects.size();
+		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String bizDay = (String) object[1];
@@ -801,13 +815,14 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<BusinessCollection> findBusinessCollectionByShiftTableToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 
 		List<Object[]> objects = posOrderService.findBusinessCollectionByShiftTableToPosOrder(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		List<BusinessCollection> list = new ArrayList<>();
+		int size = objects.size();
+		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String bizDay = (String) object[1];
@@ -846,7 +861,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		List<Object[]> objects = posOrderService.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
-		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<>();
+		int size = objects.size();
+		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
@@ -854,7 +870,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		String operator = null;
 		String type = null;
 		BigDecimal money = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			branchNum = (Integer) object[0];
 			operator = (String) object[1];
@@ -893,13 +909,14 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		List<Object[]> objects = posOrderService.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<PosReceiveDiffMoneySumDTO>();
+		int size = objects.size();
+		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<PosReceiveDiffMoneySumDTO>(size);
 		Integer branchNum = null;
 		String bizday = null;
 		Integer biznum = null;
 		String type = null;
 		BigDecimal money = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			branchNum = (Integer) object[0];
 			bizday = (String) object[1];

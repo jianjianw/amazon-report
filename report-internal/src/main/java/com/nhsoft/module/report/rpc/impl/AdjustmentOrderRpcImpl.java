@@ -24,11 +24,12 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
     @Override
     public List<LossMoneyReport> findLossMoneyByBranch(String systemBookCode,List<Integer> branchNums,Date dateFrom, Date dateTo) {
         List<Object[]> objects = adjustmentOrderService.findLossMoneyByBranch(systemBookCode,branchNums,dateFrom, dateTo);
-        List<LossMoneyReport> list = new ArrayList<LossMoneyReport>();
+        int size = objects.size();
+        List<LossMoneyReport> list = new ArrayList<LossMoneyReport>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             LossMoneyReport lossMoneyReport = new LossMoneyReport();
             lossMoneyReport.setBranchNum((Integer) object[0]);
@@ -42,11 +43,12 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
     public List<CheckMoney> findCheckMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
         List<Object[]> objects = adjustmentOrderService.findCheckMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
-        List<CheckMoney> list = new ArrayList<CheckMoney>();
+        int size = objects.size();
+        List<CheckMoney> list = new ArrayList<CheckMoney>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             CheckMoney checkMoney = new CheckMoney();
             checkMoney.setBranchNum((Integer) object[0]);
@@ -62,11 +64,12 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
     public List<AdjustmentCauseMoney> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
         List<Object[]> objects = adjustmentOrderService.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
-        List<AdjustmentCauseMoney> list = new ArrayList<AdjustmentCauseMoney>();
+        int size = objects.size();
+        List<AdjustmentCauseMoney> list = new ArrayList<AdjustmentCauseMoney>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             AdjustmentCauseMoney adjustmentCauseMoney = new AdjustmentCauseMoney();
             adjustmentCauseMoney.setBranchNum((Integer) object[0]);
@@ -83,11 +86,12 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
     public List<ItemLossDailyDTO> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
 
         List<Object[]> objects = adjustmentOrderService.findItemLossDailySummary(systemBookCode, dateFrom, dateTo);
-        List<ItemLossDailyDTO> list = new ArrayList<>();
+        int size = objects.size();
+        List<ItemLossDailyDTO> list = new ArrayList<>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             ItemLossDailyDTO itemLossDailyDTO = new ItemLossDailyDTO();
             itemLossDailyDTO.setSystemBookCode(systemBookCode);

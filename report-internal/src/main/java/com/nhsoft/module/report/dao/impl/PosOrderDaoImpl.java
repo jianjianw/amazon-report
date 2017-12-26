@@ -5017,20 +5017,19 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findBranchDailySummary(String systemBookCode,Date dateFrom,Date dateTo){
 
 		StringBuilder sb = new StringBuilder();//findMoneyBizdaySummary
-		sb.append("select branch_num,shift_table_bizday, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
-		sb.append("count(order_no) as count ");
-		//sb.append("count(detail.item_num) as item_count ");//客单购买数
-		sb.append("from pos_order with(nolock) ");
-		//sb.append("inner join pos_order_detail as detail with(nolock) on p.order_no = detail.order_no ");
-		sb.append("where system_book_code = :systemBookCode ");
+		sb.append("select p.branch_num,shift_table_bizday, sum(p.order_payment_money + p.order_coupon_total_money - p.order_mgr_discount_money) as money, ");
+		sb.append("count(p.order_no) as count, ");
+		sb.append("count(detail.item_num) as itemCount ");//客单购买数
+		sb.append("from pos_order as p with(nolock) inner join pos_order_detail as detail with(nolock) on p.order_no = detail.order_no ");
+		sb.append("where p.system_book_code = :systemBookCode ");
 		if (dateFrom != null) {
-			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+			sb.append("and p.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+			sb.append("and p.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
-		sb.append("and order_state_code in (5, 7) ");
-		sb.append("group by branch_num,shift_table_bizday order by branch_num,shift_table_bizday asc");
+		sb.append("and p.order_state_code in (5, 7) ");
+		sb.append("group by p.branch_num,p.shift_table_bizday order by p.branch_num,p.shift_table_bizday asc");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();

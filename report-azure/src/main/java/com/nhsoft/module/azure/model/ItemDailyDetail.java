@@ -29,6 +29,7 @@ public class ItemDailyDetail implements Serializable {
         this.amount = new BigDecimal[48];
         this.money = new BigDecimal[48];
         this.period = new String[48];
+        //初始化数组
         for (int i = 0; i < 48 ; i++) {
             amount[i] = BigDecimal.ZERO;
             money[i] = BigDecimal.ZERO;

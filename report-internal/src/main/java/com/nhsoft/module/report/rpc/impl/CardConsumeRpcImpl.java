@@ -23,11 +23,12 @@ public class CardConsumeRpcImpl implements CardConsumeRpc {
 
 
         List<Object[]> objects = cardConsumeService.findBranchSum(systemBookCode,branchNums,dateFrom,dateTo);
-        List<BranchConsumeReport> list = new ArrayList<BranchConsumeReport>();
+        int size = objects.size();
+        List<BranchConsumeReport> list = new ArrayList<BranchConsumeReport>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             Object[] object = objects.get(i);
             BranchConsumeReport branchConsumeReport = new BranchConsumeReport();
             branchConsumeReport.setBranchNum((Integer)object[0]);
@@ -41,11 +42,12 @@ public class CardConsumeRpcImpl implements CardConsumeRpc {
     public List<BranchBizdayConsumeSummary> findBranchBizdaySum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {
 
         List<Object[]> objects = cardConsumeService.findBranchBizdaySum(systemBookCode, branchNums, dateFrom, dateTo, cardUserCardType);
-        List<BranchBizdayConsumeSummary> list = new ArrayList<>();
+        int size = objects.size();
+        List<BranchBizdayConsumeSummary> list = new ArrayList<>(size);
         if(objects.isEmpty()){
             return list;
         }
-        for (int i = 0; i <objects.size() ; i++) {
+        for (int i = 0; i <size; i++) {
             Object[] object = objects.get(i);
             BranchBizdayConsumeSummary summary = new BranchBizdayConsumeSummary();
             summary.setBranchNum((Integer) object[0]);
