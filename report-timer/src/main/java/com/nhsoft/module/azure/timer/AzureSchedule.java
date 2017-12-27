@@ -37,8 +37,8 @@ public class AzureSchedule {
     @Autowired
     private ReportRpc reportRpc;
 
-    //String systemBook = "4410";
-    String systemBook = "4344";
+    String systemBook = "4410";
+    //String systemBook = "4344";
 
     @Scheduled(cron="0 */30 * * * *")
     public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
@@ -317,7 +317,7 @@ public class AzureSchedule {
             ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
             ItemSaleDaily itemSaleDaily = new ItemSaleDaily();
             itemSaleDaily.setSystemBookCode(systemBook);
-            itemSaleDaily.setBranchNum(itemSaleDailyDTO.getItemNum());
+            itemSaleDaily.setBranchNum(itemSaleDailyDTO.getBranchNum());
             itemSaleDaily.setShiftTableBizday(itemSaleDailyDTO.getShiftTableBizday());
             itemSaleDaily.setItemNum(itemSaleDailyDTO.getItemNum());
             itemSaleDaily.setShiftTableDate(itemSaleDailyDTO.getShiftTableDate());
