@@ -16,7 +16,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,16 +89,8 @@ public class DatabaseInterceptor {
 		if(rds == null){
 			throw new RuntimeException("rds not found");
 		}
-		//String rds = "cs";
 		DynamicDataSourceContextHolder.setDataSourceType(rds);
 		String name = jp.getTarget().getClass().getName() + "." + jp.getSignature().getName();
-
-		Object[] args = jp.getArgs();
-		for(Object obj : args){
-			logger.info("arguments: "+obj);
-			System.out.println("arguments: "+obj);
-		}
-
 		logger.info(String.format("systemBookCode = %s database = %s name = %s", systemBookCode, rds, name));
 	}
 	

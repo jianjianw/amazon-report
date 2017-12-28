@@ -73,13 +73,6 @@ public interface PosItemService {
 	public List<PosItem> find(String systemBookCode, List<String> categoryCodes, List<Integer> itemNums, String itemMethod);
 
 	/**
-	 * 查询成分商品
-	 * @param systemBookCode
-	 * @return
-	 */
-	public List<PosItemKit> findPosItemKits(String systemBookCode);
-
-	/**
 	 * 查询并组装itemMatrix itemBars
 	 * @param posItems
 	 */
@@ -110,13 +103,6 @@ public interface PosItemService {
 	 * @return
 	 */
 	public List<PosItem> findByItemNums(List<Integer> itemNums);
-
-	/**
-	 * 查询带明细的组合商品
-	 * @param itemNums
-	 * @return
-	 */
-	public List<PosItemKit> findPosItemKitsWithDetails(List<Integer> itemNums);
 
 
 	/**

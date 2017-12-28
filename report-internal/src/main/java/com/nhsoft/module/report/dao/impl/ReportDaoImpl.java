@@ -3,7 +3,7 @@ package com.nhsoft.module.report.dao.impl;
 import com.nhsoft.module.report.dao.ReportDao;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
-import com.nhsoft.module.report.query.*;
+import com.nhsoft.module.report.query.PolicyPosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.DateUtil;
@@ -12,7 +12,6 @@ import org.hibernate.Criteria;
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
@@ -31,9 +30,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		return object;
 	}
 	
-
-
-
 
 	private BusinessCollectionIncome getBusinessCollectionIncome(
 			List<BusinessCollectionIncome> businessCollectionIncomes, String name) {

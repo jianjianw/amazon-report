@@ -1,8 +1,6 @@
 package com.nhsoft.module.report.model;
 
 import com.nhsoft.module.report.query.State;
-import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -325,74 +323,5 @@ public class PolicyPromotionMoney implements java.io.Serializable {
 		this.policyPromotionMoneyDetails = policyPromotionMoneyDetails;
 	}
 
-	public String createNoticeText(List<PosItem> posItems){
-		StringBuffer sb = new StringBuffer();
-		sb.append("促销政策—超额奖励");
-		if(promotionItemCount == null){
-			promotionItemCount = 0;
-		}
-		sb.append("(").append(String.format("小票消费金额满%s奖励, 最多特价样数%s", promotionMoneyBillMoney.setScale(2, BigDecimal.ROUND_HALF_UP).toString(),
-				promotionItemCount.toString())).append(")");
-		sb.append(String.format("  单据号[%s]即将到期", promotionMoneyNo)).append(AppUtil.getSeperate());
-		sb.append(String.format("促销日期:%s 至 %s 促销时间:%s 至 %s", DateUtil.getDateStr(promotionMoneyDateFrom), DateUtil.getDateStr(promotionMoneyDateTo)
-				, DateUtil.getHHmmStr(promotionMoneyTimeFrom), DateUtil.getHHmmStr(promotionMoneyTimeTo))).append(AppUtil.getSeperate());
-		sb.append(AppUtil.getSeperate());
-		int maxItemNameLength = 0;
-		List<PosItem> xmlPosItems = (List<PosItem>) PosItem.readShortItemFromXml(promotionMoneyItems);
-
-		for(int i = 0;i < xmlPosItems.size();i++){
-			PosItem posItem = xmlPosItems.get(i);
-			String itemName = posItem.getItemCode() + "|" + posItem.getItemName();
-			int length = AppUtil.getStringWidth(itemName);
-			if(length > maxItemNameLength){
-				maxItemNameLength = length;
-			}
-		}
-		sb.append("指定促销商品");
-		sb.append(AppUtil.getSeperate());
-		for(int i = 0;i < xmlPosItems.size();i++){
-			PosItem posItem = xmlPosItems.get(i);
-
-			String item = posItem.getItemCode() + "|" + posItem.getItemName();
-			sb.append(item);
-			sb.append(AppUtil.getSeperate());
-		}
-		sb.append(AppUtil.getSeperate());
-		String blank = AppUtil.getString(8);
-		maxItemNameLength = 0;
-		for(int i = 0;i < policyPromotionMoneyDetails.size();i++){
-			PolicyPromotionMoneyDetail policyPromotionMoneyDetail = policyPromotionMoneyDetails.get(i);
-			Integer itemNum = policyPromotionMoneyDetail.getItemNum();
-			PosItem posItem = PosItem.get(itemNum, posItems);
-			if(posItem == null){
-				continue;
-			}
-			policyPromotionMoneyDetail.setPosItem(posItem);
-			String itemName = posItem.getItemCode() + "|" + posItem.getItemName();
-			int length = AppUtil.getStringWidth(itemName);
-			if(length > maxItemNameLength){
-				maxItemNameLength = length;
-			}
-		}
-		sb.append("促销特价商品").append(AppUtil.getString(maxItemNameLength + 5)).append("促销单价").append(blank).append("可购数量");
-		sb.append(AppUtil.getSeperate());
-		for(int i = 0;i < policyPromotionMoneyDetails.size();i++){
-			PolicyPromotionMoneyDetail policyPromotionMoneyDetail = policyPromotionMoneyDetails.get(i);
-			if(policyPromotionMoneyDetail.getPosItem() == null){
-				continue;
-			}
-			String item = policyPromotionMoneyDetail.getPosItem().getItemCode() + "|" + policyPromotionMoneyDetail.getPosItem().getItemName();
-			sb.append(item);
-			sb.append(AppUtil.getString(12 + maxItemNameLength + 5 - AppUtil.getStringWidth(item)));
-			
-			item = policyPromotionMoneyDetail.getPromotionMoneyDetailSpecialPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-			sb.append(item);
-			sb.append(AppUtil.getString(8 + 8 - item.length()));
-			
-			item = policyPromotionMoneyDetail.getPromotionMoneyDetailAmountLimit().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-			sb.append(item);
-			sb.append(AppUtil.getSeperate());
-		}
-		return sb.toString();
-	}
+	
 }
