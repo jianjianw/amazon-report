@@ -181,7 +181,6 @@ public class InitApi {
 
     @RequestMapping(method = RequestMethod.GET,value="/init/bizday/{systemBookCode}")
     public String saveBizday(@PathVariable("systemBookCode") String systemBookCode){
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
         Calendar calendar = Calendar.getInstance();
         Date day = calendar.getTime();
@@ -190,6 +189,14 @@ public class InitApi {
         Integer thisYear = calendar.get(Calendar.YEAR);             //本年
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
         Integer thisWeek = calendar.get(Calendar.WEEK_OF_YEAR);     //本周
+
+        Integer thisMonth = Integer.valueOf(sdf.format(calendar.getTime()).substring(5, 7)); //为了匹配微软的周 运算结果
+        if(thisWeek == 1 && thisMonth > 11) {
+            calendar.add(Calendar.DAY_OF_MONTH, -7);
+            thisWeek = calendar.get(Calendar.WEEK_OF_YEAR) + 1;
+            calendar.add(Calendar.DAY_OF_MONTH, 7);
+        }
+
         List<Bizday> list = new ArrayList<Bizday>();
         for(int i = 0; i < 735; i++) {
             calendar.setFirstDayOfWeek(Calendar.MONDAY);
@@ -301,7 +308,8 @@ public class InitApi {
             list.add(bizday);
         }
         azureService.batchSaveBizdays(systemBookCode,list);
-        return "Success";
+        return "SUCCESS";
+
     }
 
 

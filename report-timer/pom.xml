@@ -13,13 +13,19 @@
 
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>1.5.6.RELEASE</version>
-        </dependency>
 
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
+
+        </dependency>
         <dependency>
             <artifactId>report-azure</artifactId>
             <groupId>com.nhsoft</groupId>

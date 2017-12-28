@@ -415,12 +415,14 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo){
 
 		List<Object[]> objects = posOrderService.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
+		List<Object[]> itemCounts = posOrderService.findItemCountByBranchBiz(systemBookCode, dateFrom, dateTo);
 		List<SaleMoneyGoals> goals = branchTransferGoalsRpc.findGoalsByBranchBizday(systemBookCode, null, dateFrom, dateTo);
 		int size = objects.size();
 		List<BranchDaily> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
+		int itemSize = itemCounts.size();
 		int goalsSize = goals.size();
 		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
@@ -434,13 +436,19 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 				continue;
 			}
 			branchDaily.setDailyQty((Integer) object[3]);
-			branchDaily.setDailyCount((Integer) object[4]);
 			branchDaily.setShiftTableDate(DateUtil.getDateStr(branchDaily.getShiftTableBizday()));
 			if(branchDaily.getDailyQty() == 0){
 				branchDaily.setDailyPrice(BigDecimal.ZERO);
 			}else{
 				Integer qty = branchDaily.getDailyQty();
 				branchDaily.setDailyPrice(branchDaily.getDailyMoney().divide(new BigDecimal(qty),4,ROUND_HALF_UP));
+			}
+			//将客单购买数，封装到分店日汇总中
+			for (int j = 0; j <itemSize ; j++) {
+				Object[] itemCount = itemCounts.get(i);
+				if(branchDaily.getBranchNum().equals((Integer)itemCount[0]) && branchDaily.getShiftTableBizday().equals((String) itemCount[1])){
+					branchDaily.setDailyCount((Integer) itemCount[2]);
+				}
 			}
 			//将营业额目标封装到分店日汇总中
 			for (int j = 0; j <goalsSize ; j++) {
@@ -452,15 +460,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			}
 			list.add(branchDaily);
 		}
-		/*//移除数据营业额为0的数据
-		Iterator<BranchDaily> iterator = list.iterator();
-		while (iterator.hasNext()) {
-			BranchDaily next = iterator.next();
-			BigDecimal dailyMoney = next.getDailyMoney();
-			if(dailyMoney == null ||dailyMoney.compareTo(BigDecimal.ZERO) == 0){
-				iterator.remove();
-			}
-		}*/
 		return list;
 	}
 
