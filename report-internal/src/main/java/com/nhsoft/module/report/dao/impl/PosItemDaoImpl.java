@@ -325,7 +325,7 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 
 	private String createByPosItemQueryString(PosItemQuery posItemQuery){
 		if(posItemQuery.getItemTypes() == null){
-			posItemQuery.setItemTypes(new ArrayList<Integer>());
+			posItemQuery.setItemTypes(new ArrayList<Integer>(0));
 		}
 		List<Integer> unstoreItemTypes = AppUtil.getUnStoreTypes();
 		StringBuffer sb = new StringBuffer();

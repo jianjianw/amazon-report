@@ -2014,7 +2014,7 @@ public class ReportRpcImpl implements ReportRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <size ; i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();
 			profitByBranchAndItemSummary.setBranchNum((Integer) object[0]);
@@ -3046,7 +3046,7 @@ public class ReportRpcImpl implements ReportRpc {
 		posItemQuery.setQueryAll(true);
 		posItemQuery.setItemNums(itemNums);
 		posItemQuery.setPaging(false);
-		posItemQuery.setQueryProperties(new ArrayList<String>());
+		posItemQuery.setQueryProperties(new ArrayList<String>(2));
 		posItemQuery.getQueryProperties().add("itemNum");
 		posItemQuery.getQueryProperties().add("itemName");
 		

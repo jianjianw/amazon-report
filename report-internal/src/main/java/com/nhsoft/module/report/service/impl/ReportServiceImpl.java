@@ -5005,13 +5005,13 @@ public class ReportServiceImpl implements ReportService {
 			return retailDetails;
 		}
 		List<Branch> branchs = branchService.findInCache(retailDetailQueryData.getSystemBookCode());
-		List<Integer> itemNums = new ArrayList<Integer>();
+		List<Integer> itemNums = new ArrayList<Integer>(size);
 		for (int i = size - 1; i >= 0; i--) {
 			itemNums.add(retailDetails.get(i).getItemNum());
 		}
 		List<PosItem> posItems = posItemDao.findByItemNums(itemNums);
 
-		List<Integer> itemGradeNums = new ArrayList<Integer>();
+		List<Integer> itemGradeNums = new ArrayList<Integer>(0);
 		for (int i = size - 1; i >= 0; i--) {
 			RetailDetail retailDetail = retailDetails.get(i);
 			PosItem posItem = AppUtil.getPosItem(retailDetail.getItemNum(), posItems);
@@ -5045,7 +5045,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 		if (itemGradeNums.size() > 0) {
 			List<PosItemGrade> posItemGrades = posItemGradeDao.findByIds(itemGradeNums);
-			for (int i = 0; i < retailDetails.size(); i++) {
+			for (int i = 0, len = retailDetails.size(); i < len; i++) {
 				RetailDetail retailDetail = retailDetails.get(i);
 				if (retailDetail.getItemGradeNum() == null) {
 					continue;
@@ -6264,7 +6264,6 @@ public class ReportServiceImpl implements ReportService {
 
 //		}
 		
-		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		Integer itemNum;
 		Integer itemMatrixNum;
 		Integer stateCode;
@@ -6276,6 +6275,7 @@ public class ReportServiceImpl implements ReportService {
 		Integer itemGradeNum;
 		Integer saleBranchCount;
 		int size = objects.size();
+		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>(size);
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			itemNum = (Integer) object[0];
@@ -6342,7 +6342,7 @@ public class ReportServiceImpl implements ReportService {
 		if (saleAnalysisQueryData.getIsQueryGrade()) {
 			objects = posOrderDao.findSaleAnalysisCommonItemGrade(saleAnalysisQueryData);
 			int objectSize = objects.size();
-			List<Integer> gradeItemNums = new ArrayList<Integer>();
+			List<Integer> gradeItemNums = new ArrayList<Integer>(0);
 			for (int i = 0; i < objectSize; i++) {
 				Object[] object = objects.get(i);
 				itemNum = (Integer) object[0];

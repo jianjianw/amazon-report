@@ -450,7 +450,7 @@ public class PosItem implements java.io.Serializable {
 		if (posItems == null) {
 			return null;
 		}
-		for (int i = 0; i < posItems.size(); i++) {
+		for (int i = 0, len = posItems.size(); i < len; i++) {
 			if (posItems.get(i).getItemNum().equals(itemNum)) {
 				return posItems.get(i);
 			}
