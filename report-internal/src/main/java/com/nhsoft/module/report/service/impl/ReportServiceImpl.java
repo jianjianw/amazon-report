@@ -1507,7 +1507,6 @@ public class ReportServiceImpl implements ReportService {
 		Date dateFrom = abcListQuery.getDateFrom();
 		Date dateTo = abcListQuery.getDateTo();
 		List<Integer> branchNums = abcListQuery.getBranchNums();
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 		List<String> typeList = abcListQuery.getTypes();
 
 		Map<String, ABCAnalysis> map = new HashMap<String, ABCAnalysis>();
@@ -1621,6 +1620,9 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		List<ABCAnalysis> list = new ArrayList<ABCAnalysis>(map.values());
+		if(list.isEmpty()){
+			return list;
+		}
 		BigDecimal totalRate = BigDecimal.ZERO;
 		BigDecimal aCount = BigDecimal.ZERO;
 		BigDecimal bCount = BigDecimal.ZERO;
@@ -1635,6 +1637,9 @@ public class ReportServiceImpl implements ReportService {
 		};
 		Collections.sort(list, comparator);
 		BigDecimal aRate = null;
+		
+		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+		
 		for (int i = 0; i < list.size(); i++) {
 			ABCAnalysis data = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(data.getItemNum(), posItems);
