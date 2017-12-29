@@ -171,6 +171,7 @@ public class ImportDataDemo {
             list.add(cardDaily);
         }
 
+
         azureService.batchSaveCardDailies(systemBookCode,list,date,date);
     }
 
@@ -224,7 +225,26 @@ public class ImportDataDemo {
             list.add(itemLossDaily);
         }
 
-        azureService.batchSaveItemLossDailies(systemBookCode,list,date,date);
+        Map<String,ItemLossDaily> map = new HashMap<String, ItemLossDaily>();
+        Integer branchNum1;
+        Integer itemNum1;
+        String itemLossReason1;
+        StringBuilder sb;
+        for (int i = 0; i <size ; i++) {
+            ItemLossDaily lossDaily = list.get(i);
+            branchNum1 = lossDaily.getBranchNum();
+            itemNum1 = lossDaily.getItemNum();
+            itemLossReason1 = lossDaily.getItemLossReason();
+            sb = new StringBuilder();
+            String key = sb.append(branchNum1).append(itemNum1).append(itemLossReason1).toString();
+            ItemLossDaily itemLossDaily1 = map.get(key);
+            if(itemLossDaily1 == null){
+                map.put(key,lossDaily);
+            }
+        }
+        List<ItemLossDaily> returnList = new ArrayList<ItemLossDaily>(map.values());
+
+        azureService.batchSaveItemLossDailies(systemBookCode,returnList,date,date);
 
     }
 
