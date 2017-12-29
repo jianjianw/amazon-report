@@ -257,19 +257,19 @@ public class InitApi {
             String dayOfMonthName = "D" + dayOfMonth;    //bizday_day_name
             String dayOfWeekName = null;                 //bizday_dayofweek_name
             switch(weekDay) {
-                case 1: dayOfWeekName = "星期一";
+                case 1: dayOfWeekName = "周一";
                     break;
-                case 2: dayOfWeekName = "星期二";
+                case 2: dayOfWeekName = "周二";
                     break;
-                case 3: dayOfWeekName = "星期三";
+                case 3: dayOfWeekName = "周三";
                     break;
-                case 4: dayOfWeekName = "星期四";
+                case 4: dayOfWeekName = "周四";
                     break;
-                case 5: dayOfWeekName = "星期五";
+                case 5: dayOfWeekName = "周五";
                     break;
-                case 6: dayOfWeekName = "星期六";
+                case 6: dayOfWeekName = "周六";
                     break;
-                case 7: dayOfWeekName = "星期日";
+                case 7: dayOfWeekName = "周日";
                     break;
             }
             String yearmonth = year+"年"+month+"月";              //bizday_yearandmonth_name

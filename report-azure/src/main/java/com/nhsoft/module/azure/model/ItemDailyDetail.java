@@ -63,11 +63,11 @@ public class ItemDailyDetail implements Serializable {
     private String systemBookCode;
     @Id
     private String itemPeriod;      //时段
+    @Id
+    private String itemSource;      //销售来源
     private Date shiftTableDate;          //营业日期
     private BigDecimal itemAmout;   //销售数量
     private BigDecimal itemMoney;   //销售金额
-    @Id
-    private String itemSource;      //销售来源
     private BigDecimal itemPeriodAmout;    //当前时段销售数量
     private BigDecimal itemPeriodMoney;    //当前时段销售金额
 
