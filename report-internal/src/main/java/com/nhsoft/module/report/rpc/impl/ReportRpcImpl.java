@@ -2154,6 +2154,7 @@ public class ReportRpcImpl implements ReportRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
+
 		for (int i = 0; i <objects.size() ; i++) {
 			Object[] object = objects.get(i);
 			SaleByCategorySummary saleByCategorySummary = new SaleByCategorySummary();
@@ -2163,7 +2164,15 @@ public class ReportRpcImpl implements ReportRpc {
 			saleByCategorySummary.setPaymentMoney((BigDecimal) object[3]);
 			saleByCategorySummary.setAssistAmount((BigDecimal) object[4]);
 			saleByCategorySummary.setItemCount((Integer) object[5]);
-			saleByCategorySummary.setDiscount((BigDecimal) object[6]);
+			if(queryData.getIsQueryCF() != null && queryData.getIsQueryCF()){
+				BigDecimal disCount = new BigDecimal((double) object[6]);
+				saleByCategorySummary.setDiscount(disCount);
+			}else{
+				saleByCategorySummary.setDiscount((BigDecimal) object[6]);
+			}
+
+
+
 			list.add(saleByCategorySummary);
 		}
 		return list;
