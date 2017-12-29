@@ -988,11 +988,6 @@ public interface PosOrderDao {
 	 **/
 	public List<Object[]> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 
-	/**
-	 * bi  按分店营业日查询客单购买数
-	 * */
-	public List<Object[]> findItemCountByBranchBiz(String systemBookCode, Date dateFrom, Date dateTo);
-
 
 
 	public List<Object[]> findBusinessCollectionByBranchToDetail(String systemBookCode,

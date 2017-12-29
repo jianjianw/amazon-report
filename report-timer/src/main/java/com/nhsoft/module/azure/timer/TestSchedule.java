@@ -1,41 +1,64 @@
 package com.nhsoft.module.azure.timer;
 
 
+import com.nhsoft.module.azure.model.BranchDaily;
+import com.nhsoft.module.azure.service.AzureService;
+import com.nhsoft.module.report.rpc.PosItemRpc;
+import com.nhsoft.module.report.rpc.PosOrderRpc;
+import org.hibernate.boot.model.source.spi.PluralAttributeElementSourceOneToMany;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 //@Component
-public class TestSchedule {
+public class TestSchedule implements InitializingBean {
 
-//    @Scheduled(cron = "0 */1 * * * *")        //删除2天以前的数据
-//    public void test01() {
-//        System.out.println("我是01");
-//    }
-//
-//    @Scheduled(cron = "0 */1 * * * *")        //删除2天以前的数据
-//    public void test02() {
-//        System.out.println("我是02");
-//    }
-//
-//    @Scheduled(fixedDelay = 5000)
-//    public void test03() {
-//        System.out.println("我是03");
-//    }
 
-    @Scheduled(cron = "0 * * * * *")
-    public void test04() throws Exception {
-        System.out.println("我是04");
+
+
+    @Autowired
+    private PosOrderRpc posOrderRpc;
+    @Autowired
+    private AzureService azureService;
+
+    @Value("${datasource.names}")
+    private String str;
+
+    String[] systemBookCode;
+    public void afterPropertiesSet() throws Exception {
+        systemBookCode = str.split(",");
+    }
+
+    @Autowired
+    private Executor taskExecutor;
+
+    @Scheduled(cron="0 * * * * *")
+    public void saveBranchDailyMinute(){
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        int size = systemBookCode.length;
+        for (int i = 0; i <size ; i++) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+            }
+
+            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode[i], date, date);
+            azureService.batchSaveBranchDailies(systemBookCode[i],branchDailySummary,date,date);
+        }
+
 
     }
 
-    @Scheduled(cron = "0 * * * * *")
-    public void test05() throws Exception {
-        System.out.println("我是05");
-    }
 
-    @Scheduled(cron="0 0,59 * 22 12 ?")       //每30分钟，更新一次当天数据    商品日销售汇总
-    public void saveItemSaleDailyMin(){
-        System.out.println("12月22日的定时器执行了");
-    }
+
 
 }

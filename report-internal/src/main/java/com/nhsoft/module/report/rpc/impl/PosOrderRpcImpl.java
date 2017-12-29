@@ -415,15 +415,15 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo){
 
 		List<Object[]> objects = posOrderService.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
-		List<Object[]> itemCounts = posOrderService.findItemCountByBranchBiz(systemBookCode, dateFrom, dateTo);
 		List<SaleMoneyGoals> goals = branchTransferGoalsRpc.findGoalsByBranchBizday(systemBookCode, null, dateFrom, dateTo);
 		int size = objects.size();
 		List<BranchDaily> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		int itemSize = itemCounts.size();
 		int goalsSize = goals.size();
+		BigDecimal qty;
+		BigDecimal itemCount;
 		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			BranchDaily branchDaily = new BranchDaily();
@@ -435,21 +435,18 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			if(branchDaily.getDailyMoney() == null ||branchDaily.getDailyMoney().compareTo(BigDecimal.ZERO) == 0){
 				continue;
 			}
-			branchDaily.setDailyQty((Integer) object[3]);
-			branchDaily.setShiftTableDate(DateUtil.getDateStr(branchDaily.getShiftTableBizday()));
-			if(branchDaily.getDailyQty() == 0){
+			branchDaily.setDailyQty((Integer) object[3]);//客单量
+			qty = new BigDecimal(branchDaily.getDailyQty());
+			itemCount = new BigDecimal((Integer) object[4]);//商品数量
+
+			if(qty.compareTo(BigDecimal.ZERO) == 0){
+				branchDaily.setDailyCount(BigDecimal.ZERO);
 				branchDaily.setDailyPrice(BigDecimal.ZERO);
 			}else{
-				Integer qty = branchDaily.getDailyQty();
-				branchDaily.setDailyPrice(branchDaily.getDailyMoney().divide(new BigDecimal(qty),4,ROUND_HALF_UP));
+				branchDaily.setDailyCount(itemCount.divide(qty, 2, ROUND_HALF_UP));//客单购买数
+				branchDaily.setDailyPrice(branchDaily.getDailyMoney().divide(qty,4,ROUND_HALF_UP));
 			}
-			//将客单购买数，封装到分店日汇总中
-			for (int j = 0; j <itemSize ; j++) {
-				Object[] itemCount = itemCounts.get(i);
-				if(branchDaily.getBranchNum().equals((Integer)itemCount[0]) && branchDaily.getShiftTableBizday().equals((String) itemCount[1])){
-					branchDaily.setDailyCount((Integer) itemCount[2]);
-				}
-			}
+			branchDaily.setShiftTableDate(DateUtil.getDateStr(branchDaily.getShiftTableBizday()));
 			//将营业额目标封装到分店日汇总中
 			for (int j = 0; j <goalsSize ; j++) {
 				SaleMoneyGoals saleMoneyGoals = goals.get(j);

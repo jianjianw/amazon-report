@@ -200,10 +200,6 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return posOrderDao.findItemSaleDailySummary(systemBookCode,dateFrom,dateTo);
 	}
 
-	@Override
-	public List<Object[]> findItemCountByBranchBiz(String systemBookCode, Date dateFrom, Date dateTo) {
-		return posOrderDao.findItemCountByBranchBiz(systemBookCode,dateFrom,dateTo);
-	}
 
 	@Override
 	public List<Object[]> findBusinessCollectionByBranchToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {

@@ -30,7 +30,7 @@ public class BranchDaily implements Serializable {
     private BigDecimal targetMoney;       //营业额目标
 
     //新加字段
-    private Integer dailyCount;  //客单购买数
+    private BigDecimal dailyCount;  //客单购买数
 
 
     public String getSystemBookCode() {
@@ -97,11 +97,11 @@ public class BranchDaily implements Serializable {
         this.targetMoney = targetMoney;
     }
 
-    public Integer getDailyCount() {
+    public BigDecimal getDailyCount() {
         return dailyCount;
     }
 
-    public void setDailyCount(Integer dailyCount) {
+    public void setDailyCount(BigDecimal dailyCount) {
         this.dailyCount = dailyCount;
     }
 

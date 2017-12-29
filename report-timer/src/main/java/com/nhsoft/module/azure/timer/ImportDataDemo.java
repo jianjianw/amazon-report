@@ -41,7 +41,7 @@ public class ImportDataDemo {
         Integer dailyQty;         //客单量     100-500
         BigDecimal dailyPrice;      //客单价      50-100
         BigDecimal targetMoney;     //营业额目标  10000-15000
-        Integer dailyCount;     //客单购买数   200-800
+        BigDecimal dailyCount;     //客单购买数
         BranchDaily branchDaily;
         BranchDailyDirect branchDailyDirect;    //实时分店销售数据
 
@@ -68,10 +68,10 @@ public class ImportDataDemo {
             BigDecimal target_ = new BigDecimal(target * 15000 - target * 5000);
             targetMoney = target_.divide(big, 2, ROUND_HALF_UP);    //营业额目标
 
-            dailyCount = random.nextInt(800) + 200; //客单购买数
-            if(dailyCount<200){
-                dailyCount+=200;
-            }
+
+            int value1 = random.nextInt(5)+1;
+            int value2 = random.nextInt(100);
+            dailyCount = new BigDecimal(value1 + "." + value2);//客单购买数
 
             branchDaily = new BranchDaily();
             branchDaily.setSystemBookCode(systemBookCode);
