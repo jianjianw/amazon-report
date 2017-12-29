@@ -424,17 +424,20 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		int goalsSize = goals.size();
 		BigDecimal qty;
 		BigDecimal itemCount;
+		BigDecimal money;
 		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
+			money = (BigDecimal) object[2];
+			//移除数据营业额为0的数据
+			if(money == null || money .compareTo(BigDecimal.ZERO) == 0){
+				continue;
+			}
 			BranchDaily branchDaily = new BranchDaily();
 			branchDaily.setSystemBookCode(systemBookCode);
 			branchDaily.setBranchNum((Integer) object[0]);
 			branchDaily.setShiftTableBizday((String) object[1]);
-			branchDaily.setDailyMoney((BigDecimal) object[2]);
-			//移除数据营业额为0的数据
-			if(branchDaily.getDailyMoney() == null ||branchDaily.getDailyMoney().compareTo(BigDecimal.ZERO) == 0){
-				continue;
-			}
+			branchDaily.setDailyMoney(money);
+
 			branchDaily.setDailyQty((Integer) object[3]);//客单量
 			qty = new BigDecimal(branchDaily.getDailyQty());
 			itemCount = new BigDecimal((Integer) object[4]);//商品数量

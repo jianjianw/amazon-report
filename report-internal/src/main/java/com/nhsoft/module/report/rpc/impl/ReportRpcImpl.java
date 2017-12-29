@@ -2171,8 +2171,6 @@ public class ReportRpcImpl implements ReportRpc {
 				saleByCategorySummary.setDiscount((BigDecimal) object[6]);
 			}
 
-
-
 			list.add(saleByCategorySummary);
 		}
 		return list;
