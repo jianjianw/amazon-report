@@ -335,7 +335,7 @@ public class AzureSchedule {
     @Scheduled(cron="0 0 2-3 * * *")        //每天凌晨2-3点删除三个月前的数据     商品日销售汇总
     public void deleteItemSaleDaily(){
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH,-3);
+        calendar.add(Calendar.MONTH,-4);
         Date time = calendar.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
         String format = sdf.format(time);
@@ -376,7 +376,7 @@ public class AzureSchedule {
     public void deleteItemLossDaily(){
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH,-3);
+        calendar.add(Calendar.MONTH,-4);
         Date time = calendar.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
         String format = sdf.format(time);
@@ -425,7 +425,7 @@ public class AzureSchedule {
     public void deleteCardDaily(){
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH,-3);
+        calendar.add(Calendar.MONTH,-4);
         Date time = calendar.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
         String format = sdf.format(time);
