@@ -70,7 +70,7 @@ public class InventoryDaoImpl extends DaoImpl implements InventoryDao {
 			sb.append("and i.storehouse_num = " + storehouseNum + " ");
 		}
 		if(branchNums != null && branchNums.size() > 0){
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+			sb.append("and bs.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 
 		}
 		sb.append("group by bs.branch_num, i.item_num");
@@ -92,7 +92,7 @@ public class InventoryDaoImpl extends DaoImpl implements InventoryDao {
 		sb.append("where s.storehouse_del_tag = 0 and s.storehouse_actived = 1 ");
 		sb.append("and bs.system_book_code = '" + systemBookCode + "' ");
 		if(branchNums != null && branchNums.size() > 0){
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+			sb.append("and bs.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 
 		}
 		if(storehouseNum != null){
