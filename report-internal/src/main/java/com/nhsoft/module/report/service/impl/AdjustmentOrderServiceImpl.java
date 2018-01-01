@@ -38,7 +38,7 @@ public class AdjustmentOrderServiceImpl implements AdjustmentOrderService {
 	}
 
 	@Override
-	public List<Object[]> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
-		return adjustmentOrderDao.findItemLossDailySummary(systemBookCode,dateFrom,dateTo);
+	public List<Object[]> findItemLoss(String systemBookCode, Date dateFrom, Date dateTo) {
+		return adjustmentOrderDao.findItemLoss(systemBookCode,dateFrom,dateTo);
 	}
 }

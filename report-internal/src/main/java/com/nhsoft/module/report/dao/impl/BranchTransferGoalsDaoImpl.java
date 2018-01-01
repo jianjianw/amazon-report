@@ -231,7 +231,7 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 	}
 
 	@Override
-	public List<Object[]> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findDepositGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, branch_transfer_interval, sum(branch_transfer_card_deposit) ");
 		sb.append("from branch_transfer_goals ");
@@ -254,7 +254,7 @@ public class BranchTransferGoalsDaoImpl extends DaoImpl implements BranchTransfe
 	}
 
 	@Override
-	public List<Object[]> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findNewCardGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, branch_transfer_interval, sum(branch_transfer_new_card) ");
 		sb.append("from branch_transfer_goals ");

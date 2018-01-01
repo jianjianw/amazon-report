@@ -265,10 +265,8 @@ public class AdjustmentOrderDaoImpl extends DaoImpl implements AdjustmentOrderDa
 	}
 
 	@Override
-	public List<Object[]> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+	public List<Object[]> findItemLoss(String systemBookCode, Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
-		//{fn LENGTH(branch_transfer_interval)} = 10   SUBSTRING ( a.adjustment_order_audit_time , 0 , 10 )
-		// SUBSTRING(a.adjustment_order_audit_time,0,10)	convert(varchar(20), a.adjustment_order_audit_time, 5) as dateStr
 		sb.append("select bs.branch_num, convert(varchar(20), a.adjustment_order_audit_time, 112) as bizday, a.adjustment_order_cause, detail.item_num, ");
 		sb.append("sum(detail.adjustment_order_detail_subtotal) as money, sum(detail.adjustment_order_detail_qty) as amount ");
 		sb.append("from adjustment_order_detail as detail with(nolock) inner join adjustment_order as a with(nolock) on detail.adjustment_order_fid = a.adjustment_order_fid ");

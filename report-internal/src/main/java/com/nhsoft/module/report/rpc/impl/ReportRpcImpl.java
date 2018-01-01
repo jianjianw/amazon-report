@@ -3230,7 +3230,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<CardDailyDTO> findCardDailyByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<CardDailyDTO> findCardDailies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		//新增会员数
 		List<BranchBizdayCardCountSummary> cardCounts = cardUserRpc.findCardCountByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo, null);
@@ -3239,9 +3239,9 @@ public class ReportRpcImpl implements ReportRpc {
 		//付款金额，存款金额
 		List<BranchBizdayDepositSummary> depositSummarys = cardDepositRpc.findSumByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		//存款目标
-		List<DepositGoalsDTO> depositGoals = branchTransferGoalsRpc.findDepositGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<DepositGoalsDTO> depositGoals = branchTransferGoalsRpc.findDepositGoals(systemBookCode, branchNums, dateFrom, dateTo);
 		//发卡目标
-		List<NewCardGoalsDTO> newCardGoals= branchTransferGoalsRpc.findNewCardGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<NewCardGoalsDTO> newCardGoals= branchTransferGoalsRpc.findNewCardGoals(systemBookCode, branchNums, dateFrom, dateTo);
 		//卡消费
 		List<BranchBizdayConsumeSummary> consumeSummarys = cardConsumeRpc.findBranchBizdaySum(systemBookCode, branchNums, dateFrom, dateTo, null);
 

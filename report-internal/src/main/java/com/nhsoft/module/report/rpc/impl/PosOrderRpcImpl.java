@@ -412,9 +412,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		return new ArrayList<BranchItemSummaryDTO>(map.values());
 	}
 
-	public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo){
+	public List<BranchDaily> findBranchDailies(String systemBookCode, Date dateFrom, Date dateTo){
 
-		List<Object[]> objects = posOrderService.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
+		List<Object[]> objects = posOrderService.findBranchDailies(systemBookCode,dateFrom,dateTo);
 		List<SaleMoneyGoals> goals = branchTransferGoalsRpc.findGoalsByBranchBizday(systemBookCode, null, dateFrom, dateTo);
 		int size = objects.size();
 		List<BranchDaily> list = new ArrayList<>(size);
@@ -463,9 +463,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		return list;
 	}
 
-	public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
+	public List<ItemDailyDetail> findItemDailyDetails(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
 
-		List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo ,itemNums);
+		List<Object[]> objects = posOrderService.findItemDailyDetails(systemBookCode, dateFrom, dateTo ,itemNums);
 		int size = objects.size();
 		List<ItemDailyDetail> list = new ArrayList<>(size);
 		if (objects.isEmpty()) {
@@ -546,9 +546,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 	@Override
-	public List<ItemSaleDailyDTO> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+	public List<ItemSaleDailyDTO> findItemSaleDailies(String systemBookCode, Date dateFrom, Date dateTo) {
 
-		List<Object[]> objects = posOrderService.findItemSaleDailySummary(systemBookCode, dateFrom, dateTo);
+		List<Object[]> objects = posOrderService.findItemSaleDailies(systemBookCode, dateFrom, dateTo);
 		int size = objects.size();
 		List<ItemSaleDailyDTO> list = new ArrayList<>(size);
 		if(objects.isEmpty()){

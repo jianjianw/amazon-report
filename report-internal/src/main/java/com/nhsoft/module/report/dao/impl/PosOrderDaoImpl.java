@@ -5014,7 +5014,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return objects;
 	}
 
-	public List<Object[]> findBranchDailySummary(String systemBookCode,Date dateFrom,Date dateTo){
+	public List<Object[]> findBranchDailies(String systemBookCode,Date dateFrom,Date dateTo){
 
 		StringBuilder sb = new StringBuilder();//findMoneyBizdaySummary
 		sb.append("select p.branch_num, p.shift_table_bizday, sum(p.order_payment_money + p.order_coupon_total_money - p.order_mgr_discount_money) as money, ");
@@ -5022,6 +5022,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(order_detail_item_count) as itemCount ");//客单购买数
 		sb.append("from pos_order as p with(nolock) ");
 		sb.append("where p.system_book_code = :systemBookCode ");
+		sb.append("and p.branch_num in (select branch_num from branch where system_book_code = :systemBookCode) ");
 		if (dateFrom != null) {
 			sb.append("and p.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
 		}
@@ -5036,13 +5037,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 
-	public List<Object[]> findItemDailyDetailSummary(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums){
+	public List<Object[]> findItemDailyDetails(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums){
 		StringBuilder sb = new StringBuilder();		//findCustomerAnalysisTimePeriodsByItems
 		sb.append("select p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num, sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between '"
 				+ DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		sb.append("and p.branch_num in (select branch_num from branch where system_book_code = :systemBookCode) ");
 		sb.append("and p.order_state_code in (5,7) ");
 		sb.append("and detail.item_num is not null ");
 		if(itemNums != null && itemNums.size() > 0){
@@ -5055,7 +5057,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+	public List<Object[]> findItemSaleDailies(String systemBookCode, Date dateFrom, Date dateTo) {
 
 		StringBuilder sb = new StringBuilder();//findProfitAnalysisByBranchDayItem
 		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, detail.order_source, ");//case when
@@ -5065,6 +5067,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("count(detail.item_num) as count ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
 		sb.append("where detail.order_detail_book_code = :systemBookCode ");
+		sb.append("and detail.order_detail_branch_num in (select branch_num from branch where system_book_code = :systemBookCode) ");
 		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
 		sb.append("and detail.order_detail_order_state in (5, 7) ");
 		sb.append("and detail.order_detail_state_code != 8 ");

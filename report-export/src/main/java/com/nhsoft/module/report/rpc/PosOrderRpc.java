@@ -58,17 +58,17 @@ public interface PosOrderRpc  {
     /**
      *	bi 分店日销售汇总表
      * */
-    public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
+    public List<BranchDaily> findBranchDailies(String systemBookCode, Date dateFrom, Date dateTo);
 
     /**
      * bi  商品日时段销售汇总
      * */
-    public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums);
+    public List<ItemDailyDetail> findItemDailyDetails(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums);
 
     /**
      *  bi  商品日销售汇总
      **/
-    public List<ItemSaleDailyDTO> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
+    public List<ItemSaleDailyDTO> findItemSaleDailies(String systemBookCode, Date dateFrom, Date dateTo);
 
 
 

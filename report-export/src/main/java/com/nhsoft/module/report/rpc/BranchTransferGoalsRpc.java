@@ -46,7 +46,7 @@ public interface BranchTransferGoalsRpc {
      * @param dateFrom
      * @param dateTo
      * */
-    public List<DepositGoalsDTO> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+    public List<DepositGoalsDTO> findDepositGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
     /**
      *  bi 按分店和营业日查询 发卡目标
@@ -55,7 +55,7 @@ public interface BranchTransferGoalsRpc {
      * @param dateFrom
      * @param dateTo
      * */
-    public List<NewCardGoalsDTO> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+    public List<NewCardGoalsDTO> findNewCardGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
 }
