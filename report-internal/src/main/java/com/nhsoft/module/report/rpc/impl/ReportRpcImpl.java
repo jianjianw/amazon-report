@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -1732,12 +1733,25 @@ public class ReportRpcImpl implements ReportRpc {
 		List<BusinessCollection> list = reportService.findBusinessCollectionByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		List<BusinessCollection> detailList = posOrderRpc.findBusinessCollectionByBranchToDetail(systemBookCode, branchNums, dateFrom, dateTo);
 		List<BusinessCollection> posList = posOrderRpc.findBusinessCollectionByBranchToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
-		if(detailList != null && detailList.size()>0){
-			list.addAll(detailList);
+		Integer branchNum;
+		for (int i = 0; i <list.size() ; i++) {
+			BusinessCollection businessCollection = list.get(i);
+			branchNum = businessCollection.getBranchNum();
+			for (int j = 0; j <detailList.size() ; j++) {
+				BusinessCollection collection = list.get(j);
+				if(branchNum.equals(collection.getBranchNum())){
+					businessCollection.getTicketIncomes().addAll(collection.getTicketIncomes());
+				}
+			}
+
+			for (int j = 0; j <posList.size() ; j++) {
+				BusinessCollection collection = list.get(j);
+				if(branchNum.equals(collection.getBranchNum())){
+					businessCollection.setAllDiscountMoney(collection.getAllDiscountMoney());
+				}
+			}
 		}
-		if(posList != null && posList.size()>0){
-			list.addAll(posList);
-		}
+
 		return list;
 	}
 
@@ -1745,13 +1759,27 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		List<BusinessCollection> list = reportService.findBusinessCollectionByBranchDay(systemBookCode, branchNums, dateFrom, dateTo);
-		List<BusinessCollection> posList = posOrderRpc.findBusinessCollectionByBranchDayToDetail(systemBookCode, branchNums, dateFrom, dateTo);
-		List<BusinessCollection> detailList = posOrderRpc.findBusinessCollectionByBranchDayToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
-		if(posList != null && posList.size() > 0){
-			list.addAll(posList);
-		}
-		if(detailList != null && posList.size() > 0){
-			list.addAll(detailList);
+		List<BusinessCollection> detailList = posOrderRpc.findBusinessCollectionByBranchDayToDetail(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> postList = posOrderRpc.findBusinessCollectionByBranchDayToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
+		Integer branchNum = null;
+		String bizday = null;
+		for (int i = 0; i <list.size() ; i++) {
+			BusinessCollection businessCollection = list.get(i);
+			businessCollection.getBranchNum();
+			bizday = businessCollection.getShiftTableBizday();
+			for (int j = 0; j <detailList.size() ; j++) {
+				BusinessCollection collection = detailList.get(j);
+				if(branchNum.equals(collection.getBranchNum()) && bizday.equals(collection.getShiftTableBizday())){
+					businessCollection.getTicketIncomes().addAll(collection.getTicketIncomes());
+				}
+			}
+
+			for (int j = 0; j <postList.size() ; j++) {
+				BusinessCollection collection = postList.get(j);
+				if(branchNum.equals(collection.getBranchNum()) && bizday.equals(collection.getShiftTableBizday())){
+					businessCollection.setAllDiscountMoney(collection.getAllDiscountMoney());
+				}
+			}
 		}
 		return list;
 	}
@@ -1760,22 +1788,68 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		List<BusinessCollection> businessCollections = reportService.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
 		List<BusinessCollection> list = posOrderRpc.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
-		if(list != null && list.size()>0){
-			businessCollections.addAll(list);
+		Integer branchNum;
+		String bizday;
+		String machineName;
+		for (int i = 0; i <list.size() ; i++) {
+			BusinessCollection businessCollection = list.get(i);
+			branchNum = businessCollection.getBranchNum();
+			bizday = businessCollection.getShiftTableBizday();
+			machineName = businessCollection.getPosMachineName();
+			for (int j = 0; j <businessCollections.size() ; j++) {
+				BusinessCollection collection = businessCollections.get(j);
+				if(branchNum.equals(collection.getBranchNum()) && bizday.equals(collection.getShiftTableBizday())
+						&& machineName.equals(collection.getPosMachineName())){
+					collection.getTicketIncomes().addAll(businessCollection.getTicketIncomes());
+
+				}
+
+			}
 		}
 		return businessCollections;
 	}
 
-	@Override/////
+	@Override
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		List<BusinessCollection> businessCollections = reportService.findBusinessCollectionByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		List<BusinessCollection> payment = posOrderRpc.findBusinessCollectionByShiftTableToPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		if(payment != null && payment.size()>0){
-			businessCollections.addAll(payment);
-		}
 		List<BusinessCollection> detailItem = posOrderRpc.findBusinessCollectionByShiftTableToPosOrder(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		if(detailItem != null && payment.size()>0){
-			businessCollections.addAll(detailItem);
+
+		Integer branchNum;
+		String bizDay;
+		Integer bizNum;
+		for (int i = 0; i <businessCollections.size() ; i++) {
+			BusinessCollection businessCollection = businessCollections.get(i);
+			branchNum = businessCollection.getBranchNum();
+			bizDay = businessCollection.getShiftTableBizday();
+			bizNum = businessCollection.getShiftTableNum();
+
+			for (int j = 0; j < payment.size() ; j++) {
+				BusinessCollection collection = payment.get(j);
+				if(branchNum.equals(collection.getBranchNum()) && bizDay.equals(collection.getShiftTableBizday())
+						&& bizNum.equals(collection.getShiftTableNum())){
+
+					//TODO			type问题
+					businessCollection.getUnPaidMoney().add(collection.getUnPaidMoney());
+					businessCollection.getAllBankMoney().add(collection.getAllBankMoney());
+
+
+
+					businessCollection.getPosIncomes().addAll(collection.getPosIncomes());
+
+
+				}
+			}
+
+			for (int j = 0; j <detailItem.size() ; j++) {
+				BusinessCollection collection = detailItem.get(j);
+				if(branchNum.equals(collection.getBranchNum()) && bizDay.equals(collection.getShiftTableBizday())
+						&& bizNum.equals(collection.getShiftTableNum())){
+					businessCollection.getTicketIncomes().addAll(collection.getTicketIncomes());
+
+				}
+			}
+
 		}
 		return businessCollections;
 	}

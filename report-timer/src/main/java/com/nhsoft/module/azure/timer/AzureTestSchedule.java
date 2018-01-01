@@ -4,9 +4,7 @@ import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.rpc.*;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -43,13 +41,13 @@ public class AzureTestSchedule implements InitializingBean {
 
     public void afterPropertiesSet() throws Exception {
         systemBookCode = str.split(",");
+        //移除测试账套12345
         systemBookCode = ArrayUtils.remove(systemBookCode, systemBookCode.length - 1);
-        System.out.println(Arrays.toString(systemBookCode));
     }
 
 
-    @Scheduled(cron="0 */20 * * * *")
-    public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */20 * * * *")
+    @Scheduled(cron="0 */30 * * * *")
+    public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         int size = systemBookCode.length;
@@ -75,7 +73,7 @@ public class AzureTestSchedule implements InitializingBean {
 
     }
 
-    @Scheduled(cron="0 */20 * * * *")       //每30分钟更新一次当天的额数据
+    @Scheduled(cron="0 */30 * * * *")       //每30分钟更新一次当天的额数据
     public void saveBranchDailyDirectMinute(){
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
@@ -144,7 +142,7 @@ public class AzureTestSchedule implements InitializingBean {
         }
     }
 
-    @Scheduled(cron="0 */20 * * * *")       //    @Scheduled(cron="0 0,30 * * * *")
+    @Scheduled(cron="0 */30 * * * *")       //    @Scheduled(cron="0 0,30 * * * *")
     public void saveItemDailyDetailMinute(){        //商品日时段销售汇总(从凌晨开始，每个小时的0分和30分执行一次)
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
@@ -541,7 +539,7 @@ public class AzureTestSchedule implements InitializingBean {
     }
 
 
-    @Scheduled(cron="0 */20 * * * *")   //test//每30分钟执行一次当天的数据
+    @Scheduled(cron="0 */30 * * * *")   //test//每30分钟执行一次当天的数据
     public void testSaveItemSaleDaily(){
 
         Calendar calendar = Calendar.getInstance();

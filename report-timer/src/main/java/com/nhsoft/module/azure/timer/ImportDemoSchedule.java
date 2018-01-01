@@ -14,11 +14,11 @@ import java.util.*;
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
 @Component
-public class ImportDataDemo {
+public class ImportDemoSchedule {
 
 
     @Autowired
-     AzureService azureService;
+    AzureService azureService;
 
     public String getDateStr(Date date){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");

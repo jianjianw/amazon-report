@@ -16,7 +16,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 
 @RequestMapping(value="importData")
 @RestController
-public class ImportDataApi {
+public class ImportDemoApi {
 
 
     @Autowired

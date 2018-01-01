@@ -101,6 +101,40 @@ public class Report2RpcImpl implements Report2Rpc {
 		if(posList != null && posList.size() > 0){
 			list.addAll(posList);
 		}
+		Integer branchNum;
+		String casher;
+		for (int i = 0; i <posList.size() ; i++) {
+			PosReceiveDiffMoneySumDTO posReceiveDiffMoneySumDTO = posList.get(i);
+			branchNum = posReceiveDiffMoneySumDTO.getBranchNum();
+			casher = posReceiveDiffMoneySumDTO.getCasher();
+			for (int j = 0; j <posList.size() ; j++) {
+				PosReceiveDiffMoneySumDTO diffMoneySumDTO = posList.get(j);
+				if(branchNum.equals(diffMoneySumDTO.getBranchNum()) && casher.equals(diffMoneySumDTO.getCasher())){
+					posReceiveDiffMoneySumDTO.setTotalSaleMoney(diffMoneySumDTO.getTotalSaleMoney());
+
+					/*//posReceiveDiffMoneySumDTO.getTypeAndTwoValuesDTOs().addAll(diffMoneySumDTO.getTypeAndTwoValuesDTOs());
+					TypeAndTwoValuesDTO typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(posReceiveDiffMoneySumDTO.getTypeAndTwoValuesDTOs(), type);
+					if (typeAndTwoValuesDTO == null) {
+						typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+						typeAndTwoValuesDTO.setType(type);
+						diffMoneySumDTO.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
+					}
+					posReceiveDiffMoneySumDTO.getTypeAndTwoValuesDTOs();
+					typeAndTwoValuesDTO.setAmount(typeAndTwoValuesDTO.getAmount().add(money));
+
+					TypeAndTwoValuesDTO saleTypeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(posReceiveDiffMoneySumDTO.getTotalSaleMoneyDetails(), type);
+					if (saleTypeAndTwoValuesDTO == null) {
+						saleTypeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+						saleTypeAndTwoValuesDTO.setType(type);
+						diffMoneySumDTO.getTotalSaleMoneyDetails().add(saleTypeAndTwoValuesDTO);
+					}
+					saleTypeAndTwoValuesDTO.setAmount(saleTypeAndTwoValuesDTO.getAmount().add(money));
+*/
+
+				}
+			}
+		}
+
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		for(int i = 0;i < list.size();i++){
 			PosReceiveDiffMoneySumDTO dto = list.get(i);
