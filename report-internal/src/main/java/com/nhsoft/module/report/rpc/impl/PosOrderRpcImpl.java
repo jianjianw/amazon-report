@@ -440,8 +440,11 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 			branchDaily.setDailyQty((Integer) object[3]);//客单量
 			qty = new BigDecimal(branchDaily.getDailyQty());
-			itemCount = new BigDecimal((Integer) object[4]);//商品数量
-
+			if((Integer) object[4] == null){
+				itemCount = BigDecimal.ZERO;//商品数量
+			}else{
+				itemCount = new BigDecimal((Integer) object[4]);//商品数量
+			}
 			if(qty.compareTo(BigDecimal.ZERO) == 0){
 				branchDaily.setDailyCount(BigDecimal.ZERO);
 				branchDaily.setDailyPrice(BigDecimal.ZERO);
@@ -484,15 +487,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			itemPeriod = (String) object[2];
 			source = (String) object[3];
 			itemNum = (Integer) object[4];
-
-			/*if(source == null || source.length() == 0){
-				source = "线下门店";
-			}*/
-			if(source != null && source.length() == 0){
-				source = "线下门店";
-			}
-
-
 			String hour = itemPeriod.substring(0, 2);
 			Integer intHour = Integer.valueOf(hour);
 			Integer intMin = Integer.valueOf(itemPeriod.substring(2, 4));
@@ -563,11 +557,12 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			itemSaleDailyDTO.setShiftTableBizday((String) object[1]);
 			itemSaleDailyDTO.setItemNum((Integer) object[2]);
 			source = (String) object[3];
-			if(source != null && source.length() == 0){
+			itemSaleDailyDTO.setItemSource(source);
+			/*if(source != null && source.length() == 0){
 				itemSaleDailyDTO.setItemSource("线下门店");
 			}else{
 				itemSaleDailyDTO.setItemSource(source);
-			}
+			}*/
 
 			if((Integer) object[4] > 0){
 				itemSaleDailyDTO.setItemMemberTag("会员");

@@ -2934,9 +2934,8 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<AlipaySumDTO> findAlipaySumDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String payType) {
-		
-		List<AlipaySumDTO> list = reportService.findAlipaySumDTOs(systemBookCode,branchNums,dateFrom,dateTo,payType);
-		return list;
+
+		return reportService.findAlipaySumDTOs(systemBookCode,branchNums,dateFrom,dateTo,payType);
 	}
 
 	@Override

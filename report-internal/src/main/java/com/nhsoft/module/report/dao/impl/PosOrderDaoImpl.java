@@ -5039,7 +5039,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	public List<Object[]> findItemDailyDetails(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums){
 		StringBuilder sb = new StringBuilder();		//findCustomerAnalysisTimePeriodsByItems
-		sb.append("select p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num, sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
+		sb.append("select p.branch_num, p.shift_table_bizday, p.order_time_char, (case when detail.order_source = '' then '线下门店' when detail.order_source is null then '线下门店' else detail.order_source end) as source, detail.item_num, ");
+		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between '"
@@ -5050,7 +5051,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(itemNums != null && itemNums.size() > 0){
 			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
 		}
-		sb.append("group by p.branch_num, p.shift_table_bizday, p.order_time_char, p.order_source, detail.item_num order by p.order_time_char asc ");
+		sb.append("group by p.branch_num, p.shift_table_bizday, p.order_time_char, detail.item_num, case when detail.order_source = '' then '线下门店' when detail.order_source is null then '线下门店' else detail.order_source end ");
+		sb.append("order by p.order_time_char asc ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
@@ -5060,8 +5062,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findItemSaleDailies(String systemBookCode, Date dateFrom, Date dateTo) {
 
 		StringBuilder sb = new StringBuilder();//findProfitAnalysisByBranchDayItem
-		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, detail.order_source, ");//case when
-		sb.append("case when p.order_card_user_num > 0 then 1 else 0 end, ");
+		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, ");//case when
+		sb.append("(case when detail.order_source = '' then '线下门店' when detail.order_source is null then '线下门店' else detail.order_source end) as source, ");
+		sb.append("(case when p.order_card_user_num > 0 then 1 else 0 end) as userNum, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
 		sb.append("count(detail.item_num) as count ");
@@ -5072,7 +5075,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("and detail.order_detail_order_state in (5, 7) ");
 		sb.append("and detail.order_detail_state_code != 8 ");
 		sb.append("and detail.item_num is not null ");
-		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, detail.order_source, case when p.order_card_user_num > 0 then 1 else 0 end ");
+		sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, ");
+		sb.append("case when p.order_card_user_num > 0 then 1 else 0 end, ");
+		sb.append("case when detail.order_source = '' then '线下门店' when detail.order_source is null then '线下门店' else detail.order_source end ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", systemBookCode);
 		query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
