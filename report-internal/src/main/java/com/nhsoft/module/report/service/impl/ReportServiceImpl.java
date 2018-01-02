@@ -6079,17 +6079,23 @@ public class ReportServiceImpl implements ReportService {
 
 	}
 
-	private Object[] getTimeObjects(List<Object[]> objects, Date timeFrom, Date timeTo) {
+	private Object[] getTimeObjects(List<Object[]> objects, String timeFrom, String timeTo) {
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
-			Date time = (Date) object[0];
-			if (DateUtil.betweenTime(time, timeFrom, timeTo)) {
+			String time = DateUtil.format("HH:mm", (Date) object[0]);
+			if(time.compareTo(timeFrom) >= 0 && time.compareTo(timeTo) < 0){
 				return object;
 			}
+			
 		}
 		return null;
 	}
-
+	
+	public static void main(String[] args) {
+	
+	}
+	
+	
 	@Override
 	public List<CustomerAnalysisTimePeriod> findCustomerAnalysisTimePeriods(String systemBookCode, Date dateFrom,
 			Date dateTo, List<Integer> branchNums, Integer space, List<Integer> itemNums, String saleType) {
@@ -6106,10 +6112,15 @@ public class ReportServiceImpl implements ReportService {
 		Date nextTime = DateUtil.addMinute(beginTime, space);
 		nextTime = DateUtil.addSecond(nextTime, -1);
 		Date endTime = DateUtil.getMaxOfDate(Calendar.getInstance().getTime());
+		String timeFrom;
+		String timeTo;
 		while (nextTime.compareTo(endTime) <= 0) {
 			CustomerAnalysisTimePeriod data = new CustomerAnalysisTimePeriod();
-			data.setTimePeroid(DateUtil.format("HH:mm", beginTime) + " - " + DateUtil.format("HH:mm", nextTime));
-			Object[] object = getTimeObjects(objects, beginTime, nextTime);
+			timeFrom = DateUtil.format("HH:mm", beginTime);
+			timeTo = DateUtil.format("HH:mm", nextTime);
+			
+			data.setTimePeroid(timeFrom + " - " + timeTo);
+			Object[] object = getTimeObjects(objects, timeFrom, timeTo);
 			if (object == null) {
 				data.setCustomerNums(BigDecimal.ZERO);
 				data.setTotalMoney(BigDecimal.ZERO);
