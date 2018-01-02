@@ -40,7 +40,7 @@ public class TestSchedule implements InitializingBean {
     @Autowired
     private Executor taskExecutor;
 
-    @Scheduled(cron="0 * * * * *")
+    //@Scheduled(cron="0 * * * * *")
     public void saveBranchDailyMinute(){
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
@@ -51,14 +51,30 @@ public class TestSchedule implements InitializingBean {
             } catch (InterruptedException e) {
             }
 
-            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode[i], date, date);
+            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBookCode[i], date, date);
             azureService.batchSaveBranchDailies(systemBookCode[i],branchDailySummary,date,date);
         }
 
 
     }
 
+    //@Scheduled(cron="0 * * * * *")
+    public void test(){
+
+        System.out.println("我执行了");
+
+    }
+
+    //@Scheduled(cron="0 * * * * *")
+    public void test2(){
+        int size = systemBookCode.length;
+        for (int i = 0; i <size ; i++) {
+
+            System.out.println(systemBookCode[i]);
+
+        }
 
 
+    }
 
 }

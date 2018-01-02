@@ -41,6 +41,6 @@ public interface AdjustmentOrderRpc {
      * bi 商品日报损汇总
      *
      * */
-    public List<ItemLossDailyDTO> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
+    public List<ItemLossDailyDTO> findItemLoss(String systemBookCode, Date dateFrom, Date dateTo);
 
 }

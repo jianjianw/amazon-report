@@ -97,10 +97,46 @@ public class Report2RpcImpl implements Report2Rpc {
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		List<PosReceiveDiffMoneySumDTO> list = report2Service.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
-		List<PosReceiveDiffMoneySumDTO> posList = posOrderRpc.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
-		if(posList != null && posList.size() > 0){
-			list.addAll(posList);
+		List<Object[]> posList = posOrderService.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
+
+		int posSize = posList.size();
+		Integer branchNum = null;
+		String operator = null;
+		String type = null;
+		BigDecimal money = null;
+		for (int i = 0; i < posSize; i++) {
+			Object[] object = posList.get(i);
+			branchNum = (Integer) object[0];
+			operator = (String) object[1];
+			type = (String) object[2];
+			money = (BigDecimal) object[3];
+
+			PosReceiveDiffMoneySumDTO dto = PosReceiveDiffMoneySumDTO.getByBranchCashier(list, branchNum, operator);
+			if (dto == null) {
+				dto = new PosReceiveDiffMoneySumDTO();
+				dto.setBranchNum(branchNum);
+				dto.setCasher(operator);
+				list.add(dto);
+			}
+			dto.setTotalSaleMoney(dto.getTotalSaleMoney().add(money));
+
+			TypeAndTwoValuesDTO typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), type);
+			if (typeAndTwoValuesDTO == null) {
+				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				typeAndTwoValuesDTO.setType(type);
+				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
+			}
+			typeAndTwoValuesDTO.setAmount(typeAndTwoValuesDTO.getAmount().add(money));
+
+			TypeAndTwoValuesDTO saleTypeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTotalSaleMoneyDetails(), type);
+			if (saleTypeAndTwoValuesDTO == null) {
+				saleTypeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				saleTypeAndTwoValuesDTO.setType(type);
+				dto.getTotalSaleMoneyDetails().add(saleTypeAndTwoValuesDTO);
+			}
+			saleTypeAndTwoValuesDTO.setAmount(saleTypeAndTwoValuesDTO.getAmount().add(money));
 		}
+
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		for(int i = 0;i < list.size();i++){
 			PosReceiveDiffMoneySumDTO dto = list.get(i);
@@ -172,10 +208,48 @@ public class Report2RpcImpl implements Report2Rpc {
 	@Override
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		List<PosReceiveDiffMoneySumDTO> list = report2Service.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		List<PosReceiveDiffMoneySumDTO> posList = posOrderRpc.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		if(posList != null && posList.size()>0){
-			list.addAll(posList);
+		List<Object[]> posList = posOrderService.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		int posSize = posList.size();
+		Integer branchNum = null;
+		String bizday = null;
+		Integer biznum = null;
+		String type = null;
+		BigDecimal money = null;
+		for (int i = 0; i < posSize; i++) {
+			Object[] object = posList.get(i);
+			branchNum = (Integer) object[0];
+			bizday = (String) object[1];
+			biznum = (Integer) object[2];
+			type = (String) object[3];
+			money = (BigDecimal) object[4];
+
+			PosReceiveDiffMoneySumDTO dto = PosReceiveDiffMoneySumDTO.getByShift(list, branchNum, bizday, biznum);
+			if (dto == null) {
+				dto = new PosReceiveDiffMoneySumDTO();
+				dto.setBranchNum(branchNum);
+				dto.setShiftTableBizday(bizday);
+				dto.setShiftTableNum(biznum);
+				list.add(dto);
+			}
+			dto.setTotalSaleMoney(dto.getTotalSaleMoney().add(money));
+
+			TypeAndTwoValuesDTO typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), type);
+			if (typeAndTwoValuesDTO == null) {
+				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				typeAndTwoValuesDTO.setType(type);
+				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
+			}
+			typeAndTwoValuesDTO.setAmount(typeAndTwoValuesDTO.getAmount().add(money));
+
+			TypeAndTwoValuesDTO saleTypeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTotalSaleMoneyDetails(), type);
+			if (saleTypeAndTwoValuesDTO == null) {
+				saleTypeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				saleTypeAndTwoValuesDTO.setType(type);
+				dto.getTotalSaleMoneyDetails().add(saleTypeAndTwoValuesDTO);
+			}
+			saleTypeAndTwoValuesDTO.setAmount(saleTypeAndTwoValuesDTO.getAmount().add(money));
 		}
+
 
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		for(int i = 0;i < list.size();i++){

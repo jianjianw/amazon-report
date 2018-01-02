@@ -44,7 +44,7 @@ public class AzureSchedule {
     public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
-        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBook, date, date);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBook, date, date);
         azureService.batchSaveBranchDailies(systemBook,branchDailySummary,date,date);
     }
 
@@ -54,7 +54,7 @@ public class AzureSchedule {
         Date dateTo = calendar.getTime();
         calendar.add(Calendar.DAY_OF_MONTH,-7);
         Date dateFrom = calendar.getTime();
-        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBook, dateFrom, dateTo);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBook, dateFrom, dateTo);
         azureService.batchSaveBranchDailies(systemBook,branchDailySummary,dateFrom,dateTo);
     }
 
@@ -62,7 +62,7 @@ public class AzureSchedule {
     public void saveBranchDailyDirectMinute(){
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
-        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBook, date, date);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBook, date, date);
         int size = branchDailySummary.size();
         List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>(size);
         for (int i = 0; i <size ; i++) {
@@ -88,7 +88,7 @@ public class AzureSchedule {
         Date dateTo = calendar.getTime();
         calendar.add(Calendar.DAY_OF_MONTH,-2);
         Date dateFrom = calendar.getTime();
-        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBook, dateFrom, dateTo);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBook, dateFrom, dateTo);
         int size = branchDailySummary.size();
         List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>(size);
         for (int i = 0; i <size; i++) {
@@ -119,7 +119,7 @@ public class AzureSchedule {
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         List<Integer> posItemNums = azureService.findPosItemNums(systemBook);
-        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBook, date, date,posItemNums);
+        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetails(systemBook, date, date,posItemNums);
         azureService.batchSaveItemDailyDetails(systemBook,itemDailyDetailSummary,date,date);
     }
 
@@ -130,7 +130,7 @@ public class AzureSchedule {
         Date date = calendar.getTime();
         //在商品维度表里面查询商品编码
         List<Integer> posItemNums = azureService.findPosItemNums(systemBook);
-        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBook, date, date,posItemNums);
+        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetails(systemBook, date, date,posItemNums);
         azureService.batchSaveItemDailyDetails(systemBook,itemDailyDetailSummary,date,date);
     }
 
@@ -310,7 +310,7 @@ public class AzureSchedule {
         Date dateTo = calendar.getTime();   //昨天
         calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date dateFrom = calendar.getTime(); //前天
-        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, dateFrom, dateTo);
+        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailies(systemBook, dateFrom, dateTo);
         int size = itemSaleDailySummary.size();
         List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>(size);
         for (int i = 0; i <size ; i++) {
@@ -353,7 +353,7 @@ public class AzureSchedule {
         Date dateTo = calendar.getTime();   //昨天
         calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date dateFrom = calendar.getTime(); //前天
-        List<ItemLossDailyDTO> itemLossDailySummary = adjustmentOrderRpc.findItemLossDailySummary(systemBook, dateFrom, dateTo);
+        List<ItemLossDailyDTO> itemLossDailySummary = adjustmentOrderRpc.findItemLoss(systemBook, dateFrom, dateTo);
         int size = itemLossDailySummary.size();
         List<ItemLossDaily> list = new ArrayList<ItemLossDaily>(size);
         for (int i = 0; i <size ; i++) {
@@ -396,8 +396,8 @@ public class AzureSchedule {
         Date beforeYesterday = calendar.getTime(); //前天
 
         List<CardDailyDTO> CardDailyDTOs = new ArrayList<CardDailyDTO>();
-        List<CardDailyDTO> yesterdays = reportRpc.findCardDailyByBranchBizday(systemBook, null, yesterday, yesterday);
-        List<CardDailyDTO> beforeYesterdays = reportRpc.findCardDailyByBranchBizday(systemBook, null, beforeYesterday, beforeYesterday);
+        List<CardDailyDTO> yesterdays = reportRpc.findCardDailies(systemBook, null, yesterday, yesterday);
+        List<CardDailyDTO> beforeYesterdays = reportRpc.findCardDailies(systemBook, null, beforeYesterday, beforeYesterday);
         CardDailyDTOs.addAll(yesterdays);
         CardDailyDTOs.addAll(beforeYesterdays);
         int size = CardDailyDTOs.size();
@@ -460,7 +460,7 @@ public class AzureSchedule {
 //        logger.info("半点一次测试ItemSaleDaily定时器执行了");
 //        Calendar calendar = Calendar.getInstance();
 //        Date time = calendar.getTime();
-//        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBook, time, time);
+//        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailies(systemBook, time, time);
 //        int size = itemSaleDailySummary.size();
 //        List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>(size);
 //        for (int i = 0; i < size ; i++) {

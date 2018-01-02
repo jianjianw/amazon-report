@@ -1,11 +1,12 @@
-package com.nhsoft.module.azure.timer;
+package com.nhsoft.module.azure.rest;
 
 import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -13,8 +14,9 @@ import java.util.*;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
-@Component
-public class ImportDataDemo {
+@RequestMapping(value="importData")
+@RestController
+public class ImportDemoApi {
 
 
     @Autowired
@@ -26,9 +28,8 @@ public class ImportDataDemo {
     }
 
     String systemBookCode = "12345";
-
-    @Scheduled(cron="0 0,30 * * * *")
-    public void branchDaily(){//按分店和营业日统计的都是100条数据
+    @RequestMapping(method = RequestMethod.GET,value = "/branchDaily")
+    public String branchDaily(){//按分店和营业日统计的都是100条数据
         List<BranchDaily> list = new ArrayList<BranchDaily>();
         List<BranchDailyDirect> directList = new ArrayList<BranchDailyDirect>();
 
@@ -41,7 +42,7 @@ public class ImportDataDemo {
         Integer dailyQty;         //客单量     100-500
         BigDecimal dailyPrice;      //客单价      50-100
         BigDecimal targetMoney;     //营业额目标  10000-15000
-        BigDecimal dailyCount;     //客单购买数
+        BigDecimal dailyCount;     //客单购买数   200-800
         BranchDaily branchDaily;
         BranchDailyDirect branchDailyDirect;    //实时分店销售数据
 
@@ -102,10 +103,11 @@ public class ImportDataDemo {
         }
         azureService.batchSaveBranchDailies(systemBookCode,list,date,date);
         azureService.batchSaveBranchDailyDirects(systemBookCode,directList,date,date);
+       return "success";
     }
 
-    @Scheduled(cron="0 0,30 * * * *")
-    public void cardDaily(){//按分店和营业日统计的都是100条数据
+    @RequestMapping(method = RequestMethod.GET,value = "/cardDaily")
+    public String cardDaily(){//按分店和营业日统计的都是100条数据
 
         List<CardDaily> list = new ArrayList<CardDaily>();
         Calendar calendar = Calendar.getInstance();
@@ -171,12 +173,14 @@ public class ImportDataDemo {
             list.add(cardDaily);
         }
 
-
         azureService.batchSaveCardDailies(systemBookCode,list,date,date);
+        return "success";
+
     }
 
-    @Scheduled(cron="0 0,30 * * * *")
-    public void itemLossDaily(){        //每天大概150条记录
+
+    @RequestMapping(method = RequestMethod.GET,value = "/itemLossDaily")
+    public String itemLossDaily(){        //每天大概150条记录
 
         List<ItemLossDaily> list = new ArrayList<ItemLossDaily>();
         Calendar calendar = Calendar.getInstance();
@@ -245,11 +249,11 @@ public class ImportDataDemo {
         List<ItemLossDaily> returnList = new ArrayList<ItemLossDaily>(map.values());
 
         azureService.batchSaveItemLossDailies(systemBookCode,returnList,date,date);
-
+        return "success";
     }
 
-    @Scheduled(cron="0 0,30 * * * *")
-    public void itemSaleDaily(){
+    @RequestMapping(method = RequestMethod.GET,value = "/itemSaleDaily")
+    public String itemSaleDaily(){
 
         List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
         Calendar calendar = Calendar.getInstance();
@@ -325,10 +329,11 @@ public class ImportDataDemo {
         }
         List<ItemSaleDaily> returnList = new ArrayList<ItemSaleDaily>(map.values());
         azureService.batchSaveItemSaleDailies(systemBookCode,returnList,date,date);
+        return "success";
     }
-
-    @Scheduled(cron="0 0,30 * * * *")
-    public void itemDailyDetail(){
+    @RequestMapping(method = RequestMethod.GET,value = "/itemDailyDetail")
+    //@Test
+    public String itemDailyDetail(){
 
         List<ItemDailyDetail> list = new ArrayList<ItemDailyDetail>();
         Calendar calendar = Calendar.getInstance();
@@ -425,11 +430,12 @@ public class ImportDataDemo {
         }
         List<ItemDailyDetail> returnList = new ArrayList<ItemDailyDetail>(map.values());
         azureService.batchSaveItemDailyDetails(systemBookCode,returnList,date,date);
-
+        return "success";
     }
 
-    @Scheduled(cron="0 0,30 * * * *") //每天凌晨定时更新日期表
-    public void saveBizday(){
+
+    @RequestMapping(method = RequestMethod.GET,value="/bizday")
+    public String saveBizday(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
         Calendar calendar = Calendar.getInstance();
         Date day = calendar.getTime();
@@ -557,8 +563,9 @@ public class ImportDataDemo {
             list.add(bizday);
         }
         azureService.batchSaveBizdays(systemBookCode,list);
+        return "SUCCESS";
 
     }
 
-
+  
 }

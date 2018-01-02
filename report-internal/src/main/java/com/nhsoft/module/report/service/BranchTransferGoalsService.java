@@ -59,7 +59,7 @@ public interface BranchTransferGoalsService {
 	 * @param dateFrom
 	 * @param dateTo
 	 * */
-	public List<Object[]> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findDepositGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
 
@@ -70,7 +70,7 @@ public interface BranchTransferGoalsService {
 	 * @param dateFrom
 	 * @param dateTo
 	 * */
-	public List<Object[]> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findNewCardGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
 }

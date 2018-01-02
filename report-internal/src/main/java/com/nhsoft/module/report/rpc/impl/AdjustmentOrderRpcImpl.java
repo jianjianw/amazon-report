@@ -83,9 +83,9 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
     }
 
     @Override
-    public List<ItemLossDailyDTO> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+    public List<ItemLossDailyDTO> findItemLoss(String systemBookCode, Date dateFrom, Date dateTo) {
 
-        List<Object[]> objects = adjustmentOrderService.findItemLossDailySummary(systemBookCode, dateFrom, dateTo);
+        List<Object[]> objects = adjustmentOrderService.findItemLoss(systemBookCode, dateFrom, dateTo);
         int size = objects.size();
         List<ItemLossDailyDTO> list = new ArrayList<>(size);
         if(objects.isEmpty()){

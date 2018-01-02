@@ -78,8 +78,8 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
     }
 
     @Override
-    public List<DepositGoalsDTO> findDepositGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-        List<Object[]> objects = branchTransferGoalsService.findDepositGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+    public List<DepositGoalsDTO> findDepositGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = branchTransferGoalsService.findDepositGoals(systemBookCode, branchNums, dateFrom, dateTo);
         int size = objects.size();
         List<DepositGoalsDTO> list = new ArrayList<>(size);
         if(objects.isEmpty()){
@@ -99,8 +99,8 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
     }
 
     @Override
-    public List<NewCardGoalsDTO> findNewCardGoalsByBizdayBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-        List<Object[]> objects = branchTransferGoalsService.findNewCardGoalsByBizdayBranch(systemBookCode, branchNums, dateFrom, dateTo);
+    public List<NewCardGoalsDTO> findNewCardGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = branchTransferGoalsService.findNewCardGoals(systemBookCode, branchNums, dateFrom, dateTo);
 
         int size = objects.size();
         List<NewCardGoalsDTO> list = new ArrayList<>(size);

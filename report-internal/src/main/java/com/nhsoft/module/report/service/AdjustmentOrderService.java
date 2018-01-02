@@ -53,6 +53,6 @@ public interface AdjustmentOrderService {
 	 * bi 商品日报损汇总
 	 *
 	 * */
-	public List<Object[]> findItemLossDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
+	public List<Object[]> findItemLoss(String systemBookCode, Date dateFrom, Date dateTo);
 
 }
