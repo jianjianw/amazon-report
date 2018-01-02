@@ -27,7 +27,7 @@ public class ImportDemoSchedule {
 
     String systemBookCode = "12345";
 
-    @Scheduled(cron="0 0,30 * * * *")
+    @Scheduled(cron="0 20 1 * * *")
     public void branchDaily(){//按分店和营业日统计的都是100条数据
         List<BranchDaily> list = new ArrayList<BranchDaily>();
         List<BranchDailyDirect> directList = new ArrayList<BranchDailyDirect>();
@@ -104,7 +104,7 @@ public class ImportDemoSchedule {
         azureService.batchSaveBranchDailyDirects(systemBookCode,directList,date,date);
     }
 
-    @Scheduled(cron="0 0,30 * * * *")
+    @Scheduled(cron="0 20 1 * * *")
     public void cardDaily(){//按分店和营业日统计的都是100条数据
 
         List<CardDaily> list = new ArrayList<CardDaily>();
@@ -175,7 +175,7 @@ public class ImportDemoSchedule {
         azureService.batchSaveCardDailies(systemBookCode,list,date,date);
     }
 
-    @Scheduled(cron="0 0,30 * * * *")
+    @Scheduled(cron="0 20 1 * * *")
     public void itemLossDaily(){        //每天大概150条记录
 
         List<ItemLossDaily> list = new ArrayList<ItemLossDaily>();
@@ -248,7 +248,7 @@ public class ImportDemoSchedule {
 
     }
 
-    @Scheduled(cron="0 0,30 * * * *")
+    @Scheduled(cron="0 20 1 * * *")
     public void itemSaleDaily(){
 
         List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
@@ -327,7 +327,7 @@ public class ImportDemoSchedule {
         azureService.batchSaveItemSaleDailies(systemBookCode,returnList,date,date);
     }
 
-    @Scheduled(cron="0 0,30 * * * *")
+    @Scheduled(cron="0 20 1 * * *")
     public void itemDailyDetail(){
 
         List<ItemDailyDetail> list = new ArrayList<ItemDailyDetail>();
@@ -428,7 +428,7 @@ public class ImportDemoSchedule {
 
     }
 
-    @Scheduled(cron="0 0,30 * * * *") //每天凌晨定时更新日期表
+    @Scheduled(cron="0 20 1 * * *") //每天凌晨定时更新日期表
     public void saveBizday(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
         Calendar calendar = Calendar.getInstance();

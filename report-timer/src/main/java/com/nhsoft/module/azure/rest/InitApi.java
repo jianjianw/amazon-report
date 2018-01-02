@@ -419,44 +419,6 @@ public class InitApi {
         return "SUCCESS";
     }
 
-
-    @RequestMapping(method = RequestMethod.GET,value = "/init/batch/cardDaily/{systemBookCode}/{dateFrom}/{dateTo}")
-    public String  initBatchCardDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{
-
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        List<CardDailyDTO> list = new ArrayList<CardDailyDTO>();
-        Date from = sdf.parse(dateFrom);
-        Date to = sdf.parse(dateTo);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(to);
-        List<CardDailyDTO> CardDailyDTOs = null;
-        for (int i = 1; i <130 ; i++) {
-            calendar.add(Calendar.DAY_OF_MONTH,-1);
-            Date time = calendar.getTime();
-            CardDailyDTOs = reportRpc.findCardDailies(systemBookCode, null, time, time);
-            list.addAll(CardDailyDTOs);
-        }
-        List<CardDaily> returnList = new ArrayList<CardDaily>();
-        for (int i = 0; i <list.size() ; i++) {
-            CardDailyDTO cardDailyDTO = list.get(i);
-            CardDaily cardDaily = new CardDaily();
-            cardDaily.setSystemBookCode(cardDailyDTO.getSystemBookCode());
-            cardDaily.setBranchNum(cardDailyDTO.getBranchNum());
-            cardDaily.setShiftTableBizday(cardDailyDTO.getShiftTableBizday());
-            cardDaily.setShiftTableDate(cardDailyDTO.getShiftTableDate());
-            cardDaily.setCardDeliverCount(cardDailyDTO.getCardDeliverCount());
-            cardDaily.setCardReturnCount(cardDailyDTO.getCardReturnCount());
-            cardDaily.setCardDeliverTarget(cardDailyDTO.getCardDeliverTarget());
-            cardDaily.setCardDepositCash(cardDailyDTO.getCardDepositCash());
-            cardDaily.setCardDepositMoney(cardDailyDTO.getCardDepositMoney());
-            cardDaily.setCardDepositTarget(cardDailyDTO.getCardDepositTarget());
-            cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
-            returnList.add(cardDaily);
-        }
-        azureService.batchSaveCardDailies(systemBookCode,returnList,from,to);
-        return "SUCCESS";
-    }
     @RequestMapping(method = RequestMethod.GET,value = "/init/item/{systemBookCode}")
     public String initItem(@PathVariable("systemBookCode") String systemBookCode){
         List<PosItemDTO> all = posItemRpc.findAll(systemBookCode);

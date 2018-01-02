@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Component
+//@Component
 public class AzureTestSchedule implements InitializingBean {
 
     private static final Logger logger = LoggerFactory.getLogger(AzureTestSchedule.class);
