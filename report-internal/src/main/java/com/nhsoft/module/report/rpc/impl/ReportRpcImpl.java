@@ -2386,13 +2386,13 @@ public class ReportRpcImpl implements ReportRpc {
 			saleByCategorySummary.setPaymentMoney((BigDecimal) object[3]);
 			saleByCategorySummary.setAssistAmount((BigDecimal) object[4]);
 			saleByCategorySummary.setItemCount((Integer) object[5]);
-			if(queryData.getIsQueryCF() != null && queryData.getIsQueryCF()){
-				BigDecimal disCount = new BigDecimal((double) object[6]);
-				saleByCategorySummary.setDiscount(disCount);
-			}else{
-				saleByCategorySummary.setDiscount((BigDecimal) object[6]);
-			}
+			if(object[6] instanceof  Double){
+				saleByCategorySummary.setDiscount(new BigDecimal((Double) object[6]));
 
+			} else {
+				saleByCategorySummary.setDiscount(object[6] == null?BigDecimal.ZERO:(BigDecimal)object[6]);
+
+			}
 			list.add(saleByCategorySummary);
 		}
 		return list;
@@ -2417,6 +2417,8 @@ public class ReportRpcImpl implements ReportRpc {
 			saleByCategoryBranchSummary.setOrderDetailAmount((BigDecimal) object[4]);
 			saleByCategoryBranchSummary.setOrderDetailPaymentMoney((BigDecimal) object[5]);
 			saleByCategoryBranchSummary.setOrderDetailAssistAmount((BigDecimal) object[6]);
+
+			//TODO
 			saleByCategoryBranchSummary.setItemNum((Integer) object[7]);
 			list.add(saleByCategoryBranchSummary);
 		}
@@ -2442,7 +2444,13 @@ public class ReportRpcImpl implements ReportRpc {
 			saleByDepartmentSummary.setPaymentMoney((BigDecimal) object[3]);
 			saleByDepartmentSummary.setAssistAmount((BigDecimal) object[4]);
 			saleByDepartmentSummary.setItemCount((Integer) object[5]);
-			saleByDepartmentSummary.setDiscount((BigDecimal) object[6]);
+			if(object[6] instanceof  Double){
+				saleByDepartmentSummary.setDiscount(new BigDecimal((Double) object[6]));
+
+			} else {
+				saleByDepartmentSummary.setDiscount(object[6] == null?BigDecimal.ZERO:(BigDecimal)object[6]);
+
+			}
 			list.add(saleByDepartmentSummary);
 		}
 		return list;
@@ -2465,7 +2473,13 @@ public class ReportRpcImpl implements ReportRpc {
 			saleByBrandSummary.setPaymentMoney((BigDecimal) object[3]);
 			saleByBrandSummary.setAssistAmount((BigDecimal) object[4]);
 			saleByBrandSummary.setItemCount((Integer) object[5]);
-			saleByBrandSummary.setDiscount((BigDecimal) object[6]);
+			if(object[6] instanceof  Double){
+				saleByBrandSummary.setDiscount(new BigDecimal((Double) object[6]));
+
+			} else {
+				saleByBrandSummary.setDiscount(object[6] == null?BigDecimal.ZERO:(BigDecimal)object[6]);
+
+			}
 			list.add(saleByBrandSummary);
 		}
 		return list;
