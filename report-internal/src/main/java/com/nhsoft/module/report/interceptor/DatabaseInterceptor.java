@@ -79,15 +79,17 @@ public class DatabaseInterceptor {
 		}
 		SystemBookProxy systemBookProxy = ServiceDeskUtil.getSystemBookProxy(systemBookCode);
 		if(systemBookProxy == null){
-			logger.info("systemBookProxy == null " + systemBookCode);
-			
+			throw new RuntimeException(String.format("%s systemBookProxy is null", systemBookCode));
+
+
 		}
 		if(systemBookProxy.getBookProxyRdsName() == null){
-			throw new RuntimeException("RdsName is null");
+			throw new RuntimeException(String.format("%s RdsName is null", systemBookCode));
+
 		}
 		String rds = rdsNameMap.get(systemBookProxy.getBookProxyRdsName());
 		if(rds == null){
-			throw new RuntimeException("rds not found");
+			throw new RuntimeException(String.format("%s rds not found", systemBookCode));
 		}
 		DynamicDataSourceContextHolder.setDataSourceType(rds);
 		String name = jp.getTarget().getClass().getName() + "." + jp.getSignature().getName();
