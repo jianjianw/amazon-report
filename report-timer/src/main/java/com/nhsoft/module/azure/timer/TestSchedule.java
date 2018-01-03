@@ -51,7 +51,7 @@ public class TestSchedule implements InitializingBean {
             } catch (InterruptedException e) {
             }
 
-            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBookCode[i], date, date);
+            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailys(systemBookCode[i], date, date);
             azureService.batchSaveBranchDailies(systemBookCode[i],branchDailySummary,date,date);
         }
 

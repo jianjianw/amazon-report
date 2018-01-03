@@ -5016,7 +5016,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return objects;
 	}
 
-	public List<Object[]> findBranchDailies(String systemBookCode,Date dateFrom,Date dateTo){
+	public List<Object[]> findBranchDailys(String systemBookCode,Date dateFrom,Date dateTo){
 
 		StringBuilder sb = new StringBuilder();//findMoneyBizdaySummary
 		sb.append("select p.branch_num, p.shift_table_bizday, sum(p.order_payment_money + p.order_coupon_total_money - p.order_mgr_discount_money) as money, ");
@@ -5061,7 +5061,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findItemSaleDailies(String systemBookCode, Date dateFrom, Date dateTo) {
+	public List<Object[]> findItemSaleDailys(String systemBookCode, Date dateFrom, Date dateTo) {
 
 		StringBuilder sb = new StringBuilder();//findProfitAnalysisByBranchDayItem
 		sb.append("select detail.order_detail_branch_num, detail.order_detail_bizday, detail.item_num, ");//case when

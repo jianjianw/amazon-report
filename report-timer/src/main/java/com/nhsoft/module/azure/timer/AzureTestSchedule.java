@@ -53,7 +53,7 @@ public class AzureTestSchedule implements InitializingBean {
         int size = systemBookCode.length;
         for (int i = 0; i < size ; i++) {
 
-            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBookCode[i], date, date);
+            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailys(systemBookCode[i], date, date);
             azureService.batchSaveBranchDailies(systemBookCode[i],branchDailySummary,date,date);
         }
 
@@ -67,7 +67,7 @@ public class AzureTestSchedule implements InitializingBean {
         Date dateFrom = calendar.getTime();
         int size = systemBookCode.length;
         for (int i = 0; i < size ; i++) {
-            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBookCode[i], dateFrom, dateTo);
+            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailys(systemBookCode[i], dateFrom, dateTo);
             azureService.batchSaveBranchDailies(systemBookCode[i],branchDailySummary,dateFrom,dateTo);
         }
 
@@ -79,7 +79,7 @@ public class AzureTestSchedule implements InitializingBean {
         Date date = calendar.getTime();
         int size = systemBookCode.length;
         for (int i = 0; i < size ; i++) {
-            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBookCode[i], date, date);
+            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailys(systemBookCode[i], date, date);
 
             int dailySize = branchDailySummary.size();
             List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>(dailySize);
@@ -110,7 +110,7 @@ public class AzureTestSchedule implements InitializingBean {
         Date dateFrom = calendar.getTime();
         int size = systemBookCode.length;
         for (int i = 0; i < size ; i++) {
-            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBookCode[i], dateFrom, dateTo);
+            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailys(systemBookCode[i], dateFrom, dateTo);
 
             int dailySize = branchDailySummary.size();
             List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>(dailySize);
@@ -363,7 +363,7 @@ public class AzureTestSchedule implements InitializingBean {
         Date dateFrom = calendar.getTime(); //前天
         int size = systemBookCode.length;
         for (int i = 0; i < size ; i++) {
-            List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailies(systemBookCode[i], dateFrom, dateTo);
+            List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailys(systemBookCode[i], dateFrom, dateTo);
             int itemSize = itemSaleDailySummary.size();
             List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>(itemSize);
             for (int j = 0; j < itemSize; j++) {
@@ -546,7 +546,7 @@ public class AzureTestSchedule implements InitializingBean {
         Date time = calendar.getTime();
         int size = systemBookCode.length;
         for (int i = 0; i < size ; i++) {
-            List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailies(systemBookCode[i], time, time);
+            List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailys(systemBookCode[i], time, time);
             int itemSize = itemSaleDailySummary.size();
             List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>(itemSize);
             for (int j = 0; j < itemSize ; j++) {

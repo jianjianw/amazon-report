@@ -412,9 +412,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		return new ArrayList<BranchItemSummaryDTO>(map.values());
 	}
 
-	public List<BranchDaily> findBranchDailies(String systemBookCode, Date dateFrom, Date dateTo){
+	public List<BranchDaily> findBranchDailys(String systemBookCode, Date dateFrom, Date dateTo){
 
-		List<Object[]> objects = posOrderService.findBranchDailies(systemBookCode,dateFrom,dateTo);
+		List<Object[]> objects = posOrderService.findBranchDailys(systemBookCode,dateFrom,dateTo);
 		List<SaleMoneyGoals> goals = branchTransferGoalsRpc.findGoalsByBranchBizday(systemBookCode, null, dateFrom, dateTo);
 		int size = objects.size();
 		List<BranchDaily> list = new ArrayList<>(size);
@@ -540,9 +540,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 	@Override
-	public List<ItemSaleDailyDTO> findItemSaleDailies(String systemBookCode, Date dateFrom, Date dateTo) {
+	public List<ItemSaleDailyDTO> findItemSaleDailys(String systemBookCode, Date dateFrom, Date dateTo) {
 
-		List<Object[]> objects = posOrderService.findItemSaleDailies(systemBookCode, dateFrom, dateTo);
+		List<Object[]> objects = posOrderService.findItemSaleDailys(systemBookCode, dateFrom, dateTo);
 		int size = objects.size();
 		List<ItemSaleDailyDTO> list = new ArrayList<>(size);
 		if(objects.isEmpty()){

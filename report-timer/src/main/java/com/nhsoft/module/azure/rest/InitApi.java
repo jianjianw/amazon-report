@@ -53,7 +53,7 @@ public class InitApi {
         } catch (ParseException e) {
             throw new RuntimeException("日期解析失败");
         }
-        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBookCode, form, to);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailys(systemBookCode, form, to);
         azureService.batchSaveBranchDailies(systemBookCode, branchDailySummary,form,to);
         return "SUCCESS";
     }
@@ -141,7 +141,7 @@ public class InitApi {
         } catch (ParseException e) {
             throw new RuntimeException("日期解析失败");
         }
-        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailies(systemBookCode, from, to);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailys(systemBookCode, from, to);
         List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>();
         for (int i = 0; i <branchDailySummary.size() ; i++) {
             BranchDaily branchDaily = branchDailySummary.get(i);
@@ -318,7 +318,7 @@ public class InitApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Date from = sdf.parse(dateFrom);
         Date to = sdf.parse(dateTo);
-        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailies(systemBookCode, from, to);
+        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailys(systemBookCode, from, to);
         List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
         for(int i = 0; i<itemSaleDailySummary.size(); i++){
             ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);

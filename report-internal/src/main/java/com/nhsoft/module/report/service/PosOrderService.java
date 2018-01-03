@@ -209,7 +209,7 @@ public interface PosOrderService {
 	/**
 	 *	bi 分店日销售汇总表
 	 * */
-	public List<Object[]> findBranchDailies(String systemBookCode, Date dateFrom, Date dateTo);
+	public List<Object[]> findBranchDailys(String systemBookCode, Date dateFrom, Date dateTo);
 
 	/**
 	 * bi 商品日时段销售汇总
@@ -219,7 +219,7 @@ public interface PosOrderService {
 	/**
 	 *  bi  商品日销售汇总
 	 **/
-	public List<Object[]> findItemSaleDailies(String systemBookCode, Date dateFrom, Date dateTo);
+	public List<Object[]> findItemSaleDailys(String systemBookCode, Date dateFrom, Date dateTo);
 
 
 
