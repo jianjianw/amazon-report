@@ -6079,11 +6079,11 @@ public class ReportServiceImpl implements ReportService {
 
 	}
 
-	private Object[] getTimeObjects(List<Object[]> objects, String timeFrom, String timeTo) {
+	private static Object[] getTimeObjects(List<Object[]> objects, String timeFrom, String timeTo) {
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			String time = DateUtil.format("HH:mm", (Date) object[0]);
-			if(time.compareTo(timeFrom) >= 0 && time.compareTo(timeTo) < 0){
+			if(time.compareTo(timeFrom) >= 0 && time.compareTo(timeTo) <= 0){
 				return object;
 			}
 			
@@ -6092,7 +6092,45 @@ public class ReportServiceImpl implements ReportService {
 	}
 	
 	public static void main(String[] args) {
-	
+		List<Object[]> objects = new ArrayList<Object[]>();
+
+		Object[] object = new Object[1];
+		object[0] = DateUtil.getDateTimeHMS("2017-12-22 23:21:39");
+		objects.add(object);
+
+		object = new Object[1];
+		object[0] = DateUtil.getDateTimeHMS("2017-12-22 09:58:11");
+		objects.add(object);
+
+		object = new Object[1];
+		object[0] = DateUtil.getDateTimeHMS("2017-12-22 14:59:59");
+		objects.add(object);
+
+		object = new Object[1];
+		object[0] = DateUtil.getDateTimeHMS("2017-12-22 15:59:17");
+		objects.add(object);
+
+		Date beginTime = DateUtil.getMinOfDate(Calendar.getInstance().getTime());
+		Date nextTime = DateUtil.addMinute(beginTime, 60);
+		nextTime = DateUtil.addSecond(nextTime, -1);
+		Date endTime = DateUtil.getMaxOfDate(Calendar.getInstance().getTime());
+
+		String timeFrom;
+		String timeTo;
+		while (nextTime.compareTo(endTime) <= 0) {
+			CustomerAnalysisTimePeriod data = new CustomerAnalysisTimePeriod();
+			timeFrom = DateUtil.format("HH:mm", beginTime);
+			timeTo = DateUtil.format("HH:mm", nextTime);
+
+			data.setTimePeroid(timeFrom + " - " + timeTo);
+			Object[] tempObject = getTimeObjects(objects, timeFrom, timeTo);
+			if(tempObject != null){
+				System.out.println(timeFrom + "~" + timeTo + ":" + tempObject[0]);
+			}
+
+			beginTime = DateUtil.addMinute(beginTime, 60);
+			nextTime = DateUtil.addMinute(nextTime, 60);
+		}
 	}
 	
 	
