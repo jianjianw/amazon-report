@@ -1725,7 +1725,8 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal totalMoney = BigDecimal.ZERO;
 		
 		List<Object[]> objects = posOrderDao.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, null, true);
-		for (int i = 0; i < objects.size(); i++) {
+		int size = objects.size();
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			BigDecimal amount = AppUtil.getValue(object[1], BigDecimal.class);
@@ -1751,7 +1752,8 @@ public class ReportServiceImpl implements ReportService {
 		};
 		Collections.sort(list, comparator);
 		BigDecimal aRate = null;
-		for (int i = 0; i < list.size(); i++) {
+		int listSize = list.size();
+		for (int i = 0; i < listSize; i++) {
 			ABCAnalysis data = list.get(i);
 			
 			data.setTotalMoney(totalMoney);
@@ -9323,12 +9325,12 @@ public class ReportServiceImpl implements ReportService {
 						alipayLogTypes));
 			}
 		}
-
-		if (list.size() == 0) {
+		int size = list.size();
+		if (size == 0) {
 			return list;
 		}
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			AlipayDetailDTO alipayDetailDTO = list.get(i);
 
 			Branch branch = AppUtil.getBranch(branchs, alipayDetailDTO.getBranchNum());
@@ -11837,9 +11839,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-
-    //TODO
-	//@Cacheable(value = "serviceCache")
 	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierSaleQuery) {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		Integer branchNum = supplierSaleQuery.getBranchNum();

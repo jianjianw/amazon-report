@@ -2,40 +2,25 @@ package com.nhsoft.module.report.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+/**
+ * 销售分析 -- 类别汇总
+ * */
+public class SaleAnalysisByItemDTO implements Serializable {
 
-public class SaleByCategoryBranchSummary implements Serializable {
-
-    private Integer branchNum;
-    private String category;
-    private String categoryCode;
+    private Integer itemNum;
     private int stateCode;
     private BigDecimal amount;
     private BigDecimal paymentMoney;
     private BigDecimal assistAmount;
     private Integer itemCount;
+    private BigDecimal discount;
 
-    public Integer getBranchNum() {
-        return branchNum;
+    public Integer getItemNum() {
+        return itemNum;
     }
 
-    public void setBranchNum(Integer branchNum) {
-        this.branchNum = branchNum;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getCategoryCode() {
-        return categoryCode;
-    }
-
-    public void setCategoryCode(String categoryCode) {
-        this.categoryCode = categoryCode;
+    public void setItemNum(Integer itemNum) {
+        this.itemNum = itemNum;
     }
 
     public int getStateCode() {
@@ -76,5 +61,13 @@ public class SaleByCategoryBranchSummary implements Serializable {
 
     public void setItemCount(Integer itemCount) {
         this.itemCount = itemCount;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
     }
 }

@@ -2223,9 +2223,10 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				);
 		criteria.setMaxResults(10000);
 		List<Object[]> objects = criteria.list();
-		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>();
+		int size = objects.size();
+		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>(size);
 		BigDecimal buyerMoney = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 
 			AlipayDetailDTO alipayDetailDTO = new AlipayDetailDTO();

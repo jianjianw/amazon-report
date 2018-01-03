@@ -4403,8 +4403,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			query.setMaxResults(selectCount);
 		}
 		List<Object[]> objects = query.list();
-		List<IntChart> intCharts = new ArrayList<IntChart>();
-		for(int i = 0;i < objects.size();i++){
+		int size = objects.size();
+
+		List<IntChart> intCharts = new ArrayList<IntChart>(size);
+		for(int i = 0;i < size;i++){
 			Object[] object = objects.get(i);
 			IntChart intChart = new IntChart();
 			intChart.setItemNum((Integer)object[0]);
