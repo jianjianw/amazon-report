@@ -9323,12 +9323,12 @@ public class ReportServiceImpl implements ReportService {
 						alipayLogTypes));
 			}
 		}
-
-		if (list.size() == 0) {
+		int size = list.size();
+		if (size == 0) {
 			return list;
 		}
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			AlipayDetailDTO alipayDetailDTO = list.get(i);
 
 			Branch branch = AppUtil.getBranch(branchs, alipayDetailDTO.getBranchNum());
@@ -11837,9 +11837,7 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-
-    //TODO
-	//@Cacheable(value = "serviceCache")
+	@Cacheable(value = "serviceCache")
 	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierSaleQuery) {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		Integer branchNum = supplierSaleQuery.getBranchNum();

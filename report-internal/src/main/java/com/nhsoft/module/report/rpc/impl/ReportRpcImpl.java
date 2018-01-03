@@ -2369,15 +2369,17 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Deprecated
 	public List<SaleByCategorySummary> findSaleAnalysisByCategorys(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByCategorys(queryData);
-		List<SaleByCategorySummary> list = new ArrayList<SaleByCategorySummary>();
+		int size = objects.size();
+		List<SaleByCategorySummary> list = new ArrayList<SaleByCategorySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			SaleByCategorySummary saleByCategorySummary = new SaleByCategorySummary();
 			saleByCategorySummary.setItemNum((Integer) object[0]);
@@ -2398,6 +2400,7 @@ public class ReportRpcImpl implements ReportRpc {
 		return list;
 	}
 
+
 	@Override
 	public List<SaleByCategoryBranchSummary> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData queryData) {
 
@@ -2410,16 +2413,14 @@ public class ReportRpcImpl implements ReportRpc {
 		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			SaleByCategoryBranchSummary saleByCategoryBranchSummary = new SaleByCategoryBranchSummary();
-			saleByCategoryBranchSummary.setOrderDetailBranchNum((Integer) object[0]);
-			saleByCategoryBranchSummary.setItemCategory((String) object[1]);
-			saleByCategoryBranchSummary.setItemCategoryCode((String) object[2]);
-			saleByCategoryBranchSummary.setOrderDetailStateCode((Integer)object[3]);
-			saleByCategoryBranchSummary.setOrderDetailAmount((BigDecimal) object[4]);
-			saleByCategoryBranchSummary.setOrderDetailPaymentMoney((BigDecimal) object[5]);
-			saleByCategoryBranchSummary.setOrderDetailAssistAmount((BigDecimal) object[6]);
-
-			//TODO
-			saleByCategoryBranchSummary.setItemNum((Integer) object[7]);
+			saleByCategoryBranchSummary.setBranchNum((Integer) object[0]);
+			saleByCategoryBranchSummary.setCategory((String) object[1]);
+			saleByCategoryBranchSummary.setCategoryCode((String) object[2]);
+			saleByCategoryBranchSummary.setStateCode((Integer)object[3]);
+			saleByCategoryBranchSummary.setAmount((BigDecimal) object[4]);
+			saleByCategoryBranchSummary.setPaymentMoney((BigDecimal) object[5]);
+			saleByCategoryBranchSummary.setAssistAmount((BigDecimal) object[6]);
+			saleByCategoryBranchSummary.setItemCount((Integer) object[7]);
 			list.add(saleByCategoryBranchSummary);
 		}
 
@@ -2427,6 +2428,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Deprecated
 	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByDepartments(queryData);
@@ -2452,6 +2454,36 @@ public class ReportRpcImpl implements ReportRpc {
 
 			}
 			list.add(saleByDepartmentSummary);
+		}
+		return list;
+	}
+
+	@Override
+	public List<SaleAnalysisByItemDTO> findSaleAnalysisByItems(SaleAnalysisQueryData queryData) {
+		List<Object[]> objects = reportService.findSaleAnalysisByCategorys(queryData);
+		int size = objects.size();
+		List<SaleAnalysisByItemDTO> list = new ArrayList<SaleAnalysisByItemDTO>(size);
+		if(objects.isEmpty()){
+			return list;
+		}
+
+		for (int i = 0; i <size ; i++) {
+			Object[] object = objects.get(i);
+			SaleAnalysisByItemDTO saleAnalysisByItemDTO = new SaleAnalysisByItemDTO();
+			saleAnalysisByItemDTO.setItemNum((Integer) object[0]);
+			saleAnalysisByItemDTO.setStateCode((int)object[1]);
+			saleAnalysisByItemDTO.setAmount((BigDecimal) object[2]);
+			saleAnalysisByItemDTO.setPaymentMoney((BigDecimal) object[3]);
+			saleAnalysisByItemDTO.setAssistAmount((BigDecimal) object[4]);
+			saleAnalysisByItemDTO.setItemCount((Integer) object[5]);
+			if(object[6] instanceof  Double){
+				saleAnalysisByItemDTO.setDiscount(new BigDecimal((Double) object[6]));
+
+			} else {
+				saleAnalysisByItemDTO.setDiscount(object[6] == null?BigDecimal.ZERO:(BigDecimal)object[6]);
+
+			}
+			list.add(saleAnalysisByItemDTO);
 		}
 		return list;
 	}

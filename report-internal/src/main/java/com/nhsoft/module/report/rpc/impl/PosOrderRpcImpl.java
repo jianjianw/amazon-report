@@ -558,12 +558,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			itemSaleDailyDTO.setItemNum((Integer) object[2]);
 			source = (String) object[3];
 			itemSaleDailyDTO.setItemSource(source);
-			/*if(source != null && source.length() == 0){
-				itemSaleDailyDTO.setItemSource("线下门店");
-			}else{
-				itemSaleDailyDTO.setItemSource(source);
-			}*/
-
 			if((Integer) object[4] > 0){
 				itemSaleDailyDTO.setItemMemberTag("会员");
 			}else{

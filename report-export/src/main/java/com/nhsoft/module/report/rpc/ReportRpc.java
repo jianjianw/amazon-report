@@ -590,6 +590,13 @@ public interface ReportRpc {
 	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData);
 
 	/**
+	 * 销售分析 -- 商品汇总
+	 * @param queryData
+	 * @return
+	 * */
+	public List<SaleAnalysisByItemDTO> findSaleAnalysisByItems(SaleAnalysisQueryData queryData);
+
+	/**
 	 * 销售分析 -- 品牌汇总
 	 * @param queryData
 	 * @return

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -27,15 +28,24 @@ public class ImportDemoApi {
         return sdf.format(date);
     }
 
-    String systemBookCode = "12345";
-    @RequestMapping(method = RequestMethod.GET,value = "/branchDaily")
-    public String branchDaily(){//按分店和营业日统计的都是100条数据
+    public Date getDate(String dateStr){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date date = null;
+        try {
+            date = sdf.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/branchDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String branchDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo){//按分店和营业日统计的都是100条数据
         List<BranchDaily> list = new ArrayList<BranchDaily>();
         List<BranchDailyDirect> directList = new ArrayList<BranchDailyDirect>();
 
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        String shiftTableBizday = getDateStr(date);
+        String shiftTableBizday = dateFrom;
+        Date date = getDate(dateFrom);
 
         Integer branchNum;      //1-100
         BigDecimal dailyMoney;          //营业额   5000-20000
@@ -102,21 +112,20 @@ public class ImportDemoApi {
 
         }
         azureService.batchSaveBranchDailies(systemBookCode,list,date,date);
-        azureService.batchSaveBranchDailyDirects(systemBookCode,directList,date,date);
+        azureService.batchSaveBranchDailyDirects(systemBookCode,directList,date,date); //需要时再放开
        return "success";
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/cardDaily")
-    public String cardDaily(){//按分店和营业日统计的都是100条数据
+    @RequestMapping(method = RequestMethod.GET,value = "/cardDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String cardDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo){//按分店和营业日统计的都是100条数据
 
         List<CardDaily> list = new ArrayList<CardDaily>();
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
+       /* Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();*/
 
-        String systemBookCode = "12345";
+        String shiftTableBizday = dateFrom;
+        Date date = getDate(dateFrom);
         Integer branchNum;      //1-100
-        String shiftTableBizday = getDateStr(date);
-
         Integer cardDeliverCount;       //新发卡数          20-50
         Integer cardReturnCount;        //退卡数            0-5
         Integer cardDeliverTarget;      //发卡目标          10-30
@@ -179,14 +188,15 @@ public class ImportDemoApi {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET,value = "/itemLossDaily")
-    public String itemLossDaily(){        //每天大概150条记录
+    @RequestMapping(method = RequestMethod.GET,value = "/itemLossDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String itemLossDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo){        //每天大概150条记录
 
         List<ItemLossDaily> list = new ArrayList<ItemLossDaily>();
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
+       /* Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();*/
 
-        String shiftTableBizday = getDateStr(date);
+        String shiftTableBizday = dateFrom;
+        Date date = getDate(dateFrom);
         Integer branchNum;          //1-100
         Integer itemNum;            //123450001 - 123450100      itemCode  10001 - 10100
         String[] itemLossReason = {"水果现切","报损"} ;      //报损原因      水果现切      报损
@@ -252,13 +262,14 @@ public class ImportDemoApi {
         return "success";
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/itemSaleDaily")
-    public String itemSaleDaily(){
+    @RequestMapping(method = RequestMethod.GET,value = "/itemSaleDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String itemSaleDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo){
 
         List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        String shiftTableBizday = getDateStr(date);
+      /*  Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();*/
+        String shiftTableBizday = dateFrom;
+        Date date = getDate(dateFrom);
 
         Integer branchNum;
         Integer itemNum;
@@ -331,14 +342,14 @@ public class ImportDemoApi {
         azureService.batchSaveItemSaleDailies(systemBookCode,returnList,date,date);
         return "success";
     }
-    @RequestMapping(method = RequestMethod.GET,value = "/itemDailyDetail")
-    //@Test
-    public String itemDailyDetail(){
+    @RequestMapping(method = RequestMethod.GET,value = "/itemDailyDetail/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String itemDailyDetail(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo){
 
         List<ItemDailyDetail> list = new ArrayList<ItemDailyDetail>();
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        String shiftTableBizday = getDateStr(date);
+       /* Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();*/
+        String shiftTableBizday = dateFrom;
+        Date date = getDate(dateFrom);
         String[] itemSource = {"线下门店", "蜂巢微商城", "美团"};      //销售来源
 
         Integer branchNum;
@@ -434,8 +445,8 @@ public class ImportDemoApi {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET,value="/bizday")
-    public String saveBizday(){
+    @RequestMapping(method = RequestMethod.GET,value="/bizday/{systemBookCode}")
+    public String saveBizday(@PathVariable("systemBookCode") String systemBookCode ){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
         Calendar calendar = Calendar.getInstance();
         Date day = calendar.getTime();

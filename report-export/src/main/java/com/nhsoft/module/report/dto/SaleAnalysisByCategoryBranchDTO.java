@@ -2,8 +2,10 @@ package com.nhsoft.module.report.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-public class SaleByCategoryBranchSummary implements Serializable {
+/**
+ * 销售分析 -- 类别-分店汇总
+ * */
+public class SaleAnalysisByCategoryBranchDTO implements Serializable {
 
     private Integer branchNum;
     private String category;
