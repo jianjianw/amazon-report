@@ -1,6 +1,8 @@
 package com.nhsoft.module.report.api;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.query.ABCListQuery;
 import com.nhsoft.module.report.query.ProfitAnalysisQueryData;
 import com.nhsoft.module.report.query.SaleAnalysisQueryData;
@@ -9,9 +11,7 @@ import com.nhsoft.module.report.rpc.AlipayLogRpc;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.rpc.ReportRpc;
-import com.nhsoft.module.report.service.MobileAppV2Service;
-import com.nhsoft.module.report.service.PosOrderService;
-import com.nhsoft.module.report.service.ReportService;
+import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
@@ -43,6 +43,10 @@ public class APIBasic {
 	private ReportService reportService;
 	@Autowired
 	private ReportRpc reportRpc;
+	@Autowired
+	private BranchService branchService;
+	@Autowired
+	private CardUserService cardUserService;
 
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
@@ -535,6 +539,37 @@ public class APIBasic {
 		return branchNums;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value="/test20")
+	public List<SupplierLianYing> test20() throws Exception{
+		String systemBookCode= "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400126);
+		items.add(434400126);
+		items.add(110010009);
+		items.add(110010007);
+		SupplierSaleQuery supplierSaleQuery = new SupplierSaleQuery();
+		supplierSaleQuery.setSystemBookCode(systemBookCode);
+		supplierSaleQuery.setDateFrom(dateFrom);
+		supplierSaleQuery.setDateTo(dateTo);
+		supplierSaleQuery.setItemNums(items);
 
+		List<SupplierLianYing> supplierLianYing = reportService.findSupplierLianYing(supplierSaleQuery);
+		return supplierLianYing;
+	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test21")
+	public List<Branch> test21(){
+		List<Branch> branchByBranchRegionNum = branchService.findBranchByBranchRegionNum("4344", 1);
+		return branchByBranchRegionNum;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test22")
+	public List<Object[]> test22(){
+		List<Object[]> cardUserCountByBranch = cardUserService.findCardUserCountByBranch("4344", null, null, null);
+		return cardUserCountByBranch;
+	}
 	
 }

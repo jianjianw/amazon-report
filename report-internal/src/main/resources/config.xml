@@ -19,8 +19,6 @@
             http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.2.xsd"
        default-lazy-init="false">
 
-    <!--<tx:annotation-driven/>-->
-
     <aop:aspectj-autoproxy />
     <aop:config>
         <aop:advisor id="managerTx" advice-ref="txAdvice"

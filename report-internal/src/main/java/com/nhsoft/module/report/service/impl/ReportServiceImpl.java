@@ -11837,7 +11837,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache")
 	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierSaleQuery) {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		Integer branchNum = supplierSaleQuery.getBranchNum();
