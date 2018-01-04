@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import sun.font.FontRunIterator;
 
@@ -2018,11 +2019,13 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasBySale' + #p0.getKey()")
 	public List<ABCAnalysis> findABCDatasBySale(ABCListQuery query) {
 		return reportService.findABCDatasBySale(query);
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasByProfit' + #p0.getKey()")
 	public List<ABCAnalysis> findABCDatasByProfit(ABCListQuery query) {
 		return reportService.findABCDatasByProfit(query);
 	}
@@ -2068,6 +2071,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value="serviceCache", key="'findSupplierLianYing' + #supplierSaleQuery.getKey()")
 	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierBranchQuery) {
 		return reportService.findSupplierLianYing(supplierBranchQuery);
 	}
@@ -2341,11 +2345,13 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByPosItems' + #p0.getKey()")
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByPosItems(SaleAnalysisQueryData queryData) {
 		return reportService.findSaleAnalysisByPosItems(queryData);
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchs' + #p0.getKey()")
 	public List<SaleByBranchSummary> findSaleAnalysisByBranchs(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByBranchs(queryData);
@@ -2370,6 +2376,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	@Deprecated
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByCategorys' + #p0.getKey()")
 	public List<SaleByCategorySummary> findSaleAnalysisByCategorys(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByCategorys(queryData);
@@ -2402,6 +2409,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByCategoryBranchs' + #p0.getKey()")
 	public List<SaleByCategoryBranchSummary> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByCategoryBranchs(queryData);
@@ -2429,6 +2437,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	@Deprecated
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
 	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByDepartments(queryData);
@@ -2459,6 +2468,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByItems' + #p0.getKey()")
 	public List<SaleAnalysisByItemDTO> findSaleAnalysisByItems(SaleAnalysisQueryData queryData) {
 		List<Object[]> objects = reportService.findSaleAnalysisByCategorys(queryData);
 		int size = objects.size();
@@ -2489,6 +2499,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
 	public List<SaleByBrandSummary> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByBrands(queryData);
@@ -3348,6 +3359,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchBizday' + #p0.getKey()")
 	public List<BranchBizSaleSummary> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData) {
         List<Object[]> objects = reportService.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
             List<BranchBizSaleSummary> list = new ArrayList<BranchBizSaleSummary>();

@@ -214,7 +214,6 @@ public class Report2ServiceImpl implements Report2Service {
 	}
 
 	@Override
-	@Cacheable(value="serviceCache", key="'findSaleAnalysisByBranchDayItems' + #p0.getKey()")
     public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchDayItems(
             SaleAnalysisQueryData saleAnalysisQueryData) {
 		List<Object[]> objects = new ArrayList<Object[]>();

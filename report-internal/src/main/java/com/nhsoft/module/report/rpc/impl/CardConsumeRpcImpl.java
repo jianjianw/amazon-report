@@ -6,6 +6,7 @@ import com.nhsoft.module.report.dto.BranchConsumeReport;
 import com.nhsoft.module.report.rpc.CardConsumeRpc;
 import com.nhsoft.module.report.service.CardConsumeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ public class CardConsumeRpcImpl implements CardConsumeRpc {
     private CardConsumeService cardConsumeService;
 
     @Override
+    @Cacheable(value = "serviceCache")
     public List<BranchConsumeReport> findBranchSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 

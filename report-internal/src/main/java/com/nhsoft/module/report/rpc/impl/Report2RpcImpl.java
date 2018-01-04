@@ -16,6 +16,7 @@ import com.nhsoft.module.report.util.DateUtil;
 import com.nhsoft.module.report.util.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -169,6 +170,7 @@ public class Report2RpcImpl implements Report2Rpc {
 	}
 
 	@Override
+	@Cacheable(value="serviceCache", key="'findSaleAnalysisByBranchDayItems' + #p0.getKey()")
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchDayItems(SaleAnalysisQueryData policyPosItemQuery) {
 		return report2Service.findSaleAnalysisByBranchDayItems(policyPosItemQuery);
 	}

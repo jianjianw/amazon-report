@@ -1248,7 +1248,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasBySale' + #p0.getKey()")
 	public List<ABCAnalysis> findABCDatasBySale(ABCListQuery abcListQuery) {
 
 		String systemBookCode = abcListQuery.getSystemBookCode();
@@ -1498,7 +1497,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasByProfit' + #p0.getKey()")
 	public List<ABCAnalysis> findABCDatasByProfit(ABCListQuery abcListQuery) {
 		String systemBookCode = abcListQuery.getSystemBookCode();
 		Integer branchNum = abcListQuery.getBranchNum();
@@ -6188,7 +6186,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByPosItems' + #p0.getKey()")
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByPosItems(SaleAnalysisQueryData saleAnalysisQueryData) {
 		List<Object[]> objects = new ArrayList<Object[]>();
 
@@ -6547,7 +6544,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchs' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByBranchs(SaleAnalysisQueryData saleAnalysisQueryData) {
 
 		List<Object[]> objects = posOrderDao.findSaleAnalysisByBranchs(saleAnalysisQueryData);
@@ -6555,7 +6551,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByCategorys' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByCategorys(SaleAnalysisQueryData saleAnalysisQueryData) {
 
 		SystemBook systemBook = systemBookService.readInCache(saleAnalysisQueryData.getSystemBookCode());
@@ -6675,19 +6670,16 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByCategoryBranchs' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return posOrderDao.findSaleAnalysisByCategoryBranchs(saleAnalysisQueryData);
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByDepartments(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return findSaleAnalysisByCategorys(saleAnalysisQueryData);
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByBrands(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return findSaleAnalysisByCategorys(saleAnalysisQueryData);
 	}
@@ -9797,7 +9789,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchBizday' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return posOrderDao.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
 	}
@@ -11839,7 +11830,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value="serviceCache", key="'findSupplierLianYing' + #supplierSaleQuery.getKey()")
 	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierSaleQuery) {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		Integer branchNum = supplierSaleQuery.getBranchNum();

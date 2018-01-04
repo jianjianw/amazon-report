@@ -10,6 +10,7 @@ import com.nhsoft.module.report.service.BranchService;
 import com.nhsoft.module.report.util.CopyUtil;
 import com.nhsoft.module.report.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -33,11 +34,13 @@ public class BranchRpcImpl implements BranchRpc {
     }
 
     @Override
+    @Cacheable(value = "serviceCache")
     public List<BranchDTO> findBranchByBranchRegionNum(String systemBookCode, Integer branchRegionNum) {
         return CopyUtil.toList(branchService.findBranchByBranchRegionNum(systemBookCode,branchRegionNum), BranchDTO.class);
     }
 
     @Override
+    @Cacheable(value = "serviceCache")
     public List<BranchArea> findBranchArea(String systemBookCode, List<Integer> branchNums) {
         List<Object[]> objects = branchService.findBranchArea(systemBookCode, branchNums);
         int size = objects.size();
@@ -56,6 +59,7 @@ public class BranchRpcImpl implements BranchRpc {
     }
 
     @Override
+    @Cacheable(value = "serviceCache")
     public BranchDTO readWithNolock(String systemBookCode, Integer branchNum) {
         return CopyUtil.to(branchService.readWithNolock(systemBookCode,branchNum),BranchDTO.class);
     }

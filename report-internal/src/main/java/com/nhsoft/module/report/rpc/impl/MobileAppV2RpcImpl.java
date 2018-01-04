@@ -14,6 +14,7 @@ import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -1286,11 +1287,13 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public MobileBusinessDTO findMobileBusiness(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return mobileAppV2Service.findMobileBusiness(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<MobileBusinessDetailDTO> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return mobileAppV2Service.findPaymentSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
@@ -1306,6 +1309,7 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<MobileBusinessDTO> findBusinessMoneyGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return mobileAppV2Service.findBusinessMoneyGroupByShop(systemBookCode,branchNums,dateFrom,dateTo);
 	}
@@ -1316,6 +1320,7 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<MobileBusinessDTO> findBusinessReceiptGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return mobileAppV2Service.findBusinessReceiptGroupByShop(systemBookCode,branchNums,dateFrom,dateTo);
 	}
