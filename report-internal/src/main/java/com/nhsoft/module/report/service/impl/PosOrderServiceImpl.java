@@ -186,8 +186,8 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 
-	public List<Object[]> findBranchDailies(String systemBookCode,Date dateFrom,Date dateTo){
-		List<Object[]> branchDailySummary = posOrderDao.findBranchDailies(systemBookCode,dateFrom,dateTo);
+	public List<Object[]> findBranchDailys(String systemBookCode,Date dateFrom,Date dateTo){
+		List<Object[]> branchDailySummary = posOrderDao.findBranchDailys(systemBookCode,dateFrom,dateTo);
 		return branchDailySummary;
 	}
 
@@ -196,8 +196,8 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	public List<Object[]> findItemSaleDailies(String systemBookCode, Date dateFrom, Date dateTo) {
-		return posOrderDao.findItemSaleDailies(systemBookCode,dateFrom,dateTo);
+	public List<Object[]> findItemSaleDailys(String systemBookCode, Date dateFrom, Date dateTo) {
+		return posOrderDao.findItemSaleDailys(systemBookCode,dateFrom,dateTo);
 	}
 
 
