@@ -6,7 +6,7 @@ import com.nhsoft.module.report.model.BranchRegion;
 import com.nhsoft.module.report.service.BranchService;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.BaseManager;
-import com.nhsoft.module.report.util.MemCacheUtil;
+import com.nhsoft.module.report.util.RedisUtil;
 import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -46,7 +46,7 @@ public class BranchServiceImpl extends BaseManager implements BranchService {
 			cacheDateMap.put(systemBookCode, updateDate);
 		}
 
-		Date memberCacheDate = (Date) MemCacheUtil.get(AppConstants.MEMCACHED_PRE_BRANCH_UPDATE_TIME + systemBookCode);
+		Date memberCacheDate = (Date) RedisUtil.get(AppConstants.MEMCACHED_PRE_BRANCH_UPDATE_TIME + systemBookCode);
 		boolean query = false; //是否重新查询
 		if(memberCacheDate != null
 				&& memberCacheDate.compareTo(updateDate) != 0){
