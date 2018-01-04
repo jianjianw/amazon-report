@@ -3497,7 +3497,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<CardDailyDTO> findCardDailies(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<CardDailyDTO> findCardDailys(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		//新增会员数
 		List<BranchBizdayCardCountSummary> cardCounts = cardUserRpc.findCardCountByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo, null);

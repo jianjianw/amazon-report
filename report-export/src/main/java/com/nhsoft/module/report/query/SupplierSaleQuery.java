@@ -87,6 +87,44 @@ public class SupplierSaleQuery extends QueryBuilder {
 	public void setCheckList(List<String> checkList) {
 		this.checkList = checkList;
 	}
+	public String getKey() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(systemBookCode);
+		sb.append(dateFrom.toString());
+		sb.append(dateTo.toString());
+
+		if(supplierNums != null){
+			sb.append("supplierNums:");
+			for(int i = 0;i < supplierNums.size();i++){
+				sb.append(supplierNums.get(i));
+			}
+		}
+		if(itemNums != null){
+			sb.append("itemNums:");
+			for(int i = 0;i < itemNums.size();i++){
+				sb.append(itemNums.get(i));
+			}
+		}
+		if(categoryCodes != null){
+			sb.append("categoryCodes:");
+			for(int i = 0;i < categoryCodes.size();i++){
+				sb.append(categoryCodes.get(i));
+			}
+		}
+		if(branchNums != null){
+			sb.append("branchNums:");
+			for(int i = 0;i < branchNums.size();i++){
+				sb.append(branchNums.get(i));
+			}
+		}
+		if(checkList != null){
+			sb.append("checkList:");
+			for(int i = 0;i < checkList.size();i++){
+				sb.append(checkList.get(i));
+			}
+		}
+		return sb.toString();
+	}
 
 
 }

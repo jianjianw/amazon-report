@@ -467,8 +467,8 @@ public class AzureTestSchedule implements InitializingBean {
         int size = systemBookCode.length;
         for (int i = 0; i < size ; i++) {
             List<CardDailyDTO> CardDailyDTOs = new ArrayList<CardDailyDTO>();
-            List<CardDailyDTO> yesterdays = reportRpc.findCardDailies(systemBookCode[i], null, yesterday, yesterday);
-            List<CardDailyDTO> beforeYesterdays = reportRpc.findCardDailies(systemBookCode[i], null, beforeYesterday, beforeYesterday);
+            List<CardDailyDTO> yesterdays = reportRpc.findCardDailys(systemBookCode[i], null, yesterday, yesterday);
+            List<CardDailyDTO> beforeYesterdays = reportRpc.findCardDailys(systemBookCode[i], null, beforeYesterday, beforeYesterday);
             CardDailyDTOs.addAll(yesterdays);
             CardDailyDTOs.addAll(beforeYesterdays);
             int cardSize = CardDailyDTOs.size();

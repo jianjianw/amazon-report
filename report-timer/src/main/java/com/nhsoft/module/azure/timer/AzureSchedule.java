@@ -169,6 +169,25 @@ public class AzureSchedule {
         azureService.batchSaveBranchs(systemBook, list);
     }
 
+    @Scheduled(cron="0 0 2-3 * * *")    //每天更新商品资料
+    public void saveItem(){
+        List<PosItemDTO> all = posItemRpc.findAll(systemBook);
+        int size = all.size();
+        List<PosItem> list = new ArrayList<PosItem>(size);
+        for (int i = 0; i < size ; i++) {
+            PosItemDTO posItemDTO = all.get(i);
+            PosItem posItem = new PosItem();
+            posItem.setSystemBookCode(posItemDTO.getSystemBookCode());
+            posItem.setItemNum(posItemDTO.getItemNum());
+            posItem.setItemName(posItemDTO.getItemName());
+            posItem.setItemCategory(posItemDTO.getItemCategoryCode());//顶级弗雷
+            posItem.setItemSubCategory(posItemDTO.getItemCategory());
+            posItem.setItemCode(posItemDTO.getItemCode());//新加字段
+            list.add(posItem);
+        }
+        azureService.batchSaveItem(systemBook,list);
+    }
+
     @Scheduled(cron="0 10,20 0 * * *") //每天凌晨定时更新日期表
     public void saveBizday(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
@@ -396,8 +415,8 @@ public class AzureSchedule {
         Date beforeYesterday = calendar.getTime(); //前天
 
         List<CardDailyDTO> CardDailyDTOs = new ArrayList<CardDailyDTO>();
-        List<CardDailyDTO> yesterdays = reportRpc.findCardDailies(systemBook, null, yesterday, yesterday);
-        List<CardDailyDTO> beforeYesterdays = reportRpc.findCardDailies(systemBook, null, beforeYesterday, beforeYesterday);
+        List<CardDailyDTO> yesterdays = reportRpc.findCardDailys(systemBook, null, yesterday, yesterday);
+        List<CardDailyDTO> beforeYesterdays = reportRpc.findCardDailys(systemBook, null, beforeYesterday, beforeYesterday);
         CardDailyDTOs.addAll(yesterdays);
         CardDailyDTOs.addAll(beforeYesterdays);
         int size = CardDailyDTOs.size();
@@ -435,24 +454,7 @@ public class AzureSchedule {
 
     }
 
-    @Scheduled(cron="0 0 2-3 * * *")    //每天更新商品资料
-    public void saveItem(){
-        List<PosItemDTO> all = posItemRpc.findAll(systemBook);
-        int size = all.size();
-        List<PosItem> list = new ArrayList<PosItem>(size);
-        for (int i = 0; i < size ; i++) {
-            PosItemDTO posItemDTO = all.get(i);
-            PosItem posItem = new PosItem();
-            posItem.setSystemBookCode(posItemDTO.getSystemBookCode());
-            posItem.setItemNum(posItemDTO.getItemNum());
-            posItem.setItemName(posItemDTO.getItemName());
-            posItem.setItemCategory(posItemDTO.getItemCategoryCode());//顶级弗雷
-            posItem.setItemSubCategory(posItemDTO.getItemCategory());
-            posItem.setItemCode(posItemDTO.getItemCode());//新加字段
-            list.add(posItem);
-        }
-        azureService.batchSaveItem(systemBook,list);
-    }
+
 
 
 }

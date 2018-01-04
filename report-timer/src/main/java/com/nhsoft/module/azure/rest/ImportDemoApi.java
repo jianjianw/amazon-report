@@ -120,9 +120,6 @@ public class ImportDemoApi {
     public String cardDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo){//按分店和营业日统计的都是100条数据
 
         List<CardDaily> list = new ArrayList<CardDaily>();
-       /* Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();*/
-
         String shiftTableBizday = dateFrom;
         Date date = getDate(dateFrom);
         Integer branchNum;      //1-100
@@ -192,9 +189,6 @@ public class ImportDemoApi {
     public String itemLossDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo){        //每天大概150条记录
 
         List<ItemLossDaily> list = new ArrayList<ItemLossDaily>();
-       /* Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();*/
-
         String shiftTableBizday = dateFrom;
         Date date = getDate(dateFrom);
         Integer branchNum;          //1-100
@@ -266,8 +260,6 @@ public class ImportDemoApi {
     public String itemSaleDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo){
 
         List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
-      /*  Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();*/
         String shiftTableBizday = dateFrom;
         Date date = getDate(dateFrom);
 
@@ -346,8 +338,6 @@ public class ImportDemoApi {
     public String itemDailyDetail(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo){
 
         List<ItemDailyDetail> list = new ArrayList<ItemDailyDetail>();
-       /* Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();*/
         String shiftTableBizday = dateFrom;
         Date date = getDate(dateFrom);
         String[] itemSource = {"线下门店", "蜂巢微商城", "美团"};      //销售来源
