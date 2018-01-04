@@ -1432,7 +1432,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		List<Object[]> objects = receiveOrderService.findDetailBySupplierNum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums());
-		for (int i = 0; i < objects.size(); i++) {
+		int receiveSize = objects.size();
+		for (int i = 0; i < receiveSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[15];
 			Integer supplierNum = (Integer) object[1];
@@ -1474,7 +1475,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = returnOrderService.findDetailBySupplierNum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums());
-		for (int i = 0; i < objects.size(); i++) {
+		int returnSize = objects.size();
+		for (int i = 0; i < returnSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[15];
 			Integer branchNum = (Integer) object[2];
@@ -1516,7 +1518,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = wholesaleOrderService.findItemSupplierDetail(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), null);
-		for (int i = 0; i < objects.size(); i++) {
+		int wholesaleSize = objects.size();
+		for (int i = 0; i < wholesaleSize; i++) {
 			Object[] object = objects.get(i);
 			String fid = (String) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1567,7 +1570,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = wholesaleReturnService.findItemSupplierDetail(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo());
-		for (int i = 0; i < objects.size(); i++) {
+		int wholeSize = objects.size();
+		for (int i = 0; i < wholeSize; i++) {
 			Object[] object = objects.get(i);
 			String fid = (String) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1623,7 +1627,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = posOrderService.findOrderDetailWithSupplier(systemBookCode, supplierSaleQuery.getBranchNums(),
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), null, true);
-		for (int i = 0; i < objects.size(); i++) {
+		int posSize = objects.size();
+		for (int i = 0; i < posSize; i++) {
 			Object[] object = objects.get(i);
 			Integer branch = (Integer) object[0];
 			Integer itemNum = (Integer) object[2];

@@ -41,8 +41,9 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
 
+        int size = itemDailyDetails.size();
         //再插入
-        for (int i = 0; i <itemDailyDetails.size() ; i++) {
+        for (int i = 0; i <size ; i++) {
             ItemDailyDetail itemDailyDetail = itemDailyDetails.get(i);
             currentSession().save(itemDailyDetail);
             if(i % 30 == 0){
@@ -54,7 +55,8 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
     }
 
     public void batchSavePosItemLats(String systemBookCode, List<PosItemLat> posItemLats) {
-        for (int i = 0; i <posItemLats.size() ; i++) {
+        int size = posItemLats.size();
+        for (int i = 0; i <size ; i++) {
             PosItemLat posItemLat = posItemLats.get(i);
             currentSession().saveOrUpdate(posItemLat);
             if(i % 30 == 0){
@@ -69,7 +71,8 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
     }
 
     public void batchSaveBranchs(String systemBookCode, List<Branch> branches) {
-        for (int i = 0; i <branches.size() ; i++) {
+        int size = branches.size();
+        for (int i = 0; i <size ; i++) {
             Branch branch = branches.get(i);
             currentSession().saveOrUpdate(branch);
             if(i % 30 == 0){
@@ -88,8 +91,8 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sb.append("and shift_table_bizday <= '" + formatDate(dateTo) + "' ");
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
-
-        for (int i = 0; i <branchDailys.size() ; i++) {
+        int size = branchDailys.size();
+        for (int i = 0; i <size ; i++) {
             BranchDaily branchDaily = branchDailys.get(i);
             currentSession().save(branchDaily);
             if(i % 30 == 0){
@@ -137,8 +140,8 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sb.append("and shift_table_bizday <= '" + formatDate(dateTo) + "' ");
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
-
-        for (int i = 0; i <branchDailyDirects.size() ; i++) {
+        int size = branchDailyDirects.size();
+        for (int i = 0; i <size ; i++) {
             BranchDailyDirect branchDailyDirect = branchDailyDirects.get(i);
             currentSession().save(branchDailyDirect);
             if(i % 30 == 0){
@@ -163,8 +166,8 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sb.append("delete from bizday ");
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
-
-        for (int i = 0; i <bizdays.size() ; i++) {
+        int size = bizdays.size();
+        for (int i = 0; i <size ; i++) {
             Bizday bizday = bizdays.get(i);
             currentSession().save(bizday);
             if(i % 30 == 0){
@@ -183,8 +186,8 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
         currentSession().flush();
-
-        for (int i = 0; i <itemSaleDailies.size() ; i++) {
+        int size = itemSaleDailies.size();
+        for (int i = 0; i <size ; i++) {
             ItemSaleDaily itemSaleDaily = itemSaleDailies.get(i);
             currentSession().save(itemSaleDaily);
             if(i % 30 == 0){
@@ -209,8 +212,8 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sb.append("and shift_table_bizday <= '" + formatDate(dateTo) +"' ");
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
-
-        for (int i = 0; i <itemLossDailies.size() ; i++) {
+        int size = itemLossDailies.size();
+        for (int i = 0; i <size ; i++) {
             ItemLossDaily itemLossDaily = itemLossDailies.get(i);
             currentSession().save(itemLossDaily);
             if(i % 30 == 0){
@@ -228,16 +231,16 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         sqlQuery.executeUpdate();
     }
 
-    public void batchSaveCardDailies(String systemBookCode, List<CardDaily> CardDailies, Date dateFrom, Date dateTo) {
+    public void batchSaveCardDailies(String systemBookCode, List<CardDaily> cardDailies, Date dateFrom, Date dateTo) {
         StringBuilder sb = new StringBuilder();
         sb.append("delete from card_daily ");
         sb.append("where shift_table_bizday >= '" + formatDate(dateFrom) + "' ");
         sb.append("and shift_table_bizday <= '" + formatDate(dateTo) +"' ");
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
-
-        for (int i = 0; i <CardDailies.size() ; i++) {
-            CardDaily cardDaily = CardDailies.get(i);
+        int size = cardDailies.size();
+        for (int i = 0; i <size ; i++) {
+            CardDaily cardDaily = cardDailies.get(i);
             currentSession().save(cardDaily);
             if(i % 30 == 0){
                 currentSession().flush();
@@ -260,8 +263,8 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
         currentSession().flush();
-
-        for (int i = 0; i <posItems.size() ; i++) {
+        int size = posItems.size();
+        for (int i = 0; i <size ; i++) {
             PosItem posItem = posItems.get(i);
             currentSession().save(posItem);
             if(i % 30 == 0){
