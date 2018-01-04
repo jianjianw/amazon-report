@@ -107,12 +107,6 @@
             <artifactId>sharding-jdbc-core</artifactId>
             <version>1.5.4</version>
         </dependency>
-
-        <dependency>
-            <groupId>net.spy</groupId>
-            <artifactId>spymemcached</artifactId>
-            <version>2.12.3</version>
-        </dependency>
         <dependency>
             <groupId>com.nhsoft</groupId>
             <artifactId>amazon-datacenter</artifactId>
