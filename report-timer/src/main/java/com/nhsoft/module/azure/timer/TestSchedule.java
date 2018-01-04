@@ -77,7 +77,7 @@ public class TestSchedule implements InitializingBean {
 
     }
 
-    @Scheduled(cron="0 5,6,7,8,9 0 * * *") //每天凌晨定时更新日期表
+    //@Scheduled(cron="0 5,6,7,8,9 * * * *") //每天凌晨定时更新日期表
     public void test3(){
         System.out.println("test1");
     }
