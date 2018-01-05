@@ -2287,6 +2287,7 @@ public class ReportRpcImpl implements ReportRpc {
 		if(objects.isEmpty()){
 			return list;
 		}
+
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();

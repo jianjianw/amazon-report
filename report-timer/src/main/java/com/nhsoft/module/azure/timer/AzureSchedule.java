@@ -107,7 +107,7 @@ public class AzureSchedule {
         azureService.batchSaveBranchDailyDirects(systemBook,list,dateFrom,dateTo);
     }
     @Scheduled(cron="0 0 2-3 * * *")
-    public void deleteBranchDailyDirect(){      //保留两天数据
+    public void deleteBranchDailyDirect(){      //保留三天数据
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-2);
         Date date = calendar.getTime();
@@ -135,7 +135,7 @@ public class AzureSchedule {
     }
 
     @Scheduled(cron="0 0 2-3 * * *")
-    public void deleteItemDetailDaily(){        //删除2天前的数据（保存两天的数据）
+    public void deleteItemDetailDaily(){        //删除2天前的数据（保存三天的数据）
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-2);
         Date date = calendar.getTime();
