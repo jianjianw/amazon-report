@@ -25,6 +25,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Key;
 import java.util.*;
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -1274,12 +1275,14 @@ public class ReportServiceImpl implements ReportService {
 					itemMatrixNum = 0;
 				}
 				BigDecimal saleMoney = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				data.setAnalysisContent(data.getAnalysisContent().add(saleMoney));
 				totalMoney = totalMoney.add(saleMoney);
@@ -1295,12 +1298,14 @@ public class ReportServiceImpl implements ReportService {
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.add(saleMoney);
 				data.setAnalysisContent(data.getAnalysisContent().add(saleMoney));
@@ -1315,12 +1320,14 @@ public class ReportServiceImpl implements ReportService {
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.subtract(saleMoney);
 				data.setAnalysisContent(data.getAnalysisContent().subtract(saleMoney));
@@ -1337,12 +1344,14 @@ public class ReportServiceImpl implements ReportService {
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.add(saleMoney);
 				data.setAnalysisContent(data.getAnalysisContent().add(saleMoney));
@@ -1356,12 +1365,14 @@ public class ReportServiceImpl implements ReportService {
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.subtract(saleMoney);
 				data.setAnalysisContent(data.getAnalysisContent().subtract(saleMoney));
@@ -1526,12 +1537,14 @@ public class ReportServiceImpl implements ReportService {
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 
 				}
 				data.setAnalysisContent(data.getAnalysisContent().add(money));
@@ -1550,12 +1563,14 @@ public class ReportServiceImpl implements ReportService {
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 				BigDecimal costMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 				BigDecimal profit = saleMoney.subtract(costMoney);
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb  = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemNum(itemNum);
 					data.setItemMatrixNum(itemMatrixNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.add(profit);
 				data.setAnalysisContent(data.getAnalysisContent().add(profit));
@@ -1572,12 +1587,14 @@ public class ReportServiceImpl implements ReportService {
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 				BigDecimal costMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 				BigDecimal profit = saleMoney.subtract(costMoney);
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemNum(itemNum);
 					data.setItemMatrixNum(itemMatrixNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.subtract(profit);
 				data.setAnalysisContent(data.getAnalysisContent().subtract(profit));
@@ -1595,12 +1612,14 @@ public class ReportServiceImpl implements ReportService {
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 				BigDecimal costMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 				BigDecimal profit = saleMoney.subtract(costMoney);
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemNum(itemNum);
 					data.setItemMatrixNum(itemMatrixNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.add(profit);
 				data.setAnalysisContent(data.getAnalysisContent().add(profit));
@@ -1617,12 +1636,14 @@ public class ReportServiceImpl implements ReportService {
 				BigDecimal saleMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 				BigDecimal costMoney = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 				BigDecimal profit = saleMoney.subtract(costMoney);
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemNum(itemNum);
 					data.setItemMatrixNum(itemMatrixNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.subtract(profit);
 				data.setAnalysisContent(data.getAnalysisContent().subtract(profit));
@@ -6165,12 +6186,15 @@ public class ReportServiceImpl implements ReportService {
 		Date endTime = DateUtil.getMaxOfDate(Calendar.getInstance().getTime());
 		String timeFrom;
 		String timeTo;
+		StringBuilder stringBuilder;
+		String key;
 		while (nextTime.compareTo(endTime) <= 0) {
 			CustomerAnalysisTimePeriod data = new CustomerAnalysisTimePeriod();
 			timeFrom = DateUtil.format("HH:mm", beginTime);
 			timeTo = DateUtil.format("HH:mm", nextTime);
-			
-			data.setTimePeroid(timeFrom + " - " + timeTo);
+			stringBuilder = new StringBuilder();
+			key = stringBuilder.append(timeFrom).append(" - ").append(timeTo).toString();
+			data.setTimePeroid(key);
 			Object[] object = getTimeObjects(objects, timeFrom, timeTo);
 			if (object == null) {
 				data.setCustomerNums(BigDecimal.ZERO);
@@ -6342,6 +6366,8 @@ public class ReportServiceImpl implements ReportService {
 		Integer saleBranchCount;
 		int size = objects.size();
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>(size);
+		StringBuilder stringBuilder;
+		String key;
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			itemNum = (Integer) object[0];
@@ -6367,13 +6393,14 @@ public class ReportServiceImpl implements ReportService {
 			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
 				continue;
 			}
-
-			SaleAnalysisByPosItemDTO data = map.get(itemNum + "|" + itemMatrixNum);
+			stringBuilder = new StringBuilder();
+			key = stringBuilder.append(itemNum).append("|").append(itemMatrixNum).toString();
+			SaleAnalysisByPosItemDTO data = map.get(key);
 			if (data == null) {
 				data = new SaleAnalysisByPosItemDTO();
 				data.setItemNum(itemNum);
 				data.setItemMatrixNum(itemMatrixNum);
-				map.put(itemNum + "|" + itemMatrixNum, data);
+				map.put(key, data);
 			}
 			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
 				data.setTotalNum(data.getTotalNum().subtract(amount));
@@ -6408,6 +6435,8 @@ public class ReportServiceImpl implements ReportService {
 		if (saleAnalysisQueryData.getIsQueryGrade()) {
 			objects = posOrderDao.findSaleAnalysisCommonItemGrade(saleAnalysisQueryData);
 			int objectSize = objects.size();
+			StringBuilder sb;
+			String mapKey;
 			List<Integer> gradeItemNums = new ArrayList<Integer>(0);
 			for (int i = 0; i < objectSize; i++) {
 				Object[] object = objects.get(i);
@@ -6423,14 +6452,15 @@ public class ReportServiceImpl implements ReportService {
 				if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
 					continue;
 				}
-
-				SaleAnalysisByPosItemDTO data = map.get(itemNum + "|" + itemGradeNum);
+				sb = new StringBuilder();
+				mapKey = sb.append(itemNum).append("|").append(itemGradeNum).toString();
+				SaleAnalysisByPosItemDTO data = map.get(mapKey);
 				if (data == null) {
 					data = new SaleAnalysisByPosItemDTO();
 					data.setItemNum(itemNum);
 					data.setItemGradeNum(itemGradeNum);
 					data.setItemMatrixNum(0);
-					map.put(itemNum + "|" + itemGradeNum, data);
+					map.put(mapKey, data);
 				}
 				if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
 					data.setTotalNum(data.getTotalNum().subtract(amount));
@@ -10367,7 +10397,8 @@ public class ReportServiceImpl implements ReportService {
 				categoryCode = "";
 			} else {
 				departmentName = posItem.getItemDepartment();
-				category = posItem.getItemCategoryCode() + "|" + posItem.getItemCategory();
+				StringBuilder sb = new StringBuilder();
+				category = sb.append(posItem.getItemCategoryCode()).append("|").append(posItem.getItemCategory()).toString();
 				categoryCode = posItem.getItemCategoryCode();
 			}
 			//添加过滤条件
@@ -10411,7 +10442,8 @@ public class ReportServiceImpl implements ReportService {
 				categoryCode = "";
 			} else {
 				departmentName = posItem.getItemDepartment();
-				category = posItem.getItemCategoryCode() + "|" + posItem.getItemCategory();
+				StringBuilder sb = new StringBuilder();
+				category = sb.append(posItem.getItemCategoryCode()).append("|").append(posItem.getItemCategory()).toString();
 				categoryCode = posItem.getItemCategoryCode();
 			}
 			//添加过滤条件
@@ -10466,7 +10498,8 @@ public class ReportServiceImpl implements ReportService {
 		List<Integer> highestItemNums = new ArrayList<Integer>();
 		
 		BigDecimal comparePrice = null;
-		for (int i = 0; i < posItems.size(); i++) {
+		int posItemSize = posItems.size();
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			
 			if (categoryCodes != null && categoryCodes.size() > 0) {
@@ -10511,6 +10544,7 @@ public class ReportServiceImpl implements ReportService {
 		list.add(new PosItemPriceBandDTO(5, highestItemNums.size()));
 		
 		List<Object[]> objects = null;
+		int objectSize;
 		if (posItemPriceBandQuery.getType().equals(AppConstants.CHECKBOX_SALE)) {
 			
 			objects = posOrderDao.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, null, false);
@@ -10524,11 +10558,13 @@ public class ReportServiceImpl implements ReportService {
 					.findItemSummary(systemBookCode, branchNums, null, dateFrom, dateTo, null);
 			List<Object[]> inObjects = transferInOrderDao.findItemSummary(systemBookCode, branchNum, branchNums,
 					dateFrom, dateTo, null);
-			for (int i = 0; i < inObjects.size(); i++) {
+			int inObjectSize = inObjects.size();
+			objectSize = objects.size();
+			for (int i = 0; i < inObjectSize; i++) {
 				Object[] inObject = inObjects.get(i);
 				
 				boolean find = false;
-				for (int j = 0; j < objects.size(); j++) {
+				for (int j = 0; j < objectSize; j++) {
 					Object[] object = objects.get(j);
 					if (inObject[0].equals(object[0])) {
 						object[1] = ((BigDecimal) object[1]).subtract(((BigDecimal) inObject[1]));
@@ -10550,12 +10586,13 @@ public class ReportServiceImpl implements ReportService {
 			objects = wholesaleOrderDao.findItemSummary(systemBookCode, branchNums, dateFrom, dateTo);
 			List<Object[]> returnObjects = wholesaleReturnDao.findItemSummary(systemBookCode, branchNums, dateFrom,
 					dateTo);
-			
-			for (int i = 0; i < returnObjects.size(); i++) {
+			int returnSize = returnObjects.size();
+			objectSize = objects.size();
+			for (int i = 0; i < returnSize; i++) {
 				Object[] returnObject = returnObjects.get(i);
 				
 				boolean find = false;
-				for (int j = 0; j < objects.size(); j++) {
+				for (int j = 0; j < objectSize; j++) {
 					Object[] object = objects.get(j);
 					if (returnObject[0].equals(object[0])) {
 						object[1] = ((BigDecimal) object[1]).subtract(((BigDecimal) returnObject[1]));
@@ -10574,7 +10611,8 @@ public class ReportServiceImpl implements ReportService {
 		}
 		
 		PosItemPriceBandDTO posItemPriceBandDTO = null;
-		for (int i = 0; i < objects.size(); i++) {
+		objectSize = objects.size();
+		for (int i = 0; i < objectSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];

@@ -916,7 +916,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -933,7 +935,7 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierName(supplier.getSupplierName());
 				data.setInQty(amount);
 				data.setInMoney(saleMoney);
-				map.put(itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			} else {
 				data.setInQty(data.getInQty().add(amount));
 				data.setInMoney(data.getInMoney().add(saleMoney));
@@ -954,7 +956,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -971,7 +975,7 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierName(supplier.getSupplierName());
 				data.setInQty(amount.negate());
 				data.setInMoney(saleMoney.negate());
-				map.put(itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			} else {
 				data.setInQty(data.getInQty().subtract(amount));
 				data.setInMoney(data.getInMoney().subtract(saleMoney));
@@ -992,7 +996,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -1011,7 +1017,7 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSaleMoney(saleMoney);
 				data.setSaleCost(costMoney);
 				data.setSaleProfit(saleMoney.subtract(costMoney));
-				map.put(itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			} else {
 				data.setSaleQty(data.getSaleQty().add(amount));
 				data.setSaleMoney(data.getSaleMoney().add(saleMoney));
@@ -1036,7 +1042,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -1055,7 +1063,7 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSaleMoney(saleMoney.negate());
 				data.setSaleCost(costMoney.negate());
 				data.setSaleProfit(saleMoney.subtract(costMoney).negate());
-				map.put(itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			} else {
 				data.setSaleQty(data.getSaleQty().subtract(amount));
 				data.setSaleMoney(data.getSaleMoney().subtract(saleMoney));
@@ -1078,7 +1086,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -1097,7 +1107,7 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSaleMoney(saleMoney);
 				data.setSaleCost(saleMoney.subtract(profit));
 				data.setSaleProfit(profit);
-				map.put(itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			} else {
 				data.setSaleQty(data.getSaleQty().add(amount));
 				data.setSaleMoney(data.getSaleMoney().add(saleMoney));
@@ -1174,7 +1184,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(branchNum + "_" + itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append("_").append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -1196,7 +1208,7 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
-				map.put(branchNum + "_" + itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			}
 			data.setInQty(data.getInQty().add(amount));
 			data.setInMoney(data.getInMoney().add(saleMoney));
@@ -1217,7 +1229,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(branchNum + "_" + itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append("_").append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -1239,7 +1253,7 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
-				map.put(branchNum + "_" + itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			}
 			data.setInQty(data.getInQty().subtract(amount));
 			data.setInMoney(data.getInMoney().subtract(saleMoney));
@@ -1261,7 +1275,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(branchNum + "_" + itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append("_").append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -1283,7 +1299,7 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
-				map.put(branchNum + "_" + itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			}
 			data.setSaleQty(data.getSaleQty().add(amount));
 			data.setSaleMoney(data.getSaleMoney().add(saleMoney));
@@ -1308,7 +1324,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(branchNum + "_" + itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append("_").append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -1330,7 +1348,7 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
-				map.put(branchNum + "_" + itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			}
 			data.setSaleQty(data.getSaleQty().subtract(amount));
 			data.setSaleMoney(data.getSaleMoney().subtract(saleMoney));
@@ -1353,7 +1371,9 @@ public class ReportRpcImpl implements ReportRpc {
 							.getSupplierNums().contains(supplierNum))) {
 				continue;
 			}
-			SupplierComplexReportDTO data = map.get(branch + "_" + itemNum + "_" + supplierNum);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branch).append("_").append(itemNum).append("_").append(supplierNum).toString();
+			SupplierComplexReportDTO data = map.get(key);
 			if (data == null) {
 				data = new SupplierComplexReportDTO();
 				SupplierComplexReportDTO baseData = baseMap.get(itemNum);
@@ -1375,7 +1395,7 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
-				map.put(branch + "_" + itemNum + "_" + supplierNum, data);
+				map.put(key, data);
 			}
 			data.setSaleQty(data.getSaleQty().add(amount));
 			data.setSaleMoney(data.getSaleMoney().add(saleMoney));

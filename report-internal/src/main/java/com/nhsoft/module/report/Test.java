@@ -93,7 +93,24 @@ public class Test {
 	}
 
 	public static void main(String[] args) {
-		boolean equals = Objects.equals("1", "1");
-		System.out.println(equals);
+
+	/*	Integer value2  = 456;
+		long begin = System.nanoTime();
+		for (int i = 0; i <10000000 ; i++) {
+			String str = value2 + "ww" + "ee";
+		}
+		long end = System.nanoTime();
+		System.out.println(end - begin);		//743909733
+*/
+		Integer value2 = 456;
+		long begin = System.nanoTime();
+		for (int i = 0; i <10000000 ; i++) {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append(value2).append("ww").append("ee");
+		}
+		long end = System.nanoTime();
+		System.out.println(end - begin);	//634900270
 	}
+
+
 }
