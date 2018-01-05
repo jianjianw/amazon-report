@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-@Component
+//@Component
 public class TestSchedule implements InitializingBean {
 
 

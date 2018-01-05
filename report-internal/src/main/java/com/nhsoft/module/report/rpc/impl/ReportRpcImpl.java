@@ -424,10 +424,11 @@ public class ReportRpcImpl implements ReportRpc {
 
 		List<Object[]> objects = posOrderService.findBizmonthItemSummary(systemBookCode, branchNums, dateFrom, dateTo,
 				itemNums);
+		int size = objects.size();
 		OrderDetailReportDTO dto;
 		Object[] object;
-		List<OrderDetailReportDTO> list = new ArrayList<OrderDetailReportDTO>();
-		for (int i = 0; i < objects.size(); i++) {
+		List<OrderDetailReportDTO> list = new ArrayList<OrderDetailReportDTO>(size);
+		for (int i = 0; i < size; i++) {
 			object = objects.get(i);
 			dto = new OrderDetailReportDTO();
 			dto.setBizMonth((String) object[0]);
@@ -674,7 +675,8 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		for (int i = 0; i < objects.size(); i++) {
+		int receiveSize = objects.size();
+		for (int i = 0; i < receiveSize; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -705,7 +707,8 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = returnOrderService.findSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		for (int i = 0; i < objects.size(); i++) {
+		int returnSize = objects.size();
+		for (int i = 0; i < returnSize; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -738,7 +741,8 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = wholesaleOrderService.findSupplierSum(systemBookCode, branchNums, supplierSaleQuery.getDateFrom(),
 				supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(), supplierSaleQuery.getItemNums(),
 				null);
-		for (int i = 0; i < objects.size(); i++) {
+		int wholeSize = objects.size();
+		for (int i = 0; i < wholeSize; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -775,7 +779,8 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = wholesaleReturnService.findSupplierSum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums(),
 				supplierSaleQuery.getCategoryCodes(), null);
-		for (int i = 0; i < objects.size(); i++) {
+		int wholesaleSize = objects.size();
+		for (int i = 0; i < wholesaleSize; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -811,7 +816,8 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = posOrderService.findSupplierSum(systemBookCode, supplierSaleQuery.getBranchNums(),
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums(), true);
-		for (int i = 0; i < objects.size(); i++) {
+		int posSize = objects.size();
+		for (int i = 0; i < posSize; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -846,8 +852,9 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		List<SupplierComplexReportDTO> list = new ArrayList<SupplierComplexReportDTO>(map.values());
+		int size = list.size();
 		// 算毛利率
-		for (int i = list.size() - 1; i >= 0; i--) {
+		for (int i = size - 1; i >= 0; i--) {
 			SupplierComplexReportDTO data = list.get(i);
 			if (data.getSaleMoney().compareTo(BigDecimal.ZERO) == 0) {
 				data.setSaleProfitRate(BigDecimal.ZERO);
@@ -874,7 +881,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		Map<Integer, SupplierComplexReportDTO> baseMap = new HashMap<Integer, SupplierComplexReportDTO>();
 		Map<String, SupplierComplexReportDTO> map = new HashMap<String, SupplierComplexReportDTO>();
-		for (int i = 0; i < posItems.size(); i++) {
+		int posItemSize = posItems.size();
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			SupplierComplexReportDTO data = new SupplierComplexReportDTO();
 			BeanUtils.copyProperties(posItem, data);
@@ -883,7 +891,8 @@ public class ReportRpcImpl implements ReportRpc {
 			baseMap.put(data.getItemNum(), data);
 		}
 		List<Object[]> objects = inventoryService.findItemAmount(systemBookCode, branchNums, null);
-		for (int i = 0; i < objects.size(); i++) {
+		int itemAmountSize = objects.size();
+		for (int i = 0; i < itemAmountSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -895,7 +904,8 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = receiveOrderService.findItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		for (int i = 0; i < objects.size(); i++) {
+		int receiveSize = objects.size();
+		for (int i = 0; i < receiveSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -932,7 +942,8 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = returnOrderService.findItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		for (int i = 0; i < objects.size(); i++) {
+		int returnSize = objects.size();
+		for (int i = 0; i < returnSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -968,7 +979,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = wholesaleOrderService.findItemSupplierSum(systemBookCode, branchNums, supplierSaleQuery.getDateFrom(),
 				supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums(), null);
-		for (int i = 0; i < objects.size(); i++) {
+		int wholeSize = objects.size();
+		for (int i = 0; i < wholeSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -1011,7 +1023,8 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = wholesaleReturnService.findItemSupplierSum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums(),
 				supplierSaleQuery.getCategoryCodes(), null);
-		for (int i = 0; i < objects.size(); i++) {
+		int wholesaleSize = objects.size();
+		for (int i = 0; i < wholesaleSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -1052,7 +1065,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = posOrderService.findItemSupplierMatrixSum(systemBookCode, supplierSaleQuery.getBranchNums(),
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), true);
-		for (int i = 0; i < objects.size(); i++) {
+		int posSize = objects.size();
+		for (int i = 0; i < posSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -1094,7 +1108,8 @@ public class ReportRpcImpl implements ReportRpc {
 
 		List<SupplierComplexReportDTO> list = new ArrayList<SupplierComplexReportDTO>(map.values());
 		// 算毛利率和周转率
-		for (int i = list.size() - 1; i >= 0; i--) {
+		int size = list.size();
+		for (int i = size - 1; i >= 0; i--) {
 			SupplierComplexReportDTO data = list.get(i);
 			if (data.getSaleMoney().compareTo(BigDecimal.ZERO) == 0) {
 				data.setSaleProfitRate(BigDecimal.ZERO);
@@ -1118,6 +1133,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findSupplierSaleGroupByBranchDatas'+ #p0.getKey()")
 	public List<SupplierComplexReportDTO> findSupplierSaleGroupByBranchDatas(SupplierSaleQuery supplierSaleQuery) {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		List<Integer> branchNums = supplierSaleQuery.getBranchNums();
@@ -1133,7 +1149,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		Map<Integer, SupplierComplexReportDTO> baseMap = new HashMap<Integer, SupplierComplexReportDTO>();
 		Map<String, SupplierComplexReportDTO> map = new HashMap<String, SupplierComplexReportDTO>();
-		for (int i = 0; i < posItems.size(); i++) {
+		int posItemSize = posItems.size();
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			SupplierComplexReportDTO data = new SupplierComplexReportDTO();
 			BeanUtils.copyProperties(posItem, data);
@@ -1144,7 +1161,8 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findBranchItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		for (int i = 0; i < objects.size(); i++) {
+		int receiveSize = objects.size();
+		for (int i = 0; i < receiveSize; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1186,7 +1204,8 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = returnOrderService.findBranchItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		for (int i = 0; i < objects.size(); i++) {
+		int returnSize = objects.size();
+		for (int i = 0; i < returnSize; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1227,7 +1246,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = wholesaleOrderService.findBranchItemSupplierSum(systemBookCode, branchNums, supplierSaleQuery.getDateFrom(),
 				supplierSaleQuery.getDateTo(), null, null);
-		for (int i = 0; i < objects.size(); i++) {
+		int wholeSize = objects.size();
+		for (int i = 0; i < wholeSize; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1273,7 +1293,8 @@ public class ReportRpcImpl implements ReportRpc {
 
 		objects = wholesaleReturnService.findBranchItemSupplierSum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), null, null, null);
-		for (int i = 0; i < objects.size(); i++) {
+		int wholesaleSize = objects.size();
+		for (int i = 0; i < wholesaleSize; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1318,7 +1339,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = posOrderService.findItemSupplierSumByCategory(systemBookCode, supplierSaleQuery.getBranchNums(),
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), null, true, null);
-		for (int i = 0; i < objects.size(); i++) {
+		int posSize = objects.size();
+		for (int i = 0; i < posSize; i++) {
 			Object[] object = objects.get(i);
 			Integer branch = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -2076,7 +2098,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	@Cacheable(value="serviceCache", key="'findSupplierLianYing' + #supplierSaleQuery.getKey()")
+	@Cacheable(value = "serviceCache", key="'AMA_findSupplierLianYing' + #supplierSaleQuery.getKey()")
 	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierBranchQuery) {
 		return reportService.findSupplierLianYing(supplierBranchQuery);
 	}
@@ -2313,6 +2335,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<CustomerAnalysisHistory> findCustomerAnalysisHistorys(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, String saleType) {
 		return reportService.findCustomerAnalysisHistorys(systemBookCode,dateFrom,dateTo,branchNums,saleType);
 	}
@@ -2323,6 +2346,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<CustomerAnalysisDay> findCustomerAnalysisDays(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, String saleType) {
 		return reportService.findCustomerAnalysisDays(systemBookCode,dateFrom,dateTo,branchNums,saleType);
 	}
@@ -2338,8 +2362,8 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public CustomerSummary sumCustomerAnalysis(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String branchType) {
-
 		Object[] object = reportService.sumCustomerAnalysis(systemBookCode, dtFrom, dtTo, branchNums, branchType);
 		CustomerSummary customerSummary = new CustomerSummary();
 		customerSummary.setMoney((BigDecimal) object[0]);
@@ -2980,6 +3004,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<CustomerAnalysisDay> findCusotmerAnalysisBranchs(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, String saleType) {
 		return reportService.findCusotmerAnalysisBranchs(systemBookCode,dateFrom,dateTo,branchNums,saleType);
 	}
@@ -2995,8 +3020,8 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache" )
 	public List<AlipaySumDTO> findAlipaySumDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String payType) {
-
 		return reportService.findAlipaySumDTOs(systemBookCode,branchNums,dateFrom,dateTo,payType);
 	}
 

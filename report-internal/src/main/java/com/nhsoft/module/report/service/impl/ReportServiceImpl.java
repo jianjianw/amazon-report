@@ -1265,7 +1265,8 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_SALE)) {
 			List<Object[]> objects = posOrderDao.findAbcItemSum(systemBookCode, branchNums, dateFrom, dateTo,
 					abcListQuery.getCategoryCodeList());
-			for (int i = 0; i < objects.size(); i++) {
+			int itemSize = objects.size();
+			for (int i = 0; i < itemSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = (Integer) object[1];
@@ -1288,7 +1289,8 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_OUT)) {
 			List<Object[]> objects = transferOutOrderDao.findProfitGroupByItem(systemBookCode, transferBranchNums,
 					branchNums, dateFrom, dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int outSize = objects.size();
+			for (int i = 0; i < outSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -1307,7 +1309,8 @@ public class ReportServiceImpl implements ReportService {
 
 			objects = transferInOrderDao.findProfitGroupByItem(systemBookCode, transferBranchNums, branchNums,
 					dateFrom, dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int inSize = objects.size();
+			for (int i = 0; i < inSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -1328,7 +1331,8 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_WHO)) {
 			List<Object[]> objects = wholesaleOrderDao.findItemSumByCategory(systemBookCode, branchNum, dateFrom,
 					dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int wholeSize = objects.size();
+			for (int i = 0; i < wholeSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -1346,7 +1350,8 @@ public class ReportServiceImpl implements ReportService {
 			}
 			objects = wholesaleReturnDao.findItemSum(systemBookCode, branchNum, null, dateFrom, dateTo, null,
 					abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int returnSize = objects.size();
+			for (int i = 0; i < returnSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -1380,7 +1385,8 @@ public class ReportServiceImpl implements ReportService {
 		Collections.sort(list, comparator);
 		BigDecimal aRate = null;
 		List<Integer> itemNums = new ArrayList<Integer>();
-		for (int i = 0; i < list.size(); i++) {
+		int analysiSize = list.size();
+		for (int i = 0; i < analysiSize; i++) {
 			ABCAnalysis data = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(data.getItemNum(), posItems);
 			if (posItem == null) {
@@ -1477,17 +1483,19 @@ public class ReportServiceImpl implements ReportService {
 			}
 
 		}
+		int size = list.size();
 		if (itemNums.size() > 0) {
 			List<Inventory> inventories = inventoryDao.findByItemAndBranch(systemBookCode, branchNum, itemNums, false);
 			Branch branch = branchService.readInCache(systemBookCode, branchNum);
-			for (int i = 0; i < list.size(); i++) {
+
+			for (int i = 0; i < size; i++) {
 				ABCAnalysis data = list.get(i);
 				Object[] objects =AppUtil.getInventoryAmount(inventories,data.getItemNum(),data.getItemMatrixNum());
 				data.setInventoryQty((BigDecimal) objects[0]);
 			}
 		}
 
-		if (list.size() > 0) {
+		if (size > 0) {
 			list.get(0).setaLevelCount(aCount);
 			list.get(0).setbLevelCount(bCount);
 			list.get(0).setcLevelCount(cCount);
@@ -1512,7 +1520,8 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_SALE)) {
 			List<Object[]> objects = posOrderDao.findAbcItemSum(systemBookCode, branchNums, dateFrom, dateTo,
 					abcListQuery.getCategoryCodeList());
-			for (int i = 0; i < objects.size(); i++) {
+			int itemSize = objects.size();
+			for (int i = 0; i < itemSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -1533,7 +1542,8 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_OUT)) {
 			List<Object[]> objects = transferOutOrderDao.findProfitGroupByItem(systemBookCode, transferBranchNums,
 					branchNums, dateFrom, dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int outSize = objects.size();
+			for (int i = 0; i < outSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -1554,7 +1564,8 @@ public class ReportServiceImpl implements ReportService {
 
 			objects = transferInOrderDao.findProfitGroupByItem(systemBookCode, transferBranchNums, branchNums,
 					dateFrom, dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int inSize = objects.size();
+			for (int i = 0; i < inSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -1576,7 +1587,8 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_WHO)) {
 			List<Object[]> objects = wholesaleOrderDao.findItemSumByCategory(systemBookCode, branchNum, dateFrom,
 					dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int wholesaleSize = objects.size();
+			for (int i = 0; i < wholesaleSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -1597,7 +1609,8 @@ public class ReportServiceImpl implements ReportService {
 
 			objects = wholesaleReturnDao.findItemSum(systemBookCode, branchNum, null, dateFrom, dateTo, null,
 					abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int wholeSize = objects.size();
+			for (int i = 0; i < wholeSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -1637,8 +1650,8 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal aRate = null;
 		
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
-		
-		for (int i = 0; i < list.size(); i++) {
+		int size = list.size();
+		for (int i = 0; i < size; i++) {
 			ABCAnalysis data = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(data.getItemNum(), posItems);
 			if (posItem == null) {
@@ -6545,9 +6558,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<Object[]> findSaleAnalysisByBranchs(SaleAnalysisQueryData saleAnalysisQueryData) {
-
-		List<Object[]> objects = posOrderDao.findSaleAnalysisByBranchs(saleAnalysisQueryData);
-		return objects;
+		return posOrderDao.findSaleAnalysisByBranchs(saleAnalysisQueryData);
 	}
 
 	@Override
@@ -8664,8 +8675,8 @@ public class ReportServiceImpl implements ReportService {
                                                 Date dateTo, String payType) {
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		Map<Integer, AlipaySumDTO> map = new LinkedHashMap<Integer, AlipaySumDTO>();
-		int size = branchNums.size();
-		for (int i = 0; i < size; i++) {
+		int branchSize = branchNums.size();
+		for (int i = 0; i < branchSize; i++) {
 			Integer branchNum = branchNums.get(i);
 			Branch branch = AppUtil.getBranch(branchs, branchNum);
 
@@ -8700,7 +8711,8 @@ public class ReportServiceImpl implements ReportService {
 					+ AppConstants.PAY_TYPE_DPHUI;
 		}
 		List<Object[]> objects = alipayLogDao.findDepositSummary(systemBookCode, branchNums, dateFrom, dateTo, alipayLogTypes);
-		for (int i = 0; i < objects.size(); i++) {
+		int depositSize = objects.size();
+		for (int i = 0; i < depositSize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8712,8 +8724,9 @@ public class ReportServiceImpl implements ReportService {
 
 		// POS消费成功
 		objects = posOrderDao.findBranchSummary(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes);
+		int paymentSize = objects.size();
 		BigDecimal buyerMoney = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < paymentSize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8731,7 +8744,8 @@ public class ReportServiceImpl implements ReportService {
 		// 存款支付失败
 		objects = alipayLogDao.findBranchSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, true,
 				alipayLogTypes);
-		for (int i = 0; i < objects.size(); i++) {
+		int failSize = objects.size();
+		for (int i = 0; i < failSize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8744,7 +8758,8 @@ public class ReportServiceImpl implements ReportService {
 		// POS消费失败
 		objects = alipayLogDao.findBranchSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, false,
 				alipayLogTypes);
-		for (int i = 0; i < objects.size(); i++) {
+		int consumeSize = objects.size();
+		for (int i = 0; i < consumeSize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8769,7 +8784,8 @@ public class ReportServiceImpl implements ReportService {
 		}
 		// 反结账
 		objects = alipayLogDao.findBranchSummaryRePay(systemBookCode, branchNums, dateFrom, dateTo, alipayLogTypes);
-		for (int i = 0; i < objects.size(); i++) {
+		int rePaySize = objects.size();
+		for (int i = 0; i < rePaySize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8779,7 +8795,8 @@ public class ReportServiceImpl implements ReportService {
 			alipaySumDTO.setConsumeOverQty(BigDecimal.valueOf((Long) object[2]));
 		}
 		List<AlipaySumDTO> list = new ArrayList<AlipaySumDTO>(map.values());
-		for (int i = 0; i < list.size(); i++) {
+		int size = list.size();
+		for (int i = 0; i < size; i++) {
 			AlipaySumDTO alipaySumDTO = list.get(i);
 			alipaySumDTO.setPosConsumeTotalQty(alipaySumDTO.getPosConsumeFailQty().add(
 					alipaySumDTO.getPosConsumeSuccessQty()));
@@ -9338,9 +9355,11 @@ public class ReportServiceImpl implements ReportService {
 			List<Integer> branchNums, String appUserName, String saleType) {
 		List<Object[]> objects = posOrderDao.findCustomerAnalysisShiftTables(systemBookCode, dateFrom, dateTo,
 				branchNums, appUserName, saleType);
-		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>();
+		int size = objects.size();
+		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>(size);
 		List<String> shiftTableBizdays = new ArrayList<String>();
-		for (int i = 0; i < objects.size(); i++) {
+
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			BigDecimal couponMoney = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			BigDecimal mgrDiscount = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
@@ -9368,7 +9387,7 @@ public class ReportServiceImpl implements ReportService {
 			return list;
 		}
 		List<ShiftTable> shiftTables = shiftTableDao.find(systemBookCode, branchNums, shiftTableBizdays);
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			CustomerAnalysisDay customerAnalysisDay = list.get(i);
 
 			ShiftTable shiftTable = ShiftTable.getShiftTable(shiftTables, customerAnalysisDay.getBranchNum(),
@@ -10310,12 +10329,14 @@ public class ReportServiceImpl implements ReportService {
 				null, false);
 		List<Object[]> outObjects = transferOutOrderDao.findBranchItemSummary(systemBookCode, centerBranchNum,
 				branchNums, dateFrom, dateTo, null);
-
-		if (posObjects.size() == 0 && outObjects.size() == 0) {
+		int posSize = posObjects.size();
+		int outSize = outObjects.size();
+		if ( posSize == 0 && outSize == 0) {
 			return list;
 		}
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		for (int i = 0; i < branchNums.size(); i++) {
+		int branchSize = branchNums.size();
+		for (int i = 0; i < branchSize; i++) {
 			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = new BranchCategoryAnalyseDTO();
 			branchCategoryAnalyseDTO.setBranchNum(branchNums.get(i));
 			Branch branch = AppUtil.getBranch(branchs, branchCategoryAnalyseDTO.getBranchNum());
@@ -10333,7 +10354,7 @@ public class ReportServiceImpl implements ReportService {
 		String category = null;
 		String categoryCode = null;
 		TypeAndTwoValuesDTO typeAndTwoValuesDTO = null;
-		for (int i = 0; i < posObjects.size(); i++) {
+		for (int i = 0; i < posSize; i++) {
 			Object[] object = posObjects.get(i);
 			branchNum = (Integer) object[0];
 			itemNum = (Integer) object[1];
@@ -10377,7 +10398,7 @@ public class ReportServiceImpl implements ReportService {
 			typeAndTwoValuesDTO.setMoney(typeAndTwoValuesDTO.getMoney().add(money));
 		}
 
-		for (int i = 0; i < outObjects.size(); i++) {
+		for (int i = 0; i < outSize; i++) {
 			Object[] object = outObjects.get(i);
 			branchNum = (Integer) object[0];
 			itemNum = (Integer) object[1];
@@ -11841,7 +11862,8 @@ public class ReportServiceImpl implements ReportService {
 		List<PosItem> posItems = posItemService.find(systemBookCode, null, itemNums, AppConstants.BUSINESS_TYPE_SHOP);
 		Map<Integer, PosItem> baseMap = new HashMap<Integer, PosItem>();
 		List<SupplierLianYing> list = new ArrayList<SupplierLianYing>();
-		for (int i = 0; i < posItems.size(); i++) {
+		int posItemSize = posItems.size();
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			baseMap.put(posItem.getItemNum(), posItem);
 		}

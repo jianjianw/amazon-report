@@ -13,7 +13,7 @@ import java.util.*;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
-@Component
+//@Component
 public class ImportDemoSchedule {
 
 

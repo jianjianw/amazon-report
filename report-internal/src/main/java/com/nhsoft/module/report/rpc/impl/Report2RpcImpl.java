@@ -170,7 +170,7 @@ public class Report2RpcImpl implements Report2Rpc {
 	}
 
 	@Override
-	@Cacheable(value="serviceCache", key="'findSaleAnalysisByBranchDayItems' + #p0.getKey()")
+	@Cacheable(value = "serviceCache", key="'findSaleAnalysisByBranchDayItems' + #p0.getKey()")
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchDayItems(SaleAnalysisQueryData policyPosItemQuery) {
 		return report2Service.findSaleAnalysisByBranchDayItems(policyPosItemQuery);
 	}
@@ -995,6 +995,7 @@ public class Report2RpcImpl implements Report2Rpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<RequestAnalysisDTO> findRequestAnalysisDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, List<String> itemCategoryCodes) {
 		Integer branchNum = branchNums.get(0);
 
