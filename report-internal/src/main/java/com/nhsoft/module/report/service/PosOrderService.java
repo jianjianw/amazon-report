@@ -1,9 +1,7 @@
 package com.nhsoft.module.report.service;
 
 
-import com.nhsoft.module.report.dto.BusinessCollection;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
-import com.nhsoft.module.report.dto.ItemSaleDailyDTO;
 import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.ShiftTable;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;

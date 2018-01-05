@@ -85,7 +85,8 @@ public class Report2RpcImpl implements Report2Rpc {
 
 	
 	@Override
-	public List<TransferPolicyDTO> findTransferPolicyDTOs(PolicyPosItemQuery policyPosItemQuery) {
+	public List<TransferPolicyDTO>
+	findTransferPolicyDTOs(PolicyPosItemQuery policyPosItemQuery) {
 		return report2Service.findTransferPolicyDTOs(policyPosItemQuery);
 	}
 
