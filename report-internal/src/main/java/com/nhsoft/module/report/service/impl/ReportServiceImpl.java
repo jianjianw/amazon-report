@@ -4228,10 +4228,7 @@ public class ReportServiceImpl implements ReportService {
 		List<ToPicking> list = new ArrayList<ToPicking>();
 		String settlementState = queryData.getSettlementState();
 		Integer branchNum = queryData.getBranchNum();
-		/*if( (branchNums != null && branchNums.size() > 0) || ((branchNums == null || branchNums.size() == 0) &&(clientFids == null || clientFids.size() == 0)) ){
-
-		}*/
-		if ( branchNums.size()>0 || (branchNums.size() == 0 && clientFids.size() == 0) ) {//按分店查询
+		if (queryData.getIsClientFid() == null || (queryData.getIsClientFid() != null && !queryData.getIsClientFid())) {//按分店查询
 			List<TransferOutOrder> transferOutOrders = transferOutOrderDao.findToPicking(systemBookCode,
 					centerBranchNum, branchNums, storehouseNum);
 			for (int i = 0; i < transferOutOrders.size(); i++) {
@@ -4304,8 +4301,7 @@ public class ReportServiceImpl implements ReportService {
 		String settlementState = queryData.getSettlementState();
 		Integer branchNum = queryData.getBranchNum();
 		List<ToShip> list = new ArrayList<ToShip>();
-
-		if (branchNums.size()>0 || (branchNums.size() == 0 && clientFids.size() == 0)) {
+		if (queryData.getIsClientFid() == null || (queryData.getIsClientFid() != null && !queryData.getIsClientFid())) {
 			List<TransferOutOrder> transferOutOrders = transferOutOrderDao.findToShip(systemBookCode, centerBranchNum,
 					branchNums, storehouseNum);
 			int outSize = transferOutOrders.size();
@@ -5851,7 +5847,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return objects;
 	}
-	
+
 	@Override
 	public List<Object[]> findProfitAnalysisByItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
 		return posOrderDao.findProfitAnalysisByItem(profitAnalysisQueryData);
