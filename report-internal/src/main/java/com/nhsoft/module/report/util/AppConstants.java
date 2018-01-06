@@ -409,6 +409,8 @@ public class AppConstants {
 	public static final String TEAM_TYPE_DIANPING = "大众点评";
 	public static final String TEAM_TYPE_MEITUAN = "美团";
 	public static final String TEAM_TYPE_NUOMI = "糯米";
+	public static final String TEAM_TYPE_WECHAT = "微信代金券";
+
 
 
 	/**
