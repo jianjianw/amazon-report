@@ -7,6 +7,7 @@ import com.nhsoft.module.report.dto.CardUserCount;
 import com.nhsoft.module.report.rpc.CardUserRpc;
 import com.nhsoft.module.report.service.CardUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class CardUserRpcImpl implements CardUserRpc {
     @Autowired private CardUserService cardUserService;
 
     @Override
+    @Cacheable(value = "serviceCache")
     public List<CardUserCount> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
         List<Object[]> objects = cardUserService.findCardUserCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
         int size = objects.size();

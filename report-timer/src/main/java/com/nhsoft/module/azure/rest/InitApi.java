@@ -130,7 +130,6 @@ public class InitApi {
     }
 
     //一下都是新加的表
-
     @RequestMapping(method = RequestMethod.GET,value="/init/bizday/{systemBookCode}")
     public String saveBizday(@PathVariable("systemBookCode") String systemBookCode){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式

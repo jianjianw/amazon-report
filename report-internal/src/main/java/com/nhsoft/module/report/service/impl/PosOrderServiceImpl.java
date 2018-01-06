@@ -113,7 +113,6 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo,Boolean isMember) {
 
 		List<Object[]> objects = null;
@@ -125,7 +124,6 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 
 		List<Object[]> objects = null;
@@ -136,7 +134,6 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache")
 	public List<Object[]> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 
 

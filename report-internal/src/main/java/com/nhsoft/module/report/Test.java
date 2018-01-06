@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by yangqin on 2017/9/5.
@@ -68,6 +69,8 @@ public class Test {
 	}
 	@RequestMapping("/test/{systemBookCode}")
 	public  @ResponseBody List<AlipayLogDTO> testAlipay(@PathVariable("systemBookCode") String systemBookCode){
+
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date dateFrom=null;
 		Date dateTo = null;
@@ -88,4 +91,26 @@ public class Test {
 		return list;
 
 	}
+
+	public static void main(String[] args) {
+
+	/*	Integer value2  = 456;
+		long begin = System.nanoTime();
+		for (int i = 0; i <10000000 ; i++) {
+			String str = value2 + "ww" + "ee";
+		}
+		long end = System.nanoTime();
+		System.out.println(end - begin);		//743909733
+*/
+		Integer value2 = 456;
+		long begin = System.nanoTime();
+		for (int i = 0; i <10000000 ; i++) {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append(value2).append("ww").append("ee");
+		}
+		long end = System.nanoTime();
+		System.out.println(end - begin);	//634900270
+	}
+
+
 }

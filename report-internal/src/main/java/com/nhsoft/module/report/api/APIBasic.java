@@ -7,14 +7,12 @@ import com.nhsoft.module.report.query.ABCListQuery;
 import com.nhsoft.module.report.query.ProfitAnalysisQueryData;
 import com.nhsoft.module.report.query.SaleAnalysisQueryData;
 import com.nhsoft.module.report.query.SupplierSaleQuery;
-import com.nhsoft.module.report.rpc.AlipayLogRpc;
-import com.nhsoft.module.report.rpc.BranchRpc;
-import com.nhsoft.module.report.rpc.PosOrderRpc;
-import com.nhsoft.module.report.rpc.ReportRpc;
+import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
+import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +25,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/basic")
 public class APIBasic {
-	
-	@Autowired
-	private AlipayLogRpc alipayLogRpc;
-	
+
 	@Autowired
 	private PosOrderRpc posOrderRpc;
 	@Autowired
@@ -43,6 +38,8 @@ public class APIBasic {
 	private ReportService reportService;
 	@Autowired
 	private ReportRpc reportRpc;
+	@Autowired
+	private Report2Rpc report2Rpc;
 	@Autowired
 	private BranchService branchService;
 	@Autowired
@@ -571,5 +568,137 @@ public class APIBasic {
 		List<Object[]> cardUserCountByBranch = cardUserService.findCardUserCountByBranch("4344", null, null, null);
 		return cardUserCountByBranch;
 	}
-	
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test23")
+	public List test23() throws Exception{
+		String systemBookCode= "4410";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400126);
+		items.add(434400126);
+		SupplierSaleQuery supplierSaleQuery = new SupplierSaleQuery();
+		supplierSaleQuery.setSystemBookCode(systemBookCode);
+		supplierSaleQuery.setDateFrom(dateFrom);
+		supplierSaleQuery.setDateTo(dateTo);
+		supplierSaleQuery.setItemNums(items);
+		List<SupplierComplexReportDTO> list = reportRpc.findSupplierSaleGroupByBranchDatas(supplierSaleQuery);
+		return list;
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/test24")
+	public List test24() throws Exception{
+		String systemBookCode = "4344";
+
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+
+		List<Integer> items = new ArrayList<>();
+		items.add(434400126);
+		items.add(4344);
+
+		List<String> itemCategoryCodes = new ArrayList<>();
+		itemCategoryCodes.add("qqq");
+		itemCategoryCodes.add("www");
+
+		List<RequestAnalysisDTO> list = report2Rpc.findRequestAnalysisDTOs(systemBookCode, branchNums, dateFrom, dateTo, items, itemCategoryCodes);
+		return list;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test25")
+	public List test25() throws Exception{
+		String systemBookCode = "4344";
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		//branchNums.add(3);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		String payType = "微信二维码支付";//微信二维码支付
+
+		List<AlipaySumDTO> list = reportRpc.findAlipaySumDTOs(systemBookCode, branchNums, dateFrom, dateTo, payType);
+		return list;
+	}
+
+	//findCusotmerAnalysisBranchs
+	@RequestMapping(method = RequestMethod.GET,value = "/test26")
+	public List test26() throws Exception{
+		String systemBookCode = "4344";
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-30");
+
+		String saleType = "美团外卖";
+		List<CustomerAnalysisDay> list = reportRpc.findCusotmerAnalysisBranchs(systemBookCode, dateFrom, dateTo, branchNums, saleType);
+		return list;
+	}
+
+	//findCustomerAnalysisHistorys
+	@RequestMapping(method = RequestMethod.GET,value = "/test27")
+	public List test27() throws Exception{
+
+		String systemBookCode = "4344";
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-30");
+
+		String saleType = "微商城";//微商城
+		List<CustomerAnalysisHistory> list = reportRpc.findCustomerAnalysisHistorys(systemBookCode,dateFrom,dateTo,branchNums,saleType);
+		return list;
+	}
+	//sumCustomerAnalysis
+	@RequestMapping(method = RequestMethod.GET,value = "/test28")
+	public CustomerSummary test28() throws Exception{
+		String systemBookCode = "4344";
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-30");
+
+		String branchType = "微商城";//微商城
+		CustomerSummary customerSummary = reportRpc.sumCustomerAnalysis(systemBookCode, dateFrom, dateTo, branchNums, branchType);
+		return customerSummary;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test29")
+	public List<CustomerAnalysisDay> test29() throws Exception{
+		//findCustomerAnalysisDays
+		String systemBookCode = "4344";
+		List<Integer> branchNums = new ArrayList();
+		branchNums.add(1);
+		branchNums.add(2);
+		branchNums.add(3);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-30");
+
+		String saleType = "饿了么";//微商城
+		List<CustomerAnalysisDay> list = reportRpc.findCustomerAnalysisDays(systemBookCode,dateFrom,dateTo,branchNums,saleType);
+		return list;
+	}
 }

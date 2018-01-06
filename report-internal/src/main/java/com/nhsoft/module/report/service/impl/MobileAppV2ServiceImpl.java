@@ -968,7 +968,6 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache")
 	public MobileBusinessDTO findMobileBusiness(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo) {
 		MobileBusinessDTO mobileBusinessDTO = new MobileBusinessDTO();
@@ -996,7 +995,6 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	}
 	
 	@Override
-	@Cacheable(value = "serviceCache")
 	public List<MobileBusinessDetailDTO> findPaymentSummary(String systemBookCode, List<Integer> branchNums,
                                                             Date dateFrom, Date dateTo){
 		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo);
@@ -1135,7 +1133,6 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache")
 	public List<MobileBusinessDTO> findBusinessMoneyGroupByShop(String systemBookCode, List<Integer> branchNums,
 			Date dateFrom, Date dateTo) {
 		List<MobileBusinessDTO> list = new ArrayList<MobileBusinessDTO>();
@@ -1205,7 +1202,6 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	}
 	
 	@Override
-	@Cacheable(value = "serviceCache")
 	public List<MobileBusinessDTO> findBusinessReceiptGroupByShop(String systemBookCode, List<Integer> branchNums,
 			Date dateFrom, Date dateTo) {
 		List<MobileBusinessDTO> list = new ArrayList<MobileBusinessDTO>();

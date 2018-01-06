@@ -91,7 +91,7 @@ public interface AzureDao {
     /**
      * 批量保存 会员统计
      * */
-    public void batchSaveCardDailies(String systemBookCode,List<CardDaily> CardDailies,Date dateFrom, Date dateTo);
+    public void batchSaveCardDailies(String systemBookCode,List<CardDaily> cardDailies,Date dateFrom, Date dateTo);
 
     /**
      * 批量删除 会员统计

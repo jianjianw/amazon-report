@@ -19,12 +19,14 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.module.report.util.CopyUtil;
 import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.cache.spi.QueryKey;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Key;
 import java.util.*;
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -1248,7 +1250,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasBySale' + #p0.getKey()")
 	public List<ABCAnalysis> findABCDatasBySale(ABCListQuery abcListQuery) {
 
 		String systemBookCode = abcListQuery.getSystemBookCode();
@@ -1266,7 +1267,8 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_SALE)) {
 			List<Object[]> objects = posOrderDao.findAbcItemSum(systemBookCode, branchNums, dateFrom, dateTo,
 					abcListQuery.getCategoryCodeList());
-			for (int i = 0; i < objects.size(); i++) {
+			int itemSize = objects.size();
+			for (int i = 0; i < itemSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = (Integer) object[1];
@@ -1274,12 +1276,14 @@ public class ReportServiceImpl implements ReportService {
 					itemMatrixNum = 0;
 				}
 				BigDecimal saleMoney = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				data.setAnalysisContent(data.getAnalysisContent().add(saleMoney));
 				totalMoney = totalMoney.add(saleMoney);
@@ -1289,17 +1293,20 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_OUT)) {
 			List<Object[]> objects = transferOutOrderDao.findProfitGroupByItem(systemBookCode, transferBranchNums,
 					branchNums, dateFrom, dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int outSize = objects.size();
+			for (int i = 0; i < outSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.add(saleMoney);
 				data.setAnalysisContent(data.getAnalysisContent().add(saleMoney));
@@ -1308,17 +1315,20 @@ public class ReportServiceImpl implements ReportService {
 
 			objects = transferInOrderDao.findProfitGroupByItem(systemBookCode, transferBranchNums, branchNums,
 					dateFrom, dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int inSize = objects.size();
+			for (int i = 0; i < inSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.subtract(saleMoney);
 				data.setAnalysisContent(data.getAnalysisContent().subtract(saleMoney));
@@ -1329,17 +1339,20 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_WHO)) {
 			List<Object[]> objects = wholesaleOrderDao.findItemSumByCategory(systemBookCode, branchNum, dateFrom,
 					dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int wholeSize = objects.size();
+			for (int i = 0; i < wholeSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.add(saleMoney);
 				data.setAnalysisContent(data.getAnalysisContent().add(saleMoney));
@@ -1347,17 +1360,20 @@ public class ReportServiceImpl implements ReportService {
 			}
 			objects = wholesaleReturnDao.findItemSum(systemBookCode, branchNum, null, dateFrom, dateTo, null,
 					abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int returnSize = objects.size();
+			for (int i = 0; i < returnSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.subtract(saleMoney);
 				data.setAnalysisContent(data.getAnalysisContent().subtract(saleMoney));
@@ -1381,7 +1397,8 @@ public class ReportServiceImpl implements ReportService {
 		Collections.sort(list, comparator);
 		BigDecimal aRate = null;
 		List<Integer> itemNums = new ArrayList<Integer>();
-		for (int i = 0; i < list.size(); i++) {
+		int analysiSize = list.size();
+		for (int i = 0; i < analysiSize; i++) {
 			ABCAnalysis data = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(data.getItemNum(), posItems);
 			if (posItem == null) {
@@ -1478,17 +1495,19 @@ public class ReportServiceImpl implements ReportService {
 			}
 
 		}
+		int size = list.size();
 		if (itemNums.size() > 0) {
 			List<Inventory> inventories = inventoryDao.findByItemAndBranch(systemBookCode, branchNum, itemNums, false);
 			Branch branch = branchService.readInCache(systemBookCode, branchNum);
-			for (int i = 0; i < list.size(); i++) {
+
+			for (int i = 0; i < size; i++) {
 				ABCAnalysis data = list.get(i);
 				Object[] objects =AppUtil.getInventoryAmount(inventories,data.getItemNum(),data.getItemMatrixNum());
 				data.setInventoryQty((BigDecimal) objects[0]);
 			}
 		}
 
-		if (list.size() > 0) {
+		if (size > 0) {
 			list.get(0).setaLevelCount(aCount);
 			list.get(0).setbLevelCount(bCount);
 			list.get(0).setcLevelCount(cCount);
@@ -1498,7 +1517,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findABCDatasByProfit' + #p0.getKey()")
 	public List<ABCAnalysis> findABCDatasByProfit(ABCListQuery abcListQuery) {
 		String systemBookCode = abcListQuery.getSystemBookCode();
 		Integer branchNum = abcListQuery.getBranchNum();
@@ -1514,17 +1532,20 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_SALE)) {
 			List<Object[]> objects = posOrderDao.findAbcItemSum(systemBookCode, branchNums, dateFrom, dateTo,
 					abcListQuery.getCategoryCodeList());
-			for (int i = 0; i < objects.size(); i++) {
+			int itemSize = objects.size();
+			for (int i = 0; i < itemSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemMatrixNum(itemMatrixNum);
 					data.setItemNum(itemNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 
 				}
 				data.setAnalysisContent(data.getAnalysisContent().add(money));
@@ -1535,19 +1556,22 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_OUT)) {
 			List<Object[]> objects = transferOutOrderDao.findProfitGroupByItem(systemBookCode, transferBranchNums,
 					branchNums, dateFrom, dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int outSize = objects.size();
+			for (int i = 0; i < outSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 				BigDecimal costMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 				BigDecimal profit = saleMoney.subtract(costMoney);
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb  = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemNum(itemNum);
 					data.setItemMatrixNum(itemMatrixNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.add(profit);
 				data.setAnalysisContent(data.getAnalysisContent().add(profit));
@@ -1556,19 +1580,22 @@ public class ReportServiceImpl implements ReportService {
 
 			objects = transferInOrderDao.findProfitGroupByItem(systemBookCode, transferBranchNums, branchNums,
 					dateFrom, dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int inSize = objects.size();
+			for (int i = 0; i < inSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 				BigDecimal costMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 				BigDecimal profit = saleMoney.subtract(costMoney);
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemNum(itemNum);
 					data.setItemMatrixNum(itemMatrixNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.subtract(profit);
 				data.setAnalysisContent(data.getAnalysisContent().subtract(profit));
@@ -1578,19 +1605,22 @@ public class ReportServiceImpl implements ReportService {
 		if (typeList.contains(AppConstants.CHECKBOX_WHO)) {
 			List<Object[]> objects = wholesaleOrderDao.findItemSumByCategory(systemBookCode, branchNum, dateFrom,
 					dateTo, abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int wholesaleSize = objects.size();
+			for (int i = 0; i < wholesaleSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 				BigDecimal costMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 				BigDecimal profit = saleMoney.subtract(costMoney);
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemNum(itemNum);
 					data.setItemMatrixNum(itemMatrixNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.add(profit);
 				data.setAnalysisContent(data.getAnalysisContent().add(profit));
@@ -1599,19 +1629,22 @@ public class ReportServiceImpl implements ReportService {
 
 			objects = wholesaleReturnDao.findItemSum(systemBookCode, branchNum, null, dateFrom, dateTo, null,
 					abcListQuery.getCategoryCodeList(), null);
-			for (int i = 0; i < objects.size(); i++) {
+			int wholeSize = objects.size();
+			for (int i = 0; i < wholeSize; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer) object[0];
 				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
 				BigDecimal saleMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 				BigDecimal costMoney = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 				BigDecimal profit = saleMoney.subtract(costMoney);
-				ABCAnalysis data = map.get(itemNum + "|" + itemMatrixNum);
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(itemNum).append("|").append(itemMatrixNum).toString();
+				ABCAnalysis data = map.get(key);
 				if (data == null) {
 					data = new ABCAnalysis();
 					data.setItemNum(itemNum);
 					data.setItemMatrixNum(itemMatrixNum);
-					map.put(itemNum + "|" + itemMatrixNum, data);
+					map.put(key, data);
 				}
 				totalMoney = totalMoney.subtract(profit);
 				data.setAnalysisContent(data.getAnalysisContent().subtract(profit));
@@ -1639,8 +1672,8 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal aRate = null;
 		
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
-		
-		for (int i = 0; i < list.size(); i++) {
+		int size = list.size();
+		for (int i = 0; i < size; i++) {
 			ABCAnalysis data = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(data.getItemNum(), posItems);
 			if (posItem == null) {
@@ -1796,7 +1829,8 @@ public class ReportServiceImpl implements ReportService {
 		List<BranchTransferGoals> branchTransferGoals = branchTransferGoalsDao.findByDate(systemBookCode, branchNums,
 				dateFrom, dateTo, dateType);
 		Map<String, TransferGoal> map = new HashMap<String, TransferGoal>();
-		for (int i = 0; i < branchTransferGoals.size(); i++) {
+		int goalSize = branchTransferGoals.size();
+		for (int i = 0; i < goalSize; i++) {
 			BranchTransferGoals branchTransferGoal = branchTransferGoals.get(i);
 			TransferGoal data = new TransferGoal();
 			data.setBranchNum(branchTransferGoal.getId().getBranchNum());
@@ -1804,10 +1838,12 @@ public class ReportServiceImpl implements ReportService {
 			data.setTransferGoal(branchTransferGoal.getBranchTransferValue() == null ? BigDecimal.ZERO
 					: branchTransferGoal.getBranchTransferValue());
 			data.setYearMonth(branchTransferGoal.getId().getBranchTransferInterval());
-			map.put(data.getBranchNum() + "|" + data.getYearMonth(), data);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(data.getBranchNum()).append("|").append(data.getYearMonth()).toString();
+			map.put(key, data);
 		}
-
-		for (int i = 0; i < objects.size(); i++) {
+		int size = objects.size();
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String date = (String) object[1];
@@ -1815,14 +1851,16 @@ public class ReportServiceImpl implements ReportService {
 			if (dateType.equals(AppConstants.BUSINESS_DATE_SOME_MONTH)) {
 				date = date.replaceAll("-", "");
 			}
-			TransferGoal data = map.get(branchNum + "|" + date);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append("|").append(date).toString();
+			TransferGoal data = map.get(key);
 			if (data == null) {
 				data = new TransferGoal();
 				data.setTransferGoal(BigDecimal.ZERO);
 				data.setTransferAmount(amount);
 				data.setBranchNum(branchNum);
 				data.setYearMonth(date);
-				map.put(branchNum + "|" + date, data);
+				map.put(key, data);
 			} else {
 				data.setTransferAmount(amount);
 			}
@@ -2319,7 +2357,9 @@ public class ReportServiceImpl implements ReportService {
 				if (baseData != null) {
 					baseData.setSaleMoney(saleMoney);
 					baseData.setBranchNum(branch);
-					SupplierBranchGroupByDate data = map.get(baseData.getSupplierNum() + ":" + date);
+					StringBuilder sb = new StringBuilder();
+					String key = sb.append(baseData.getSupplierNum()).append(":").append(date).toString();
+					SupplierBranchGroupByDate data = map.get(key);
 					if (data == null) {
 						data = new SupplierBranchGroupByDate();
 						data.setSaleDate(date);
@@ -2331,7 +2371,7 @@ public class ReportServiceImpl implements ReportService {
 						branchValueDatas.add(branchValueData);
 						data.setBranchValues(branchValueDatas);
 						data.setTotalValue(saleMoney);
-						map.put(baseData.getSupplierNum() + ":" + date, data);
+						map.put(key, data);
 
 					} else {
 						BranchValue branchValueData = data.getBranchValues().get(0);
@@ -2354,7 +2394,9 @@ public class ReportServiceImpl implements ReportService {
 				if (baseData != null) {
 					baseData.setSaleMoney(saleMoney);
 					baseData.setBranchNum(branch);
-					SupplierBranchGroupByDate data = map.get(baseData.getSupplierNum() + ":" + date);
+					StringBuilder sb = new StringBuilder();
+					String key = sb.append(baseData.getSupplierNum()).append(":").append(date).toString();
+					SupplierBranchGroupByDate data = map.get(key);
 					if (data == null) {
 						data = new SupplierBranchGroupByDate();
 						data.setSaleDate(date);
@@ -2366,7 +2408,7 @@ public class ReportServiceImpl implements ReportService {
 						branchValueDatas.add(branchValueData);
 						data.setBranchValues(branchValueDatas);
 						data.setTotalValue(saleMoney);
-						map.put(baseData.getSupplierNum() + ":" + date, data);
+						map.put(key, data);
 
 					} else {
 						BranchValue branchValueData = data.getBranchValues().get(0);
@@ -2388,7 +2430,9 @@ public class ReportServiceImpl implements ReportService {
 				if (baseData != null) {
 					baseData.setSaleMoney(saleMoney);
 					baseData.setBranchNum(branch);
-					SupplierBranchGroupByDate data = map.get(baseData.getSupplierNum() + ":" + date);
+					StringBuilder sb = new StringBuilder();
+					String key = sb.append(baseData.getSupplierNum()).append(":").append(date).toString();
+					SupplierBranchGroupByDate data = map.get(key);
 					if (data == null) {
 						data = new SupplierBranchGroupByDate();
 						data.setSaleDate(date);
@@ -2400,7 +2444,7 @@ public class ReportServiceImpl implements ReportService {
 						branchValueDatas.add(branchValueData);
 						data.setTotalValue(saleMoney);
 						data.setBranchValues(branchValueDatas);
-						map.put(baseData.getSupplierNum() + ":" + date, data);
+						map.put(key, data);
 
 					} else {
 						BranchValue branchValueData = data.getBranchValues().get(0);
@@ -2898,8 +2942,10 @@ public class ReportServiceImpl implements ReportService {
 				if (baseData != null) {
 					baseData.setSaleMoney(saleMoney);
 					baseData.setBranchNum(branch);
-					SupplierBranchDetail data = map.get(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":"
-							+ date);
+					StringBuilder sb = new StringBuilder();
+					sb.append(baseData.getSupplierNum()).append(":").append(baseData.getItemNum());
+					String key = sb.append(":").append(date).toString();
+					SupplierBranchDetail data = map.get(key);
 					if (data == null) {
 						data = new SupplierBranchDetail();
 						data.setSaleDate(date);
@@ -2911,7 +2957,7 @@ public class ReportServiceImpl implements ReportService {
 						branchValueDatas.add(branchValueData);
 						data.setBranchValues(branchValueDatas);
 						data.setTotalValue(saleMoney);
-						map.put(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":" + date, data);
+						map.put(key, data);
 
 					} else {
 						BranchValue branchValueData = data.getBranchValues().get(0);
@@ -2934,8 +2980,10 @@ public class ReportServiceImpl implements ReportService {
 				if (baseData != null) {
 					baseData.setSaleMoney(saleMoney);
 					baseData.setBranchNum(branch);
-					SupplierBranchDetail data = map.get(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":"
-							+ date);
+					StringBuilder sb = new StringBuilder();
+					sb.append(baseData.getSupplierNum()).append(":").append(baseData.getItemNum());
+					String key = sb.append(":").append(date).toString();
+					SupplierBranchDetail data = map.get(key);
 					if (data == null) {
 						data = new SupplierBranchDetail();
 						data.setSaleDate(date);
@@ -2947,7 +2995,7 @@ public class ReportServiceImpl implements ReportService {
 						branchValueDatas.add(branchValueData);
 						data.setBranchValues(branchValueDatas);
 						data.setTotalValue(saleMoney);
-						map.put(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":" + date, data);
+						map.put(key, data);
 
 					} else {
 						BranchValue branchValueData = data.getBranchValues().get(0);
@@ -2976,8 +3024,10 @@ public class ReportServiceImpl implements ReportService {
 				if (baseData != null) {
 					baseData.setSaleMoney(saleMoney);
 					baseData.setBranchNum(branch);
-					SupplierBranchDetail data = map.get(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":"
-							+ date);
+					StringBuilder sb = new StringBuilder();
+					sb.append(baseData.getSupplierNum()).append(":").append( baseData.getItemNum());
+					String key = sb.append(":").append(date).toString();
+					SupplierBranchDetail data = map.get(key);
 					if (data == null) {
 						data = new SupplierBranchDetail();
 						data.setSaleDate(date);
@@ -2989,7 +3039,7 @@ public class ReportServiceImpl implements ReportService {
 						branchValueDatas.add(branchValueData);
 						data.setTotalValue(saleMoney);
 						data.setBranchValues(branchValueDatas);
-						map.put(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":" + date, data);
+						map.put(key, data);
 
 					} else {
 						BranchValue branchValueData = data.getBranchValues().get(0);
@@ -3017,8 +3067,10 @@ public class ReportServiceImpl implements ReportService {
 				if (baseData != null) {
 					baseData.setSaleMoney(saleMoney);
 					baseData.setBranchNum(branch);
-					SupplierBranchDetail data = map.get(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":"
-							+ date);
+					StringBuilder sb = new StringBuilder();
+					sb.append(baseData.getSupplierNum()).append(":").append(baseData.getItemNum());
+					String key = sb.append(":").append(date).toString();
+					SupplierBranchDetail data = map.get(key);
 					if (data == null) {
 						data = new SupplierBranchDetail();
 						data.setSaleDate(date);
@@ -3030,7 +3082,7 @@ public class ReportServiceImpl implements ReportService {
 						branchValueDatas.add(branchValueData);
 						data.setTotalValue(saleMoney);
 						data.setBranchValues(branchValueDatas);
-						map.put(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":" + date, data);
+						map.put(key, data);
 
 					} else {
 						BranchValue branchValueData = data.getBranchValues().get(0);
@@ -3059,7 +3111,9 @@ public class ReportServiceImpl implements ReportService {
 					}
 				}
 				String date = (String) object[2];
-				date = date.substring(0, 4) + "-" + date.substring(4, 6) + "-" + date.substring(6, 8);
+				StringBuilder sb = new StringBuilder();
+				sb.append(date.substring(0, 4)).append("-").append(date.substring(4, 6));
+				date = sb.append("-").append(date.substring(6, 8)).toString();
 
 				saleMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 				saleProfit = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
@@ -3070,8 +3124,10 @@ public class ReportServiceImpl implements ReportService {
 					baseData.setSaleMoney(saleMoney);
 					baseData.setSaleDiscount(saleDiscount);
 					baseData.setBranchNum(branch);
-					SupplierBranchDetail data = map.get(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":"
-							+ date);
+					StringBuilder stringBuilder  = new StringBuilder();
+					stringBuilder.append(baseData.getSupplierNum()).append(":").append(baseData.getItemNum());
+					String key = stringBuilder.append(":").append(date).toString();
+					SupplierBranchDetail data = map.get(key);
 					if (data == null) {
 						data = new SupplierBranchDetail();
 						data.setSaleDate(date);
@@ -3087,7 +3143,7 @@ public class ReportServiceImpl implements ReportService {
 						data.setBranchValues(branchValueDatas);
 						data.setTotalValue(saleMoney);
 						data.setTotalDiscount(saleDiscount);
-						map.put(baseData.getSupplierNum() + ":" + baseData.getItemNum() + ":" + date, data);
+						map.put(key, data);
 					} else {
 						BranchValue branchValueData = readBranchValueData(data.getBranchValues(), branch);
 						if (branchValueData != null) {
@@ -3811,7 +3867,9 @@ public class ReportServiceImpl implements ReportService {
 			data.setPresentUseQty(presentUseQty);
 			data.setPresentCostMoney(presentCostMoney);
 			data.setPresentMoney(presentMoney);
-			map.put(itemNum + "|" + itemMatrixNum, data);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(itemNum).append("|").append(itemMatrixNum).toString();
+			map.put(key, data);
 
 		}
 
@@ -3829,13 +3887,14 @@ public class ReportServiceImpl implements ReportService {
 			presentUseQty = object[8] == null ? BigDecimal.ZERO : ((BigDecimal) object[8]);
 			presentCostMoney = object[9] == null ? BigDecimal.ZERO : ((BigDecimal) object[9]);
 			presentMoney = object[10] == null ? BigDecimal.ZERO : ((BigDecimal) object[10]);
-			
-			WholesaleProfitByPosItem data = map.get(itemNum + "|" + itemMatrixNum);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(itemNum).append("|").append(itemMatrixNum).toString();
+			WholesaleProfitByPosItem data = map.get(key);
 			if (data == null) {
 				data = new WholesaleProfitByPosItem();
 				data.setPosItemNum(itemNum);
 				data.setItemMatrixNum(itemMatrixNum);
-				map.put(itemNum + "|" + itemMatrixNum, data);
+				map.put(key, data);
 			}
 			data.setSaleNum(data.getSaleNum().subtract(qty));
 			data.setSaleMoney(data.getSaleMoney().subtract(money));
@@ -4169,10 +4228,7 @@ public class ReportServiceImpl implements ReportService {
 		List<ToPicking> list = new ArrayList<ToPicking>();
 		String settlementState = queryData.getSettlementState();
 		Integer branchNum = queryData.getBranchNum();
-		/*if( (branchNums != null && branchNums.size() > 0) || ((branchNums == null || branchNums.size() == 0) &&(clientFids == null || clientFids.size() == 0)) ){
-
-		}*/
-		if ( branchNums.size()>0 || (branchNums.size() == 0 && clientFids.size() == 0) ) {//按分店查询
+		if (queryData.getIsClientFid() == null || (queryData.getIsClientFid() != null && !queryData.getIsClientFid())) {//按分店查询
 			List<TransferOutOrder> transferOutOrders = transferOutOrderDao.findToPicking(systemBookCode,
 					centerBranchNum, branchNums, storehouseNum);
 			for (int i = 0; i < transferOutOrders.size(); i++) {
@@ -4245,11 +4301,11 @@ public class ReportServiceImpl implements ReportService {
 		String settlementState = queryData.getSettlementState();
 		Integer branchNum = queryData.getBranchNum();
 		List<ToShip> list = new ArrayList<ToShip>();
-
-		if (branchNums.size()>0 || (branchNums.size() == 0 && clientFids.size() == 0)) {
+		if (queryData.getIsClientFid() == null || (queryData.getIsClientFid() != null && !queryData.getIsClientFid())) {
 			List<TransferOutOrder> transferOutOrders = transferOutOrderDao.findToShip(systemBookCode, centerBranchNum,
 					branchNums, storehouseNum);
-			for (int i = 0; i < transferOutOrders.size(); i++) {
+			int outSize = transferOutOrders.size();
+			for (int i = 0; i < outSize; i++) {
 				TransferOutOrder outOrder = transferOutOrders.get(i);
 				ToShip data = new ToShip();
 				data.setOrderNo(outOrder.getOutOrderFid());
@@ -4277,12 +4333,17 @@ public class ReportServiceImpl implements ReportService {
 			List<WholesaleOrder> wholesaleOrders = wholesaleOrderDao.findToShip(systemBookCode, branchNum, clientFids,
                     storehouseNum, null);
 			List<PosClient> posClients = posClientService.findInCache(systemBookCode);
-			for (int i = 0; i < wholesaleOrders.size(); i++) {
+			StringBuilder stringBuilder;
+			String shipClient;
+			int wholeSize = wholesaleOrders.size();
+			for (int i = 0; i < wholeSize; i++) {
                 WholesaleOrder wholesaleOrder = wholesaleOrders.get(i);
                 ToShip data = new ToShip();
                 PosClient posClient = AppUtil.getPosClient(wholesaleOrder.getClientFid(), posClients);
                 if (posClient != null) {
-                    data.setShipClient(posClient.getClientCode() + "|" + posClient.getClientName());
+					stringBuilder = new StringBuilder();
+					shipClient = stringBuilder.append(posClient.getClientCode()).append("|").append(posClient.getClientName()).toString();
+					data.setShipClient(shipClient);
                 }
                 data.setOrderNo(wholesaleOrder.getWholesaleOrderFid());
                 data.setOrderType(AppConstants.POS_ITEM_LOG_WHOLESALE_ORDER_ORDER);
@@ -5103,7 +5164,9 @@ public class ReportServiceImpl implements ReportService {
 			PurchaseOrderCollect data = new PurchaseOrderCollect();
 			data.setPurchaseOrderNo((String) object[0]);
 			Supplier supplier = (Supplier) object[1];
-			data.setSupplierName(supplier.getSupplierCode() + "|" + supplier.getSupplierName());
+			StringBuilder sb = new StringBuilder();
+			String supplierName = sb.append(supplier.getSupplierCode()).append("|").append(supplier.getSupplierName()).toString();
+			data.setSupplierName(supplierName);
 			data.setOperateDate((Date) object[2]);
 			data.setItemNum((Integer) object[3]);
 			data.setPurchaseItemAmount((BigDecimal) object[4]);
@@ -5217,7 +5280,9 @@ public class ReportServiceImpl implements ReportService {
 			PurchaseOrderCollect data = new PurchaseOrderCollect();
 			data.setPurchaseOrderNo((String) object[0]);
 			Supplier supplier = (Supplier) object[1];
-			data.setSupplierName(supplier.getSupplierCode() + "|" + supplier.getSupplierName());
+			StringBuilder sb = new StringBuilder();
+			String supplierName = sb.append(supplier.getSupplierCode()).append("|").append(supplier.getSupplierName()).toString();
+			data.setSupplierName(supplierName);
 			data.setOperateDate((Date) object[2]);
 			data.setItemNum((Integer) object[3]);
 			data.setPurchaseItemReturnAmount((BigDecimal) object[4]);
@@ -5361,7 +5426,9 @@ public class ReportServiceImpl implements ReportService {
 			BigDecimal supplierMoney = object[12] == null ? BigDecimal.ZERO : (BigDecimal) object[12];
 			Integer queryBranchNum = (Integer) object[11];
 			BigDecimal saleMoney = AppUtil.getValue(object[13], BigDecimal.class);
-			PurchaseOrderCollect data = map.get(queryBranchNum + "|" + itemNum + "|" + itemMatrixNum);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(queryBranchNum).append("|").append(itemNum).append("|").append(itemMatrixNum).toString();
+			PurchaseOrderCollect data = map.get(key);
 			if (data == null) {
 				data = new PurchaseOrderCollect();
 				data.setBranchNum(queryBranchNum);
@@ -5428,7 +5495,7 @@ public class ReportServiceImpl implements ReportService {
 
 				}
 				data.setRate(rate);
-				map.put(queryBranchNum + "|" + itemNum + "|" + itemMatrixNum, data);
+				map.put(key, data);
 			}
 			data.setBaseAmount(data.getBaseAmount().add(amount));
 			if (data.getRate().compareTo(BigDecimal.ZERO) > 0) {
@@ -5467,8 +5534,9 @@ public class ReportServiceImpl implements ReportService {
 			BigDecimal presentMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
 			BigDecimal presentUseAmount = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
 			Integer queryBranchNum = (Integer) object[9];
-
-			PurchaseOrderCollect data = map.get(queryBranchNum + "|" + itemNum + "|" + itemMatrixNum);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(queryBranchNum).append("|").append(itemNum).append("|").append(itemMatrixNum).toString();
+			PurchaseOrderCollect data = map.get(key);
 			if (data == null) {
 				data = new PurchaseOrderCollect();
 				data.setBranchNum(queryBranchNum);
@@ -5533,7 +5601,7 @@ public class ReportServiceImpl implements ReportService {
 
 				}
 				data.setRate(rate);
-				map.put(queryBranchNum + "|" + itemNum + "|" + itemMatrixNum, data);
+				map.put(key, data);
 			}
 			data.setBaseAmount(data.getBaseAmount().add(amount));
 			if (data.getRate().compareTo(BigDecimal.ZERO) > 0) {
@@ -5617,7 +5685,9 @@ public class ReportServiceImpl implements ReportService {
 			PurchaseOrderCollect data = map.get(supplier.getSupplierNum());
 			if (data == null) {
 				data = new PurchaseOrderCollect();
-				data.setSupplierName(supplier.getSupplierCode() + "|" + supplier.getSupplierName());
+				StringBuilder stringBuilder = new StringBuilder();
+				String supplierName = stringBuilder.append(supplier.getSupplierCode()).append("|").append(supplier.getSupplierName()).toString();
+				data.setSupplierName(supplierName);
 				data.setSupplierNum(supplier.getSupplierNum());
 				data.setPurchaseItemAmount(BigDecimal.ZERO);
 				data.setPurchaseItemMoney(BigDecimal.ZERO);
@@ -5699,7 +5769,9 @@ public class ReportServiceImpl implements ReportService {
 			PurchaseOrderCollect data = map.get(supplier.getSupplierNum());
 			if (data == null) {
 				data = new PurchaseOrderCollect();
-				data.setSupplierName(supplier.getSupplierCode() + "|" + supplier.getSupplierName());
+				StringBuilder stringBuilder = new StringBuilder();
+				String supplierName = stringBuilder.append(supplier.getSupplierCode()).append("|").append(supplier.getSupplierName()).toString();
+				data.setSupplierName(supplierName);
 				data.setPurchaseItemAmount(BigDecimal.ZERO);
 				data.setPurchaseItemMoney(BigDecimal.ZERO);
 				data.setPurchasePresentAmount(BigDecimal.ZERO);
@@ -5775,7 +5847,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return objects;
 	}
-	
+
 	@Override
 	public List<Object[]> findProfitAnalysisByItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
 		return posOrderDao.findProfitAnalysisByItem(profitAnalysisQueryData);
@@ -6154,12 +6226,15 @@ public class ReportServiceImpl implements ReportService {
 		Date endTime = DateUtil.getMaxOfDate(Calendar.getInstance().getTime());
 		String timeFrom;
 		String timeTo;
+		StringBuilder stringBuilder;
+		String key;
 		while (nextTime.compareTo(endTime) <= 0) {
 			CustomerAnalysisTimePeriod data = new CustomerAnalysisTimePeriod();
 			timeFrom = DateUtil.format("HH:mm", beginTime);
 			timeTo = DateUtil.format("HH:mm", nextTime);
-			
-			data.setTimePeroid(timeFrom + " - " + timeTo);
+			stringBuilder = new StringBuilder();
+			key = stringBuilder.append(timeFrom).append(" - ").append(timeTo).toString();
+			data.setTimePeroid(key);
 			Object[] object = getTimeObjects(objects, timeFrom, timeTo);
 			if (object == null) {
 				data.setCustomerNums(BigDecimal.ZERO);
@@ -6188,7 +6263,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByPosItems' + #p0.getKey()")
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByPosItems(SaleAnalysisQueryData saleAnalysisQueryData) {
 		List<Object[]> objects = new ArrayList<Object[]>();
 
@@ -6332,6 +6406,8 @@ public class ReportServiceImpl implements ReportService {
 		Integer saleBranchCount;
 		int size = objects.size();
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>(size);
+		StringBuilder stringBuilder;
+		String key;
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			itemNum = (Integer) object[0];
@@ -6357,13 +6433,14 @@ public class ReportServiceImpl implements ReportService {
 			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
 				continue;
 			}
-
-			SaleAnalysisByPosItemDTO data = map.get(itemNum + "|" + itemMatrixNum);
+			stringBuilder = new StringBuilder();
+			key = stringBuilder.append(itemNum).append("|").append(itemMatrixNum).toString();
+			SaleAnalysisByPosItemDTO data = map.get(key);
 			if (data == null) {
 				data = new SaleAnalysisByPosItemDTO();
 				data.setItemNum(itemNum);
 				data.setItemMatrixNum(itemMatrixNum);
-				map.put(itemNum + "|" + itemMatrixNum, data);
+				map.put(key, data);
 			}
 			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
 				data.setTotalNum(data.getTotalNum().subtract(amount));
@@ -6398,6 +6475,8 @@ public class ReportServiceImpl implements ReportService {
 		if (saleAnalysisQueryData.getIsQueryGrade()) {
 			objects = posOrderDao.findSaleAnalysisCommonItemGrade(saleAnalysisQueryData);
 			int objectSize = objects.size();
+			StringBuilder sb;
+			String mapKey;
 			List<Integer> gradeItemNums = new ArrayList<Integer>(0);
 			for (int i = 0; i < objectSize; i++) {
 				Object[] object = objects.get(i);
@@ -6413,14 +6492,15 @@ public class ReportServiceImpl implements ReportService {
 				if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
 					continue;
 				}
-
-				SaleAnalysisByPosItemDTO data = map.get(itemNum + "|" + itemGradeNum);
+				sb = new StringBuilder();
+				mapKey = sb.append(itemNum).append("|").append(itemGradeNum).toString();
+				SaleAnalysisByPosItemDTO data = map.get(mapKey);
 				if (data == null) {
 					data = new SaleAnalysisByPosItemDTO();
 					data.setItemNum(itemNum);
 					data.setItemGradeNum(itemGradeNum);
 					data.setItemMatrixNum(0);
-					map.put(itemNum + "|" + itemGradeNum, data);
+					map.put(mapKey, data);
 				}
 				if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
 					data.setTotalNum(data.getTotalNum().subtract(amount));
@@ -6547,15 +6627,11 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchs' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByBranchs(SaleAnalysisQueryData saleAnalysisQueryData) {
-
-		List<Object[]> objects = posOrderDao.findSaleAnalysisByBranchs(saleAnalysisQueryData);
-		return objects;
+		return posOrderDao.findSaleAnalysisByBranchs(saleAnalysisQueryData);
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByCategorys' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByCategorys(SaleAnalysisQueryData saleAnalysisQueryData) {
 
 		SystemBook systemBook = systemBookService.readInCache(saleAnalysisQueryData.getSystemBookCode());
@@ -6675,19 +6751,16 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByCategoryBranchs' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return posOrderDao.findSaleAnalysisByCategoryBranchs(saleAnalysisQueryData);
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByDepartments(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return findSaleAnalysisByCategorys(saleAnalysisQueryData);
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByBrands(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return findSaleAnalysisByCategorys(saleAnalysisQueryData);
 	}
@@ -6884,11 +6957,15 @@ public class ReportServiceImpl implements ReportService {
 			data.setPresentUseQty(presentUseQty);
 			data.setPresentCostMoney(presentCostMoney);
 			data.setPresentMoney(presentMoney);
-			map.put(clientFid + itemNum.toString() + itemMatrixNum.toString(), data);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(clientFid).append(itemNum).append(itemMatrixNum).toString();
+			map.put(key, data);
 
 		}
 
 		List<Object[]> returnObjects = wholesaleReturnDao.findMoneyGroupByClientItemNum(wholesaleProfitQuery);
+		StringBuilder stringBuilder;
+		String key;
 		for (int i = 0; i < returnObjects.size(); i++) {
 			Object[] object = returnObjects.get(i);
 			clientFid = (String) object[0];
@@ -6902,14 +6979,15 @@ public class ReportServiceImpl implements ReportService {
 			presentUseQty = object[8] == null ? BigDecimal.ZERO : ((BigDecimal) object[8]);
 			presentCostMoney = object[9] == null ? BigDecimal.ZERO : ((BigDecimal) object[9]);
 			presentMoney = object[10] == null ? BigDecimal.ZERO : ((BigDecimal) object[10]);
-
-			WholesaleProfitByPosItemDetail data = map.get(clientFid + itemNum.toString() + itemMatrixNum.toString());
+			stringBuilder = new StringBuilder();
+			key = stringBuilder.append(clientFid).append(itemNum).append(itemMatrixNum).toString();
+			WholesaleProfitByPosItemDetail data = map.get(key);
 			if (data == null) {
 				data = new WholesaleProfitByPosItemDetail();
 				data.setItemNum(itemNum);
 				data.setItemMatrixNum(itemMatrixNum);
 				data.setClientFid(clientFid);
-				map.put(clientFid + itemNum.toString() + itemMatrixNum.toString(), data);
+				map.put(key, data);
 			}
 			data.setWholesaleNum(data.getWholesaleNum().subtract(qty));
 			data.setWholesaleMoney(data.getWholesaleMoney().subtract(money));
@@ -6924,6 +7002,8 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		List<WholesaleProfitByPosItemDetail> list = new ArrayList<WholesaleProfitByPosItemDetail>(map.values());
+		StringBuilder sb;
+		String itemCategory;
 		for (int i = list.size() - 1; i >= 0; i--) {
 			WholesaleProfitByPosItemDetail data = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(data.getItemNum(), posItems);
@@ -6939,7 +7019,9 @@ public class ReportServiceImpl implements ReportService {
 			}
 			data.setPosItemCode(posItem.getItemCode());
 			data.setPosItemName(posItem.getItemName());
-			data.setPosItemCategory(posItem.getItemCategoryCode() + "|" + posItem.getItemCategory());
+			sb = new StringBuilder();
+			itemCategory = sb.append(posItem.getItemCategoryCode()).append("|").append(posItem.getItemCategory()).toString();
+			data.setPosItemCategory(itemCategory);
 			data.setSpec(posItem.getItemSpec());
 			data.setUnit(posItem.getItemWholesaleUnit());
 			data.setBaseUnit(posItem.getItemUnit());
@@ -8672,8 +8754,8 @@ public class ReportServiceImpl implements ReportService {
                                                 Date dateTo, String payType) {
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		Map<Integer, AlipaySumDTO> map = new LinkedHashMap<Integer, AlipaySumDTO>();
-		int size = branchNums.size();
-		for (int i = 0; i < size; i++) {
+		int branchSize = branchNums.size();
+		for (int i = 0; i < branchSize; i++) {
 			Integer branchNum = branchNums.get(i);
 			Branch branch = AppUtil.getBranch(branchs, branchNum);
 
@@ -8708,7 +8790,8 @@ public class ReportServiceImpl implements ReportService {
 					+ AppConstants.PAY_TYPE_DPHUI;
 		}
 		List<Object[]> objects = alipayLogDao.findDepositSummary(systemBookCode, branchNums, dateFrom, dateTo, alipayLogTypes);
-		for (int i = 0; i < objects.size(); i++) {
+		int depositSize = objects.size();
+		for (int i = 0; i < depositSize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8720,8 +8803,9 @@ public class ReportServiceImpl implements ReportService {
 
 		// POS消费成功
 		objects = posOrderDao.findBranchSummary(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes);
+		int paymentSize = objects.size();
 		BigDecimal buyerMoney = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0; i < paymentSize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8739,7 +8823,8 @@ public class ReportServiceImpl implements ReportService {
 		// 存款支付失败
 		objects = alipayLogDao.findBranchSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, true,
 				alipayLogTypes);
-		for (int i = 0; i < objects.size(); i++) {
+		int failSize = objects.size();
+		for (int i = 0; i < failSize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8752,7 +8837,8 @@ public class ReportServiceImpl implements ReportService {
 		// POS消费失败
 		objects = alipayLogDao.findBranchSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, false,
 				alipayLogTypes);
-		for (int i = 0; i < objects.size(); i++) {
+		int consumeSize = objects.size();
+		for (int i = 0; i < consumeSize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8777,7 +8863,8 @@ public class ReportServiceImpl implements ReportService {
 		}
 		// 反结账
 		objects = alipayLogDao.findBranchSummaryRePay(systemBookCode, branchNums, dateFrom, dateTo, alipayLogTypes);
-		for (int i = 0; i < objects.size(); i++) {
+		int rePaySize = objects.size();
+		for (int i = 0; i < rePaySize; i++) {
 			Object[] object = objects.get(i);
 			AlipaySumDTO alipaySumDTO = map.get((Integer) object[0]);
 			if (alipaySumDTO == null) {
@@ -8787,7 +8874,8 @@ public class ReportServiceImpl implements ReportService {
 			alipaySumDTO.setConsumeOverQty(BigDecimal.valueOf((Long) object[2]));
 		}
 		List<AlipaySumDTO> list = new ArrayList<AlipaySumDTO>(map.values());
-		for (int i = 0; i < list.size(); i++) {
+		int size = list.size();
+		for (int i = 0; i < size; i++) {
 			AlipaySumDTO alipaySumDTO = list.get(i);
 			alipaySumDTO.setPosConsumeTotalQty(alipaySumDTO.getPosConsumeFailQty().add(
 					alipaySumDTO.getPosConsumeSuccessQty()));
@@ -9162,7 +9250,8 @@ public class ReportServiceImpl implements ReportService {
 		List<BranchTransferGoals> branchTransferGoals = branchTransferGoalsDao.findByDate(systemBookCode, branchNums,
 				dateFrom, dateTo, dateType);
 		Map<String, TransferGoal> map = new HashMap<String, TransferGoal>();
-		for (int i = 0; i < branchTransferGoals.size(); i++) {
+		int goalSize = branchTransferGoals.size();
+		for (int i = 0; i < goalSize; i++) {
 			BranchTransferGoals branchTransferGoal = branchTransferGoals.get(i);
 			TransferGoal data = new TransferGoal();
 			data.setBranchNum(branchTransferGoal.getId().getBranchNum());
@@ -9174,17 +9263,22 @@ public class ReportServiceImpl implements ReportService {
 			data.setTransferDiffGoal(branchTransferGoal.getBranchTransferDiffValue() == null ? BigDecimal.ZERO
 					: branchTransferGoal.getBranchTransferDiffValue());
 			data.setSaleProfitGoal(branchTransferGoal.getBranchTransferGrossValue() == null?BigDecimal.ZERO:(BigDecimal)branchTransferGoal.getBranchTransferGrossValue());
-			map.put(data.getBranchNum() + "|" + data.getYearMonth(), data);
+			StringBuilder stringBuilder  = new StringBuilder();
+			String key = stringBuilder.append(data.getBranchNum()).append("|").append(data.getYearMonth()).toString();
+			map.put(key, data);
 		}
 
 		BigDecimal profit = null;
-		for (int i = 0; i < objects.size(); i++) {
+		int size = objects.size();
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String date = (String) object[1];
 			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
 			profit = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-			TransferGoal data = map.get(branchNum + "|" + date);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(branchNum).append("|").append(date).toString();
+			TransferGoal data = map.get(key);
 			if (data == null) {
 				data = new TransferGoal();
 				data.setTransferGoal(BigDecimal.ZERO);
@@ -9192,7 +9286,7 @@ public class ReportServiceImpl implements ReportService {
 				data.setBranchNum(branchNum);
 				data.setYearMonth(date);
 				data.setSaleProfitMoney(profit);
-				map.put(branchNum + "|" + date, data);
+				map.put(key, data);
 			} else {
 				data.setTransferAmount(money);
 				data.setSaleProfitMoney(profit);
@@ -9206,19 +9300,22 @@ public class ReportServiceImpl implements ReportService {
 		}
 		objects = transferOutOrderDao.findBranchSumByDateType(systemBookCode, centerBranchNum, branchNums, dateFrom,
 				dateTo, dateType, null, null);
-		for (int i = 0; i < objects.size(); i++) {
+		size = objects.size();
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String date = (String) object[1];
 			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-			TransferGoal data = map.get(branchNum + "|" + date);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(branchNum).append("|").append(date).toString();
+			TransferGoal data = map.get(key);
 			if (data == null) {
 				data = new TransferGoal();
 				data.setTransferGoal(BigDecimal.ZERO);
 				data.setTransferDiffAmount(money);
 				data.setBranchNum(branchNum);
 				data.setYearMonth(date);
-				map.put(branchNum + "|" + date, data);
+				map.put(key, data);
 			} else {
 				data.setTransferDiffAmount(money);
 			}
@@ -9227,25 +9324,29 @@ public class ReportServiceImpl implements ReportService {
 
 		objects = transferInOrderDao.findBranchSumByDateType(systemBookCode, centerBranchNum, branchNums, dateFrom,
 				dateTo, dateType);
-		for (int i = 0; i < objects.size(); i++) {
+		size = objects.size();
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			String date = (String) object[1];
 			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-			TransferGoal data = map.get(branchNum + "|" + date);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(branchNum).append("|").append(date).toString();
+			TransferGoal data = map.get(key);
 			if (data == null) {
 				data = new TransferGoal();
 				data.setTransferGoal(BigDecimal.ZERO);
 				data.setTransferDiffAmount(money.negate());
 				data.setBranchNum(branchNum);
 				data.setYearMonth(date);
-				map.put(branchNum + "|" + date, data);
+				map.put(key, data);
 			} else {
 				data.setTransferDiffAmount(data.getTransferDiffAmount().subtract(money));
 			}
 		}
 		List<TransferGoal> transferGoals = new ArrayList<TransferGoal>(map.values());
-		for (int i = 0; i < transferGoals.size(); i++) {
+		int transferSize = transferGoals.size();
+		for (int i = 0; i < transferSize; i++) {
 			TransferGoal transferGoal = transferGoals.get(i);
 
 			transferGoal.setTransferDiffAmount(transferGoal.getTransferAmount().subtract(
@@ -9346,9 +9447,11 @@ public class ReportServiceImpl implements ReportService {
 			List<Integer> branchNums, String appUserName, String saleType) {
 		List<Object[]> objects = posOrderDao.findCustomerAnalysisShiftTables(systemBookCode, dateFrom, dateTo,
 				branchNums, appUserName, saleType);
-		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>();
+		int size = objects.size();
+		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>(size);
 		List<String> shiftTableBizdays = new ArrayList<String>();
-		for (int i = 0; i < objects.size(); i++) {
+
+		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			BigDecimal couponMoney = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			BigDecimal mgrDiscount = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
@@ -9376,7 +9479,7 @@ public class ReportServiceImpl implements ReportService {
 			return list;
 		}
 		List<ShiftTable> shiftTables = shiftTableDao.find(systemBookCode, branchNums, shiftTableBizdays);
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			CustomerAnalysisDay customerAnalysisDay = list.get(i);
 
 			ShiftTable shiftTable = ShiftTable.getShiftTable(shiftTables, customerAnalysisDay.getBranchNum(),
@@ -9797,7 +9900,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchBizday' + #p0.getKey()")
 	public List<Object[]> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return posOrderDao.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
 	}
@@ -10319,12 +10421,14 @@ public class ReportServiceImpl implements ReportService {
 				null, false);
 		List<Object[]> outObjects = transferOutOrderDao.findBranchItemSummary(systemBookCode, centerBranchNum,
 				branchNums, dateFrom, dateTo, null);
-
-		if (posObjects.size() == 0 && outObjects.size() == 0) {
+		int posSize = posObjects.size();
+		int outSize = outObjects.size();
+		if ( posSize == 0 && outSize == 0) {
 			return list;
 		}
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		for (int i = 0; i < branchNums.size(); i++) {
+		int branchSize = branchNums.size();
+		for (int i = 0; i < branchSize; i++) {
 			BranchCategoryAnalyseDTO branchCategoryAnalyseDTO = new BranchCategoryAnalyseDTO();
 			branchCategoryAnalyseDTO.setBranchNum(branchNums.get(i));
 			Branch branch = AppUtil.getBranch(branchs, branchCategoryAnalyseDTO.getBranchNum());
@@ -10342,7 +10446,7 @@ public class ReportServiceImpl implements ReportService {
 		String category = null;
 		String categoryCode = null;
 		TypeAndTwoValuesDTO typeAndTwoValuesDTO = null;
-		for (int i = 0; i < posObjects.size(); i++) {
+		for (int i = 0; i < posSize; i++) {
 			Object[] object = posObjects.get(i);
 			branchNum = (Integer) object[0];
 			itemNum = (Integer) object[1];
@@ -10355,7 +10459,8 @@ public class ReportServiceImpl implements ReportService {
 				categoryCode = "";
 			} else {
 				departmentName = posItem.getItemDepartment();
-				category = posItem.getItemCategoryCode() + "|" + posItem.getItemCategory();
+				StringBuilder sb = new StringBuilder();
+				category = sb.append(posItem.getItemCategoryCode()).append("|").append(posItem.getItemCategory()).toString();
 				categoryCode = posItem.getItemCategoryCode();
 			}
 			//添加过滤条件
@@ -10386,7 +10491,7 @@ public class ReportServiceImpl implements ReportService {
 			typeAndTwoValuesDTO.setMoney(typeAndTwoValuesDTO.getMoney().add(money));
 		}
 
-		for (int i = 0; i < outObjects.size(); i++) {
+		for (int i = 0; i < outSize; i++) {
 			Object[] object = outObjects.get(i);
 			branchNum = (Integer) object[0];
 			itemNum = (Integer) object[1];
@@ -10399,7 +10504,8 @@ public class ReportServiceImpl implements ReportService {
 				categoryCode = "";
 			} else {
 				departmentName = posItem.getItemDepartment();
-				category = posItem.getItemCategoryCode() + "|" + posItem.getItemCategory();
+				StringBuilder sb = new StringBuilder();
+				category = sb.append(posItem.getItemCategoryCode()).append("|").append(posItem.getItemCategory()).toString();
 				categoryCode = posItem.getItemCategoryCode();
 			}
 			//添加过滤条件
@@ -10454,7 +10560,8 @@ public class ReportServiceImpl implements ReportService {
 		List<Integer> highestItemNums = new ArrayList<Integer>();
 		
 		BigDecimal comparePrice = null;
-		for (int i = 0; i < posItems.size(); i++) {
+		int posItemSize = posItems.size();
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			
 			if (categoryCodes != null && categoryCodes.size() > 0) {
@@ -10499,6 +10606,7 @@ public class ReportServiceImpl implements ReportService {
 		list.add(new PosItemPriceBandDTO(5, highestItemNums.size()));
 		
 		List<Object[]> objects = null;
+		int objectSize;
 		if (posItemPriceBandQuery.getType().equals(AppConstants.CHECKBOX_SALE)) {
 			
 			objects = posOrderDao.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, null, false);
@@ -10512,11 +10620,13 @@ public class ReportServiceImpl implements ReportService {
 					.findItemSummary(systemBookCode, branchNums, null, dateFrom, dateTo, null);
 			List<Object[]> inObjects = transferInOrderDao.findItemSummary(systemBookCode, branchNum, branchNums,
 					dateFrom, dateTo, null);
-			for (int i = 0; i < inObjects.size(); i++) {
+			int inObjectSize = inObjects.size();
+			objectSize = objects.size();
+			for (int i = 0; i < inObjectSize; i++) {
 				Object[] inObject = inObjects.get(i);
 				
 				boolean find = false;
-				for (int j = 0; j < objects.size(); j++) {
+				for (int j = 0; j < objectSize; j++) {
 					Object[] object = objects.get(j);
 					if (inObject[0].equals(object[0])) {
 						object[1] = ((BigDecimal) object[1]).subtract(((BigDecimal) inObject[1]));
@@ -10538,12 +10648,13 @@ public class ReportServiceImpl implements ReportService {
 			objects = wholesaleOrderDao.findItemSummary(systemBookCode, branchNums, dateFrom, dateTo);
 			List<Object[]> returnObjects = wholesaleReturnDao.findItemSummary(systemBookCode, branchNums, dateFrom,
 					dateTo);
-			
-			for (int i = 0; i < returnObjects.size(); i++) {
+			int returnSize = returnObjects.size();
+			objectSize = objects.size();
+			for (int i = 0; i < returnSize; i++) {
 				Object[] returnObject = returnObjects.get(i);
 				
 				boolean find = false;
-				for (int j = 0; j < objects.size(); j++) {
+				for (int j = 0; j < objectSize; j++) {
 					Object[] object = objects.get(j);
 					if (returnObject[0].equals(object[0])) {
 						object[1] = ((BigDecimal) object[1]).subtract(((BigDecimal) returnObject[1]));
@@ -10562,7 +10673,8 @@ public class ReportServiceImpl implements ReportService {
 		}
 		
 		PosItemPriceBandDTO posItemPriceBandDTO = null;
-		for (int i = 0; i < objects.size(); i++) {
+		objectSize = objects.size();
+		for (int i = 0; i < objectSize; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -11696,8 +11808,9 @@ public class ReportServiceImpl implements ReportService {
 					categoryName = typeParam.getPosItemTypeName();
 				}
 			}
-			
-			PurchaseOrderCollect data = map.get(queryBranchNum + "|" + categoryCode);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(queryBranchNum).append("|").append(categoryCode).toString();
+			PurchaseOrderCollect data = map.get(key);
 			if (data == null) {
 				data = new PurchaseOrderCollect();
 				data.setBranchNum(queryBranchNum);
@@ -11716,7 +11829,7 @@ public class ReportServiceImpl implements ReportService {
 				data.setItemName(posItem.getItemName());
 				data.setItemSpec(posItem.getItemSpec());
 
-				map.put(queryBranchNum + "|" + categoryCode, data);
+				map.put(key, data);
 			}
 			data.setBaseAmount(data.getBaseAmount().add(amount));
 			if (rate.compareTo(BigDecimal.ZERO) > 0) {
@@ -11792,8 +11905,9 @@ public class ReportServiceImpl implements ReportService {
 					categoryName = typeParam.getPosItemTypeName();
 				}
 			}
-			
-			PurchaseOrderCollect data = map.get(queryBranchNum + "|" + categoryCode);
+			StringBuilder stringBuilder = new StringBuilder();
+			String key = stringBuilder.append(queryBranchNum).append("|").append(categoryCode).toString();
+			PurchaseOrderCollect data = map.get(key);
 			if (data == null) {
 				data = new PurchaseOrderCollect();
 				data.setBranchNum(queryBranchNum);
@@ -11811,7 +11925,7 @@ public class ReportServiceImpl implements ReportService {
 				data.setItemName(posItem.getItemName());
 				data.setItemSpec(posItem.getItemSpec());
 
-				map.put(queryBranchNum + "|" + categoryCode, data);
+				map.put(key, data);
 			}
 			data.setBaseAmount(data.getBaseAmount().add(amount));
 			if (rate.compareTo(BigDecimal.ZERO) > 0) {
@@ -11839,7 +11953,6 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	@Cacheable(value="serviceCache", key="'findSupplierLianYing' + #supplierSaleQuery.getKey()")
 	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierSaleQuery) {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		Integer branchNum = supplierSaleQuery.getBranchNum();
@@ -11851,7 +11964,8 @@ public class ReportServiceImpl implements ReportService {
 		List<PosItem> posItems = posItemService.find(systemBookCode, null, itemNums, AppConstants.BUSINESS_TYPE_SHOP);
 		Map<Integer, PosItem> baseMap = new HashMap<Integer, PosItem>();
 		List<SupplierLianYing> list = new ArrayList<SupplierLianYing>();
-		for (int i = 0; i < posItems.size(); i++) {
+		int posItemSize = posItems.size();
+		for (int i = 0; i < posItemSize; i++) {
 			PosItem posItem = posItems.get(i);
 			baseMap.put(posItem.getItemNum(), posItem);
 		}
@@ -11911,7 +12025,9 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal assistAmount;
 		BigDecimal count_;
 		BigDecimal discount;
-		for (int i = 0; i < objects.size(); i++) {
+		StringBuilder stringBuilder;
+		int objectSize = objects.size();
+		for (int i = 0; i < objectSize; i++) {
 			Object[] object = objects.get(i);
 			branchNum = (Integer) object[0];
 			itemNum = (Integer) object[1];
@@ -11932,13 +12048,14 @@ public class ReportServiceImpl implements ReportService {
 			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
 				continue;
 			}
-			
-			SaleAnalysisByPosItemDTO data = map.get(branchNum + "|" + itemNum);
+			stringBuilder  = new StringBuilder();
+			String key = stringBuilder.append(branchNum).append("|").append(itemNum).toString();
+			SaleAnalysisByPosItemDTO data = map.get(key);
 			if (data == null) {
 				data = new SaleAnalysisByPosItemDTO();
 				data.setItemNum(itemNum);
 				data.setBranchNum(branchNum);
-				map.put(branchNum + "|" + itemNum, data);
+				map.put(key, data);
 			}
 			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
 				data.setTotalNum(data.getTotalNum().subtract(amount));
@@ -11986,7 +12103,8 @@ public class ReportServiceImpl implements ReportService {
 		}
 		Branch branch;
 		List<ItemExtendAttributeDTO> itemItemExtendAttributes = null;
-		for (int i = list.size() - 1; i >= 0; i--) {
+		int size = list.size();
+		for (int i = size - 1; i >= 0; i--) {
 			SaleAnalysisByPosItemDTO data = list.get(i);
 			
 			Integer posItemNum = data.getItemNum();

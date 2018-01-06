@@ -19,6 +19,7 @@ import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -52,6 +53,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<BranchRevenueReport> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 		/*SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
@@ -155,6 +157,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<BranchBizRevenueSummary> findMoneyBizdaySummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
@@ -252,6 +255,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<BranchBizRevenueSummary> findMoneyBizmonthSummary(String systemBookCode, List<Integer> branchNums, String queryBy, Date dateFrom, Date dateTo, Boolean isMember) {
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();

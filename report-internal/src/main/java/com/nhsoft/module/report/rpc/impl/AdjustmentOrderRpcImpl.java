@@ -9,6 +9,7 @@ import com.nhsoft.module.report.rpc.AdjustmentOrderRpc;
 import com.nhsoft.module.report.service.AdjustmentOrderService;
 import com.nhsoft.module.report.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -61,6 +62,7 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
 
 
     @Override
+    @Cacheable(value = "serviceCache")
     public List<AdjustmentCauseMoney> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
         List<Object[]> objects = adjustmentOrderService.findAdjustmentCauseMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);

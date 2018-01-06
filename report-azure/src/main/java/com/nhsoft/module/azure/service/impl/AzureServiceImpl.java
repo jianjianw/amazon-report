@@ -90,8 +90,8 @@ public class AzureServiceImpl implements AzureService {
         azureDao.batchDeleteItemLossDailies(systemBookCode,dateFrom,dateTo);
     }
 
-    public void batchSaveCardDailies(String systemBookCode, List<CardDaily> CardDailies, Date dateFrom, Date dateTo) {
-        azureDao.batchSaveCardDailies(systemBookCode,CardDailies,dateFrom,dateTo);
+    public void batchSaveCardDailies(String systemBookCode, List<CardDaily> cardDailies, Date dateFrom, Date dateTo) {
+        azureDao.batchSaveCardDailies(systemBookCode,cardDailies,dateFrom,dateTo);
     }
 
 

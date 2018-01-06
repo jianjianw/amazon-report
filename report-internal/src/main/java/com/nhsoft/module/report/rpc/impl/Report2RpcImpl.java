@@ -16,6 +16,7 @@ import com.nhsoft.module.report.util.DateUtil;
 import com.nhsoft.module.report.util.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -84,7 +85,8 @@ public class Report2RpcImpl implements Report2Rpc {
 
 	
 	@Override
-	public List<TransferPolicyDTO> findTransferPolicyDTOs(PolicyPosItemQuery policyPosItemQuery) {
+	public List<TransferPolicyDTO>
+	findTransferPolicyDTOs(PolicyPosItemQuery policyPosItemQuery) {
 		return report2Service.findTransferPolicyDTOs(policyPosItemQuery);
 	}
 
@@ -169,6 +171,7 @@ public class Report2RpcImpl implements Report2Rpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key="'findSaleAnalysisByBranchDayItems' + #p0.getKey()")
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchDayItems(SaleAnalysisQueryData policyPosItemQuery) {
 		return report2Service.findSaleAnalysisByBranchDayItems(policyPosItemQuery);
 	}
@@ -993,6 +996,7 @@ public class Report2RpcImpl implements Report2Rpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache")
 	public List<RequestAnalysisDTO> findRequestAnalysisDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, List<String> itemCategoryCodes) {
 		Integer branchNum = branchNums.get(0);
 

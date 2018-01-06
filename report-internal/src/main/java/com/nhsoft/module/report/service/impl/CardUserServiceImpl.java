@@ -38,7 +38,6 @@ public class CardUserServiceImpl implements CardUserService {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache")
 	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return cardUserDao.findCardUserCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 	}
