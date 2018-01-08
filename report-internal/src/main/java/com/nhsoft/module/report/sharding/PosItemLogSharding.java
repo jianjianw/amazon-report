@@ -100,10 +100,9 @@ public static class PosItemLogShardingTableAlgorithm implements SingleKeyTableSh
 		} else {
 			newRange = Range.open(begin, end);
 		}
-		
-		int year = 2017;
+
 		for (Integer i = newRange.lowerEndpoint(); i <= newRange.upperEndpoint(); i++) {
-			if(i >= year) {
+			if(i >= 2017) {
 				result.add("pos_item_log");
 			} else {
 				result.add("pos_item_log_" + i);
