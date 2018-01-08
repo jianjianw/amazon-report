@@ -144,7 +144,7 @@ public class AzureSchedule {
 
 
     @Scheduled(cron="0 0 2-3 * * *")
-    public void insertBranch(){                 //每天凌晨2店-4点 每个小时执行一次
+    public void insertBranch(){                 //每天凌晨2店-3点 每个小时执行一次
         List<BranchDTO> brachDTO = branchRpc.findInCache(systemBook);
         int size = brachDTO.size();
         List<Branch> list = new ArrayList<Branch>(size);
@@ -351,7 +351,7 @@ public class AzureSchedule {
     }
 
 
-    @Scheduled(cron="0 0 2-3 * * *")        //每天凌晨2-3点删除三个月前的数据     商品日销售汇总
+    @Scheduled(cron="0 0 2-3 * * *")        //每天凌晨2-3点删除四个月前的数据     商品日销售汇总
     public void deleteItemSaleDaily(){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH,-4);
@@ -391,7 +391,7 @@ public class AzureSchedule {
         azureService.batchSaveItemLossDailies(systemBook,list,dateFrom,dateTo);
     }
 
-    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除三个月前的数据   商品日报损汇总
+    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除4个月前的数据   商品日报损汇总
     public void deleteItemLossDaily(){
 
         Calendar calendar = Calendar.getInstance();
@@ -440,7 +440,7 @@ public class AzureSchedule {
         azureService.batchSaveCardDailies(systemBook,list,beforeYesterday,yesterday);
     }
 
-    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除三个月前的数据   会员统计
+    @Scheduled(cron="0 0 2-3 * * *")    //每天凌晨2-3点删除四个月前的数据   会员统计
     public void deleteCardDaily(){
 
         Calendar calendar = Calendar.getInstance();

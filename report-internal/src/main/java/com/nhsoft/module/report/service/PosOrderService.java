@@ -221,32 +221,34 @@ public interface PosOrderService {
 
 
 
-	public List<Object[]> findBusinessCollectionByBranchToDetail(String systemBookCode,
-														 List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findDetailItemsByBranch(String systemBookCode,
+												  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	public List<Object[]> findBusinessCollectionByBranchToPosOrder(String systemBookCode,
-																   List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	public List<Object[]> findBusinessCollectionByBranchDayToDetail(String systemBookCode,
-															List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findDiscountMoneyByBranch(String systemBookCode,
+													List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	public List<Object[]> findBusinessCollectionByBranchDayToPosOrder(String systemBookCode,
-																	  List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findDetailItemsByBranchBizday(String systemBookCode,
+														List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	public List<Object[]> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums,
-														   Date dateFrom, Date dateTo);
 
-	public List<Object[]> findBusinessCollectionByShiftTableToPayment(String systemBookCode, List<Integer> branchNums,
-														  Date dateFrom, Date dateTo, String casher);
+	public List<Object[]> findDiscountMoneyByBranchBizday(String systemBookCode,
+														  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	public List<Object[]> findBusinessCollectionByShiftTableToPosOrder(String systemBookCode, List<Integer> branchNums,
-															 Date dateFrom, Date dateTo, String casher);
+	public List<Object[]> findDetailItemSum(String systemBookCode, List<Integer> branchNums,
+											Date dateFrom, Date dateTo);
 
-	public List<Object[]> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode,
-																	   List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findPaymentByShiftTables(String systemBookCode, List<Integer> branchNums,
+												   Date dateFrom, Date dateTo, String casher);
 
-	public List<Object[]> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode,
-																	 List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
+	public List<Object[]> findDetailItemAnalysisByShiftTables(String systemBookCode, List<Integer> branchNums,
+															  Date dateFrom, Date dateTo, String casher);
+
+	public List<Object[]> findPaymentAnalysisByBranch(String systemBookCode,
+													  List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<Object[]> findPaymentAnalysisByShiftTables(String systemBookCode,
+														   List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
 
 
 }

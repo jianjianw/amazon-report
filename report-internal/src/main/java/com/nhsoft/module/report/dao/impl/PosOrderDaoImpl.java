@@ -5089,7 +5089,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findBusinessCollectionByBranchToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findDetailItemsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 
 		StringBuilder sb = new StringBuilder();
@@ -5113,7 +5113,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findBusinessCollectionByBranchToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findDiscountMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("select branch_num, sum(order_discount_money + order_round + order_mgr_discount_money) as money ");
@@ -5136,7 +5136,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findBusinessCollectionByBranchDayToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findDetailItemsByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 
 		StringBuilder sb = new StringBuilder();
@@ -5161,7 +5161,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findBusinessCollectionByBranchDayToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findDiscountMoneyByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 
 		StringBuilder sb = new StringBuilder();
@@ -5185,7 +5185,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 
-	public List<Object[]> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums,
+	public List<Object[]> findDetailItemSum(String systemBookCode, List<Integer> branchNums,
 														   Date dateFrom, Date dateTo){
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
 		StringBuilder sb = new StringBuilder();
@@ -5210,7 +5210,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findBusinessCollectionByShiftTableToPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+	public List<Object[]> findPaymentByShiftTables(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select o.branch_num, o.shift_table_bizday, o.shift_table_num, p.payment_pay_by, sum(p.payment_money) as money, sum(p.payment_balance) as balance ");
 		sb.append("from payment as p with(nolock) inner join pos_order as o with(nolock) on p.order_no = o.order_no ");
@@ -5233,7 +5233,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	}
 
-	public List<Object[]> findBusinessCollectionByShiftTableToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher){
+	public List<Object[]> findDetailItemAnalysisByShiftTables(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher){
 		StringBuilder sb = new StringBuilder();
 		sb.append("select p.branch_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
@@ -5257,7 +5257,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sqlQuery.list();
 	}
 
-	public List<Object[]> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode,
+	public List<Object[]> findPaymentAnalysisByBranch(String systemBookCode,
 																	   List<Integer> branchNums, Date dateFrom, Date dateTo){
 		 StringBuffer sb = new StringBuffer();
 		 sb.append("select pos_order.branch_num, order_operator, payment_pay_by, sum(payment_money) as money ");
@@ -5280,8 +5280,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
-
+	public List<Object[]> findPaymentAnalysisByShiftTables(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 
 		StringBuffer sb = new StringBuffer();
 		 sb.append("select pos_order.branch_num, pos_order.shift_table_bizday, pos_order.shift_table_num, payment_pay_by, sum(payment_money) as money ");

@@ -71,8 +71,6 @@ public interface PosOrderRpc  {
     public List<ItemSaleDailyDTO> findItemSaleDailys(String systemBookCode, Date dateFrom, Date dateTo);
 
 
-
-
     public List<BusinessCollection> findBusinessCollectionByBranchToDetail(String systemBookCode,
                                                          List<Integer> branchNums, Date dateFrom, Date dateTo);
 

@@ -1785,12 +1785,9 @@ public class ReportRpcImpl implements ReportRpc {
 			BusinessCollection collection = list.get(i);
 			map.put(collection.getBranchNum(),collection);
 		}
+		List<Object[]> detailList = posOrderService.findDetailItemsByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 
-
-		List<Object[]> detailList = posOrderService.findBusinessCollectionByBranchToDetail(systemBookCode, branchNums, dateFrom, dateTo);
-		int detailSize = detailList.size();
-
-		for (int i = 0; i < detailSize; i++) {
+		for (int i = 0,len = detailList.size(); i < len; i++) {
 			Object[] object = detailList.get(i);
 			Integer branchNum = (Integer) object[0];
 			String type = (String) object[1];
@@ -1817,11 +1814,9 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			detail.setMoney(detail.getMoney().add(money));
 		}
-		list.addAll(map.values());
 
-		List<Object[]> posList = posOrderService.findBusinessCollectionByBranchToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
-		int posSize = posList.size();
-		for (int i = 0; i < posSize ; i++) {
+		List<Object[]> posList = posOrderService.findDiscountMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		for (int i = 0,len = posList.size(); i < len ; i++) {
 			Object[] object = posList.get(i);
 			Integer branchNum = (Integer) object[0];
 			BigDecimal money = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -1834,27 +1829,24 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setAllDiscountMoney(money);
 		}
 
-		list.addAll(map.values());
-		return list;
+		return new ArrayList<BusinessCollection>(map.values());
 	}
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
 		List<BusinessCollection> list = reportService.findBusinessCollectionByBranchDay(systemBookCode, branchNums, dateFrom, dateTo);
-		int size = list.size();
 		StringBuilder sb;
 		String key;
-		for (int i = 0; i < size ; i++) {
+		for (int i = 0,len = list.size(); i < len ; i++) {
 			BusinessCollection collection = list.get(i);
 			sb = new StringBuilder();
 			key = sb.append(collection.getBranchNum()).append(collection.getShiftTableBizday()).toString();
 			map.put(key,collection);
 		}
 
-		List<Object[]> detailList = posOrderService.findBusinessCollectionByBranchDayToDetail(systemBookCode, branchNums, dateFrom, dateTo);
-		int detailSize = detailList.size();
-		for (int i = 0; i < detailSize; i++) {
+		List<Object[]> detailList = posOrderService.findDetailItemsByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo);
+		for (int i = 0,len = detailList.size(); i < len; i++) {
 			Object[] object = detailList.get(i);
 			Integer branchNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
@@ -1884,9 +1876,8 @@ public class ReportRpcImpl implements ReportRpc {
 			detail.setMoney(detail.getMoney().add(money));
 		}
 
-		List<Object[]> postList = posOrderService.findBusinessCollectionByBranchDayToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
-		int posSize = postList.size();
-		for (int i = 0; i < posSize; i++) {
+		List<Object[]> postList = posOrderService.findDiscountMoneyByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo);
+		for (int i = 0,len = postList.size(); i < len; i++) {
 			Object[] object = postList.get(i);
 			Integer branchNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
@@ -1900,9 +1891,7 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			data.setAllDiscountMoney(money);
 		}
-
-		list.addAll(map.values());
-		return list;
+		return new ArrayList<BusinessCollection>(map.values());
 	}
 
 	@Override
@@ -1910,10 +1899,9 @@ public class ReportRpcImpl implements ReportRpc {
 
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
 		List<BusinessCollection> list = reportService.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
-		int size = list.size();
 		StringBuilder sb;
 		String key;
-		for (int i = 0; i <size; i++) {
+		for (int i = 0,len = list.size(); i <len; i++) {
 			BusinessCollection collection = list.get(i);
 			Integer branchNum = collection.getBranchNum();
 			String bizday = collection.getShiftTableBizday();
@@ -1923,9 +1911,8 @@ public class ReportRpcImpl implements ReportRpc {
 			map.put(key,collection);
 		}
 
-		List<Object[]> poslist = posOrderService.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
-		int posSize = poslist.size();
-		for (int i = 0; i < posSize; i++) {
+		List<Object[]> poslist = posOrderService.findDetailItemSum(systemBookCode, branchNums, dateFrom, dateTo);
+		for (int i = 0,len = poslist.size(); i < len; i++) {
 			Object[] object = poslist.get(i);
 			Integer branchNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
@@ -1955,9 +1942,7 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			detail.setMoney(detail.getMoney().add(money));
 		}
-		list.addAll(map.values());
-
-		return list;
+		return new ArrayList<BusinessCollection>(map.values());
 	}
 
 	@Override
@@ -1965,10 +1950,9 @@ public class ReportRpcImpl implements ReportRpc {
 
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
 		List<BusinessCollection> list = reportService.findBusinessCollectionByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		int size = list.size();
 		StringBuilder sb;
 		String key;
-		for (int i = 0; i < size ; i++) {
+		for (int i = 0,len = list.size(); i < len ; i++) {
 			BusinessCollection collection = list.get(i);
 			Integer branchNum = collection.getBranchNum();
 			String bizday = collection.getShiftTableBizday();
@@ -1979,9 +1963,8 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 
-		List<Object[]> payment = posOrderService.findBusinessCollectionByShiftTableToPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		int paymentSize = payment.size();
-		for (int i = 0; i < paymentSize; i++) {
+		List<Object[]> payment = posOrderService.findPaymentByShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		for (int i = 0,len = payment.size(); i < len; i++) {
 			Object[] object = payment.get(i);
 			Integer branchNum = (Integer) object[0];
 			String bizDay = (String) object[1];
@@ -2010,12 +1993,9 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			data.getPosIncomes().add(detail);
 		}
-		list.addAll(map.values());
 
-
-		List<Object[]> detailItem = posOrderService.findBusinessCollectionByShiftTableToPosOrder(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		int detailSize = detailItem.size();
-		for (int i = 0; i < detailSize; i++) {
+		List<Object[]> detailItem = posOrderService.findDetailItemAnalysisByShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		for (int i = 0,len = detailItem.size(); i < len; i++) {
 			Object[] object = detailItem.get(i);
 			Integer branchNum = (Integer) object[0];
 			String bizDay = (String) object[1];
@@ -2046,8 +2026,8 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			detail.setMoney(detail.getMoney().add(money));
 		}
-		list.addAll(map.values());
-		return list;
+
+		return new ArrayList<BusinessCollection>(map.values());
 	}
 
 	@Override

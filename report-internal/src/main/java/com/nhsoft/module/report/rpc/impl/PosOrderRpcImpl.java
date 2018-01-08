@@ -579,7 +579,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
-		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchToDetail(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = posOrderService.findDetailItemsByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		int size = objects.size();
 		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
@@ -619,7 +619,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = posOrderService.findDiscountMoneyByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 
 		int size = objects.size();
 		List<BusinessCollection> list = new ArrayList<>(size);
@@ -646,7 +646,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchDayToDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
-		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchDayToDetail(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = posOrderService.findDetailItemsByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo);
 		int size = objects.size();
 		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
@@ -691,7 +691,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public List<BusinessCollection> findBusinessCollectionByBranchDayToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 
-		List<Object[]> objects = posOrderService.findBusinessCollectionByBranchDayToPosOrder(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = posOrderService.findDiscountMoneyByBranchBizday(systemBookCode, branchNums, dateFrom, dateTo);
 		int size = objects.size();
 		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
@@ -718,7 +718,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		List<Object[]> objects = posOrderService.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = posOrderService.findDetailItemSum(systemBookCode, branchNums, dateFrom, dateTo);
 		int size = objects.size();
 		List<BusinessCollection> list = new ArrayList<>(size);
 		if (objects.isEmpty()) {
@@ -763,7 +763,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByShiftTableToPayment(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 
-		List<Object[]> objects = posOrderService.findBusinessCollectionByShiftTableToPayment(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<Object[]> objects = posOrderService.findPaymentByShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		int size = objects.size();
 		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
@@ -806,7 +806,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByShiftTableToPosOrder(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 
-		List<Object[]> objects = posOrderService.findBusinessCollectionByShiftTableToPosOrder(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<Object[]> objects = posOrderService.findDetailItemAnalysisByShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		int size = objects.size();
 		List<BusinessCollection> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
@@ -852,7 +852,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
-		List<Object[]> objects = posOrderService.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = posOrderService.findPaymentAnalysisByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		int size = objects.size();
 		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<>(size);
 		if(objects.isEmpty()){
@@ -900,7 +900,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 	@Override
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
-		List<Object[]> objects = posOrderService.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<Object[]> objects = posOrderService.findPaymentAnalysisByShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		int size = objects.size();
 		List<PosReceiveDiffMoneySumDTO> list = new ArrayList<PosReceiveDiffMoneySumDTO>(size);
 		Integer branchNum = null;
