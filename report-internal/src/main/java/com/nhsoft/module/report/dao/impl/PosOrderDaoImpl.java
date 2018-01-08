@@ -4225,7 +4225,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			//只显示电子券
 			if(StringUtils.contains(elecTicketDTO.getCouponType(), AppConstants.TEAM_TYPE_MEITUAN)
 					|| StringUtils.contains(elecTicketDTO.getCouponType(), AppConstants.TEAM_TYPE_DIANPING)
-					|| StringUtils.contains(elecTicketDTO.getCouponType(), AppConstants.TEAM_TYPE_NUOMI)){
+					|| StringUtils.contains(elecTicketDTO.getCouponType(), AppConstants.TEAM_TYPE_NUOMI)
+					|| StringUtils.contains(elecTicketDTO.getCouponType(), AppConstants.TEAM_TYPE_WECHAT)){
 
 				list.add(elecTicketDTO);
 			}
