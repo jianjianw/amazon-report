@@ -5122,8 +5122,7 @@ public class ReportServiceImpl implements ReportService {
 				if (posItemGrade == null) {
 					continue;
 				}
-				retailDetail.setPosItemName(retailDetail.getPosItemName().concat(
-						"(" + posItemGrade.getItemGradeName() + ")"));
+				retailDetail.setPosItemName(retailDetail.getPosItemName().concat("(" + posItemGrade.getItemGradeName() + ")"));
 			}
 
 		}
@@ -6404,11 +6403,10 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal discount;
 		Integer itemGradeNum;
 		Integer saleBranchCount;
-		int size = objects.size();
-		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>(size);
+		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		StringBuilder stringBuilder;
 		String key;
-		for (int i = 0; i < size; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			itemNum = (Integer) object[0];
 			itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
@@ -6474,11 +6472,10 @@ public class ReportServiceImpl implements ReportService {
 		List<PosItemGrade> posItemGrades = new ArrayList<PosItemGrade>();
 		if (saleAnalysisQueryData.getIsQueryGrade()) {
 			objects = posOrderDao.findSaleAnalysisCommonItemGrade(saleAnalysisQueryData);
-			int objectSize = objects.size();
 			StringBuilder sb;
 			String mapKey;
 			List<Integer> gradeItemNums = new ArrayList<Integer>(0);
-			for (int i = 0; i < objectSize; i++) {
+			for (int i = 0,len = objects.size(); i < len; i++) {
 				Object[] object = objects.get(i);
 				itemNum = (Integer) object[0];
 				itemGradeNum = (Integer) object[1];

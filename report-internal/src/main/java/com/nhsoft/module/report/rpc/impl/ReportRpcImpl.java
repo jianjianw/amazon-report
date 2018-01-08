@@ -104,7 +104,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findBranchSummary(systemBookCode, branchNums, dateFrom, dateTo,
 				itemNums);
 		Object[] object = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			object = objects.get(i);
 
 			SalePurchaseProfitDTO dto = new SalePurchaseProfitDTO();
@@ -115,7 +115,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		objects = posOrderService.findBranchDetailSum(systemBookCode, branchNums, dateFrom, dateTo, itemNums, false);
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			object = objects.get(i);
 
 			SalePurchaseProfitDTO dto = SalePurchaseProfitDTO.getByBranch(list, (Integer) object[0]);
@@ -127,13 +127,14 @@ public class ReportRpcImpl implements ReportRpc {
 			dto.setSaleMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
 
 		}
-		if (list.size() == 0) {
+		int size = list.size();
+		if (size == 0) {
 			return list;
 		}
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		Branch branch;
 		SalePurchaseProfitDTO dto;
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			dto = list.get(i);
 			branch = AppUtil.getBranch(branchs, dto.getBranchNum());
 			if (branch != null) {
@@ -161,7 +162,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findBranchItemSummary(systemBookCode, branchNums, dateFrom,
 				dateTo, itemNums);
 		Object[] object = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			object = objects.get(i);
 
 			SalePurchaseProfitDTO dto = new SalePurchaseProfitDTO();
@@ -173,7 +174,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		objects = posOrderService.findBranchItemSum(systemBookCode, branchNums, dateFrom, dateTo, itemNums, false);
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			object = objects.get(i);
 
 			SalePurchaseProfitDTO dto = SalePurchaseProfitDTO.getByBranchItem(list, (Integer) object[0],
@@ -188,7 +189,8 @@ public class ReportRpcImpl implements ReportRpc {
 			dto.setSaleMoney(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
 
 		}
-		if (list.size() == 0) {
+		int size = list.size();
+		if (size == 0) {
 			return list;
 		}
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
@@ -196,7 +198,7 @@ public class ReportRpcImpl implements ReportRpc {
 		Branch branch;
 		PosItem posItem;
 		SalePurchaseProfitDTO dto;
-		for (int i = list.size() - 1; i >= 0; i--) {
+		for (int i = size - 1; i >= 0; i--) {
 			dto = list.get(i);
 			posItem = AppUtil.getPosItem(dto.getItemNum(), posItems);
 			if (posItem != null) {
@@ -241,7 +243,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findItemSummary(systemBookCode, branchNums, dateFrom, dateTo,
 				itemNums);
 		Object[] object = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			object = objects.get(i);
 
 			SalePurchaseProfitDTO dto = new SalePurchaseProfitDTO();
@@ -252,7 +254,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		objects = posOrderService.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, itemNums, false);
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			object = objects.get(i);
 			if (object[0] == null) {
 				continue;
@@ -267,7 +269,8 @@ public class ReportRpcImpl implements ReportRpc {
 			dto.setSaleMoney(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
 
 		}
-		if (list.size() == 0) {
+		int size = list.size();
+		if (size == 0) {
 			return list;
 		}
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
@@ -277,7 +280,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<SalePurchaseProfitDTO> categoryList = new ArrayList<SalePurchaseProfitDTO>();
 		String categoryCode = "";
 		String categoryName = "未知类别";
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			dto = list.get(i);
 			posItem = AppUtil.getPosItem(dto.getItemNum(), posItems);
 			if (posItem != null) {
@@ -305,7 +308,7 @@ public class ReportRpcImpl implements ReportRpc {
 			categoryDto.setSaleCost(categoryDto.getSaleCost().add(dto.getSaleCost()));
 
 		}
-		for (int i = 0; i < categoryList.size(); i++) {
+		for (int i = 0,len = categoryList.size(); i < len; i++) {
 			dto = categoryList.get(i);
 
 			dto.setProfit(dto.getSaleMoney().subtract(dto.getSaleCost()));
@@ -330,7 +333,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findBranchItemSummary(systemBookCode, branchNums, dateFrom,
 				dateTo, itemNums);
 		Object[] object = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			object = objects.get(i);
 
 			SalePurchaseProfitDTO dto = new SalePurchaseProfitDTO();
@@ -342,7 +345,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		objects = posOrderService.findBranchItemSum(systemBookCode, branchNums, dateFrom, dateTo, itemNums, false);
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < objects.size(); i++) {
 			object = objects.get(i);
 
 			SalePurchaseProfitDTO dto = SalePurchaseProfitDTO.getByBranchItem(list, (Integer) object[0],
@@ -357,7 +360,8 @@ public class ReportRpcImpl implements ReportRpc {
 			dto.setSaleMoney(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
 
 		}
-		if (list.size() == 0) {
+		int size = list.size();
+		if (size == 0) {
 			return list;
 		}
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
@@ -368,7 +372,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<SalePurchaseProfitDTO> categoryList = new ArrayList<SalePurchaseProfitDTO>();
 		String categoryCode = "";
 		String categoryName = "未知类别";
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			dto = list.get(i);
 			posItem = AppUtil.getPosItem(dto.getItemNum(), posItems);
 			if (posItem != null) {
@@ -398,7 +402,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		Branch branch;
-		for (int i = 0; i < categoryList.size(); i++) {
+		for (int i = 0,len = categoryList.size(); i < len; i++) {
 			dto = categoryList.get(i);
 
 			branch = AppUtil.getBranch(branchs, dto.getBranchNum());
@@ -451,7 +455,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		List<Object[]> objects = receiveOrderService.findBizSummary(systemBookCode, branchNums, dateFrom, dateTo);
 		Object[] object = null;
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			object = objects.get(i);
 
 			SalePurchaseProfitDTO dto = new SalePurchaseProfitDTO();
@@ -476,12 +480,13 @@ public class ReportRpcImpl implements ReportRpc {
 			dto.setSaleMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
 			dto.setSaleOrderCount(object[2] == null ? 0 : (Integer) object[2]);
 		}
-		if (list.size() == 0) {
+		int size = list.size();
+		if (size == 0) {
 			return list;
 		}
 
 		SalePurchaseProfitDTO dto;
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			dto = list.get(i);
 			dto.setProfit(dto.getSaleMoney().subtract(dto.getSaleCost()));
 			if (dto.getSaleMoney().compareTo(BigDecimal.ZERO) > 0) {
@@ -496,8 +501,9 @@ public class ReportRpcImpl implements ReportRpc {
 				dateTo, List<String> categoryCodes, List<Integer> itemNums) {
 
 		List<Branch> branchs = branchService.findActivedRdc(systemBookCode);
-		List<Integer> branchNums = new ArrayList<Integer>();
-		for (int i = 0; i < branchs.size(); i++) {
+		int size = branchs.size();
+		List<Integer> branchNums = new ArrayList<Integer>(size);
+		for (int i = 0; i < size; i++) {
 			branchNums.add(branchs.get(i).getId().getBranchNum());
 		}
 
@@ -523,7 +529,7 @@ public class ReportRpcImpl implements ReportRpc {
 		// 批发退货
 		List<Object[]> wholesaleReturns = wholesaleReturnService.findItemSum(systemBookCode, null, null, dateFrom,
 				dateTo, itemNums, null);
-		for (int i = 0; i < wholesaleReturns.size(); i++) {
+		for (int i = 0,len = wholesaleReturns.size(); i < len; i++) {
 			objects = wholesaleReturns.get(i);
 			multipleProfitReportDTO = map.get(objects[0]);
 			if (multipleProfitReportDTO == null) {
@@ -545,7 +551,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> transferOutOrders = transferOutOrderService.findProfitGroupByItem(systemBookCode, branchNums,
 				null, dateFrom, dateTo, null, itemNums);
 		// 调出
-		for (int i = 0; i < transferOutOrders.size(); i++) {
+		for (int i = 0,len = transferOutOrders.size(); i < len; i++) {
 			objects = transferOutOrders.get(i);
 			multipleProfitReportDTO = map.get(objects[0]);
 			if (multipleProfitReportDTO == null) {
@@ -563,7 +569,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> transferInOrders = transferInOrderService.findProfitGroupByItem(systemBookCode, branchNums,
 				null, dateFrom, dateTo, null, itemNums);
 		
-		for (int i = 0; i < transferInOrders.size(); i++) {
+		for (int i = 0,len = transferInOrders.size(); i < len; i++) {
 			objects = transferInOrders.get(i);
 			multipleProfitReportDTO = map.get(objects[0]);
 			if (multipleProfitReportDTO == null) {
@@ -584,7 +590,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> posOrders = posOrderService.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, itemNums, true);
 		// 零售
 		BigDecimal hundred = BigDecimal.valueOf(100);
-		for (int i = 0; i < posOrders.size(); i++) {
+		for (int i = 0,len = posOrders.size(); i < len; i++) {
 			objects = posOrders.get(i);
 			multipleProfitReportDTO = map.get(objects[0]);
 			if (multipleProfitReportDTO == null) {
@@ -610,7 +616,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(existsItemNums);
 		PosItem posItem;
-		for (int i = 0; i < posItems.size(); i++) {
+		for (int i = 0,len = posItems.size(); i < len; i++) {
 			posItem = posItems.get(i);
 			
 			if(categoryCodes != null && categoryCodes.size() > 0){
@@ -675,8 +681,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		int receiveSize = objects.size();
-		for (int i = 0; i < receiveSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -707,8 +712,7 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = returnOrderService.findSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		int returnSize = objects.size();
-		for (int i = 0; i < returnSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -741,8 +745,7 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = wholesaleOrderService.findSupplierSum(systemBookCode, branchNums, supplierSaleQuery.getDateFrom(),
 				supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(), supplierSaleQuery.getItemNums(),
 				null);
-		int wholeSize = objects.size();
-		for (int i = 0; i < wholeSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -779,8 +782,7 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = wholesaleReturnService.findSupplierSum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums(),
 				supplierSaleQuery.getCategoryCodes(), null);
-		int wholesaleSize = objects.size();
-		for (int i = 0; i < wholesaleSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -816,8 +818,7 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = posOrderService.findSupplierSum(systemBookCode, supplierSaleQuery.getBranchNums(),
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums(), true);
-		int posSize = objects.size();
-		for (int i = 0; i < posSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer supplierNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -881,8 +882,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		Map<Integer, SupplierComplexReportDTO> baseMap = new HashMap<Integer, SupplierComplexReportDTO>();
 		Map<String, SupplierComplexReportDTO> map = new HashMap<String, SupplierComplexReportDTO>();
-		int posItemSize = posItems.size();
-		for (int i = 0; i < posItemSize; i++) {
+		for (int i = 0,len = posItems.size(); i < len; i++) {
 			PosItem posItem = posItems.get(i);
 			SupplierComplexReportDTO data = new SupplierComplexReportDTO();
 			BeanUtils.copyProperties(posItem, data);
@@ -891,8 +891,7 @@ public class ReportRpcImpl implements ReportRpc {
 			baseMap.put(data.getItemNum(), data);
 		}
 		List<Object[]> objects = inventoryService.findItemAmount(systemBookCode, branchNums, null);
-		int itemAmountSize = objects.size();
-		for (int i = 0; i < itemAmountSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			BigDecimal amount = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
@@ -904,8 +903,7 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = receiveOrderService.findItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		int receiveSize = objects.size();
-		for (int i = 0; i < receiveSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -944,8 +942,7 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = returnOrderService.findItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		int returnSize = objects.size();
-		for (int i = 0; i < returnSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -983,8 +980,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = wholesaleOrderService.findItemSupplierSum(systemBookCode, branchNums, supplierSaleQuery.getDateFrom(),
 				supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums(), null);
-		int wholeSize = objects.size();
-		for (int i = 0; i < wholeSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -1029,8 +1025,7 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = wholesaleReturnService.findItemSupplierSum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums(),
 				supplierSaleQuery.getCategoryCodes(), null);
-		int wholesaleSize = objects.size();
-		for (int i = 0; i < wholesaleSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -1073,8 +1068,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = posOrderService.findItemSupplierMatrixSum(systemBookCode, supplierSaleQuery.getBranchNums(),
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), true);
-		int posSize = objects.size();
-		for (int i = 0; i < posSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
 			Integer supplierNum = (Integer) object[1];
@@ -1159,8 +1153,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		Map<Integer, SupplierComplexReportDTO> baseMap = new HashMap<Integer, SupplierComplexReportDTO>();
 		Map<String, SupplierComplexReportDTO> map = new HashMap<String, SupplierComplexReportDTO>();
-		int posItemSize = posItems.size();
-		for (int i = 0; i < posItemSize; i++) {
+		for (int i = 0,len = posItems.size(); i < len; i++) {
 			PosItem posItem = posItems.get(i);
 			SupplierComplexReportDTO data = new SupplierComplexReportDTO();
 			BeanUtils.copyProperties(posItem, data);
@@ -1171,8 +1164,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findBranchItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		int receiveSize = objects.size();
-		for (int i = 0; i < receiveSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1216,8 +1208,7 @@ public class ReportRpcImpl implements ReportRpc {
 		objects = returnOrderService.findBranchItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
-		int returnSize = objects.size();
-		for (int i = 0; i < returnSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1260,8 +1251,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = wholesaleOrderService.findBranchItemSupplierSum(systemBookCode, branchNums, supplierSaleQuery.getDateFrom(),
 				supplierSaleQuery.getDateTo(), null, null);
-		int wholeSize = objects.size();
-		for (int i = 0; i < wholeSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1309,8 +1299,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		objects = wholesaleReturnService.findBranchItemSupplierSum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), null, null, null);
-		int wholesaleSize = objects.size();
-		for (int i = 0; i < wholesaleSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1357,8 +1346,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = posOrderService.findItemSupplierSumByCategory(systemBookCode, supplierSaleQuery.getBranchNums(),
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), null, true, null);
-		int posSize = objects.size();
-		for (int i = 0; i < posSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer branch = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1464,7 +1452,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		Map<Integer, SupplierComplexReportDetailDTO> map = new HashMap<Integer, SupplierComplexReportDetailDTO>();
 		List<SupplierComplexReportDetailDTO> list = new ArrayList<SupplierComplexReportDetailDTO>();
-		for (int i = 0; i < posItems.size(); i++) {
+		for (int i = 0, len = posItems.size(); i < len; i++) {
 			PosItem posItem = posItems.get(i);
 			SupplierComplexReportDetailDTO data = new SupplierComplexReportDetailDTO();
 			BeanUtils.copyProperties(posItem, data);
@@ -1474,8 +1462,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		List<Object[]> objects = receiveOrderService.findDetailBySupplierNum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums());
-		int receiveSize = objects.size();
-		for (int i = 0; i < receiveSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[15];
 			Integer supplierNum = (Integer) object[1];
@@ -1517,8 +1504,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = returnOrderService.findDetailBySupplierNum(systemBookCode, branchNums, null,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getItemNums());
-		int returnSize = objects.size();
-		for (int i = 0; i < returnSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[15];
 			Integer branchNum = (Integer) object[2];
@@ -1560,8 +1546,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = wholesaleOrderService.findItemSupplierDetail(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), null);
-		int wholesaleSize = objects.size();
-		for (int i = 0; i < wholesaleSize; i++) {
+		for (int i = 0, len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			String fid = (String) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1612,8 +1597,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = wholesaleReturnService.findItemSupplierDetail(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo());
-		int wholeSize = objects.size();
-		for (int i = 0; i < wholeSize; i++) {
+		for (int i = 0, len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			String fid = (String) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -1669,8 +1653,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = posOrderService.findOrderDetailWithSupplier(systemBookCode, supplierSaleQuery.getBranchNums(),
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), null, true);
-		int posSize = objects.size();
-		for (int i = 0; i < posSize; i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer branch = (Integer) object[0];
 			Integer itemNum = (Integer) object[2];
@@ -1735,12 +1718,13 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BranchDayReport> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
 		List<Object[]> objects = reportService.findDayWholes(systemBookCode,branchNums,dateFrom,dateTo,type);
-		List<BranchDayReport> list = new ArrayList<BranchDayReport>();
+		int size = objects.size();
+		List<BranchDayReport> list = new ArrayList<BranchDayReport>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 		Object[] object;
-		for(int i = 0;i < objects.size();i++){
+		for(int i = 0;i < size;i++){
 			object = objects.get(i);
 			BranchDayReport branchDayReport = new BranchDayReport();
 			branchDayReport.setBranchNum((Integer) object[0]);
@@ -1778,9 +1762,10 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>();
+
 		List<BusinessCollection> list = reportService.findBusinessCollectionByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		int size = list.size();
+		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>(size);
 		for (int i = 0; i <size ; i++) {
 			BusinessCollection collection = list.get(i);
 			map.put(collection.getBranchNum(),collection);
@@ -1834,14 +1819,14 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+
 		List<BusinessCollection> list = reportService.findBusinessCollectionByBranchDay(systemBookCode, branchNums, dateFrom, dateTo);
-		StringBuilder sb;
-		String key;
-		for (int i = 0,len = list.size(); i < len ; i++) {
+		int size = list.size();
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>(size);
+		for (int i = 0; i < size ; i++) {
 			BusinessCollection collection = list.get(i);
-			sb = new StringBuilder();
-			key = sb.append(collection.getBranchNum()).append(collection.getShiftTableBizday()).toString();
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(collection.getBranchNum()).append(collection.getShiftTableBizday()).toString();
 			map.put(key,collection);
 		}
 
@@ -1853,12 +1838,14 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[2];
 			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-			BusinessCollection data = map.get(branchNum + shiftTableBizday);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(shiftTableBizday).toString();
+			BusinessCollection data = map.get(key);
 			if (data == null) {
 				data = new BusinessCollection();
 				data.setBranchNum(branchNum);
 				data.setShiftTableBizday(shiftTableBizday);
-				map.put(branchNum + shiftTableBizday, data);
+				map.put(key, data);
 			}
 			BusinessCollectionIncome detail = new BusinessCollectionIncome();
 			detail.setName(type);
@@ -1882,12 +1869,14 @@ public class ReportRpcImpl implements ReportRpc {
 			Integer branchNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
 			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-			BusinessCollection data = map.get(branchNum + shiftTableBizday);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(shiftTableBizday).toString();
+			BusinessCollection data = map.get(key);
 			if (data == null) {
 				data = new BusinessCollection();
 				data.setBranchNum(branchNum);
 				data.setShiftTableBizday(shiftTableBizday);
-				map.put(branchNum + shiftTableBizday, data);
+				map.put(key, data);
 			}
 			data.setAllDiscountMoney(money);
 		}
@@ -1897,17 +1886,17 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
-		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+
 		List<BusinessCollection> list = reportService.findBusinessCollectionByTerminal(systemBookCode, branchNums, dateFrom, dateTo);
-		StringBuilder sb;
-		String key;
-		for (int i = 0,len = list.size(); i <len; i++) {
+		int size = list.size();
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>(size);
+		for (int i = 0; i <size; i++) {
 			BusinessCollection collection = list.get(i);
 			Integer branchNum = collection.getBranchNum();
 			String bizday = collection.getShiftTableBizday();
 			String machineName = collection.getPosMachineName();
-			sb = new StringBuilder();
-			key = sb.append(branchNum).append(bizday).append(machineName).toString();
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(bizday).append(machineName).toString();
 			map.put(key,collection);
 		}
 
@@ -1920,13 +1909,15 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[3];
 			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			BigDecimal money = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(shiftTableBizday).append(machineName).toString();
 			BusinessCollection data = map.get(branchNum + shiftTableBizday + machineName);
 			if (data == null) {
 				data = new BusinessCollection();
 				data.setPosMachineName(machineName);
 				data.setBranchNum(branchNum);
 				data.setShiftTableBizday(shiftTableBizday);
-				map.put(branchNum + shiftTableBizday + machineName, data);
+				map.put(key, data);
 			}
 			BusinessCollectionIncome detail = new BusinessCollectionIncome();
 			detail.setName(type);
@@ -1948,17 +1939,17 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 
-		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+
 		List<BusinessCollection> list = reportService.findBusinessCollectionByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		StringBuilder sb;
-		String key;
-		for (int i = 0,len = list.size(); i < len ; i++) {
+		int size = list.size();
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>(size);
+		for (int i = 0; i < size ; i++) {
 			BusinessCollection collection = list.get(i);
 			Integer branchNum = collection.getBranchNum();
 			String bizday = collection.getShiftTableBizday();
 			Integer bizNum = collection.getShiftTableNum();
-			sb = new StringBuilder();
-			key = sb.append(branchNum).append(bizday).append(bizNum).toString();
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(bizday).append(bizNum).toString();
 			map.put(key,collection);
 		}
 
@@ -1972,14 +1963,16 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[3];
 			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			BigDecimal unPaidMoney = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
-			BusinessCollection data = map.get(branchNum.toString() + bizDay + bizNum.toString());
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(bizDay).append(bizNum).toString();
+			BusinessCollection data = map.get(key);
 			if (data == null) {
 				data = new BusinessCollection();
 				data.setBranchNum(branchNum);
 				data.setShiftTableBizday(bizDay);
 				data.setShiftTableNum(bizNum);
 				data.setUnPaidMoney(BigDecimal.ZERO);
-				map.put(branchNum.toString() + bizDay + bizNum.toString(), data);
+				map.put(key, data);
 			}
 			BusinessCollectionIncome detail = new BusinessCollectionIncome();
 			detail.setName(type);
@@ -2003,13 +1996,15 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[3];
 			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			BigDecimal money = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
-			BusinessCollection data = map.get(branchNum.toString() + bizDay + bizNum.toString());
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(bizDay).append(bizNum).toString();
+			BusinessCollection data = map.get(key);
 			if (data == null) {
 				data = new BusinessCollection();
 				data.setShiftTableBizday(bizDay);
 				data.setShiftTableNum(bizNum);
 				data.setBranchNum(branchNum);
-				map.put(branchNum.toString() + bizDay + bizNum.toString(), data);
+				map.put(key, data);
 			}
 			BusinessCollectionIncome detail = new BusinessCollectionIncome();
 			detail.setName(type);
@@ -2156,12 +2151,13 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BranchBizSummary> findBizAndMoney(String systemBookCode, Integer branchNum, String queryBy, String dateType, Date dateFrom, Date dateTo) {
 		List<Object[]> objects = reportService.findBizAndMoney(systemBookCode,branchNum,queryBy,dateType,dateFrom,dateTo);
-		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>();
+		int size = objects.size();
+		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
 		Object[] object = null;
-		for(int i = 0;i < objects.size();i++){
+		for(int i = 0;i < size;i++){
 			object = objects.get(i);
 			BranchBizSummary branchBizSummary = new BranchBizSummary();
 			branchBizSummary.setBranchNum((Integer) object[0]);
@@ -2238,11 +2234,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<ProfitByClientAndItemSummary> findProfitAnalysisByClientAndItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
 		List<Object[]> objects = reportService.findProfitAnalysisByClientAndItem(profitAnalysisQueryData);
-		List<ProfitByClientAndItemSummary> list = new ArrayList<ProfitByClientAndItemSummary>();
+		int size = objects.size();
+		List<ProfitByClientAndItemSummary> list = new ArrayList<ProfitByClientAndItemSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			ProfitByClientAndItemSummary profitByClientAndItemSummary = new ProfitByClientAndItemSummary();
 			profitByClientAndItemSummary.setClientFid((String) object[0]);
@@ -2533,11 +2530,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<SaleByBrandSummary> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByBrands(queryData);
-		List<SaleByBrandSummary> list = new ArrayList<SaleByBrandSummary>();
+		int size = objects.size();
+		List<SaleByBrandSummary> list = new ArrayList<SaleByBrandSummary>(size);
 		if(objects.isEmpty()) {
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i < size ; i++) {
 			Object[] object = objects.get(i);
 			SaleByBrandSummary saleByBrandSummary = new SaleByBrandSummary();
 			saleByBrandSummary.setItemNum((Integer) object[0]);
@@ -2572,11 +2570,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<ItemRebatesSummary> findItemRebates(PolicyAllowPriftQuery policyAllowPriftQuery) {
 
 		List<Object[]> objects = reportService.findItemRebates(policyAllowPriftQuery);
-		List<ItemRebatesSummary> list = new ArrayList<ItemRebatesSummary>();
+		int size = objects.size();
+		List<ItemRebatesSummary> list = new ArrayList<ItemRebatesSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			ItemRebatesSummary itemRebatesSummary = new ItemRebatesSummary();
 			itemRebatesSummary.setMoney((BigDecimal) object[0]);
@@ -2591,8 +2590,9 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<RebatesDetailSummary> findRebatesDetail(PolicyAllowPriftQuery policyAllowPriftQuery) {
 
 		List<Object[]> objects = reportService.findRebatesDetail(policyAllowPriftQuery);
-		List<RebatesDetailSummary> list = new ArrayList<RebatesDetailSummary>();
-		for (int i = 0; i <objects.size() ; i++) {
+		int size = objects.size();
+		List<RebatesDetailSummary> list = new ArrayList<RebatesDetailSummary>(size);
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			RebatesDetailSummary rebatesDetailSummary = new RebatesDetailSummary();
 			rebatesDetailSummary.setOrderDetailBranchNum((Integer) object[0]);
@@ -2627,11 +2627,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<OutOrderCountAndMoneySummary> findOutOrderCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
 
 		List<Object[]> objects = reportService.findOutOrderCountAndMoneyByDate(systemBookCode, outBranchNum, branchNum, dateFrom, dateTo, dateType);
-		List<OutOrderCountAndMoneySummary> list = new ArrayList<OutOrderCountAndMoneySummary>();
+		int size = objects.size();
+		List<OutOrderCountAndMoneySummary> list = new ArrayList<OutOrderCountAndMoneySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0; i<objects.size();i++){
+		for(int i = 0; i<size;i++){
 			Object[] object = objects.get(i);
 			OutOrderCountAndMoneySummary outOrderCountAndMoneySummary = new OutOrderCountAndMoneySummary();
 			outOrderCountAndMoneySummary.setAuditTime((String) object[0]);
@@ -2646,11 +2647,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<ReturnCountAndMoneySummary> findReturnCountAndMoneyByDate(String systemBookCode, Integer outBranchNum, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
 
 		List<Object[]> objects = reportService.findReturnCountAndMoneyByDate(systemBookCode, outBranchNum, branchNum, dateFrom, dateTo, dateType);
-		List<ReturnCountAndMoneySummary> list = new ArrayList<ReturnCountAndMoneySummary>();
+		int size = objects.size();
+		List<ReturnCountAndMoneySummary> list = new ArrayList<ReturnCountAndMoneySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0; i < objects.size(); i++){
+		for(int i = 0; i < size; i++){
 			Object[] object = objects.get(i);
 			ReturnCountAndMoneySummary returnCountAndMoneySummary = new ReturnCountAndMoneySummary();
 			returnCountAndMoneySummary.setAuditTime((String) object[0]);
@@ -2665,11 +2667,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<WholesaleOrderCountAndMoneySummary> findWholesaleOrderCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType) {
 
 		List<Object[]> objects = reportService.findWholesaleOrderCountAndMoneyByDate(systemBookCode, branchNum, clientFid, dateFrom, dateTo, dateType);
-		List<WholesaleOrderCountAndMoneySummary> list = new ArrayList<WholesaleOrderCountAndMoneySummary>();
+		int size = objects.size();
+		List<WholesaleOrderCountAndMoneySummary> list = new ArrayList<WholesaleOrderCountAndMoneySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0;i < objects.size(); i++){
+		for(int i = 0;i < size; i++){
 			Object[] object = objects.get(i);
 			WholesaleOrderCountAndMoneySummary wholesaleOrderCountAndMoneySummary = new WholesaleOrderCountAndMoneySummary();
 			wholesaleOrderCountAndMoneySummary.setAuditTime((String) object[0]);
@@ -2684,11 +2687,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<WholesaleReturnCountAndMoneySummary> findWholesaleReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, String clientFid, Date dateFrom, Date dateTo, String dateType) {
 
 		List<Object[]> objects = reportService.findWholesaleReturnCountAndMoneyByDate(systemBookCode, branchNum, clientFid, dateFrom, dateTo, dateType);
-		List<WholesaleReturnCountAndMoneySummary> list = new ArrayList<WholesaleReturnCountAndMoneySummary>();
+		int size = objects.size();
+		List<WholesaleReturnCountAndMoneySummary> list = new ArrayList<WholesaleReturnCountAndMoneySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			WholesaleReturnCountAndMoneySummary wholesaleReturnCountAndMoneySummary = new WholesaleReturnCountAndMoneySummary();
 			wholesaleReturnCountAndMoneySummary.setAuditTime((String) object[0]);
@@ -2703,11 +2707,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<PosOrderMoneyByBizDaySummary> findPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
 
 		List<Object[]> objects = reportService.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
-		List<PosOrderMoneyByBizDaySummary> list = new ArrayList<PosOrderMoneyByBizDaySummary>();
+		int size = objects.size();
+		List<PosOrderMoneyByBizDaySummary> list = new ArrayList<PosOrderMoneyByBizDaySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			PosOrderMoneyByBizDaySummary posOrderMoneyByBizDaySummary = new PosOrderMoneyByBizDaySummary();
 			posOrderMoneyByBizDaySummary.setBizday((String) object[0]);
@@ -2722,11 +2727,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<PurchaseReceiveCountMoneySummary> findPurchaseReceiveCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
 		List<Object[]> objects = reportService.findPurchaseReceiveCountAndMoneyByDate(systemBookCode, branchNum, supplierNum, dateFrom, dateTo, dateType);
-		List<PurchaseReceiveCountMoneySummary> list = new ArrayList<PurchaseReceiveCountMoneySummary>();
+		int size = objects.size();
+		List<PurchaseReceiveCountMoneySummary> list = new ArrayList<PurchaseReceiveCountMoneySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0; i<objects.size();i++){
+		for(int i = 0; i<size;i++){
 			Object[] object = objects.get(i);
 			PurchaseReceiveCountMoneySummary purchaseReceiveCountMoneySummary = new PurchaseReceiveCountMoneySummary();
 			purchaseReceiveCountMoneySummary.setAuditTime((String) object[0]);
@@ -2741,11 +2747,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<PurchaseReturnCountMoneySummary> findPurchaseReturnCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
 
 		List<Object[]> objects = reportService.findPurchaseReturnCountAndMoneyByDate(systemBookCode, branchNum, supplierNum, dateFrom, dateTo, dateType);
-		List<PurchaseReturnCountMoneySummary> list = new ArrayList<PurchaseReturnCountMoneySummary>();
+		int size = objects.size();
+		List<PurchaseReturnCountMoneySummary> list = new ArrayList<PurchaseReturnCountMoneySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			PurchaseReturnCountMoneySummary purchaseReturnCountMoneySummary = new PurchaseReturnCountMoneySummary();
 			purchaseReturnCountMoneySummary.setAuditTime((String) object[0]);
@@ -2761,11 +2768,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<PurchaseCountMoneySummary> findPurchaseCountAndMoneyByDate(String systemBookCode, Integer branchNum, Integer supplierNum, Date dateFrom, Date dateTo, String dateType) {
 
 		List<Object[]> objects = reportService.findPurchaseCountAndMoneyByDate(systemBookCode, branchNum, supplierNum, dateFrom, dateTo, dateType);
-		List<PurchaseCountMoneySummary> list = new ArrayList<PurchaseCountMoneySummary>();
+		int size = objects.size();
+		List<PurchaseCountMoneySummary> list = new ArrayList<PurchaseCountMoneySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			PurchaseCountMoneySummary purchaseCountMoneySummary = new PurchaseCountMoneySummary();
 			purchaseCountMoneySummary.setAuditTime((String) object[0]);
@@ -2786,11 +2794,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<CardConsumeDetailSummary> findCardConsumeAnalysisDetails(CardConsuemAnalysisQuery cardConsuemAnalysisQuery) {
 
 		List<Object[]> objects = reportService.findCardConsumeAnalysisDetails(cardConsuemAnalysisQuery);
-		List<CardConsumeDetailSummary> list = new ArrayList<CardConsumeDetailSummary>();
+		int size = objects.size();
+		List<CardConsumeDetailSummary> list = new ArrayList<CardConsumeDetailSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			CardConsumeDetailSummary cardConsumeDetailSummary = new CardConsumeDetailSummary();
 			cardConsumeDetailSummary.setCardUserNum((Integer) object[0]);
@@ -2838,11 +2847,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<PosGroupBranchRegionTypeSummary> findPosGroupByBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
 
 		List<Object[]> objects = reportService.findPosGroupByBranchRegionType(systemBookCode, branchNum, dateFrom, dateTo);
-		List<PosGroupBranchRegionTypeSummary> list = new ArrayList<PosGroupBranchRegionTypeSummary>();
+		int size = objects.size();
+		List<PosGroupBranchRegionTypeSummary> list = new ArrayList<PosGroupBranchRegionTypeSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			PosGroupBranchRegionTypeSummary posGroupBranchRegionTypeSummary = new PosGroupBranchRegionTypeSummary();
 			posGroupBranchRegionTypeSummary.setRegionType((String) object[0]);
@@ -2857,11 +2867,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<PosGroupHourAndBranchRegionTypeSummary> findPosGroupByHourAndBranchRegionType(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
 		List<Object[]> objects = reportService.findPosGroupByHourAndBranchRegionType(systemBookCode, branchNum, dateFrom, dateTo);
-		List<PosGroupHourAndBranchRegionTypeSummary> list = new ArrayList<PosGroupHourAndBranchRegionTypeSummary>();
+		int size = objects.size();
+		List<PosGroupHourAndBranchRegionTypeSummary> list = new ArrayList<PosGroupHourAndBranchRegionTypeSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size(); i++) {
+		for (int i = 0; i <size; i++) {
 			Object[] object = objects.get(i);
 			PosGroupHourAndBranchRegionTypeSummary posGroupHourAndBranchRegionTypeSummary = new PosGroupHourAndBranchRegionTypeSummary();
 			posGroupHourAndBranchRegionTypeSummary.setOrderTimeChar((int)object[0]);
@@ -2875,11 +2886,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<PosGroupHourSummary> findPosGroupByHour(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
 		List<Object[]> objects = reportService.findPosGroupByHour(systemBookCode, branchNum, dateFrom, dateTo);
-		List<PosGroupHourSummary> list = new ArrayList<PosGroupHourSummary>();
+		int size = objects.size();
+		List<PosGroupHourSummary> list = new ArrayList<PosGroupHourSummary>(size);
 		if(objects.isEmpty()){
 			return null;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			PosGroupHourSummary posGroupHourSummary = new PosGroupHourSummary();
 			posGroupHourSummary.setOrderTime((Integer) object[0]);
@@ -2893,11 +2905,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<GroupByItemSummary> findSummaryGroupByItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, boolean kitFlag) {
 		List<Object[]> objects = reportService.findSummaryGroupByItem(systemBookCode, branchNums, dateFrom, dateTo, itemNums, kitFlag);
-		List<GroupByItemSummary> list = new ArrayList<GroupByItemSummary>();
+		int size = objects.size();
+		List<GroupByItemSummary> list = new ArrayList<GroupByItemSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			GroupByItemSummary groupByItemSummary = new GroupByItemSummary();
 			groupByItemSummary.setItemNum((Integer) object[0]);
@@ -2915,11 +2928,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<ItemSaleQtySummary> findItemSaleQty(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, boolean includePos, boolean includeTranferOut, boolean includeWholesale) {
 		List<Object[]> objects = reportService.findItemSaleQty(systemBookCode, branchNum, dateFrom, dateTo, includePos, includeTranferOut, includeWholesale);
-		List<ItemSaleQtySummary> list = new ArrayList<ItemSaleQtySummary>();
+		int size = objects.size();
+		List<ItemSaleQtySummary> list = new ArrayList<ItemSaleQtySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for (int i = 0; i <objects.size() ; i++) {
+		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			ItemSaleQtySummary itemSaleQtySummary  = new ItemSaleQtySummary();
 			itemSaleQtySummary.setItemNum((Integer) object[0]);
@@ -2934,11 +2948,12 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<WholesaleOrderLostSummary> findWholesaleOrderLostByClientAndItem(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<String> clientFids, List<Integer> itemNums) {
 
 		List<Object[]> objects = reportService.findWholesaleOrderLostByClientAndItem(systemBookCode, branchNum, dateFrom, dateTo, clientFids, itemNums);
-		List<WholesaleOrderLostSummary> list = new ArrayList<WholesaleOrderLostSummary>();
+		int size = objects.size();
+		List<WholesaleOrderLostSummary> list = new ArrayList<WholesaleOrderLostSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0; i<objects.size(); i++){
+		for(int i = 0; i<size; i++){
 			Object[] object = objects.get(i);
 			WholesaleOrderLostSummary wholesaleOrderLostSummary = new WholesaleOrderLostSummary();
 			wholesaleOrderLostSummary.setClientFid((String) object[0]);
@@ -2969,11 +2984,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BranchSaleQtySummary> findBranchSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		List<Object[]> objects = reportService.findBranchSaleQty(systemBookCode, branchNums, dateFrom, dateTo);
-		List<BranchSaleQtySummary> list = new ArrayList<BranchSaleQtySummary>();
+		int size = objects.size();
+		List<BranchSaleQtySummary> list = new ArrayList<BranchSaleQtySummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0 ;i<objects.size(); i++){
+		for(int i = 0 ;i<size; i++){
 			Object[] object = objects.get(i);
 			BranchSaleQtySummary branchSaleQtySummary = new BranchSaleQtySummary();
 			branchSaleQtySummary.setBranchNum((Integer) object[0]);
@@ -2987,11 +3003,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BranchItemSummary> findBranchItemSaleQty(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums) {
 		List<Object[]> objects = reportService.findBranchItemSaleQty(systemBookCode, branchNums, dateFrom, dateTo, itemNums);
-		List<BranchItemSummary> list = new ArrayList<BranchItemSummary>();
+		int size = objects.size();
+		List<BranchItemSummary> list = new ArrayList<BranchItemSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0 ;i<objects.size();i++){
+		for(int i = 0 ;i<size;i++){
 			Object[] object = objects.get(i);
 			BranchItemSummary branchItemSummary = new BranchItemSummary();
 			branchItemSummary.setBranchNum((Integer) object[0]);
@@ -3068,7 +3085,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = reportService.findCustomerAnalysisBranchItem(systemBookCode, thisDateFrom, thisDateTo,
 				branchNums, itemNums);
 
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			OrderDetailCompare data = reportUtil.getInstance();
 			data.setBranchNum((Integer) object[0]);
@@ -3084,7 +3101,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = reportService.findCustomerAnalysisBranchItem(systemBookCode, lastDateFrom, lastDateTo, branchNums, itemNums);
 
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			OrderDetailCompare data = reportUtil.getInstance();
 			data.setBranchNum((Integer) object[0]);
@@ -3101,7 +3118,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		List<AdjustmentReason> adjustmentReasons = bookResourceRpc.findAdjustmentReasons(systemBookCode);
 		List<String> reasons = new ArrayList<String>();
-		for (int i = 0; i < adjustmentReasons.size(); i++) {
+		for (int i = 0,len = adjustmentReasons.size(); i < len; i++) {
 			AdjustmentReason adjustmentReason = adjustmentReasons.get(i);
 			if (StringUtils.equals(adjustmentReason.getAdjustmentInoutCategory(),
 					AppConstants.ADJUSTMENT_REASON_TYPE_LOSS)) {
@@ -3111,7 +3128,7 @@ public class ReportRpcImpl implements ReportRpc {
 		if (reasons.size() > 0) {
 			objects = adjustmentOrderService.findBranchItemSummary(systemBookCode, branchNums, thisDateFrom, thisDateTo, itemNums,
 					reasons);
-			for (int i = 0; i < objects.size(); i++) {
+			for (int i = 0,len = objects.size(); i < len; i++) {
 				Object[] object = objects.get(i);
 				Integer branchNum = (Integer) object[0];
 				Integer itemNum = (Integer) object[1];
@@ -3127,7 +3144,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 			objects = adjustmentOrderService.findBranchItemSummary(systemBookCode, branchNums, lastDateFrom, lastDateTo, itemNums,
 					reasons);
-			for (int i = 0; i < objects.size(); i++) {
+			for (int i = 0,len = objects.size(); i < len; i++) {
 				Object[] object = objects.get(i);
 				Integer branchNum = (Integer) object[0];
 				Integer itemNum = (Integer) object[1];
@@ -3147,7 +3164,7 @@ public class ReportRpcImpl implements ReportRpc {
 				AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM, branchNums, thisDateFrom, thisDateTo, itemNums);
 		List<Object[]> outLastObjects = transferOutOrderService.findBranchItemMatrixSummary(systemBookCode,
 				AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM, branchNums, lastDateFrom, lastDateTo, itemNums);
-		for (int i = 0; i < outThisObjects.size(); i++) {
+		for (int i = 0,len = outThisObjects.size(); i < len; i++) {
 			Object[] object = outThisObjects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -3161,7 +3178,7 @@ public class ReportRpcImpl implements ReportRpc {
 			reportUtil.add(data);
 		}
 
-		for (int i = 0; i < outLastObjects.size(); i++) {
+		for (int i = 0,len = outLastObjects.size(); i < len; i++) {
 			Object[] object = outLastObjects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -3392,25 +3409,26 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchBizday' + #p0.getKey()")
 	public List<BranchBizSaleSummary> findSaleAnalysisByBranchBizday(SaleAnalysisQueryData saleAnalysisQueryData) {
-        List<Object[]> objects = reportService.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
-            List<BranchBizSaleSummary> list = new ArrayList<BranchBizSaleSummary>();
-			if(objects.isEmpty()){
-				return list;
-			}
-            for(int i = 0; i<objects.size();i++){
-                Object[] object = objects.get(i);
-                BranchBizSaleSummary branchBizSaleSummary = new BranchBizSaleSummary();
-                branchBizSaleSummary.setBranchNum((Integer) object[0]);
-                branchBizSaleSummary.setBizday((String) object[1]);
-                branchBizSaleSummary.setStateCode((int)object[2]);
-                branchBizSaleSummary.setAmount((BigDecimal) object[3]);
-                branchBizSaleSummary.setPaymentMoney((BigDecimal) object[4]);
-                branchBizSaleSummary.setAssistAmount((BigDecimal) object[5]);
-                branchBizSaleSummary.setItemNumAmount((Integer) object[6]);
-                list.add(branchBizSaleSummary);
-            }
-            return list;
-    }
+		List<Object[]> objects = reportService.findSaleAnalysisByBranchBizday(saleAnalysisQueryData);
+		int size = objects.size();
+		List<BranchBizSaleSummary> list = new ArrayList<BranchBizSaleSummary>(size);
+		if (objects.isEmpty()) {
+			return list;
+		}
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			BranchBizSaleSummary branchBizSaleSummary = new BranchBizSaleSummary();
+			branchBizSaleSummary.setBranchNum((Integer) object[0]);
+			branchBizSaleSummary.setBizday((String) object[1]);
+			branchBizSaleSummary.setStateCode((int) object[2]);
+			branchBizSaleSummary.setAmount((BigDecimal) object[3]);
+			branchBizSaleSummary.setPaymentMoney((BigDecimal) object[4]);
+			branchBizSaleSummary.setAssistAmount((BigDecimal) object[5]);
+			branchBizSaleSummary.setItemNumAmount((Integer) object[6]);
+			list.add(branchBizSaleSummary);
+		}
+		return list;
+	}
 
 	@Override
 	public List<CardReportDTO> findCardReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {
@@ -3465,11 +3483,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<BranchCustomerSummary> findCustomerAnalysisBranch(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
 		List<Object[]> objects = reportService.findCustomerAnalysisBranch(systemBookCode, dtFrom, dtTo, branchNums, saleType);
-		List<BranchCustomerSummary> list = new ArrayList<BranchCustomerSummary>();
+		int size = objects.size();
+		List<BranchCustomerSummary> list = new ArrayList<BranchCustomerSummary>(size);
 		if(objects.isEmpty()){
 			return list;
 		}
-		for(int i = 0; i<objects.size();i++){
+		for(int i = 0; i<size;i++){
 			Object[] object = objects.get(i);
 			BranchCustomerSummary branchCustomerSummary = new BranchCustomerSummary();
 			branchCustomerSummary.setBranchNum((Integer) object[0]);
@@ -3561,7 +3580,7 @@ public class ReportRpcImpl implements ReportRpc {
 		String biz = DateUtil.getDateShortStr(dateFrom);
 
 
-		for (int i = 0; i <branchs.size() ; i++) {
+		for (int i = 0,size = branchs.size(); i <size ; i++) {
 			BranchDTO branchDTO = branchs.get(i);
 			CardDailyDTO cardDailyDTO = new CardDailyDTO();
 			cardDailyDTO.setSystemBookCode(systemBookCode);
@@ -3570,21 +3589,21 @@ public class ReportRpcImpl implements ReportRpc {
 			cardDailyDTO.setShiftTableDate(dateFrom);
 			Integer branchNum = cardDailyDTO.getBranchNum();
 			//新增会员数(发卡数)
-			for (int j = 0; j <cardCounts.size() ; j++) {
+			for (int j = 0,len = cardCounts.size(); j <len ; j++) {
 				BranchBizdayCardCountSummary countSummary = cardCounts.get(j);
 				if(branchNum.equals(countSummary.getBranchNum()) && biz.equals(countSummary.getBizday())){
 					cardDailyDTO.setCardDeliverCount(countSummary.getCount().intValue());
 				}
 			}
 			//退卡数
-			for (int j = 0; j <revokeCards.size() ; j++) {
+			for (int j = 0,len = revokeCards.size(); j <len; j++) {
 				BranchBizdayCardReturnSummary returnSummary = revokeCards.get(j);
 				if(branchNum.equals(returnSummary.getBranchNum()) && biz.equals(returnSummary.getBizday())){
 					cardDailyDTO.setCardReturnCount(returnSummary.getReturnCount().intValue());
 				}
 			}
 			//付款金额，存款金额
-			for (int j = 0; j <depositSummarys.size() ; j++) {
+			for (int j = 0,len = depositSummarys.size(); j <len; j++) {
 				BranchBizdayDepositSummary depositSummary = depositSummarys.get(j);
 				if(branchNum.equals(depositSummary.getBranchNum()) && biz.equals(depositSummary.getBizday())){
 					cardDailyDTO.setCardDepositCash(depositSummary.getDepositCash());
@@ -3592,21 +3611,21 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 			}
 			//存款目标
-			for (int j = 0; j <depositGoals.size() ; j++) {
+			for (int j = 0,len = depositGoals.size(); j <len; j++) {
 				DepositGoalsDTO depositGoalsDTO = depositGoals.get(j);
 				if(branchNum.equals(depositGoalsDTO.getBranchNum()) && biz.equals(depositGoalsDTO.getBizday())){
 					cardDailyDTO.setCardDepositTarget(depositGoalsDTO.getDepositGoals());
 				}
 			}
 			//发卡目标
-			for (int j = 0; j <newCardGoals.size() ; j++) {
+			for (int j = 0,len = newCardGoals.size(); j <len; j++) {
 				NewCardGoalsDTO newCardGoalsDTO = newCardGoals.get(j);
 				if(branchNum.equals(newCardGoalsDTO.getBranchNum()) && biz.equals(newCardGoalsDTO.getBizday())){
 					cardDailyDTO.setCardDeliverTarget(newCardGoalsDTO.getNewCard());
 				}
 			}
 			//卡消费
-			for (int j = 0; j <consumeSummarys.size() ; j++) {
+			for (int j = 0,len = consumeSummarys.size(); j <len; j++) {
 				BranchBizdayConsumeSummary consumeSummary = consumeSummarys.get(j);
 				if(branchNum.equals(consumeSummary.getBranchNum()) && biz.equals(consumeSummary.getBizday())){
 					cardDailyDTO.setCardConsumeMoney(consumeSummary.getMoney());
@@ -3619,7 +3638,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	private BusinessCollectionIncome getBusinessCollectionIncome(
 			List<BusinessCollectionIncome> businessCollectionIncomes, String name) {
-		for (int i = 0; i < businessCollectionIncomes.size(); i++) {
+		for (int i = 0,len = businessCollectionIncomes.size(); i < len; i++) {
 			BusinessCollectionIncome businessCollectionIncome = businessCollectionIncomes.get(i);
 			if (businessCollectionIncome.getName().equals(name)) {
 				return businessCollectionIncome;
