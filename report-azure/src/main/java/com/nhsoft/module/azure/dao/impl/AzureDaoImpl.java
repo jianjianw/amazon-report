@@ -167,12 +167,12 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
         currentSession().flush();
-        System.out.println("bizday删除-----------------------------------------------------------");
+
         int size = bizdays.size();
         for (int i = 0; i <size ; i++) {
             Bizday bizday = bizdays.get(i);
             currentSession().save(bizday);
-            if(i % 20 == 0){
+            if(i % 10 == 0){
                 currentSession().flush();
                 currentSession().clear();
             }

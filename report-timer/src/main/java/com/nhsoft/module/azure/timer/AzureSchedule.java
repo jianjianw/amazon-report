@@ -187,7 +187,7 @@ public class AzureSchedule {
         azureService.batchSaveItem(systemBook,list);
     }
 
-    @Scheduled(cron="0 40 1,2 * * *") //每天凌晨定时更新日期表
+    @Scheduled(cron="0 10,20 0 * * *") //每天凌晨定时更新日期表
     public void saveBizday(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
         Calendar calendar = Calendar.getInstance();
@@ -453,8 +453,7 @@ public class AzureSchedule {
 
     }
 
-
-    @Scheduled(cron="0 20 1 * * *") //每天凌晨定时更新日期表
+    @Scheduled(cron="0 10,20 1 * * *") //每天凌晨定时更新日期表
     public void testBizday(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
         Calendar calendar = Calendar.getInstance();
@@ -585,8 +584,4 @@ public class AzureSchedule {
         azureService.batchSaveBizdays(systemBook,list);
 
     }
-
-
-
-
 }
