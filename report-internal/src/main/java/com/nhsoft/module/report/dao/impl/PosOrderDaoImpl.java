@@ -2669,7 +2669,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
                                                        List<Integer> branchNums, String saleType) {
 
         StringBuffer sb = new StringBuffer();
-        sb.append("select branch_num as branchNum, order_machine as machine, shift_table_bizday as bizday, sum(order_payment_money) as paymentMoney, count(order_no) as orderNo, ");
+        sb.append("select branch_num as branchNum, shift_table_bizday as bizday, sum(order_payment_money) as paymentMoney, count(order_no) as orderNo, ");
         sb.append("sum(order_coupon_total_money) as conponMoney, sum(order_mgr_discount_money) as mgrDiscount ");
         sb.append("from pos_order with(nolock) ");
         sb.append("where system_book_code = '" + systemBookCode + "' ");
@@ -2686,10 +2686,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			}
 		}
 
-        sb.append("group by branch_num, order_machine, shift_table_bizday ");
+        sb.append("group by branch_num, shift_table_bizday ");
         SQLQuery query = currentSession().createSQLQuery(sb.toString());
         query.addScalar("branchNum", StandardBasicTypes.INTEGER)
-                .addScalar("machine", StandardBasicTypes.STRING)
                 .addScalar("bizday", StandardBasicTypes.STRING)
                 .addScalar("paymentMoney", StandardBasicTypes.BIG_DECIMAL)
                 .addScalar("orderNo", StandardBasicTypes.LONG)

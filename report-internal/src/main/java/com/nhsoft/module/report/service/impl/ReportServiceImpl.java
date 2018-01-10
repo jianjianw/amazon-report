@@ -6041,12 +6041,11 @@ public class ReportServiceImpl implements ReportService {
 				saleType);
 		int size = objects.size();
 		List<CustomerAnalysisHistory> list = new ArrayList<CustomerAnalysisHistory>(size);
-		List<PosMachine> posMachines = posMachineDao.findByBranchs(systemBookCode, branchNums, null);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
-			BigDecimal couponMoney = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
-			BigDecimal mgrDiscount = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+			BigDecimal couponMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BigDecimal mgrDiscount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
 
 			CustomerAnalysisHistory data = new CustomerAnalysisHistory();
 			data.setBranchNum((Integer) object[0]);
@@ -6056,21 +6055,14 @@ public class ReportServiceImpl implements ReportService {
 				data.setBranchRegionNum(branch.getBranchRegionNum());
 			}
 
-			data.setPosMachineTerminalId((String) object[1]);
-			data.setShiftTableDate((String) object[2]);
-			data.setTotalMoney(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
+			data.setShiftTableDate((String) object[1]);
+			data.setTotalMoney(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
 			data.setTotalMoney(data.getTotalMoney().add(couponMoney).subtract(mgrDiscount));
-			data.setCustomerNums(BigDecimal.valueOf((Long) object[4]));
+			data.setCustomerNums(BigDecimal.valueOf((Long) object[3]));
 			data.setCustomerAvePrice(BigDecimal.ZERO);
 			if (data.getCustomerNums().compareTo(BigDecimal.ZERO) > 0) {
 				data.setCustomerAvePrice(data.getTotalMoney().divide(data.getCustomerNums(), 4,
 						BigDecimal.ROUND_HALF_UP));
-			}
-			PosMachine posMachine = AppUtil.getPosMachine(posMachines, data.getPosMachineTerminalId());
-			if (posMachine != null) {
-				data.setPosMachineName(posMachine.getPosMachineName());
-			} else {
-				data.setPosMachineName("未知终端");
 			}
 			list.add(data);
 		}
