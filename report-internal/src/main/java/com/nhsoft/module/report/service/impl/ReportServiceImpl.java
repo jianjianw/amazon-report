@@ -6044,8 +6044,8 @@ public class ReportServiceImpl implements ReportService {
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
-			BigDecimal couponMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
-			BigDecimal mgrDiscount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+			BigDecimal couponMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal mgrDiscount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 
 			CustomerAnalysisHistory data = new CustomerAnalysisHistory();
 			data.setBranchNum((Integer) object[0]);
@@ -6056,7 +6056,7 @@ public class ReportServiceImpl implements ReportService {
 			}
 
 			data.setShiftTableDate((String) object[1]);
-			data.setTotalMoney(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
+			data.setTotalMoney(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
 			data.setTotalMoney(data.getTotalMoney().add(couponMoney).subtract(mgrDiscount));
 			data.setCustomerNums(BigDecimal.valueOf((Long) object[3]));
 			data.setCustomerAvePrice(BigDecimal.ZERO);
