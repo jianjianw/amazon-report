@@ -3,6 +3,7 @@ package com.nhsoft.module.report.service;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.CustomReport;
 import com.nhsoft.module.report.model.PosItem;
+import com.nhsoft.module.report.model.ShiftTable;
 import com.nhsoft.module.report.query.*;
 
 import java.math.BigDecimal;
@@ -72,7 +73,19 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode,
-                                                                     List<Integer> branchNums, Date dateFrom, Date dateTo);
+																	 List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询班次
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param casher
+	 */
+	public List<ShiftTable> findShiftTables(String systemBookCode,
+											List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
+
 
 	/**
 	 * 营业收款统计 根据班次汇总

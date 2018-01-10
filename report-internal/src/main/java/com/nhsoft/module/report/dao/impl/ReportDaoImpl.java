@@ -1357,8 +1357,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
-	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums,
-																	   Date dateFrom, Date dateTo, String casher) {
+	public List<ShiftTable> findShiftTables(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		Criteria criteria = currentSession()
 				.createCriteria(ShiftTable.class, "s")
 				.add(Restrictions.eq("s.id.systemBookCode", systemBookCode))
@@ -1371,6 +1370,12 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			criteria.add(Restrictions.in("s.shiftTableUserName", casher.split(",")));
 		}
 		List<ShiftTable> shiftTables = criteria.list();
+		return shiftTables;
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums,
+																	   Date dateFrom, Date dateTo, String casher) {
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
 		// 补扣金额
 		StringBuffer sb = new StringBuffer();
@@ -1622,8 +1627,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			data.setCardChangeInMoney(money);
 
 		}
-
-		criteria = currentSession().createCriteria(OtherInout.class, "o")
+		Criteria criteria = currentSession().createCriteria(OtherInout.class, "o")
 				.add(Restrictions.eq("o.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
 				.add(Restrictions.eq("o.systemBookCode", systemBookCode));
 		if (branchNums != null && branchNums.size() > 0) {
@@ -1765,28 +1769,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			if (type.equals(AppConstants.PAYMENT_YINLIAN)) {
 				data.setAllBankMoney(data.getAllBankMoney().add(money));
 			}
-		}
-
-		for (int i = 0; i < shiftTables.size(); i++) {
-			ShiftTable shiftTable = shiftTables.get(i);
-			BusinessCollection data = map.get(shiftTable.getId().getBranchNum().toString()
-					+ shiftTable.getId().getShiftTableBizday() + shiftTable.getId().getShiftTableNum().toString());
-			if (data == null) {
-				data = new BusinessCollection();
-				data.setShiftTableBizday(shiftTable.getId().getShiftTableBizday());
-				data.setShiftTableNum(shiftTable.getId().getShiftTableNum());
-				data.setBranchNum(shiftTable.getId().getBranchNum());
-				map.put(shiftTable.getId().getBranchNum().toString() + shiftTable.getId().getShiftTableBizday()
-						+ shiftTable.getId().getShiftTableNum().toString(), data);
-			}
-			data.setShiftTableTerminalId(shiftTable.getShiftTableTerminalId());
-			data.setCasher(shiftTable.getShiftTableUserName());
-			data.setReceiveCash(shiftTable.getShiftTableActualMoney() == null ? BigDecimal.ZERO : shiftTable
-					.getShiftTableActualMoney());
-			data.setReceiveBankMoney(shiftTable.getShiftTableActualBankMoney() == null ? BigDecimal.ZERO : shiftTable
-					.getShiftTableActualBankMoney());
-			data.setShiftTableStart(shiftTable.getShiftTableStart());
-			data.setShiftTableEnd(shiftTable.getShiftTableEnd());
 		}
 		return new ArrayList<BusinessCollection>(map.values());
 	}

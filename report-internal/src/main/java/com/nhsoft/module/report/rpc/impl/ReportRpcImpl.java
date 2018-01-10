@@ -1953,7 +1953,6 @@ public class ReportRpcImpl implements ReportRpc {
 			map.put(key,collection);
 		}
 
-
 		List<Object[]> payment = posOrderService.findBranchShiftTablePaymentSummary(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		for (int i = 0,len = payment.size(); i < len; i++) {
 			Object[] object = payment.get(i);
@@ -2020,6 +2019,30 @@ public class ReportRpcImpl implements ReportRpc {
 				data.getPosIncomes().add(detail);
 			}
 			detail.setMoney(detail.getMoney().add(money));
+		}
+
+
+		List<ShiftTable> shiftTables = reportService.findShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		for (int i = 0; i < shiftTables.size(); i++) {
+			ShiftTable shiftTable = shiftTables.get(i);
+			BusinessCollection data = map.get(shiftTable.getId().getBranchNum().toString()
+					+ shiftTable.getId().getShiftTableBizday() + shiftTable.getId().getShiftTableNum().toString());
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setShiftTableBizday(shiftTable.getId().getShiftTableBizday());
+				data.setShiftTableNum(shiftTable.getId().getShiftTableNum());
+				data.setBranchNum(shiftTable.getId().getBranchNum());
+				map.put(shiftTable.getId().getBranchNum().toString() + shiftTable.getId().getShiftTableBizday()
+						+ shiftTable.getId().getShiftTableNum().toString(), data);
+			}
+			data.setShiftTableTerminalId(shiftTable.getShiftTableTerminalId());
+			data.setCasher(shiftTable.getShiftTableUserName());
+			data.setReceiveCash(shiftTable.getShiftTableActualMoney() == null ? BigDecimal.ZERO : shiftTable
+					.getShiftTableActualMoney());
+			data.setReceiveBankMoney(shiftTable.getShiftTableActualBankMoney() == null ? BigDecimal.ZERO : shiftTable
+					.getShiftTableActualBankMoney());
+			data.setShiftTableStart(shiftTable.getShiftTableStart());
+			data.setShiftTableEnd(shiftTable.getShiftTableEnd());
 		}
 
 		return new ArrayList<BusinessCollection>(map.values());

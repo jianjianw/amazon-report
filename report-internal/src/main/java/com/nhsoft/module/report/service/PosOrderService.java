@@ -221,31 +221,87 @@ public interface PosOrderService {
 
 
 
+	/**
+	 * 按分店汇总消费券
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
 	public List<Object[]> findBranchCouponSummary(String systemBookCode,
 												  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-
+	/**
+	 * 按分店汇总折扣金额
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
 	public List<Object[]> findBranchDiscountSummary(String systemBookCode,
 													List<Integer> branchNums, Date dateFrom, Date dateTo);
-
+	/**
+	 * 按分店 营业日 汇总消费券
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
 	public List<Object[]> findBranchBizdayCouponSummary(String systemBookCode,
 														List<Integer> branchNums, Date dateFrom, Date dateTo);
-
-
+	/**
+	 * 按分店 营业日 汇总折扣金额
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
 	public List<Object[]> findBranchBizdayDiscountSummary(String systemBookCode,
 														  List<Integer> branchNums, Date dateFrom, Date dateTo);
-
+	/**
+	 * 按分店 营业日 终端 汇总消费券
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
 	public List<Object[]> findCouponSummary(String systemBookCode, List<Integer> branchNums,
 											Date dateFrom, Date dateTo);
-
+	/**
+	 * 按分店 班次 支付方式 汇总消费金额
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
 	public List<Object[]> findBranchShiftTablePaymentSummary(String systemBookCode, List<Integer> branchNums,
-												   Date dateFrom, Date dateTo, String casher);
-
+															 Date dateFrom, Date dateTo, String casher);
+	/**
+	 * 按分店 班次 汇总消费券
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
 	public List<Object[]> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums,
-															  Date dateFrom, Date dateTo, String casher);
-
+															Date dateFrom, Date dateTo, String casher);
+	/**
+	 * 按分店 操作员 支付方式 汇总消费金额
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
 	public List<Object[]> findBranchOperatorPayByMoneySummary(String systemBookCode,
-													  List<Integer> branchNums, Date dateFrom, Date dateTo);
+															  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
 }

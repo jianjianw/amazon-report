@@ -577,6 +577,12 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
+	public List<ShiftTable> findShiftTables(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		return reportDao.findShiftTables(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	}
+
+
+	@Override
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums,
 			Date dateFrom, Date dateTo, String casher) {
 		return reportDao.findBusinessCollectionByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
