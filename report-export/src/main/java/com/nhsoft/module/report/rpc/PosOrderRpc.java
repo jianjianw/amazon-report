@@ -58,46 +58,43 @@ public interface PosOrderRpc  {
     /**
      *	bi 分店日销售汇总表
      * */
-    public List<BranchDaily> findBranchDailys(String systemBookCode, Date dateFrom, Date dateTo);
+    public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 
     /**
      * bi  商品日时段销售汇总
      * */
-    public List<ItemDailyDetail> findItemDailyDetails(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums);
+    public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums);
 
     /**
      *  bi  商品日销售汇总
      **/
-    public List<ItemSaleDailyDTO> findItemSaleDailys(String systemBookCode, Date dateFrom, Date dateTo);
+    public List<ItemSaleDailyDTO> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 
 
-    public List<BusinessCollection> findBusinessCollectionByBranchToDetail(String systemBookCode,
+    public List<BusinessCollection> findBranchCouponSummary(String systemBookCode,
                                                          List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-    public List<BusinessCollection> findBusinessCollectionByBranchToPosOrder(String systemBookCode,
+    public List<BusinessCollection> findBranchDiscountSummary(String systemBookCode,
                                                                    List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-    public List<BusinessCollection> findBusinessCollectionByBranchDayToDetail(String systemBookCode,
+    public List<BusinessCollection> findBranchBizdayCouponSummary(String systemBookCode,
                                                             List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-    public List<BusinessCollection> findBusinessCollectionByBranchDayToPosOrder(String systemBookCode,
+    public List<BusinessCollection> findBranchBizdayDiscountSummary(String systemBookCode,
                                                                       List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-    public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums,
+    public List<BusinessCollection> findCouponSummary(String systemBookCode, List<Integer> branchNums,
                                                            Date dateFrom, Date dateTo);
 
-    public List<BusinessCollection> findBusinessCollectionByShiftTableToPayment(String systemBookCode, List<Integer> branchNums,
+    public List<BusinessCollection> findBranchShiftTablePaymentSummary(String systemBookCode, List<Integer> branchNums,
                                                           Date dateFrom, Date dateTo, String casher);
 
-    public List<BusinessCollection> findBusinessCollectionByShiftTableToPosOrder(String systemBookCode, List<Integer> branchNums,
+    public List<BusinessCollection> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums,
                                                              Date dateFrom, Date dateTo, String casher);
 
-    public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode,
+    public List<PosReceiveDiffMoneySumDTO> findBranchOperatorPayByMoneySummary(String systemBookCode,
                                                                        List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-
-    public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode,
-                                                                     List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
 
 
 

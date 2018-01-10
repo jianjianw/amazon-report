@@ -219,8 +219,8 @@ public class TestSpringBoot {
     }
 
 
-   /* public List<ItemDailyDetail> findItemDailyDetails(String systemBookCode, Date dateFrom, Date dateTo) {
-        List<Object[]> objects = posOrderService.findItemDailyDetails(systemBookCode, dateFrom, dateTo);
+   /* public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo) {
+        List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo);
         List<ItemDailyDetail> list = new ArrayList<>();
         if (objects.isEmpty()) {
             return list;

@@ -207,48 +207,45 @@ public interface PosOrderService {
 	/**
 	 *	bi 分店日销售汇总表
 	 * */
-	public List<Object[]> findBranchDailys(String systemBookCode, Date dateFrom, Date dateTo);
+	public List<Object[]> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 
 	/**
 	 * bi 商品日时段销售汇总
 	 * */
-	public List<Object[]> findItemDailyDetails(String systemBookCode, Date dateFrom, Date dateTo ,List<Integer> itemNums);
+	public List<Object[]> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo ,List<Integer> itemNums);
 
 	/**
 	 *  bi  商品日销售汇总
 	 **/
-	public List<Object[]> findItemSaleDailys(String systemBookCode, Date dateFrom, Date dateTo);
+	public List<Object[]> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 
 
 
-	public List<Object[]> findDetailItemsByBranch(String systemBookCode,
+	public List<Object[]> findBranchCouponSummary(String systemBookCode,
 												  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
-	public List<Object[]> findDiscountMoneyByBranch(String systemBookCode,
+	public List<Object[]> findBranchDiscountSummary(String systemBookCode,
 													List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	public List<Object[]> findDetailItemsByBranchBizday(String systemBookCode,
+	public List<Object[]> findBranchBizdayCouponSummary(String systemBookCode,
 														List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
-	public List<Object[]> findDiscountMoneyByBranchBizday(String systemBookCode,
+	public List<Object[]> findBranchBizdayDiscountSummary(String systemBookCode,
 														  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	public List<Object[]> findDetailItemSum(String systemBookCode, List<Integer> branchNums,
+	public List<Object[]> findCouponSummary(String systemBookCode, List<Integer> branchNums,
 											Date dateFrom, Date dateTo);
 
-	public List<Object[]> findPaymentByShiftTables(String systemBookCode, List<Integer> branchNums,
+	public List<Object[]> findBranchShiftTablePaymentSummary(String systemBookCode, List<Integer> branchNums,
 												   Date dateFrom, Date dateTo, String casher);
 
-	public List<Object[]> findDetailItemAnalysisByShiftTables(String systemBookCode, List<Integer> branchNums,
+	public List<Object[]> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums,
 															  Date dateFrom, Date dateTo, String casher);
 
-	public List<Object[]> findPaymentAnalysisByBranch(String systemBookCode,
+	public List<Object[]> findBranchOperatorPayByMoneySummary(String systemBookCode,
 													  List<Integer> branchNums, Date dateFrom, Date dateTo);
-
-	public List<Object[]> findPaymentAnalysisByShiftTables(String systemBookCode,
-														   List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
 
 
 }

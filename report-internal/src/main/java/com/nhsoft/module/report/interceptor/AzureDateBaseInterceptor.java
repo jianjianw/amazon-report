@@ -55,19 +55,20 @@ public class AzureDateBaseInterceptor {
         Object object;
         long diff = 0;
         String systemBookCode = null;
+        long preTime = 0;
         try {
             name = jp.getTarget().getClass().getName() + "." + jp.getSignature().getName();
-            long preTime = System.currentTimeMillis();
-            object = jp.proceed(jp.getArgs());
+            preTime = System.currentTimeMillis();
             Object[] params = jp.getArgs();
             systemBookCode = (String) params[0];//获取账套
-            long afterTime = System.currentTimeMillis();
-            diff = (afterTime - preTime)/1000;
+            object = jp.proceed(jp.getArgs());
             return object;
         } catch (Throwable throwable) {
             logger.error(throwable.getMessage(),throwable);
             throw throwable;
         } finally {
+            long afterTime = System.currentTimeMillis();
+            diff = (afterTime - preTime)/1000;
             logger.info("账套："+ systemBookCode + " 接口：" + name + " 耗时：" + diff + " 秒");
         }
     }

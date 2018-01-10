@@ -5,7 +5,7 @@ import com.nhsoft.module.azure.model.*;
 import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 
-import java.io.Serializable;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -163,14 +163,16 @@ public class AzureDaoImpl extends DaoImpl implements AzureDao {
 
     public void batchSaveBizdays(String systemBookCode, List<Bizday> bizdays) {
         StringBuilder sb = new StringBuilder();
-        sb.append("delete from bizday ");
+        sb.append("delete from bizday");
         SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
         sqlQuery.executeUpdate();
+        currentSession().flush();
+        System.out.println("bizday删除-----------------------------------------------------------");
         int size = bizdays.size();
         for (int i = 0; i <size ; i++) {
             Bizday bizday = bizdays.get(i);
             currentSession().save(bizday);
-            if(i % 30 == 0){
+            if(i % 20 == 0){
                 currentSession().flush();
                 currentSession().clear();
             }

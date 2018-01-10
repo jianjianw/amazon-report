@@ -99,7 +99,7 @@ public class Report2RpcImpl implements Report2Rpc {
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		List<PosReceiveDiffMoneySumDTO> list = report2Service.findPosReceiveDiffMoneySumDTOsByBranchCasher(systemBookCode, branchNums, dateFrom, dateTo);
-		List<Object[]> posList = posOrderService.findPaymentAnalysisByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> posList = posOrderService.findBranchOperatorPayByMoneySummary(systemBookCode, branchNums, dateFrom, dateTo);
 
 		int posSize = posList.size();
 		Integer branchNum = null;
@@ -211,7 +211,7 @@ public class Report2RpcImpl implements Report2Rpc {
 	@Override
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByShiftTable(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		List<PosReceiveDiffMoneySumDTO> list = report2Service.findPosReceiveDiffMoneySumDTOsByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
-		List<Object[]> posList = posOrderService.findPaymentAnalysisByShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		List<Object[]> posList = posOrderService.findBranchShiftTablePaymentSummary(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		int posSize = posList.size();
 		Integer branchNum = null;
 		String bizday = null;

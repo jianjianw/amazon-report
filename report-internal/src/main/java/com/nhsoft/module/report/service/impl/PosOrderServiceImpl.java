@@ -183,63 +183,58 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 
-	public List<Object[]> findBranchDailys(String systemBookCode,Date dateFrom,Date dateTo){
-		List<Object[]> branchDailySummary = posOrderDao.findBranchDailys(systemBookCode,dateFrom,dateTo);
+	public List<Object[]> findBranchDailySummary(String systemBookCode,Date dateFrom,Date dateTo){
+		List<Object[]> branchDailySummary = posOrderDao.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
 		return branchDailySummary;
 	}
 
-	public List<Object[]> findItemDailyDetails(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums){
-		return posOrderDao.findItemDailyDetails(systemBookCode, dateFrom, dateTo,itemNums);
+	public List<Object[]> findItemDailyDetailSummary(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums){
+		return posOrderDao.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo,itemNums);
 	}
 
 	@Override
-	public List<Object[]> findItemSaleDailys(String systemBookCode, Date dateFrom, Date dateTo) {
-		return posOrderDao.findItemSaleDailys(systemBookCode,dateFrom,dateTo);
+	public List<Object[]> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
+		return posOrderDao.findItemSaleDailySummary(systemBookCode,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findDetailItemsByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return posOrderDao.findDetailItemsByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	public List<Object[]> findBranchCouponSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBranchCouponSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findDiscountMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return posOrderDao.findDiscountMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+	public List<Object[]> findBranchDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBranchDiscountSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findDetailItemsByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return posOrderDao.findDetailItemsByBranchBizday(systemBookCode,branchNums,dateFrom,dateTo);
+	public List<Object[]> findBranchBizdayCouponSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBranchBizdayCouponSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findDiscountMoneyByBranchBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return posOrderDao.findDiscountMoneyByBranchBizday(systemBookCode,branchNums,dateFrom,dateTo);
+	public List<Object[]> findBranchBizdayDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBranchBizdayDiscountSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findDetailItemSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return posOrderDao.findDetailItemSum(systemBookCode,branchNums,dateFrom,dateTo);
+	public List<Object[]> findCouponSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findCouponSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
-	public List<Object[]> findPaymentByShiftTables(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
-		return posOrderDao.findPaymentByShiftTables(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	public List<Object[]> findBranchShiftTablePaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		return posOrderDao.findBranchShiftTablePaymentSummary(systemBookCode,branchNums,dateFrom,dateTo,casher);
 	}
 
 	@Override
-	public List<Object[]> findDetailItemAnalysisByShiftTables(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
-		return posOrderDao.findDetailItemAnalysisByShiftTables(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	public List<Object[]> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
+		return posOrderDao.findBranchShiftTableCouponSummary(systemBookCode,branchNums,dateFrom,dateTo,casher);
 	}
 
 	@Override
-	public List<Object[]> findPaymentAnalysisByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return posOrderDao.findPaymentAnalysisByBranch(systemBookCode,branchNums,dateFrom,dateTo);
-	}
-
-	@Override
-	public List<Object[]> findPaymentAnalysisByShiftTables(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
-		return posOrderDao.findPaymentAnalysisByShiftTables(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	public List<Object[]> findBranchOperatorPayByMoneySummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posOrderDao.findBranchOperatorPayByMoneySummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 
