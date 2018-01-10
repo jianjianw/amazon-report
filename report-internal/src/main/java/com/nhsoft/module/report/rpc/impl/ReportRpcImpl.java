@@ -2025,15 +2025,18 @@ public class ReportRpcImpl implements ReportRpc {
 		List<ShiftTable> shiftTables = reportService.findShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
 		for (int i = 0; i < shiftTables.size(); i++) {
 			ShiftTable shiftTable = shiftTables.get(i);
-			BusinessCollection data = map.get(shiftTable.getId().getBranchNum().toString()
-					+ shiftTable.getId().getShiftTableBizday() + shiftTable.getId().getShiftTableNum().toString());
+			Integer branchNum = shiftTable.getId().getBranchNum();
+			String shiftTableBizday = shiftTable.getId().getShiftTableBizday();
+			Integer shiftTableNum = shiftTable.getId().getShiftTableNum();
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(shiftTableBizday).append(shiftTableNum).toString();
+			BusinessCollection data = map.get(key);
 			if (data == null) {
 				data = new BusinessCollection();
 				data.setShiftTableBizday(shiftTable.getId().getShiftTableBizday());
 				data.setShiftTableNum(shiftTable.getId().getShiftTableNum());
 				data.setBranchNum(shiftTable.getId().getBranchNum());
-				map.put(shiftTable.getId().getBranchNum().toString() + shiftTable.getId().getShiftTableBizday()
-						+ shiftTable.getId().getShiftTableNum().toString(), data);
+				map.put(key, data);
 			}
 			data.setShiftTableTerminalId(shiftTable.getShiftTableTerminalId());
 			data.setCasher(shiftTable.getShiftTableUserName());

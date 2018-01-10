@@ -254,6 +254,46 @@ public class Report2RpcImpl implements Report2Rpc {
 		}
 
 
+		List<ShiftTable> shiftTables = reportService.findShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
+		BigDecimal bankMoney = null;
+		for (int i = 0; i < shiftTables.size(); i++) {
+			ShiftTable shiftTable = shiftTables.get(i);
+			branchNum = shiftTable.getId().getBranchNum();
+			bizday = shiftTable.getId().getShiftTableBizday();
+			biznum = shiftTable.getId().getShiftTableNum();
+			money = shiftTable.getShiftTableActualMoney() == null ? BigDecimal.ZERO : shiftTable.getShiftTableActualMoney();
+			bankMoney = shiftTable.getShiftTableActualBankMoney() == null ? BigDecimal.ZERO : shiftTable.getShiftTableActualBankMoney();
+
+			PosReceiveDiffMoneySumDTO dto = PosReceiveDiffMoneySumDTO.getByShift(list, branchNum, bizday, biznum);
+			if (dto == null) {
+				dto = new PosReceiveDiffMoneySumDTO();
+				dto.setBranchNum(branchNum);
+				dto.setShiftTableBizday(bizday);
+				dto.setShiftTableNum(biznum);
+				list.add(dto);
+			}
+			dto.setBranchInputMemo(shiftTable.getShiftTableMemo());
+			dto.setCasher(shiftTable.getShiftTableUserName());
+			dto.setTotalReceiveMoney(dto.getTotalReceiveMoney().add(money.add(bankMoney)));
+
+			TypeAndTwoValuesDTO typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), AppConstants.PAYMENT_CASH);
+			if (typeAndTwoValuesDTO == null) {
+				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				typeAndTwoValuesDTO.setType(AppConstants.PAYMENT_CASH);
+				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
+			}
+			typeAndTwoValuesDTO.setMoney(typeAndTwoValuesDTO.getMoney().add(money));
+
+			typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), AppConstants.PAYMENT_YINLIAN);
+			if (typeAndTwoValuesDTO == null) {
+				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+				typeAndTwoValuesDTO.setType(AppConstants.PAYMENT_YINLIAN);
+				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
+			}
+			typeAndTwoValuesDTO.setMoney(typeAndTwoValuesDTO.getMoney().add(bankMoney));
+		}
+
+
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		for(int i = 0;i < list.size();i++){
 			PosReceiveDiffMoneySumDTO dto = list.get(i);

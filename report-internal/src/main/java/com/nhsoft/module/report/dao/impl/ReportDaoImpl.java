@@ -3539,72 +3539,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			typeAndTwoValuesDTO.setAmount(typeAndTwoValuesDTO.getAmount().add(money));
 		}
-		
-		
-		sb = new StringBuffer();
-		sb.append("select * ");
-		sb.append("from shift_table with(nolock) ");
-		sb.append("where system_book_code = :systemBookCode ");
-		if (branchNums != null && branchNums.size() > 0) {
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		if (dateFrom != null) {
-			sb.append("and shift_table_bizday >= :bizFrom ");
-		}
-		if (dateTo != null) {
-			sb.append("and shift_table_bizday <= :bizTo ");
-		}
-		if(StringUtils.isNotEmpty(casher)){
-			sb.append("and shift_table_user_name = '" + casher + "' ");
-		}
-		sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", systemBookCode);
-		if (dateFrom != null) {
-			sqlQuery.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
-		}
-		if (dateTo != null) {
-			sqlQuery.setString("bizTo", DateUtil.getDateShortStr(dateTo));
-		}
-		sqlQuery.addEntity(ShiftTable.class);
-		List<ShiftTable> shiftTables = sqlQuery.list();
-		BigDecimal bankMoney = null;
-		for (int i = 0; i < shiftTables.size(); i++) {
-			ShiftTable shiftTable = shiftTables.get(i);
-			branchNum = shiftTable.getId().getBranchNum();
-			bizday = shiftTable.getId().getShiftTableBizday();
-			biznum = shiftTable.getId().getShiftTableNum();
-			money = shiftTable.getShiftTableActualMoney() == null ? BigDecimal.ZERO : shiftTable.getShiftTableActualMoney();
-			bankMoney = shiftTable.getShiftTableActualBankMoney() == null ? BigDecimal.ZERO : shiftTable.getShiftTableActualBankMoney();
-			
-			PosReceiveDiffMoneySumDTO dto = PosReceiveDiffMoneySumDTO.getByShift(list, branchNum, bizday, biznum);
-			if(dto == null){
-				dto = new PosReceiveDiffMoneySumDTO();
-				dto.setBranchNum(branchNum);
-				dto.setShiftTableBizday(bizday);
-				dto.setShiftTableNum(biznum);
-				list.add(dto);
-			}
-			dto.setBranchInputMemo(shiftTable.getShiftTableMemo());
-			dto.setCasher(shiftTable.getShiftTableUserName());
-			dto.setTotalReceiveMoney(dto.getTotalReceiveMoney().add(money.add(bankMoney)));
-			
-			TypeAndTwoValuesDTO typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), AppConstants.PAYMENT_CASH);
-			if(typeAndTwoValuesDTO == null){
-				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
-				typeAndTwoValuesDTO.setType(AppConstants.PAYMENT_CASH);
-				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
-			}
-			typeAndTwoValuesDTO.setMoney(typeAndTwoValuesDTO.getMoney().add(money));
-			
-			typeAndTwoValuesDTO = TypeAndTwoValuesDTO.get(dto.getTypeAndTwoValuesDTOs(), AppConstants.PAYMENT_YINLIAN);
-			if(typeAndTwoValuesDTO == null){
-				typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
-				typeAndTwoValuesDTO.setType(AppConstants.PAYMENT_YINLIAN);
-				dto.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
-			}
-			typeAndTwoValuesDTO.setMoney(typeAndTwoValuesDTO.getMoney().add(bankMoney));
-		}
-		
+
 		sb = new StringBuffer();
 		sb.append("select shift_table.branch_num, shift_table.shift_table_bizday, shift_table.shift_table_num, shift_table_payment_type, sum(shift_table_payment_money) as money ");
 		sb.append("from shift_table_payment with(nolock) inner join shift_table ");
