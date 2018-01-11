@@ -1,4 +1,4 @@
-package com.nhsoft.module.report.util;
+package com.nhsoft.report.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

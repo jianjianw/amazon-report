@@ -6,7 +6,7 @@ import com.dianping.cat.message.Transaction;
 import com.nhsoft.module.report.dto.APIException;
 import com.nhsoft.module.report.dto.SystemBookProxy;
 import com.nhsoft.module.report.query.QueryBuilder;
-import com.nhsoft.module.report.util.DynamicDataSourceContextHolder;
+import com.nhsoft.report.utils.DynamicDataSourceContextHolder;
 import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.ServiceBizException;
 import com.nhsoft.module.report.util.ServiceDeskUtil;

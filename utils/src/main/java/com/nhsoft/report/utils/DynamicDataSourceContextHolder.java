@@ -1,4 +1,4 @@
-package com.nhsoft.module.report.util;
+package com.nhsoft.report.utils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,7 +13,7 @@ import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.BaseManager;
-import com.nhsoft.module.report.util.RedisUtil;
+import com.nhsoft.report.utils.RedisUtil;
 import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

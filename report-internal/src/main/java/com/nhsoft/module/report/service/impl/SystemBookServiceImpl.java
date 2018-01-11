@@ -6,7 +6,7 @@ import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.service.SystemBookService;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.report.utils.BaseManager;
-import com.nhsoft.module.report.util.RedisUtil;
+import com.nhsoft.report.utils.RedisUtil;
 import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

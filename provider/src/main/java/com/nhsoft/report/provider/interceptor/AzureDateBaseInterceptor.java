@@ -1,7 +1,7 @@
 package com.nhsoft.report.provider.interceptor;
 
 import com.nhsoft.module.report.query.QueryBuilder;
-import com.nhsoft.module.report.util.DynamicDataSourceContextHolder;
+import com.nhsoft.report.utils.DynamicDataSourceContextHolder;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

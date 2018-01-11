@@ -10,7 +10,7 @@ import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.RedisUtil;
+import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.phone.server.model.MobileBusiness;
 import com.nhsoft.phone.server.model.MobileSalesRank;
 import com.nhsoft.phone.server.model.SalesDiscount;

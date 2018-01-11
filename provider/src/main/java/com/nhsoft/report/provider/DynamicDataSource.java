@@ -1,6 +1,6 @@
 package com.nhsoft.report.provider;
 
-import com.nhsoft.module.report.util.DynamicDataSourceContextHolder;
+import com.nhsoft.report.utils.DynamicDataSourceContextHolder;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 public class DynamicDataSource extends AbstractRoutingDataSource {

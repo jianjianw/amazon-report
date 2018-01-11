@@ -1,7 +1,7 @@
 package com.nhsoft.report.provider;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.nhsoft.module.report.util.DynamicDataSourceContextHolder;
+import com.nhsoft.report.utils.DynamicDataSourceContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
