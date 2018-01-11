@@ -10,17 +10,16 @@ import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.CopyUtil;
 import com.nhsoft.module.report.util.RedisUtil;
 import com.nhsoft.phone.server.model.MobileBusiness;
 import com.nhsoft.phone.server.model.MobileSalesRank;
 import com.nhsoft.phone.server.model.SalesDiscount;
 import com.nhsoft.module.report.query.CardUserQuery;
 import com.nhsoft.module.report.query.LogQuery;
+import com.nhsoft.report.utils.CopyUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

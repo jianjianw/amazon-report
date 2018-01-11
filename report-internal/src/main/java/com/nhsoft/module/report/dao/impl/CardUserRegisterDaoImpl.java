@@ -3,7 +3,7 @@ package com.nhsoft.module.report.dao.impl;
 import com.nhsoft.module.report.dao.CardUserRegisterDao;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 

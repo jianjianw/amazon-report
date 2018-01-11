@@ -2,7 +2,7 @@ package com.nhsoft.module.report.model;
 
 import com.nhsoft.module.report.query.State;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;

@@ -2,7 +2,7 @@ package com.nhsoft.module.report.dao;
 
 
 import com.nhsoft.module.report.model.TransferInOrder;
-import com.nhsoft.module.report.shared.queryBuilder.TransferProfitQuery;
+import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;

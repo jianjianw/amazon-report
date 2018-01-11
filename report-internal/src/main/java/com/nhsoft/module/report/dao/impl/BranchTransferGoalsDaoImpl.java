@@ -5,7 +5,7 @@ import com.nhsoft.module.report.dao.BranchTransferGoalsDao;
 import com.nhsoft.module.report.model.BranchTransferGoals;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Projections;

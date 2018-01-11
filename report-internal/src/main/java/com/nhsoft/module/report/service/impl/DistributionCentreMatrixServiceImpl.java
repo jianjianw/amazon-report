@@ -2,7 +2,7 @@ package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.DistributionCentreMatrixDao;
 import com.nhsoft.module.report.service.DistributionCentreMatrixService;
-import com.nhsoft.module.report.util.BaseManager;
+import com.nhsoft.report.utils.BaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

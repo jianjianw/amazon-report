@@ -10,7 +10,7 @@ import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.rpc.MobileAppV2Rpc;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

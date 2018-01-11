@@ -12,7 +12,7 @@ import com.nhsoft.module.report.api.dto.InputControlsMonthDTO;
 import com.nhsoft.module.report.api.dto.InputControlsWeekDTO;
 import com.nhsoft.module.report.api.dto.InputControlsYearDTO;
 import com.nhsoft.module.report.dto.BranchDTO;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;

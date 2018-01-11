@@ -5,11 +5,10 @@ import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.BranchRegion;
 import com.nhsoft.module.report.service.BranchService;
 import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.BaseManager;
+import com.nhsoft.report.utils.BaseManager;
 import com.nhsoft.module.report.util.RedisUtil;
 import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

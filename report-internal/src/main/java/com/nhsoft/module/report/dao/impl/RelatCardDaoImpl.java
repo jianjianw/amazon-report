@@ -4,7 +4,7 @@ import com.nhsoft.module.report.dao.RelatCardDao;
 import com.nhsoft.module.report.model.RelatCard;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Projections;

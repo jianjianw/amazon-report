@@ -5,8 +5,6 @@ import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.rpc.*;
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +17,6 @@ import java.util.*;
 //@Component
 public class AzureTestSchedule implements InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(AzureTestSchedule.class);
 
     @Autowired
     private PosOrderRpc posOrderRpc;

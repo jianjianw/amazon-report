@@ -5,7 +5,7 @@ import com.nhsoft.module.report.dao.RetailPosLogDao;
 import com.nhsoft.module.report.model.RetailPosLog;
 import com.nhsoft.module.report.query.LogQuery;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;

@@ -2,7 +2,7 @@ package com.nhsoft.module.report.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nhsoft.amazon.shared.AppConstants;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

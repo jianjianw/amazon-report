@@ -7,7 +7,7 @@ import com.nhsoft.module.report.dto.LossMoneyReport;
 import com.nhsoft.module.report.rpc.AdjustmentOrderRpc;
 
 import com.nhsoft.module.report.service.AdjustmentOrderService;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;

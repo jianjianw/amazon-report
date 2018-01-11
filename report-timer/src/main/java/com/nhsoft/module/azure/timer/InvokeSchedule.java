@@ -18,7 +18,6 @@ import java.util.Date;
 //@Component
 public class InvokeSchedule implements InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(InvokeSchedule.class);
     @Autowired
     private Invoke invoke;
     @Autowired

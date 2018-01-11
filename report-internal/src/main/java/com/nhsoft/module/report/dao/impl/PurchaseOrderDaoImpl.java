@@ -7,7 +7,7 @@ import com.nhsoft.module.report.model.PurchaseOrder;
 import com.nhsoft.module.report.model.PurchaseOrderDetail;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.*;

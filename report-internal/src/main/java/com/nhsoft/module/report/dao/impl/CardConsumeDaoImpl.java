@@ -2,10 +2,10 @@ package com.nhsoft.module.report.dao.impl;
 
 import com.nhsoft.module.report.dao.CardConsumeDao;
 import com.nhsoft.module.report.model.CardConsume;
-import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;

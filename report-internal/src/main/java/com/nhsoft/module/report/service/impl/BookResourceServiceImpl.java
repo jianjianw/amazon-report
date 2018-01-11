@@ -9,7 +9,7 @@ import com.nhsoft.module.report.param.ChainDeliveryParam;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.service.BookResourceService;
 import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.BaseManager;
+import com.nhsoft.report.utils.BaseManager;
 import com.nhsoft.module.report.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

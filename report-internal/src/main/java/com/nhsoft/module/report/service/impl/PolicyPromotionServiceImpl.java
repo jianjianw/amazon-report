@@ -6,7 +6,7 @@ import com.nhsoft.module.report.dao.PolicyPromotionDao;
 import com.nhsoft.module.report.dto.PolicyPosItem;
 import com.nhsoft.module.report.query.PolicyPosItemQuery;
 import com.nhsoft.module.report.service.PolicyPromotionService;
-import com.nhsoft.module.report.util.BaseManager;
+import com.nhsoft.report.utils.BaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

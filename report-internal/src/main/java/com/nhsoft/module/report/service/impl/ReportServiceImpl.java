@@ -12,21 +12,18 @@ import com.nhsoft.module.report.param.CardUserType;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.service.*;
-import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
-import com.nhsoft.module.report.shared.queryBuilder.TransferProfitQuery;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.CopyUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.CopyUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.cache.spi.QueryKey;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.security.Key;
 import java.util.*;
 @Service
 public class ReportServiceImpl implements ReportService {

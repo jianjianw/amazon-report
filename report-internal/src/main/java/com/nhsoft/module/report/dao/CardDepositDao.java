@@ -2,7 +2,7 @@ package com.nhsoft.module.report.dao;
 
 
 
-import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;

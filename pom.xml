@@ -15,8 +15,10 @@
 
 		<module>report-azure</module>
         <module>report-timer</module>
+        <module>provider</module>
+		<module>utils</module>
 
-    </modules>
+	</modules>
 
 
 	<name>amazon-report</name>

@@ -7,7 +7,7 @@ import com.nhsoft.module.report.rpc.AlipayLogRpc;
 import com.nhsoft.module.report.query.LogQuery;
 
 import com.nhsoft.module.report.service.AlipayLogService;
-import com.nhsoft.module.report.util.CopyUtil;
+import com.nhsoft.report.utils.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

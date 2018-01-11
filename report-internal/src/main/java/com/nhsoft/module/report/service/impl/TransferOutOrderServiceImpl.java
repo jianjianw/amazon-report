@@ -5,7 +5,7 @@ import com.nhsoft.module.report.model.TransferOutOrder;
 import com.nhsoft.module.report.service.TransferOutOrderService;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.BaseManager;
+import com.nhsoft.report.utils.BaseManager;
 import com.nhsoft.module.report.util.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -8,7 +8,7 @@ import com.nhsoft.module.report.model.PolicyPromotionQuantity;
 import com.nhsoft.module.report.query.PolicyPosItemQuery;
 
 import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;

@@ -5,11 +5,10 @@ import com.google.gson.*;
 import com.nhsoft.module.report.dto.GsonIgnore;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.param.PosItemTypeParam;
-import org.apache.commons.codec.digest.DigestUtils;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -25,8 +24,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @SuppressWarnings("rawtypes")
 public class AppUtil {
@@ -34,47 +31,9 @@ public class AppUtil {
 	private static final Logger logger = LoggerFactory.getLogger(AppUtil.class);
 	private static String filePath = null;
 	private static String reportPath = null;
-	private static String excelPath = null;
-	private static String pdfPath = null;
-	private static String utilPath = null;
-	private static String qrCodeImagePath = null;
 	private static String serverIp;
-	private static ThreadPoolTaskExecutor poolTaskExecutor;
 	private static String fileSeparator = System.getProperty("file.separator");
-	private static String weixinMNSQueueName;
-	private static String tmallPosOrderMNSQueueName;
-	private static String tmallRequestOrderMNSQueueName;
-	private static String tmallOutOrderMNSQueueName;
-	private static String tmallShipOrderMNSQueueName;
 	private static Gson gson;
-
-	public static String getWeixinMNSQueueName() {
-		return weixinMNSQueueName;
-	}
-
-	public static ThreadPoolTaskExecutor getPoolTaskExecutor() {
-		return poolTaskExecutor;
-	}
-
-	public void setPoolTaskExecutor(ThreadPoolTaskExecutor poolTaskExecutor) {
-		AppUtil.poolTaskExecutor = poolTaskExecutor;
-	}
-
-	public static final List<String> ENGLISH_STOP_WORDS = Arrays.asList("a", "an", "and", "are", "as", "at", "be",
-			"but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the",
-			"their", "then", "there", "these", "they", "this", "to", "was", "will", "with");
-	
-	public void setWeixinMNSQueueName(String weixinMNSQueueName) {
-		AppUtil.weixinMNSQueueName = weixinMNSQueueName;
-	}
-
-	public static String getQrCodeImagePath() {
-		return qrCodeImagePath;
-	}
-
-	public static void setQrCodeImagePath(String qrCodeImagePath) {
-		AppUtil.qrCodeImagePath = qrCodeImagePath;
-	}
 
 	private static final String[] hexDigits = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d",
 			"e", "f" };
@@ -85,10 +44,6 @@ public class AppUtil {
 			resultSb.append(byteToHexString(b[i]));
 		}
 		return resultSb.toString();
-	}
-
-	public static String readImageUrl() {
-		return "posImage" + fileSeparator;
 	}
 
 	private static String byteToHexString(byte b) {
@@ -109,132 +64,6 @@ public class AppUtil {
 		} catch (Exception localException) {
 		}
 		return resultString;
-	}
-
-	public static Double BigDecimalToDouble(BigDecimal decimal) {
-		if (decimal != null) {
-			return decimal.doubleValue();
-		} else {
-			return 0.00;
-		}
-	}
-
-	public static String NumToBig(BigDecimal decimalNum) {
-		// String[][] s = new String[][] {{"1","1"},{"1","1"}};
-		String result = "";
-		String cNum = new String("零壹贰叁肆伍陆柒捌玖-万仟佰拾亿仟佰拾万仟佰拾元角分");
-		String[][] cChar = new String[][] {
-				{ "零仟", "零佰", "零拾", "零零零", "零零", "零亿", "零万", "零元", "亿万", "零角", "零分", "零整" },
-				{ "零", "零", "零", "零", "零", "亿", "万", "元", "亿", "零", "整", "整" } };
-		String sNum = String.valueOf(decimalNum.multiply(new BigDecimal(100)).abs().intValue());
-		for (int i = 0; i <= sNum.length() - 1; i++) {
-			result = result + cNum.charAt(sNum.charAt(i) - 47 - 1) + cNum.charAt(26 - (sNum.length() - 1) + i - 1);
-		}
-		for (int i = 0; i <= 11; i++) {// 去掉多余的零
-			result = result.replaceAll(cChar[0][i], cChar[1][i]);
-		}
-		if (decimalNum.signum() < 0) {
-			result = "负" + result;
-		}
-		return result;
-	}
-
-	public static String getMoneyFormat(Double value) {
-		if (value == null) {
-			return "0.00";
-		}
-		DecimalFormat df = new DecimalFormat("#,##0.00");
-		return df.format(value);
-	}
-
-	public static String getSimpleMoneyFormat(Double value) {
-		if (value == null) {
-			return "0";
-		}
-		return value.toString();
-	}
-
-	public static String getStringFormat(String value) {
-		if (value == null) {
-			return "";
-		}
-		return value.toString();
-	}
-
-	public static String getNumberFormat(Double value) {
-		if (value == null) {
-			return "0.00";
-		}
-		DecimalFormat df = new DecimalFormat("#,##0.#");
-		return df.format(value);
-	}
-
-	public static String getRateFormat(Double value) {
-		if (value == null) {
-			return "0.00";
-		}
-		DecimalFormat df = new DecimalFormat("0.00#############");
-		return df.format(value);
-	}
-
-	public static String getBooleanFormat(Boolean value) {
-		if (value == null) {
-			return "否";
-		}
-		if (value) {
-			return "是";
-		}
-		return "否";
-	}
-
-	public static String getUUID() {
-		String s = UUID.randomUUID().toString();
-		return s.substring(0, 8) + s.substring(9, 13) + s.substring(14, 18) + s.substring(19, 23) + s.substring(24);
-	}
-
-	public static boolean isNotNull(String var) {
-		if ((var != null) && (!var.equals(""))) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public static String calcGrowingRate(Double lastPeriod, Double currentPeriod) {
-		if ((currentPeriod.compareTo(0.00) > 0) && (lastPeriod.compareTo(0.00) == 0)) {
-			return "100.00%";
-		} else if ((currentPeriod.compareTo(0.00) < 0) && (lastPeriod.compareTo(0.00) == 0)) {
-			return "-100.00%";
-		} else if ((currentPeriod.compareTo(0.00) == 0) && (lastPeriod.compareTo(0.00) == 0)) {
-			return "0.00%";
-		}
-		Double precent = (currentPeriod - lastPeriod) * 100 / lastPeriod;
-		return String.format("%.2f%%", precent);
-	}
-
-	public static String generateUUID() {
-		return UUID.randomUUID().toString();
-	}
-
-	public static int getMobileType(String mobile) {
-		if (StringUtils.length(mobile) == 12) {
-			mobile = StringUtils.substring(mobile, 1);
-		}
-		if ((StringUtils.isEmpty(mobile)) || (StringUtils.length(mobile) != 11)) {
-			return -1;
-		}
-		List<String> chinaUnicom = Arrays.asList(new String[] { "130", "131", "132", "155", "156", "186", "145" });
-		List<String> chinaMobile = Arrays.asList(new String[] { "134", "135", "136", "137", "138", "139", "150", "151",
-				"152", "157", "158", "159", "188", "187", "147" });
-
-		List<String> chinaTelecom = Arrays.asList(new String[] { "133", "153", "189", "180" });
-		if (chinaUnicom.contains(mobile.substring(0, 3)))
-			return 1;// 联通
-		if (chinaMobile.contains(mobile.substring(0, 3)))
-			return 2; // 移动
-		if (chinaTelecom.contains(mobile.substring(0, 3)))
-			return 3; // 电信
-		return -1;// 其它
 	}
 
 	public static List<Integer> getUnStoreTypes() {
@@ -279,33 +108,6 @@ public class AppUtil {
 		for (int i = 0; i < suppliers.size(); i++) {
 			if (suppliers.get(i).getSupplierNum().equals(supplierNum)) {
 				return suppliers.get(i);
-			}
-		}
-		return null;
-	}
-
-	public static PosItem getPosItemByCode(String itemCode, List<PosItem> posItems) {
-		for (int i = 0; i < posItems.size(); i++) {
-			PosItem posItem = posItems.get(i);
-			if (posItem.getItemDelTag() != null && posItem.getItemDelTag()) {
-				continue;
-			}
-			if (posItem.getItemEliminativeFlag() != null && posItem.getItemEliminativeFlag()) {
-				continue;
-			}
-			if (posItems.get(i).getItemCode().equals(itemCode)) {
-				return posItem;
-			}
-		}
-		return null;
-	}
-
-	public static StoreItemSupplier getStoreItemSupplier(List<StoreItemSupplier> storeItemSuppliers,
-														 StoreItemSupplierId id) {
-		for (int i = 0; i < storeItemSuppliers.size(); i++) {
-			StoreItemSupplier storeItemSupplier = storeItemSuppliers.get(i);
-			if (storeItemSupplier.getId().equals(id)) {
-				return storeItemSupplier;
 			}
 		}
 		return null;
@@ -419,17 +221,6 @@ public class AppUtil {
 		}
 		return null;
 	}
-
-
-
-
-
-
-
-
-
-
-
 	public static String getMatrixName(ItemMatrix itemMatrix) {
 		if (itemMatrix == null) {
 			return "";
@@ -457,49 +248,8 @@ public class AppUtil {
 		return str;
 	}
 
-	public static Inventory getInventory(List<Inventory> inventories, Integer itemNum) {
-		if(inventories == null){
-			return null;
-		}
-		for (int i = 0, len = inventories.size(); i < len; i++) {
-			Inventory inventory = inventories.get(i);
-			if (inventory.getItemNum().equals(itemNum)) {
-				return inventory;
-			}
-		}
-		return null;
-	}
-	
-	public static Inventory getInventory(List<Inventory> inventories, Integer itemNum, Integer storehouseNum) {
-		for (int i = 0, len = inventories.size(); i < len; i++) {
-			Inventory inventory = inventories.get(i);
-			if (inventory.getItemNum().equals(itemNum) && storehouseNum.equals(inventory.getId().getStorehouseNum())) {
-				return inventory;
-			}
-		}
-		return null;
-	}
-
-
-
-
 
 	public static String getIntegerParmeList(List<Integer> list) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("(");
-		for (int i = 0; i < list.size(); i++) {
-			if (i == list.size() - 1) {
-				sb.append(list.get(i));
-			} else {
-				sb.append(list.get(i) + ",");
-			}
-
-		}
-		sb.append(") ");
-		return sb.toString();
-	}
-
-	public static String getShortParmeList(List<Short> list) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("(");
 		for (int i = 0; i < list.size(); i++) {
@@ -544,32 +294,6 @@ public class AppUtil {
 		return sb.toString();
 	}
 
-	public static List<Integer> findSubRegions(List<Region> regions, Integer regionNum) {
-		Set<Integer> set = new HashSet<Integer>();
-		Set<Integer> subSet = new HashSet<Integer>();
-		Set<Integer> compareSet = new HashSet<Integer>();
-		compareSet.add(regionNum);
-		while (compareSet.size() != 0) {
-			subSet.clear();
-			for (int i = 0; i < regions.size(); i++) {
-				Region region = regions.get(i);
-				if (region.getRegionParentNum() != null && compareSet.contains(region.getRegionParentNum())) {
-					subSet.add(region.getRegionNum());
-				}
-			}
-			Iterator<Integer> iterator = subSet.iterator();
-			while (iterator.hasNext()) {
-				Integer num = iterator.next();
-				if (set.contains(num)) {
-					subSet.remove(num);
-				}
-			}
-			compareSet = new HashSet<Integer>(subSet);
-			set.addAll(subSet);
-		}
-		return new ArrayList<Integer>(set);
-	}
-
 	public static List<String> findSubCategory(List<PosItemTypeParam> posItemTypeParams, String categoryCode) {
 		Set<String> set = new HashSet<String>();
 		Set<String> subSet = new HashSet<String>();
@@ -598,28 +322,6 @@ public class AppUtil {
 		return new ArrayList<String>(set);
 	}
 
-	public static File createFile(String fileName, String filePath, byte[] b) {
-		BufferedOutputStream bos = null;
-		FileOutputStream fos = null;
-		File file = null;
-		try {
-			File dir = new File(filePath);
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
-			file = new File(filePath + fileSeparator + fileName);
-			fos = new FileOutputStream(file);
-			bos = new BufferedOutputStream(fos);
-			bos.write(b);
-			bos.close();
-			fos.close();
-			return file;
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
-		return null;
-	}
-
 	public static String getReportPath() {
 		return reportPath;
 	}
@@ -627,36 +329,6 @@ public class AppUtil {
 	public static String getFilePath() {
 		return filePath;
 	}
-
-	public static String getExcelPath() {
-		return excelPath;
-	}
-
-	public static String getPdfPath() {
-		return pdfPath;
-	}
-
-	public static String getUtilPath() {
-		return utilPath;
-	}
-
-	public static void setFilePath(String filePath) {
-		AppUtil.filePath = filePath;
-		AppUtil.reportPath = filePath + "report" + fileSeparator;
-		AppUtil.excelPath = filePath + "excel" + fileSeparator;
-		AppUtil.pdfPath = filePath + "pdf" + fileSeparator;
-		AppUtil.utilPath = filePath + "util" + fileSeparator;
-	}
-
-	public static boolean isValidEmail(String email) {
-		if (StringUtils.isEmpty(email)) {
-			return false;
-		}
-		Pattern p = Pattern.compile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
-		Matcher m = p.matcher(email);
-		return m.matches();
-	}
-
 
 	public static byte[] getBytes(File file) {
 		byte[] buffer = null;
@@ -721,203 +393,6 @@ public class AppUtil {
 		return obj;
 	}
 
-	public static Object[] getInventoryAmount(List<Inventory> inventories, PosItem posItem, Integer itemMatrixNum,
-			String lotNumber, Branch branch) {
-		BigDecimal amount = BigDecimal.ZERO;
-		BigDecimal money = BigDecimal.ZERO;
-		BigDecimal assistAmount = BigDecimal.ZERO;
-		BigDecimal cost = BigDecimal.ZERO;
-		boolean found = false;
-		for (int i = 0; i < inventories.size(); i++) {
-			Inventory inventory = inventories.get(i);
-			if (inventory.getItemNum().equals(posItem.getItemNum())) {
-				found = true;
-				if (posItem.getItemCostMode(branch).equals(AppConstants.C_ITEM_COST_MODE_MANUAL)) {
-					List<InventoryLnDetail> inventoryLnDetails = inventory.getInventoryLnDetails();
-					for (int j = 0; j < inventoryLnDetails.size(); j++) {
-						InventoryLnDetail inventoryLnDetail = inventoryLnDetails.get(j);
-						if (StringUtils.isNotEmpty(lotNumber)) {
-							if (!lotNumber.equals(inventoryLnDetail.getInventoryLnDetailLotNumber())) {
-								continue;
-							}
-						}
-						if (itemMatrixNum != null && itemMatrixNum != 0) {
-							if (inventoryLnDetail.getItemMatrixNum() != null
-									&& !itemMatrixNum.equals(inventoryLnDetail.getItemMatrixNum())) {
-								continue;
-							}
-						}
-						amount = amount.add(inventoryLnDetail.getInventoryLnDetailAmount());
-						money = money.add(inventoryLnDetail.getInventoryLnDetailAmount().multiply(
-								inventoryLnDetail.getInventoryLnDetailCostPrice()));
-						assistAmount = assistAmount.add(inventoryLnDetail.getInventoryLnDetailAssistAmount());
-						cost = inventoryLnDetail.getInventoryLnDetailCostPrice();
-					}
-				} else if (posItem.getItemCostMode(branch).equals(AppConstants.C_ITEM_COST_MODE_FIFO)) {
-					List<InventoryBatchDetail> inventoryBatchDetails = inventory.getInventoryBatchDetails();
-					for (int j = 0; j < inventoryBatchDetails.size(); j++) {
-						InventoryBatchDetail inventoryBatchDetail = inventoryBatchDetails.get(j);
-						if (itemMatrixNum != null && itemMatrixNum != 0) {
-							if (inventoryBatchDetail.getItemMatrixNum() != null
-									&& !itemMatrixNum.equals(inventoryBatchDetail.getItemMatrixNum())) {
-								continue;
-							}
-						}
-						amount = amount.add(inventoryBatchDetail.getInventoryBatchDetailAmount());
-						money = money.add(inventoryBatchDetail.getInventoryBatchDetailAmount().multiply(
-								inventoryBatchDetail.getInventoryBatchDetailCostPrice()));
-						assistAmount = assistAmount.add(inventoryBatchDetail.getInventoryBatchDetailAssistAmount());
-					}
-				} else if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_MATRIX) {
-					List<InventoryMatrix> inventoryMatrixs = inventory.getInventoryMatrixs();
-					for (int j = 0; j < inventoryMatrixs.size(); j++) {
-						InventoryMatrix inventoryMatrix = inventoryMatrixs.get(j);
-						if (itemMatrixNum != null && itemMatrixNum != 0) {
-							if (inventoryMatrix.getId().getItemMatrixNum() != null
-									&& !itemMatrixNum.equals(inventoryMatrix.getId().getItemMatrixNum())) {
-								continue;
-							}
-						}
-						amount = amount.add(inventoryMatrix.getInventoryMatrixAmount());
-						assistAmount = assistAmount.add(inventoryMatrix.getInventoryMatrixAssistAmount());
-					}
-				} else {
-					amount = amount.add(inventory.getInventoryAmount());
-					money = money.add(inventory.getInventoryMoney());
-					assistAmount = assistAmount.add(inventory.getInventoryAssistAmount());
-				}
-			}
-		}
-		if (!posItem.getItemCostMode(branch).equals(AppConstants.C_ITEM_COST_MODE_MANUAL)
-				|| StringUtils.isNotEmpty(lotNumber)) {
-			if (amount.compareTo(BigDecimal.ZERO) > 0) {
-				cost = money.divide(amount, 4, BigDecimal.ROUND_HALF_UP);
-			}
-		}
-		Object[] obj = new Object[5];
-		obj[0] = amount;
-		obj[1] = assistAmount;
-		obj[2] = money;
-		obj[3] = cost;
-		obj[4] = found;
-		return obj;
-	}
-
-	public static Object[] getInventoryAmount(Inventory inventory, Integer itemNum, String lotNumber,
-			Integer itemMatrixNum) {
-		Object[] objects = new Object[3];
-		BigDecimal qty = BigDecimal.ZERO;
-		BigDecimal assistQty = BigDecimal.ZERO;
-		BigDecimal cost = BigDecimal.ZERO;
-		if (inventory != null) {
-			if (inventory.getInventoryAmount().compareTo(BigDecimal.ZERO) != 0) {
-
-				cost = inventory.getInventoryMoney()
-						.divide(inventory.getInventoryAmount(), 4, BigDecimal.ROUND_HALF_UP);
-			}
-			List<InventoryMatrix> inventoryMatrixs = inventory.getInventoryMatrixs();
-			List<InventoryBatchDetail> inventoryBatchDetails = inventory.getInventoryBatchDetails();
-			List<InventoryLnDetail> inventoryLnDetails = inventory.getInventoryLnDetails();
-			if (inventoryMatrixs.size() > 0) {
-				for (int i = 0; i < inventoryMatrixs.size(); i++) {
-					InventoryMatrix inventoryMatrix = inventoryMatrixs.get(i);
-					if (itemMatrixNum != null && itemMatrixNum != 0) {
-						if (!itemMatrixNum.equals(inventoryMatrix.getId().getItemMatrixNum())) {
-							continue;
-						}
-					}
-					qty = qty.add(inventoryMatrix.getInventoryMatrixAmount());
-					assistQty = assistQty.add(inventoryMatrix.getInventoryMatrixAssistAmount());
-
-				}
-			} else if (inventoryBatchDetails.size() > 0) {
-				for (int i = 0; i < inventoryBatchDetails.size(); i++) {
-					InventoryBatchDetail inventoryBatchDetail = inventoryBatchDetails.get(i);
-					if (itemMatrixNum != null && itemMatrixNum != 0) {
-						if (inventoryBatchDetail.getItemMatrixNum() != null
-								&& !itemMatrixNum.equals(inventoryBatchDetail.getItemMatrixNum())) {
-							continue;
-						}
-					}
-					qty = qty.add(inventoryBatchDetail.getInventoryBatchDetailAmount());
-					assistQty = assistQty.add(inventoryBatchDetail.getInventoryBatchDetailAssistAmount());
-
-				}
-			} else if (inventoryLnDetails.size() > 0) {
-				for (int i = 0; i < inventoryLnDetails.size(); i++) {
-					InventoryLnDetail inventoryLnDetail = inventoryLnDetails.get(i);
-					if (itemMatrixNum != null && itemMatrixNum != 0) {
-						if (inventoryLnDetail.getItemMatrixNum() != null
-								&& !itemMatrixNum.equals(inventoryLnDetail.getItemMatrixNum())) {
-							continue;
-						}
-					}
-					if (lotNumber != null) {
-						if (!StringUtils.equals(lotNumber, inventoryLnDetail.getInventoryLnDetailLotNumber())) {
-							continue;
-						}
-						cost = inventoryLnDetail.getInventoryLnDetailCostPrice();
-					}
-					qty = qty.add(inventoryLnDetail.getInventoryLnDetailAmount());
-					assistQty = assistQty.add(inventoryLnDetail.getInventoryLnDetailAssistAmount());
-				}
-			} else {
-				qty = inventory.getInventoryAmount();
-				assistQty = inventory.getInventoryAssistAmount();
-			}
-		}
-		objects[0] = qty.setScale(4, BigDecimal.ROUND_HALF_UP);
-		;
-		objects[1] = assistQty.setScale(4, BigDecimal.ROUND_HALF_UP);
-		;
-		objects[2] = cost.setScale(4, BigDecimal.ROUND_HALF_UP);
-		return objects;
-	}
-
-	public static Storehouse getStorehouse(List<Storehouse> storehouses, Integer storehouseNum) {
-		for (int i = 0; i < storehouses.size(); i++) {
-			Storehouse storehouse = storehouses.get(i);
-			if (storehouse.getStorehouseNum().equals(storehouseNum)) {
-				return storehouse;
-			}
-		}
-		return null;
-	}
-
-	public static List<Storehouse> findStorehouses(List<Storehouse> storehouses, Integer branchNum, boolean isCenter) {
-		List<Storehouse> list = new ArrayList<Storehouse>();
-		for (int i = 0; i < storehouses.size(); i++) {
-			Storehouse storehouse = storehouses.get(i);
-			List<Branch> branchs = storehouse.getBranchs();
-			if (branchs.size() == 0) {
-				continue;
-			}
-			Branch branch = branchs.get(0);
-			if (branch.getId().getBranchNum().equals(branchNum)) {
-				if (isCenter) {
-					if (storehouse.getStorehouseCenterTag() != null && storehouse.getStorehouseCenterTag()) {
-						list.add(storehouse);
-					}
-				} else {
-					list.add(storehouse);
-				}
-			}
-		}
-		return list;
-	}
-
-	private static void addPrivilege(String privilegeResourceCategory, String PrivilegeResourceName,
-			List<PrivilegeResource> privilegeResources, List<PrivilegeResource> addPrivilegeResources) {
-		for (int i = 0; i < privilegeResources.size(); i++) {
-			PrivilegeResource privilegeResource = privilegeResources.get(i);
-			if (privilegeResource.getPrivilegeResourceName().equals(PrivilegeResourceName)) {
-				addPrivilegeResources.add(privilegeResource);
-			}
-		}
-	}
-
-
-
 	public static int getStringWidth(String str) {
 		int width = 0;
 		for (int i = 0; i < str.length(); i++) {
@@ -957,61 +432,6 @@ public class AppUtil {
 			return true;
 		}
 		return false;
-	}
-
-	public static String constructHTTPGetParam(String secret, Map<String, Object> map) {
-		map.put("timestamp", DateUtil.getLongDateTimeStr(Calendar.getInstance().getTime()));
-		Set<String> keySet = map.keySet();
-		Object[] objs = keySet.toArray();
-		Arrays.sort(objs);
-		StringBuffer sb = new StringBuffer();
-		sb.append(secret);
-		for (int i = 0; i < objs.length; i++) {
-			String param = objs[i].toString();
-			String value = map.get(param).toString();
-			if (isChinese(value)) {
-				continue;
-			}
-			sb.append(param).append(value);
-		}
-		sb.append(secret);
-		String sign = sb.toString();
-		sign = DigestUtils.md5Hex(sign);// 对 API 输入参数进行 md5 加密
-		map.put("sign", sign);
-		sb = new StringBuffer();
-		keySet = map.keySet();
-		Iterator<String> keyIterator = keySet.iterator();
-		while (keyIterator.hasNext()) {
-			String key = keyIterator.next();
-			Object object = map.get(key);
-			String value = object.toString();
-			if (key.equals("url")) {
-				try {
-					value = URLEncoder.encode(value, "utf-8");
-				} catch (UnsupportedEncodingException e) {
-
-				}
-			}
-			if (sb.toString().isEmpty()) {
-				sb.append("?");
-
-			} else {
-				sb.append("&");
-
-			}
-			sb.append(key).append("=").append(value);
-		}
-		return sb.toString();
-	}
-
-	public static SystemBook getSystemBook(List<SystemBook> systemBooks, String systemBookCode) {
-		for (int i = 0; i < systemBooks.size(); i++) {
-			SystemBook systemBook = systemBooks.get(i);
-			if (systemBook.getSystemBookCode().equals(systemBookCode)) {
-				return systemBook;
-			}
-		}
-		return null;
 	}
 
 	public static boolean isChinese(String str) {
@@ -1836,9 +1256,6 @@ public class AppUtil {
 		return gson;
 	}
 
-	public static boolean isIntegerValue(BigDecimal bd) {
-		return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
-	}
 	
 	public static <T> T get(List<T> list, T condition) {
 		try {
@@ -1938,22 +1355,6 @@ public class AppUtil {
 			return new ArrayList<T>();
 		}
 	}
-	
-    /**
-     * 获取一定长度的随机字符串
-     * @param length 指定字符串长度
-     * @return 一定长度的字符串
-     */
-    public static String getRandomStringByLength(int length) {
-        String base = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        Random random = new Random();
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(base.length());
-            sb.append(base.charAt(number));
-        }
-        return sb.toString();
-    }
     
     public static String getMACAddress(){  
     	try {
@@ -1982,67 +1383,11 @@ public class AppUtil {
     	return null;
 
     }
-
-	public static String getTmallPosOrderMNSQueueName() {
-		return tmallPosOrderMNSQueueName;
-	}
-
-	public static String getTmallRequestOrderMNSQueueName() {
-		return tmallRequestOrderMNSQueueName;
-	}
-
-	public static String getTmallOutOrderMNSQueueName() {
-		return tmallOutOrderMNSQueueName;
-	}
-
-	public static String getTmallShipOrderMNSQueueName() {
-		return tmallShipOrderMNSQueueName;
-	}
-
-	public static void setTmallPosOrderMNSQueueName(String tmallPosOrderMNSQueueName) {
-		AppUtil.tmallPosOrderMNSQueueName = tmallPosOrderMNSQueueName;
-	}
-
-	public static void setTmallRequestOrderMNSQueueName(String tmallRequestOrderMNSQueueName) {
-		AppUtil.tmallRequestOrderMNSQueueName = tmallRequestOrderMNSQueueName;
-	}
-
-	public static void setTmallOutOrderMNSQueueName(String tmallOutOrderMNSQueueName) {
-		AppUtil.tmallOutOrderMNSQueueName = tmallOutOrderMNSQueueName;
-	}
-
-	public static void setTmallShipOrderMNSQueueName(String tmallShipOrderMNSQueueName) {
-		AppUtil.tmallShipOrderMNSQueueName = tmallShipOrderMNSQueueName;
-	}
-	
 	public static boolean checkMaoXiongBookCode(String systemBookCode){
 		if(systemBookCode.equals("6465")){
 			return true;
 		}
 		return false;
-	}
-
-	public static boolean checkPQYBookCode(String systemBookCode){
-		if(systemBookCode.equals("6360") || systemBookCode.equals("4020") || systemBookCode.equals("4344")){
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean isImage(String suffix) {
-		Pattern p = Pattern.compile("\\.(jpg|jpeg|png|bmp|gif)$");
-		if(p.matcher(suffix.toLowerCase()).matches()) {
-			return true;
-		}
-		return false;
-	}
-	
-	public static boolean checkOutWithOrderPrice(String systemBookCode){
-		if(systemBookCode.equals("6435") || systemBookCode.equals("6360") || systemBookCode.equals("4997")){
-			return true;
-		}
-		return false;
-		
 	}
 
 	public static BigDecimal getGroupCustomerValue(GroupCustomer groupCustomer, String type) {
