@@ -190,19 +190,6 @@ public interface PosOrderDao {
                                             Date dateTo);
 
 	/**
-	 * 按商品主键汇总销售数量 销售金额 成本金额
-	 * @param systemBookCode
-	 * @param branchNums  销售分店列表
-	 * @param dateFrom 营业日起
-	 * @param dateTo 营业日止
-	 * @param itemNums 商品主键列表
-	 * @param queryKit 组合商品是否按明细统计
-	 * @return
-	 */
-	public List<Object[]> findItemSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-                                      List<Integer> itemNums, boolean queryKit);
-
-	/**
 	 * 按门店 商品 汇总 数量  销售金额
 	 * @param systemBookCode
 	 * @param branchNums

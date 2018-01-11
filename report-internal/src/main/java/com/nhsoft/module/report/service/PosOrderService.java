@@ -87,20 +87,6 @@ public interface PosOrderService {
 	public List<Object[]> findBizmonthItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
                                                   Date dateTo, List<Integer> itemNums);
 
-
-	/**
-	 * 商品主键、多特性 汇总销售数量 销售金额 毛利金额
-	 * @param systemBookCode
-	 * @param branchNums
-	 * @param dateFrom
-	 * @param dateTo
-	 * @param itemNums
-	 * @return
-	 */
-	public List<Object[]> findItemSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
-
-
-
 	/**
 	 * 按供应商汇总数据
 	 * @param systemBookCode

@@ -183,59 +183,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findItemSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-									  List<Integer> itemNums, boolean queryKit) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select detail.item_num, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else order_detail_amount end) as amount,");
-		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
-		sb.append("count(detail.item_num) as saleCount ");
-		sb.append("from pos_order_detail as detail with(nolock) ");
-		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' ");
-		if (branchNums != null && branchNums.size() > 0) {
-			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		}
-		sb.append("and detail.order_detail_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and  '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		sb.append("and detail.order_detail_order_state in (5, 7) ");
-		sb.append("and detail.order_detail_state_code != 8 and detail.item_num is not null ");
-		if (itemNums != null && itemNums.size() > 0) {
-			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
-		}
-		if (queryKit) {
-			sb.append("and (detail.order_detail_has_kit is null or  detail.order_detail_has_kit = 0) ");
-		}
-		sb.append("group by detail.item_num");
-		Query query = currentSession().createSQLQuery(sb.toString());
-		List<Object[]> objects = query.list();
-		if (queryKit) {
-			sb = new StringBuffer();
-			sb.append("select detail.item_num, ");
-			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else order_kit_detail_amount end) as amount,");
-			sb.append("sum(case when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money end) as money, ");
-			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
-			sb.append("count(detail.item_num) as saleCount ");
-			sb.append("from pos_order_kit_detail as detail with(nolock) ");
-			sb.append("where detail.order_kit_detail_book_code = '" + systemBookCode + "' ");
-			if (branchNums != null && branchNums.size() > 0) {
-				sb.append("and detail.order_kit_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-			}
-			sb.append("and detail.order_kit_detail_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and  '" + DateUtil.getDateShortStr(dateTo) + "' ");
-			sb.append("and detail.order_kit_detail_order_state in (5, 7) ");
-			sb.append("and detail.order_kit_detail_state_code != 8  and detail.item_num is not null ");
-			if (itemNums != null && itemNums.size() > 0) {
-				sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
-			}
-			sb.append("group by detail.item_num");
-			query = currentSession().createSQLQuery(sb.toString());
-			List<Object[]> kitObjects = query.list();
-			objects.addAll(kitObjects);
-		}
-		return objects;
-	}
-
-
-	@Override
 	public List<Object[]> findBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 											Date dateTo, String paymentType) {
 		Criteria criteria = currentSession().createCriteria(Payment.class, "p").add(

@@ -42,6 +42,8 @@ public class ReportServiceImpl implements ReportService {
 	@Autowired
 	private PosOrderDao posOrderDao;
 	@Autowired
+	private PosOrderService posOrderService;
+	@Autowired
 	public TransferOutOrderDao transferOutOrderDao;
 	@Autowired
 	private WholesaleOrderDao wholesaleOrderDao;
@@ -1752,7 +1754,7 @@ public class ReportServiceImpl implements ReportService {
 		List<ABCAnalysis> list = new ArrayList<ABCAnalysis>();
 		BigDecimal totalMoney = BigDecimal.ZERO;
 		
-		List<Object[]> objects = posOrderDao.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, null, true);
+		List<Object[]> objects = posOrderService.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, null, true);
 		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
@@ -10592,7 +10594,7 @@ public class ReportServiceImpl implements ReportService {
 		List<Object[]> objects = null;
 		if (posItemPriceBandQuery.getType().equals(AppConstants.CHECKBOX_SALE)) {
 			
-			objects = posOrderDao.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, null, false);
+			objects = posOrderService.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, null, false);
 			
 		} else if (posItemPriceBandQuery.getType().equals(AppConstants.CHECKBOX_OUT)) {
 			if(branchNums == null){

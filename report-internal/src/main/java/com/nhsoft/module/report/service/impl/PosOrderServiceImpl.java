@@ -15,9 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 public class PosOrderServiceImpl implements PosOrderService {
@@ -57,7 +56,36 @@ public class PosOrderServiceImpl implements PosOrderService {
 
 	@Override
 	public List<Object[]> findItemSum(ItemQueryDTO itemQueryDTO) {
-		return posOrderDao.findItemSum(itemQueryDTO);
+
+		List<Object[]> objects = posOrderDao.findItemSum(itemQueryDTO);
+		if(itemQueryDTO.getQueryKit()){
+			List<Object[]> returnObjects = new ArrayList<>(objects.size());
+			Set<Integer> itemNumSet = new HashSet<>(objects.size());
+			for(Object[] object : objects){
+
+				if(!itemNumSet.contains(object[0])){
+					returnObjects.add(object);
+					itemNumSet.add((Integer) object[0]);
+					continue;
+				}
+
+				for(Object[] returnObject : returnObjects){
+					if(returnObject[0].equals(object[0])){
+						returnObject[1] = (returnObject[1] == null? BigDecimal.ZERO:(BigDecimal)returnObject[1]).add(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+						returnObject[2] = (returnObject[2] == null?BigDecimal.ZERO:(BigDecimal)returnObject[2]).add(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+						returnObject[3] = (returnObject[3] == null?BigDecimal.ZERO:(BigDecimal)returnObject[3]).add(object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3]);
+						returnObject[4] = returnObject[4] == null?0:(Integer)returnObject[4] + (object[4] == null?0:(Integer)object[4]);
+						returnObject[5] = (returnObject[5] == null?BigDecimal.ZERO:(BigDecimal)returnObject[5]).add(object[5] == null?BigDecimal.ZERO:(BigDecimal)object[5]);
+						break;
+					}
+				}
+			}
+			return returnObjects;
+
+		} else {
+			return objects;
+
+		}
 	}
 
 
@@ -71,13 +99,6 @@ public class PosOrderServiceImpl implements PosOrderService {
 												  Date dateTo, List<Integer> itemNums) {
 		return posOrderDao.findBizmonthItemSummary(systemBookCode, branchNums, dateFrom, dateTo, itemNums);
 	}
-
-
-	@Override
-	public List<Object[]> findItemSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return posOrderDao.findItemMatrixSum(systemBookCode, branchNums, dateFrom, dateTo, false);
-	}
-
 
 	@Override
 	public List<Object[]> findSupplierSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodes, List<Integer> itemNums, boolean queryKit) {
@@ -104,7 +125,15 @@ public class PosOrderServiceImpl implements PosOrderService {
 	@Override
 	public List<Object[]> findItemSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
 									  List<Integer> itemNums, boolean queryKit) {
-		return posOrderDao.findItemSum(systemBookCode, branchNums, dateFrom, dateTo, itemNums, queryKit);
+
+		ItemQueryDTO itemQueryDTO = new ItemQueryDTO();
+		itemQueryDTO.setSystemBookCode(systemBookCode);
+		itemQueryDTO.setBranchNums(branchNums);
+		itemQueryDTO.setDateFrom(dateFrom);
+		itemQueryDTO.setDateTo(dateTo);
+		itemQueryDTO.setItemNums(itemNums);
+		itemQueryDTO.setQueryKit(queryKit);
+		return findItemSum(itemQueryDTO);
 	}
 
 	@Override

@@ -108,6 +108,7 @@ public static class PosItemLogShardingTableAlgorithm implements SingleKeyTableSh
 				result.add("pos_item_log_" + i);
 			}
 		}
+
 		return result;
 	}
 }
