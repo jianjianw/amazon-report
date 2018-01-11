@@ -2117,9 +2117,9 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key="'AMA_findSupplierLianYing' + #supplierSaleQuery.getKey()")
-	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierBranchQuery) {
-		return reportService.findSupplierLianYing(supplierBranchQuery);
+	@Cacheable(value = "serviceCache", key="'AMA_findSupplierLianYing' + #p0.getKey()")
+	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierSaleQuery) {
+		return reportService.findSupplierLianYing(supplierSaleQuery);
 	}
 
 	@Override
