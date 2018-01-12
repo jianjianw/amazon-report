@@ -1,6 +1,6 @@
-package com.nhsoft.module.azure.rest;
+package com.nhsoft.module.azure.api;
 
-import com.nhsoft.module.azure.invoke.Invoke;
+import com.nhsoft.module.azure.internal.ImportAzure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +13,10 @@ import java.util.Date;
 
 @RestController
 @RequestMapping(value="/invoke")
-public class InvokeApi {
+public class InitMultipleApi {
 
     @Autowired
-    private Invoke invoke;
+    private ImportAzure importAzure;
 
     @RequestMapping(method = RequestMethod.GET, value = "/init/branchDaily/{systemBookCode}/{dateFrom}/{dateTo}")
     public String initBranchDaily(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
@@ -29,7 +29,7 @@ public class InvokeApi {
         } catch (ParseException e) {
             throw new RuntimeException("日期解析失败");
         }
-        invoke.saveBranchDailys(systemBookCode, form, to);
+        importAzure.saveBranchDailys(systemBookCode, form, to);
         return "SUCCESS";
     }
 
@@ -44,7 +44,7 @@ public class InvokeApi {
         } catch (ParseException e) {
             throw new RuntimeException("日期解析失败");
         }
-        invoke.saveBranchDailyDirects(systemBookCode, from, to);
+        importAzure.saveBranchDailyDirects(systemBookCode, from, to);
         return "SUCCESS";
     }
 
@@ -61,7 +61,7 @@ public class InvokeApi {
         } catch (ParseException e) {
             throw new RuntimeException("日期解析失败");
         }
-        invoke.saveItemDailyDeatils(systemBookCode, form, to);
+        importAzure.saveItemDailyDeatils(systemBookCode, form, to);
         return "SUCCESS";
     }
 
@@ -70,7 +70,7 @@ public class InvokeApi {
     //一下都是新加的表
     @RequestMapping(method = RequestMethod.GET, value = "/init/bizday/{systemBookCode}")
     public String saveBizday(@PathVariable("systemBookCode") String systemBookCode) {
-        invoke.saveBizday(systemBookCode);
+        importAzure.saveBizday(systemBookCode);
         return "SUCCESS";
 
     }
@@ -82,7 +82,7 @@ public class InvokeApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Date from = sdf.parse(dateFrom);
         Date to = sdf.parse(dateTo);
-        invoke.saveItemSaleDailys(systemBookCode, from, to);
+        importAzure.saveItemSaleDailys(systemBookCode, from, to);
         return "SUCCESS";
     }
 
@@ -92,7 +92,7 @@ public class InvokeApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Date from = sdf.parse(dateFrom);
         Date to = sdf.parse(dateTo);
-        invoke.saveItemLossDailys(systemBookCode, from, to);
+        importAzure.saveItemLossDailys(systemBookCode, from, to);
         return "SUCCESS";
     }
 
@@ -103,21 +103,21 @@ public class InvokeApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Date from = sdf.parse(dateFrom);
         Date to = sdf.parse(dateTo);
-        invoke.saveCardDailys(systemBookCode, from, to);
+        importAzure.saveCardDailys(systemBookCode, from, to);
         return "SUCCESS";
     }
 
 
     @RequestMapping(method = RequestMethod.GET,value = "/init/item/{systemBookCode}")
     public String initItem(@PathVariable("systemBookCode") String systemBookCode) {
-        invoke.saveItems(systemBookCode);
+        importAzure.saveItems(systemBookCode);
         return "SUCCESS";
     }
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/init/branch/{systemBookCode}")
     public String insertBranch(@PathVariable("systemBookCode") String systemBookCode) {//@PathVariable("systemBookCode")
-        invoke.saveBranch(systemBookCode);
+        importAzure.saveBranch(systemBookCode);
         return "SUCCESS";
     }
 }

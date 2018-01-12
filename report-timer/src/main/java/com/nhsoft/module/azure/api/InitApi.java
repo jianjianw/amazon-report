@@ -1,21 +1,25 @@
-package com.nhsoft.module.azure.invoke;
+package com.nhsoft.module.azure.api;
 
 import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.rpc.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Component
-public class Invoke {
-
+@RestController
+@RequestMapping(value="/azure")
+public class InitApi {
 
     @Autowired
     private PosOrderRpc posOrderRpc;
@@ -30,49 +34,38 @@ public class Invoke {
     @Autowired
     private PosItemRpc posItemRpc;
 
-    public void saveBranchDailys(String systemBookCode,Date dateFrom ,Date dateTo){
-        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, dateFrom, dateTo);
-        azureService.batchSaveBranchDailies(systemBookCode,branchDailySummary,dateFrom,dateTo);
+
+    @RequestMapping(method = RequestMethod.GET,value = "/echo")
+    public String echo(){
+
+        Date time = Calendar.getInstance().getTime();
+        return time.toString();
     }
 
-    public void saveBranchDailyDirects(String systemBookCode, Date dateFrom ,Date dateTo){
-        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, dateFrom, dateTo);
-        int size = branchDailySummary.size();
-        List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>(size);
-        for (int i = 0; i <size ; i++) {
-            BranchDaily branchDaily = branchDailySummary.get(i);
-            BranchDailyDirect branchDailyDirect = new BranchDailyDirect();
-            branchDailyDirect.setSystemBookCode(branchDaily.getSystemBookCode());
-            branchDailyDirect.setBranchNum(branchDaily.getBranchNum());
-            branchDailyDirect.setShiftTableBizday(branchDaily.getShiftTableBizday());
-            branchDailyDirect.setDailyMoney(branchDaily.getDailyMoney());
-            branchDailyDirect.setDailyQty(branchDaily.getDailyQty());
-            branchDailyDirect.setShiftTableDate(branchDaily.getShiftTableDate());
-            branchDailyDirect.setDailyPrice(branchDaily.getDailyPrice());
-            branchDailyDirect.setTargetMoney(branchDaily.getTargetMoney());
-            list.add(branchDailyDirect);
+    @RequestMapping(method = RequestMethod.GET, value = "/init/branchDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String initBranchDaily(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+        Date form = null;
+        Date to = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            form = sdf.parse(dateFrom);
+            to = sdf.parse(dateTo);
+        } catch (ParseException e) {
+            throw new RuntimeException("日期解析失败");
         }
-        azureService.batchSaveBranchDailyDirects(systemBookCode,list,dateFrom,dateTo);
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, form, to);
+        azureService.batchSaveBranchDailies(systemBookCode, branchDailySummary,form,to);
+        return "SUCCESS";
     }
 
-    public void saveItemDailyDeatils(String systemBookCode, Date dateFrom , Date dateTo){
-        //在商品维度表里面查询商品编码
-        List<Integer> posItemNums = azureService.findPosItemNums(systemBookCode);
-        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo,posItemNums);
-        azureService.batchSaveItemDailyDetails(systemBookCode,itemDailyDetailSummary,dateFrom,dateTo);
-    }
-
-    public void saveBranch(String systemBookCode){
+    @RequestMapping(method = RequestMethod.GET, value = "/init/branch/{systemBookCode}")
+    public String insertBranch(@PathVariable("systemBookCode") String systemBookCode) {//@PathVariable("systemBookCode")
         List<BranchDTO> brachDTO = branchRpc.findInCache(systemBookCode);
-        int size = brachDTO.size();
-        List<Branch> list = new ArrayList<Branch>(size);
-        if (brachDTO.isEmpty()) {
-            return;
-        }
-        for (int i = 0; i < size; i++) {
+        List<Branch> list = new ArrayList<Branch>();
+        for (int i = 0; i < brachDTO.size(); i++) {
             BranchDTO branchDTO = brachDTO.get(i);
             Branch branch = new Branch();
-            branch.setSystemBookCode(branchDTO.getSystemBookCode());
+            branch.setSystemBookCode(systemBookCode);
             branch.setBranchNum(branchDTO.getBranchNum());
             branch.setBranchCode(branchDTO.getBranchCode());
             branch.setBranchName(branchDTO.getBranchName());
@@ -85,26 +78,60 @@ public class Invoke {
             list.add(branch);
         }
         azureService.batchSaveBranchs(systemBookCode, list);
+        return "SUCCESS";
     }
 
-    public void saveItems(String systemBookCode){
-        List<PosItemDTO> all = posItemRpc.findAll(systemBookCode);
-        List<PosItem> list = new ArrayList<PosItem>();
-        for (int i = 0; i < all.size() ; i++) {
-            PosItemDTO posItemDTO = all.get(i);
-            PosItem posItem = new PosItem();
-            posItem.setSystemBookCode(posItemDTO.getSystemBookCode());
-            posItem.setItemNum(posItemDTO.getItemNum());
-            posItem.setItemName(posItemDTO.getItemName());
-            posItem.setItemCategory(posItemDTO.getItemCategoryCode());//顶级父类
-            posItem.setItemSubCategory(posItemDTO.getItemCategory());
-            posItem.setItemCode(posItemDTO.getItemCode());
-            list.add(posItem);
+    @RequestMapping(method = RequestMethod.GET, value = "/init/itemDetail/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String initItemDeatil(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+
+        Date form = null;
+        Date to = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            form = sdf.parse(dateFrom);
+            to = sdf.parse(dateTo);
+        } catch (ParseException e) {
+            throw new RuntimeException("日期解析失败");
         }
-        azureService.batchSaveItem(systemBookCode,list);
+        List<Integer> posItemNums = azureService.findPosItemNums(systemBookCode);
+        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode, form, to,posItemNums);
+        azureService.batchSaveItemDailyDetails(systemBookCode, itemDailyDetailSummary,form,to);
+        return "SUCCESS";
     }
 
-    public void saveBizday(String systemBookCode){
+    @RequestMapping(method = RequestMethod.GET, value = "/init/branchDailyDirect/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String initBranchDailyDirect(@PathVariable("systemBookCode") String systemBookCode, @PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) {
+        Date from = null;
+        Date to = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            from = sdf.parse(dateFrom);
+            to = sdf.parse(dateTo);
+        } catch (ParseException e) {
+            throw new RuntimeException("日期解析失败");
+        }
+        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, from, to);
+        List<BranchDailyDirect> list = new ArrayList<BranchDailyDirect>();
+        for (int i = 0; i <branchDailySummary.size() ; i++) {
+            BranchDaily branchDaily = branchDailySummary.get(i);
+            BranchDailyDirect branchDailyDirect = new BranchDailyDirect();
+            branchDailyDirect.setSystemBookCode(branchDaily.getSystemBookCode());
+            branchDailyDirect.setBranchNum(branchDaily.getBranchNum());
+            branchDailyDirect.setShiftTableBizday(branchDaily.getShiftTableBizday());
+            branchDailyDirect.setDailyMoney(branchDaily.getDailyMoney());
+            branchDailyDirect.setDailyQty(branchDaily.getDailyQty());
+            branchDailyDirect.setShiftTableDate(branchDaily.getShiftTableDate());
+            branchDailyDirect.setDailyPrice(branchDaily.getDailyPrice());
+            branchDailyDirect.setTargetMoney(branchDaily.getTargetMoney());
+            list.add(branchDailyDirect);
+        }
+        azureService.batchSaveBranchDailyDirects(systemBookCode,list,from,to);
+        return "SUCCESS";
+    }
+
+    //一下都是新加的表
+    @RequestMapping(method = RequestMethod.GET,value="/init/bizday/{systemBookCode}")
+    public String saveBizday(@PathVariable("systemBookCode") String systemBookCode){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   //设置日期格式
         Calendar calendar = Calendar.getInstance();
         Date day = calendar.getTime();
@@ -232,13 +259,20 @@ public class Invoke {
             list.add(bizday);
         }
         azureService.batchSaveBizdays(systemBookCode,list);
+        return "SUCCESS";
+
     }
 
-    public void saveItemSaleDailys(String systemBookCode, Date dateFrom, Date dateTo){
-        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBookCode, dateFrom, dateTo);
-        int size = itemSaleDailySummary.size();
-        List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>(size);
-        for(int i = 0; i<size; i++){
+
+    //商品日销售
+    @RequestMapping(method = RequestMethod.GET,value = "/init/saleDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String initSaleDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBookCode, from, to);
+        List<ItemSaleDaily> list = new ArrayList<ItemSaleDaily>();
+        for(int i = 0; i<itemSaleDailySummary.size(); i++){
             ItemSaleDailyDTO itemSaleDailyDTO = itemSaleDailySummary.get(i);
             ItemSaleDaily itemSaleDaily = new ItemSaleDaily();
             itemSaleDaily.setSystemBookCode(systemBookCode);
@@ -253,12 +287,17 @@ public class Invoke {
             itemSaleDaily.setItemMemberTag(itemSaleDailyDTO.getItemMemberTag());
             list.add(itemSaleDaily);
         }
-        azureService.batchSaveItemSaleDailies(systemBookCode,list,dateFrom,dateTo);
+        azureService.batchSaveItemSaleDailies(systemBookCode,list,from,to);
+        return "SUCCESS";
     }
 
-
-    public void saveItemLossDailys(String systemBookCode, Date dateFrom, Date dateTo){
-        List<ItemLossDailyDTO> itemLossDailySummary = adjustmentOrderRpc.findItemLoss(systemBookCode, dateFrom, dateTo);
+    //商品日报损
+    @RequestMapping(method = RequestMethod.GET,value = "/init/lossDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String initLossDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        List<ItemLossDailyDTO> itemLossDailySummary = adjustmentOrderRpc.findItemLoss(systemBookCode, from, to);
         List<ItemLossDaily> list = new ArrayList<ItemLossDaily>();
         for (int i = 0; i <itemLossDailySummary.size() ; i++) {
             ItemLossDailyDTO itemLossDailyDTO = itemLossDailySummary.get(i);
@@ -273,13 +312,20 @@ public class Invoke {
             itemLossDaily.setItemAmount(itemLossDailyDTO.getItemAmount());
             list.add(itemLossDaily);
         }
-        azureService.batchSaveItemLossDailies(systemBookCode,list,dateFrom,dateTo);
+        azureService.batchSaveItemLossDailies(systemBookCode,list,from,to);
+        return "SUCCESS";
     }
 
+    //会员统计
+    @RequestMapping(method = RequestMethod.GET,value = "/init/cardDaily/{systemBookCode}/{dateFrom}/{dateTo}")
+    public String  initCardDaily(@PathVariable("systemBookCode") String systemBookCode ,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{
 
-    public void saveCardDailys(String systemBookCode, Date dateFrom, Date dateTo){
-        List<CardDailyDTO> CardDailyDTOs = reportRpc.findCardDailys(systemBookCode, null, dateFrom, dateTo);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date from = sdf.parse(dateFrom);
+        Date to = sdf.parse(dateTo);
+        List<CardDailyDTO> CardDailyDTOs = reportRpc.findCardDailys(systemBookCode, null, from, to);
         List<CardDaily> list = new ArrayList<CardDaily>();
+
         for (int i = 0; i <CardDailyDTOs.size() ; i++) {
             CardDailyDTO cardDailyDTO = CardDailyDTOs.get(i);
             CardDaily cardDaily = new CardDaily();
@@ -296,8 +342,27 @@ public class Invoke {
             cardDaily.setCardConsumeMoney(cardDailyDTO.getCardConsumeMoney());
             list.add(cardDaily);
         }
-        azureService.batchSaveCardDailies(systemBookCode,list,dateFrom,dateTo);
+        azureService.batchSaveCardDailies(systemBookCode,list,from,to);
+        return "SUCCESS";
     }
 
+    @RequestMapping(method = RequestMethod.GET,value = "/init/item/{systemBookCode}")
+    public String initItem(@PathVariable("systemBookCode") String systemBookCode){
+        List<PosItemDTO> all = posItemRpc.findAll(systemBookCode);
+        List<PosItem> list = new ArrayList<PosItem>();
+        for (int i = 0; i < all.size() ; i++) {
+            PosItemDTO posItemDTO = all.get(i);
+            PosItem posItem = new PosItem();
+            posItem.setSystemBookCode(posItemDTO.getSystemBookCode());
+            posItem.setItemNum(posItemDTO.getItemNum());
+            posItem.setItemName(posItemDTO.getItemName());
+            posItem.setItemCategory(posItemDTO.getItemCategoryCode());//顶级父类
+            posItem.setItemSubCategory(posItemDTO.getItemCategory());
+            posItem.setItemCode(posItemDTO.getItemCode());
+            list.add(posItem);
+        }
+        azureService.batchSaveItem(systemBookCode,list);
+        return "SUCCESS";
+    }
 
 }

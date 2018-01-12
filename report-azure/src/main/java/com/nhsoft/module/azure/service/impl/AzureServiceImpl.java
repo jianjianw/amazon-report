@@ -5,7 +5,6 @@ import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
