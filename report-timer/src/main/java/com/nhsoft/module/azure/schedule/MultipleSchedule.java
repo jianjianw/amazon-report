@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-@Component
+//@Component
 public class MultipleSchedule implements InitializingBean {
 
     @Autowired
@@ -122,7 +122,7 @@ public class MultipleSchedule implements InitializingBean {
         }
     }
 
-    @Scheduled(cron="0 10,20 0 * * *") //每天凌晨定时更新日期表
+    @Scheduled(cron="0 10,20 0 * * *") //每天凌晨定时更新日期表        //@Scheduled(cron="0 50,53 * * * *")
     public void saveBizday(){
         int length = systemBookCode.length;
         for (int i = 0; i <length ; i++) {

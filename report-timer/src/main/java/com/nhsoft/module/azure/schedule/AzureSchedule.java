@@ -6,6 +6,7 @@ import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.rpc.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-//@Component
+@Component
 public class AzureSchedule {
 
 

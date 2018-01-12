@@ -24,8 +24,8 @@
                     <artifactId>logback-classic</artifactId>
                 </exclusion>
             </exclusions>
-
         </dependency>
+
         <dependency>
             <artifactId>report-azure</artifactId>
             <groupId>com.nhsoft</groupId>
