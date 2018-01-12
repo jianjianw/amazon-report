@@ -43,19 +43,6 @@ public class AzureTestSchedule implements InitializingBean {
     }
 
 
-    @Scheduled(cron="0 */30 * * * *")
-    public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        int size = systemBookCode.length;
-        for (int i = 0; i < size ; i++) {
-
-            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode[i], date, date);
-            azureService.batchSaveBranchDailies(systemBookCode[i],branchDailySummary,date,date);
-        }
-
-    }
-
     @Scheduled(cron="0 0 2-3 * * *")////更新历史1
     public void saveBranchDailyHour(){     //分店销售汇总(每天凌晨2点执行,更新前七天的数据)
         Calendar calendar = Calendar.getInstance();
