@@ -6,18 +6,22 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="amazon-report-export" />
-        <module name="amazon-report-internal" />
+        <module name="provider" />
         <module name="report-azure" />
+        <module name="report-export" />
+        <module name="report-internal" />
         <module name="report-timer" />
+        <module name="utils" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="amazon-report" target="1.5" />
-      <module name="amazon-report-export" target="1.8" />
-      <module name="amazon-report-internal" target="1.8" />
+      <module name="provider" target="1.8" />
       <module name="report-azure" target="1.5" />
+      <module name="report-export" target="1.8" />
+      <module name="report-internal" target="1.8" />
       <module name="report-timer" target="1.5" />
+      <module name="utils" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

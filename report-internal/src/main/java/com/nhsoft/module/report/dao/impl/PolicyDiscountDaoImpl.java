@@ -4,7 +4,7 @@ package com.nhsoft.module.report.dao.impl;
 import com.nhsoft.module.report.dao.PolicyDiscountDao;
 import com.nhsoft.module.report.model.PolicyDiscount;
 import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;

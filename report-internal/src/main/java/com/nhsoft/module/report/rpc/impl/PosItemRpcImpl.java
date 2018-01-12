@@ -6,8 +6,7 @@ import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.rpc.PosItemRpc;
 import com.nhsoft.module.report.service.BookResourceService;
 import com.nhsoft.module.report.service.PosItemService;
-import com.nhsoft.module.report.util.CopyUtil;
-import jdk.nashorn.internal.runtime.regexp.joni.constants.OPSize;
+import com.nhsoft.report.utils.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

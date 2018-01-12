@@ -18,7 +18,6 @@ import java.util.Date;
 //@Component
 public class InvokeSchedule implements InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(InvokeSchedule.class);
     @Autowired
     private Invoke invoke;
     @Autowired
@@ -43,15 +42,6 @@ public class InvokeSchedule implements InitializingBean {
         }
     }
 
-    @Scheduled(cron="0 */30 * * * *")
-    public void saveBranchDailyMin(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        int length = systemBookCode.length;
-        for (int i = 0; i <length ; i++) {
-            invoke.saveBranchDailys(systemBookCode[i],date,date);
-        }
-    }
     @Scheduled(cron="0 0 2-3 * * *")////更新历史1
     public void saveBranchDailyHour(){     //分店销售汇总(每天凌晨2点执行,更新前七天的数据)
         Calendar calendar = Calendar.getInstance();

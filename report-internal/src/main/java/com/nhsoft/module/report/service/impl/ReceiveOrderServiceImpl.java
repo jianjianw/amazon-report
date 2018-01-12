@@ -3,7 +3,7 @@ package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.ReceiveOrderDao;
 import com.nhsoft.module.report.service.ReceiveOrderService;
-import com.nhsoft.module.report.util.BaseManager;
+import com.nhsoft.report.utils.BaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

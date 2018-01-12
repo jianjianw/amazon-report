@@ -3,7 +3,7 @@ package com.nhsoft.module.report.dao.impl;
 
 import com.nhsoft.module.report.dao.ItemVersionDao;
 import com.nhsoft.module.report.model.ItemVersion;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 

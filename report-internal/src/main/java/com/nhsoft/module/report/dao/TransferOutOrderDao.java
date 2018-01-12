@@ -1,10 +1,9 @@
 package com.nhsoft.module.report.dao;
 
 
-import com.nhsoft.module.report.dto.TransferOutMoney;
 import com.nhsoft.module.report.model.OutOrderDetail;
 import com.nhsoft.module.report.model.TransferOutOrder;
-import com.nhsoft.module.report.shared.queryBuilder.TransferProfitQuery;
+import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;

@@ -5,10 +5,10 @@ import com.nhsoft.module.report.model.OutOrderDetail;
 import com.nhsoft.module.report.model.PosItem;
 import com.nhsoft.module.report.model.TransferInOrder;
 import com.nhsoft.module.report.model.TransferOutOrder;
-import com.nhsoft.module.report.shared.queryBuilder.TransferProfitQuery;
+import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 

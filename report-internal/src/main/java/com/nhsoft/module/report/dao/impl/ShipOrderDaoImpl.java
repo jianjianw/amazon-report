@@ -4,7 +4,7 @@ package com.nhsoft.module.report.dao.impl;
 import com.nhsoft.module.report.dao.ShipOrderDao;
 import com.nhsoft.module.report.dto.ShipOrderDTO;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;

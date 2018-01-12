@@ -4,7 +4,7 @@ package com.nhsoft.module.report.service;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.ShiftTable;
-import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 
 import java.util.Date;
 import java.util.List;

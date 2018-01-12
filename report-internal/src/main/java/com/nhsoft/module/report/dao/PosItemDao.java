@@ -2,12 +2,11 @@ package com.nhsoft.module.report.dao;
 
 
 
-import com.nhsoft.module.report.dto.PosItemDTO;
 import com.nhsoft.module.report.model.ItemBar;
 import com.nhsoft.module.report.model.ItemMatrix;
 import com.nhsoft.module.report.model.PosItem;
 import com.nhsoft.module.report.model.PosItemKit;
-import com.nhsoft.module.report.shared.queryBuilder.PosItemQuery;
+import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 
 import java.util.Date;
 import java.util.List;

@@ -1,6 +1,5 @@
 package com.nhsoft.module.report.api;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.query.ABCListQuery;
@@ -9,10 +8,10 @@ import com.nhsoft.module.report.query.SaleAnalysisQueryData;
 import com.nhsoft.module.report.query.SupplierSaleQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
-import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
-import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
+import jdk.nashorn.internal.runtime.ECMAException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -274,7 +273,7 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value="/test10")
-	public void test10() throws Exception{
+	public List<SupplierLianYing> test10() throws Exception{
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -303,7 +302,7 @@ public class APIBasic {
 
 
 		List<SupplierLianYing> supplierLianYing = reportService.findSupplierLianYing(supplierSaleQuery);
-		System.out.println();
+		return supplierLianYing;
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value="/test11")
@@ -700,5 +699,34 @@ public class APIBasic {
 		String saleType = "饿了么";//微商城
 		List<CustomerAnalysisDay> list = reportRpc.findCustomerAnalysisDays(systemBookCode,dateFrom,dateTo,branchNums,saleType);
 		return list;
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/nimei")
+	public String nimei(){
+		return "nimei";
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "test30")
+	public List<SupplierLianYing> test30()throws Exception{
+
+
+		String systemBookCode= "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2015-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400100);
+		items.add(434400126);
+		items.add(110010009);
+		items.add(110010007);
+		SupplierSaleQuery supplierSaleQuery = new SupplierSaleQuery();
+		supplierSaleQuery.setSystemBookCode(systemBookCode);
+		supplierSaleQuery.setDateFrom(dateFrom);
+		supplierSaleQuery.setDateTo(dateTo);
+		supplierSaleQuery.setItemNums(items);
+
+		List<SupplierLianYing> supplierLianYing = reportRpc.findSupplierLianYing(supplierSaleQuery);
+		return supplierLianYing;
 	}
 }

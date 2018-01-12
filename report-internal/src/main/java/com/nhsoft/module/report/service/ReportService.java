@@ -221,10 +221,10 @@ public interface ReportService {
 
 	/**
 	 * 查询供应商联营信息
-	 * @param supplierBranchQuery
+	 * @param supplierSaleQuery
 	 * @return
 	 */
-	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierBranchQuery);
+	public List<SupplierLianYing> findSupplierLianYing(SupplierSaleQuery supplierSaleQuery);
 
 	/**
 	 * 	/**

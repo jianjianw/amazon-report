@@ -4,7 +4,7 @@ package com.nhsoft.module.report.dao.impl;
 import com.nhsoft.module.report.dao.SmsSendDao;
 import com.nhsoft.module.report.model.SmsSend;
 import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;

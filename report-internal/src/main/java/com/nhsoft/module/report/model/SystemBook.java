@@ -1,7 +1,7 @@
 package com.nhsoft.module.report.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;

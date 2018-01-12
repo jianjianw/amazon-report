@@ -6,7 +6,7 @@ import com.nhsoft.module.report.model.BranchResource;
 import com.nhsoft.module.report.param.ExpressCompany;
 import com.nhsoft.module.report.service.BranchResourceService;
 import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.RedisUtil;
+import com.nhsoft.report.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

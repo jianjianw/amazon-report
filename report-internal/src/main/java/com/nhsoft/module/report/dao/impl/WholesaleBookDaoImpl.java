@@ -5,7 +5,7 @@ import com.nhsoft.module.report.dao.WholesaleBookDao;
 import com.nhsoft.module.report.model.PosItem;
 import com.nhsoft.module.report.model.WholesaleBook;
 import com.nhsoft.module.report.util.AppConstants;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;

@@ -3,16 +3,14 @@ package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.InvoiceChangeDao;
 import com.nhsoft.module.report.dao.PosOrderDao;
-import com.nhsoft.module.report.dto.BusinessCollection;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.service.PosOrderService;
-import com.nhsoft.module.report.shared.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

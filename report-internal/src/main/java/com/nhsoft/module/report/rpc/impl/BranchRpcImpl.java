@@ -1,21 +1,17 @@
 package com.nhsoft.module.report.rpc.impl;
 
-import com.nhsoft.module.azure.model.Branch;
-import com.nhsoft.module.azure.model.BranchLat;
 import com.nhsoft.module.report.dto.BranchArea;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.BranchRegionDTO;
 import com.nhsoft.module.report.rpc.BranchRpc;
 import com.nhsoft.module.report.service.BranchService;
-import com.nhsoft.module.report.util.CopyUtil;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 @Component
 public class BranchRpcImpl implements BranchRpc {

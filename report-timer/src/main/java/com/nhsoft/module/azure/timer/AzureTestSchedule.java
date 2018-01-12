@@ -5,8 +5,6 @@ import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.rpc.*;
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +17,6 @@ import java.util.*;
 //@Component
 public class AzureTestSchedule implements InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(AzureTestSchedule.class);
 
     @Autowired
     private PosOrderRpc posOrderRpc;
@@ -45,19 +42,6 @@ public class AzureTestSchedule implements InitializingBean {
         systemBookCode = ArrayUtils.remove(systemBookCode, systemBookCode.length - 1);
     }
 
-
-    @Scheduled(cron="0 */30 * * * *")
-    public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        int size = systemBookCode.length;
-        for (int i = 0; i < size ; i++) {
-
-            List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode[i], date, date);
-            azureService.batchSaveBranchDailies(systemBookCode[i],branchDailySummary,date,date);
-        }
-
-    }
 
     @Scheduled(cron="0 0 2-3 * * *")////更新历史1
     public void saveBranchDailyHour(){     //分店销售汇总(每天凌晨2点执行,更新前七天的数据)

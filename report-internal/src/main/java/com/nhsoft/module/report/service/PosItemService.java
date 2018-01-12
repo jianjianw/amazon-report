@@ -3,7 +3,7 @@ package com.nhsoft.module.report.service;
 
 import com.nhsoft.module.report.model.PosItem;
 import com.nhsoft.module.report.model.PosItemKit;
-import com.nhsoft.module.report.shared.queryBuilder.PosItemQuery;
+import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 
 import java.util.List;
 

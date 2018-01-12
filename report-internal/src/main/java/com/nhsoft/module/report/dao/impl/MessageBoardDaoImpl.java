@@ -2,7 +2,7 @@ package com.nhsoft.module.report.dao.impl;
 
 
 import com.nhsoft.module.report.dao.MessageBoardDao;
-import com.nhsoft.module.report.util.DateUtil;
+import com.nhsoft.report.utils.DateUtil;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 

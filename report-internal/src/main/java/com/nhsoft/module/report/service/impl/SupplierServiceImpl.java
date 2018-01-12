@@ -6,7 +6,7 @@ import com.nhsoft.module.report.model.Supplier;
 import com.nhsoft.module.report.service.SupplierService;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.module.report.util.BaseManager;
+import com.nhsoft.report.utils.BaseManager;
 import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

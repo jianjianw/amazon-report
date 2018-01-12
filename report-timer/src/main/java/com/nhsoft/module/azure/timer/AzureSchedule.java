@@ -4,8 +4,6 @@ import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.rpc.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,7 +20,6 @@ import java.util.List;
 //@Component
 public class AzureSchedule {
 
-    private static final Logger logger = LoggerFactory.getLogger(AzureSchedule.class);
 
     @Autowired
     private PosOrderRpc posOrderRpc;
@@ -39,13 +36,6 @@ public class AzureSchedule {
 
     String systemBook = "4410";
 
-    @Scheduled(cron="0 */30 * * * *")
-    public void saveBranchDailyMinute(){     //分店销售汇总(每30分钟执行一次)  Scheduled(cron="0 */30 * * * *")
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBook, date, date);
-        azureService.batchSaveBranchDailies(systemBook,branchDailySummary,date,date);
-    }
 
     @Scheduled(cron="0 0 2-3 * * *")////更新历史1
     public void saveBranchDailyHour(){     //分店销售汇总(每天凌晨2点执行,更新前七天的数据)
