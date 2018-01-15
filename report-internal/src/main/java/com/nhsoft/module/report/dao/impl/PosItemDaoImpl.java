@@ -695,12 +695,4 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		return sqlQuery.list();
 	}
 
-	@Override
-	public List<Object[]> findPosItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("");
-
-
-		return null;
-	}
 }
