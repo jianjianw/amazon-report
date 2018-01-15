@@ -66,27 +66,27 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	//以下都是从amazonCenter中移过来的
 
 	@Override
-	public List<Object[]> findItemOutAmount(String systemBookCode,
+	public List<Object[]> findItemOutAmountSummary(String systemBookCode,
 											Integer branchNum, Date dateFrom, Date dateTo,
 											List<Integer> itemNums) {
-		return posItemLogDao.findItemOutAmount(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
+		return posItemLogDao.findItemOutAmountSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
 	}
 
 	@Override
-	public List<Object[]> findItemOutDate(String systemBookCode,
+	public List<Object[]> findItemOutDateSummary(String systemBookCode,
 										  Integer branchNum, Date dateFrom, Date dateTo,
 										  List<Integer> itemNums) {
-		return posItemLogDao.findItemOutDate(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
+		return posItemLogDao.findItemOutDateSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
 	}
 
 	@Override
-	public List<Integer> findNoticeItems(String systemBookCode, Integer branchNum, Date dateFrom,
+	public List<Integer> findNoticeItemSummary(String systemBookCode, Integer branchNum, Date dateFrom,
 										 Date dateTo, String posItemLogType) {
-		return posItemLogDao.findNoticeItems(systemBookCode, branchNum, dateFrom, dateTo, posItemLogType);
+		return posItemLogDao.findNoticeItemSummary(systemBookCode, branchNum, dateFrom, dateTo, posItemLogType);
 	}
 
 	@Override
-	public List<Object[]> findItemInOutQtyAndMoney(
+	public List<Object[]> findItemInOutQtyAndMoneySummary(
 			StoreQueryCondition storeQueryCondition) {
 		storeQueryCondition.setDateStart(DateUtil.getMinOfDate(storeQueryCondition.getDateStart()));
 		storeQueryCondition.setDateEnd(DateUtil.getMaxOfDate(storeQueryCondition.getDateEnd()));
@@ -106,7 +106,7 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 			storeQueryCondition.setDateStart(compareDate);
 			storeQueryCondition.setDateEnd(toDate);
 			if(whileCount == 0){
-				objects = posItemLogDao.findItemInOutQtyAndMoney(storeQueryCondition);
+				objects = posItemLogDao.findItemInOutQtyAndMoneySummary(storeQueryCondition);
 				for(int i = 0;i < objects.size();i++){
 					object = objects.get(i);
 					object[2] = object[2] == null? BigDecimal.ZERO:(BigDecimal)object[2];
@@ -116,7 +116,7 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 					allObjects.add(object);
 				}
 			} else {
-				objects = posItemLogDao.findItemInOutQtyAndMoney(storeQueryCondition);
+				objects = posItemLogDao.findItemInOutQtyAndMoneySummary(storeQueryCondition);
 
 				for(int i = 0;i < objects.size();i++){
 					object = objects.get(i);
@@ -218,9 +218,9 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	}
 
 	@Override
-	public List<PosItemLog> findLast(String systemBookCode, Integer branchNum,
+	public List<PosItemLog> findLastSummary(String systemBookCode, Integer branchNum,
 									 Integer storehouseNum, Date endDate) {
-		return posItemLogDao.findLast(systemBookCode, branchNum, storehouseNum, endDate);
+		return posItemLogDao.findLastSummary(systemBookCode, branchNum, storehouseNum, endDate);
 	}
 
 	@Override
@@ -370,8 +370,8 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	}
 
 	@Override
-	public List<Object[]> findSumByBranchAndItemFlag(StoreQueryCondition storeQueryCondition) {
-		return posItemLogDao.findSumByBranchAndItemFlag(storeQueryCondition);
+	public List<Object[]> findBranchAndItemFlagSummary(StoreQueryCondition storeQueryCondition) {
+		return posItemLogDao.findBranchAndItemFlagSummary(storeQueryCondition);
 	}
 
 	@Override
@@ -385,30 +385,30 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	}
 
 	@Override
-	public List<Object[]> findMoneyByBranchFlag(String systemBookCode,
+	public List<Object[]> findMoneyBranchFlagSummary(String systemBookCode,
 												List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return posItemLogDao.findMoneyByBranchFlag(systemBookCode, branchNums, dateFrom, dateTo);
+		return posItemLogDao.findMoneyBranchFlagSummary(systemBookCode, branchNums, dateFrom, dateTo);
 	}
 
 
 	@Override
-	public List<Object[]> findMoneyByBranchItemFlag(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return posItemLogDao.findMoneyByBranchItemFlag(systemBookCode, branchNums, dateFrom, dateTo);
+	public List<Object[]> findMoneyBranchItemFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		return posItemLogDao.findMoneyBranchItemFlagSummary(systemBookCode, branchNums, dateFrom, dateTo);
 	}
 
 	@Override
-	public List<Object[]> findMinPriceAndDate(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
-		return posItemLogDao.findMinPriceAndDate(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
+	public List<Object[]> findMinPriceAndDateSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+		return posItemLogDao.findMinPriceAndDateSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
 	}
 
 	@Override
-	public List<Object[]> findMaxPriceAndDate(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
-		return posItemLogDao.findMaxPriceAndDate(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
+	public List<Object[]> findMaxPriceAndDateSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+		return posItemLogDao.findMaxPriceAndDateSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
 	}
 
 	@Override
-	public List<Object[]> findItemDetails(StoreQueryCondition storeQueryCondition) {
-		return posItemLogDao.findItemDetails(storeQueryCondition);
+	public List<Object[]> findItemDetailSummary(StoreQueryCondition storeQueryCondition) {
+		return posItemLogDao.findItemDetailSummary(storeQueryCondition);
 	}
 
 	@Override
@@ -418,13 +418,13 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	}
 
 	@Override
-	public List<PosItemLog> findUnUpload(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, int offset, int limit) {
-		return posItemLogDao.findUnUpload(systemBookCode, branchNum, dateFrom, dateTo, offset, limit);
+	public List<PosItemLog> findUnUploadSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, int offset, int limit) {
+		return posItemLogDao.findUnUploadSummary(systemBookCode, branchNum, dateFrom, dateTo, offset, limit);
 	}
 
 	@Override
-	public List<PosItemLog> findRepeatAuditOrder(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
-		return posItemLogDao.findRepeatAuditOrder(systemBookCode, branchNum, dateFrom, dateTo);
+	public List<PosItemLog> findRepeatAuditOrderSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+		return posItemLogDao.findRepeatAuditOrderSummary(systemBookCode, branchNum, dateFrom, dateTo);
 	}
 
 	@Override
@@ -522,8 +522,8 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	}
 
 	@Override
-	public List<PosItemLog> findByBillNo(String systemBookCode, String orderNo) {
-		return posItemLogDao.findByBillNo(systemBookCode,orderNo);
+	public List<PosItemLog> findByBillNoSummary(String systemBookCode, String orderNo) {
+		return posItemLogDao.findByBillNoSummary(systemBookCode,orderNo);
 	}
 
 	@Override
@@ -556,14 +556,14 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	}
 
 	@Override
-	public List<Object[]> findSumByDateItemFlag(StoreQueryCondition storeQueryCondition) {
-		return posItemLogDao.findSumByDateItemFlag(storeQueryCondition);
+	public List<Object[]> findDateItemFlagSummary(StoreQueryCondition storeQueryCondition) {
+		return posItemLogDao.findDateItemFlagSummary(storeQueryCondition);
 	}
 
 	@Override
-	public List<Integer> findItemNums(String systemBookCode, Integer branchNum, Integer storehouseNum, Date dateFrom,
+	public List<Integer> findItemNumSummary(String systemBookCode, Integer branchNum, Integer storehouseNum, Date dateFrom,
 									  Date dateTo) {
-		return posItemLogDao.findItemNums(systemBookCode, branchNum, storehouseNum, dateFrom, dateTo);
+		return posItemLogDao.findItemNumSummary(systemBookCode, branchNum, storehouseNum, dateFrom, dateTo);
 	}
 
 	@Override

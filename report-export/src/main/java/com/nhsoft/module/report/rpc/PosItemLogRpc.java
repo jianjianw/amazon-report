@@ -54,7 +54,7 @@ public interface PosItemLogRpc {
 
 	//以下都是从amazonCenter中移过来的
 
-	public List<PosItemLogSummaryDTO> findItemOutAmount(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums);
+	public List<PosItemLogSummaryDTO> findItemOutAmountSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 
 	/**
@@ -66,7 +66,7 @@ public interface PosItemLogRpc {
 	 * @param itemNums
 	 * @return
 	 */
-	public List<PosItemLogSummaryDTO> findItemOutDate(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums);
+	public List<PosItemLogSummaryDTO> findItemOutDateSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 
 	/**
@@ -77,7 +77,7 @@ public interface PosItemLogRpc {
 	 * @param posItemLogType
 	 * @return
 	 */
-	public List<Integer> findNoticeItems(String systemBookCode, Integer branchNum, Date dateFrom,
+	public List<Integer> findNoticeItemSummary(String systemBookCode, Integer branchNum, Date dateFrom,
 										 Date dateTo, String posItemLogType);
 
 	/**
@@ -85,7 +85,7 @@ public interface PosItemLogRpc {
 	 * @param storeQueryCondition
 	 * @return
 	 */
-	public List<PosItemLogSummaryDTO> findItemInOutQtyAndMoney(StoreQueryCondition storeQueryCondition);
+	public List<PosItemLogSummaryDTO> findItemInOutQtyAndMoneySummary(StoreQueryCondition storeQueryCondition);
 
 
 	/**
@@ -104,7 +104,7 @@ public interface PosItemLogRpc {
 	 * @param endDate
 	 * @return
 	 */
-	public List<PosItemLogDTO> findLast(String systemBookCode,
+	public List<PosItemLogDTO> findLastSummary(String systemBookCode,
 									 Integer branchNum, Integer storehouseNum, Date endDate);
 
 
@@ -148,7 +148,7 @@ public interface PosItemLogRpc {
 	 * 根据门店 商品 进出库类型汇总 数量 金额
 	 * @return
 	 */
-	public List<PosItemLogSummaryDTO> findSumByBranchAndItemFlag(StoreQueryCondition storeQueryCondition);
+	public List<PosItemLogSummaryDTO> findBranchAndItemFlagSummary(StoreQueryCondition storeQueryCondition);
 
 
 	/**
@@ -175,7 +175,7 @@ public interface PosItemLogRpc {
 	 * @param dateTo
 	 * @return
 	 */
-	public List<PosItemLogSummaryDTO> findMoneyByBranchFlag(String systemBookCode,
+	public List<PosItemLogSummaryDTO> findMoneyBranchFlagSummary(String systemBookCode,
 												List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
@@ -186,7 +186,7 @@ public interface PosItemLogRpc {
 	 * @param dateTo
 	 * @return
 	 */
-	public List<PosItemLogSummaryDTO> findMoneyByBranchItemFlag(String systemBookCode,
+	public List<PosItemLogSummaryDTO> findMoneyBranchItemFlagSummary(String systemBookCode,
 													List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
@@ -198,7 +198,7 @@ public interface PosItemLogRpc {
 	 * @param itemNums
 	 * @return
 	 */
-	public List<PosItemLogSummaryDTO> findMinPriceAndDate(String systemBookCode,
+	public List<PosItemLogSummaryDTO> findMinPriceAndDateSummary(String systemBookCode,
 											  Integer branchNum, Date dateFrom, Date dateTo,
 											  List<Integer> itemNums);
 
@@ -211,11 +211,11 @@ public interface PosItemLogRpc {
 	 * @param itemNums
 	 * @return
 	 */
-	public List<PosItemLogSummaryDTO> findMaxPriceAndDate(String systemBookCode,
+	public List<PosItemLogSummaryDTO> findMaxPriceAndDateSummary(String systemBookCode,
 											  Integer branchNum, Date dateFrom, Date dateTo,
 											  List<Integer> itemNums);
 	//含name code  (已删)
-	public List<PosItemLogSummaryDTO> findItemDetails(StoreQueryCondition storeQueryCondition);
+	public List<PosItemLogSummaryDTO> findItemDetailSummary(StoreQueryCondition storeQueryCondition);
 
 	public List<PosItemLogDTO> findByDate(String systemBookCode, Date dateFrom, Date dateTo);
 
@@ -227,7 +227,7 @@ public interface PosItemLogRpc {
 	 * @param dateFrom
 	 * @return
 	 */
-	public List<PosItemLogDTO> findUnUpload(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, int offset, int limit);
+	public List<PosItemLogDTO> findUnUploadSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, int offset, int limit);
 
 
 	/**	含name code （已删除）
@@ -238,7 +238,7 @@ public interface PosItemLogRpc {
 	 * @param dateTo
 	 * @return
 	 */
-	public List<PosItemLogDTO> findRepeatAuditOrder(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+	public List<PosItemLogDTO> findRepeatAuditOrderSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 
 
 	/**
@@ -289,7 +289,7 @@ public interface PosItemLogRpc {
 	public List<PosItemLogSummaryDTO> findItemInOutSummary(StoreQueryCondition storeQueryCondition);
 
 
-	public List<PosItemLogDTO> findByBillNo(String systemBookCode, String orderNo);
+	public List<PosItemLogDTO> findByBillNoSummary(String systemBookCode, String orderNo);
 
 	public int countByBillNo(String systemBookCode, String posItemLogBillNo);
 
@@ -298,7 +298,7 @@ public interface PosItemLogRpc {
 	 * 根据营业日 商品 多特性编码 进出库类型汇总 数量 金额 辅助数量
 	 * @return
 	 */
-	public List<PosItemLogSummaryDTO> findSumByDateItemFlag(StoreQueryCondition storeQueryCondition);
+	public List<PosItemLogSummaryDTO> findDateItemFlagSummary(StoreQueryCondition storeQueryCondition);
 
 
 	/**
@@ -310,7 +310,7 @@ public interface PosItemLogRpc {
 	 * @param dateTo
 	 * @return
 	 */
-	public List<Integer> findItemNums(String systemBookCode, Integer branchNum, Integer storehouseNum, Date dateFrom, Date dateTo);
+	public List<Integer> findItemNumSummary(String systemBookCode, Integer branchNum, Integer storehouseNum, Date dateFrom, Date dateTo);
 
 
 	/**

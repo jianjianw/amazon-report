@@ -560,7 +560,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 	//以下都是从amazonCenter中移过来的
 	@Override
-	public List<Object[]> findItemOutAmount(String systemBookCode,
+	public List<Object[]> findItemOutAmountSummary(String systemBookCode,
 											Integer branchNum, Date dateFrom, Date dateTo,
 											List<Integer> itemNums) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
@@ -588,7 +588,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<Object[]> findItemOutDate(String systemBookCode,
+	public List<Object[]> findItemOutDateSummary(String systemBookCode,
 										  Integer branchNum, Date dateFrom, Date dateTo,
 										  List<Integer> itemNums) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
@@ -617,7 +617,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 	}
 
 	@Override
-	public List<Integer> findNoticeItems(String systemBookCode, Integer branchNum, Date dateFrom,
+	public List<Integer> findNoticeItemSummary(String systemBookCode, Integer branchNum, Date dateFrom,
 										 Date dateTo, String posItemLogType) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
 				.add(Restrictions.eq("p.branchNum", branchNum))
@@ -635,7 +635,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<Object[]> findItemInOutQtyAndMoney(
+	public List<Object[]> findItemInOutQtyAndMoneySummary(
 			StoreQueryCondition storeQueryCondition) {
 		String queryYear = DateUtil.getYearString(storeQueryCondition.getDateStart());
 		StringBuilder sb = new StringBuilder();
@@ -777,7 +777,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<PosItemLog> findLast(String systemBookCode, Integer branchNum,
+	public List<PosItemLog> findLastSummary(String systemBookCode, Integer branchNum,
 									 Integer storehouseNum, Date endDate) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
 				.add(Restrictions.eq("p.systemBookCode", systemBookCode))
@@ -1023,7 +1023,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<Object[]> findSumByBranchAndItemFlag(StoreQueryCondition storeQueryCondition) {
+	public List<Object[]> findBranchAndItemFlagSummary(StoreQueryCondition storeQueryCondition) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
 				.add(Restrictions.eq("p.systemBookCode", storeQueryCondition.getSystemBookCode()));
 		if(storeQueryCondition.getBranchNums() != null && storeQueryCondition.getBranchNums().size() > 0){
@@ -1085,7 +1085,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<Object[]> findMoneyByBranchFlag(String systemBookCode,
+	public List<Object[]> findMoneyBranchFlagSummary(String systemBookCode,
 												List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select p.branchNum, p.posItemLogInoutFlag, sum(p.posItemLogMoney), sum(p.posItemLogItemAmount * item.itemRegularPrice) ");
@@ -1122,7 +1122,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<Object[]> findMoneyByBranchItemFlag(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findMoneyBranchItemFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
 				.add(Restrictions.eq("p.systemBookCode", systemBookCode));
 		if(branchNums != null && branchNums.size() > 0){
@@ -1145,7 +1145,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 	}
 
 	@Override
-	public List<Object[]> findMinPriceAndDate(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+	public List<Object[]> findMinPriceAndDateSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
 				.add(Restrictions.eq("p.posItemLogSummary", AppConstants.POS_ITEM_LOG_RECEIVE_ORDER))
 				.add(Restrictions.eq("p.systemBookCode", systemBookCode));
@@ -1172,7 +1172,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<Object[]> findMaxPriceAndDate(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+	public List<Object[]> findMaxPriceAndDateSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
 				.add(Restrictions.eq("p.posItemLogSummary", AppConstants.POS_ITEM_LOG_RECEIVE_ORDER))
 				.add(Restrictions.eq("p.systemBookCode", systemBookCode));
@@ -1199,7 +1199,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<Object[]> findItemDetails(StoreQueryCondition storeQueryCondition) {
+	public List<Object[]> findItemDetailSummary(StoreQueryCondition storeQueryCondition) {
 		String queryYear = DateUtil.getYearString(storeQueryCondition.getDateStart());
 		StringBuilder sb = new StringBuilder();
 		sb.append("select l.item_num, l.pos_item_log_summary, pos_item_log_date, ");
@@ -1262,7 +1262,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<PosItemLog> findUnUpload(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, int offset, int limit) {
+	public List<PosItemLog> findUnUploadSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, int offset, int limit) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
 				.add(Restrictions.eq("p.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("p.branchNum", branchNum))
@@ -1276,7 +1276,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<PosItemLog> findRepeatAuditOrder(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+	public List<PosItemLog> findRepeatAuditOrderSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select system_book.system_book_code,system_book.book_name, branch.branch_num, branch.branch_name, ");
 		sb.append("item_num, pos_item_log_item_matrix_num, pos_item_log_summary,pos_item_log_bill_no, pos_item_log_lot_number, count(pos_item_log.pos_item_log_fid) as repeat_count ");
@@ -1513,7 +1513,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<PosItemLog> findByBillNo(String systemBookCode, String posItemLogBillNo) {
+	public List<PosItemLog> findByBillNoSummary(String systemBookCode, String posItemLogBillNo) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select * from pos_item_log with(nolock) where system_book_code = '" + systemBookCode + "' ");
 		sb.append("and pos_item_log_bill_no = '" + posItemLogBillNo + "' ");
@@ -1535,7 +1535,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 
 	@Override
-	public List<Object[]> findSumByDateItemFlag(StoreQueryCondition storeQueryCondition) {
+	public List<Object[]> findDateItemFlagSummary(StoreQueryCondition storeQueryCondition) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select pos_item_log_date_index, item_num, pos_item_log_item_matrix_num, pos_item_log_inout_flag, ");
 		sb.append("sum(pos_item_log_item_amount) as amount, sum(pos_item_log_money) as money, sum(pos_item_log_item_assist_amount) as assistAmount, ");
@@ -1584,7 +1584,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 	}
 
 	@Override
-	public List<Integer> findItemNums(String systemBookCode, Integer branchNum, Integer storehouseNum, Date dateFrom,
+	public List<Integer> findItemNumSummary(String systemBookCode, Integer branchNum, Integer storehouseNum, Date dateFrom,
 									  Date dateTo) {
 		String queryYear = DateUtil.getYearString(dateFrom);
 		StringBuilder sb = new StringBuilder();
