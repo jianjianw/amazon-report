@@ -1110,9 +1110,8 @@ public class Report2RpcImpl implements Report2Rpc {
 		}
 		List<Supplier> suppliers = supplierService.findInCache(systemBookCode);
 		List<RequestAnalysisDTO> dtos = reportUtil.toList();
-		int dtoSize = dtos.size();
 		Branch branch = branchService.readInCache(systemBookCode, branchNum);
-		for(int i = dtoSize-1;i>=0;i--) {
+		for(int i = dtos.size();i>=0;i--) {
 			RequestAnalysisDTO dto = dtos.get(i);
 			PosItem item = AppUtil.getPosItem(dto.getItemNum(), posItems);
 			if(item == null) {
@@ -1148,8 +1147,7 @@ public class Report2RpcImpl implements Report2Rpc {
 			if(dto.getItemType() == AppConstants.C_ITEM_TYPE_ASSEMBLE){
 				List<PosItemKit> posItemKits = posItemService.findPosItemKits(dto.getItemNum());
 				dto.setDetails(new ArrayList<RequestAnalysisDTO>());
-				int kitSize = posItemKits.size();
-				for(int j = 0;j < kitSize;j++){
+				for(int j = 0,len = posItemKits.size();j < len;j++){
 					PosItemKit posItemKit = posItemKits.get(j);
 					RequestAnalysisDTO detail = new RequestAnalysisDTO();
 					detail.setItemNum(posItemKit.getPosItem().getItemNum());
