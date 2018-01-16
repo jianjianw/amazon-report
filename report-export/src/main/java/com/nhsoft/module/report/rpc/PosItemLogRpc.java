@@ -50,8 +50,6 @@ public interface PosItemLogRpc {
 
 
 
-
-
 	//以下都是从amazonCenter中移过来的
 
 	public List<PosItemLogSummaryDTO> findItemOutAmountSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums);

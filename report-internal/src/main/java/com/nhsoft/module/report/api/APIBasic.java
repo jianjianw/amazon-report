@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.api;
 
+import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.query.ABCListQuery;
@@ -43,6 +44,8 @@ public class APIBasic {
 	private BranchService branchService;
 	@Autowired
 	private CardUserService cardUserService;
+	@Autowired
+	private PosOrderDao posOrderDao;
 
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
@@ -51,8 +54,8 @@ public class APIBasic {
 		return "success";
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/test/report")
-	public  List<BranchBizRevenueSummary> test () throws Exception {
+	@RequestMapping(method = RequestMethod.GET, value = "/test1")
+	public  List<Object[]> test () throws Exception {
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -66,35 +69,7 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2017-05-01");
 		Date dateTo = sdf.parse("2017-10-31");
 
-		//含inner
-		CardReportQuery cardReportQuery = new CardReportQuery();
-		cardReportQuery.setQueryDetail(true);
-		//cardReportQuery.setQueryPayment(true);
-		cardReportQuery.setSystemBookCode("4344");
-		cardReportQuery.setBranchNum(99);
-		cardReportQuery.setDateFrom(dateFrom);
-		cardReportQuery.setDateTo(dateTo);
-		List<Object[]> summaryByBranch = posOrderService.findSummaryByBizday(cardReportQuery);
-		System.out.println();
-		return null;
-		//return posOrderRpc.findMoneyBizdaySummary("4344", Arrays.asList(1,2,99), AppConstants.BUSINESS_TREND_PAYMENT, DateUtil.getDateStr("20170901"), DateUtil.getDateStr("20171101"), false);
-	}
-	@RequestMapping(method = RequestMethod.GET,value = "/test1")
-	public void test1()throws Exception{
-		String systemBookCode= "4344";
-		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
-		List<Integer> branchNums = new ArrayList<Integer>();
-		for (BranchDTO b : all) {
-			Integer branchNum = b.getBranchNum();
-			branchNums.add(branchNum);
-		}
-		Calendar calendar = Calendar.getInstance();
-		Date date = calendar.getTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-10-01");
-		Date dateTo = sdf.parse("2017-10-31");
-
-		//含inner
+		//含join
 		CardReportQuery cardReportQuery = new CardReportQuery();
 		//cardReportQuery.setQueryDetail(true);
 		cardReportQuery.setQueryPayment(true);
@@ -102,12 +77,12 @@ public class APIBasic {
 		cardReportQuery.setBranchNum(99);
 		cardReportQuery.setDateFrom(dateFrom);
 		cardReportQuery.setDateTo(dateTo);
-		List<Object[]> summaryByBranch = posOrderService.findSummaryByBizday(cardReportQuery);
-		System.out.println();
-
+		List<Object[]> summaryByBranch = posOrderService.findSummaryByBizday(cardReportQuery);   //含join是ok的
+		return summaryByBranch;
+		//return posOrderRpc.findMoneyBizdaySummary("4344", Arrays.asList(1,2,99), AppConstants.BUSINESS_TREND_PAYMENT, DateUtil.getDateStr("20170901"), DateUtil.getDateStr("20171101"), false);
 	}
 	@RequestMapping(method = RequestMethod.GET,value = "/test2")
-	public List<Object[]> test2() throws Exception{		//有or没报错
+	public List<Object[]> test2() throws Exception{		//含or没报错   含case when 不报错
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -133,7 +108,7 @@ public class APIBasic {
 	@RequestMapping(method=RequestMethod.GET,value="/test3/{systemBookCode}/{dateFrom}/{dateTo}")
 	public List<Object[]> test3(@PathVariable("systemBookCode") String systemBookCode,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{			//ok 含 case when
 
-		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
+		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);	//含 case when 不报错
 		List<Integer> branchNums = new ArrayList<Integer>();
 		for (BranchDTO b : all) {
 			Integer branchNum = b.getBranchNum();
@@ -151,7 +126,7 @@ public class APIBasic {
 
 
 	@RequestMapping(method = RequestMethod.GET, value = "/test4")
-	public void test4() throws Exception{						// ok 含or
+	public List<Object[]> test4() throws Exception{						// ok 含or
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -160,20 +135,19 @@ public class APIBasic {
 			branchNums.add(branchNum);
 		}
 		Calendar calendar = Calendar.getInstance();
-		Date date = calendar.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2016-05-01");
-		Date dateTo = sdf.parse("2017-10-31");
+		Date dateTo = sdf.parse("2017-05-31");
 		List<Integer> items = new ArrayList<>();
 		items.add(434400126);
 		items.add(434400126);
 		items.add(110010009);
 		items.add(110010007);		//修改sql中的 detail.order_detail_has_kit = 0   数据改变
 		List<Object[]> branchItemSum = posOrderService.findBranchItemSum(systemBookCode,branchNums,dateFrom,dateTo,items, true);
-		System.out.println();
+		return branchItemSum;
 	}
 	@RequestMapping(method=RequestMethod.GET,value="/test5")
-	public void test5() throws Exception{  //ok case   when
+	public List<Object[]> test5() throws Exception{  //ok case   when
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -182,18 +156,19 @@ public class APIBasic {
 			branchNums.add(branchNum);
 		}
 		Calendar calendar = Calendar.getInstance();
-		Date date = calendar.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateFrom = sdf.parse("2017-01-01");
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> items = new ArrayList<>();
 		items.add(434400126);
-		//List<Object[]> branchItemMatrixSummary = posOrderService.findBranchItemMatrixSummary(systemBookCode, branchNums, dateFrom, dateTo, items);
-		System.out.println();
+		List<Object[]> branchItemSaleQty = reportService.findBranchItemSaleQty(systemBookCode, branchNums, dateFrom, dateTo, items);
+		//为了测试findBranchItemMatrixSummary方法     含case when   是ok的
+		return branchItemSaleQty;
 	}
-	/*@RequestMapping(method = RequestMethod.GET,value="/test6")
-	public void test6() throws Exception{			//含or没报错
-		String systemBookCode= "4344";
+
+	@RequestMapping(method = RequestMethod.GET,value="/test6")
+	public List<Object[]> test6() throws Exception{			//含or没报错   (将or放在任何地方也不报错)
+		String systemBookCode= "4344";				//含  exists  也不报错
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
 		for (BranchDTO b : all) {
@@ -207,13 +182,16 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> items = new ArrayList<>();
 		items.add(434400126);
-		List<Object[]> itemSupplierSumByCategory = posOrderService.findItemSupplierSumByCategory(systemBookCode, branchNums, dateFrom, dateTo, null, true, items);
-		System.out.println();
-	}*/
+
+		List<String> category = new ArrayList<>();
+		category.add("456123");
+		List<Object[]> itemSupplierSumByCategory = posOrderService.findItemSupplierSumByCategory(systemBookCode, branchNums, dateFrom, dateTo, category, true, items);
+		return itemSupplierSumByCategory;
+	}
 
 	@RequestMapping(method = RequestMethod.GET,value="/test7")
 	public void test7() throws Exception{
-		String systemBookCode= "4344";
+		String systemBookCode= "4344";				//含or  放在exists关键字的上面不会报错，再高一点就报错了
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
 		for (BranchDTO b : all) {
@@ -221,13 +199,13 @@ public class APIBasic {
 			branchNums.add(branchNum);
 		}
 		Calendar calendar = Calendar.getInstance();
-		Date date = calendar.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2017-05-01");
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> items = new ArrayList<>();
 		items.add(434400126);
 		ItemQueryDTO itemQueryDTO = new ItemQueryDTO();
+		itemQueryDTO.setSystemBookCode(systemBookCode);
 		itemQueryDTO.setDateFrom(dateFrom);
 		itemQueryDTO.setDateTo(dateTo);
 		itemQueryDTO.setItemMethod("购销");
@@ -237,7 +215,7 @@ public class APIBasic {
 		System.out.println();
 	}
 	@RequestMapping(method = RequestMethod.GET,value = "/test8")
-	public void test8() throws Exception{
+	public List<MobileBusinessDetailDTO> test8() throws Exception{			//ok
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -252,11 +230,11 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2017-10-31");
 		//List<NameAndValueDTO> discountDetails = mobileAppV2Service.findDiscountDetails(systemBookCode, branchNums, dateFrom, dateTo);
 		List<MobileBusinessDetailDTO> cashSummaryGroupByShop = mobileAppV2Service.findCashSummaryGroupByShop(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.CASH_TYPE_POS);
-		System.out.println();
+		return cashSummaryGroupByShop;
 	}
 	@RequestMapping(method = RequestMethod.GET,value = "/test9")  //三张表  findDetails
 	public void test9() throws Exception{
-		String systemBookCode= "4344";
+		String systemBookCode= "4344";				//不ok   Cannot find table rule and default data source with logic tables: '[]'
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
 		for (BranchDTO b : all) {
@@ -268,12 +246,12 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2017-05-01");
 		Date dateTo = sdf.parse("2017-10-31");
-		//List<Object[]> details = posOrderService.findDetails(systemBookCode, branchNums, dateFrom, dateTo, null, null, null, null, null);
+		List<Object[]> details = posOrderService.findDetails(systemBookCode, branchNums, dateFrom, dateTo, null, null, null, null, null);
 		System.out.println();
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value="/test10")
-	public List<SupplierLianYing> test10() throws Exception{
+	public List<SupplierLianYing> test10() throws Exception{		//ok
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
@@ -306,7 +284,7 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value="/test11")
-	public void test11() throws Exception{	//子查询    ok带  exists  也ok
+	public List<ABCAnalysis> test11() throws Exception{	//子查询    ok带  exists  也ok
 
 		String systemBookCode= "4344";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
@@ -333,36 +311,15 @@ public class APIBasic {
 		list1.add(AppConstants.CHECKBOX_SALE);
 		abc.setTypes(list1);
 		List<ABCAnalysis> abcDatasBySale1 = reportService.findABCDatasBySale(abc);
-		System.out.println();
+		return abcDatasBySale1;
 	}
-
-	/**
-
-	 类别-门店：reportService.findSaleAnalysisByCategoryBranchs(queryData);
-	 类别汇总：reportService.findSaleAnalysisByCategorys(queryData);
-	 门店汇总：reportService.findSaleAnalysisByBranchs(queryData);
-	 商品汇总：reportService.findSaleAnalysisByPosItems(queryData)
-	 部门汇总：reportService.findSaleAnalysisByDepartments(queryData);
-	 营业日汇总：reportService.findSaleAnalysisByBranchBizday(queryData);
-	 品牌汇总：reportService.findSaleAnalysisByBrands(queryData);
-	 对应属性：private String saleType;//销售方式：微商城、实体店（SaleAnalysisQueryData）
-
-	 public static final String ONLINE_ORDER_SOURCE_YOUZAN = "有赞";
-	 public static final String ONLINE_ORDER_SOURCE_MEITUAN = "美团外卖";
-	 public static final String ONLINE_ORDER_SOURCE_ELE = "饿了么外卖";
-	 public static final String ONLINE_ORDER_SOURCE_MERCURY= "水星微商城";
-	 public static final String POS_ORDER_SALE_TYPE_BRANCH = "实体店";
-	 * */
-
 
 	//类别汇总
 	@RequestMapping(method=RequestMethod.GET,value="/test12")
-	public void test12() throws Exception{
+	public List<SaleByBranchSummary> test12() throws Exception{	//多表 有问题  关联不没有使用sharding的表positem   不报错
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Calendar instance = Calendar.getInstance();
 		Date dateFrom = sdf.parse("2017-10-01");
 		Date dateTo = sdf.parse("2017-10-31");
-
 
 		SaleAnalysisQueryData queryData = new SaleAnalysisQueryData();
 		queryData.setDtFrom(dateFrom);
@@ -377,18 +334,17 @@ public class APIBasic {
 		branchNums.add(7);
 		branchNums.add(8);
 		branchNums.add(9);
-		branchNums.add(10);
 		branchNums.add(11);
 		branchNums.add(12);
 		branchNums.add(99);
 		queryData.setBranchNums(branchNums);
-		queryData.setSystemBookCode("4020");
+		queryData.setSystemBookCode("4344");
 		queryData.setQueryItemExtendAttribute(true);
 		queryData.setBrandCodes(null);
 		queryData.setPosItemTypeCodes(null);
 		queryData.setPosItemNums(null);
 		queryData.setIsQueryChild(false);
-		queryData.setIsQueryCF(false);
+		queryData.setIsQueryCF(true);
 		queryData.setIsQueryGrade(false);
 		queryData.setItemDepartments(null);
 		queryData.setItemFlagNum(null);
@@ -398,34 +354,18 @@ public class APIBasic {
 		queryData.setTwoStringValueDatas(null);
 		queryData.setAppUserNum(null);
 		List<SaleByBranchSummary> saleAnalysisByBranchs = reportRpc.findSaleAnalysisByBranchs(queryData);
-		//List<Object[]> saleAnalysisByCategorys = reportService.findSaleAnalysisByBranchs(queryData);
-		System.out.println();
+
+		return saleAnalysisByBranchs;
 
 	}
 
 	@RequestMapping(method=RequestMethod.GET,value="/test13")
-	public void test13()throws Exception{
+	public List<BranchBizSummary> test13()throws Exception{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar instance = Calendar.getInstance();
 		Date dateFrom = sdf.parse("2017-10-01");
 		Date dateTo = sdf.parse("2017-10-31");
 		ProfitAnalysisQueryData queryData = new ProfitAnalysisQueryData();
-		/*private Date shiftTableFrom;//营业日起
-		private Date shiftTableTo;//营业日止
-		private List<Integer> branchNums;//分店
-		private List<String> brandCodes;//品牌
-		private List<String> posItemTypeCodes;//商品类别
-		private List<Integer> posItemNums;//商品
-		private List<String> clientFids;//客户
-		private Boolean isQueryCF;//组合商品按成分统计
-		private Boolean isQueryChild;//统计类别包含子类
-		private Date checkFrom;//盘点时间起 只在毛利分析里使用
-		private Date checkTo;//盘点时间止 只在毛利分析里使用
-		private boolean isQueryClient = false; //是否查询客户
-		private Integer itemFlagNum;
-		private boolean isQueryPresent = false; //是否查询赠品
-		private String saleType;//销售方式：微商城、实体店
-		private List<String> orderSources;*/
 		queryData.setShiftTableFrom(dateFrom);
 		queryData.setShiftTableTo(dateTo);
 		List<Integer> branchNums = new ArrayList();
@@ -443,7 +383,7 @@ public class APIBasic {
 		branchNums.add(12);
 		branchNums.add(99);
 		queryData.setBranchNums(branchNums);
-		queryData.setSystemBookCode("4020");
+		queryData.setSystemBookCode("4344");
 		queryData.setBrandCodes(null);
 		queryData.setPosItemTypeCodes(null);
 		queryData.setPosItemNums(null);
@@ -451,12 +391,10 @@ public class APIBasic {
 		queryData.setIsQueryCF(false);
 		queryData.setItemFlagNum(null);
 		queryData.setSaleType("实体店");//水星微商城   实体店
-		queryData.setOrderSources(null);
+		queryData.setOrderSources(null);		//关联没有使用sharding的表 不报错。
 
 		List<BranchBizSummary> profitAnalysisDays = reportRpc.findProfitAnalysisDays(queryData);
-		System.out.println();
-		//reportService.
-
+		return profitAnalysisDays;
 	}
 	@RequestMapping(method=RequestMethod.GET,value="/test14")
 	public void test14() throws Exception {
@@ -487,10 +425,9 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method=RequestMethod.GET,value="/test15")
-	public void test15() throws Exception{
+	public List<BranchItemSummaryDTO> test15() throws Exception{
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Calendar instance = Calendar.getInstance();
 		Date dateFrom = sdf.parse("2017-01-28");
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> branchNums = new ArrayList();
@@ -511,9 +448,8 @@ public class APIBasic {
 		itemQueryDTO.setBranchNums(branchNums);
 		itemQueryDTO.setDateFrom(dateFrom);
 		itemQueryDTO.setDateTo(dateTo);
-		List<BranchItemSummaryDTO> branchItemSum = posOrderRpc.findBranchItemSum("4020",itemQueryDTO);
-		System.out.println();
-		//reportService.
+		List<BranchItemSummaryDTO> branchItemSum = posOrderRpc.findBranchItemSum("4344",itemQueryDTO);
+		return branchItemSum;
 
 	}
 

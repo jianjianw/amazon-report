@@ -585,8 +585,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as saleMoney, ");
 		sb.append("(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as marginMoney, ");
 		sb.append("(case when detail.order_detail_state_code = 8 then 0 when detail.order_detail_state_code = 4 then -(detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as costMoney ");
-		sb.append("from pos_order as p with(nolock) inner join pos_order_detail as detail with(nolock) on p.order_no = detail.order_no ");
-		sb.append("inner join pos_item as t with(nolock) on t.item_num = detail.item_num ");
+		sb.append("from pos_order as p with(nolock) join pos_order_detail as detail with(nolock) on p.order_no = detail.order_no ");
+		sb.append("join pos_item as t with(nolock) on t.item_num = detail.item_num ");
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between :dateFrom and :dateTo and detail.item_num is not null ");
 
 		if (branchNums != null && branchNums.size() > 0) {
@@ -1333,7 +1333,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findPosCashGroupByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 												   Date dateTo) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num, sum(payment_money) ");
+		sb.append("select branch_num, sum(payment_money) money ");
 		sb.append("from payment with(nolock) where system_book_code = '" + systemBookCode + "' ");
 		sb.append("and payment_pay_by = '现金' ");
 		if (branchNums != null && branchNums.size() > 0) {
@@ -3309,10 +3309,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("select p.branch_num as branchNum, detail.order_detail_state_code as stateCode,  ");
 			sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
 			sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_ ");
-			sb.append("from pos_order_detail as detail with(nolock) ");
-			sb.append("inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+			sb.append("from pos_order as p with(nolock) ");
+			sb.append("join pos_order_detail as detail with(nolock) on p.order_no = detail.order_no ");
 			if(queryPosItem){
-				sb.append("inner join pos_item as item with(nolock) on item.item_num = detail.item_num ");
+				sb.append("join pos_item as item with(nolock) on item.item_num = detail.item_num ");
 
 			}
 			sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
@@ -3374,7 +3374,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_ ");
 			sb.append("from pos_order_detail as detail with(nolock) ");
 			if(queryPosItem){
-				sb.append("inner join pos_item as item with(nolock) on item.item_num = detail.item_num ");
+				sb.append("join pos_item as item with(nolock) on item.item_num = detail.item_num ");
 
 			}
 			sb.append("where detail.order_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
@@ -3440,7 +3440,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(0.00) as assistAmount, count(kitDetail.item_num) as amount_ ");
 			sb.append("from pos_order_kit_detail as kitDetail with(nolock) ");
 			if (queryPosItem) {
-				sb.append("inner join pos_item as item with(nolock) on item.item_num = kitDetail.item_num ");
+				sb.append("join pos_item as item with(nolock) on item.item_num = kitDetail.item_num ");
 			}
 			sb.append("where kitDetail.order_kit_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
 			if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
