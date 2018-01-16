@@ -78,8 +78,8 @@ if __name__ == "__main__":
                 shutil.rmtree(target_dir+dir)
             if config is not None and os.path.exists(config+dir):
                 shutil.rmtree(config+dir)
-        subprocess.run('d:&&cd {}&&cd ../../../../target/&&mkdir standard&&cd standard&&{} -xf ../amazon-report-internal-0.0.2-SNAPSHOT.war'.format(deploy_path, jar),shell=True)
-        print('d:&&cd {}&&cd ../../../../target/&&mkdir standard&&cd standard&&{} -xf ../amazon-report-internal-0.0.2-SNAPSHOT.war'.format(deploy_path, jar))
+        subprocess.run('d:&&cd {}&&cd ../../../../target/&&mkdir standard&&cd standard&&{} -xf ../provider-0.0.2-SNAPSHOT.war'.format(deploy_path, jar),shell=True)
+        print('d:&&cd {}&&cd ../../../../target/&&mkdir standard&&cd standard&&{} -xf ../provider-0.0.2-SNAPSHOT.war'.format(deploy_path, jar))
         for dir in platform_dirs:
             shutil.copytree(target_dir+standard_dir, target_dir+dir)
             if config is not None:
