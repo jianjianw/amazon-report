@@ -40,7 +40,7 @@ if __name__ == "__main__":
         subprocess.run('''cd ../../../../target/;
         mkdir standard;
         cd standard;
-        {} -xf ../amazon-report-internal-0.0.2-SNAPSHOT.war'''.format(jar), shell=True)
+        {} -xf ../provider-0.0.2-SNAPSHOT.war'''.format(jar), shell=True)
         for dir in platform_dirs:
             shutil.copytree(target_dir+standard_dir, target_dir+dir)
             for file in os.listdir(dir):
