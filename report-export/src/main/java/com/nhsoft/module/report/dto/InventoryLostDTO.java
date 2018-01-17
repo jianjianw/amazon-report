@@ -1,0 +1,100 @@
+package com.nhsoft.module.report.dto;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class InventoryLostDTO implements Serializable {
+
+    private Integer ItemNum;
+    private String ItemName;
+    private BigDecimal inventoryAmount; //配送仓库库存
+    private Integer lostCount;//断货次数
+    private Integer lostDay;//断货天数
+    private BigDecimal receiveAmount;//收货数量
+    private BigDecimal requestAmount;//要货数量
+    private BigDecimal requestOutAmount;//要货调出数量
+    private Date firstReceiveDay;//首次收货日期
+    private String maxReceiveDay;//最近收货日期
+
+
+    public Integer getItemNum() {
+        return ItemNum;
+    }
+
+    public void setItemNum(Integer itemNum) {
+        ItemNum = itemNum;
+    }
+
+    public String getItemName() {
+        return ItemName;
+    }
+
+    public void setItemName(String itemName) {
+        ItemName = itemName;
+    }
+
+    public BigDecimal getInventoryAmount() {
+        return inventoryAmount;
+    }
+
+    public void setInventoryAmount(BigDecimal inventoryAmount) {
+        this.inventoryAmount = inventoryAmount;
+    }
+
+    public Integer getLostCount() {
+        return lostCount;
+    }
+
+    public void setLostCount(Integer lostCount) {
+        this.lostCount = lostCount;
+    }
+
+    public Integer getLostDay() {
+        return lostDay;
+    }
+
+    public void setLostDay(Integer lostDay) {
+        this.lostDay = lostDay;
+    }
+
+    public BigDecimal getReceiveAmount() {
+        return receiveAmount;
+    }
+
+    public void setReceiveAmount(BigDecimal receiveAmount) {
+        this.receiveAmount = receiveAmount;
+    }
+
+    public BigDecimal getRequestAmount() {
+        return requestAmount;
+    }
+
+    public void setRequestAmount(BigDecimal requestAmount) {
+        this.requestAmount = requestAmount;
+    }
+
+    public BigDecimal getRequestOutAmount() {
+        return requestOutAmount;
+    }
+
+    public void setRequestOutAmount(BigDecimal requestOutAmount) {
+        this.requestOutAmount = requestOutAmount;
+    }
+
+    public Date getFirstReceiveDay() {
+        return firstReceiveDay;
+    }
+
+    public void setFirstReceiveDay(Date firstReceiveDay) {
+        this.firstReceiveDay = firstReceiveDay;
+    }
+
+    public String getMaxReceiveDay() {
+        return maxReceiveDay;
+    }
+
+    public void setMaxReceiveDay(String maxReceiveDay) {
+        this.maxReceiveDay = maxReceiveDay;
+    }
+}

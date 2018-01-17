@@ -125,4 +125,16 @@ public interface TransferOutOrderService {
 	 */
 	public List<TransferOutOrder> findBySettleBranch(String systemBookCode, Integer branchNum, Integer outBranchNum, Date dateFrom, Date dateTo);
 
+	/**
+	 * 按商品主键汇总基本数量 金额 常用数量
+	 * @param systemBookCode
+	 * @param outBranchNums
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param itemNums
+	 * @return
+	 */
+	public List<Object[]> findItemSummary(String systemBookCode, List<Integer> outBranchNums, List<Integer> branchNums,
+										  Date dateFrom, Date dateTo, List<Integer> itemNums);
 }

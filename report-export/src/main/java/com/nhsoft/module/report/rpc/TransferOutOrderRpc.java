@@ -2,6 +2,7 @@ package com.nhsoft.module.report.rpc;
 
 
 import com.nhsoft.module.report.dto.TransferOutMoney;
+import com.nhsoft.module.report.dto.TransterOutDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -34,5 +35,19 @@ public interface TransferOutOrderRpc {
      * @param dateTo 时间止
      */
     public List<TransferOutMoney> findMoneyBymonthSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+    /**
+     * 按商品主键汇总基本数量 金额 常用数量
+     * @param systemBookCode
+     * @param outBranchNums
+     * @param branchNums
+     * @param dateFrom
+     * @param dateTo
+     * @param itemNums
+     * @return
+     */
+    public List<TransterOutDTO> findItemSummary(String systemBookCode, List<Integer> outBranchNums, List<Integer> branchNums,
+                                                Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 }

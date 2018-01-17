@@ -11,6 +11,10 @@ public class ReceiveOrderInfoDTO implements Serializable {
     private String auditor;
     private BigDecimal receiveOrderPrice;
 
+    private Integer itemNum;
+    private BigDecimal receiveQty;  //收货数量
+    private BigDecimal receiveMoney;  //收货金额
+
     public String getOrderFid() {
         return orderFid;
     }
@@ -41,5 +45,29 @@ public class ReceiveOrderInfoDTO implements Serializable {
 
     public void setReceiveOrderPrice(BigDecimal receiveOrderPrice) {
         this.receiveOrderPrice = receiveOrderPrice;
+    }
+
+    public Integer getItemNum() {
+        return itemNum;
+    }
+
+    public void setItemNum(Integer itemNum) {
+        this.itemNum = itemNum;
+    }
+
+    public BigDecimal getReceiveQty() {
+        return receiveQty;
+    }
+
+    public void setReceiveQty(BigDecimal receiveQty) {
+        this.receiveQty = receiveQty;
+    }
+
+    public BigDecimal getReceiveMoney() {
+        return receiveMoney;
+    }
+
+    public void setReceiveMoney(BigDecimal receiveMoney) {
+        this.receiveMoney = receiveMoney;
     }
 }

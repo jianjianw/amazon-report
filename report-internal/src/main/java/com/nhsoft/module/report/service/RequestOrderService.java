@@ -49,6 +49,20 @@ public interface RequestOrderService {
 	 * @return
 	 */
 	public List<RequestOrderDetail> findDetails(String requestOrderFid);
+
+
+	/**
+	 * 按商品汇总数据
+	 * @param systemBookCode
+	 * @param centerBranchNum
+	 * @param branchNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param itemNums
+	 * @return
+	 */
+	public List<Object[]> findItemSummary(String systemBookCode, Integer centerBranchNum, Integer branchNum,
+										  Date dateFrom, Date dateTo, List<Integer> itemNums);
 	
 	
 	

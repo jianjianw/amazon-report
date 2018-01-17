@@ -4,6 +4,7 @@ package com.nhsoft.module.report.dao.impl;
 import com.nhsoft.module.report.dao.BranchItemRecoredDao;
 import com.nhsoft.module.report.util.AppUtil;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 
 

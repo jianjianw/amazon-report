@@ -1312,6 +1312,17 @@ public interface ReportRpc {
 	public List<CardDailyDTO> findCardDailys(String systemBookCode,List<Integer> branchNums, Date dateFrom,Date dateTo);
 
 
+	/**
+	 * 缺货分析
+	 * @param systemBookCode
+	 * @param branchNum 分店号
+	 * @param dateFrom 审核时间起
+	 * @param dateTo 审核时间止
+	 * @param itemNums 商品主键列表
+	 * */
+	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode,  Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums);
+
+
 
 
 

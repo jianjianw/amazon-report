@@ -23,6 +23,7 @@ public class RequestOrderDetailDTO implements Serializable {
 	private BigDecimal requestOrderDetailOutUseQty;
 	private BigDecimal requestOrderDetailOutReceivedQty; //调入数量
 	private BigDecimal requestOrderDetailInventoryQty; //中心库存数
+	private BigDecimal requestOrderDetailUseQty;
 
 	public BigDecimal getRequestOrderDetailOutReceivedQty() {
 		return requestOrderDetailOutReceivedQty;
@@ -127,7 +128,15 @@ public class RequestOrderDetailDTO implements Serializable {
 	public void setRequestOrderDetailOutMoney(BigDecimal requestOrderDetailOutMoney) {
 		this.requestOrderDetailOutMoney = requestOrderDetailOutMoney;
 	}
-	
+
+	public BigDecimal getRequestOrderDetailUseQty() {
+		return requestOrderDetailUseQty;
+	}
+
+	public void setRequestOrderDetailUseQty(BigDecimal requestOrderDetailUseQty) {
+		this.requestOrderDetailUseQty = requestOrderDetailUseQty;
+	}
+
 	public static RequestOrderDetailDTO get(List<RequestOrderDetailDTO> dtos, Integer itemNum){
 		for(int i = 0;i < dtos.size();i++){
 			RequestOrderDetailDTO dto = dtos.get(i);

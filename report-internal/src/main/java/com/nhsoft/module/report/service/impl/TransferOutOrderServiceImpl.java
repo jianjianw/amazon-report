@@ -104,5 +104,10 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 	public List<TransferOutOrder> findBySettleBranch(String systemBookCode, Integer branchNum, Integer outBranchNum, Date dateFrom, Date dateTo) {
 		return transferOutOrderDao.findBySettleBranch(systemBookCode, branchNum, outBranchNum, dateFrom, dateTo);
 	}
-	
+
+	@Override
+	public List<Object[]> findItemSummary(String systemBookCode, List<Integer> outBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+		return transferOutOrderDao.findItemSummary(systemBookCode,outBranchNums,branchNums,dateFrom,dateTo,itemNums);
+	}
+
 }

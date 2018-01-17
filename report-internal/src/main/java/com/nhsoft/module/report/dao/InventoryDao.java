@@ -87,4 +87,25 @@ public interface InventoryDao {
 	 * @return
 	 */
 	public List<Object[]> findBranchSummary(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
+
+
+	/**
+	 * 查询断货天数 商品库存为0的天数
+	 * @param systemBookCode
+	 * @param branchNum 分店号
+	 * @param itemNums
+	 * @return
+	 * */
+	 public List<Object[]> findInventoryLostDayCount(String systemBookCode, Integer branchNum, List<Integer> itemNums);
+
+
+	/**
+	 * 查询断货次数 		时间范围内从 有库存到无库存的 次数
+	 * @param systemBookCode
+	 * @param branchNum 分店号
+	 * @param itemNums
+	 * @return
+	 * */
+	public List<Object[]> findInventoryLostCount(String systemBookCode, Integer branchNum, List<Integer> itemNums);
+
 }

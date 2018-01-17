@@ -2,6 +2,7 @@ package com.nhsoft.module.report.rpc.impl;
 
 
 import com.nhsoft.module.report.dto.TransferOutMoney;
+import com.nhsoft.module.report.dto.TransterOutDTO;
 import com.nhsoft.module.report.rpc.TransferOutOrderRpc;
 import com.nhsoft.module.report.service.TransferOutOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,4 +71,23 @@ public class TransferOutOrderRpcImpl implements TransferOutOrderRpc {
         }
         return list;
     }
+
+    @Override
+    public List<TransterOutDTO> findItemSummary(String systemBookCode, List<Integer> outBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+
+        List<Object[]> objects = transferOutOrderService.findItemSummary(systemBookCode, outBranchNums, branchNums, dateFrom, dateTo, itemNums);
+        int size = objects.size();
+        List<TransterOutDTO> list = new ArrayList<>(size);
+        for (int i = 0; i <size ; i++) {
+            Object[] object = objects.get(i);
+            TransterOutDTO dto = new TransterOutDTO();
+            dto.setItemNum((Integer) object[0]);
+            dto.setQty((BigDecimal) object[1]);
+            dto.setMoney((BigDecimal) object[2]);
+            dto.setUseQty((BigDecimal) object[3]);
+            list.add(dto);
+        }
+        return list;
+    }
+
 }

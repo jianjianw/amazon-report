@@ -133,7 +133,6 @@ public class InventoryDaoImpl extends DaoImpl implements InventoryDao {
 		return objects;
 	}
 
-
 	@Override
 	public List<Object[]> findInventory(String systemBookCode, Integer branchNum, Integer storehouseNum,
 										List<String> itemCategorys) {
@@ -296,6 +295,32 @@ public class InventoryDaoImpl extends DaoImpl implements InventoryDao {
 	}
 
 
+	@Override
+	public List<Object[]> findInventoryLostDayCount(String systemBookCode, Integer branchNum, List<Integer> itemNums) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("select item_num,count() from inventory as i");
+		sb.append("inner join branch_storehouse as bs on i.storehouse_num = bs.storehouse_num ");
+		sb.append("where inventory_amount = 0 ");
+		sb.append("and systemBookCode = :systemBookCode ");
+		if (branchNum != null) {
+			sb.append("and bs.branch_num = :branchNum ");
+		}
+		if (itemNums != null && itemNums.size() > 0) {
+			sb.append("and i.item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if (branchNum != null) {
+			query.setInteger("branchNum", branchNum);
+		}
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findInventoryLostCount(String systemBookCode, Integer branchNum, List<Integer> itemNums) {
+		return null;
+	}
 
 
 }

@@ -57,10 +57,6 @@ public class ReportRpcImpl implements ReportRpc {
 	@Autowired
 	private BookResourceRpc bookResourceRpc;
 	@Autowired
-	private PosOrderRpc posOrderRpc;
-
-
-	@Autowired
 	private CardUserRpc cardUserRpc;
 	@Autowired
 	private CardDepositRpc cardDepositRpc;
@@ -70,7 +66,17 @@ public class ReportRpcImpl implements ReportRpc {
 	private CardConsumeRpc cardConsumeRpc;
 	@Autowired
 	private BranchRpc branchRpc;
-	
+	@Autowired
+	private InventoryRpc inventoryRpc;
+	@Autowired
+	private ReceiveOrderRpc receiveOrderRpc;
+	@Autowired
+	private RequestOrderRpc requestOrderRpc;
+	@Autowired
+	private TransferOutOrderRpc transferOutOrderRpc;
+	@Autowired
+	private BranchItemRecoredRpc branchItemRecoredRpc;
+
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
 		String systemBookCode = saleAnalysisQueryData.getSystemBookCode();
@@ -3675,4 +3681,92 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		return null;
 	}
+
+
+
+	@Override
+	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+
+		/**
+		 * amazonReport中实现
+		 配送仓库库存 inventoryRpc.findCenterStore
+		 收货数量 从 receiveOrder里查
+		 要货数量 从 requestOrder里查
+		 要货调出数量 从transferOutOrder里查
+		 最近收货日期 从branchItemRecord 里查收货单的记录
+		 断货天数 = 时间范围内库存为0 的天数 见图1
+		 断货次数 = 时间范围内 从 有库存到 无库存的 次数 见图1
+		 要用当前库存inventory 从posItemLog倒退每天的库存 这个最后查 先实现上面几个
+		 *
+		 * */
+		List<Integer> branch = new ArrayList<>();
+		branch.add(branchNum);
+		//配送仓库库存
+		List<InventoryDTO> inventory = inventoryRpc.findCenterStore(systemBookCode, branchNum, itemNums);
+		//收货数量
+		List<ReceiveOrderInfoDTO> receiveSummary = receiveOrderRpc.findItemSummary(systemBookCode, branch, dateFrom, dateTo, itemNums);
+		//要货数量
+		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(systemBookCode, null, branchNum, dateFrom, dateTo, itemNums);
+		//要货调出数量
+		List<TransterOutDTO> transterOutSummary = transferOutOrderRpc.findItemSummary(systemBookCode, null, branch, dateFrom, dateTo, itemNums);
+		//最近收货日期
+		List<BranchItemRecoredDTO> itemAuditDate = branchItemRecoredRpc.findItemAuditDate(systemBookCode, branchNum, null, itemNums, null);
+		//断货天数			时间范围内库存为0的天数
+
+		//断货次数			时间范围内 从 有库存到 无库存的 次数
+
+
+		int itemSize = itemNums.size();
+		List<InventoryLostDTO> list = new ArrayList<>();
+		for (int i = 0; i <itemSize ; i++) {
+			Integer itemNum = itemNums.get(i);
+			InventoryLostDTO inventoryLostDTO = new InventoryLostDTO();
+			inventoryLostDTO.setItemNum(itemNum);
+			//配送仓库库存
+			for (int j = 0,len = inventory.size(); j < len  ; j++) {
+				InventoryDTO dto = inventory.get(j);
+				if(itemNum.equals(dto.getItemNum())){
+					inventoryLostDTO.setInventoryAmount(dto.getInventoryAmount());
+				}
+			}
+			//收货数量
+			for (int j = 0,len = receiveSummary.size(); j <len ; j++) {
+				ReceiveOrderInfoDTO dto = receiveSummary.get(j);
+				if(itemNum.equals(dto.getItemNum())){
+					inventoryLostDTO.setReceiveAmount(dto.getReceiveQty());
+				}
+			}
+			//要货数量
+			for (int j = 0,len = requestSummary.size(); j <len ; j++) {
+				RequestOrderDetailDTO dto = requestSummary.get(j);
+				if(itemNum.equals(dto.getItemNum())){
+					inventoryLostDTO.setRequestAmount(dto.getRequestOrderDetailQty());
+				}
+			}
+			//要货调出数量
+			for (int j = 0,len = transterOutSummary.size(); j <len ; j++) {
+				TransterOutDTO dto = transterOutSummary.get(j);
+				if(itemNum.equals(dto.getItemNum())){
+					inventoryLostDTO.setRequestOutAmount(dto.getQty());
+				}
+			}
+			//最近收货日期
+			for (int j = 0,len = itemAuditDate.size(); j < len ; j++) {
+				BranchItemRecoredDTO dto = itemAuditDate.get(j);
+				if(itemNum.equals(dto.getItemNum())){
+					inventoryLostDTO.setMaxReceiveDay(dto.getAuditDate());
+				}
+			}
+
+
+
+			list.add(inventoryLostDTO);
+		}
+
+
+
+		return null;
+	}
+
+
 }

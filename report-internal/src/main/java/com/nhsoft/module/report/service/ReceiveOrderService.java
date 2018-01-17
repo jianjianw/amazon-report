@@ -87,28 +87,29 @@ public interface ReceiveOrderService{
 		public List<Object[]> findBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 
-
 		/**
 		 * 按分店、商品汇总收货数量 金额
+		 *
 		 * @param systemBookCode
-		 * @param branchNums 分店主键列表
-		 * @param dateFrom 审核时间起
-		 * @param dateTo 审核时间止
-		 * @param itemNums 商品主键列表
+		 * @param branchNums     分店主键列表
+		 * @param dateFrom       审核时间起
+		 * @param dateTo         审核时间止
+		 * @param itemNums       商品主键列表
 		 * @return
 		 */
 		public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
-	/**
-	 * 按商品汇总收货数量 金额
-	 * @param systemBookCode
-	 * @param branchNums 分店
-	 * @param dateFrom 审核时间起
-	 * @param dateTo 审核时间止
-	 * @param itemNums 商品主键列表
-	 * @return
-	 */
-	public List<Object[]> findItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
+		/**
+		 * 按商品汇总收货数量 金额
+		 *
+		 * @param systemBookCode
+		 * @param branchNums     分店
+		 * @param dateFrom       审核时间起
+		 * @param dateTo         审核时间止
+		 * @param itemNums       商品主键列表
+		 * @return
+		 */
+		public List<Object[]> findItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 
 }
