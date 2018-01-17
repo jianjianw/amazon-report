@@ -9,6 +9,7 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.*;
@@ -119,6 +120,7 @@ public class ReceiveOrderDaoImpl extends DaoImpl implements ReceiveOrderDao {
 		if (storehouseNum != null) {
 			criteria.add(Restrictions.eq("r.storehouseNum", storehouseNum));
 		}
+		criteria.setLockMode(LockMode.NONE);
 		return criteria;
 	}
 
@@ -182,9 +184,7 @@ public class ReceiveOrderDaoImpl extends DaoImpl implements ReceiveOrderDao {
 				.add(Projections.sum("detail.receiveOrderDetailUseQty"))
 				.add(Projections.sum("detail.receiveOrderDetailPresentUseQty"))
 				.add(Projections.sum("detail.receiveOrderDetailOtherMoney"))
-				.add(Projections
-						.sqlProjection(
-								"sum(case when receive_order_detail_other_money > 0 then receive_order_detail_use_qty end) as otherQty",
+				.add(Projections.sqlProjection("sum(case when receive_order_detail_other_money > 0 then receive_order_detail_use_qty end) as otherQty",
 								new String[] { "otherQty" }, new Type[] { StandardBasicTypes.BIG_DECIMAL }))
 				.add(Projections.groupProperty("r.branchNum"))
 				.add(Projections.sum("detail.receiveOrderDetailSupplierMoney"))

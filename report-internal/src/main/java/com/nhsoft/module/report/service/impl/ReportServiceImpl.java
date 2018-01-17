@@ -5649,7 +5649,6 @@ public class ReportServiceImpl implements ReportService {
 		String operator = purchaseOrderCollectQuery.getOperator();
 		Integer storehouseNum = purchaseOrderCollectQuery.getStorehouseNum();
 
-
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 		Map<Integer, PurchaseOrderCollect> map = new HashMap<Integer, PurchaseOrderCollect>();
 		List<Object[]> receiveObjects = receiveOrderDao.findQueryItems(systemBookCode, branchNums, dateFrom, dateTo,
@@ -11929,6 +11928,223 @@ public class ReportServiceImpl implements ReportService {
 			data.setAmountTotal(data.getPurchaseItemAmount().subtract(data.getPurchaseItemReturnAmount()));
 			data.setMoneyTotal(data.getPurchaseItemMoney().subtract(data.getPurchaseItemReturnMoney()));
 		}
+		return list;
+	}
+
+	@Override
+	public List<PurchaseOrderCollect> findPurchaseBranchSupplier(PurchaseOrderCollectQuery purchaseOrderCollectQuery) {
+		String systemBookCode = purchaseOrderCollectQuery.getSystemBookCode();
+		List<Integer> branchNums = new ArrayList<Integer>();
+		Integer branchNum = purchaseOrderCollectQuery.getBranchNum();
+		if (branchNum != null) {
+			branchNums.add(branchNum);
+		} else {
+			branchNums.addAll(purchaseOrderCollectQuery.getBranchNums());
+		}
+		List<Integer> itemNums = purchaseOrderCollectQuery.getItemNums();
+		List<String> itemCategoryCodes = purchaseOrderCollectQuery.getItemCategoryCodes();
+		List<Integer> supplierNums = purchaseOrderCollectQuery.getSupplierNums();
+		String unit = purchaseOrderCollectQuery.getUnitType();
+		Date dateFrom = purchaseOrderCollectQuery.getDtFrom();
+		Date dateTo = purchaseOrderCollectQuery.getDtTo();
+		String operator = purchaseOrderCollectQuery.getOperator();
+		Integer storehouseNum = purchaseOrderCollectQuery.getStorehouseNum();
+
+		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+		Map<String, PurchaseOrderCollect> map = new HashMap<>();
+		List<Object[]> receiveObjects = receiveOrderDao.findQueryItems(systemBookCode, branchNums, dateFrom, dateTo,
+				itemNums, itemCategoryCodes, supplierNums, operator, storehouseNum);
+		List<Branch> branches = branchService.findInCache(systemBookCode);
+		List<String> departments = null;
+		if(StringUtils.isNotEmpty(purchaseOrderCollectQuery.getItemDepartment())){
+			String[] array = purchaseOrderCollectQuery.getItemDepartment().split(",");
+			departments = Arrays.asList(array);
+		}
+		StringBuilder stringBuilder;
+		String key;
+		for (int i = 0,len = receiveObjects.size(); i < len; i++) {
+			Object[] object = receiveObjects.get(i);
+			Supplier supplier = (Supplier) object[0];
+			Integer itemNum = (Integer) object[1];
+			BigDecimal amount = (BigDecimal) object[3];
+			BigDecimal money = (BigDecimal) object[4];
+			BigDecimal presentAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BigDecimal presentMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+			BigDecimal presentUseAmount = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
+			Integer queryBranchNum =(Integer) object[11];
+			BigDecimal supplierMoney = object[12] == null ? BigDecimal.ZERO : (BigDecimal) object[12];
+
+			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
+			if (posItem == null) {
+				continue;
+			}
+			if(StringUtils.isNotEmpty(purchaseOrderCollectQuery.getItemBrand())){
+				if(!purchaseOrderCollectQuery.getItemBrand().equals(posItem.getItemBrand())){
+					continue;
+				}
+
+			}
+			if(departments != null && !departments.contains(posItem.getItemDepartment())){
+				continue;
+
+			}
+			stringBuilder = new StringBuilder();
+			stringBuilder.append(queryBranchNum.toString()).append("|").append(supplier.getSupplierNum().toString());
+			key = stringBuilder.toString();
+			PurchaseOrderCollect data = map.get(key);
+			if (data == null) {
+				data = new PurchaseOrderCollect();
+				stringBuilder = new StringBuilder();
+				String supplierName = stringBuilder.append(supplier.getSupplierCode()).append("|").append(supplier.getSupplierName()).toString();
+				data.setSupplierName(supplierName);
+				data.setSupplierNum(supplier.getSupplierNum());
+				data.setPurchaseItemAmount(BigDecimal.ZERO);
+				data.setPurchaseItemMoney(BigDecimal.ZERO);
+				data.setPurchasePresentAmount(BigDecimal.ZERO);
+				data.setPurchasePresentMoney(BigDecimal.ZERO);
+				data.setPurchaseItemReturnAmount(BigDecimal.ZERO);
+				data.setPurchaseItemReturnMoney(BigDecimal.ZERO);
+				data.setReceiveOrderDetailSupplierMoney(BigDecimal.ZERO);
+				data.setBaseAmount(BigDecimal.ZERO);
+				data.setBranchNum(queryBranchNum);
+
+				Branch branch = Branch.get(branches, queryBranchNum);
+				if(branch != null){
+					data.setBranchName(branch.getBranchName());
+				}
+				map.put(key, data);
+			}
+
+			BigDecimal rate = BigDecimal.ZERO;
+			if (unit.equals(AppConstants.UNIT_BASIC)) {
+				data.setPurchaseItemUnit(posItem.getItemUnit());
+				rate = BigDecimal.ONE;
+			}
+			if (unit.equals(AppConstants.UNIT_SOTRE)) {
+				rate = posItem.getItemInventoryRate();
+
+			}
+			if (unit.equals(AppConstants.UNIT_TRANFER)) {
+				rate = posItem.getItemTransferRate();
+
+			}
+			if (unit.equals(AppConstants.UNIT_PURCHASE)) {
+				rate = posItem.getItemPurchaseRate();
+
+			}
+			if (unit.equals(AppConstants.UNIT_PIFA)) {
+				rate = posItem.getItemWholesaleRate();
+
+			}
+			data.setBaseAmount(data.getBaseAmount().add(amount));
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				amount = amount.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+				presentAmount = presentAmount.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+			}
+			if (unit.equals(AppConstants.UNIT_USE)) {
+				amount = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+				presentAmount = presentUseAmount;
+			}
+			data.setPurchaseItemAmount(data.getPurchaseItemAmount().add(amount));
+			data.setPurchaseItemMoney(data.getPurchaseItemMoney().add(money));
+			data.setPurchasePresentAmount(data.getPurchasePresentAmount().add(presentAmount));
+			data.setPurchasePresentMoney(data.getPurchasePresentMoney().add(presentMoney));
+			data.setReceiveOrderDetailOtherMoney(data.getReceiveOrderDetailOtherMoney().add(
+					object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9]));
+			data.setReceiveOrderDetailOtherQty(data.getReceiveOrderDetailOtherQty().add(
+					object[10] == null ? BigDecimal.ZERO : (BigDecimal) object[10]));
+			data.setReceiveOrderDetailSupplierMoney(data.getReceiveOrderDetailSupplierMoney().add(supplierMoney));
+			data.setAmountTotal(data.getAmountTotal().add(amount));
+			data.setMoneyTotal(data.getMoneyTotal().add(money));
+		}
+
+		List<Object[]> returnObjects = returnOrderDao.findQueryItems(systemBookCode, branchNums, dateFrom, dateTo,
+				itemNums, itemCategoryCodes, supplierNums, operator, storehouseNum);
+		for (int i = 0,len = returnObjects.size(); i < len; i++) {
+			Object[] object = returnObjects.get(i);
+			Supplier supplier = (Supplier) object[0];
+			Integer itemNum = (Integer) object[1];
+			BigDecimal amount = (BigDecimal) object[3];
+			BigDecimal money = (BigDecimal) object[4];
+			BigDecimal presentAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BigDecimal presentMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+			BigDecimal presentUseAmount = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
+			Integer queryBranchNum = (Integer) object[9];
+
+			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
+			if(StringUtils.isNotEmpty(purchaseOrderCollectQuery.getItemBrand())){
+				if(!purchaseOrderCollectQuery.getItemBrand().equals(posItem.getItemBrand())){
+					continue;
+				}
+
+			}
+			if(departments != null && !departments.contains(posItem.getItemDepartment())){
+				continue;
+
+			}
+			stringBuilder = new StringBuilder();
+			stringBuilder.append(queryBranchNum.toString()).append("|").append(supplier.getSupplierNum().toString());
+			key = stringBuilder.toString();
+			PurchaseOrderCollect data = map.get(key);
+			if (data == null) {
+				data = new PurchaseOrderCollect();
+				stringBuilder = new StringBuilder();
+				String supplierName = stringBuilder.append(supplier.getSupplierCode()).append("|").append(supplier.getSupplierName()).toString();
+				data.setSupplierName(supplierName);
+				data.setPurchaseItemAmount(BigDecimal.ZERO);
+				data.setPurchaseItemMoney(BigDecimal.ZERO);
+				data.setPurchasePresentAmount(BigDecimal.ZERO);
+				data.setPurchasePresentMoney(BigDecimal.ZERO);
+				data.setPurchaseItemReturnAmount(BigDecimal.ZERO);
+				data.setPurchaseItemReturnMoney(BigDecimal.ZERO);
+				data.setBaseAmount(BigDecimal.ZERO);
+				data.setBranchNum(queryBranchNum);
+
+				Branch branch = Branch.get(branches, queryBranchNum);
+				if(branch != null){
+					data.setBranchName(branch.getBranchName());
+				}
+				map.put(key, data);
+			}
+
+			BigDecimal rate = BigDecimal.ZERO;
+			if (unit.equals(AppConstants.UNIT_BASIC)) {
+				data.setPurchaseItemUnit(posItem.getItemUnit());
+				rate = BigDecimal.ONE;
+			}
+			if (unit.equals(AppConstants.UNIT_SOTRE)) {
+				rate = posItem.getItemInventoryRate();
+
+			}
+			if (unit.equals(AppConstants.UNIT_TRANFER)) {
+				rate = posItem.getItemTransferRate();
+
+			}
+			if (unit.equals(AppConstants.UNIT_PURCHASE)) {
+				rate = posItem.getItemPurchaseRate();
+
+			}
+			if (unit.equals(AppConstants.UNIT_PIFA)) {
+				rate = posItem.getItemWholesaleRate();
+
+			}
+			data.setBaseAmount(data.getBaseAmount().add(amount));
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				amount = amount.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+				presentAmount = presentAmount.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+			}
+			if (unit.equals(AppConstants.UNIT_USE)) {
+				amount = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+				presentAmount = presentUseAmount;
+			}
+			data.setPurchaseItemReturnAmount(data.getPurchaseItemReturnAmount().add(amount));
+			data.setPurchaseItemReturnMoney(data.getPurchaseItemReturnMoney().add(money));
+			data.setAmountTotal(data.getAmountTotal().subtract(amount));
+			data.setMoneyTotal(data.getMoneyTotal().subtract(money));
+			data.setPurchasePresentAmount(data.getPurchasePresentAmount().subtract(presentAmount));
+			data.setPurchasePresentMoney(data.getPurchasePresentMoney().subtract(presentMoney));
+		}
+		List<PurchaseOrderCollect> list = new ArrayList<PurchaseOrderCollect>(map.values());
 		return list;
 	}
 

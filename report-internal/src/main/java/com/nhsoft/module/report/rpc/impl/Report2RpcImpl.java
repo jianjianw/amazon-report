@@ -1255,10 +1255,10 @@ public class Report2RpcImpl implements Report2Rpc {
 	
 	@Override
 	public List<OtherInfoSummaryDTO> findOtherInfos(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		List<Branch> branches = branchService.findInCache(systemBookCode);
-		if(branchNums== null || branchNums.size() == 0) {
-			branchNums = branches.stream().map(b -> b.getId().getBranchNum()).collect(Collectors.toList());
+		if(branchNums == null || branchNums.isEmpty()){
+			return new ArrayList<>();
 		}
+		List<Branch> branches = branchService.findInCache(systemBookCode);
 		ReportUtil<OtherInfoSummaryDTO> reportUtil = new ReportUtil<>(OtherInfoSummaryDTO.class);
 		for(Integer branchNum : branchNums) {
 			List<NameAndValueDTO> dtos = mobileAppV2Service.findOtherInfos(systemBookCode, Collections.singletonList(branchNum), dateFrom, dateTo);
@@ -1297,6 +1297,10 @@ public class Report2RpcImpl implements Report2Rpc {
 					case "经理折扣":
 						otherInfoSummaryDTO.setMgrDiscountCount(dto.getIntValue());
 						otherInfoSummaryDTO.setMgrDiscountMoney(dto.getValue());
+						break;
+					case "赠送":
+						otherInfoSummaryDTO.setPresentCount(dto.getIntValue());
+						otherInfoSummaryDTO.setPresentMoney(dto.getValue());
 						break;
 				}
 				reportUtil.add(otherInfoSummaryDTO);

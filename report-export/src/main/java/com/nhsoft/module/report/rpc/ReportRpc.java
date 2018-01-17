@@ -400,6 +400,13 @@ public interface ReportRpc {
 	public List<PurchaseOrderCollect> findPurchaseBranchCategory(PurchaseOrderCollectQuery purchaseOrderCollectQuery);
 
 	/**
+	 * 查询采购门店、供应商汇总
+	 * @param purchaseOrderCollectQuery
+	 * @return
+	 */
+	public List<PurchaseOrderCollect> findPurchaseBranchSupplier(PurchaseOrderCollectQuery purchaseOrderCollectQuery);
+
+	/**
 	 * 毛利分析 日毛利汇总
 	 * @param profitAnalysisQueryData
 	 * @return

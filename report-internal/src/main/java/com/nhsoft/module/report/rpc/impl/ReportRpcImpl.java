@@ -2233,7 +2233,12 @@ public class ReportRpcImpl implements ReportRpc {
 		return reportService.findPurchaseBranchCategory(purchaseOrderCollectQuery);
 	}
 
-	@Override
+    @Override
+    public List<PurchaseOrderCollect> findPurchaseBranchSupplier(PurchaseOrderCollectQuery purchaseOrderCollectQuery) {
+        return reportService.findPurchaseBranchSupplier(purchaseOrderCollectQuery);
+    }
+
+    @Override
 	public List<BranchBizSummary> findProfitAnalysisDays(ProfitAnalysisQueryData profitAnalysisQueryData) {
 		List<Object[]> objects = reportService.findProfitAnalysisDays(profitAnalysisQueryData);
 		int size = objects.size();

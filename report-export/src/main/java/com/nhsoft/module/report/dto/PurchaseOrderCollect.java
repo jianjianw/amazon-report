@@ -44,6 +44,7 @@ public class PurchaseOrderCollect implements Serializable {
 	private BigDecimal receiveOrderDetailOtherQty;//筐数量
 	private BigDecimal receiveOrderDetailOtherMoney;//筐押金
 	private Integer branchNum;
+	private String branchName;
 	private BigDecimal receiveOrderDetailSupplierMoney;//运费金额
 	private String itemCategoryCode;
 	private String itemCategory;
@@ -70,7 +71,15 @@ public class PurchaseOrderCollect implements Serializable {
 		receiveOrderDetailSupplierMoney = BigDecimal.ZERO;
 		receiveSaleMoney = BigDecimal.ZERO;
 	}
-	
+
+	public String getBranchName() {
+		return branchName;
+	}
+
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
+	}
+
 	public BigDecimal getPurchaseUseRate() {
 		return purchaseUseRate;
 	}
