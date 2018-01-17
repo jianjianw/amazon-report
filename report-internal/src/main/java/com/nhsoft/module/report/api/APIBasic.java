@@ -1,12 +1,11 @@
 package com.nhsoft.module.report.api;
 
+import com.nhsoft.module.azure.model.BranchDaily;
+import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.Branch;
-import com.nhsoft.module.report.query.ABCListQuery;
-import com.nhsoft.module.report.query.ProfitAnalysisQueryData;
-import com.nhsoft.module.report.query.SaleAnalysisQueryData;
-import com.nhsoft.module.report.query.SupplierSaleQuery;
+import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
@@ -71,8 +70,8 @@ public class APIBasic {
 
 		//含join
 		CardReportQuery cardReportQuery = new CardReportQuery();
-		//cardReportQuery.setQueryDetail(true);
-		cardReportQuery.setQueryPayment(true);
+		cardReportQuery.setQueryDetail(true);
+		//cardReportQuery.setQueryPayment(true);
 		cardReportQuery.setSystemBookCode("4344");
 		cardReportQuery.setBranchNum(99);
 		cardReportQuery.setDateFrom(dateFrom);
@@ -349,7 +348,7 @@ public class APIBasic {
 		queryData.setItemDepartments(null);
 		queryData.setItemFlagNum(null);
 		queryData.setSaleType("实体店");//水星微商城   实体店
-		queryData.setIsQueryCardUser(true);
+		queryData.setIsQueryCardUser(false);
 		queryData.setOrderSources(null);
 		queryData.setTwoStringValueDatas(null);
 		queryData.setAppUserNum(null);
@@ -665,4 +664,126 @@ public class APIBasic {
 		List<SupplierLianYing> supplierLianYing = reportRpc.findSupplierLianYing(supplierSaleQuery);
 		return supplierLianYing;
 	}
+
+
+
+
+
+
+
+
+
+
+    @RequestMapping(method = RequestMethod.GET,value = "test31")
+    public List<ItemDailyDetail> test31()throws Exception{  //test bi   两个内连接都不行
+
+
+        String systemBookCode= "4344";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateFrom = sdf.parse("2016-05-01");
+        Date dateTo = sdf.parse("2017-10-31");
+        List<Integer> items = new ArrayList<>();
+        items.add(434400100);
+        items.add(434400126);
+        items.add(110010009);
+        items.add(110010007);
+        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode,dateFrom,dateTo,items);
+        return itemDailyDetailSummary;
+        //findItemDailyDetailSummary
+    }
+
+	@RequestMapping(method = RequestMethod.GET,value = "test31_1")
+	public List<ItemSaleDailyDTO> test31_1()throws Exception{  //test bi   两个内连接都不行
+
+
+		String systemBookCode= "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2016-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400100);
+		items.add(434400126);
+		items.add(110010009);
+		items.add(110010007);
+		List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBookCode, dateFrom, dateTo);
+		return itemSaleDailySummary;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "test31_2")
+	public List<BranchDaily> test31_2()throws Exception{  //单表是ok的
+
+
+		String systemBookCode= "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2016-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> items = new ArrayList<>();
+		items.add(434400100);
+		items.add(434400126);
+		items.add(110010009);
+		items.add(110010007);
+		List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, dateFrom, dateTo);
+		return branchDailySummary;
+	}
+
+
+    @RequestMapping(method = RequestMethod.GET,value = "test32")
+    public List<BusinessCollection> test32()throws Exception{
+
+
+        String systemBookCode= "4344";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateFrom = sdf.parse("2015-05-01");
+        Date dateTo = sdf.parse("2017-10-31");
+        List<Integer> branchNums = getBranchNums();
+
+
+        List<BusinessCollection> couponSummary = posOrderRpc.findCouponSummary(systemBookCode, branchNums, dateFrom, dateTo);
+        return couponSummary;
+    }
+
+
+    //findRetailDetails
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "test33")
+	public List<RetailDetail> test33()throws Exception{
+		String systemBookCode= "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> branchNums = getBranchNums();
+		RetailDetailQueryData query = new RetailDetailQueryData();
+		query.setDtFromShiftTable(dateFrom);
+		query.setDtToShiftTable(dateTo);
+		query.setSystemBookCode(systemBookCode);
+		//去掉 with(nolock) 就会走sharding
+		// sb.append("from pos_order as p inner join pos_order_detail as detail on p.order_no = detail.order_no ");
+		List<RetailDetail> retailDetails = reportRpc.findRetailDetails(query);
+		return retailDetails;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "test34")
+	public List<ProfitByClientAndItemSummary> test34()throws Exception{
+		String systemBookCode= "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		ProfitAnalysisQueryData query  = new ProfitAnalysisQueryData();
+		query.setShiftTableFrom(dateFrom);
+		query.setShiftTableTo(dateTo);
+		query.setSystemBookCode(systemBookCode);
+		//去掉with(nolock) 就走sharding
+		////sb.append("from pos_order as p inner join pos_order_detail as detail on p.order_no = detail.order_no ");
+		List<ProfitByClientAndItemSummary> profitAnalysisByClientAndItem = reportRpc.findProfitAnalysisByClientAndItem(query);
+		return profitAnalysisByClientAndItem;
+	}
+
+
+
+
+
+
+
+
 }

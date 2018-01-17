@@ -585,8 +585,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as saleMoney, ");
 		sb.append("(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as marginMoney, ");
 		sb.append("(case when detail.order_detail_state_code = 8 then 0 when detail.order_detail_state_code = 4 then -(detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as costMoney ");
-		sb.append("from pos_order as p with(nolock) join pos_order_detail as detail with(nolock) on p.order_no = detail.order_no ");
-		sb.append("join pos_item as t with(nolock) on t.item_num = detail.item_num ");
+		sb.append("from pos_order as p join pos_order_detail as detail on p.order_no = detail.order_no ");
+		sb.append("join pos_item as t on detail.item_num = t.item_num ");
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between :dateFrom and :dateTo and detail.item_num is not null ");
 
 		if (branchNums != null && branchNums.size() > 0) {
@@ -1607,9 +1607,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         sb.append("detail.order_detail_discount, detail.order_detail_item_matrix_num, detail.order_detail_state_code, ");
         sb.append("p.order_sold_by, detail.item_grade_num, p.order_state_code, detail.order_detail_commission, ");
         sb.append("detail.order_detail_memo, detail.order_detail_gross_profit, detail.order_detail_cost ");
-
         sb.append("from pos_order_detail as detail with(nolock, forceseek) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
-        sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
+		sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
         if(queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0){
             sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
         }
@@ -1804,14 +1803,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         }
         if (profitAnalysisQueryData.isQueryClient()
                 || (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
-
             sb.append("select p.branch_num,p.shift_table_bizday, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as payment, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-            sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
-            if(queryPosItem){
-                sb.append("inner join pos_item as item with(nolock) on item.item_num = detail.item_num ");
+			sb.append("from pos_order as p inner join pos_order_detail as detail on p.order_no = detail.order_no ");
+
+			if(queryPosItem){
+                sb.append("inner join pos_item as item on item.item_num = detail.item_num ");
             }
             sb.append("where p.system_book_code = :systemBookCode ");
             if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
@@ -1863,9 +1862,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as payment, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-            sb.append("from pos_order_detail as detail with(nolock) ");
+            sb.append("from pos_order_detail as detail ");
             if(queryPosItem){
-                sb.append("inner join pos_item as item with(nolock) on item.item_num = detail.item_num ");
+                sb.append("inner join pos_item as item on detail.item_num = item.item_num ");
             }
             sb.append("where detail.order_detail_book_code = :systemBookCode ");
             if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
@@ -1976,7 +1975,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
         sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
         sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
-        sb.append("where p.system_book_code = :systemBookCode  ");
+		sb.append("where p.system_book_code = :systemBookCode  ");
         if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
             sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums())
                     + " ");
@@ -3309,10 +3308,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("select p.branch_num as branchNum, detail.order_detail_state_code as stateCode,  ");
 			sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
 			sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_ ");
-			sb.append("from pos_order as p with(nolock) ");
-			sb.append("join pos_order_detail as detail with(nolock) on p.order_no = detail.order_no ");
+			sb.append("from pos_order p ");
+			sb.append("join pos_order_detail detail on p.order_no = detail.order_no ");
 			if(queryPosItem){
-				sb.append("join pos_item as item with(nolock) on item.item_num = detail.item_num ");
+				sb.append("join pos_item item on detail.item_num = item.item_num ");
 
 			}
 			sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
@@ -3372,9 +3371,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("select detail.order_detail_branch_num as branchNum, detail.order_detail_state_code as stateCode,  ");
 			sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
 			sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_ ");
-			sb.append("from pos_order_detail as detail with(nolock) ");
+			sb.append("from pos_order_detail detail ");
 			if(queryPosItem){
-				sb.append("join pos_item as item with(nolock) on item.item_num = detail.item_num ");
+				sb.append("join pos_item item  on item.item_num = detail.item_num ");
 
 			}
 			sb.append("where detail.order_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
@@ -3438,9 +3437,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.order_kit_detail_state_code as stateCode, ");
 			sb.append("sum(kitDetail.order_kit_detail_amount) as amount, sum(kitDetail.order_kit_detail_payment_money) as money, ");
 			sb.append("sum(0.00) as assistAmount, count(kitDetail.item_num) as amount_ ");
-			sb.append("from pos_order_kit_detail as kitDetail with(nolock) ");
+			sb.append("from pos_order_kit_detail kitDetail ");
 			if (queryPosItem) {
-				sb.append("join pos_item as item with(nolock) on item.item_num = kitDetail.item_num ");
+				sb.append("join pos_item item on kitDetail.item_num = item.item_num ");
 			}
 			sb.append("where kitDetail.order_kit_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
 			if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
@@ -4991,7 +4990,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("select p.branch_num, p.shift_table_bizday, p.order_time_char, (case when detail.order_source = '' then '线下门店' when detail.order_source is null then '线下门店' else detail.order_source end) as source, detail.item_num, ");
 		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
-		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+		sb.append("from pos_order as p inner join pos_order_detail as detail on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between '"
 				+ DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		sb.append("and p.branch_num in (select branch_num from branch where system_book_code = :systemBookCode) ");
@@ -5005,6 +5004,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
+		//from pos_order_detail as detail inner join pos_order as p  on p.order_no = detail.order_no
 	}
 
 	@Override
@@ -5134,7 +5134,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("select p.branch_num, p.shift_table_bizday, p.order_machine, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
-		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
+		sb.append("from pos_order p join pos_order_detail detail on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = '" + systemBookCode + "' ");
 		if (branchNums != null && branchNums.size() > 0) {
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
@@ -5223,5 +5223,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		 return sqlQuery.list();
 
 	}
+
+
 
 }
