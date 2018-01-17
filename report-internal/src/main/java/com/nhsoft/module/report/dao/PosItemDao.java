@@ -111,8 +111,4 @@ public interface PosItemDao {
 	 * */
 	public List<Object[]> findItemLat(String systemBookCode);
 
-	/**
-	 * bi 商品资料
-	 * */
-	public List<Object[]> findPosItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 }

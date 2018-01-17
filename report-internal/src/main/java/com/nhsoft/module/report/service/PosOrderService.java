@@ -290,5 +290,13 @@ public interface PosOrderService {
 															  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
+
+	/**
+	 * test三张表
+	 * */
+	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+									  Date dateTo, List<String> categoryCodes, Integer offset, Integer limit, String sortField, String sortType);
+
+
 }
 

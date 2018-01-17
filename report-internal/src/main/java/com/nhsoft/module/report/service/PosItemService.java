@@ -76,7 +76,7 @@ public interface PosItemService {
 	 * 查询并组装itemMatrix itemBars
 	 * @param posItems
 	 */
-	public void findItemDetails(List<PosItem> posItems);
+	public void findItemDetailSummary(List<PosItem> posItems);
 
 	/**
 	 * 按条件查询明细

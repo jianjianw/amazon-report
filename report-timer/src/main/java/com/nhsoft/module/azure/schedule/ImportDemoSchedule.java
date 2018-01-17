@@ -1,4 +1,4 @@
-package com.nhsoft.module.azure.timer;
+package com.nhsoft.module.azure.schedule;
 
 import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
@@ -13,7 +13,7 @@ import java.util.*;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
-//@Component
+@Component
 public class ImportDemoSchedule {
 
 

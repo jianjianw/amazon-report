@@ -1,4 +1,4 @@
-package com.nhsoft.module.azure.rest;
+package com.nhsoft.module.azure.api;
 
 import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;

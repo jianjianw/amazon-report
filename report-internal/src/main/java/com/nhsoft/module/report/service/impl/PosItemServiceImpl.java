@@ -140,7 +140,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 
 	private List<PosItem> findAllWithDetails(String systemBookCode) {
 		List<PosItem> posItems = posItemDao.findAll(systemBookCode);
-		findItemDetails(posItems);
+		findItemDetailSummary(posItems);
 		return posItems;
 	}
 
@@ -150,7 +150,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 	 * @param posItems
 	 */
 	@Override
-	public void findItemDetails(List<PosItem> posItems) {
+	public void findItemDetailSummary(List<PosItem> posItems) {
 		if (posItems.size() == 0) {
 			return;
 		}
@@ -193,7 +193,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 	@Override
 	public List<PosItem> find(String systemBookCode) {
 		List<PosItem> posItems = posItemDao.find(systemBookCode);
-		findItemDetails(posItems);
+		findItemDetailSummary(posItems);
 		return posItems;
 	}
 
@@ -264,7 +264,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 		}
 
 		List<PosItem> posItems = posItemDao.findByItemNums(itemNums);
-		findItemDetails(posItems);
+		findItemDetailSummary(posItems);
 		return posItems;
 	}
 	
@@ -273,7 +273,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 											int count) {
 		List<PosItem> posItems = posItemDao.findByPosItemQuery(posItemQuery, sortField, sortName, first, count);
 		if(posItemQuery.getQueryProperties() == null || posItemQuery.getQueryProperties().isEmpty()){
-			findItemDetails(posItems);
+			findItemDetailSummary(posItems);
 
 		}
 		return posItems;

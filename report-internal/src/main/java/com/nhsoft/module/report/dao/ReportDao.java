@@ -2,8 +2,7 @@ package com.nhsoft.module.report.dao;
 
 
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.model.CustomReport;
-import com.nhsoft.module.report.model.ShiftTable;
+import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.*;
 
 import java.math.BigDecimal;
@@ -346,25 +345,6 @@ public interface ReportDao {
 	public List<PosReceiveDiffMoneySumDTO> findPosReceiveDiffMoneySumDTOsByBranchCasher(String systemBookCode,
                                                                                         List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	/**
 	 * 按班次汇总缴款明细
 	 * @param systemBookCode
@@ -408,15 +388,6 @@ public interface ReportDao {
 	 */
 	public List<CardDepositCommissionDTO> findCardDepositCommissionDTOs(String systemBookCode, List<Integer> branchNums,
                                                                         Date dateFrom, Date dateTo, Integer groupType, String sellers);
-
-
-
-
-
-
-
-
-
 
 
 

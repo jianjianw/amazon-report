@@ -25,11 +25,19 @@ public class StoreQueryCondition extends  QueryBuilder{
 	private String itemDepartment;
 	private Date exactDateEnd;
 	private List<String> memos;
+	private Date exactDateFrom;
 	
 	private boolean isPaging = true;
 	private String sortField;
 	private String sortType;
-	
+
+	private Boolean filterElement; //非配送中心过滤成分商品
+
+	//新加
+	private String summaries;
+	private Integer offset;
+	private Integer limit;
+
 	public StoreQueryCondition(){}
 	
 	public List<String> getMemos() {
@@ -188,4 +196,43 @@ public class StoreQueryCondition extends  QueryBuilder{
 		this.branchNums = branchNums;
 	}
 
+	public Boolean getFilterElement() {
+		return filterElement;
+	}
+
+	public void setFilterElement(Boolean filterElement) {
+		this.filterElement = filterElement;
+	}
+
+	public Date getExactDateFrom() {
+		return exactDateFrom;
+	}
+
+	public void setExactDateFrom(Date exactDateFrom) {
+		this.exactDateFrom = exactDateFrom;
+	}
+
+	public String getSummaries() {
+		return summaries;
+	}
+
+	public void setSummaries(String summaries) {
+		this.summaries = summaries;
+	}
+
+	public Integer getOffset() {
+		return offset;
+	}
+
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
 }

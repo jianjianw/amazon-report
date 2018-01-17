@@ -1,4 +1,4 @@
-package com.nhsoft.module.azure.timer;
+package com.nhsoft.module.azure.schedule;
 
 import com.nhsoft.module.azure.model.*;
 import com.nhsoft.module.azure.service.AzureService;
@@ -7,9 +7,6 @@ import com.nhsoft.module.report.rpc.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-//@Component
+@Component
 public class AzureSchedule {
 
 
