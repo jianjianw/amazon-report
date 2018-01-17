@@ -283,4 +283,5 @@ public interface Report2Rpc {
 	 * @return
 	 */
 	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String infoType);
+
 }

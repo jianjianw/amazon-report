@@ -23,6 +23,24 @@ public class OtherInfoSummaryDTO implements Serializable {
     private BigDecimal changePriceMoney = BigDecimal.ZERO;
     private Integer mgrDiscountCount = 0; //经理折扣
     private BigDecimal mgrDiscountMoney = BigDecimal.ZERO;
+    private Integer presentCount = 0; //赠送
+    private BigDecimal presentMoney = BigDecimal.ZERO;
+
+    public Integer getPresentCount() {
+        return presentCount;
+    }
+
+    public void setPresentCount(Integer presentCount) {
+        this.presentCount = presentCount;
+    }
+
+    public BigDecimal getPresentMoney() {
+        return presentMoney;
+    }
+
+    public void setPresentMoney(BigDecimal presentMoney) {
+        this.presentMoney = presentMoney;
+    }
 
     public Integer getBranchNum() {
         return branchNum;
