@@ -11,6 +11,7 @@ import com.nhsoft.module.report.query.ProfitAnalysisQueryData;
 import com.nhsoft.module.report.query.RetailDetailQueryData;
 import com.nhsoft.module.report.query.SaleAnalysisQueryData;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -1056,4 +1057,16 @@ public interface PosOrderDao {
 	 */
 	public List<Object[]> findBranchOperatorPayByMoneySummary(String systemBookCode,
 																	   List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+	public List<PosOrder> findSettled(PosOrderQuery posOrderQuery, int offset, int limit);
+
+	/**
+	 * 查询单据号 付款名称 金额
+	 * @param orderNos
+	 * @return
+	 */
+	public List<Object[]> findOrderPaymentMoneys(List<String> orderNos);
+
+	public List<Object[]> findOrderPaymentMoneys(PosOrderQuery posOrderQuery);
 }

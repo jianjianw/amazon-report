@@ -6,6 +6,7 @@ import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
@@ -5222,6 +5223,190 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		 SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		 return sqlQuery.list();
 
+	}
+
+	@Override
+	public List<PosOrder> findSettled(PosOrderQuery posOrderQuery, int offset, int limit) {
+
+		String sql = "select p.* " + createByPosOrderQuery(posOrderQuery);
+
+		if (posOrderQuery.isPage()) {
+
+			if (posOrderQuery.getSortField() != null) {
+				if(posOrderQuery.getSortField().equals("orderReceiveMoney")){
+					if (posOrderQuery.getSortType().equals("ASC")) {
+						sql = sql + "order by (order_payment_money + order_coupon_total_money - order_mgr_discount_money) asc ";
+					} else {
+						sql = sql + "order by (order_payment_money + order_coupon_total_money - order_mgr_discount_money) desc ";
+					}
+
+				} else {
+					if (posOrderQuery.getSortType().equals("ASC")) {
+						sql = sql + "order by p." + AppUtil.getDBColumnName(posOrderQuery.getSortField()) + " asc ";
+					} else {
+						sql = sql + "order by p." + AppUtil.getDBColumnName(posOrderQuery.getSortField()) + " desc ";
+					}
+
+				}
+
+			} else {
+				sql = sql + "order by p.order_no ";
+			}
+		} else {
+			sql = sql + "order by p.order_no ";
+		}
+
+		SQLQuery query = currentSession().createSQLQuery(sql);
+
+		if (posOrderQuery.isPage()) {
+			query.setFirstResult(offset);
+			query.setMaxResults(limit);
+
+		} else {
+			query.setMaxResults(posOrderQuery.getMax());
+		}
+		query.addEntity(PosOrder.class);
+		return query.list();
+	}
+
+	private String createByPosOrderQuery(PosOrderQuery posOrderQuery){
+		StringBuilder sb = new StringBuilder();
+		String ip = AppUtil.getServerIp();
+		if(ip != null){
+			if(ip.equals("121.41.22.86")){
+				sb.append("from pos_order as p with(nolock,index=INDEX_20170411_INCLUDE_NO_PAYMENT_MGR_COUPON_DISCOUNT_ROUND_PROFIT_PDIS_CLIENT) ");
+
+			} else if(ip.equals("42.121.65.234")){
+				sb.append("from pos_order as p with(nolock,index=INDEX_POS_ORDER_BOOK_BRANCH_BIZ_STATE_CARD_INCLUDE_NO_PAYMENT_MGR_COUPON_DISCOUNT_ROUND_PROFIT) ");
+
+			} else if(ip.equals("116.62.107.203")){
+				sb.append("from pos_order as p with(nolock,index=IX_20170615_INCLUDE_PAYMENT_MGR_COUPON_DISCOUNT_ROUND_PROFIT) ");
+
+			} else {
+				sb.append("from pos_order as p with(nolock, forceseek) ");
+
+			}
+		} else {
+			sb.append("from pos_order as p with(nolock, forceseek) ");
+
+		}
+		boolean queryPayment = false;
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posOrderQuery.getPaymentType())) {
+			if (!posOrderQuery.getPaymentType().equals(AppConstants.PAYMENT_COUPON)) {
+				queryPayment = true;
+			}
+		}
+		if(queryPayment){
+			sb.append("inner join payment with(nolock) on p.order_no = payment.order_no ");
+		}
+
+		sb.append("where p.system_book_code = '" + posOrderQuery.getSystemBookCode() + "' ");
+		if (posOrderQuery.getBranchNums() != null && posOrderQuery.getBranchNums().size() > 0) {
+			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(posOrderQuery.getBranchNums()));
+		}
+		if (posOrderQuery.getDateFrom() != null) {
+			sb.append("and p.shift_table_bizday >= '" + DateUtil.getDateShortStr(posOrderQuery.getDateFrom()) + "' ");
+		}
+		if (posOrderQuery.getDateTo() != null) {
+			sb.append("and p.shift_table_bizday <= '" + DateUtil.getDateShortStr(posOrderQuery.getDateTo()) + "' ");
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posOrderQuery.getOrderNo())) {
+			sb.append("and p.order_no like '%" + posOrderQuery.getOrderNo() + "%' ");
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posOrderQuery.getClientFid())) {
+
+			sb.append("and p.client_fid = '" + posOrderQuery.getClientFid() + "' ");
+
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posOrderQuery.getPaymentType())) {
+			if (posOrderQuery.getPaymentType().equals(AppConstants.PAYMENT_COUPON)) {
+				sb.append("and p.order_coupon_total_money > 0 ");
+			} else if(queryPayment){
+
+				if (posOrderQuery.getPaymentType().equals(AppConstants.PAYMENT_WEIXIN)) {
+
+					sb.append("and payment_pay_by like '" + AppConstants.PAYMENT_WEIXIN + "%' ");
+
+				} else {
+
+					sb.append("and payment_pay_by = '" + posOrderQuery.getPaymentType() + "' ");
+
+				}
+			}
+
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posOrderQuery.getSaleType())) {
+			int stateCode = 0;
+
+			if (posOrderQuery.getSaleType().equals(AppConstants.POS_ORDER_DETAIL_STATE_SALE_NAME)) {
+				stateCode = AppConstants.POS_ORDER_DETAIL_STATE_SALE;
+
+			} else if (posOrderQuery.getSaleType().equals(AppConstants.POS_ORDER_DETAIL_STATE_PRESENT_NAME)) {
+
+				stateCode = AppConstants.POS_ORDER_DETAIL_STATE_PRESENT;
+
+			} else if (posOrderQuery.getSaleType().equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL_NAME)) {
+
+				stateCode = AppConstants.POS_ORDER_DETAIL_STATE_CANCEL;
+
+			} else if (posOrderQuery.getSaleType().equals(AppConstants.POS_ORDER_DETAIL_STATE_REMOVE_NAME)) {
+
+				stateCode = AppConstants.POS_ORDER_DETAIL_STATE_REMOVE;
+
+			}
+
+			sb.append("and exists (select 1 from pos_order_detail with(nolock) where ORDER_DETAIL_BOOK_CODE = '" + posOrderQuery.getSystemBookCode() + "' ");
+			if (posOrderQuery.getBranchNums() != null && posOrderQuery.getBranchNums().size() > 0) {
+				sb.append("and ORDER_DETAIL_BRANCH_NUM in " + AppUtil.getIntegerParmeList(posOrderQuery.getBranchNums()));
+			}
+			if (posOrderQuery.getDateFrom() != null) {
+				sb.append("and ORDER_DETAIL_BIZDAY >= '" + DateUtil.getDateShortStr(posOrderQuery.getDateFrom()) + "' ");
+			}
+			if (posOrderQuery.getDateTo() != null) {
+				sb.append("and ORDER_DETAIL_BIZDAY <= '" + DateUtil.getDateShortStr(posOrderQuery.getDateTo()) + "' ");
+			}
+			sb.append("and order_detail_state_code = " + stateCode + " and pos_order_detail.order_no = p.order_no ) ");
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posOrderQuery.getOrderOperator())) {
+			sb.append("and p.order_operator = '" + posOrderQuery.getOrderOperator() + "' ");
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posOrderQuery.getOrderExternalNo())) {
+			sb.append("and p.order_external_no = '" + posOrderQuery.getOrderExternalNo() + "' ");
+
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posOrderQuery.getOrderState())) {
+			if (posOrderQuery.getOrderState().equals(AppConstants.POS_ORDER_REPAY.getStateName())) {
+
+				sb.append("and exists (select 1 from invoice_change with(nolock) where invoice_change.order_no = p.order_no and system_book_code = '" + posOrderQuery.getSystemBookCode() + "'  ) ");
+
+
+			} else {
+				sb.append("and p.order_state_name like '%" + posOrderQuery.getOrderState() + "' ");
+
+			}
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public List<Object[]> findOrderPaymentMoneys(List<String> orderNos) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select order_no, payment_pay_by, payment_money ");
+		sb.append("from payment with(nolock) ");
+		sb.append("where order_no in " + AppUtil.getStringParmeList(orderNos));
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findOrderPaymentMoneys(PosOrderQuery posOrderQuery) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select order_no, payment_pay_by, payment_money ");
+		sb.append("from payment with(nolock) ");
+		sb.append("where order_no in ( select top(:batchsize) p.order_no ").append(createByPosOrderQuery(posOrderQuery)).append(" order by order_no )");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setInteger("batchsize", posOrderQuery.getMax());
+		return query.list();
 	}
 
 

@@ -5,6 +5,7 @@ import com.nhsoft.module.azure.model.BranchDailyDirect;
 import com.nhsoft.module.azure.model.ItemDaily;
 import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 
 import java.util.Date;
 import java.util.List;
@@ -154,6 +155,17 @@ public interface PosOrderRpc  {
      */
     public List<PosReceiveDiffMoneySumDTO> findBranchOperatorPayByMoneySummary(String systemBookCode,
                                                               List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+    /**
+     * 已结账单查询
+     * @param posOrderQuery
+     * @param offset 查询起始位
+     * @param limit 查询数量
+     * @return
+     * */
+    public List<PosOrderDTO> findSettled(String systemBookCode, PosOrderQuery posOrderQuery, int offset, int limit);
+
 
 
 

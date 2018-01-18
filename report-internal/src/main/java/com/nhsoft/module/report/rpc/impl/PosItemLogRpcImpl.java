@@ -495,8 +495,8 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
     }
 
     @Override
-    public List<PosItemLogSummaryDTO> findBranchFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String posItemLogSummarys) {
-        List<Object[]> objects = posItemLogService.findBranchFlagSummary(systemBookCode, branchNums, dateFrom, dateTo, posItemLogSummarys);
+    public List<PosItemLogSummaryDTO> findBranchFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String posItemLogSummarys,Boolean itemDelTag) {
+        List<Object[]> objects = posItemLogService.findBranchFlagSummary(systemBookCode, branchNums, dateFrom, dateTo, posItemLogSummarys,itemDelTag);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {

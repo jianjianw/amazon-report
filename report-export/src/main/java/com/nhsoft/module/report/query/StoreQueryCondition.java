@@ -26,6 +26,7 @@ public class StoreQueryCondition extends  QueryBuilder{
 	private Date exactDateEnd;
 	private List<String> memos;
 	private Date exactDateFrom;
+	private Boolean itemDelTag;
 	
 	private boolean isPaging = true;
 	private String sortField;
@@ -234,5 +235,13 @@ public class StoreQueryCondition extends  QueryBuilder{
 
 	public void setLimit(Integer limit) {
 		this.limit = limit;
+	}
+
+	public Boolean getItemDelTag() {
+		return itemDelTag;
+	}
+
+	public void setItemDelTag(Boolean itemDelTag) {
+		this.itemDelTag = itemDelTag;
 	}
 }

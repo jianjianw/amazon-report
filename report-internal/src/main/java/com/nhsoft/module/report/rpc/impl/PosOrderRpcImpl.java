@@ -7,11 +7,13 @@ import com.nhsoft.module.azure.model.BranchDaily;
 import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.SystemBook;
+import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 import com.nhsoft.module.report.rpc.BranchTransferGoalsRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.service.SystemBookService;
 import com.nhsoft.module.report.util.AppConstants;;
+import com.nhsoft.report.utils.CopyUtil;
 import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -893,6 +895,14 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 		return list;
 	}
+
+	@Override
+	public List<PosOrderDTO> findSettled(String systemBookCode, PosOrderQuery posOrderQuery, int offset, int limit) {
+		return CopyUtil.toList(posOrderService.findSettled(posOrderQuery, offset, limit), PosOrderDTO.class);
+	}
+
+
+
 	private BusinessCollectionIncome getBusinessCollectionIncome(
 			List<BusinessCollectionIncome> businessCollectionIncomes, String name) {
 		for (int i = 0; i < businessCollectionIncomes.size(); i++) {

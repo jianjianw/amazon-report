@@ -4,7 +4,9 @@ package com.nhsoft.module.report.service.impl;
 import com.nhsoft.module.report.dao.InvoiceChangeDao;
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
+import com.nhsoft.module.report.dto.TypeAndTwoValuesDTO;
 import com.nhsoft.module.report.model.*;
+import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
@@ -267,6 +269,57 @@ public class PosOrderServiceImpl implements PosOrderService {
 	@Override
 	public List<Object[]> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodes, Integer offset, Integer limit, String sortField, String sortType) {
 		return posOrderDao.findDetails(systemBookCode,branchNums,dateFrom,dateTo,categoryCodes,offset,limit,sortField,sortType);
+	}
+
+
+	@Override
+	public List<PosOrder> findSettled(PosOrderQuery posOrderQuery,
+									  int offset, int limit) {
+
+		List<PosOrder> posOrders = posOrderDao.findSettled(posOrderQuery,
+				offset, limit);
+		if (posOrders.isEmpty()) {
+			return posOrders;
+
+
+		}
+		List<Object[]> objects;
+		if (!posOrderQuery.isPage()) {
+			objects = posOrderDao.findOrderPaymentMoneys(posOrderQuery);
+		} else {
+			List<String> orderNos = new ArrayList<String>();
+			for (int i = 0; i < posOrders.size(); i++) {
+				PosOrder posOrder = posOrders.get(i);
+				orderNos.add(posOrder.getOrderNo());
+			}
+			objects = posOrderDao.findOrderPaymentMoneys(orderNos);
+
+		}
+		for (int i = 0; i < posOrders.size(); i++) {
+			PosOrder posOrder = posOrders.get(i);
+
+			for (int j = 0; j < objects.size(); j++) {
+				Object[] object = objects.get(j);
+				if (posOrder.getOrderNo().equals(object[0])) {
+					String payment = (String) object[1];
+					if (posOrder.getPaymentTypes() == null) {
+						posOrder.setPaymentTypes(payment);
+					} else if(!posOrder.getPaymentTypes().contains(payment)){
+						posOrder.setPaymentTypes(posOrder.getPaymentTypes() + "," + payment);
+					}
+					TypeAndTwoValuesDTO typeAndTwoValuesDTO = posOrder.getTypeAndTwoValuesDTO(payment);
+					if(typeAndTwoValuesDTO == null){
+						typeAndTwoValuesDTO = new TypeAndTwoValuesDTO();
+						typeAndTwoValuesDTO.setType(payment);
+						typeAndTwoValuesDTO.setMoney(BigDecimal.ZERO);
+						posOrder.getTypeAndTwoValuesDTOs().add(typeAndTwoValuesDTO);
+					}
+					typeAndTwoValuesDTO.setMoney(typeAndTwoValuesDTO.getMoney().add(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]));
+
+				}
+			}
+		}
+		return posOrders;
 	}
 
 

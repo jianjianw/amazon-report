@@ -26,6 +26,15 @@ public class PosOrderQuery extends QueryBuilder{
 	private String sortField;
 	private String sortType;
 	private boolean page = true;
+	private Integer max = 50000;
+
+	public int getMax() {
+		return max == null?50000:max;
+	}
+
+	public void setMax(int max) {
+		this.max = max;
+	}
 
 	public List<Integer> getBranchNums() {
 		return branchNums;

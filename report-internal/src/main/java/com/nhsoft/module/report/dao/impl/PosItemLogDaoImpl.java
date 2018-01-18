@@ -7,6 +7,7 @@ import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.impl.execchain.TunnelRefusedException;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
@@ -497,7 +498,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		StringBuffer sb = new StringBuffer();
 		sb.append("select l.branch_num, l.pos_item_log_inout_flag ,  ");
 		sb.append("sum(l.pos_item_log_item_amount) as mount, sum(l.pos_item_log_money) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount ");
-		sb.append("from pos_item_log as l ");
+		sb.append("from pos_item_log as l inner join pos_item as p on l.item_num = p.item_num ");
 		sb.append("with(nolock) where l.system_book_code = :systemBookCode ");
 		if(storeQueryCondition.getBranchNums() != null && storeQueryCondition.getBranchNums().size() > 0){
 			sb.append("and l.branch_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getBranchNums()));
@@ -525,6 +526,9 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getCenterStorehouse() != null){
 			sb.append("and (exists (select 1 from storehouse where l.in_storehouse_num = storehouse.storehouse_num and system_book_code = :systemBookCode and storehouse_del_tag = 0 and storehouse_center_tag = 1 )"
 					+ "or exists (select 1 from storehouse where l.out_storehouse_num = storehouse.storehouse_num and system_book_code = :systemBookCode and storehouse_del_tag = 0 and storehouse_center_tag = 1 ) )");
+		}
+		if(storeQueryCondition.getItemDelTag() != null && storeQueryCondition.getItemDelTag().equals(true)){
+			sb.append("and p.item_del_tag = 0");
 		}
 		sb.append("group by l.branch_num, l.pos_item_log_inout_flag ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
@@ -1422,26 +1426,28 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 	@Override
 	public List<Object[]> findBranchFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-												Date dateTo, String posItemLogSummarys) {
+												Date dateTo, String posItemLogSummarys,Boolean itemDelTag) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select branch_num, pos_item_log_inout_flag, ");
-		sb.append("sum(pos_item_log_item_amount) as amount, sum(pos_item_log_money) as money, sum(pos_item_log_item_assist_amount) as assistAmount ");
-		sb.append("from pos_item_log ");
-		sb.append("with(nolock) where system_book_code = '" + systemBookCode + "' ");
+		sb.append("select l.branch_num, l.pos_item_log_inout_flag, ");
+		sb.append("sum(l.pos_item_log_item_amount) as amount, sum(l.pos_item_log_money) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount ");
+		sb.append("from pos_item_log as l inner join pos_item as p on l.item_num = p.item_num ");
+		sb.append("with(nolock) where l.system_book_code = '" + systemBookCode + "' ");
 		if(branchNums != null && branchNums.size() > 0){
-
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+			sb.append("and l.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
 		if(dateFrom != null){
-			sb.append("and pos_item_log_date_index >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+			sb.append("and l.pos_item_log_date_index >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
 		}
 		if(dateTo != null){
-			sb.append("and pos_item_log_date_index <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+			sb.append("and l.pos_item_log_date_index <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
 		if(org.apache.commons.lang.StringUtils.isNotEmpty(posItemLogSummarys)){
-			sb.append("and pos_item_log_summary in (:summarys) ");
+			sb.append("and l.pos_item_log_summary in (:summarys) ");
 		}
-		sb.append("group by branch_num, pos_item_log_inout_flag ");
+		if(itemDelTag !=null && itemDelTag.equals(true)){
+			sb.append("and p.item_del_tag = 0");
+		}
+		sb.append("group by l.branch_num, l.pos_item_log_inout_flag ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		if(org.apache.commons.lang.StringUtils.isNotEmpty(posItemLogSummarys)){
 			query.setParameterList("summarys", posItemLogSummarys.split(","));

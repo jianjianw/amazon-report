@@ -312,7 +312,7 @@ public interface PosItemLogService {
 	 * @return
 	 */
 	public List<Object[]> findBranchFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-												Date dateTo, String posItemLogSummarys);
+												Date dateTo, String posItemLogSummarys,Boolean itemDelTag);
 
 	/**
 	 * 按商品、进出标记汇总进出库数量 和 金额

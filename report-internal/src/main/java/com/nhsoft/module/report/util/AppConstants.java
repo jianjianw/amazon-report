@@ -163,9 +163,13 @@ public class AppConstants {
 	 * 单据明细状态
 	 */
 	public static final int POS_ORDER_DETAIL_STATE_SALE = 1;
-	public static final int POS_ORDER_DETAIL_STATE_REMOVE = 8;
-	public static final int POS_ORDER_DETAIL_STATE_CANCEL = 4;
+	public static final String POS_ORDER_DETAIL_STATE_SALE_NAME = "销售";
 	public static final int POS_ORDER_DETAIL_STATE_PRESENT = 2;
+	public static final String POS_ORDER_DETAIL_STATE_PRESENT_NAME = "赠送";
+	public static final int POS_ORDER_DETAIL_STATE_CANCEL = 4;
+	public static final String POS_ORDER_DETAIL_STATE_CANCEL_NAME = "退货";
+	public static final int POS_ORDER_DETAIL_STATE_REMOVE = 8;
+	public static final String POS_ORDER_DETAIL_STATE_REMOVE_NAME = "取消";
 	
 	/**
 	 * 查询商品类型
@@ -581,6 +585,9 @@ public class AppConstants {
 	//branchResource
 	public static final String BRANCH_EXPRESEE_COMPANY = "货运公司参数";
 	public static final String PARAM_ANALYTICS_MODEL = "C_会员模型分析参数";
+
+	//单据状态
+	public static final State POS_ORDER_REPAY = new State(1 << 3, "反结账");
 	
 	
 	

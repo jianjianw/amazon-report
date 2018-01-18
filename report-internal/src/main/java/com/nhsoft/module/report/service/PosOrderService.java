@@ -5,6 +5,7 @@ import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.ShiftTable;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 
 import java.util.Date;
 import java.util.List;
@@ -298,5 +299,14 @@ public interface PosOrderService {
 									  Date dateTo, List<String> categoryCodes, Integer offset, Integer limit, String sortField, String sortType);
 
 
+	/**
+	 * 已结账单查询
+	 * @param posOrderQuery
+	 * @param offset 查询起始位
+	 * @param limit 查询数量
+	 * @return
+	 */
+	public List<PosOrder> findSettled(PosOrderQuery posOrderQuery,
+									  int offset, int limit);
 }
 
