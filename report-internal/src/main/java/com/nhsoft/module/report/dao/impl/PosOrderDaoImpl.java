@@ -2045,7 +2045,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         if (profitAnalysisQueryData.isQueryClient()
                 || (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
 
-            sb.append("select top 50000 p.branch_num, detail.item_num, detail.order_detail_item_matrix_num, ");
+            sb.append("select p.branch_num, detail.item_num, detail.order_detail_item_matrix_num, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
@@ -2105,7 +2105,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             }
             sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
         } else {
-            sb.append("select top 50000 detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num, ");
+            sb.append("select detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
@@ -2162,6 +2162,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
         query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
         query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
+		query.setMaxResults(profitAnalysisQueryData.getMax());
         return query.list();
     }
 
@@ -2342,7 +2343,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
     @Override
     public List<Object[]> findKitProfitAnalysisByBranchAndItem(ProfitAnalysisQueryData profitAnalysisQueryData) {
         StringBuffer sb = new StringBuffer();
-        sb.append("select top 50000 detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num, ");
+        sb.append("select detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num, ");
         sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
         sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else detail.order_kit_detail_amount end) as amount, ");
         sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
@@ -2387,6 +2388,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
         query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
         query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
+		query.setMaxResults(profitAnalysisQueryData.getMax());
         return query.list();
     }
 
@@ -4830,7 +4832,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findCustomerAnalysisBranchItem(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, List<Integer> itemNums) {
 		StringBuffer queryStr = new StringBuffer();
-		queryStr.append(" select top 50000 t.order_detail_branch_num, t.item_num, t.order_detail_item_matrix_num, ");
+		queryStr.append(" select t.order_detail_branch_num, t.item_num, t.order_detail_item_matrix_num, ");
 		queryStr.append(" sum(case when t.order_detail_state_code = 4 then -t.order_detail_amount else order_detail_amount end) as amount,");
 		queryStr.append(" sum(case when t.order_detail_state_code = 1 then order_detail_payment_money when t.order_detail_state_code = 4 then -t.order_detail_payment_money end) as money, ");
 		queryStr.append(" sum(case when t.order_detail_state_code = 4 then -t.order_detail_gross_profit else t.order_detail_gross_profit end) as profit ");
@@ -4851,6 +4853,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		query.setString("systemBookCode", systemBookCode);
 		query.setParameter("bizFrom", DateUtil.getDateShortStr(dtFrom));
 		query.setParameter("bizTo", DateUtil.getDateShortStr(dtTo));
+		query.setMaxResults(50000);
 		return query.list();
 	}
 
@@ -5385,6 +5388,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 			}
 		}
+
+		if(posOrderQuery.getOrderSources() != null && posOrderQuery.getOrderSources().size() > 0){
+			sb.append("and p.order_source in " + AppUtil.getStringParmeList(posOrderQuery.getOrderSources()));
+		}
 		return sb.toString();
 	}
 
@@ -5409,6 +5416,15 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return query.list();
 	}
 
+	@Override
+	public List<Object[]> findTest(String systemBookCode, Date dateFrom, Date dateTo) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select * from pos_order where system_book_code = '"+systemBookCode+"' ");
+		sb.append("and branch_num like '%9'");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+
+	}
 
 
 }

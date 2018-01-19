@@ -10,6 +10,7 @@ import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -340,6 +341,24 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 		criteria.setLockMode(LockMode.NONE);
 		objects.addAll(criteria.list());
 		return objects;
+	}
+
+	@Override
+	public List<AlipayLog> test(String systemBookCode,Date dateFrom,Date dateTo) {
+
+		/*StringBuilder sb = new StringBuilder();
+		sb.append("select * from alipay_log where system_book_code = '"+systemBookCode+"' ");
+		sb.append("and alipay_log_start between '" + DateUtil.getLongDateTimeStr(dateFrom) + "' and '" + DateUtil.getLongDateTimeStr(dateTo) +"' ");
+		sb.append("and branch_num = 99");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();*/
+
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
+				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
+
+		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
+		criteria.setLockMode(LockMode.NONE);
+		return criteria.list();
 	}
 
 }

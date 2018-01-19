@@ -1069,4 +1069,7 @@ public interface PosOrderDao {
 	public List<Object[]> findOrderPaymentMoneys(List<String> orderNos);
 
 	public List<Object[]> findOrderPaymentMoneys(PosOrderQuery posOrderQuery);
+
+
+	public List<Object[]> findTest(String systemBookCode,Date dateFrom,Date dateTo);
 }

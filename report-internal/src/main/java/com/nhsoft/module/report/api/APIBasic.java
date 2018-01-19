@@ -4,6 +4,7 @@ import com.nhsoft.module.azure.model.BranchDaily;
 import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.model.AlipayLog;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.rpc.*;
@@ -45,6 +46,10 @@ public class APIBasic {
 	private CardUserService cardUserService;
 	@Autowired
 	private PosOrderDao posOrderDao;
+	@Autowired
+	private AlipayLogService alipayLogService;
+	@Autowired
+	private AlipayLogRpc alipayLogRpc;
 
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
@@ -779,10 +784,55 @@ public class APIBasic {
 		return profitAnalysisByClientAndItem;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "test35")
+	public List<Object[]> test35()throws Exception{
+		String systemBookCode= "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<Integer> branchNums = getBranchNums();
+		ProfitAnalysisQueryData query  = new ProfitAnalysisQueryData();
+		query.setShiftTableFrom(dateFrom);
+		query.setShiftTableTo(dateTo);
+		query.setSystemBookCode(systemBookCode);
+		List<Object[]> branchSummaryPayFail = alipayLogService.findBranchSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, true, null);
+		return branchSummaryPayFail;
+	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "test36")
+	public List<AlipayLogDTO> test36()throws Exception{
+		String systemBookCode= "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		LogQuery query  =new LogQuery();
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		//query.setLogItem("123");
+		List<AlipayLogDTO> byLogQuery = alipayLogRpc.findByLogQuery(systemBookCode, 99, query, 0,100);
+		return byLogQuery;
+	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "test37")
+	public List<AlipayLog> test37()throws Exception{
+		String systemBookCode= "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		List<AlipayLog> test = alipayLogService.test(systemBookCode, dateFrom, dateTo);
+		return test;
+	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "test38")
+	public List<Object[]> test38()throws Exception{
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateTo = sdf.parse("2017-10-31");
+		String systemBookCode = "4344";
+		List<Object[]> test = posOrderService.findTest(systemBookCode, dateFrom, dateTo);
+		return test;
+	}
 
 
 

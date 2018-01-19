@@ -308,5 +308,7 @@ public interface PosOrderService {
 	 */
 	public List<PosOrder> findSettled(PosOrderQuery posOrderQuery,
 									  int offset, int limit);
+
+	public List<Object[]> findTest(String systemBookCode,Date dateFrom,Date dateTo);
 }
 

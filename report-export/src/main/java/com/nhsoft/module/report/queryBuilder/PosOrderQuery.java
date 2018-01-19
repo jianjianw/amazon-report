@@ -27,6 +27,7 @@ public class PosOrderQuery extends QueryBuilder{
 	private String sortType;
 	private boolean page = true;
 	private Integer max = 50000;
+	private List<String> orderSources;
 
 	public int getMax() {
 		return max == null?50000:max;
@@ -148,4 +149,11 @@ public class PosOrderQuery extends QueryBuilder{
 		this.page = page;
 	}
 
+	public List<String> getOrderSources() {
+		return orderSources;
+	}
+
+	public void setOrderSources(List<String> orderSources) {
+		this.orderSources = orderSources;
+	}
 }

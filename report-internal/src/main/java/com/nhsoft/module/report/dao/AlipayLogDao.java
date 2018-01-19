@@ -80,4 +80,7 @@ public interface AlipayLogDao {
 	public List<Object[]> findDepositSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
                                              Date dateTo, String alipayLogTypes);
 
+
+	public List<AlipayLog> test(String systemBookCode,Date dateFrom,Date dateTo);
+
 }

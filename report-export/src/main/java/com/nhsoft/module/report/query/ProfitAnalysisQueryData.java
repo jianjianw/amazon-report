@@ -27,8 +27,16 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 	private String saleType;//销售方式：微商城、实体店
 	private List<String> orderSources;
 
-	
-	
+	private Integer max = 50000;
+
+	public Integer getMax() {
+		return max == null?50000:max;
+	}
+
+	public void setMax(Integer max) {
+		this.max = max;
+	}
+
 	public List<String> getOrderSources() {
 		return orderSources;
 	}

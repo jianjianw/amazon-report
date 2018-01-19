@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,7 +32,15 @@ public class AlipayLogServiceImpl implements AlipayLogService {
 		return alipayLogDao.findByLogQuery(systemBookCode, branchNum, logQuery, offset, limit);
 	}
 
-	
+	@Override
+	public List<Object[]> findBranchSummaryPayFail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isDeposit, String alipayLogTypes) {
+		return alipayLogDao.findBranchSummaryPayFail(systemBookCode,branchNums,dateFrom,dateTo,isDeposit,alipayLogTypes);
+	}
+
+	@Override
+	public List<AlipayLog> test(String systemBookCode, Date dateFrom, Date dateTo) {
+		return alipayLogDao.test(systemBookCode,dateFrom,dateTo);
+	}
 
 
 }
