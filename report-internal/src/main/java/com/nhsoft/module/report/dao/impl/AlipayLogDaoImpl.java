@@ -344,7 +344,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 	}
 
 	@Override
-	public List<AlipayLog> test(String systemBookCode,Date dateFrom,Date dateTo) {
+	public List<AlipayLog> test(String systemBookCode,LogQuery logQuery,Date dateFrom,Date dateTo) {
 
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("select * from alipay_log where system_book_code = '"+systemBookCode+"' ");
@@ -353,12 +353,28 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		return sqlQuery.list();*/
 
-		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
+		/*Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
 				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
-
+		private Criteria createByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery){
 		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
 		criteria.setLockMode(LockMode.NONE);
-		return criteria.list();
+		return criteria.list();*/
+			Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
+					.add(Restrictions.eq("a.systemBookCode", systemBookCode));
+			if(StringUtils.isNotEmpty(logQuery.getLogItem())){
+				criteria.add(Restrictions.like("a.alipayLogOrderNo", logQuery.getLogItem(), MatchMode.ANYWHERE));
+				return criteria.list();
+			}
+			if(StringUtils.isNotEmpty(logQuery.getOperator())){
+				criteria.add(Restrictions.eq("a.alipayLogOperator", logQuery.getOperator()));
+			}
+			if(StringUtils.isNotEmpty(logQuery.getOperateType())){
+				criteria.add(Restrictions.eq("a.alipayLogType", logQuery.getOperateType()));
+			}
+			criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(logQuery.getDateFrom()), DateUtil.getMaxOfDate(logQuery.getDateTo())));
+			criteria.setLockMode(LockMode.NONE);
+			return criteria.list();
+
 	}
 
 }

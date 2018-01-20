@@ -24,17 +24,18 @@ public class ApiInterceptor {
         String name = null;
         Object object;
         long diff = 0;
+        long preTime = 0;
         try {
             name = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
-            long preTime = System.currentTimeMillis();
+            preTime = System.currentTimeMillis();
             object = point.proceed();
-            long afterTime = System.currentTimeMillis();
-            diff = (afterTime - preTime)/1000;
             return object;
         } catch (Throwable throwable) {
             logger.error(throwable.getMessage(),throwable);
             throw throwable;
         } finally {
+            long afterTime = System.currentTimeMillis();
+            diff = (afterTime - preTime)/1000;
             logger.info("API：" + name + "耗时：" + diff + "秒");
         }
     }

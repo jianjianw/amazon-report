@@ -32,6 +32,6 @@ public interface AlipayLogService {
 	public List<Object[]> findBranchSummaryPayFail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
 												   boolean isDeposit, String alipayLogTypes);
 
-	public List<AlipayLog> test(String systemBookCode,Date dateFrom,Date dateTo);
+	public List<AlipayLog> test(String systemBookCode,LogQuery logQuery,Date dateFrom,Date dateTo);
 
 }

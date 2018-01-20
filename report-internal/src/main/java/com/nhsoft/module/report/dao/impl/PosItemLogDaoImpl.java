@@ -500,6 +500,12 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("sum(l.pos_item_log_item_amount) as mount, sum(l.pos_item_log_money) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount ");
 		sb.append("from pos_item_log as l inner join pos_item as p on l.item_num = p.item_num ");
 		sb.append("with(nolock) where l.system_book_code = :systemBookCode ");
+		if(storeQueryCondition.getFilterDeleteItem() != true){
+			sb.append("from pos_item_log as l ");
+		}else{
+			sb.append("from pos_item_log as l inner join pos_item as p on l.item_num = p.item_num ");
+			sb.append("and p.item_del_tag = 0");
+		}
 		if(storeQueryCondition.getBranchNums() != null && storeQueryCondition.getBranchNums().size() > 0){
 			sb.append("and l.branch_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getBranchNums()));
 		}
@@ -527,9 +533,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append("and (exists (select 1 from storehouse where l.in_storehouse_num = storehouse.storehouse_num and system_book_code = :systemBookCode and storehouse_del_tag = 0 and storehouse_center_tag = 1 )"
 					+ "or exists (select 1 from storehouse where l.out_storehouse_num = storehouse.storehouse_num and system_book_code = :systemBookCode and storehouse_del_tag = 0 and storehouse_center_tag = 1 ) )");
 		}
-		if(storeQueryCondition.getItemDelTag() != null && storeQueryCondition.getItemDelTag().equals(true)){
-			sb.append("and p.item_del_tag = 0");
-		}
+
 		sb.append("group by l.branch_num, l.pos_item_log_inout_flag ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", storeQueryCondition.getSystemBookCode());

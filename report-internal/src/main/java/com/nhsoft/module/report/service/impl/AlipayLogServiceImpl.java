@@ -38,8 +38,8 @@ public class AlipayLogServiceImpl implements AlipayLogService {
 	}
 
 	@Override
-	public List<AlipayLog> test(String systemBookCode, Date dateFrom, Date dateTo) {
-		return alipayLogDao.test(systemBookCode,dateFrom,dateTo);
+	public List<AlipayLog> test(String systemBookCode,LogQuery logQuery,Date dateFrom,Date dateTo) {
+		return alipayLogDao.test(systemBookCode,logQuery,dateFrom,dateTo);
 	}
 
 

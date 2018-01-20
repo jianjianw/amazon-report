@@ -81,6 +81,6 @@ public interface AlipayLogDao {
                                              Date dateTo, String alipayLogTypes);
 
 
-	public List<AlipayLog> test(String systemBookCode,Date dateFrom,Date dateTo);
+	public List<AlipayLog> test(String systemBookCode,LogQuery logQuery,Date dateFrom,Date dateTo);
 
 }

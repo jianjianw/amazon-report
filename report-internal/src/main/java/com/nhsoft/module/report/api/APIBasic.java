@@ -819,7 +819,11 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2017-05-01");
 		Date dateTo = sdf.parse("2017-10-31");
-		List<AlipayLog> test = alipayLogService.test(systemBookCode, dateFrom, dateTo);
+		LogQuery query  =new LogQuery();
+		query.setLogItem("123");
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		List<AlipayLog> test = alipayLogService.test(systemBookCode, query,dateFrom, dateTo);
 		return test;
 	}
 

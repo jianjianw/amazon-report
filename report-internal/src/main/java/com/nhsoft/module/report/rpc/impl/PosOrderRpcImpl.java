@@ -901,8 +901,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		return CopyUtil.toList(posOrderService.findSettled(posOrderQuery, offset, limit), PosOrderDTO.class);
 	}
 
-
-
 	private BusinessCollectionIncome getBusinessCollectionIncome(
 			List<BusinessCollectionIncome> businessCollectionIncomes, String name) {
 		for (int i = 0; i < businessCollectionIncomes.size(); i++) {
