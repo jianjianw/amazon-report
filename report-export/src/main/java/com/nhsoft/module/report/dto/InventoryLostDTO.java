@@ -31,6 +31,8 @@ public class InventoryLostDTO implements Serializable {
 
     private Integer itemNum;
     private String itemName;
+    private String itemSpec;//商品规格
+    private String itemUnit;//单位
     private BigDecimal inventoryAmount; //配送仓库库存
     private Integer lostCount;//断货次数
     private Integer lostDay;//断货天数
@@ -56,6 +58,22 @@ public class InventoryLostDTO implements Serializable {
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+
+    public String getItemSpec() {
+        return itemSpec;
+    }
+
+    public void setItemSpec(String itemSpec) {
+        this.itemSpec = itemSpec;
+    }
+
+    public String getItemUnit() {
+        return itemUnit;
+    }
+
+    public void setItemUnit(String itemUnit) {
+        this.itemUnit = itemUnit;
     }
 
     public BigDecimal getInventoryAmount() {
