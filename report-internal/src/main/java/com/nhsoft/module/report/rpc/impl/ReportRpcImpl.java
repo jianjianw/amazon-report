@@ -3723,6 +3723,10 @@ public class ReportRpcImpl implements ReportRpc {
 
 		//断货天数			时间范围内库存为0的天数
 		List<PosItemLogSummaryDTO> itemOutAmountSummary = posItemLogRpc.findItemOutAmountSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
+
+
+
+
 		//断货次数			时间范围内 从 有库存到 无库存的 次数
 
 
@@ -3771,11 +3775,6 @@ public class ReportRpcImpl implements ReportRpc {
 			for( int j = 0,len = itemOutAmountSummary.size();j < len ; j++){
 				PosItemLogSummaryDTO dto = itemOutAmountSummary.get(j);
 				if(itemNum.equals(dto.getItemNum())){
-					/**
-					 dto.setItemNum((Integer) object[0]);
-					 dto.setItemMatrixNum((Integer) object[1]);
-					 dto.setQty((BigDecimal) object[2]);
-					 * */
 
 				}
 			}
