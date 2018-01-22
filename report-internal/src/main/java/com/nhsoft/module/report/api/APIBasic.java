@@ -785,18 +785,16 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value = "test35")
-	public List<Object[]> test35()throws Exception{
+	public List<PayFailDTO> test35()throws Exception{
 		String systemBookCode= "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-01");
-		Date dateTo = sdf.parse("2017-10-31");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-01-20");
 		List<Integer> branchNums = getBranchNums();
-		ProfitAnalysisQueryData query  = new ProfitAnalysisQueryData();
-		query.setShiftTableFrom(dateFrom);
-		query.setShiftTableTo(dateTo);
-		query.setSystemBookCode(systemBookCode);
-		List<Object[]> branchSummaryPayFail = alipayLogService.findBranchSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, true, null);
-		return branchSummaryPayFail;
+		List<Integer> list = new ArrayList<>();
+		list.add(8);
+		List<PayFailDTO> dtos = alipayLogRpc.findBranchSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, false, null);
+		return dtos;
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value = "test36")
@@ -820,21 +818,10 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2017-05-01");
 		Date dateTo = sdf.parse("2017-10-31");
 		LogQuery query  =new LogQuery();
-		query.setLogItem("123");
+		//query.setLogItem("123");
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		List<AlipayLog> test = alipayLogService.test(systemBookCode, query,dateFrom, dateTo);
-		return test;
-	}
-
-	@RequestMapping(method = RequestMethod.GET,value = "test38")
-	public List<Object[]> test38()throws Exception{
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-01");
-		Date dateTo = sdf.parse("2017-10-31");
-		String systemBookCode = "4344";
-		List<Object[]> test = posOrderService.findTest(systemBookCode, dateFrom, dateTo);
 		return test;
 	}
 

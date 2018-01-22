@@ -5416,24 +5416,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return query.list();
 	}
 
-	@Override
-	public List<Object[]> findTest(String systemBookCode, Date dateFrom, Date dateTo) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("select p.shift_table_bizday, count(p.order_no) as amount, sum(p.order_payment_money) as paymentMoney, ");
-		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgr, ");
-		sb.append("sum(p.order_coupon_total_money) as couponMoney ");
-		sb.append("from pos_order as p with(nolock) ");
-		sb.append("where p.system_book_code = '" + systemBookCode + "' ");
-		if (dateFrom != null) {
-			sb.append("and o.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
-		}
-		if (dateTo != null) {
-			sb.append("and o.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
-		}
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		return sqlQuery.list();
-
-	}
 
 
 }

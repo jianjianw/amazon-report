@@ -4619,6 +4619,7 @@ public class ReportServiceImpl implements ReportService {
 			if (branchNums.size() > 1) {
 				data.setInventoryDate(initDate);
 			}
+			data.setItemUnit(posItem.getItemUnit());
 			map.put(data.getItemNum(), data);
 		}
 		dateFrom = DateUtil.getDateStr("20170101");
@@ -10815,6 +10816,16 @@ public class ReportServiceImpl implements ReportService {
 		cardUserQuery.setDateTo(null);
 		cardUserQuery.setBranchNums(null);
 		Object[] object = cardUserDao.sumByCardUserQuery(cardUserQuery);
+		/**
+		 * private BigDecimal totalPaymentMoney;// 累计付款
+		 private BigDecimal cardBalance;// 当前余额
+		 private BigDecimal lastCardBalance;// 上期余额
+		 private BigDecimal paymentMoney;// 本期付款金额
+		 private BigDecimal depositMoney;// 本期存款金额
+		 private BigDecimal consumeMoney;// 本期消费
+		 private BigDecimal balanceMoney;// 期末余额
+		 private BigDecimal revokeMoney;// 本期卡回收金额
+		 * */
 		
 		//AMA-11807
 		revokeMoney = cardUserDao.getRevokeMoney(cardUserQuery.getSystemBookCode(), null, null, null);

@@ -1320,7 +1320,8 @@ public interface ReportRpc {
 	 * @param dateTo 审核时间止
 	 * @param itemNums 商品主键列表
 	 * */
-	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode,  Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums);
+	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums,String unitType,
+															List<String> itemDepartments, List<String> itemCategoryCodes);
 
 
 

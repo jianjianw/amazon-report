@@ -33,6 +33,8 @@ public class RetailDetail implements Serializable {
 	private String memo;// 
 	private BigDecimal saleCost;
 	private BigDecimal saleProfit;
+	private String itemBarCode;
+
 
 	public BigDecimal getSaleCost() {
 		return saleCost;
@@ -218,4 +220,11 @@ public class RetailDetail implements Serializable {
 		this.stateCode = stateCode;
 	}
 
+	public String getItemBarCode() {
+		return itemBarCode;
+	}
+
+	public void setItemBarCode(String itemBarCode) {
+		this.itemBarCode = itemBarCode;
+	}
 }

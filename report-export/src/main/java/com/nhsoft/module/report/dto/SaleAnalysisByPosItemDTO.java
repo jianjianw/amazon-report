@@ -28,6 +28,7 @@ public class SaleAnalysisByPosItemDTO extends SaleAnalysisDTO {
 	private String branchName;
 	private String bizday;
 	private List<ItemExtendAttributeDTO> itemExtendAttributes;
+	private String itemBarCode;
 
 	public SaleAnalysisByPosItemDTO() {
 		setSaleNum(BigDecimal.ZERO);
@@ -182,4 +183,11 @@ public class SaleAnalysisByPosItemDTO extends SaleAnalysisDTO {
 		this.itemGradeNum = itemGradeNum;
 	}
 
+	public String getItemBarCode() {
+		return itemBarCode;
+	}
+
+	public void setItemBarCode(String itemBarCode) {
+		this.itemBarCode = itemBarCode;
+	}
 }

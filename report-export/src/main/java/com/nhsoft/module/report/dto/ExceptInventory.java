@@ -26,6 +26,7 @@ public class ExceptInventory implements Serializable {
 	private Boolean itemEliminativeFlag;
 	private BigDecimal rate;
 	private Boolean saleCease; //停售标记
+	private String itemUnit;
 	
 	public Integer getItemNum() {
 		return itemNum;
@@ -153,6 +154,14 @@ public class ExceptInventory implements Serializable {
 
 	public void setSaleCease(Boolean saleCease) {
 		this.saleCease = saleCease;
+	}
+
+	public String getItemUnit() {
+		return itemUnit;
+	}
+
+	public void setItemUnit(String itemUnit) {
+		this.itemUnit = itemUnit;
 	}
 
 	@Override

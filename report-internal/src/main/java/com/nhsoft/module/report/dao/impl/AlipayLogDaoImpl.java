@@ -90,7 +90,8 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 		if(isDeposit){
 			criteria.add(Restrictions.like("a.alipayLogOrderNo", "DEP", MatchMode.START));
 		} else {
-			criteria.add(Restrictions.not(Restrictions.like("a.alipayLogOrderNo", "DEP", MatchMode.START)));
+			//criteria.add(Restrictions.not(Restrictions.like("a.alipayLogOrderNo", "DEP", MatchMode.START)));  sharding jdbc  不支持这种not like
+			criteria.add(Restrictions.sqlRestriction("substring(alipay_log_order_no, 0, 4) != 'DEP'"));
 		}
 		if(StringUtils.isNotEmpty(alipayLogTypes)){
 			criteria.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
@@ -346,19 +347,6 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 	@Override
 	public List<AlipayLog> test(String systemBookCode,LogQuery logQuery,Date dateFrom,Date dateTo) {
 
-		/*StringBuilder sb = new StringBuilder();
-		sb.append("select * from alipay_log where system_book_code = '"+systemBookCode+"' ");
-		sb.append("and alipay_log_start between '" + DateUtil.getLongDateTimeStr(dateFrom) + "' and '" + DateUtil.getLongDateTimeStr(dateTo) +"' ");
-		sb.append("and branch_num = 99");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		return sqlQuery.list();*/
-
-		/*Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
-				.add(Restrictions.eq("a.systemBookCode", systemBookCode));
-		private Criteria createByLogQuery(String systemBookCode, Integer branchNum, LogQuery logQuery){
-		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
-		criteria.setLockMode(LockMode.NONE);
-		return criteria.list();*/
 			Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
 					.add(Restrictions.eq("a.systemBookCode", systemBookCode));
 			if(StringUtils.isNotEmpty(logQuery.getLogItem())){

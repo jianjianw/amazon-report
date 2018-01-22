@@ -3685,9 +3685,15 @@ public class ReportRpcImpl implements ReportRpc {
 
 
 	@Override
-	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums,String unitType,
+															List<String> itemDepartments, List<String> itemCategoryCodes) {
 
 		/**
+		 *
+		 *  private String unitType;
+		 private List<String> itemDepartments;
+		 private List<String> itemCategoryCodes;
+		 *
 		 * amazonReport中实现
 		 配送仓库库存 inventoryRpc.findCenterStore
 		 收货数量 从 receiveOrder里查

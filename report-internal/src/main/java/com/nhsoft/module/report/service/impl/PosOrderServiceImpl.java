@@ -322,11 +322,6 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return posOrders;
 	}
 
-	@Override
-	public List<Object[]> findTest(String systemBookCode, Date dateFrom, Date dateTo) {
-		return posOrderDao.findTest(systemBookCode,dateFrom,dateTo);
-	}
-
 
 }
 
