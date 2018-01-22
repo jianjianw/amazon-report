@@ -500,7 +500,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("sum(l.pos_item_log_item_amount) as mount, sum(l.pos_item_log_money) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount ");
 		if(storeQueryCondition.getFilterDeleteItem() == null || !storeQueryCondition.getFilterDeleteItem()){
 			sb.append("from pos_item_log as l where l.system_book_code = :systemBookCode ");
-		}else{
+		} else {
 			sb.append("from pos_item_log as l inner join pos_item as p on l.item_num = p.item_num ");
 			sb.append("where l.system_book_code = :systemBookCode ");
 			sb.append("and p.item_del_tag = 0 ");

@@ -1259,13 +1259,15 @@ public class Report2RpcImpl implements Report2Rpc {
 			return new ArrayList<>();
 		}
 		List<Branch> branches = branchService.findInCache(systemBookCode);
-		ReportUtil<OtherInfoSummaryDTO> reportUtil = new ReportUtil<>(OtherInfoSummaryDTO.class);
+		List<OtherInfoSummaryDTO> list = new ArrayList<>();
 		for(Integer branchNum : branchNums) {
 			List<NameAndValueDTO> dtos = mobileAppV2Service.findOtherInfos(systemBookCode, Collections.singletonList(branchNum), dateFrom, dateTo);
+			OtherInfoSummaryDTO otherInfoSummaryDTO = new OtherInfoSummaryDTO();
+			otherInfoSummaryDTO.setBranchNum(branchNum);
+			otherInfoSummaryDTO.setBranchName(AppUtil.getBranch(branches, branchNum).getBranchName());
+
 			for(NameAndValueDTO dto : dtos) {
-				OtherInfoSummaryDTO otherInfoSummaryDTO = reportUtil.getInstance();
-				otherInfoSummaryDTO.setBranchNum(branchNum);
-				otherInfoSummaryDTO.setBranchName(AppUtil.getBranch(branches, branchNum).getBranchName());
+
 				switch (dto.getName()) {
 					case "删除":
 						otherInfoSummaryDTO.setDeleteCount(dto.getIntValue());
@@ -1303,10 +1305,10 @@ public class Report2RpcImpl implements Report2Rpc {
 						otherInfoSummaryDTO.setPresentMoney(dto.getValue());
 						break;
 				}
-				reportUtil.add(otherInfoSummaryDTO);
+				list.add(otherInfoSummaryDTO);
 			}
 		}
-		return reportUtil.toList();
+		return list;
 		
 	}
 	
