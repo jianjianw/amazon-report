@@ -1305,8 +1305,9 @@ public class Report2RpcImpl implements Report2Rpc {
 						otherInfoSummaryDTO.setPresentMoney(dto.getValue());
 						break;
 				}
-				list.add(otherInfoSummaryDTO);
 			}
+			list.add(otherInfoSummaryDTO);
+
 		}
 		return list;
 		
