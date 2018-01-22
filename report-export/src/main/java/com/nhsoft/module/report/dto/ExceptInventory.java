@@ -26,7 +26,7 @@ public class ExceptInventory implements Serializable {
 	private Boolean itemEliminativeFlag;
 	private BigDecimal rate;
 	private Boolean saleCease; //停售标记
-	private String itemUnit;
+	private String itemUnit;//基本单位
 	
 	public Integer getItemNum() {
 		return itemNum;

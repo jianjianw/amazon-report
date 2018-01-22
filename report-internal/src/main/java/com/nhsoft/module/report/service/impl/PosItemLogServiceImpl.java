@@ -58,9 +58,10 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 		return posItemLogDao.findBranchFlagSummary(storeQueryCondition);
 	}
 
-
-
-
+	@Override
+	public List<Object[]> findItemBizFlagSummary(StoreQueryCondition storeQueryCondition) {
+		return posItemLogDao.findItemBizFlagSummary(storeQueryCondition);
+	}
 
 
 	//以下都是从amazonCenter中移过来的

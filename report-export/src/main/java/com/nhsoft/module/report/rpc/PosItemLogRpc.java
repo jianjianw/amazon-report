@@ -48,6 +48,12 @@ public interface PosItemLogRpc {
 	 */
 	public List<PosItemLogSummaryDTO> findBranchFlagSummary(StoreQueryCondition storeQueryCondition);
 
+	/**
+	 * 按商品 营业日 进出标记汇总
+	 *
+	 * */
+	public List<PosItemLogSummaryDTO> findItemBizFlagSummary(StoreQueryCondition storeQueryCondition);
+
 
 
 	//以下都是从amazonCenter中移过来的

@@ -3721,9 +3721,20 @@ public class ReportRpcImpl implements ReportRpc {
 		List<BranchItemRecoredDTO> itemAuditDate = branchItemRecoredRpc.findItemAuditDate(systemBookCode, branchNum, null, itemNums, null);
 
 
+		StoreQueryCondition queryCondition = new StoreQueryCondition();
 		//断货天数			时间范围内库存为0的天数
-		List<PosItemLogSummaryDTO> itemOutAmountSummary = posItemLogRpc.findItemOutAmountSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
+		List<PosItemLogSummaryDTO> itemBizFlagSummary = posItemLogRpc.findItemBizFlagSummary(queryCondition);
 
+
+
+		Calendar calendar = Calendar.getInstance();
+		Date now = calendar.getTime();
+		StoreQueryCondition query = new StoreQueryCondition();
+		calendar.add(Calendar.DAY_OF_MONTH,1);
+		Date time = calendar.getTime();
+		query.setDateStart(time);
+		query.setDateEnd(now);
+		List<PosItemLogSummaryDTO> itemFlagSummary = posItemLogRpc.findItemFlagSummary(query);
 
 
 
@@ -3740,7 +3751,7 @@ public class ReportRpcImpl implements ReportRpc {
 			for (int j = 0,len = inventory.size(); j < len  ; j++) {
 				InventoryDTO dto = inventory.get(j);
 				if(itemNum.equals(dto.getItemNum())){
-					inventoryLostDTO.setInventoryAmount(dto.getInventoryAmount());
+					inventoryLostDTO.setInventoryAmount(dto.getInventoryAmount());//当前库存
 				}
 			}
 			//收货数量
@@ -3771,13 +3782,80 @@ public class ReportRpcImpl implements ReportRpc {
 					inventoryLostDTO.setMaxReceiveDay(dto.getAuditDate());
 				}
 			}
-			//计算断货天数
-			for( int j = 0,len = itemOutAmountSummary.size();j < len ; j++){
-				PosItemLogSummaryDTO dto = itemOutAmountSummary.get(j);
+			//6-22号的按商品汇总
+			BigDecimal currentAmount = inventoryLostDTO.getInventoryAmount();//当前库存
+			for (int j = 0,len =itemFlagSummary.size() ; j <len ; j++) {
+				PosItemLogSummaryDTO dto = itemFlagSummary.get(i);
 				if(itemNum.equals(dto.getItemNum())){
+					//得到当前库存
+					if(dto.getInoutFlag()){//调入
+						currentAmount = currentAmount.subtract(dto.getQty());
+					}else{	//调出
+						currentAmount = currentAmount.add(dto.getQty());
+					}
 
 				}
 			}
+			
+			
+			//计算断货天数      1是入库  入库是减       0是出库 出库是加
+			for( int j = 0,len = itemBizFlagSummary.size();j < len ; j++){
+				BigDecimal urrentAmount = inventoryLostDTO.getInventoryAmount();//当前库存
+				PosItemLogSummaryDTO dto = itemBizFlagSummary.get(j);
+				InventoryLostDTO.InventoryLostDetailDTO detail = new InventoryLostDTO.InventoryLostDetailDTO();
+				detail.setBizday(dto.getBizday());
+				BigDecimal amount = BigDecimal.ZERO;
+				if(itemNum.equals(dto.getItemNum()) && dto.getInoutFlag()){//入库
+					amount = currentAmount.subtract(dto.getQty());
+				}
+
+				if(itemNum.equals(dto.getItemNum()) && !dto.getInoutFlag()){//出库
+
+					amount.add(dto.getQty());
+				}
+				//detail.setInventoryAmount();//当天库存
+				inventoryLostDTO.getInventoryCount().add(detail);
+			}
+		/*	int size = DateUtil.diffDay(dateFrom, dateTo);
+			String to = DateUtil.getDateShortStr(dateFrom);
+			Integer integer = Integer.valueOf(to);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(dateFrom);
+			for (int j = 0; j <size ; j++) {
+				InventoryLostDTO.InventoryLostDetailDTO detail = new InventoryLostDTO.InventoryLostDetailDTO();
+				calendar.add(Calendar.DAY_OF_MONTH,i);
+				Date time = calendar.getTime();
+				detail.setBizday()
+
+			}
+
+
+			for (int j = 0,len = itemBizFlagSummary.size();j < len ; j++) {
+				PosItemLogSummaryDTO dto = itemBizFlagSummary.get(j);
+			}*/
+
+
+
+			/*Map<String,InventoryLostDTO.InventoryLostDetailDTO> map = new HashMap<>();
+			for( int j = 0,len = itemBizFlagSummary.size();j < len ; j++){
+				PosItemLogSummaryDTO dto = itemBizFlagSummary.get(j);
+
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(dto.getItemNum()).append(dto.getBizday()).toString();
+				InventoryLostDTO.InventoryLostDetailDTO data = map.get(key);
+				if(data == null){
+					continue;
+				}else{
+					InventoryLostDTO.InventoryLostDetailDTO detail = new InventoryLostDTO.InventoryLostDetailDTO();
+					detail.setBizday();
+					detail.setInventoryAmount(dto.getQty());
+
+					List<InventoryLostDTO.InventoryLostDetailDTO> inventoryCount = inventoryLostDTO.getInventoryCount();
+				}
+
+
+
+			}*/
 
 
 

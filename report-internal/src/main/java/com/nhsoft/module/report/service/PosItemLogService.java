@@ -78,7 +78,11 @@ public interface PosItemLogService {
 	 */
 	public List<Object[]> findBranchFlagSummary(StoreQueryCondition storeQueryCondition);
 
-
+	/**
+	 * 按商品 营业日 进出标记汇总
+	 *
+	 * */
+	public List<Object[]> findItemBizFlagSummary(StoreQueryCondition storeQueryCondition);
 
 
 

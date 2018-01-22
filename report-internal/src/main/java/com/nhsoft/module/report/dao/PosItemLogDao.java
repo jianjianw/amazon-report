@@ -118,10 +118,10 @@ public interface PosItemLogDao {
 
 
 	/**
-	 * 按商品 营业日 进出标记汇总
-	 *
+	 * 按商品和营业日  进出标记汇总
 	 * */
 	public List<Object[]> findItemBizFlagSummary(StoreQueryCondition storeQueryCondition);
+
 
 
 

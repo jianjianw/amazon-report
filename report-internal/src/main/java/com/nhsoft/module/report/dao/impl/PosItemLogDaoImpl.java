@@ -558,18 +558,75 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 	@Override
 	public List<Object[]> findItemBizFlagSummary(StoreQueryCondition storeQueryCondition) {
-		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
-				.add(Restrictions.eq("p.branchNum", storeQueryCondition.getBranchNum()))
-				.add(Restrictions.eq("p.systemBookCode", storeQueryCondition.getSystemBookCode()));
+		StringBuffer sb = new StringBuffer();
+		sb.append("select l.item_num, l.pos_item_log_inout_flag , l.shift_table_bizday ");
+		sb.append("sum(l.pos_item_log_item_amount) as mount, sum(l.pos_item_log_money) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount ");
+		sb.append("from pos_item_log as l ");
+		sb.append("with(nolock) where l.system_book_code = :systemBookCode ");
+		if(storeQueryCondition.getBranchNums() != null && storeQueryCondition.getBranchNums().size() > 0){
+			sb.append("and l.branch_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getBranchNums()));
+		}
+		sb.append("and l.pos_item_log_date_index between '" + DateUtil.getDateShortStr(storeQueryCondition.getDateStart()) + "' and '" + DateUtil.getDateShortStr(storeQueryCondition.getDateEnd()) + "' ");
 
-		if(storeQueryCondition.getDateStart() != null){
-			criteria.add(Restrictions.ge("p.posItemLogDateIndex", DateUtil.getDateShortStr(storeQueryCondition.getDateStart())));
+		if(storeQueryCondition.getExactDateEnd() != null){
+			sb.append("and l.pos_item_log_date <= '" + DateUtil.getLongDateTimeStr(storeQueryCondition.getExactDateEnd()) + "' ");
 		}
-		if(storeQueryCondition.getDateEnd() != null){
-			criteria.add(Restrictions.le("p.posItemLogDateIndex", DateUtil.getDateShortStr(storeQueryCondition.getDateEnd())));
+		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
+			sb.append("and l.item_num in (:itemNums) ");
 		}
-		if(!storeQueryCondition.getItemNums().isEmpty()){
-			criteria.add(Restrictions.in("p.itemNum", storeQueryCondition.getItemNums()));
+		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
+			sb.append("and l.pos_item_log_item_category in (:categoryCodes) ");
+		}
+		if(storeQueryCondition.getStorehouseNum() != null){
+			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
+		}
+		if(StringUtils.isNotEmpty(storeQueryCondition.getPosItemLogSummary())){
+			sb.append("and l.pos_item_log_summary in (:summaries) ");
+		}
+		if(StringUtils.isNotEmpty(storeQueryCondition.getAdjustReason())){
+			sb.append("and l.pos_item_log_memo = :adjustReason ");
+		}
+		if(storeQueryCondition.getCenterStorehouse() != null){
+			sb.append("and (exists (select 1 from storehouse where l.in_storehouse_num = storehouse.storehouse_num and system_book_code = :systemBookCode and storehouse_del_tag = 0 and storehouse_center_tag = 1 )"
+					+ "or exists (select 1 from storehouse where l.out_storehouse_num = storehouse.storehouse_num and system_book_code = :systemBookCode and storehouse_del_tag = 0 and storehouse_center_tag = 1 ) )");
+		}
+		sb.append("group by l.item_num, l.pos_item_log_inout_flag,l.shift_table_bizday ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", storeQueryCondition.getSystemBookCode());
+
+		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
+			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
+		}
+		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
+			sqlQuery.setParameterList("categoryCodes", storeQueryCondition.getItemCategoryCodes());
+		}
+		if(storeQueryCondition.getStorehouseNum() != null){
+			sqlQuery.setInteger("storehouseNum", storeQueryCondition.getStorehouseNum());
+		}
+		if(StringUtils.isNotEmpty(storeQueryCondition.getPosItemLogSummary())){
+			sqlQuery.setParameterList("summaries", storeQueryCondition.getPosItemLogSummary().split(","));
+		}
+		if(StringUtils.isNotEmpty(storeQueryCondition.getAdjustReason())){
+			sqlQuery.setString("adjustReason", storeQueryCondition.getAdjustReason());
+		}
+
+		return sqlQuery.list();
+	}
+
+	/*@Override
+	public List<Object[]> findItemBizFlagSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
+				.add(Restrictions.eq("p.branchNum", branchNum))
+				.add(Restrictions.eq("p.systemBookCode", systemBookCode));
+
+		if(dateFrom != null){
+			criteria.add(Restrictions.ge("p.posItemLogDateIndex", DateUtil.getDateShortStr(dateFrom)));
+		}
+		if(dateTo != null){
+			criteria.add(Restrictions.le("p.posItemLogDateIndex", DateUtil.getDateShortStr(dateTo)));
+		}
+		if(!itemNums.isEmpty()){
+			criteria.add(Restrictions.in("p.itemNum", itemNums));
 		}
 		criteria.setProjection(Projections.projectionList()
 				.add(Projections.groupProperty("p.itemNum"))
@@ -578,8 +635,9 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 				.add(Projections.sum("p.posItemLogItemAmount"))
 		);
 		criteria.setLockMode(LockMode.NONE);
+		criteria.addOrder(Order.desc("p.posItemLogDateIndex"));//降序
 		return criteria.list();
-	}
+	}*/
 
 
 	//以下都是从amazonCenter中移过来的

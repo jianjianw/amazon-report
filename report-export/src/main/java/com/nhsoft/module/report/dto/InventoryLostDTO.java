@@ -2,29 +2,30 @@ package com.nhsoft.module.report.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class InventoryLostDTO implements Serializable {
 
 
-    public class InventoryLostDetailDTO{
-        private String date;
-        private String inventoryAmount;
+    public static class InventoryLostDetailDTO{
+        private String bizday;
+        private BigDecimal inventoryAmount;
 
-        public String getDate() {
-            return date;
+        public String getBizday() {
+            return bizday;
         }
 
-        public void setDate(String date) {
-            this.date = date;
+        public void setBizday(String bizday) {
+            this.bizday = bizday;
         }
 
-        public String getInventoryAmount() {
+        public BigDecimal getInventoryAmount() {
             return inventoryAmount;
         }
 
-        public void setInventoryAmount(String inventoryAmount) {
+        public void setInventoryAmount(BigDecimal inventoryAmount) {
             this.inventoryAmount = inventoryAmount;
         }
     }
@@ -41,7 +42,7 @@ public class InventoryLostDTO implements Serializable {
     private BigDecimal requestOutAmount;//要货调出数量
     private Date firstReceiveDay;//首次收货日期
     private String maxReceiveDay;//最近收货日期
-    private List<InventoryLostDetailDTO> inventoryCount;
+    private List<InventoryLostDetailDTO> inventoryCount = new ArrayList<>();
 
 
     public Integer getItemNum() {

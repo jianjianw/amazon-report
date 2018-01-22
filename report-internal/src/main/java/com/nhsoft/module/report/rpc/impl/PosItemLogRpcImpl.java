@@ -111,7 +111,6 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
         Object[] object = null;
         for (int i = 0; i < size; i++) {
             object = objects.get(i);
-
             PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
             dto.setItemNum((Integer) object[0]);
             dto.setInoutFlag((Boolean) object[1]);
@@ -142,6 +141,23 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
             list.add(dto);
         }
 
+        return list;
+    }
+
+    @Override
+    public List<PosItemLogSummaryDTO> findItemBizFlagSummary(StoreQueryCondition storeQueryCondition) {
+        List<Object[]> objects = posItemLogService.findItemBizFlagSummary(storeQueryCondition);
+        int size = objects.size();
+        List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
+        for (int i = 0; i < size; i++) {
+            Object[] object = objects.get(i);
+            PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
+            dto.setItemNum((Integer) object[0]);
+            dto.setInoutFlag((Boolean) object[1]);
+            dto.setBizday((String) object[2]);
+            dto.setQty((BigDecimal) object[3]);
+            list.add(dto);
+        }
         return list;
     }
 
