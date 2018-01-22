@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.rpc.impl;
 
+import com.nhsoft.module.azure.model.PosItem;
 import com.nhsoft.module.azure.model.PosItemLat;
 import com.nhsoft.module.report.dto.PosItemDTO;
 import com.nhsoft.module.report.param.PosItemTypeParam;
@@ -55,4 +56,5 @@ public class PosItemRpcImpl implements PosItemRpc {
         }
         return posItemDTOS;
     }
+
 }
