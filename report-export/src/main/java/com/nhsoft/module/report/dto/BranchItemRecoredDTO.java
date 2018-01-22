@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class BranchItemRecoredDTO implements Serializable {
 
     private Integer itemNum;
-    private String auditDate;//最近审核时间
+    private String auditDate;//最近审核时间(最近收获日)
 
 
     public Integer getItemNum() {

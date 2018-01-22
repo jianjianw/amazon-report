@@ -76,6 +76,8 @@ public class ReportRpcImpl implements ReportRpc {
 	private TransferOutOrderRpc transferOutOrderRpc;
 	@Autowired
 	private BranchItemRecoredRpc branchItemRecoredRpc;
+	@Autowired
+	private PosItemLogRpc posItemLogRpc;
 
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -3717,8 +3719,10 @@ public class ReportRpcImpl implements ReportRpc {
 		List<TransterOutDTO> transterOutSummary = transferOutOrderRpc.findItemSummary(systemBookCode, null, branch, dateFrom, dateTo, itemNums);
 		//最近收货日期
 		List<BranchItemRecoredDTO> itemAuditDate = branchItemRecoredRpc.findItemAuditDate(systemBookCode, branchNum, null, itemNums, null);
-		//断货天数			时间范围内库存为0的天数
 
+
+		//断货天数			时间范围内库存为0的天数
+		List<PosItemLogSummaryDTO> itemOutAmountSummary = posItemLogRpc.findItemOutAmountSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
 		//断货次数			时间范围内 从 有库存到 无库存的 次数
 
 
@@ -3761,6 +3765,18 @@ public class ReportRpcImpl implements ReportRpc {
 				BranchItemRecoredDTO dto = itemAuditDate.get(j);
 				if(itemNum.equals(dto.getItemNum())){
 					inventoryLostDTO.setMaxReceiveDay(dto.getAuditDate());
+				}
+			}
+			//计算断货天数
+			for( int j = 0,len = itemOutAmountSummary.size();j < len ; j++){
+				PosItemLogSummaryDTO dto = itemOutAmountSummary.get(j);
+				if(itemNum.equals(dto.getItemNum())){
+					/**
+					 dto.setItemNum((Integer) object[0]);
+					 dto.setItemMatrixNum((Integer) object[1]);
+					 dto.setQty((BigDecimal) object[2]);
+					 * */
+
 				}
 			}
 

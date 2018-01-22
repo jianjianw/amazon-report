@@ -16,7 +16,7 @@ public class InventoryExceptQuery extends QueryBuilder {
 	//private String systemBookCode;
 	private Integer branchNum;
 	private List<String> itemCategorys; // 类别代码
-	private Integer storehouseNum;
+	private List<Integer> storehouseNums;
 	private String unit;
 	private BigDecimal inventoryHigh;  //高库存数量	
 	private BigDecimal inventoryMoney;  //库存金额
@@ -103,12 +103,12 @@ public class InventoryExceptQuery extends QueryBuilder {
 		this.itemCategorys = itemCategorys;
 	}
 
-	public Integer getStorehouseNum() {
-		return storehouseNum;
+	public List<Integer> getStorehouseNums() {
+		return storehouseNums;
 	}
 
-	public void setStorehouseNum(Integer storehouseNum) {
-		this.storehouseNum = storehouseNum;
+	public void setStorehouseNums(List<Integer> storehouseNums) {
+		this.storehouseNums = storehouseNums;
 	}
 
 	public String getUnit() {

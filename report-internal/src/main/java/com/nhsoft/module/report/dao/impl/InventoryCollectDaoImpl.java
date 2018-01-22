@@ -108,7 +108,7 @@ public class InventoryCollectDaoImpl extends DaoImpl implements InventoryCollect
 
 	@Override
 	public List<Object[]> findItemLatestDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-											 List<Integer> itemNums, String collectDetailSummary) {
+											 List<Integer> itemNums, String collectDetailSummary,List<Integer> storehouseNums) {
 
 		Date now = Calendar.getInstance().getTime();
 		now = DateUtil.getMinOfDate(now);
@@ -136,6 +136,9 @@ public class InventoryCollectDaoImpl extends DaoImpl implements InventoryCollect
 				}
 				sb.append("and collect_detail_date <= :dateTo ");
 				sb.append("and collect_detail_summary in (:summaries) ");
+				if(storehouseNums != null && storehouseNums.size() > 0){
+					sb.append("and storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+				}
 				sb.append("group by item_num");
 			} else {
 				sb.append("select a.item_num, max(a.logDate) from ");
@@ -152,6 +155,9 @@ public class InventoryCollectDaoImpl extends DaoImpl implements InventoryCollect
 				}
 				sb.append("and collect_detail_date < '" + DateUtil.getLongDateTimeStr(now) + "' ");
 				sb.append("and collect_detail_summary in (:summaries)) ");
+				if(storehouseNums != null && storehouseNums.size() > 0){
+					sb.append("and storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+				}
 
 				sb.append("union ");
 
@@ -166,6 +172,9 @@ public class InventoryCollectDaoImpl extends DaoImpl implements InventoryCollect
 				sb.append("and pos_item_log_date >= '" + DateUtil.getLongDateTimeStr(now) + "' ");
 				sb.append("and pos_item_log_date <= :dateTo ");
 				sb.append("and pos_item_log_summary in (:summaries)) ) as a ");
+				if(storehouseNums != null && storehouseNums.size() > 0){
+					sb.append("and in_storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+				}
 				sb.append("group by a.item_num ");
 
 			}
@@ -185,6 +194,9 @@ public class InventoryCollectDaoImpl extends DaoImpl implements InventoryCollect
 					sb.append("and inventory_collect_date >= :dateFrom ");
 				}
 				sb.append("and inventory_collect_date <= :dateTo ");
+				if(storehouseNums != null && storehouseNums.size() > 0){
+					sb.append("and storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+				}
 				sb.append("group by item_num");
 			} else {
 				sb.append("select a.item_num, max(a.logDate) from ");
@@ -201,6 +213,9 @@ public class InventoryCollectDaoImpl extends DaoImpl implements InventoryCollect
 				}
 				sb.append("and inventory_collect_date < '" + DateUtil.getLongDateTimeStr(now) + "' ");
 				sb.append("and collect_detail_summary in (:summaries)) ");
+				if(storehouseNums != null && storehouseNums.size() > 0){
+					sb.append("and storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+				}
 
 				sb.append("union ");
 
@@ -215,6 +230,9 @@ public class InventoryCollectDaoImpl extends DaoImpl implements InventoryCollect
 				sb.append("and pos_item_log_date >= '" + DateUtil.getLongDateTimeStr(now) + "' ");
 				if(dateTo != null){
 					sb.append("and pos_item_log_date <= :dateTo ");
+				}
+				if(storehouseNums != null && storehouseNums.size() > 0){
+					sb.append("and in_storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
 				}
 				sb.append("group by a.item_num ");
 

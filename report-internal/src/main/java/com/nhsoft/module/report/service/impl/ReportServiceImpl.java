@@ -4625,7 +4625,7 @@ public class ReportServiceImpl implements ReportService {
 		dateFrom = DateUtil.getDateStr("20170101");
 		dateTo = Calendar.getInstance().getTime();
 		List<Object[]> objects = inventoryCollectDao.findItemLatestDate(systemBookCode, branchNums, dateFrom, dateTo,
-				null, inventoryExceptQuery.getPosItemLogSummary());
+				null, inventoryExceptQuery.getPosItemLogSummary(),inventoryExceptQuery.getStorehouseNums());
 		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
