@@ -1,5 +1,8 @@
 package com.nhsoft.module.report.dto;
 
+import com.nhsoft.utils.annotation.ReportInfo;
+import com.nhsoft.utils.annotation.ReportKey;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
