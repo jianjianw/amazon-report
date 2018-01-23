@@ -3744,6 +3744,37 @@ public class ReportRpcImpl implements ReportRpc {
 					inventoryLostDTO.setItemName(posItem.getItemName());
 					inventoryLostDTO.setItemUnit(posItem.getItemUnit());
 					inventoryLostDTO.setItemSpec(posItem.getItemSpec());
+
+				/*	BigDecimal rate = BigDecimal.ZERO;
+					if (unitType.equals(AppConstants.UNIT_SOTRE)) {
+						rate = posItem.getItemInventoryRate();
+						unsalablePosItem.setPosItemUnit(posItem.getItemInventoryUnit());
+
+					} else if (unitType.equals(AppConstants.UNIT_TRANFER)) {
+						rate = posItem.getItemTransferRate();
+						unsalablePosItem.setPosItemUnit(posItem.getItemTransferUnit());
+
+					} else if (unit.equals(AppConstants.UNIT_PURCHASE)) {
+						rate = posItem.getItemPurchaseRate();
+						unsalablePosItem.setPosItemUnit(posItem.getItemPurchaseUnit());
+
+					} else if (unit.equals(AppConstants.UNIT_PIFA)) {
+						rate = posItem.getItemWholesaleRate();
+						unsalablePosItem.setPosItemUnit(posItem.getItemWholesaleUnit());
+					} else {
+						unsalablePosItem.setPosItemUnit(posItem.getItemUnit());
+					}
+					if (rate.compareTo(BigDecimal.ZERO) > 0) {
+						unsalablePosItem.setCurrentSaleNum(unsalablePosItem.getCurrentSaleNum().divide(rate, 4,
+								BigDecimal.ROUND_HALF_UP));
+						unsalablePosItem.setCurrentStore(unsalablePosItem.getCurrentStore().divide(rate, 4,
+								BigDecimal.ROUND_HALF_UP));
+						unsalablePosItem.setCurrentPifaNum(unsalablePosItem.getCurrentPifaNum().divide(rate, 4,
+								BigDecimal.ROUND_HALF_UP));
+						unsalablePosItem.setCurrentOutNum(unsalablePosItem.getCurrentOutNum().divide(rate, 4,
+								BigDecimal.ROUND_HALF_UP));
+
+					}*/
 				}
 			}
 

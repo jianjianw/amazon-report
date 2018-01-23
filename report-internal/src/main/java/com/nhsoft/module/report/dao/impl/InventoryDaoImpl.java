@@ -42,7 +42,9 @@ public class InventoryDaoImpl extends DaoImpl implements InventoryDao {
 		sb.append("select i.item_num, sum(i.inventory_amount) as amount, sum(i.inventory_money) as money, sum(i.inventory_assist_amount) as assistAmount ");
 		sb.append("from inventory as i with(nolock) inner join storehouse as s with(nolock) on s.storehouse_num = i.storehouse_num ");
 		sb.append("where s.storehouse_del_tag = 0 and s.storehouse_actived = 1 ");
-		sb.append("and s.storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+		if(storehouseNums != null && storehouseNums.size()>0){
+			sb.append("and s.storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+		}
 		sb.append("and branch_num = " + branchNum + " ");
 		if (itemNums != null && itemNums.size() > 0) {
 			sb.append("and i.item_num in " + AppUtil.getIntegerParmeList(itemNums));

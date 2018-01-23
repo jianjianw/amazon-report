@@ -5302,7 +5302,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(queryPayment){
 			sb.append("inner join payment with(nolock) on p.order_no = payment.order_no ");
 		}
-		//String systemBookCode = posOrderQuery.getSystemBookCode();
+
 		sb.append("where p.system_book_code = '" + posOrderQuery.getSystemBookCode() + "' ");
 		if (posOrderQuery.getBranchNums() != null && posOrderQuery.getBranchNums().size() > 0) {
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(posOrderQuery.getBranchNums()));
