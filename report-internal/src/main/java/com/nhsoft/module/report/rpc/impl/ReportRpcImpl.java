@@ -3691,6 +3691,7 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums,String unitType,
 															List<String> itemDepartments, List<String> itemCategoryCodes) {
 
+
 		List<Integer> branch = new ArrayList<>();
 		branch.add(branchNum);
 		//查询商品信息
@@ -3700,13 +3701,17 @@ public class ReportRpcImpl implements ReportRpc {
 		//收货数量
 		List<ReceiveOrderInfoDTO> receiveSummary = receiveOrderRpc.findItemSummary(systemBookCode, branch, dateFrom, dateTo, itemNums);
 		//要货数量
-		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(systemBookCode, null, branchNum, dateFrom, dateTo, itemNums);
+		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(systemBookCode, branchNum, null, dateFrom, dateTo, itemNums);
 		//要货调出数量
-		List<TransterOutDTO> transterOutSummary = transferOutOrderRpc.findItemSummary(systemBookCode, null, branch, dateFrom, dateTo, itemNums);
+		List<TransterOutDTO> transterOutSummary = transferOutOrderRpc.findItemSummary(systemBookCode, branch, null, dateFrom, dateTo, itemNums);
 		//最近收货日期
-		List<BranchItemRecoredDTO> itemAuditDate = branchItemRecoredRpc.findItemAuditDate(systemBookCode, branchNum, null, itemNums, null);
-		StoreQueryCondition queryCondition = null;
+		List<String> types = new ArrayList<>();
+		types.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+		List<BranchItemRecoredDTO> itemAuditDate = branchItemRecoredRpc.findItemAuditDate(systemBookCode, branchNum, null, itemNums, types);
 
+		//首次收货日期 WEB版暂时不加 有需要再说
+
+		StoreQueryCondition queryCondition = null;
 		queryCondition = new StoreQueryCondition();
 		queryCondition.setSystemBookCode(systemBookCode);
 		queryCondition.setBranchNum(branchNum);
@@ -3732,6 +3737,10 @@ public class ReportRpcImpl implements ReportRpc {
 
 		//断货次数			时间范围内 从 有库存到 无库存的 次数
 		int itemSize = itemNums.size();
+		if(itemNums.isEmpty()){
+			List<PosItem> items = posItemService.findShortItems(systemBookCode);
+			itemSize = items.size();
+		}
 		List<InventoryLostDTO> list = new ArrayList<>();
 		for (int i = 0; i <itemSize ; i++) {
 			Integer itemNum = itemNums.get(i);
@@ -3742,29 +3751,29 @@ public class ReportRpcImpl implements ReportRpc {
 				PosItem posItem = posItems.get(j);
 				if(itemNum.equals(posItem.getItemNum())){
 					inventoryLostDTO.setItemName(posItem.getItemName());
-					inventoryLostDTO.setItemUnit(posItem.getItemUnit());
 					inventoryLostDTO.setItemSpec(posItem.getItemSpec());
 
-				/*	BigDecimal rate = BigDecimal.ZERO;
+
+					BigDecimal rate = BigDecimal.ZERO;
 					if (unitType.equals(AppConstants.UNIT_SOTRE)) {
 						rate = posItem.getItemInventoryRate();
-						unsalablePosItem.setPosItemUnit(posItem.getItemInventoryUnit());
+						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
 
 					} else if (unitType.equals(AppConstants.UNIT_TRANFER)) {
 						rate = posItem.getItemTransferRate();
-						unsalablePosItem.setPosItemUnit(posItem.getItemTransferUnit());
+						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
 
-					} else if (unit.equals(AppConstants.UNIT_PURCHASE)) {
+					} else if (unitType.equals(AppConstants.UNIT_PURCHASE)) {
 						rate = posItem.getItemPurchaseRate();
-						unsalablePosItem.setPosItemUnit(posItem.getItemPurchaseUnit());
+						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
 
-					} else if (unit.equals(AppConstants.UNIT_PIFA)) {
+					} else if (unitType.equals(AppConstants.UNIT_PIFA)) {
 						rate = posItem.getItemWholesaleRate();
-						unsalablePosItem.setPosItemUnit(posItem.getItemWholesaleUnit());
+						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
 					} else {
-						unsalablePosItem.setPosItemUnit(posItem.getItemUnit());
+						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
 					}
-					if (rate.compareTo(BigDecimal.ZERO) > 0) {
+					/*if (rate.compareTo(BigDecimal.ZERO) > 0) {
 						unsalablePosItem.setCurrentSaleNum(unsalablePosItem.getCurrentSaleNum().divide(rate, 4,
 								BigDecimal.ROUND_HALF_UP));
 						unsalablePosItem.setCurrentStore(unsalablePosItem.getCurrentStore().divide(rate, 4,
