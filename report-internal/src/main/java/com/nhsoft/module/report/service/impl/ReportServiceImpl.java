@@ -4656,7 +4656,7 @@ public class ReportServiceImpl implements ReportService {
 
 			}
 		}
-		objects = inventoryDao.findItemAmount(systemBookCode, branchNum, null);
+		objects = inventoryDao.findItemAmountByStorehouse(systemBookCode, branchNum, null,inventoryExceptQuery.getStorehouseNums());
 		for (int i = list.size() - 1; i >= 0; i--) {
 			ExceptInventory data = list.get(i);
 			Integer itemNum = data.getItemNum();

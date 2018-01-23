@@ -37,6 +37,24 @@ public class InventoryDaoImpl extends DaoImpl implements InventoryDao {
 	}
 
 	@Override
+	public List<Object[]> findItemAmountByStorehouse(String systemBookCode, Integer branchNum, List<Integer> itemNums, List<Integer> storehouseNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select i.item_num, sum(i.inventory_amount) as amount, sum(i.inventory_money) as money, sum(i.inventory_assist_amount) as assistAmount ");
+		sb.append("from inventory as i with(nolock) inner join storehouse as s with(nolock) on s.storehouse_num = i.storehouse_num ");
+		sb.append("where s.storehouse_del_tag = 0 and s.storehouse_actived = 1 ");
+		sb.append("and s.storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+		sb.append("and branch_num = " + branchNum + " ");
+		if (itemNums != null && itemNums.size() > 0) {
+			sb.append("and i.item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		sb.append("group by i.item_num");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
+
+
+	@Override
 	public List<Object[]> findItemAmount(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select i.item_num, sum(i.inventory_amount) as amount, sum(i.inventory_money) as money, sum(i.inventory_assist_amount) as assistAmount ");

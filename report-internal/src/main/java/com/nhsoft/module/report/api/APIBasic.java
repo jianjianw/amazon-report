@@ -7,6 +7,7 @@ import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.AlipayLog;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.query.*;
+import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
@@ -845,10 +846,22 @@ public class APIBasic {
 
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "test39")
+	public List<PosOrderDTO> test39() throws Exception{
 
-	/*public List test39(){
-
-	}*/
+		PosOrderQuery query = new PosOrderQuery();
+		query.setSystemBookCode("4020");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-01-31");
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		List<Integer> list = new ArrayList<>();
+		list.add(99);
+		query.setBranchNums(list);
+		List<PosOrderDTO> settled = posOrderRpc.findSettled("4020",query,0,5000);
+		return settled;
+	}
 
 
 

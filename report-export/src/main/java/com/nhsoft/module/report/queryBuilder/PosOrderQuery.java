@@ -11,7 +11,6 @@ public class PosOrderQuery extends QueryBuilder{
 	 * 
 	 */
 	private static final long serialVersionUID = 3105327136840843916L;
-	private String systemBookCode;
 	private List<Integer> branchNums;
 	private Date dateFrom;
 	private Date dateTo;
@@ -28,6 +27,7 @@ public class PosOrderQuery extends QueryBuilder{
 	private boolean page = true;
 	private Integer max = 50000;
 	private List<String> orderSources;
+
 
 	public int getMax() {
 		return max == null?50000:max;

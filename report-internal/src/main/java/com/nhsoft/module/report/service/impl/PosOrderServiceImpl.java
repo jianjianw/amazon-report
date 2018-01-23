@@ -280,8 +280,6 @@ public class PosOrderServiceImpl implements PosOrderService {
 				offset, limit);
 		if (posOrders.isEmpty()) {
 			return posOrders;
-
-
 		}
 		List<Object[]> objects;
 		if (!posOrderQuery.isPage()) {

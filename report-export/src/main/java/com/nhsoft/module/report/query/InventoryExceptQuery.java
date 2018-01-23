@@ -16,7 +16,7 @@ public class InventoryExceptQuery extends QueryBuilder {
 	//private String systemBookCode;
 	private Integer branchNum;
 	private List<String> itemCategorys; // 类别代码
-	private List<Integer> storehouseNums;
+	private List<Integer> storehouseNums;		//仓库号
 	private String unit;
 	private BigDecimal inventoryHigh;  //高库存数量	
 	private BigDecimal inventoryMoney;  //库存金额

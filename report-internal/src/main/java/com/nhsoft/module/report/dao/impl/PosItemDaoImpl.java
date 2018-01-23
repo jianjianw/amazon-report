@@ -701,13 +701,13 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 				.add(Restrictions.eq("p.systemBookCode", systemBookCode));
 				//.add(Restrictions.eq("p.branchNum", branchNum));
 				if(itemDepartments != null && itemDepartments.size() > 0){
-					criteria.add(Restrictions.in("p.item_department",itemDepartments));
+					criteria.add(Restrictions.in("p.itemDepartment",itemDepartments));
 				}
 				if(itemCategoryCodes != null && itemCategoryCodes.size() > 0){
-					criteria.add(Restrictions.in("p.item_category",itemCategoryCodes));
+					criteria.add(Restrictions.in("p.itemCategory",itemCategoryCodes));
 				}
 				if(StringUtils.isNotEmpty(unitType)){
-					criteria.add(Restrictions.eq("p.item_unit",unitType));
+					criteria.add(Restrictions.eq("p.itemUnit",unitType));
 				}
 
 		List<PosItem> list = criteria.list();
