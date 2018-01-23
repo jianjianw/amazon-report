@@ -27,6 +27,7 @@ public class StoreQueryCondition extends  QueryBuilder{
 	private List<String> memos;
 	private Date exactDateFrom;
 	private Boolean isFilterDeleteItem;
+	private Boolean querySaleMoney;
 	
 	private boolean isPaging = true;
 	private String sortField;
@@ -40,7 +41,15 @@ public class StoreQueryCondition extends  QueryBuilder{
 	private Integer limit;
 
 	public StoreQueryCondition(){}
-	
+
+	public Boolean getQuerySaleMoney() {
+		return querySaleMoney;
+	}
+
+	public void setQuerySaleMoney(Boolean querySaleMoney) {
+		this.querySaleMoney = querySaleMoney;
+	}
+
 	public List<String> getMemos() {
 		return memos;
 	}

@@ -13,17 +13,10 @@ public interface PosItemLogService {
 
 	/**
 	 * 根据分店 商品 进出库方向 汇总 数量 金额 辅助数量
-	 * @param systemBookCode
-	 * @param branchNums 进出分店列表
-	 * @param dateFrom 进出时间起
-	 * @param dateTo 进出时间止
-	 * @param summaries 进出类型 有多个用逗号隔开
-	 * @param itemNums 商品主键列表
-	 * @param storehouseNum  仓库号
+	 * @param storeQueryCondition
 	 * @return
 	 */
-	public List<Object[]> findBranchItemFlagSummary(String systemBookCode,
-													List<Integer> branchNums, Date dateFrom, Date dateTo, String summaries, List<Integer> itemNums, Integer storehouseNum);
+	public List<Object[]> findBranchItemFlagSummary(StoreQueryCondition storeQueryCondition);
 	
 	/**
 	 * 根据分店 营业日 商品 多特性编码 进出库类型汇总 数量 金额 辅助数量

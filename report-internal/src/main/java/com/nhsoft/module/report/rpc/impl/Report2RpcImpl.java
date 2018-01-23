@@ -521,7 +521,15 @@ public class Report2RpcImpl implements Report2Rpc {
 			}
 		}
 		if(customReportQuery.isQueryAdjust()) {
-			List<Object[]> objects = posItemLogService.findBranchItemFlagSummary(customReportQuery.getSystemBookCode(), customReportQuery.getBranchNums(), customReportQuery.getDateFrom(), customReportQuery.getDateTo(), customReportQuery.getSummaries(), null, null);
+
+            StoreQueryCondition storeQueryCondition = new StoreQueryCondition();
+            storeQueryCondition.setSystemBookCode(customReportQuery.getSystemBookCode());
+            storeQueryCondition.setBranchNums(customReportQuery.getBranchNums());
+            storeQueryCondition.setDateStart(customReportQuery.getDateFrom());
+            storeQueryCondition.setDateEnd(customReportQuery.getDateTo());
+            storeQueryCondition.setSummaries(customReportQuery.getSummaries());
+
+			List<Object[]> objects = posItemLogService.findBranchItemFlagSummary(storeQueryCondition);
 			for(Object[] object : objects) {
 				CustomReportDTO dto = reportUtil.getInstance();
 				dto.setBranchNum((Integer)object[0]);

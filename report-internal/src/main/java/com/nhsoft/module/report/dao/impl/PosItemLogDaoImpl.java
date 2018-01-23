@@ -242,31 +242,35 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 	}
 
 	@Override
-	public List<Object[]> findBranchItemFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-													Date dateTo, String summaries, List<Integer> itemNums, Integer storehouseNum) {
+	public List<Object[]> findBranchItemFlagSummary(StoreQueryCondition storeQueryCondition) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select l.branch_num, l.item_num, l.pos_item_log_inout_flag,  ");
 		sb.append("sum(l.pos_item_log_item_amount) as amount, sum(l.POS_ITEM_LOG_MONEY) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount,  ");
-		sb.append("sum(l.pos_item_log_use_qty) as useAmount, sum(l.pos_item_log_operate_price * l.pos_item_log_item_amount) as saleMoney, ");
+		sb.append("sum(l.pos_item_log_use_qty) as useAmount,  ");
 		sb.append("min(l.pos_item_log_use_unit) as useUnit ");
-
-		sb.append("from pos_item_log as l with(nolock) ");
-
-		sb.append("where l.system_book_code = '" + systemBookCode + "' ");
-		if(branchNums != null && branchNums.size() > 0){
-			sb.append("and l.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		if(storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney()){
+			sb.append(", sum(l.pos_item_log_item_amount * p.item_regular_price) as saleMoney ");
 		}
-		sb.append("and l.pos_item_log_date_index between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		sb.append("from pos_item_log as l ");
+		if(storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney()){
+			sb.append("inner join pos_item as p on p.item_num = l.item_num ");
+		}
+		sb.append("where l.system_book_code = '" + storeQueryCondition.getSystemBookCode() + "' ");
+
+		if(storeQueryCondition.getBranchNums() != null && !storeQueryCondition.getBranchNums().isEmpty()){
+			sb.append("and l.branch_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getBranchNums()));
+		}
+		sb.append("and l.pos_item_log_date_index between '" + DateUtil.getDateShortStr(storeQueryCondition.getDateStart()) + "' and '" + DateUtil.getDateShortStr(storeQueryCondition.getDateEnd()) + "' ");
 
 
-		if(itemNums != null && itemNums.size() > 0){
-			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		if(storeQueryCondition.getItemNums() != null && !storeQueryCondition.getItemNums().isEmpty()){
+			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getItemNums()));
 		}
-		if(storehouseNum != null){
-			sb.append("and (l.in_storehouse_num = " + storehouseNum + " or l.out_storehouse_num = " + storehouseNum + ") ");
+		if(storeQueryCondition.getStorehouseNum() != null){
+			sb.append("and (l.in_storehouse_num = " + storeQueryCondition.getStorehouseNum() + " or l.out_storehouse_num = " + storeQueryCondition.getStorehouseNum() + ") ");
 		}
-		if(StringUtils.isNotEmpty(summaries)){
-			sb.append("and l.pos_item_log_summary in " + AppUtil.getStringParmeArray(summaries.split(",")));
+		if(StringUtils.isNotEmpty(storeQueryCondition.getSummaries())){
+			sb.append("and l.pos_item_log_summary in " + AppUtil.getStringParmeArray(storeQueryCondition.getSummaries().split(",")));
 		}
 		sb.append("group by l.branch_num, l.item_num, l.pos_item_log_inout_flag ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
@@ -498,11 +502,19 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		StringBuffer sb = new StringBuffer();
 		sb.append("select l.branch_num, l.pos_item_log_inout_flag ,  ");
 		sb.append("sum(l.pos_item_log_item_amount) as mount, sum(l.pos_item_log_money) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount ");
-		if(storeQueryCondition.getFilterDeleteItem() == null || !storeQueryCondition.getFilterDeleteItem()){
-			sb.append("from pos_item_log as l where l.system_book_code = :systemBookCode ");
-		} else {
-			sb.append("from pos_item_log as l inner join pos_item as p on l.item_num = p.item_num ");
-			sb.append("where l.system_book_code = :systemBookCode ");
+		if(storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney()){
+			sb.append(", sum(l.pos_item_log_item_amount * p.item_regular_price) as saleMoney ");
+		}
+		sb.append("from pos_item_log as l ");
+		if((storeQueryCondition.getFilterDeleteItem() != null && storeQueryCondition.getFilterDeleteItem())
+				|| (storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney())
+				){
+			sb.append("inner join pos_item as p on l.item_num = p.item_num ");
+
+		}
+		sb.append("where l.system_book_code = :systemBookCode ");
+
+		if(storeQueryCondition.getFilterDeleteItem() != null && storeQueryCondition.getFilterDeleteItem()){
 			sb.append("and p.item_del_tag = 0 ");
 		}
 		if(storeQueryCondition.getBranchNums() != null && storeQueryCondition.getBranchNums().size() > 0){
