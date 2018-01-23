@@ -86,11 +86,10 @@ public class RequestOrderDaoImpl extends DaoImpl implements RequestOrderDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select detail.item_num, sum(detail.request_order_detail_qty) as amount,  sum(detail.request_order_detail_use_qty) as useAmount, ");
 		sb.append("sum(detail.request_order_detail_out_qty) as outAmount, ");
-		sb.append(
-				"sum(case when request_order_detail_out_use_qty is not null then request_order_detail_out_use_qty when request_order_detail_out_qty is null then 0.00 else (detail.request_order_detail_out_qty/detail.request_order_detail_use_rate) end) as outUseAmount ");
+		sb.append("sum(case when request_order_detail_out_use_qty is not null then request_order_detail_out_use_qty when request_order_detail_out_qty is null then 0.00 else (detail.request_order_detail_out_qty/detail.request_order_detail_use_rate) end) as outUseAmount ");
 		sb.append("from request_order_detail as detail with(nolock) inner join request_order as r with(nolock) on r.request_order_fid = detail.request_order_fid ");
 		sb.append("where r.out_system_book_code = '" + systemBookCode + "' and r.out_branch_num = " + centerBranchNum + " ");
-		sb.append("and r.branch_num = " + branchNum);
+		sb.append("and r.branch_num = " +branchNum+" ");
 		sb.append("and r.request_order_audit_time between '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
 		sb.append("and '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 		sb.append("and r.request_order_state_code = " + AppConstants.STATE_INIT_AUDIT_CODE + " ");

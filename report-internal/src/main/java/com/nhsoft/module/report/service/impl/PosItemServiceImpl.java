@@ -332,8 +332,4 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 		return posItemDao.findItemLat(systemBookCode);
 	}
 
-	@Override
-	public List<PosItem> findItemByBranch(String systemBookCode, Integer branchNum,List<String> itemDepartments, List<String> itemCategoryCodes,String unitType) {
-		return posItemDao.findItemByBranch(systemBookCode,branchNum,itemDepartments,itemCategoryCodes,unitType);
-	}
 }

@@ -5095,6 +5095,7 @@ public class ReportServiceImpl implements ReportService {
 			retailDetail.setPosItemName(posItem.getItemName());
 			retailDetail.setPosItemSpec(posItem.getItemSpec());
 			retailDetail.setItemUnit(posItem.getItemUnit());
+			retailDetail.setItemBarCode(posItem.getItemBarcode());
 			if (retailDetail.getItemMatrixNum() != null && retailDetail.getItemMatrixNum() != 0) {
 				ItemMatrix itemMatrix = AppUtil.getItemMatrix(posItem.getItemMatrixs(), retailDetail.getItemNum(),
 						retailDetail.getItemMatrixNum());
@@ -6603,6 +6604,7 @@ public class ReportServiceImpl implements ReportService {
 			data.setUnit(posItem.getItemUnit());
 			data.setCategoryName(posItem.getItemCategory());
 			data.setCategoryCode(posItem.getItemCategoryCode());
+			data.setItemBarCode(posItem.getItemBarcode());
 
 			if (itemMatrixNum > 0) {
 				ItemMatrix itemMatrix = AppUtil.getItemMatrix(posItem.getItemMatrixs(), posItemNum, itemMatrixNum);

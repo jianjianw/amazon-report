@@ -9,7 +9,8 @@ import java.util.List;
 public class InventoryLostDTO implements Serializable {
 
 
-    public static class InventoryLostDetailDTO{
+    public static class InventoryLostDetailDTO implements Serializable{
+
         private String bizday;
         private BigDecimal inventoryAmount;
 

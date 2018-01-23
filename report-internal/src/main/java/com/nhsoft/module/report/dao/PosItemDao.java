@@ -111,11 +111,4 @@ public interface PosItemDao {
 	 * */
 	public List<Object[]> findItemLat(String systemBookCode);
 
-	/**
-	 * 根据分店查询商品信息
-	 * @param branchNum 分店号
-	 * @return
-	 */
-	public List<PosItem> findItemByBranch(String systemBookCode, Integer branchNum,List<String> itemDepartments, List<String> itemCategoryCodes,String unitType);
-
 }

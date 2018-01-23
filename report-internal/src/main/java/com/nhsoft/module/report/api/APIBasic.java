@@ -14,6 +14,7 @@ import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
 import jdk.nashorn.internal.runtime.ECMAException;
+import jdk.nashorn.internal.runtime.Source;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -834,14 +835,19 @@ public class APIBasic {
 		String systemBookCode= "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-01-20");
+		Date dateTo = sdf.parse("2018-01-31");
 		Integer branchNum = 99;
 		List<Integer> itemNums = new ArrayList<>();
-		itemNums.add(402000092);
-		itemNums.add(402000134);
-		itemNums.add(402000145);
-		itemNums.add(402000073);
-		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,null,null,null);
+		//itemNums.add(402000022);
+		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_BASIC,null,null);
+		int j = 0;
+		for (int i = 0; i <inventoryLostAnalysis.size() ; i++) {
+			InventoryLostDTO inventoryLostDTO = inventoryLostAnalysis.get(i);
+			if(inventoryLostDTO.getInventoryCount().size()>0){
+				++j;
+			}
+		}
+		System.out.println(j);
 		return inventoryLostAnalysis;
 
 	}
