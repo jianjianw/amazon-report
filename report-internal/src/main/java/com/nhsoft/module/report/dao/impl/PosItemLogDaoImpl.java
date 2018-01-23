@@ -251,7 +251,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney()){
 			sb.append(", sum(l.pos_item_log_item_amount * p.item_regular_price) as saleMoney ");
 		}
-		sb.append("from pos_item_log as l with(nolock) ");
+		sb.append("from pos_item_log as l ");
 		if(storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney()){
 			sb.append("inner join pos_item as p on p.item_num = l.item_num ");
 		}
