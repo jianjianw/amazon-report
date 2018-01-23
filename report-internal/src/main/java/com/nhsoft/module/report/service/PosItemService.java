@@ -141,5 +141,5 @@ public interface PosItemService {
 	 * @param branchNum 分店号
 	 * @return
 	 */
-	public List<PosItem> findItemByBranch(String systemBookCode, Integer branchNum);
+	public List<PosItem> findItemByBranch(String systemBookCode, Integer branchNum,List<String> itemDepartments, List<String> itemCategoryCodes,String unitType);
 }

@@ -827,4 +827,29 @@ public class APIBasic {
 
 
 
+	//test测试新加的报表
+	@RequestMapping(method = RequestMethod.GET,value = "test38")
+	public List<InventoryLostDTO> test38() throws Exception{
+		String systemBookCode= "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-01-20");
+		Integer branchNum = 99;
+		List<Integer> itemNums = new ArrayList<>();
+		itemNums.add(402000092);
+		itemNums.add(402000134);
+		itemNums.add(402000145);
+		itemNums.add(402000073);
+		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,null,null,null);
+		return inventoryLostAnalysis;
+
+	}
+
+
+	/*public List test39(){
+
+	}*/
+
+
+
 }

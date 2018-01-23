@@ -24,5 +24,5 @@ public interface InventoryCollectDao {
 	 * @param collectDetailSummary
 	 * @return
 	 */
-	public List<Object[]> findItemLatestDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, String collectDetailSummary,List<Integer> storehouseNums);
+	public List<Object[]> findItemLatestDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, String collectDetailSummary);
 }

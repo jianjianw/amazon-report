@@ -696,10 +696,20 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 	}
 
 	@Override
-	public List<PosItem> findItemByBranch(String systemBookCode, Integer branchNum) {
+	public List<PosItem> findItemByBranch(String systemBookCode, Integer branchNum,List<String> itemDepartments, List<String> itemCategoryCodes,String unitType) {
 		Criteria criteria = currentSession().createCriteria(PosItem.class, "p")
-		.add(Restrictions.eq("p.systemBookCode", systemBookCode))
-				.add(Restrictions.eq("p.branchNum", branchNum));
+				.add(Restrictions.eq("p.systemBookCode", systemBookCode));
+				//.add(Restrictions.eq("p.branchNum", branchNum));
+				if(itemDepartments != null && itemDepartments.size() > 0){
+					criteria.add(Restrictions.in("p.item_department",itemDepartments));
+				}
+				if(itemCategoryCodes != null && itemCategoryCodes.size() > 0){
+					criteria.add(Restrictions.in("p.item_category",itemCategoryCodes));
+				}
+				if(StringUtils.isNotEmpty(unitType)){
+					criteria.add(Restrictions.eq("p.item_unit",unitType));
+				}
+
 		List<PosItem> list = criteria.list();
 		return list;
 	}
