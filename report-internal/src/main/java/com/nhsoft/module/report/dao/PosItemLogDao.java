@@ -52,8 +52,7 @@ public interface PosItemLogDao {
 	 * 根据分店 商品 进出库类型 汇总 数量 金额 辅助数量
 	 * @return
 	 */
-	public List<Object[]> findBranchItemFlagSummary(String systemBookCode,
-													List<Integer> branchNums, Date dateFrom, Date dateTo, String summaries, List<Integer> itemNums, Integer storehouseNum);
+	public List<Object[]> findBranchItemFlagSummary(StoreQueryCondition storeQueryCondition);
 
 	/**
 	 * 根据分店 营业日 商品 多特性编码 进出库类型汇总 数量 金额 辅助数量

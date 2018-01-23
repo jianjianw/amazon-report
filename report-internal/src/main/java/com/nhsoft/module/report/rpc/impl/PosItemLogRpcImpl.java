@@ -29,11 +29,11 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findBranchItemFlagSummary(StoreQueryCondition storeQueryCondition) {
-        List<Object[]> objects = posItemLogService.findBranchItemFlagSummary(storeQueryCondition.getSystemBookCode(), storeQueryCondition.getBranchNums(),
-                storeQueryCondition.getDateStart(), storeQueryCondition.getDateEnd(), storeQueryCondition.getPosItemLogSummary(), storeQueryCondition.getItemNums(), storeQueryCondition.getStorehouseNum());
+        List<Object[]> objects = posItemLogService.findBranchItemFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
-        Object[] object = null;
+        Object[] object;
+        boolean querySaleMoney = storeQueryCondition.getQuerySaleMoney() == null?false:storeQueryCondition.getQuerySaleMoney();
         for (int i = 0; i < size; i++) {
             object = objects.get(i);
 
@@ -45,8 +45,12 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
             dto.setMoney(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]);
             dto.setAssistQty(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
             dto.setUseQty(object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
-            dto.setSaleMoney(object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7]);
-            dto.setUseUnit(object[8] == null ? "" : (String) object[8]);
+            dto.setUseUnit(object[7] == null ? "" : (String) object[7]);
+
+            if(querySaleMoney) {
+                dto.setSaleMoney(object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8]);
+
+            }
             list.add(dto);
         }
 
@@ -128,16 +132,21 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
         List<Object[]> objects = posItemLogService.findBranchFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
-        Object[] object = null;
+        Object[] object;
+        PosItemLogSummaryDTO dto;
+        boolean querySaleMoney = storeQueryCondition.getQuerySaleMoney() == null?false:storeQueryCondition.getQuerySaleMoney();
         for (int i = 0; i < size; i++) {
             object = objects.get(i);
 
-            PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
+            dto = new PosItemLogSummaryDTO();
             dto.setBranchNum((Integer) object[0]);
             dto.setInoutFlag((Boolean) object[1]);
             dto.setQty(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
             dto.setMoney(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
             dto.setAssistQty(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]);
+            if(querySaleMoney){
+                dto.setSaleMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
+            }
             list.add(dto);
         }
 
@@ -507,25 +516,6 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
             dto.setUseUnit((String) object[9]);
             list.add(dto);
         }
-        return list;
-    }
-
-    @Override
-    public List<PosItemLogSummaryDTO> findBranchFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String posItemLogSummarys,Boolean itemDelTag) {
-        List<Object[]> objects = posItemLogService.findBranchFlagSummary(systemBookCode, branchNums, dateFrom, dateTo, posItemLogSummarys,itemDelTag);
-        int size = objects.size();
-        List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
-            Object[] object = objects.get(i);
-            dto.setBranchNum((Integer) object[0]);
-            dto.setInoutFlag((Boolean) object[1]);
-            dto.setQty((BigDecimal) object[2]);
-            dto.setMoney((BigDecimal) object[3]);
-            dto.setAssistQty((BigDecimal) object[4]);
-            list.add(dto);
-        }
-
         return list;
     }
 

@@ -274,18 +274,6 @@ public interface PosItemLogRpc {
 																	Date dateTo, String summaries, List<Integer> itemNums, Integer storehouseNum);
 
 	/**
-	 * 按分店、进出标记汇总数量 金额 辅助数量
-	 * @param systemBookCode
-	 * @param branchNums 进出分店列表
-	 * @param dateFrom 进出时间起
-	 * @param dateTo 进出时间止
-	 * @param posItemLogSummarys 进出类型 有多个用逗号隔开
-	 * @return
-	 */
-	public List<PosItemLogSummaryDTO> findBranchFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-												Date dateTo, String posItemLogSummarys,Boolean itemDelTag);
-
-	/**
 	 * 按商品、进出标记汇总进出库数量 和 金额
 	 * @param storeQueryCondition
 	 * @return

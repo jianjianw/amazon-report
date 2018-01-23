@@ -1738,7 +1738,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
         }
         Query query = currentSession().createSQLQuery(sb.toString());
-        query.setMaxResults(10000);
+        query.setMaxResults(50000);
         List<Object[]> objects = query.list();
         List<RetailDetail> list = new ArrayList<RetailDetail>();
         List<Integer> normalOrderStates = AppUtil.getNormalPosOrderState();

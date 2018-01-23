@@ -27,8 +27,8 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	
 	
 	@Override
-	public List<Object[]> findBranchItemFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String summaries, List<Integer> itemNums, Integer storehouseNum) {
-		return posItemLogDao.findBranchItemFlagSummary(systemBookCode, branchNums, dateFrom, dateTo, summaries, itemNums, storehouseNum);
+	public List<Object[]> findBranchItemFlagSummary(StoreQueryCondition storeQueryCondition) {
+		return posItemLogDao.findBranchItemFlagSummary(storeQueryCondition);
 	}
 	
 	@Override
