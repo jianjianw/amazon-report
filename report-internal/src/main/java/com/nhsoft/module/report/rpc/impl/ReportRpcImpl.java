@@ -521,7 +521,7 @@ public class ReportRpcImpl implements ReportRpc {
 				dateTo, itemNums, null, null);
 		// 批发销售
 		Object[] objects;
-		for (int i = 0; i < wholesaleOrders.size(); i++) {
+		for (int i = 0,len = wholesaleOrders.size(); i < len ; i++) {
 			multipleProfitReportDTO = new MultipleProfitReportDTO();
 			objects = wholesaleOrders.get(i);
 			multipleProfitReportDTO.setItemNum((Integer) objects[0]);
