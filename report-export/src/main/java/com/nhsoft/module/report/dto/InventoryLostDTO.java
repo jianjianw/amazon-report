@@ -31,6 +31,16 @@ public class InventoryLostDTO implements Serializable {
         }
     }
 
+
+    public InventoryLostDTO() {
+
+        this.inventoryAmount = BigDecimal.ZERO;
+        this.receiveAmount = BigDecimal.ZERO;
+        this.requestAmount = BigDecimal.ZERO;
+        this.requestOutAmount = BigDecimal.ZERO;
+
+    }
+
     private Integer itemNum;
     private String itemName;
     private String itemSpec;//商品规格
