@@ -3851,7 +3851,6 @@ public class ReportRpcImpl implements ReportRpc {
 					StringBuilder sb = new StringBuilder();
 					String key = sb.append(dto.getItemNum()).append(dto.getBizday()).toString();
 					InventoryLostDTO.InventoryLostDetailDTO detail = map.get(key);
-					BigDecimal amount = currentAmount;//dateTo的库存量  也就是5号的库存量
 					if(detail == null){
 						if(StringUtils.isEmpty(dto.getBizday()) ){
 							continue;
@@ -3865,7 +3864,7 @@ public class ReportRpcImpl implements ReportRpc {
 					}else{//调出
 						currentAmount = currentAmount.add(dto.getQty()== null ? BigDecimal.ZERO : dto.getQty());
 					}
-					detail.setInventoryAmount(currentAmount==null?BigDecimal.ZERO:amount);
+					detail.setInventoryAmount(currentAmount);
 					map.put(key,detail);
 					++count;
 					if(count == 2){
