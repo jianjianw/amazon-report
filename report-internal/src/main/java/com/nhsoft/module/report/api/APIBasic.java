@@ -843,7 +843,7 @@ public class APIBasic {
 		int j = 0;
 		for (int i = 0; i <inventoryLostAnalysis.size() ; i++) {
 			InventoryLostDTO inventoryLostDTO = inventoryLostAnalysis.get(i);
-			if(inventoryLostDTO.getInventoryCount().size()>0){
+			if(inventoryLostDTO.getInventoryDetails().size()>0){
 				++j;
 			}
 		}
