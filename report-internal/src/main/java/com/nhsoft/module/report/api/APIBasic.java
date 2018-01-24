@@ -838,16 +838,7 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-01-31");
 		Integer branchNum = 99;
 		List<Integer> itemNums = new ArrayList<>();
-		//itemNums.add(402000022);
 		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_BASIC,null,null);
-		int j = 0;
-		for (int i = 0; i <inventoryLostAnalysis.size() ; i++) {
-			InventoryLostDTO inventoryLostDTO = inventoryLostAnalysis.get(i);
-			if(inventoryLostDTO.getInventoryDetails().size()>0){
-				++j;
-			}
-		}
-		System.out.println(j);
 		return inventoryLostAnalysis;
 
 	}
