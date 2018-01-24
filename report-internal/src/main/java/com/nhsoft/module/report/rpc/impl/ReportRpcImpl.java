@@ -732,7 +732,7 @@ public class ReportRpcImpl implements ReportRpc {
 				continue;
 			}
 			SupplierComplexReportDTO data = map.get(supplierNum);
-			if (data == null) {
+			if (data == null) {/////
 				data = new SupplierComplexReportDTO();
 				data.setSupplierNum(supplierNum);
 				Supplier supplier = AppUtil.getSupplier(supplierNum, suppliers);
@@ -3827,30 +3827,45 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 			}
 
+
+			if(itemBizFlagSummary != null && itemBizFlagSummary.size()>0){
+				//排序,降序
+				Comparator<PosItemLogSummaryDTO> comparing = Comparator.comparing(PosItemLogSummaryDTO::getBizday);
+				itemBizFlagSummary.sort(comparing.reversed());
+			}
+
 			//此时的currentAmount是dateTo号的库存量
 			//计算断货天数
 			Map<String,InventoryLostDTO.InventoryLostDetailDTO> map = new HashMap<>();
+			InventoryLostDTO.InventoryLostDetailDTO nowInventory = new InventoryLostDTO.InventoryLostDetailDTO();
+			nowInventory.setBizday(DateUtil.getDateShortStr(dateTo));
+			nowInventory.setInventoryAmount(currentAmount);
+			map.put(nowInventory.getBizday(),nowInventory);//dateTo的库存量
 			int count = 0;
 			for( int j = 0,len = itemBizFlagSummary.size();j < len ; j++){
 				PosItemLogSummaryDTO dto = itemBizFlagSummary.get(j);
-				InventoryLostDTO.InventoryLostDetailDTO detail = new InventoryLostDTO.InventoryLostDetailDTO();
-				if(itemNum.equals(dto.getItemNum())){
+					if(dto.getBizday().equals(DateUtil.getDateShortStr(dateTo))){
+						continue;
+					}
+					if(itemNum.equals(dto.getItemNum())){
 					StringBuilder sb = new StringBuilder();
 					String key = sb.append(dto.getItemNum()).append(dto.getBizday()).toString();
-					InventoryLostDTO.InventoryLostDetailDTO data = map.get(key);
+					InventoryLostDTO.InventoryLostDetailDTO detail = map.get(key);
 					BigDecimal amount = currentAmount;//dateTo的库存量  也就是5号的库存量
-					if(data == null){
-						if(StringUtils.isEmpty(dto.getBizday())){
+					if(detail == null){
+						if(StringUtils.isEmpty(dto.getBizday()) ){
 							continue;
 						}
+						detail = new InventoryLostDTO.InventoryLostDetailDTO();
 						detail.setBizday(dto.getBizday());
+						map.put(key,detail);
 					}
 					if(dto.getInoutFlag()){//调入
 						currentAmount = currentAmount.subtract(dto.getQty()== null ? BigDecimal.ZERO : dto.getQty());
 					}else{//调出
 						currentAmount = currentAmount.add(dto.getQty()== null ? BigDecimal.ZERO : dto.getQty());
 					}
-					detail.setInventoryAmount(amount==null?BigDecimal.ZERO:amount);
+					detail.setInventoryAmount(currentAmount==null?BigDecimal.ZERO:amount);
 					map.put(key,detail);
 					++count;
 					if(count == 2){
