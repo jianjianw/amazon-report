@@ -58,7 +58,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	public List<Object[]> findItemSum(ItemQueryDTO itemQueryDTO) {
 
 		List<Object[]> objects = posOrderDao.findItemSum(itemQueryDTO);
-		if(itemQueryDTO.getQueryKit()){
+		/*if(itemQueryDTO.getQueryKit()){
 			List<Object[]> returnObjects = new ArrayList<>(objects.size());
 			Set<Integer> itemNumSet = new HashSet<>(objects.size());
 			for(Object[] object : objects){
@@ -85,7 +85,8 @@ public class PosOrderServiceImpl implements PosOrderService {
 		} else {
 			return objects;
 
-		}
+		}*/
+		return objects;
 	}
 
 

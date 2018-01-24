@@ -3123,7 +3123,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = reportService.findCustomerAnalysisBranchItem(systemBookCode, thisDateFrom, thisDateTo,
 				branchNums, itemNums);
 
-		for (int i = 0,len = objects.size(); i < len; i++) {
+		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			OrderDetailCompare data = reportUtil.getInstance();
 			data.setBranchNum((Integer) object[0]);
@@ -3139,7 +3139,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		objects = reportService.findCustomerAnalysisBranchItem(systemBookCode, lastDateFrom, lastDateTo, branchNums, itemNums);
 
-		for (int i = 0,len = objects.size(); i < len; i++) {
+		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			OrderDetailCompare data = reportUtil.getInstance();
 			data.setBranchNum((Integer) object[0]);
@@ -3156,9 +3156,9 @@ public class ReportRpcImpl implements ReportRpc {
 
 		List<AdjustmentReason> adjustmentReasons = bookResourceRpc.findAdjustmentReasons(systemBookCode);
 		List<String> reasons = new ArrayList<String>();
-		for (int i = 0,len = adjustmentReasons.size(); i < len; i++) {
+		for (int i = 0; i < adjustmentReasons.size(); i++) {
 			AdjustmentReason adjustmentReason = adjustmentReasons.get(i);
-			if (StringUtils.equals(adjustmentReason.getAdjustmentInoutCategory(),
+			if (org.apache.commons.lang.StringUtils.equals(adjustmentReason.getAdjustmentInoutCategory(),
 					AppConstants.ADJUSTMENT_REASON_TYPE_LOSS)) {
 				reasons.add(adjustmentReason.getAdjustmentReasonName());
 			}
@@ -3166,7 +3166,7 @@ public class ReportRpcImpl implements ReportRpc {
 		if (reasons.size() > 0) {
 			objects = adjustmentOrderService.findBranchItemSummary(systemBookCode, branchNums, thisDateFrom, thisDateTo, itemNums,
 					reasons);
-			for (int i = 0,len = objects.size(); i < len; i++) {
+			for (int i = 0; i < objects.size(); i++) {
 				Object[] object = objects.get(i);
 				Integer branchNum = (Integer) object[0];
 				Integer itemNum = (Integer) object[1];
@@ -3182,7 +3182,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 			objects = adjustmentOrderService.findBranchItemSummary(systemBookCode, branchNums, lastDateFrom, lastDateTo, itemNums,
 					reasons);
-			for (int i = 0,len = objects.size(); i < len; i++) {
+			for (int i = 0; i < objects.size(); i++) {
 				Object[] object = objects.get(i);
 				Integer branchNum = (Integer) object[0];
 				Integer itemNum = (Integer) object[1];
@@ -3202,7 +3202,7 @@ public class ReportRpcImpl implements ReportRpc {
 				AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM, branchNums, thisDateFrom, thisDateTo, itemNums);
 		List<Object[]> outLastObjects = transferOutOrderService.findBranchItemMatrixSummary(systemBookCode,
 				AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM, branchNums, lastDateFrom, lastDateTo, itemNums);
-		for (int i = 0,len = outThisObjects.size(); i < len; i++) {
+		for (int i = 0; i < outThisObjects.size(); i++) {
 			Object[] object = outThisObjects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -3216,7 +3216,7 @@ public class ReportRpcImpl implements ReportRpc {
 			reportUtil.add(data);
 		}
 
-		for (int i = 0,len = outLastObjects.size(); i < len; i++) {
+		for (int i = 0; i < outLastObjects.size(); i++) {
 			Object[] object = outLastObjects.get(i);
 			Integer branchNum = (Integer) object[0];
 			Integer itemNum = (Integer) object[1];
@@ -3357,7 +3357,7 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			BigDecimal subInMoney = orderDetailCompare.getThisInMoney().subtract(orderDetailCompare.getLastInMoney());
 			if (orderDetailCompare.getLastInMoney().compareTo(BigDecimal.ZERO) > 0) {
-				
+
 				orderDetailCompare.setInGrowthRateValue(subInMoney
 						.divide(orderDetailCompare.getLastInMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(hundred)
 						.setScale(2));
@@ -3366,11 +3366,11 @@ public class ReportRpcImpl implements ReportRpc {
 			} else if (subInMoney.compareTo(BigDecimal.ZERO) > 0) {
 				orderDetailCompare.setInGrowthRate("100%");
 				orderDetailCompare.setInGrowthRateValue(hundred);
-				
+
 			} else {
 				orderDetailCompare.setInGrowthRate("0%");
 				orderDetailCompare.setInGrowthRateValue(BigDecimal.ZERO);
-				
+
 			}
 		}
 		return list;

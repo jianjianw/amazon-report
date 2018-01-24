@@ -10828,7 +10828,7 @@ public class ReportServiceImpl implements ReportService {
 		 private BigDecimal balanceMoney;// 期末余额
 		 private BigDecimal revokeMoney;// 本期卡回收金额
 		 * */
-		
+
 		//AMA-11807
 		revokeMoney = cardUserDao.getRevokeMoney(cardUserQuery.getSystemBookCode(), null, null, null);
 		cardAnalysisSummaryDTO.setTotalPaymentMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
