@@ -3713,7 +3713,6 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Integer> branchNums = new ArrayList<>();
 		branchNums.add(branchNum);
 		//查询商品信息
-		//List<PosItem> posItems = posItemService.findItemByBranch(systemBookCode, branchNum,itemDepartments,itemCategoryCodes,unitType);
 		PosItemQuery query = new PosItemQuery();
 		query.setSystemBookCode(systemBookCode);
 		query.setBranchNum(branchNum);
@@ -3750,7 +3749,7 @@ public class ReportRpcImpl implements ReportRpc {
 			queryCondition = new StoreQueryCondition();
 			queryCondition.setSystemBookCode(systemBookCode);
 			queryCondition.setBranchNum(branchNum);
-			queryCondition.setDateStart(from);	//(6-22)
+			queryCondition.setDateStart(from);
 			queryCondition.setDateEnd(now);
 			queryCondition.setItemNums(itemNums);
 			itemFlagSummary = posItemLogRpc.findItemFlagSummary(queryCondition);//计算dateto到现在的商品库存出入
@@ -3809,7 +3808,7 @@ public class ReportRpcImpl implements ReportRpc {
 					inventoryLostDTO.setMaxReceiveDay(dto.getAuditDate());
 				}
 			}
-			//6-22号的按商品汇总  (dateTo+1 到 now 这段时间)
+
 			BigDecimal currentAmount = inventoryLostDTO.getInventoryAmount();//当前库存   (循环迭代完毕后。currentAmount为dateTo的库存量)
 			if(currentAmount == null ){
 				currentAmount = BigDecimal.ZERO;
@@ -3819,17 +3818,17 @@ public class ReportRpcImpl implements ReportRpc {
 					PosItemLogSummaryDTO dto = itemFlagSummary.get(j);
 					if(itemNum.equals(dto.getItemNum())){
 						//得到当前库存
-						if(dto.getInoutFlag()){//调入
+						if(dto.getInoutFlag()){
 							currentAmount = currentAmount.subtract(dto.getQty()== null ? BigDecimal.ZERO :dto.getQty());
-						}else{	//调出
+						}else{
 							currentAmount = currentAmount.add(dto.getQty()== null ? BigDecimal.ZERO :dto.getQty());
 						}
 					}
 				}
 			}
 
-			//此时的currentAmount是dateTo号的库存量 也就是5号的库存量
-			//计算断货天数      1是入库  入库是减       0是出库 出库是加
+			//此时的currentAmount是dateTo号的库存量
+			//计算断货天数
 			Map<String,InventoryLostDTO.InventoryLostDetailDTO> map = new HashMap<>();
 			int count = 0;
 			for( int j = 0,len = itemBizFlagSummary.size();j < len ; j++){
@@ -3853,7 +3852,6 @@ public class ReportRpcImpl implements ReportRpc {
 					}
 					detail.setInventoryAmount(amount==null?BigDecimal.ZERO:amount);
 					map.put(key,detail);
-					//循环迭代完毕currentAmount是4号的库存量
 					++count;
 					if(count == 2){
 						break;
@@ -3870,32 +3868,38 @@ public class ReportRpcImpl implements ReportRpc {
 					inventoryLostDTO.setItemName(posItem.getItemName());
 					inventoryLostDTO.setItemSpec(posItem.getItemSpec());
 					BigDecimal rate = BigDecimal.ZERO;
-
 					if (unitType.equals(AppConstants.UNIT_BASIC)) {
 						rate = BigDecimal.ONE;
 						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
 					}
 					if (unitType.equals(AppConstants.UNIT_SOTRE)) {
 						rate = posItem.getItemInventoryRate();
-						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
+						inventoryLostDTO.setItemUnit(posItem.getItemInventoryUnit());
 
-					} else if (unitType.equals(AppConstants.UNIT_TRANFER)) {
+					}
+					if (unitType.equals(AppConstants.UNIT_TRANFER)) {
 						rate = posItem.getItemTransferRate();
-						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
+						inventoryLostDTO.setItemUnit(posItem.getItemTransferUnit());
 
-					} else if (unitType.equals(AppConstants.UNIT_PURCHASE)) {
+					}
+					if (unitType.equals(AppConstants.UNIT_PURCHASE)) {
 						rate = posItem.getItemPurchaseRate();
-						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
+						inventoryLostDTO.setItemUnit(posItem.getItemPurchaseUnit());
 
-					} else if (unitType.equals(AppConstants.UNIT_PIFA)) {
+					}
+					if (unitType.equals(AppConstants.UNIT_PIFA)) {
 						rate = posItem.getItemWholesaleRate();
-						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
-					} else {
-						inventoryLostDTO.setItemUnit(posItem.getItemUnit());
+						inventoryLostDTO.setItemUnit(posItem.getItemWholesaleUnit());
 					}
 					if (rate.compareTo(BigDecimal.ZERO) > 0) {
 						inventoryLostDTO.setInventoryAmount(inventoryLostDTO.getInventoryAmount().divide(rate,4,
 								BigDecimal.ROUND_HALF_UP));
+						//收货数量
+						inventoryLostDTO.setReceiveAmount(inventoryLostDTO.getReceiveAmount().divide(rate,4,BigDecimal.ROUND_HALF_UP));
+						//要货数量
+						inventoryLostDTO.setRequestAmount(inventoryLostDTO.getRequestAmount().divide(rate,4,BigDecimal.ROUND_HALF_UP));
+						//要货调出数量
+						inventoryLostDTO.setRequestOutAmount(inventoryLostDTO.getRequestOutAmount().divide(rate,4,BigDecimal.ROUND_HALF_UP));
 						// 计算detail里面的库存件数
 						List<InventoryLostDTO.InventoryLostDetailDTO> dtos = inventoryLostDTO.getInventoryCount();
 						for (int k = 0; k <dtos.size() ; k++) {
@@ -3921,6 +3925,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 			int size = inventoryCount.size();
 			int lostDay = 0;
+			int lostCount = 0;
 			for (int j = 0; j <size ; j++) {
 				InventoryLostDTO.InventoryLostDetailDTO dto = inventoryCount.get(j);
 				if (dto.getInventoryAmount().compareTo(BigDecimal.ZERO) <= 0){
@@ -3933,9 +3938,8 @@ public class ReportRpcImpl implements ReportRpc {
 					}
 					InventoryLostDTO.InventoryLostDetailDTO inventoryLostDetailDTO = inventoryCount.get(j - 1);
 					if(inventoryLostDetailDTO.getInventoryAmount().compareTo(BigDecimal.ZERO)>0){
-						int lostCount = 0;
 						++lostCount;
-						inventoryLostDTO.setLostCount(lostCount);//缺货次数	//断货次数			时间范围内 从 有库存到 无库存的 次数
+						inventoryLostDTO.setLostCount(lostCount);//缺货次数
 					}
 				}
 			}
