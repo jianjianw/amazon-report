@@ -646,7 +646,7 @@ public class ReportRpcImpl implements ReportRpc {
 				multipleProfitReportDTO.setWholesaleProfitRate(BigDecimal.ZERO);
 			} else {
 				multipleProfitReportDTO.setWholesaleProfitRate(multipleProfitReportDTO.getWholesaleProfit()
-						.divide(multipleProfitReportDTO.getWholesaleMoney(), 2, BigDecimal.ROUND_HALF_UP).multiply(hundred));
+						.divide(multipleProfitReportDTO.getWholesaleMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(hundred));
 			}
 
 			multipleProfitReportDTO.setTranferProfit(multipleProfitReportDTO.getTranferMoney().subtract(multipleProfitReportDTO.getTranferCost()));
@@ -654,7 +654,7 @@ public class ReportRpcImpl implements ReportRpc {
 				multipleProfitReportDTO.setTranferProfitRate(BigDecimal.ZERO);
 			} else {
 				multipleProfitReportDTO.setTranferProfitRate(multipleProfitReportDTO.getTranferProfit().divide(
-						multipleProfitReportDTO.getTranferMoney(), 2, BigDecimal.ROUND_HALF_UP).multiply(hundred));
+						multipleProfitReportDTO.getTranferMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(hundred));
 			}
 			multipleProfitReportDTO.setTotalMoney(multipleProfitReportDTO.getPosSaleMoney()
 					.add(multipleProfitReportDTO.getTranferMoney()).add(multipleProfitReportDTO.getWholesaleMoney()));
@@ -664,7 +664,7 @@ public class ReportRpcImpl implements ReportRpc {
 				multipleProfitReportDTO.setTotalProfitRate(BigDecimal.ZERO);
 			} else {
 				multipleProfitReportDTO.setTotalProfitRate(multipleProfitReportDTO.getTotalProfit().divide(
-						multipleProfitReportDTO.getTotalMoney(), 2,BigDecimal.ROUND_HALF_UP).multiply(hundred));
+						multipleProfitReportDTO.getTotalMoney(), 4,BigDecimal.ROUND_HALF_UP).multiply(hundred));
 			}
 			multipleProfitReportDTOs.add(multipleProfitReportDTO);
 		}
