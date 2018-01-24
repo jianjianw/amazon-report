@@ -3718,6 +3718,15 @@ public class ReportRpcImpl implements ReportRpc {
 		query.setBranchNum(branchNum);
 		query.setCategoryCodes(itemCategoryCodes);
 		List<PosItem> posItems = posItemService.findByPosItemQuery(query, null, null, 0, 0);
+
+		if(itemNums.isEmpty()){
+			for (int i = 0; i <posItems.size() ; i++) {
+				PosItem posItem = posItems.get(i);
+				Integer itemNum = posItem.getItemNum();
+				itemNums.add(itemNum);
+			}
+		}
+
 		//配送仓库库存
 		List<InventoryDTO> inventory = inventoryRpc.findCenterStore(systemBookCode, branchNum, itemNums);
 		//收货数量
@@ -3741,7 +3750,7 @@ public class ReportRpcImpl implements ReportRpc {
 		queryCondition.setDateEnd(dateTo);
 		queryCondition.setItemNums(itemNums);
 		//断货天数			时间范围内库存为0的天数
-		List<PosItemLogSummaryDTO> itemBizFlagSummary = posItemLogRpc.findItemBizFlagSummary(queryCondition);
+		List<PosItemLogSummaryDTO> itemBizFlagSummary = posItemLogRpc.findItemBizFlagSummary(queryCondition);//进出标记
 
 		//dateTo = now  就不用按商品汇总数据了
 		List<PosItemLogSummaryDTO> itemFlagSummary = new ArrayList<>();
@@ -3755,21 +3764,10 @@ public class ReportRpcImpl implements ReportRpc {
 			itemFlagSummary = posItemLogRpc.findItemFlagSummary(queryCondition);//计算dateto到现在的商品库存出入
 		}
 
-
-
-		int itemSize = itemNums.size();
-		if(itemNums.isEmpty()){
-			itemSize = posItems.size();
-		}
-		List<InventoryLostDTO> list = new ArrayList<>();
-		for (int i = 0; i <itemSize ; i++) {
-			Integer itemNum;
-			if(itemNums.isEmpty()){//传入商品为null
-				PosItem posItem = posItems.get(i);
-				itemNum = posItem.getItemNum();
-			}else{
-				itemNum = itemNums.get(i);
-			}
+		int size = itemNums.size();
+		List<InventoryLostDTO> list = new ArrayList<>(size);
+		for (int i = 0; i <size ; i++) {
+			Integer itemNum = itemNums.get(i);
 			InventoryLostDTO inventoryLostDTO = new InventoryLostDTO();
 			inventoryLostDTO.setItemNum(itemNum);
 
@@ -3827,13 +3825,6 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 			}
 
-
-			if(itemBizFlagSummary != null && itemBizFlagSummary.size()>0){
-				//排序,降序
-				Comparator<PosItemLogSummaryDTO> comparing = Comparator.comparing(PosItemLogSummaryDTO::getBizday);
-				itemBizFlagSummary.sort(comparing.reversed());
-			}
-
 			//此时的currentAmount是dateTo号的库存量
 			//计算断货天数
 			Map<String,InventoryLostDTO.InventoryLostDetailDTO> map = new HashMap<>();
@@ -3842,8 +3833,8 @@ public class ReportRpcImpl implements ReportRpc {
 			nowInventory.setInventoryAmount(currentAmount);
 			map.put(nowInventory.getBizday(),nowInventory);//dateTo的库存量
 			int count = 0;
-			for( int j = 0,len = itemBizFlagSummary.size();j < len ; j++){
-				PosItemLogSummaryDTO dto = itemBizFlagSummary.get(j);
+			for( int j = 0,len = itemBizFlagSummary.size();j < len ; j++){		///进出标记
+					PosItemLogSummaryDTO dto = itemBizFlagSummary.get(j);
 					if(dto.getBizday().equals(DateUtil.getDateShortStr(dateTo))){
 						continue;
 					}
@@ -3872,7 +3863,7 @@ public class ReportRpcImpl implements ReportRpc {
 					}
 				}
 			}
-			inventoryLostDTO.getInventoryCount().addAll(map.values());//时间范围内的库存量封装到集合中
+			inventoryLostDTO.getInventoryDetails().addAll(map.values());//时间范围内的库存量封装到集合中
 
 
 			//商品基信息   （通过转换率计算件数）
@@ -3915,7 +3906,7 @@ public class ReportRpcImpl implements ReportRpc {
 						//要货调出数量
 						inventoryLostDTO.setRequestOutAmount(inventoryLostDTO.getRequestOutAmount().divide(rate,4,BigDecimal.ROUND_HALF_UP));
 						// 计算detail里面的库存件数
-						List<InventoryLostDTO.InventoryLostDetailDTO> dtos = inventoryLostDTO.getInventoryCount();
+						List<InventoryLostDTO.InventoryLostDetailDTO> dtos = inventoryLostDTO.getInventoryDetails();
 						for (int k = 0; k <dtos.size() ; k++) {
 							InventoryLostDTO.InventoryLostDetailDTO dto = dtos.get(k);
 							dto.setInventoryAmount(dto.getInventoryAmount().divide(rate,4,BigDecimal.ROUND_HALF_UP));
@@ -3929,7 +3920,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 
 			//遍历集合(统计 缺货天数)
-			List<InventoryLostDTO.InventoryLostDetailDTO> inventoryCount = inventoryLostDTO.getInventoryCount();
+			List<InventoryLostDTO.InventoryLostDetailDTO> inventoryCount = inventoryLostDTO.getInventoryDetails();
 
 			if(inventoryCount != null && inventoryCount.size()>0){
 				//排序（默认是升序）
@@ -3937,25 +3928,26 @@ public class ReportRpcImpl implements ReportRpc {
 				inventoryCount.sort(comparing);
 			}
 
-			int size = inventoryCount.size();
 			int lostDay = 0;
 			int lostCount = 0;
-			for (int j = 0; j <size ; j++) {
+			BigDecimal inventoryAmount;
+			for (int j = 0,len = inventoryCount.size(); j <len ; j++) {
 				InventoryLostDTO.InventoryLostDetailDTO dto = inventoryCount.get(j);
-				if (dto.getInventoryAmount().compareTo(BigDecimal.ZERO) <= 0){
+				inventoryAmount = dto.getInventoryAmount();
+				if (inventoryAmount.compareTo(BigDecimal.ZERO) <= 0){
 					++lostDay;
-					inventoryLostDTO.setLostDay(lostDay);//缺货天数
 				}
-				if(dto.getInventoryAmount().compareTo(BigDecimal.ZERO) == 0){
+				inventoryLostDTO.setLostDay(lostDay);//缺货天数
+
+				if(dto.getInventoryAmount().compareTo(BigDecimal.ZERO) <= 0){
 					if(j == 0){
 						continue;
 					}
-					InventoryLostDTO.InventoryLostDetailDTO inventoryLostDetailDTO = inventoryCount.get(j - 1);
-					if(inventoryLostDetailDTO.getInventoryAmount().compareTo(BigDecimal.ZERO)>0){
+					if(inventoryAmount.compareTo(BigDecimal.ZERO)>0){
 						++lostCount;
-						inventoryLostDTO.setLostCount(lostCount);//缺货次数
 					}
 				}
+				inventoryLostDTO.setLostCount(lostCount);//缺货次数
 			}
 
 			list.add(inventoryLostDTO);
