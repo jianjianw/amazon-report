@@ -3797,7 +3797,6 @@ public class ReportRpcImpl implements ReportRpc {
 		int size = itemNums.size();
 		List<InventoryLostDTO> list = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-			long start = System.currentTimeMillis();
 
 			Integer itemNum = itemNums.get(i);
 			InventoryLostDTO inventoryLostDTO = new InventoryLostDTO();
@@ -3865,7 +3864,6 @@ public class ReportRpcImpl implements ReportRpc {
 			nowInventory.setInventoryAmount(currentAmount);
 			map.put(nowInventory.getBizday(), nowInventory);//dateTo的库存量
 
-			long start2 = System.currentTimeMillis();
 			String to = DateUtil.getDateShortStr(dateTo);
 			for (int j = 0, len = itemBizFlagSummary.size(); j < len; j++) {        ///进出标记
 				PosItemLogSummaryDTO dto = itemBizFlagSummary.get(j);
@@ -3892,9 +3890,6 @@ public class ReportRpcImpl implements ReportRpc {
 					map.put(key, detail);
 				}
 			}
-			long end2 = System.currentTimeMillis();
-			long time2 = end2 - start2;
-			logger.info("根据进出标记计算库存的一次for  "+time2);
 			inventoryLostDTO.getInventoryDetails().addAll(map.values());//时间范围内的库存量封装到集合中
 
 
@@ -3945,9 +3940,6 @@ public class ReportRpcImpl implements ReportRpc {
 					}
 				}
 			}
-			long end3 = System.currentTimeMillis();
-			long time3 = end3 - start3;
-			logger.info("更具转换率计算数量的for  "+time3);
 
 			//遍历集合(统计 缺货天数)
 			List<InventoryLostDTO.InventoryLostDetailDTO> inventoryDetails = inventoryLostDTO.getInventoryDetails();
@@ -3976,9 +3968,6 @@ public class ReportRpcImpl implements ReportRpc {
 			inventoryLostDTO.setLostDay(lostDay);//缺货天数
 			inventoryLostDTO.setLostCount(lostCount);//缺货次数
 			list.add(inventoryLostDTO);
-			long end = System.currentTimeMillis();
-			long l = end - start;
-			logger.info("遍历一次for的时间  "+l);
 		}
 
 		return list;
