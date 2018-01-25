@@ -12,7 +12,6 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.runtime.directive.Foreach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -3119,7 +3118,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<OrderDetailCompare> findOrderDetailCompareDatasByBranchItem(String systemBookCode, List<Integer> branchNums, Date lastDateFrom, Date lastDateTo, Date thisDateFrom, Date thisDateTo, List<Integer> itemNums, List<String> categoryCodes) {
-		ReportUtil<OrderDetailCompare> reportUtil = new ReportUtil<OrderDetailCompare>(OrderDetailCompare.class);
+		ReportUtil<OrderDetailCompare> reportUtil = new ReportUtil<>(OrderDetailCompare.class);
 		List<Object[]> objects = reportService.findCustomerAnalysisBranchItem(systemBookCode, thisDateFrom, thisDateTo,
 				branchNums, itemNums);
 

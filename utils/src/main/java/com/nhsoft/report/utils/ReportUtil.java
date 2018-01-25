@@ -1,7 +1,11 @@
 package com.nhsoft.report.utils;
 
-import com.nhsoft.report.utils.annotation.ReportInfo;
-import com.nhsoft.report.utils.annotation.ReportKey;
+
+
+
+
+import com.nhsoft.module.report.annotation.ReportInfo;
+import com.nhsoft.module.report.annotation.ReportKey;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -22,7 +26,7 @@ public class ReportUtil<T> {
 	
 	public ReportUtil(Class<T> cls) {
 		this.cls = cls;
-        Field[] fields = cls.getDeclaredFields();
+		Field[] fields = cls.getDeclaredFields();
         for(Field field : fields) {
         	field.setAccessible(true);
         	ReportKey reportKey = field.getAnnotation(ReportKey.class);
