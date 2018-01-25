@@ -10851,6 +10851,7 @@ public class ReportServiceImpl implements ReportService {
 			
 			revokeMoney = cardUserDao.getRevokeMoney(cardReportQuery.getSystemBookCode(), null, cardReportQuery.getDateFrom(), cardReportQuery.getDateTo());
 			cardAnalysisSummaryDTO.setBalanceMoney(cardAnalysisSummaryDTO.getBalanceMoney().add(revokeMoney));
+			cardAnalysisSummaryDTO.setLastCardBalance(cardAnalysisSummaryDTO.getLastCardBalance().add(revokeMoney));
 
 		}
 		cardReportQuery.setDateFrom(dateFrom);
