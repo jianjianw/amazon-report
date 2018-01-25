@@ -189,6 +189,14 @@
             <version>0.0.2-SNAPSHOT</version>
         </dependency>
 
+        <!--
+            <dependency>
+                <groupId>com.nhsoft</groupId>
+                <artifactId>module-base-internal</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+        -->
+
     </dependencies>
 
 
