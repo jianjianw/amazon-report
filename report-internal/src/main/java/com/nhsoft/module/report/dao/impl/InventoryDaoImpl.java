@@ -44,6 +44,8 @@ public class InventoryDaoImpl extends DaoImpl implements InventoryDao {
 		sb.append("where s.storehouse_del_tag = 0 and s.storehouse_actived = 1 ");
 		if(storehouseNums != null && storehouseNums.size()>0){
 			sb.append("and s.storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+		}else{
+			sb.append("and s.storehouse_num in (select storehouse_num from branch_storehouse with(nolock) where system_book_code = '" + systemBookCode + "' ");
 		}
 		sb.append("and branch_num = " + branchNum + " ");
 		if (itemNums != null && itemNums.size() > 0) {

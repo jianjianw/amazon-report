@@ -473,6 +473,9 @@ public class APIBasic {
 		branchNums.add(10);
 		branchNums.add(11);
 		branchNums.add(12);
+		branchNums.add(13);
+		branchNums.add(14);
+		branchNums.add(59);
 		branchNums.add(99);
 		return branchNums;
 	}
@@ -858,6 +861,26 @@ public class APIBasic {
 		query.setBranchNums(list);
 		List<PosOrderDTO> settled = posOrderRpc.findSettled("4020",query,0,5000);
 		return settled;
+	}
+
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "test40")
+	public List test40() throws Exception{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		//findOrderDetailCompareDatasByBranchItem
+		String systemBookCode = "4020";
+		List<Integer> branchNums = getBranchNums();
+		Date lastDateFrom = sdf.parse("2017-10-01");
+		Date lastDateTo = sdf.parse("2017-12-31");
+		Date thisDateFrom = sdf.parse("2018-01-15");
+		Date thisDateTo = sdf.parse("2018-01-21");
+		List<Integer> itemNums =  new ArrayList<>();
+		List<String> categoryCodes = new ArrayList<>();
+
+		List<OrderDetailCompare> orderDetailCompareDatasByBranchItem = reportRpc.findOrderDetailCompareDatasByBranchItem(systemBookCode,branchNums,lastDateFrom,lastDateTo,
+				thisDateFrom,thisDateTo,itemNums,categoryCodes);
+		return orderDetailCompareDatasByBranchItem;
 	}
 
 
