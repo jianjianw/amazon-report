@@ -29,7 +29,6 @@ public class BranchDTO implements java.io.Serializable {
 	private String branchName;
 	private Boolean branchActived;
 	private String branchPostcode;
-	private String branchAddr;
 	private String branchFax;
 	private String branchPhone;
 	private Boolean branchRdc;
@@ -43,27 +42,16 @@ public class BranchDTO implements java.io.Serializable {
 	private String branchBankNo;
 	private Boolean branchRequestCheckMoney;
 	private BigDecimal branchArea;
-	private String branchLinkMan;
 	private Integer branchOffLineDay;
 	private BigDecimal branchCardBalanceLimit;
 	private String branchModule;
-	private String branchEmail;
 	private String branchRegionType;
 	private Integer branchEmployeeCount;
 	private Date branchExpiration;
 	private BigDecimal branchRent;
-	private String branchSellerId;
-	private String branchSellerEmail;
 	private Integer branchStatus;
-	private Integer managementTemplateNum;
-	private Boolean branchSupportIc;
-	private Boolean branchSupportId;
 	private String branchProduct;
 	private Boolean branchVirtual; // 是否虚拟店
-	private Boolean branchKitEnabled;
-	private Date branchCloseTime;
-	private Boolean branchStockClosed;
-	private Boolean branchTmall;
 	private Date branchCreateTime;
 
 	
@@ -82,38 +70,6 @@ public class BranchDTO implements java.io.Serializable {
 		this.branchCreateTime = branchCreateTime;
 	}
 
-	public Boolean getBranchTmall() {
-		return branchTmall;
-	}
-
-	public void setBranchTmall(Boolean branchTmall) {
-		this.branchTmall = branchTmall;
-	}
-
-	public Boolean getBranchStockClosed() {
-		return branchStockClosed;
-	}
-
-	public void setBranchStockClosed(Boolean branchStockClosed) {
-		this.branchStockClosed = branchStockClosed;
-	}
-
-	public Date getBranchCloseTime() {
-		return branchCloseTime;
-	}
-
-	public void setBranchCloseTime(Date branchCloseTime) {
-		this.branchCloseTime = branchCloseTime;
-	}
-
-	public Boolean getBranchKitEnabled() {
-		return branchKitEnabled;
-	}
-
-	public void setBranchKitEnabled(Boolean branchKitEnabled) {
-		this.branchKitEnabled = branchKitEnabled;
-	}
-
 	public Boolean getBranchVirtual() {
 		return branchVirtual;
 	}
@@ -128,14 +84,6 @@ public class BranchDTO implements java.io.Serializable {
 
 	public void setBranchProduct(String branchProduct) {
 		this.branchProduct = branchProduct;
-	}
-
-	public Integer getManagementTemplateNum() {
-		return managementTemplateNum;
-	}
-
-	public void setManagementTemplateNum(Integer managementTemplateNum) {
-		this.managementTemplateNum = managementTemplateNum;
 	}
 
 	public Integer getBranchStatus() {
@@ -162,22 +110,6 @@ public class BranchDTO implements java.io.Serializable {
 		this.branchNum = branchNum;
 	}
 
-	public String getBranchSellerId() {
-		return branchSellerId;
-	}
-
-	public void setBranchSellerId(String branchSellerId) {
-		this.branchSellerId = branchSellerId;
-	}
-
-	public String getBranchSellerEmail() {
-		return branchSellerEmail;
-	}
-
-	public void setBranchSellerEmail(String branchSellerEmail) {
-		this.branchSellerEmail = branchSellerEmail;
-	}
-
 	public String getBranchRegionType() {
 		return branchRegionType;
 	}
@@ -192,14 +124,6 @@ public class BranchDTO implements java.io.Serializable {
 
 	public void setBranchEmployeeCount(Integer branchEmployeeCount) {
 		this.branchEmployeeCount = branchEmployeeCount;
-	}
-
-	public String getBranchEmail() {
-		return branchEmail;
-	}
-
-	public void setBranchEmail(String branchEmail) {
-		this.branchEmail = branchEmail;
 	}
 
 	public String getBranchModule() {
@@ -280,14 +204,6 @@ public class BranchDTO implements java.io.Serializable {
 
 	public void setBranchPostcode(String branchPostcode) {
 		this.branchPostcode = branchPostcode;
-	}
-
-	public String getBranchAddr() {
-		return branchAddr;
-	}
-
-	public void setBranchAddr(String branchAddr) {
-		this.branchAddr = branchAddr;
 	}
 
 	public String getBranchFax() {
@@ -397,14 +313,6 @@ public class BranchDTO implements java.io.Serializable {
 		this.branchArea = branchArea;
 	}
 
-	public String getBranchLinkMan() {
-		return branchLinkMan;
-	}
-
-	public void setBranchLinkMan(String branchLinkMan) {
-		this.branchLinkMan = branchLinkMan;
-	}
-
 	public Integer getBranchOffLineDay() {
 		return branchOffLineDay;
 	}
@@ -435,22 +343,6 @@ public class BranchDTO implements java.io.Serializable {
 
 	public void setBranchRent(BigDecimal branchRent) {
 		this.branchRent = branchRent;
-	}
-
-	public Boolean getBranchSupportIc() {
-		return branchSupportIc;
-	}
-
-	public void setBranchSupportIc(Boolean branchSupportIc) {
-		this.branchSupportIc = branchSupportIc;
-	}
-
-	public Boolean getBranchSupportId() {
-		return branchSupportId;
-	}
-
-	public void setBranchSupportId(Boolean branchSupportId) {
-		this.branchSupportId = branchSupportId;
 	}
 
 	public static List<BranchDTO> readFromXml(String text) {

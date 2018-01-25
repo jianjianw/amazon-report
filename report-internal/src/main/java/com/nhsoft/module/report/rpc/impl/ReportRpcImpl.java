@@ -3892,8 +3892,6 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			inventoryLostDTO.getInventoryDetails().addAll(map.values());//时间范围内的库存量封装到集合中
 
-
-			long start3 = System.currentTimeMillis();
 			//商品基信息   （通过转换率计算件数）
 			PosItem posItem = posItems.get(i);
 			if (itemNum.equals(posItem.getItemNum())) {
@@ -3969,7 +3967,6 @@ public class ReportRpcImpl implements ReportRpc {
 			inventoryLostDTO.setLostCount(lostCount);//缺货次数
 			list.add(inventoryLostDTO);
 		}
-
 		return list;
 	}
 
