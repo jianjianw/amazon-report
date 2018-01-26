@@ -246,7 +246,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		StringBuffer sb = new StringBuffer();
 		sb.append("select l.branch_num, l.item_num, l.pos_item_log_inout_flag,  ");
 		sb.append("sum(l.pos_item_log_item_amount) as amount, sum(l.POS_ITEM_LOG_MONEY) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount,  ");
-		sb.append("sum(l.pos_item_log_use_qty) as useAmount,  ");
+		sb.append("sum(l.pos_item_log_use_qty) as useAmount, ");
 		sb.append("min(l.pos_item_log_use_unit) as useUnit ");
 		if(storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney()){
 			sb.append(", sum(l.pos_item_log_item_amount * p.item_regular_price) as saleMoney ");
@@ -260,9 +260,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getBranchNums() != null && !storeQueryCondition.getBranchNums().isEmpty()){
 			sb.append("and l.branch_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getBranchNums()));
 		}
+
 		sb.append("and l.pos_item_log_date_index between '" + DateUtil.getDateShortStr(storeQueryCondition.getDateStart()) + "' and '" + DateUtil.getDateShortStr(storeQueryCondition.getDateEnd()) + "' ");
-
-
 		if(storeQueryCondition.getItemNums() != null && !storeQueryCondition.getItemNums().isEmpty()){
 			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getItemNums()));
 		}

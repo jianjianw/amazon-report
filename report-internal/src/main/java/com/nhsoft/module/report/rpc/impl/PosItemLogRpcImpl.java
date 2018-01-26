@@ -34,7 +34,7 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
         List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
         Object[] object;
         boolean querySaleMoney = storeQueryCondition.getQuerySaleMoney() == null?false:storeQueryCondition.getQuerySaleMoney();
-        for (int i = 0; i < size; i++) {
+         for (int i = 0; i < size; i++) {
             object = objects.get(i);
 
             PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();

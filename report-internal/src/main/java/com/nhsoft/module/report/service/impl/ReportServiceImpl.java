@@ -4574,7 +4574,6 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<ExceptInventory> findSingularItem(InventoryExceptQuery inventoryExceptQuery) {
-//		return new ArrayList<ExceptInventory>();
 
 		String systemBookCode = inventoryExceptQuery.getSystemBookCode();
 		Integer branchNum = inventoryExceptQuery.getBranchNum();

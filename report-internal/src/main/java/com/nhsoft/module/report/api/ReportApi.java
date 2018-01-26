@@ -3,6 +3,7 @@ package com.nhsoft.module.report.api;
 import com.nhsoft.module.report.api.dto.*;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.query.LogQuery;
+import com.nhsoft.module.report.query.StoreQueryCondition;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.dto.TransferOutMoney;
 import com.nhsoft.module.report.util.AppConstants;
@@ -43,6 +44,8 @@ public class ReportApi {
     private TransferOutOrderRpc transferOutOrderRpc;
     @Autowired
     private AlipayLogRpc alipayLogRpc;
+    @Autowired
+    private PosItemLogRpc posItemLogRpc;
     //将分店字符串转化成list<Integer>
     public List<Integer> stringToList(String systemBookCode, String branchNums) {
 
@@ -54,6 +57,23 @@ public class ReportApi {
             bannchNumList.add(Integer.parseInt(split[i]));
         }
         return bannchNumList;
+
+    }
+
+
+    //alipaylogs
+    @RequestMapping(method = RequestMethod.GET, value = "/test")
+    public  void test() {
+        StoreQueryCondition storeQueryCondition  = new StoreQueryCondition();
+        storeQueryCondition.setSystemBookCode("4020");
+        storeQueryCondition.setBranchNums(Arrays.asList(99));
+        storeQueryCondition.setDateStart(DateUtil.getDateStr("20180101"));
+        storeQueryCondition.setDateEnd(DateUtil.getDateStr("20180123"));
+
+        storeQueryCondition.setQuerySaleMoney(true);
+        posItemLogRpc.findBranchItemFlagSummary(storeQueryCondition);
+
+
 
     }
 

@@ -3140,6 +3140,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
+
 			OrderDetailCompare data = reportUtil.getInstance();
 			data.setBranchNum((Integer) object[0]);
 			data.setItemNum((Integer) object[1]);
