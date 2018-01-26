@@ -252,17 +252,12 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append(", sum(l.pos_item_log_item_amount * p.item_regular_price) as saleMoney ");
 		}
 		sb.append("from pos_item_log as l ");
-		if((storeQueryCondition.getFilterDeleteItem() != null && storeQueryCondition.getFilterDeleteItem())
-				|| (storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney())
-				){
+		if(storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney()){
 			sb.append("inner join pos_item as p on l.item_num = p.item_num ");
 
 		}
 		sb.append("where l.system_book_code = '" + storeQueryCondition.getSystemBookCode() + "' ");
 
-		if(storeQueryCondition.getFilterDeleteItem() != null && storeQueryCondition.getFilterDeleteItem()){
-			sb.append("and p.item_del_tag = 0 ");
-		}
 		if(storeQueryCondition.getBranchNums() != null && !storeQueryCondition.getBranchNums().isEmpty()){
 			sb.append("and l.branch_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getBranchNums()));
 		}
@@ -511,15 +506,15 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append(", sum(l.pos_item_log_item_amount * p.item_regular_price) as saleMoney ");
 		}
 		sb.append("from pos_item_log as l ");
-		if((storeQueryCondition.getFilterDeleteItem() != null && storeQueryCondition.getFilterDeleteItem())
-				|| (storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney())
-				){
+		if(((storeQueryCondition.getFilterDeleteItem() != null && storeQueryCondition.getFilterDeleteItem()) && (storeQueryCondition.getPosOrderMoney() == null || storeQueryCondition.getPosOrderMoney().compareTo(BigDecimal.ZERO) == 0 ))
+				|| (storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney())){
 			sb.append("inner join pos_item as p on l.item_num = p.item_num ");
 
 		}
 		sb.append("where l.system_book_code = :systemBookCode ");
 
-		if(storeQueryCondition.getFilterDeleteItem() != null && storeQueryCondition.getFilterDeleteItem()){
+		if((storeQueryCondition.getFilterDeleteItem() != null && storeQueryCondition.getFilterDeleteItem()) &&
+				(storeQueryCondition.getPosOrderMoney() == null || storeQueryCondition.getPosOrderMoney().compareTo(BigDecimal.ZERO) == 0 )){
 			sb.append("and p.item_del_tag = 0 ");
 		}
 		if(storeQueryCondition.getBranchNums() != null && storeQueryCondition.getBranchNums().size() > 0){

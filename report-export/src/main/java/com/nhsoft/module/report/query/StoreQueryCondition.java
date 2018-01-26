@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.query;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class StoreQueryCondition extends  QueryBuilder{
 	private Date exactDateFrom;
 	private Boolean isFilterDeleteItem;
 	private Boolean querySaleMoney;
+	private BigDecimal posOrderMoney;//pos营业额
 	
 	private boolean isPaging = true;
 	private String sortField;
@@ -252,5 +254,13 @@ public class StoreQueryCondition extends  QueryBuilder{
 
 	public void setFilterDeleteItem(Boolean filterDeleteItem) {
 		isFilterDeleteItem = filterDeleteItem;
+	}
+
+	public BigDecimal getPosOrderMoney() {
+		return posOrderMoney;
+	}
+
+	public void setPosOrderMoney(BigDecimal posOrderMoney) {
+		this.posOrderMoney = posOrderMoney;
 	}
 }
