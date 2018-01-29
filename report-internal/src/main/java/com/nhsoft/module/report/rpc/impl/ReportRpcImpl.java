@@ -3719,13 +3719,7 @@ public class ReportRpcImpl implements ReportRpc {
 		query.setItemNums(itemNums);
 		query.setItemDepartments(itemDepartments);
 		List<PosItem> posItems = posItemService.findByPosItemQuery(query, null, null, 0, 0);
-		if (itemNums != null && !itemNums.isEmpty()) {
-			for (int i = 0; i < posItems.size(); i++) {
-				PosItem posItem = posItems.get(i);
-				Integer itemNum = posItem.getItemNum();
-				itemNums.add(itemNum);
-			}
-		}
+
 
 		//配送仓库库存
 		List<InventoryDTO> inventory = inventoryRpc.findCenterStore(systemBookCode, branchNum, itemNums);
@@ -3795,11 +3789,12 @@ public class ReportRpcImpl implements ReportRpc {
 			itemFlagSummary = posItemLogRpc.findItemFlagSummary(queryCondition);//计算dateto到现在的商品库存出入
 		}
 
-		int size = itemNums.size();
+		int size = posItems.size();
 		List<InventoryLostDTO> list = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
+			PosItem posItem = posItems.get(i);
+			Integer itemNum = posItem.getItemNum();
 
-			Integer itemNum = itemNums.get(i);
 			InventoryLostDTO inventoryLostDTO = new InventoryLostDTO();
 			inventoryLostDTO.setItemNum(itemNum);
 
@@ -3894,7 +3889,6 @@ public class ReportRpcImpl implements ReportRpc {
 			inventoryLostDTO.getInventoryDetails().addAll(map.values());//时间范围内的库存量封装到集合中
 
 			//商品基信息   （通过转换率计算件数）
-			PosItem posItem = posItems.get(i);
 			if (itemNum.equals(posItem.getItemNum())) {
 				inventoryLostDTO.setItemName(posItem.getItemName());
 				inventoryLostDTO.setItemSpec(posItem.getItemSpec());
