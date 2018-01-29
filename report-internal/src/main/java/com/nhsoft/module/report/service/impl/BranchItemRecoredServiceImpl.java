@@ -18,4 +18,9 @@ public class BranchItemRecoredServiceImpl implements BranchItemRecoredService {
         return branchItemRecoredDao.findItemAuditDate(systemBookCode,branchNum,storehouseNum,itemNums,branchItemRecoredTypes);
     }
 
+    @Override
+    public List<Object[]> findItemMinAuditDate(String systemBookCode, Integer branchNum, Integer storehouseNum, List<Integer> itemNums, List<String> branchItemRecoredTypes) {
+        return branchItemRecoredDao.findItemMinAuditDate(systemBookCode,branchNum,storehouseNum,itemNums,branchItemRecoredTypes);
+    }
+
 }

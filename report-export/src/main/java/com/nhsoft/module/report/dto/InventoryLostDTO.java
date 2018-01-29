@@ -51,7 +51,7 @@ public class InventoryLostDTO implements Serializable {
     private BigDecimal receiveAmount;//收货数量
     private BigDecimal requestAmount;//要货数量
     private BigDecimal requestOutAmount;//要货调出数量
-    private Date firstReceiveDay;//首次收货日期
+    private String firstReceiveDay;//首次收货日期
     private String maxReceiveDay;//最近收货日期
     private List<InventoryLostDetailDTO> inventoryDetails = new ArrayList<>();
 
@@ -136,11 +136,11 @@ public class InventoryLostDTO implements Serializable {
         this.requestOutAmount = requestOutAmount;
     }
 
-    public Date getFirstReceiveDay() {
+    public String getFirstReceiveDay() {
         return firstReceiveDay;
     }
 
-    public void setFirstReceiveDay(Date firstReceiveDay) {
+    public void setFirstReceiveDay(String firstReceiveDay) {
         this.firstReceiveDay = firstReceiveDay;
     }
 

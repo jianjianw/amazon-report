@@ -30,4 +30,22 @@ public class BranchItemRecoredRpcImpl implements BranchItemRecoredRpc {
         }
         return list;
     }
+
+    @Override
+    public List<BranchItemRecoredDTO> findItemMinAuditDate(String systemBookCode, Integer branchNum, Integer storehouseNum, List<Integer> itemNums, List<String> branchItemRecoredTypes) {
+
+        List<Object[]> objects = branchItemRecoredService.findItemAuditDate(systemBookCode, branchNum, storehouseNum, itemNums, branchItemRecoredTypes);
+        int size = objects.size();
+        List<BranchItemRecoredDTO> list = new ArrayList<>(size);
+        for (int i = 0; i <size ; i++) {
+            Object[] object = objects.get(i);
+            BranchItemRecoredDTO dto = new BranchItemRecoredDTO();
+            dto.setItemNum((Integer) object[0]);
+            dto.setAuditDate((String) object[1]);
+            list.add(dto);
+        }
+        return list;
+    }
+
+
 }
