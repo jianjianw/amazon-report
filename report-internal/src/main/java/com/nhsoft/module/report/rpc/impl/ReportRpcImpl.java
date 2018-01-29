@@ -3734,8 +3734,6 @@ public class ReportRpcImpl implements ReportRpc {
 		types.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
 		List<BranchItemRecoredDTO> itemAuditDate = branchItemRecoredRpc.findItemAuditDate(systemBookCode, branchNum, null, itemNums, types);
 
-		//首次收货日期
-		List<BranchItemRecoredDTO> itemMinAuditDate = branchItemRecoredRpc.findItemMinAuditDate(systemBookCode, branchNum, null, itemNums, types);
 
 		StoreQueryCondition queryCondition = new StoreQueryCondition();
 		queryCondition.setSystemBookCode(systemBookCode);
@@ -3755,8 +3753,9 @@ public class ReportRpcImpl implements ReportRpc {
 			calendar.add(Calendar.DAY_OF_MONTH, i);
 			Date tempDate = calendar.getTime();
 			String tempDateStr = DateUtil.getDateShortStr(tempDate);
-			for (int j = 0,len = itemNums.size(); j <len ; j++) {
-				Integer num = itemNums.get(j);
+			for (int j = 0,len = posItems.size(); j <len ; j++) {
+				PosItem posItem = posItems.get(j);
+				Integer num = posItem.getItemNum();
 				PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
 				dto.setItemNum(num);
 				dto.setBizday(tempDateStr);
@@ -3832,13 +3831,6 @@ public class ReportRpcImpl implements ReportRpc {
 				BranchItemRecoredDTO dto = itemAuditDate.get(j);
 				if (itemNum.equals(dto.getItemNum())) {
 					inventoryLostDTO.setMaxReceiveDay(dto.getAuditDate());
-				}
-			}
-			//首次收货日期
-			for (int j = 0,len = itemMinAuditDate.size(); j <len; j++) {
-				BranchItemRecoredDTO dto = itemMinAuditDate.get(j);
-				if(itemNum.equals(dto.getItemNum())){
-					inventoryLostDTO.setFirstReceiveDay(dto.getAuditDate());
 				}
 			}
 
@@ -3962,7 +3954,6 @@ public class ReportRpcImpl implements ReportRpc {
 							++lostCount;
 						}
 					}
-
 				}
 				inventoryAmount = dto.getInventoryAmount();
 			}

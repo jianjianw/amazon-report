@@ -837,11 +837,16 @@ public class APIBasic {
 	public List<InventoryLostDTO> test38() throws Exception{
 		String systemBookCode= "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-01-31");
+		Date dateFrom = sdf.parse("2017-12-30");
+		Date dateTo = sdf.parse("2018-01-29");
 		Integer branchNum = 99;
 		List<Integer> itemNums = new ArrayList<>();
-		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_BASIC,null,null);
+		List<String>  categorys = new ArrayList<>();
+		categorys.add("01");
+		categorys.add("cfcs,022");
+		categorys.add("cf2,023");
+		categorys.add("cf3,024");
+		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_PURCHASE,null,categorys);
 		return inventoryLostAnalysis;
 
 	}

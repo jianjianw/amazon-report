@@ -9,8 +9,11 @@ import java.util.List;
 public class InventoryLostDTO implements Serializable {
 
 
+    private static final long serialVersionUID = 5468197238510011561L;
+
     public static class InventoryLostDetailDTO implements Serializable{
 
+        private static final long serialVersionUID = 800581540744534911L;
         private String bizday;
         private BigDecimal inventoryAmount;
 
