@@ -843,9 +843,9 @@ public class APIBasic {
 		List<Integer> itemNums = new ArrayList<>();
 		List<String>  categorys = new ArrayList<>();
 		categorys.add("01");
-		categorys.add("cfcs,022");
-		categorys.add("cf2,023");
-		categorys.add("cf3,024");
+		categorys.add("022");
+		categorys.add("023");
+		categorys.add("024");
 		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_PURCHASE,null,categorys);
 		return inventoryLostAnalysis;
 

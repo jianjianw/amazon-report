@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class ReportRpcImpl implements ReportRpc {
@@ -3718,6 +3719,7 @@ public class ReportRpcImpl implements ReportRpc {
 		query.setCategoryCodes(itemCategoryCodes);
 		query.setItemNums(itemNums);
 		query.setItemDepartments(itemDepartments);
+		query.setFilterType(AppConstants.ITEM_TYPE_PURCHASE);
 		List<PosItem> posItems = posItemService.findByPosItemQuery(query, null, null, 0, 0);
 
 
@@ -3741,6 +3743,7 @@ public class ReportRpcImpl implements ReportRpc {
 		queryCondition.setDateStart(dateFrom);
 		queryCondition.setDateEnd(dateTo);
 		queryCondition.setItemNums(itemNums);
+		//queryCondition.setCenterStorehouse(true);
 		//断货天数			时间范围内库存为0的天数
 		List<PosItemLogSummaryDTO> itemBizFlagSummary = posItemLogRpc.findItemBizFlagSummary(queryCondition);
 
@@ -3748,7 +3751,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<PosItemLogSummaryDTO> dateList = new ArrayList<>();
 		int diff = DateUtil.diffDay(dateFrom, dateTo);
 
-		for (int i = 0; i <= diff ; i++) {
+		for (int i = 0; i < diff ; i++) {
 			calendar.setTime(dateFrom);
 			calendar.add(Calendar.DAY_OF_MONTH, i);
 			Date tempDate = calendar.getTime();
@@ -3769,14 +3772,14 @@ public class ReportRpcImpl implements ReportRpc {
 			PosItemLogSummaryDTO dto = itemBizFlagSummary.get(i);
 			String bizday = dto.getBizday();
 			Integer itemNum = dto.getItemNum();
-			if(StringUtils.isNotEmpty(bizday)){
+			//if(StringUtils.isNotEmpty(bizday)){
 				for (int j = dateList.size() - 1; j >= 0 ; j--) {
 					PosItemLogSummaryDTO posItemDTO = dateList.get(j);
 					if(itemNum.equals(posItemDTO.getItemNum()) && bizday.equals(posItemDTO.getBizday())){
 						dateList.remove(posItemDTO);
 					}
 				}
-			}
+			//}
 
 		}
 		itemBizFlagSummary.addAll(dateList);
@@ -3852,6 +3855,13 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 			}
 
+
+
+			itemBizFlagSummary= itemBizFlagSummary.stream() .filter(a -> a.getBizday() != null) .collect(Collectors.toList());
+			Comparator<PosItemLogSummaryDTO> comparing = Comparator.comparing(PosItemLogSummaryDTO::getBizday);
+			itemBizFlagSummary.sort(comparing.reversed());
+
+
 			//此时的currentAmount是dateTo号的库存量
 			//计算断货天数
 			Map<String, InventoryLostDTO.InventoryLostDetailDTO> map = new HashMap<>();
@@ -3865,7 +3875,10 @@ public class ReportRpcImpl implements ReportRpc {
 				PosItemLogSummaryDTO dto = itemBizFlagSummary.get(j);
 				String bizday = dto.getBizday();
 				Integer num = dto.getItemNum();
-				if (StringUtils.isEmpty(dto.getBizday()) || StringUtils.equals(bizday,to)){
+				/*if (StringUtils.isEmpty(dto.getBizday()) || StringUtils.equals(bizday,to)){
+					continue;
+				}*/
+				if(StringUtils.isEmpty(dto.getBizday())){
 					continue;
 				}
 				if (itemNum.equals(num)) {
@@ -3938,8 +3951,8 @@ public class ReportRpcImpl implements ReportRpc {
 			List<InventoryLostDTO.InventoryLostDetailDTO> inventoryDetails = inventoryLostDTO.getInventoryDetails();
 			if (inventoryDetails != null && inventoryDetails.size() > 0) {
 				//排序（默认是升序）
-				Comparator<InventoryLostDTO.InventoryLostDetailDTO> comparing = Comparator.comparing(InventoryLostDTO.InventoryLostDetailDTO::getBizday);
-				inventoryDetails.sort(comparing);
+				Comparator<InventoryLostDTO.InventoryLostDetailDTO> sort = Comparator.comparing(InventoryLostDTO.InventoryLostDetailDTO::getBizday);
+				inventoryDetails.sort(sort);
 			}
 
 			int lostDay = 0;
