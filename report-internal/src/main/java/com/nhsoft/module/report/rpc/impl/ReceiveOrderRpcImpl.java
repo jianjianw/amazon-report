@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.rpc.impl;
 
+import com.nhsoft.module.report.dto.MonthPurchaseDTO;
 import com.nhsoft.module.report.dto.ReceiveOrderInfoDTO;
 import com.nhsoft.module.report.rpc.ReceiveOrderRpc;
 import com.nhsoft.module.report.service.ReceiveOrderService;
@@ -28,6 +29,24 @@ public class ReceiveOrderRpcImpl implements ReceiveOrderRpc {
             dto.setItemNum((Integer) object[0]);
             dto.setReceiveQty((BigDecimal) object[1]);
             dto.setReceiveMoney((BigDecimal) object[2]);
+            list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public List<MonthPurchaseDTO> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
+        List<Object[]> objects = receiveOrderService.findPurchaseMonth(systemBookCode, branchNum, dateFrom, dateTo, dateType);
+        int size = objects.size();
+        List<MonthPurchaseDTO> list = new ArrayList<>(size);
+
+        for (int i = 0; i < size ; i++) {
+            Object[] object = objects.get(i);
+            MonthPurchaseDTO dto = new MonthPurchaseDTO();
+            dto.setBizday((String) object[0]);
+            dto.setItemNum((Integer) object[1]);
+            dto.setSubTotal((BigDecimal) object[2]);
+            dto.setOtherMoney((BigDecimal) object[3]);
             list.add(dto);
         }
         return list;

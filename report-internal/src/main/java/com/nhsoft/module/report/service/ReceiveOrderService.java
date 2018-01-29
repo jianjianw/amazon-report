@@ -111,5 +111,15 @@ public interface ReceiveOrderService{
 		 */
 		public List<Object[]> findItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
+		/**
+		 * 查询月采购汇总
+		 * @param systemBookCode
+		 * @param branchNum
+		 * @param dateFrom
+		 * @param dateTo
+		 * @return
+		 */
+		public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType);
+
 
 }

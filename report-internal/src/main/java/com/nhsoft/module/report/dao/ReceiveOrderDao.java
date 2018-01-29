@@ -222,6 +222,15 @@ public interface ReceiveOrderDao{
                                                      List<String> employees);
 
 
+	/**
+	 * 查询月采购汇总
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType);
 
 
 

@@ -3719,7 +3719,7 @@ public class ReportRpcImpl implements ReportRpc {
 		query.setItemNums(itemNums);
 		query.setItemDepartments(itemDepartments);
 		List<PosItem> posItems = posItemService.findByPosItemQuery(query, null, null, 0, 0);
-		if (itemNums == null || itemNums.isEmpty()) {
+		if (itemNums != null && !itemNums.isEmpty()) {
 			for (int i = 0; i < posItems.size(); i++) {
 				PosItem posItem = posItems.get(i);
 				Integer itemNum = posItem.getItemNum();

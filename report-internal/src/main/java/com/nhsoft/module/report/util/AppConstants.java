@@ -238,6 +238,7 @@ public class AppConstants {
 	public static final String STATE_AUDIT_TIME = "审核时间";
 	public static final String POLICY_ORDER_TIME = "促销时间";
 	public static final String STATE_INIT_TIME = "制单时间";
+	public static final String RECEIVE_ORDER_TIME = "收货时间";
 
 	//系统用户操作动作
 	public static final String WEB_LOG_ACTION_LOGIN = "登录";

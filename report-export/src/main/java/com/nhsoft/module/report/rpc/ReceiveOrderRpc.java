@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.rpc;
 
+import com.nhsoft.module.report.dto.MonthPurchaseDTO;
 import com.nhsoft.module.report.dto.ReceiveOrderInfoDTO;
 
 import java.util.Date;
@@ -18,5 +19,16 @@ public interface ReceiveOrderRpc {
      * @return
      */
     public List<ReceiveOrderInfoDTO> findItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums);
+
+
+    /**
+     * 查询月采购汇总
+     * @param systemBookCode
+     * @param branchNum
+     * @param dateFrom
+     * @param dateTo
+     * @return
+     */
+    public List<MonthPurchaseDTO> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String dateType);
 
 }
