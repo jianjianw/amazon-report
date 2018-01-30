@@ -1118,7 +1118,7 @@ public class Report2RpcImpl implements Report2Rpc {
 		List<Supplier> suppliers = supplierService.findInCache(systemBookCode);
 		List<RequestAnalysisDTO> dtos = reportUtil.toList();
 		Branch branch = branchService.readInCache(systemBookCode, branchNum);
-		for(int i = dtos.size();i>=0;i--) {
+		for(int i = dtos.size()-1;i>=0;i--) {
 			RequestAnalysisDTO dto = dtos.get(i);
 			PosItem item = AppUtil.getPosItem(dto.getItemNum(), posItems);
 			if(item == null) {
