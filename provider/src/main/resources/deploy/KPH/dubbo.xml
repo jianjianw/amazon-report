@@ -31,7 +31,7 @@
     <dubbo:service interface="com.nhsoft.module.report.rpc.TransferOutOrderRpc" ref="transferOutOrderRpcImpl"/>
     <dubbo:service interface="com.nhsoft.module.report.rpc.PosItemLogRpc" ref="posItemLogRpcImpl"/>
     <dubbo:service interface="com.nhsoft.module.report.rpc.MobileAppV2Rpc" ref="mobileAppV2RpcImpl"/>
-    <dubbo:service interface="com.nhsoft.module.report.rpc.impl.ReceiveOrderRpcImpl" ref="receiveOrderRpcImpl" />
+    <dubbo:service interface="com.nhsoft.module.report.rpc.ReceiveOrderRpc" ref="receiveOrderRpcImpl"/>
 
 
 </beans>
