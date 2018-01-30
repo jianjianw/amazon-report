@@ -3743,7 +3743,7 @@ public class ReportRpcImpl implements ReportRpc {
 		queryCondition.setDateStart(dateFrom);
 		queryCondition.setDateEnd(dateTo);
 		queryCondition.setItemNums(itemNums);
-		//queryCondition.setCenterStorehouse(true);
+
 		//断货天数			时间范围内库存为0的天数
 		List<PosItemLogSummaryDTO> itemBizFlagSummary = posItemLogRpc.findItemBizFlagSummary(queryCondition);
 
@@ -3751,7 +3751,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<PosItemLogSummaryDTO> dateList = new ArrayList<>();
 		int diff = DateUtil.diffDay(dateFrom, dateTo);
 
-		for (int i = 0; i < diff ; i++) {
+		for (int i = 1; i < diff ; i++) {
 			calendar.setTime(dateFrom);
 			calendar.add(Calendar.DAY_OF_MONTH, i);
 			Date tempDate = calendar.getTime();
@@ -3772,15 +3772,13 @@ public class ReportRpcImpl implements ReportRpc {
 			PosItemLogSummaryDTO dto = itemBizFlagSummary.get(i);
 			String bizday = dto.getBizday();
 			Integer itemNum = dto.getItemNum();
-			//if(StringUtils.isNotEmpty(bizday)){
+
 				for (int j = dateList.size() - 1; j >= 0 ; j--) {
 					PosItemLogSummaryDTO posItemDTO = dateList.get(j);
 					if(itemNum.equals(posItemDTO.getItemNum()) && bizday.equals(posItemDTO.getBizday())){
 						dateList.remove(posItemDTO);
 					}
 				}
-			//}
-
 		}
 		itemBizFlagSummary.addAll(dateList);
 
@@ -3870,20 +3868,15 @@ public class ReportRpcImpl implements ReportRpc {
 			nowInventory.setInventoryAmount(currentAmount);
 			map.put(nowInventory.getBizday(), nowInventory);//dateTo的库存量
 
-			String to = DateUtil.getDateShortStr(dateTo);
 			for (int j = 0, len = itemBizFlagSummary.size(); j < len; j++) {        ///进出标记
 				PosItemLogSummaryDTO dto = itemBizFlagSummary.get(j);
 				String bizday = dto.getBizday();
 				Integer num = dto.getItemNum();
-				/*if (StringUtils.isEmpty(dto.getBizday()) || StringUtils.equals(bizday,to)){
-					continue;
-				}*/
-				if(StringUtils.isEmpty(dto.getBizday())){
-					continue;
-				}
+
 				if (itemNum.equals(num)) {
 					StringBuilder sb = new StringBuilder();
-					String key = sb.append(num).append(bizday).toString();
+					bizday = DateUtil.addDayStr(bizday, -1);//当前日期减一
+					String key = sb.append(bizday).append(num).toString();
 					InventoryLostDTO.InventoryLostDetailDTO detail = map.get(key);
 					if (detail == null) {
 						detail = new InventoryLostDTO.InventoryLostDetailDTO();
@@ -3899,7 +3892,23 @@ public class ReportRpcImpl implements ReportRpc {
 					map.put(key, detail);
 				}
 			}
+
+
 			inventoryLostDTO.getInventoryDetails().addAll(map.values());//时间范围内的库存量封装到集合中
+			/*List<InventoryLostDTO.InventoryLostDetailDTO> detailDTOs = inventoryLostDTO.getInventoryDetails();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			try {
+				for (int j = 0,len = detailDTOs.size(); j <len ; j++) {
+                    InventoryLostDTO.InventoryLostDetailDTO dto = detailDTOs.get(j);
+                    String bizday = dto.getBizday();
+                    Date parse = sdf.parse(bizday);
+					Date date = DateUtil.addDay(parse, -1);
+					String format = sdf.format(date);
+					dto.setBizday(format);
+				}
+			} catch (ParseException e) {
+				logger.error("日期解析失败");
+			}*/
 
 			//商品基信息   （通过转换率计算件数）
 			if (itemNum.equals(posItem.getItemNum())) {

@@ -852,5 +852,23 @@ public class DateUtil {
 	}
 
 
+	public static String addDayStr(String dateStr, int addDay){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		Date date = null;
+		try {
+			Date parse = sdf.parse(dateStr);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(parse);
+			calendar.add(Calendar.DAY_OF_MONTH,addDay);
+			date = calendar.getTime();
+			return sdf.format(date);
+		} catch (ParseException e) {
+
+		}
+		return null;
+
+	}
+
+
 
 }
