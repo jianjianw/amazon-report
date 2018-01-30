@@ -3895,48 +3895,47 @@ public class ReportRpcImpl implements ReportRpc {
 			inventoryLostDTO.getInventoryDetails().addAll(map.values());//时间范围内的库存量封装到集合中
 
 			//商品基信息   （通过转换率计算件数）
-			if (itemNum.equals(posItem.getItemNum())) {
-				inventoryLostDTO.setItemName(posItem.getItemName());
-				inventoryLostDTO.setItemSpec(posItem.getItemSpec());
-				BigDecimal rate = BigDecimal.ZERO;
-				if (unitType.equals(AppConstants.UNIT_BASIC)) {
-					rate = BigDecimal.ONE;
-					inventoryLostDTO.setItemUnit(posItem.getItemUnit());
-				}
-				if (unitType.equals(AppConstants.UNIT_SOTRE)) {
-					rate = posItem.getItemInventoryRate();
-					inventoryLostDTO.setItemUnit(posItem.getItemInventoryUnit());
 
-				}
-				if (unitType.equals(AppConstants.UNIT_TRANFER)) {
-					rate = posItem.getItemTransferRate();
-					inventoryLostDTO.setItemUnit(posItem.getItemTransferUnit());
+			inventoryLostDTO.setItemName(posItem.getItemName());
+			inventoryLostDTO.setItemSpec(posItem.getItemSpec());
+			BigDecimal rate = BigDecimal.ZERO;
+			if (unitType.equals(AppConstants.UNIT_BASIC)) {
+				rate = BigDecimal.ONE;
+				inventoryLostDTO.setItemUnit(posItem.getItemUnit());
+			}
+			if (unitType.equals(AppConstants.UNIT_SOTRE)) {
+				rate = posItem.getItemInventoryRate();
+				inventoryLostDTO.setItemUnit(posItem.getItemInventoryUnit());
 
-				}
-				if (unitType.equals(AppConstants.UNIT_PURCHASE)) {
-					rate = posItem.getItemPurchaseRate();
-					inventoryLostDTO.setItemUnit(posItem.getItemPurchaseUnit());
+			}
+			if (unitType.equals(AppConstants.UNIT_TRANFER)) {
+				rate = posItem.getItemTransferRate();
+				inventoryLostDTO.setItemUnit(posItem.getItemTransferUnit());
 
-				}
-				if (unitType.equals(AppConstants.UNIT_PIFA)) {
-					rate = posItem.getItemWholesaleRate();
-					inventoryLostDTO.setItemUnit(posItem.getItemWholesaleUnit());
-				}
-				if (rate.compareTo(BigDecimal.ZERO) > 0) {
-					inventoryLostDTO.setInventoryAmount(inventoryLostDTO.getInventoryAmount().divide(rate, 4,
-							BigDecimal.ROUND_HALF_UP));
-					//收货数量
-					inventoryLostDTO.setReceiveAmount(inventoryLostDTO.getReceiveAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
-					//要货数量
-					inventoryLostDTO.setRequestAmount(inventoryLostDTO.getRequestAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
-					//要货调出数量
-					inventoryLostDTO.setRequestOutAmount(inventoryLostDTO.getRequestOutAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
-					// 计算detail里面的库存件数
-					List<InventoryLostDTO.InventoryLostDetailDTO> dtos = inventoryLostDTO.getInventoryDetails();
-					for (int j = 0; j < dtos.size(); j++) {
-						InventoryLostDTO.InventoryLostDetailDTO dto = dtos.get(j);
-						dto.setInventoryAmount(dto.getInventoryAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
-					}
+			}
+			if (unitType.equals(AppConstants.UNIT_PURCHASE)) {
+				rate = posItem.getItemPurchaseRate();
+				inventoryLostDTO.setItemUnit(posItem.getItemPurchaseUnit());
+
+			}
+			if (unitType.equals(AppConstants.UNIT_PIFA)) {
+				rate = posItem.getItemWholesaleRate();
+				inventoryLostDTO.setItemUnit(posItem.getItemWholesaleUnit());
+			}
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				inventoryLostDTO.setInventoryAmount(inventoryLostDTO.getInventoryAmount().divide(rate, 4,
+						BigDecimal.ROUND_HALF_UP));
+				//收货数量
+				inventoryLostDTO.setReceiveAmount(inventoryLostDTO.getReceiveAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
+				//要货数量
+				inventoryLostDTO.setRequestAmount(inventoryLostDTO.getRequestAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
+				//要货调出数量
+				inventoryLostDTO.setRequestOutAmount(inventoryLostDTO.getRequestOutAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
+				// 计算detail里面的库存件数
+				List<InventoryLostDTO.InventoryLostDetailDTO> dtos = inventoryLostDTO.getInventoryDetails();
+				for (int j = 0; j < dtos.size(); j++) {
+					InventoryLostDTO.InventoryLostDetailDTO dto = dtos.get(j);
+					dto.setInventoryAmount(dto.getInventoryAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
 				}
 			}
 
