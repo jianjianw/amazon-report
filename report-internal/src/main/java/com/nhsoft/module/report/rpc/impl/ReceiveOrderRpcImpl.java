@@ -39,11 +39,18 @@ public class ReceiveOrderRpcImpl implements ReceiveOrderRpc {
         List<Object[]> objects = receiveOrderService.findPurchaseMonth(systemBookCode, branchNum, dateFrom, dateTo, dateType);
         int size = objects.size();
         List<MonthPurchaseDTO> list = new ArrayList<>(size);
-
+        String bizday;
         for (int i = 0; i < size ; i++) {
             Object[] object = objects.get(i);
             MonthPurchaseDTO dto = new MonthPurchaseDTO();
-            dto.setBizday((String) object[0]);
+            bizday = (String) object[0];
+            bizday= bizday.substring(bizday.length() - 2, bizday.length());
+            if("10".compareTo(bizday) > 0){
+                String sub = bizday.substring(bizday.length() - 1,bizday.length());
+                dto.setBizday(sub);
+            }else{
+                dto.setBizday(bizday);
+            }
             dto.setItemNum((Integer) object[1]);
             dto.setSubTotal((BigDecimal) object[2]);
             dto.setOtherMoney((BigDecimal) object[3]);
