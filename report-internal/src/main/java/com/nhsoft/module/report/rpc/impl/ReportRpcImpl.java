@@ -3892,23 +3892,7 @@ public class ReportRpcImpl implements ReportRpc {
 					map.put(key, detail);
 				}
 			}
-
-
 			inventoryLostDTO.getInventoryDetails().addAll(map.values());//时间范围内的库存量封装到集合中
-			/*List<InventoryLostDTO.InventoryLostDetailDTO> detailDTOs = inventoryLostDTO.getInventoryDetails();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-			try {
-				for (int j = 0,len = detailDTOs.size(); j <len ; j++) {
-                    InventoryLostDTO.InventoryLostDetailDTO dto = detailDTOs.get(j);
-                    String bizday = dto.getBizday();
-                    Date parse = sdf.parse(bizday);
-					Date date = DateUtil.addDay(parse, -1);
-					String format = sdf.format(date);
-					dto.setBizday(format);
-				}
-			} catch (ParseException e) {
-				logger.error("日期解析失败");
-			}*/
 
 			//商品基信息   （通过转换率计算件数）
 			if (itemNum.equals(posItem.getItemNum())) {
