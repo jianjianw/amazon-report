@@ -4056,6 +4056,7 @@ public class ReportServiceImpl implements ReportService {
 			data.setItemValidPeriod(posItem.getItemValidPeriod());
 			data.setProductDate((Date) object[24]);
 			data.setBasePrice(basePrice);
+			data.setPosItemCategory(posItem.getItemCategoryCode());
 			list.add(data);
 
 		}
