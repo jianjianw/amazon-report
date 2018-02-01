@@ -12,6 +12,8 @@ public class PosOrderQuery extends QueryBuilder{
 	 */
 	private static final long serialVersionUID = 3105327136840843916L;
 	private List<Integer> branchNums;
+	private Integer merchantNum;
+	private Integer stallNum;
 	private Date dateFrom;
 	private Date dateTo;
 	private String orderNo;
@@ -156,4 +158,20 @@ public class PosOrderQuery extends QueryBuilder{
 	public void setOrderSources(List<String> orderSources) {
 		this.orderSources = orderSources;
 	}
+
+    public Integer getMerchantNum() {
+        return merchantNum;
+    }
+
+    public void setMerchantNum(Integer merchantNum) {
+        this.merchantNum = merchantNum;
+    }
+
+    public Integer getStallNum() {
+        return stallNum;
+    }
+
+    public void setStallNum(Integer stallNum) {
+        this.stallNum = stallNum;
+    }
 }

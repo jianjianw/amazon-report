@@ -2057,7 +2057,100 @@ public class ReportRpcImpl implements ReportRpc {
 		return new ArrayList<BusinessCollection>(map.values());
 	}
 
-	@Override
+    @Override
+    public List<BusinessCollection> findBusinessCollectionByMerchantDay(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
+        return null;
+    }
+
+    @Override
+    public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo, String casher) {
+
+        List<BusinessCollection> list = reportService.findBusinessCollectionByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
+        int size = list.size();
+        Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>(size);
+        for (int i = 0; i < size ; i++) {
+            BusinessCollection collection = list.get(i);
+            Integer branchNum = collection.getBranchNum();
+            String bizday = collection.getShiftTableBizday();
+            Integer bizNum = collection.getShiftTableNum();
+            StringBuilder sb = new StringBuilder();
+            String key = sb.append(branchNum).append(bizday).append(bizNum).toString();
+            map.put(key,collection);
+        }
+
+        List<Object[]> payment = posOrderService.findBranchShiftTablePaymentSummary(systemBookCode, branchNums, dateFrom, dateTo, casher);
+        for (int i = 0,len = payment.size(); i < len; i++) {
+            Object[] object = payment.get(i);
+            Integer branchNum = (Integer) object[0];
+            String bizDay = (String) object[1];
+            Integer bizNum = (Integer) object[2];
+            String type = (String) object[3];
+            BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+            BigDecimal unPaidMoney = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+            StringBuilder sb = new StringBuilder();
+            String key = sb.append(branchNum).append(bizDay).append(bizNum).toString();
+            BusinessCollection data = map.get(key);
+            if (data == null) {
+                data = new BusinessCollection();
+                data.setBranchNum(branchNum);
+                data.setShiftTableBizday(bizDay);
+                data.setShiftTableNum(bizNum);
+                data.setUnPaidMoney(BigDecimal.ZERO);
+                map.put(key, data);
+            }
+            BusinessCollectionIncome detail = new BusinessCollectionIncome();
+            detail.setName(type);
+            detail.setMoney(money);
+            if (type.equals(AppConstants.PAYMENT_GIFTCARD)) {
+                data.setUnPaidMoney(data.getUnPaidMoney().add(unPaidMoney));
+
+            }
+            if (type.equals(AppConstants.PAYMENT_YINLIAN)) {
+                data.setAllBankMoney(data.getAllBankMoney().add(money));
+            }
+            data.getPosIncomes().add(detail);
+        }
+
+        List<ShiftTable> shiftTables = reportService.findShiftTables(systemBookCode, branchNums, dateFrom, dateTo, casher);
+        for (int i = 0; i < shiftTables.size(); i++) {
+            ShiftTable shiftTable = shiftTables.get(i);
+            Integer branchNum = shiftTable.getId().getBranchNum();
+            String shiftTableBizday = shiftTable.getId().getShiftTableBizday();
+            Integer shiftTableNum = shiftTable.getId().getShiftTableNum();
+            StringBuilder sb = new StringBuilder();
+            String key = sb.append(branchNum).append(shiftTableBizday).append(shiftTableNum).toString();
+            BusinessCollection data = map.get(key);
+            if (data == null) {
+                data = new BusinessCollection();
+                data.setShiftTableBizday(shiftTable.getId().getShiftTableBizday());
+                data.setShiftTableNum(shiftTable.getId().getShiftTableNum());
+                data.setBranchNum(shiftTable.getId().getBranchNum());
+                map.put(key, data);
+            }
+            data.setShiftTableTerminalId(shiftTable.getShiftTableTerminalId());
+            data.setCasher(shiftTable.getShiftTableUserName());
+            data.setReceiveCash(shiftTable.getShiftTableActualMoney() == null ? BigDecimal.ZERO : shiftTable
+                    .getShiftTableActualMoney());
+            data.setReceiveBankMoney(shiftTable.getShiftTableActualBankMoney() == null ? BigDecimal.ZERO : shiftTable
+                    .getShiftTableActualBankMoney());
+            data.setShiftTableStart(shiftTable.getShiftTableStart());
+            data.setShiftTableEnd(shiftTable.getShiftTableEnd());
+        }
+
+        return new ArrayList<BusinessCollection>(map.values());
+    }
+
+    @Override
+    public List<BusinessCollection> findBusinessCollectionByMerchant(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
+        return null;
+    }
+
+    @Override
+    public List<BusinessCollection> findBusinessCollectionByStall(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo) {
+        return null;
+    }
+
+    @Override
 	public List<OrderCompare> findCategoryMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return reportService.findCategoryMoney(systemBookCode,branchNums,dateFrom,dateTo);
 	}

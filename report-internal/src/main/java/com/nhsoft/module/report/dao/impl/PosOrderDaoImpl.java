@@ -5307,6 +5307,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if (posOrderQuery.getBranchNums() != null && posOrderQuery.getBranchNums().size() > 0) {
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(posOrderQuery.getBranchNums()));
 		}
+		if(posOrderQuery.getMerchantNum() != null) {
+			sb.append("and p.merchant_num = " + posOrderQuery.getMerchantNum() + " ");
+		}
+		if(posOrderQuery.getStallNum() != null) {
+			sb.append("and p.stall_num = " + posOrderQuery.getStallNum() + " ");
+		}
 		if (posOrderQuery.getDateFrom() != null) {
 			sb.append("and p.shift_table_bizday >= '" + DateUtil.getDateShortStr(posOrderQuery.getDateFrom()) + "' ");
 		}
@@ -5414,6 +5420,46 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setInteger("batchsize", posOrderQuery.getMax());
 		return query.list();
+	}
+
+	@Override
+	public Object[] sumSettled(PosOrderQuery posOrderQuery) {
+
+		List<Integer> stateCodes = PosOrder.getNormalPosOrderState();
+		StringBuilder sb = new StringBuilder();
+//		if (StringUtils.isNotEmpty(posOrderQuery.getOrderState())
+//				&& (posOrderQuery.getOrderState().equals(AppConstants.POS_ORDER_REPAY.getStateName())
+//						|| posOrderQuery.getOrderState().equals(AppConstants.POS_ORDER_CANCEL.getStateName()))) {
+
+		sb.append("select count(p.order_no) as amount, sum(case when p.order_state_code in "
+				+ AppUtil.getIntegerParmeList(stateCodes) + " then p.order_total_money end) as orderTotalMoney, ");
+		sb.append("sum(case when p.order_state_code in " + AppUtil.getIntegerParmeList(stateCodes)
+				+ " then p.order_coupon_total_money end) as orderCouponTotalMoney, ");
+		sb.append("sum(case when p.order_state_code in " + AppUtil.getIntegerParmeList(stateCodes)
+				+ " then p.order_discount_money end) as orderDiscountMoney, ");
+		sb.append("sum(case when p.order_state_code in " + AppUtil.getIntegerParmeList(stateCodes)
+				+ " then p.order_payment_money end) as orderPaymentMoney, ");
+		sb.append("sum(case when p.order_state_code in " + AppUtil.getIntegerParmeList(stateCodes)
+				+ " then p.order_round end) as orderRound, ");
+		sb.append("sum(case when p.order_state_code in " + AppUtil.getIntegerParmeList(stateCodes)
+				+ " then p.order_mgr_discount_money end) as orderMgrDiscountMoney, ");
+		sb.append("sum(case when p.order_state_code in " + AppUtil.getIntegerParmeList(stateCodes)
+				+ " then p.order_coupon_payment_money end) as orderCouponPaymentMoney ");
+		sb.append(createByPosOrderQuery(posOrderQuery));
+
+
+//		} else {
+//			sb.append("select count(order_no) as amount, sum(order_total_money) as orderTotalMoney, sum(order_coupon_total_money) as orderCouponTotalMoney, ");
+//			sb.append("sum(order_discount_money) as orderDiscountMoney, sum(order_payment_money) as orderPaymentMoney, sum(order_round) as orderRound, ");
+//			sb.append("sum(order_mgr_discount_money) as orderMgrDiscountMoney , sum(order_coupon_payment_money) as orderCouponPaymentMoney ");
+//			sb.append(createByPosOrderQuery(posOrderQuery));
+//
+//		}
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		Object[] objects = (Object[]) query.uniqueResult();
+		Integer amount = objects[0] == null ? 0 : (Integer) objects[0];
+		objects[0] = Long.valueOf(amount);
+		return objects;
 	}
 
 

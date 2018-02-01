@@ -1070,4 +1070,20 @@ public interface PosOrderDao {
 
 	public List<Object[]> findOrderPaymentMoneys(PosOrderQuery posOrderQuery);
 
+	/**
+	 * 已结账单汇总
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param orderNo
+	 * @param saleType
+	 * @param orderOperator  收银员
+	 * @param orderState
+	 * @param clientFid
+	 * @param orderExternalNo
+	 * @return
+	 */
+	public Object[] sumSettled(PosOrderQuery posOrderQuery);
+
 }

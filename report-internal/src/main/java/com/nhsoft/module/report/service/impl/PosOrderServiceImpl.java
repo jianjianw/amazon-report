@@ -321,6 +321,12 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return posOrders;
 	}
 
+	@Override
+	public Object[] sumSettled(PosOrderQuery posOrderQuery) {
+		Object[] objects = posOrderDao.sumSettled(posOrderQuery);
+		return objects;
+	}
+
 
 }
 

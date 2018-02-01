@@ -309,5 +309,8 @@ public interface PosOrderService {
 	public List<PosOrder> findSettled(PosOrderQuery posOrderQuery,
 									  int offset, int limit);
 
+	public Object[] sumSettled(PosOrderQuery posOrderQuery);
+
+
 }
 

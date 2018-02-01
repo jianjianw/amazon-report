@@ -166,16 +166,6 @@ public interface PosOrderRpc  {
      * */
     public List<PosOrderDTO> findSettled(String systemBookCode, PosOrderQuery posOrderQuery, int offset, int limit);
 
-
-
-
-
-
-
-
-
-
-
-
+    public Object[] sumSettled(String systemBookCode, PosOrderQuery posOrderQuery);
 
 }
