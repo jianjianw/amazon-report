@@ -46,6 +46,9 @@ public interface ReportDao {
 	public List<ShiftTable> findShiftTables(String systemBookCode,
 											List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
 
+	public List<ShiftTable> findShiftTables(String systemBookCode,
+											Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher);
+
 	/**
 	 * 营业收款统计 根据班次汇总
 	 * @param systemBookCode
@@ -57,6 +60,9 @@ public interface ReportDao {
 	 */
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode,
                                                                        List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
+
+	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode,
+																	   Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher);
 
 	/**
 	 *  营业收款统计  根据分店、营业日汇总

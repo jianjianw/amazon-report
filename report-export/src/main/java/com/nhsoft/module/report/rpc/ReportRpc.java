@@ -174,7 +174,7 @@ public interface ReportRpc {
 	 * @param dateTo 营业日止
 	 * @return
 	 */
-	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo, String casher);
+	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher);
 
 	/**
 	 *  营业收款统计  根据分店汇总

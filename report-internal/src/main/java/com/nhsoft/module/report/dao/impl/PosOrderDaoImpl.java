@@ -5181,6 +5181,29 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	}
 
+	@Override
+	public List<Object[]> findBranchShiftTablePaymentSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select o.merchant_num, o.shift_table_bizday, o.shift_table_num, p.payment_pay_by, sum(p.payment_money) as money, sum(p.payment_balance) as balance ");
+		sb.append("from payment as p with(nolock) inner join pos_order as o with(nolock) on p.order_no = o.order_no ");
+		sb.append("where o.system_book_code = '" + systemBookCode + "' and o.branch_num = " + branchNum + " ");
+		if (merchantNum != null) {
+			sb.append("and o.merchant_num = " + merchantNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and o.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and o.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		if (StringUtils.isNotEmpty(casher)) {
+			sb.append("and o.order_operator in " + AppUtil.getStringParmeArray(casher.split(",")));
+		}
+		sb.append("group by o.merchant_num, o.shift_table_bizday, o.shift_table_num, p.payment_pay_by ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+	}
+
 	public List<Object[]> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher){
 
 		StringBuilder sb = new StringBuilder();

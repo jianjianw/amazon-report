@@ -1037,6 +1037,18 @@ public interface PosOrderDao {
 	 */
 	public List<Object[]> findBranchShiftTablePaymentSummary(String systemBookCode, List<Integer> branchNums,
 																	   Date dateFrom, Date dateTo, String casher);
+
+	/**
+	 * 按分店 班次 支付方式 汇总消费金额
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findBranchShiftTablePaymentSummary(String systemBookCode, Integer branchNum, Integer merchantNum,
+															 Date dateFrom, Date dateTo, String casher);
+
 	/**
 	 * 按分店 班次 汇总消费券
 	 * @param systemBookCode
