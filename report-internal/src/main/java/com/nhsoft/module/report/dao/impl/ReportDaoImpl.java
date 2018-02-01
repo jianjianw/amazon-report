@@ -484,7 +484,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		return new ArrayList<BusinessCollection>(map.values());
 	}
-	
+
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, List<Integer> branchNums,
 			Date dateFrom, Date dateTo) {

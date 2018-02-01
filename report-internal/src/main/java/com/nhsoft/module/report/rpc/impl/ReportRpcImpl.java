@@ -1769,7 +1769,6 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-
 		List<BusinessCollection> list = reportService.findBusinessCollectionByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 		int size = list.size();
 		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>(size);
@@ -1821,7 +1820,7 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setAllDiscountMoney(money);
 		}
 
-		return new ArrayList<BusinessCollection>(map.values());
+		return new ArrayList<>(map.values());
 	}
 
 	@Override

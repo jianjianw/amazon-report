@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 
