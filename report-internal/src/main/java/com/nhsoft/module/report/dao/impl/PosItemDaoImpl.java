@@ -17,6 +17,8 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static com.nhsoft.module.report.util.AppUtil.getUnStoreTypes;
+
 
 @Repository
 @SuppressWarnings("deprecation")
@@ -94,7 +96,7 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		Criteria criteria = currentSession().createCriteria(PosItem.class, "p")
 				.add(Restrictions.eq("p.itemDelTag", false))
 				.add(Restrictions.ne("p.itemPurchaseScope", AppConstants.ITEM_PURCHASE_SCOPE_SELFPRODUCT))
-				.add(Restrictions.not(Restrictions.in("p.itemType", AppUtil.getUnStoreTypes())))
+				.add(Restrictions.not(Restrictions.in("p.itemType", getUnStoreTypes())))
 				.add(Restrictions.eq("p.itemEliminativeFlag", false))
 				.add(Restrictions.eq("p.systemBookCode", systemBookCode));
 		criteria.addOrder(Order.asc("p.itemCode"));
@@ -322,126 +324,155 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 	}
 
 
-
-	private String createByPosItemQueryString(PosItemQuery posItemQuery){
-		if(posItemQuery.getItemTypes() == null){
-			posItemQuery.setItemTypes(new ArrayList<Integer>(0));
+	private String createByPosItemQueryString(PosItemQuery posItemQuery) {
+		if (posItemQuery.getItemTypes() == null) {
+			posItemQuery.setItemTypes(new ArrayList<Integer>());
 		}
-		List<Integer> unstoreItemTypes = AppUtil.getUnStoreTypes();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("from pos_item as p with(nolock) ");
-		if(posItemQuery.aliasBars()){
+		if (posItemQuery.aliasBars()) {
 			sb.append("left join item_bar as bar with(nolock) on p.item_num = bar.item_num ");
 		}
 		sb.append("where p.system_book_code = '" + posItemQuery.getSystemBookCode() + "' ");
-		if(posItemQuery.getItemNums() != null && posItemQuery.getItemNums().size() > 0){
+		if (posItemQuery.getItemNums() != null && posItemQuery.getItemNums().size() > 0) {
 			sb.append("and p.item_num in " + AppUtil.getIntegerParmeList(posItemQuery.getItemNums()));
 		}
-		if(posItemQuery.isQueryAll()){
-			return sb.toString();
-		}
-		if(posItemQuery.getIsFindWeedOut() == null || !posItemQuery.getIsFindWeedOut()){
+
+		if (!posItemQuery.isQueryAll() && (posItemQuery.getIsFindWeedOut() == null || !posItemQuery.getIsFindWeedOut())) {
 			sb.append("and p.item_eliminative_flag = 0 ");
 		}
-		if(posItemQuery.getItemLastEditTime() == null){
+		if (!posItemQuery.isQueryAll() && posItemQuery.getItemLastEditTime() == null) {
 			sb.append("and p.item_del_tag = 0 ");
-		} else {
+
+		}
+		if (posItemQuery.getItemLastEditTime() != null) {
+
 			sb.append("and p.item_last_edit_time > '" + DateUtil.getLongDateTimeStr(posItemQuery.getItemLastEditTime()) + "' ");
 		}
-		if (posItemQuery.getIsFindNoStock() != null) {
-			if (posItemQuery.getIsFindNoStock()) {
-				sb.append("and p.item_type in " + AppUtil.getIntegerParmeList(unstoreItemTypes));
-			} else {
-				sb.append("and p.item_type not in " + AppUtil.getIntegerParmeList(unstoreItemTypes));
-			}
-		}
-		
-		if (StringUtils.isNotEmpty(posItemQuery.getFilterType())) {
+
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getFilterType())) {
+
+			List<Integer> filterItemTypes = new ArrayList<Integer>(2);
+			filterItemTypes.add(AppConstants.C_ITEM_TYPE_KIT);
+			filterItemTypes.add(AppConstants.C_ITEM_TYPE_NON_STOCK);
+
 			if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_PURCHASE)) {
-				if(posItemQuery.getItemTypes().size() == 0 || !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_KIT)){
+				posItemQuery.setIsFindNoStock(null);
+				if (posItemQuery.getItemTypes().isEmpty() || !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_KIT)) {
 					sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_KIT + " ");
 				}
-				
-				if(posItemQuery.getItemTypes().size() == 0
-						|| !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_ASSEMBLE)){
+				sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_NON_STOCK + " ");
+				if (posItemQuery.getItemTypes().isEmpty()
+						|| !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_ASSEMBLE)) {
 					sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_ASSEMBLE + " ");
 					sb.append("and p.item_purchase_scope != '" + AppConstants.ITEM_PURCHASE_SCOPE_SELFPRODUCT + "' ");
 				}
 				//采购订单过滤停购 AMA-9547
-				if(StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_PURCHASE_ORDER)){
-					
-					if(posItemQuery.getBranchNum() != null && posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
-						
+				if (org.apache.commons.lang.StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_PURCHASE_ORDER)) {
+
+					if (posItemQuery.getBranchNum() != null && posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)) {
+
 						sb.append("and p.item_stock_cease_flag = 0 ");
-						
+
 					} else {
 						sb.append("and ( ");
 						sb.append("(p.item_stock_cease_flag = 0 and not exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and (s.store_matrix_stock_enabled is null or s.store_matrix_stock_enabled = 1) and s.store_matrix_stock_cease_flag = 1 )) ");
 						sb.append("or ");
-						sb.append("(p.item_stock_cease_flag = 1 and exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and s.store_matrix_stock_enabled = 0 and s.store_matrix_stock_cease_flag = 0 )) ");
+						sb.append("(p.item_stock_cease_flag = 1 and     exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and (s.store_matrix_stock_enabled is null or s.store_matrix_stock_enabled = 1) and s.store_matrix_stock_cease_flag = 0 )) ");
 						sb.append(")");
-						
+
 					}
-					
+
 				}
-				if(posItemQuery.getItemMethod() == null || !posItemQuery.getItemMethod().equals(AppConstants.BUSINESS_TYPE_SHOP)){
+				if (posItemQuery.getItemMethod() == null || !posItemQuery.getItemMethod().equals(AppConstants.BUSINESS_TYPE_SHOP)) {
 					sb.append("and p.item_method != '" + AppConstants.BUSINESS_TYPE_SHOP + "' ");
-					
+
 				}
-				if(posItemQuery.isRdc()){
+				if (posItemQuery.isRdc()) {
 					sb.append("and p.item_purchase_scope != '" + AppConstants.ITEM_PURCHASE_SCOPE_BRANCH + "' ");
-					
+
 				}
-				
+
 			} else if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_INVENTORY)) {
 				if (!posItemQuery.isRdc()) {
 					sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_ELEMENT + " ");
 				}
-				if(posItemQuery.getItemTypes().size() == 0 || !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_KIT)){
+				if (posItemQuery.getItemTypes().isEmpty() || !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_KIT)) {
 					sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_KIT + " ");
 				}
 			} else if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_WHOLESALE)) {
-				if(StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_WHOLESALE_RETURN_ORDER)){
+				posItemQuery.setIsFindNoStock(null);
+				if (org.apache.commons.lang.StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_WHOLESALE_RETURN_ORDER)) {
 					posItemQuery.setFilterTypeFilterSleepItem(false);
 				}
 				//批发销售 门店不过滤休眠
-				if(StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_WHOLESALE_ORDER_ORDER)){
-					if(!posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+				if (org.apache.commons.lang.StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_WHOLESALE_ORDER_ORDER)) {
+					if (!posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)) {
 						posItemQuery.setFilterTypeFilterSleepItem(false);
 					}
 				}
-				if(posItemQuery.isFilterTypeFilterSleepItem()){
+				if (posItemQuery.isFilterTypeFilterSleepItem()) {
 					sb.append("and (p.item_status is null or p.item_status = " + AppConstants.ITEM_STATUS_NORMAL + " ) ");
 				}
-				if(posItemQuery.getItemTypes().size() == 0
-						|| !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_KIT)){
+				if (posItemQuery.getItemTypes().isEmpty()
+						|| !posItemQuery.getItemTypes().contains(AppConstants.C_ITEM_TYPE_KIT)) {
 					sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_KIT + " ");
-					
+
 				}
+				sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_NON_STOCK + " ");
+
 			} else if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_CHAIN)) {
-				if(!AppUtil.checkMaoXiongBookCode(posItemQuery.getSystemBookCode())){
+				posItemQuery.setIsFindNoStock(null);
+				if (!AppUtil.checkMaoXiongBookCode(posItemQuery.getSystemBookCode())) {
 					sb.append("and p.item_purchase_scope != '" + AppConstants.ITEM_PURCHASE_SCOPE_SELFPRODUCT + "' ");
-					
+
 				}
 				sb.append("and p.item_purchase_scope != '" + AppConstants.ITEM_PURCHASE_SCOPE_BRANCH + "' ");
 				//调出单门店查询不过滤休眠商品
-				if(StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_OUT_ORDER)){
-					if(!posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+				if (org.apache.commons.lang.StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_OUT_ORDER)) {
+					if (!posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)) {
 						posItemQuery.setFilterTypeFilterSleepItem(false);
 					}
 				}
-				if(posItemQuery.isFilterTypeFilterSleepItem()){
+				if (posItemQuery.isFilterTypeFilterSleepItem()) {
 					sb.append("and (p.item_status is null or p.item_status = " + AppConstants.ITEM_STATUS_NORMAL + " ) ");
 				}
+
 				sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_KIT + " ");
-				
+				sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_NON_STOCK + " ");
+
+				if (org.apache.commons.lang.StringUtils.equals(posItemQuery.getOrderType(), AppConstants.POS_ITEM_LOG_REQUEST_ORDER)) {
+					if (posItemQuery.getCenterBranchNum() != null) {
+						sb.append("and ((select count(*) from branch_item where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and branch_num = " + posItemQuery.getCenterBranchNum() + ") = 0 or (p.item_num in (select item_num from branch_item where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and branch_num = " + posItemQuery.getCenterBranchNum() + "))) ");
+
+					}
+
+
+				}
+				if (posItemQuery.getFilterDepartmentRequesTime() != null) {
+
+					StringBuilder departmentSb = new StringBuilder();
+					departmentSb.append("select department_name from department_Request_time where  CONVERT(varchar(10), Request_time_from, 24) <  CONVERT(varchar(10), Request_time_to, 24) ");
+					departmentSb.append("and CONVERT(varchar(10), GETDATE(), 24)  <  CONVERT(varchar(10), Request_time_from, 24) or CONVERT(varchar(10), GETDATE(), 24) > CONVERT(varchar(10), Request_time_to, 24) ");
+					departmentSb.append("and system_book_code = '" + posItemQuery.getSystemBookCode() + "' and branch_num = " + posItemQuery.getBranchNum() + " ");
+					departmentSb.append("union ");
+					departmentSb.append("select department_name from department_Request_time where  CONVERT(varchar(10), Request_time_from, 24) >=  CONVERT(varchar(10), Request_time_to, 24) ");
+					departmentSb.append("and CONVERT(varchar(10), GETDATE(), 24)  <  CONVERT(varchar(10), Request_time_from, 24) and CONVERT(varchar(10), GETDATE(), 24) > CONVERT(varchar(10), Request_time_to, 24) ");
+					departmentSb.append("and system_book_code = '" + posItemQuery.getSystemBookCode() + "' and branch_num = " + posItemQuery.getBranchNum() + " ");
+
+					sb.append("and p.item_department not in (").append(departmentSb.toString()).append(") ");
+
+				}
+
+
 			} else if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_ONLINE)) {
 				sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_MATRIX + " ");
 			} else if (posItemQuery.getFilterType().equals(AppConstants.ITEM_TYPE_SALE)) {
-				
-				if(posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+
+				sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_ELEMENT + " ");
+				if (posItemQuery.getBranchNum().equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)) {
 					sb.append("and p.item_sale_cease_flag = 0 ");
-					
+
 				} else {
 					sb.append("and ( ");
 					sb.append("(p.item_sale_cease_flag = 0 and not exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and s.store_matrix_sale_cease_flag = 1 and store_matrix_sale_enabled = 1)) ");
@@ -449,27 +480,35 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 					sb.append("(p.item_sale_cease_flag = 1 and exists (select 1 from store_matrix as s where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' and s.branch_num = " + posItemQuery.getBranchNum() + " and s.item_num = p.item_num and s.store_matrix_sale_cease_flag = 0 and store_matrix_sale_enabled = 1)) ");
 					sb.append(")");
 				}
-				
+
 			}
 		}
-		
-		if (StringUtils.isNotEmpty(posItemQuery.getVar())) {
-			
+		if (posItemQuery.getIsFindNoStock() != null) {
+			List<Integer> unstoreItemTypes = getUnStoreTypes();
+
+			if (posItemQuery.getIsFindNoStock()) {
+				sb.append("and p.item_type in " + AppUtil.getIntegerParmeList(unstoreItemTypes));
+			} else {
+				sb.append("and p.item_type not in " + AppUtil.getIntegerParmeList(unstoreItemTypes));
+			}
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getVar())) {
+
 			posItemQuery.setVar(AppUtil.filterDangerousQuery(posItemQuery.getVar()));
 			sb.append("and (");
 			sb.append("p.item_code like '%" + posItemQuery.getVar() + "%' or ");
 			sb.append("p.item_name like '%" + posItemQuery.getVar() + "%' or ");
 			sb.append("p.store_item_pinyin like '%" + posItemQuery.getVar().toUpperCase() + "%' or ");
 			sb.append("bar.item_bar_code like '%" + posItemQuery.getVar() + "%' ");
-			
-			Integer cardUserNum = null;
-			try{
-				cardUserNum = Integer.parseInt(posItemQuery.getVar());
+
+			Integer itemNum = null;
+			try {
+				itemNum = Integer.parseInt(posItemQuery.getVar());
 			} catch (Exception e) {
-			
+
 			}
-			if(cardUserNum != null){
-				sb.append(" or p.item_num = " + cardUserNum + " ");
+			if (itemNum != null) {
+				sb.append(" or p.item_num = " + itemNum + " ");
 			}
 			sb.append(") ");
 		}
@@ -482,77 +521,87 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		if (posItemQuery.getItemTreeBrand() != null) {
 			sb.append("and p.item_brand = '" + posItemQuery.getItemTreeBrand() + "' ");
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemDepartment())) {
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemDepartment())) {
 			sb.append("and p.item_department = '" + posItemQuery.getItemDepartment() + "' ");
 		}
-		if(posItemQuery.getItemDepartments() != null && posItemQuery.getItemDepartments().size() > 0) {
+		if (posItemQuery.getItemDepartments() != null && posItemQuery.getItemDepartments().size() > 0) {
 			sb.append("and p.item_department in " + AppUtil.getStringParmeList(posItemQuery.getItemDepartments()));
 		}
 		if (posItemQuery.getSupplierNum() != null) {
-			
-			StringBuffer supplierSb = new StringBuffer();
+
+			StringBuilder supplierSb = new StringBuilder();
 			supplierSb.append("select 1 from store_item_supplier as s with(nolock) where s.system_book_code = '" + posItemQuery.getSystemBookCode() + "' ");
-			if(posItemQuery.getBranchNum() != null){
+			if (posItemQuery.getBranchNum() != null) {
 				supplierSb.append("and s.branch_num = " + posItemQuery.getBranchNum() + " ");
 			}
-			if(posItemQuery.getDefaultSupplier() != null){
+			if (posItemQuery.getDefaultSupplier() != null) {
 				supplierSb.append("and s.store_item_supplier_default = 1 ");
-				
+
 			}
 			supplierSb.append("and s.supplier_num = " + posItemQuery.getSupplierNum() + " and s.item_num = p.item_num ");
 			sb.append("and exists (").append(supplierSb.toString()).append(") ");
-			
+
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemCode())) {
-			if(posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_GRADE){
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemCode())) {
+			if (posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_GRADE) {
 				sb.append("and (p.item_code like '%" + posItemQuery.getItemCode() + "%' ");
 				sb.append("or exists (select 1 from pos_item_grade as grade where grade.item_num = p.item_num and item_grade_code like '%" + posItemQuery.getItemCode() + "%' ");
 				sb.append(")) ");
 			} else {
 				sb.append("and p.item_code like '%" + posItemQuery.getItemCode() + "%' ");
-				
+
 			}
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemBarCode())) {
-			if(posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_GRADE){
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemBarCode())) {
+			if (posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_GRADE) {
 				sb.append("and (bar.item_bar_code like '%" + posItemQuery.getItemBarCode() + "%' ");
 				sb.append("or exists (select 1 from pos_item_grade as grade where grade.item_num = p.item_num and item_grade_barcode like '%" + posItemQuery.getItemBarCode() + "%' ");
 				sb.append(")) ");
 			} else {
 				sb.append("and bar.item_bar_code like '%" + posItemQuery.getItemBarCode() + "%' ");
-				
+
 			}
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemName())) {
-			if(posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_GRADE){
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getEqItemBarCode())) {
+			if (posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_GRADE) {
+				sb.append("and (bar.item_bar_code = '" + posItemQuery.getEqItemBarCode() + "' ");
+				sb.append("or exists (select 1 from pos_item_grade as grade where grade.item_num = p.item_num and item_grade_barcode = '" + posItemQuery.getEqItemBarCode() + "' ");
+				sb.append(")) ");
+			} else {
+				sb.append("and bar.item_bar_code = '" + posItemQuery.getEqItemBarCode() + "' ");
+
+			}
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemName())) {
+			if (posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_GRADE) {
 				sb.append("and (p.item_name like '%" + posItemQuery.getItemName() + "%' ");
 				sb.append("or exists (select 1 from pos_item_grade as grade where grade.item_num = p.item_num and item_grade_name like '%" + posItemQuery.getItemName() + "%' ");
 				sb.append(")) ");
 			} else {
-				
+
 				sb.append("and p.item_name like '%" + posItemQuery.getItemName() + "%' ");
 			}
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemPinyin())) {
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemPinyin())) {
 			sb.append("and p.store_item_pinyin like '%" + posItemQuery.getItemPinyin().toUpperCase() + "%' ");
 		}
 		if (posItemQuery.getItemType() != null) {
 			sb.append("and p.item_type = " + posItemQuery.getItemType() + " ");
-			
+
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getCategoryCode())) {
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getCategoryCode())) {
 			sb.append("and p.item_category_code in " + AppUtil.getStringParmeArray(posItemQuery.getCategoryCode().split(",")));
-			
+
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemBrand())) {
-			sb.append("and p.item_brand = '" + posItemQuery.getItemBrand() + "' ");
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemBrand())) {
+			sb.append("and p.item_brand in " + AppUtil.getStringParmeArray(posItemQuery.getItemBrand().split(",")));
 		}
 		if (posItemQuery.getRegularPriceFrom() != null) {
 			sb.append("and p.item_regular_price > " + posItemQuery.getRegularPriceFrom() + " ");
 		}
 		if (posItemQuery.getRegularPriceTo() != null) {
 			sb.append("and p.item_regular_price < " + posItemQuery.getRegularPriceTo() + " ");
-			
+
 		}
 		if (posItemQuery.getMinPriceFrom() != null) {
 			sb.append("and p.item_min_price > " + posItemQuery.getMinPriceFrom() + " ");
@@ -566,96 +615,102 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		if (posItemQuery.getTransferPriceTo() != null) {
 			sb.append("and p.item_transfer_price < " + posItemQuery.getTransferPriceTo() + " ");
 		}
-		
+
 		if (posItemQuery.getPurchasePriceFrom() != null) {
 			sb.append("and p.item_cost_price > " + posItemQuery.getPurchasePriceFrom() + " ");
 		}
 		if (posItemQuery.getPurchasePriceTo() != null) {
 			sb.append("and p.item_cost_price < " + posItemQuery.getPurchasePriceTo() + " ");
 		}
-		
+
 		if (posItemQuery.getWholePriceFrom() != null) {
 			sb.append("and p.item_wholesale_price > " + posItemQuery.getWholePriceFrom() + " ");
 		}
 		if (posItemQuery.getWholePriceTo() != null) {
 			sb.append("and p.item_wholesale_price < " + posItemQuery.getWholePriceTo() + " ");
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemPlace())) {
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemPlace())) {
 			sb.append("and p.item_store_place like '%" + posItemQuery.getItemPlace() + "%' ");
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemPuchaseScope())) {
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemPuchaseScope())) {
 			sb.append("and p.item_purchase_scope = '" + posItemQuery.getItemPuchaseScope() + "' ");
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemMethod()) && StringUtils.isEmpty(posItemQuery.getFilterType())) {
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemMethod()) && org.apache.commons.lang.StringUtils.isEmpty(posItemQuery.getFilterType())) {
 			sb.append("and p.item_method = '" + posItemQuery.getItemMethod() + "' ");
 		}
-		if(StringUtils.isNotEmpty(posItemQuery.getItemMethods())){
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemMethods())) {
 			sb.append("and p.item_method in " + AppUtil.getStringParmeArray(posItemQuery.getItemMethods().split(",")));
 		}
-		if (StringUtils.isNotEmpty(posItemQuery.getItemCostMode())) {
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(posItemQuery.getItemCostMode())) {
 			sb.append("and p.item_cost_mode in " + AppUtil.getStringParmeArray(posItemQuery.getItemCostMode().split(",")));
 		}
-		if (posItemQuery.getItemCreateTimeFrom() != null){
+		if (posItemQuery.getItemCreateTimeFrom() != null) {
 			sb.append("and p.item_create_time >= '" + DateUtil.getLongDateTimeStr(posItemQuery.getItemCreateTimeFrom()) + "' ");
 		}
-		if (posItemQuery.getItemCreateTimeTo() != null){
+		if (posItemQuery.getItemCreateTimeTo() != null) {
 			sb.append("and p.item_create_time <= '" + DateUtil.getLongDateTimeStr(posItemQuery.getItemCreateTimeTo()) + "' ");
 		}
-		if (posItemQuery.getFilterItemTypes() != null && posItemQuery.getFilterItemTypes().size() > 0){
+		if (posItemQuery.getFilterItemTypes() != null && posItemQuery.getFilterItemTypes().size() > 0) {
 			sb.append("and p.item_type not in " + AppUtil.getIntegerParmeList(posItemQuery.getFilterItemTypes()));
 		}
-		if (posItemQuery.getSaleCrease() != null ) {
-			sb.append("and p.item_sale_cease_flag = " + BooleanUtils.toString(posItemQuery.getSaleCrease(), "1", "0") + " ");
+		if (posItemQuery.getSaleCrease() != null) {
+			sb.append("and p.item_sale_cease_flag = " + org.apache.commons.lang.BooleanUtils.toString(posItemQuery.getSaleCrease(), "1", "0") + " ");
 		}
 		if (posItemQuery.getStockCrease() != null) {
-			sb.append("and p.item_stock_cease_flag = " + BooleanUtils.toString(posItemQuery.getStockCrease(), "1", "0") + " ");
+			sb.append("and p.item_stock_cease_flag = " + org.apache.commons.lang.BooleanUtils.toString(posItemQuery.getStockCrease(), "1", "0") + " ");
 		}
 		if (posItemQuery.getItemManufactureFlag() != null) {
-			sb.append("and (p.item_manufacture_flag = " + BooleanUtils.toString(posItemQuery.getItemManufactureFlag(), "1", "0") + " or p.item_type = " + AppConstants.C_ITEM_TYPE_ASSEMBLE + ") ");
-			
+			sb.append("and (p.item_manufacture_flag = " + org.apache.commons.lang.BooleanUtils.toString(posItemQuery.getItemManufactureFlag(), "1", "0") + " or p.item_type = " + AppConstants.C_ITEM_TYPE_ASSEMBLE + ") ");
+
+		}
+		if (posItemQuery.getManagementTemplateNum() != null) {
+
+			sb.append("and ((select count(*) from management_template_detail where management_template_num = " + posItemQuery.getManagementTemplateNum() + ") = 0 or (p.item_num in (select item_num from management_template_detail where management_template_num = " + posItemQuery.getManagementTemplateNum() + "))) ");
+
+
 		}
 		if (posItemQuery.getFilterInElementKit() != null && posItemQuery.getFilterInElementKit()) {
-			if(posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_MATERIAL){
+			if (posItemQuery.getItemType() != null && posItemQuery.getItemType() == AppConstants.C_ITEM_TYPE_MATERIAL) {
 				sb.append("and not exists (select 1 from item_element_kit with(nolock) where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and item_element_kit.element_item_num = p.item_num ) ");
-				
+
 			} else {
 				sb.append("and not exists (select 1 from item_element_kit with(nolock) where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and item_element_kit.item_num = p.item_num ) ");
-				
+
 			}
 		}
 		if (posItemQuery.getFilterInCategoryProfit() != null) {
-			if(posItemQuery.getFilterInCategoryProfit()){
-				
+			if (posItemQuery.getFilterInCategoryProfit()) {
+
 				sb.append("and not exists (select 1 from category_profit with(nolock) where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and category_profit.item_num = p.item_num ) ");
-				
+
 			} else {
 				sb.append("and exists (select 1 from category_profit with(nolock) where system_book_code = '" + posItemQuery.getSystemBookCode() + "' and category_profit.item_num = p.item_num ) ");
-				
+
 			}
 		}
-		StringBuffer orBuffer = new StringBuffer();
+		StringBuilder orBuffer = new StringBuilder();
 		boolean haveOr = false;
 		if (posItemQuery.getNewCrease() != null && posItemQuery.getNewCrease() && posItemQuery.getNewDay() != null) {
 			int newDay = posItemQuery.getNewDay();
 			haveOr = true;
 			orBuffer.append("p.item_create_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(DateUtil.addDay(Calendar.getInstance().getTime(), -newDay))) + "' ");
 		}
-		
+
 		if (posItemQuery.getDromCrease() != null) {
-			if(haveOr){
+			if (haveOr) {
 				orBuffer.append("or ");
 			}
 			orBuffer.append("p.item_status = " + AppConstants.ITEM_STATUS_SLEEP + " ");
 			haveOr = true;
 		}
-		if (posItemQuery.getNormalCrease() != null && posItemQuery.getNormalCrease()){
-			if(haveOr){
+		if (posItemQuery.getNormalCrease() != null && posItemQuery.getNormalCrease()) {
+			if (haveOr) {
 				orBuffer.append("or ");
 			}
 			orBuffer.append("(p.item_sale_cease_flag = 0 and p.item_stock_cease_flag = 0 and (p.item_status is null or p.item_status = 0)) ");
 		}
 		String orString = orBuffer.toString();
-		if(StringUtils.isNotEmpty(orString)){
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(orString)) {
 			sb.append("and (" + orString + ") ");
 		}
 		return sb.toString();

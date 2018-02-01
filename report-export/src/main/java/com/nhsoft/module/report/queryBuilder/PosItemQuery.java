@@ -73,6 +73,11 @@ public class PosItemQuery extends QueryBuilder {
 	private Boolean filterInCategoryProfit;//过滤已存在毛利率调整中的商品
 	private List<String> queryProperties;
 	private boolean queryAll = false;//是否查询所有商品 主要用于报表
+
+	//新加
+	private Integer centerBranchNum; //中心门店
+	private Boolean filterDepartmentRequesTime;//过滤不在要货时间范围内的商品
+	private String eqItemBarCode;// 条码  全匹配
 	
 	public List<String> getItemDepartments() {
 		return itemDepartments;
@@ -595,5 +600,27 @@ public class PosItemQuery extends QueryBuilder {
 		return false;
 	}
 
+	public Integer getCenterBranchNum() {
+		return centerBranchNum;
+	}
 
+	public void setCenterBranchNum(Integer centerBranchNum) {
+		this.centerBranchNum = centerBranchNum;
+	}
+
+	public Boolean getFilterDepartmentRequesTime() {
+		return filterDepartmentRequesTime;
+	}
+
+	public void setFilterDepartmentRequesTime(Boolean filterDepartmentRequesTime) {
+		this.filterDepartmentRequesTime = filterDepartmentRequesTime;
+	}
+
+	public String getEqItemBarCode() {
+		return eqItemBarCode;
+	}
+
+	public void setEqItemBarCode(String eqItemBarCode) {
+		this.eqItemBarCode = eqItemBarCode;
+	}
 }
