@@ -5086,6 +5086,28 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
+	public List<Object[]> findMerchantDiscountSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select merchant_num, sum(order_discount_money + order_round + order_mgr_discount_money) as money ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' and branch_num = " + branchNum + " and merchant_num is not null ");
+		if (merchantNum != null) {
+			sb.append("and merchant_num = " + merchantNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code in (5, 7) ");
+		sb.append("group by merchant_num order by branch_num asc");
+
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+	}
+
+	@Override
 	public List<Object[]> findBranchBizdayCouponSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		StringBuilder sb = new StringBuilder();

@@ -997,6 +997,10 @@ public interface PosOrderDao {
 	 */
 	public List<Object[]> findBranchDiscountSummary(String systemBookCode,
 														 List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<Object[]> findMerchantDiscountSummary(String systemBookCode,
+													  Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo);
+
 	/**
 	 * 按分店 营业日 汇总消费券
 	 * @param systemBookCode
