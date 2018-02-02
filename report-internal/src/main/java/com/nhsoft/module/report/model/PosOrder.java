@@ -82,6 +82,8 @@ public class PosOrder implements java.io.Serializable {
 	private String orderTmallMemo;
 	private String orderUserGroup;
 	private BigDecimal orderOnlineDiscount;
+	private Integer merchantNum;
+	private Integer stallNum;
 	@OneToMany
 	@Fetch(FetchMode.SUBSELECT)
 	@JoinColumn(name = "orderNo", updatable=false, insertable=false)
@@ -921,4 +923,19 @@ public class PosOrder implements java.io.Serializable {
 		return posOrders.stream().filter(p -> p.getOrderNo().equals(orderNo)).findFirst().orElse(null);
 	}
 
+	public Integer getStallNum() {
+		return stallNum;
+	}
+
+	public void setStallNum(Integer stallNum) {
+		this.stallNum = stallNum;
+	}
+
+	public Integer getMerchantNum() {
+		return merchantNum;
+	}
+
+	public void setMerchantNum(Integer merchantNum) {
+		this.merchantNum = merchantNum;
+	}
 }
