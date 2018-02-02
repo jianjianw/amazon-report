@@ -3,8 +3,8 @@ package com.nhsoft.module.report.dto;
 
 
 
-import com.nhsoft.utils.annotation.ReportInfo;
-import com.nhsoft.utils.annotation.ReportKey;
+import com.nhsoft.module.report.annotation.ReportInfo;
+import com.nhsoft.module.report.annotation.ReportKey;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -15,8 +15,8 @@ import java.util.*;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
-@RequestMapping(value="importData")
 @RestController
+@RequestMapping(value="importData")
 public class ImportDemoApi {
 
 
@@ -568,5 +568,9 @@ public class ImportDemoApi {
 
     }
 
+    public void test(){
+        String[] str = new String[2];
+        List<String> strings = Arrays.asList(str);
+    }
   
 }

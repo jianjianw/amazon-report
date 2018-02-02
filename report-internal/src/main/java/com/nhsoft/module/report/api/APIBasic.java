@@ -842,7 +842,7 @@ public class APIBasic {
 		Integer branchNum = 99;
 		List<Integer> itemNums = new ArrayList<>();
 		List<String>  categorys = new ArrayList<>();
-		categorys.add("91");
+		//categorys.add("91");
 		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_PURCHASE,null,categorys);
 		return inventoryLostAnalysis;
 
@@ -883,6 +883,31 @@ public class APIBasic {
 		List<OrderDetailCompare> orderDetailCompareDatasByBranchItem = reportRpc.findOrderDetailCompareDatasByBranchItem(systemBookCode,branchNums,lastDateFrom,lastDateTo,
 				thisDateFrom,thisDateTo,itemNums,categoryCodes);
 		return orderDetailCompareDatasByBranchItem;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "test41")
+	public List<RequestAnalysisDTO> test41() throws Exception{
+
+		String systemBookCode = "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-29");
+		Date dateTo = sdf.parse("2018-01-31");
+		List<Integer> branchNums = getBranchNums();
+		List<Integer> list = new ArrayList<>();
+		list.add(434404819);
+		list.add(434404818);
+		list.add(434400459);
+		list.add(434404817);
+		list.add(434400458);
+		list.add(434404816);
+		list.add(434404815);
+		list.add(434401789);
+		list.add(434404814);
+		list.add(434404813);
+		list.add(434401787);
+		List<RequestAnalysisDTO> requestAnalysisDTOs = report2Rpc.findRequestAnalysisDTOs(systemBookCode, branchNums, dateFrom, dateTo, list, null);
+		return requestAnalysisDTOs;
 	}
 
 
