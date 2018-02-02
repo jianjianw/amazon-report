@@ -886,5 +886,26 @@ public class APIBasic {
 	}
 
 
+	@RequestMapping(method = RequestMethod.GET,value = "test41")
+	public List<RequestAnalysisDTO> test41() throws Exception{
+
+		String systemBookCode = "4344";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-25");
+		Date dateTo = sdf.parse("2018-01-31");
+		List<Integer> branchNums = getBranchNums();
+		List<Integer> list = new ArrayList<>();
+		list.add(434406902);
+		list.add(434406923);
+		list.add(434406925);
+		list.add(434406927);
+		list.add(434400793);
+		list.add(434400790);
+		list.add(434400789);
+		List<RequestAnalysisDTO> requestAnalysisDTOs = report2Rpc.findRequestAnalysisDTOs(systemBookCode, branchNums, dateFrom, dateTo, list, null);
+		return requestAnalysisDTOs;
+	}
+
+
 
 }
