@@ -609,4 +609,23 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
     public PosItemLogDTO read(String posItemLogBillNo, Integer posItemLogBillDetailNum) {
         return  CopyUtil.to(posItemLogService.read(posItemLogBillNo, posItemLogBillDetailNum), PosItemLogDTO.class);
     }
+
+    @Override
+    public List<PosItemLogSummaryDTO> findItemInOutQtyAndMoney(StoreQueryCondition storeQueryCondition) {
+
+        List<Object[]> objects = posItemLogService.findItemInOutQtyAndMoney(storeQueryCondition);
+        int size = objects.size();
+        List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
+        for (int i = 0; i <size ; i++) {
+            Object[] object = objects.get(i);
+            PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
+            dto.setItemNum((Integer) object[0]);
+            dto.setQty((BigDecimal) object[1]);
+            dto.setMoney((BigDecimal) object[2]);
+            dto.setAssistQty((BigDecimal) object[3]);
+            dto.setAdjustMoney((BigDecimal) object[4]);
+            list.add(dto);
+        }
+        return list;
+    }
 }

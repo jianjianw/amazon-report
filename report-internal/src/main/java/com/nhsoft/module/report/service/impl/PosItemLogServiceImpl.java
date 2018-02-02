@@ -649,4 +649,67 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	public PosItemLog read(String posItemLogBillNo, Integer posItemLogBillDetailNum) {
 		return posItemLogDao.read(posItemLogBillNo,posItemLogBillDetailNum);
 	}
+
+	@Override
+	public List<Object[]> findItemInOutQtyAndMoney(StoreQueryCondition storeQueryCondition) {
+		storeQueryCondition.setDateStart(DateUtil.getMinOfDate(storeQueryCondition.getDateStart()));
+		storeQueryCondition.setDateEnd(DateUtil.getMaxOfDate(storeQueryCondition.getDateEnd()));
+		List<Object[]> allObjects = new ArrayList<Object[]>();
+		Date compareDate = storeQueryCondition.getDateStart();
+		int whileCount = 0;
+		int toYear = DateUtil.getYear(storeQueryCondition.getDateEnd());
+		int fromYear = 0;
+		List<Object[]> objects = null;
+		Object[] object;
+		Object[] allObject;
+		Date dateTo = storeQueryCondition.getDateEnd();
+		while(compareDate.compareTo(dateTo) < 0){
+
+			fromYear = DateUtil.getYear(compareDate);
+			Date toDate = fromYear == toYear?dateTo:DateUtil.getLastDayOfYear(compareDate);
+			storeQueryCondition.setDateStart(compareDate);
+			storeQueryCondition.setDateEnd(toDate);
+			if(whileCount == 0){
+				objects = posItemLogDao.findItemInOutQtyAndMoney(storeQueryCondition);
+				for(int i = 0;i < objects.size();i++){
+					object = objects.get(i);
+					object[2] = object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2];
+					object[3] = object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3];
+					object[4] = object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4];
+					object[5] = object[5] == null?BigDecimal.ZERO:(BigDecimal)object[5];
+					allObjects.add(object);
+				}
+			} else {
+				objects = posItemLogDao.findItemInOutQtyAndMoney(storeQueryCondition);
+
+				for(int i = 0;i < objects.size();i++){
+					object = objects.get(i);
+					boolean find = false;
+					for(int j = 0;j < allObjects.size();j++){
+						allObject = allObjects.get(j);
+						if(allObject[0].equals(object[0])
+								&& allObject[1].equals(object[1])){
+							allObject[2] = ((BigDecimal)allObject[2]).add(object[2] == null?BigDecimal.ZERO:((BigDecimal)object[2]));
+							allObject[3] = ((BigDecimal)allObject[3]).add(object[3] == null?BigDecimal.ZERO:((BigDecimal)object[3]));
+							allObject[4] = ((BigDecimal)allObject[4]).add(object[4] == null?BigDecimal.ZERO:((BigDecimal)object[4]));
+							allObject[5] = ((BigDecimal)allObject[5]).add(object[5] == null?BigDecimal.ZERO:((BigDecimal)object[5]));
+							find = true;
+							break;
+						}
+					}
+					if(!find){
+						object[2] = object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2];
+						object[3] = object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3];
+						object[4] = object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4];
+						object[5] = object[5] == null?BigDecimal.ZERO:(BigDecimal)object[5];
+						allObjects.add(object);
+					}
+
+				}
+			}
+			whileCount++;
+			compareDate = DateUtil.getMinOfYear(DateUtil.addYear(compareDate, 1));
+		}
+		return allObjects;
+	}
 }

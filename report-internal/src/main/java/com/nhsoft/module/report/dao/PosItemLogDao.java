@@ -424,4 +424,12 @@ public interface PosItemLogDao {
 	 */
 	public PosItemLog read(String posItemLogBillNo, Integer posItemLogBillDetailNum);
 
+
+	/**
+	 * 按商品汇总进出库量 和 金额
+	 * @param storeQueryCondition
+	 * @return
+	 */
+	public List<Object[]> findItemInOutQtyAndMoney(StoreQueryCondition storeQueryCondition);
+
 }
