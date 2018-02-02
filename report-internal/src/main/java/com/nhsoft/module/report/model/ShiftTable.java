@@ -21,6 +21,8 @@ public class ShiftTable implements java.io.Serializable {
 	private static final long serialVersionUID = 1225341176889558728L;
 	@EmbeddedId
 	private ShiftTableId id;
+	private Integer merchantNum;
+	private Integer stallNum;
 	private Date shiftTableBizDate;
 	private Date shiftTableStart;
 	private Date shiftTableEnd;
@@ -201,8 +203,24 @@ public class ShiftTable implements java.io.Serializable {
 		this.shiftTablePayments = shiftTablePayments;
 	}
 
+	public Integer getMerchantNum() {
+		return merchantNum;
+	}
+
+	public void setMerchantNum(Integer merchantNum) {
+		this.merchantNum = merchantNum;
+	}
+
+	public Integer getStallNum() {
+		return stallNum;
+	}
+
+	public void setStallNum(Integer stallNum) {
+		this.stallNum = stallNum;
+	}
+
 	public static ShiftTable getShiftTable(List<ShiftTable> shiftTables, Integer branchNum, String shiftTableBizday,
-			Integer shiftTableNum) {
+										   Integer shiftTableNum) {
 		for(int i = 0;i < shiftTables.size();i++){
 			ShiftTable shiftTable = shiftTables.get(i);
 			if(shiftTable.getId().getBranchNum().equals(branchNum) 

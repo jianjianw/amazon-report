@@ -2141,7 +2141,7 @@ public class ReportRpcImpl implements ReportRpc {
         List<ShiftTable> shiftTables = reportService.findShiftTables(systemBookCode, branchNum, merchantNum, dateFrom, dateTo, casher);
         for (int i = 0; i < shiftTables.size(); i++) {
             ShiftTable shiftTable = shiftTables.get(i);
-            Integer tempMerchantNum = shiftTable.getId().getMerchantNum();
+            Integer tempMerchantNum = shiftTable.getMerchantNum();
             String shiftTableBizday = shiftTable.getId().getShiftTableBizday();
             Integer shiftTableNum = shiftTable.getId().getShiftTableNum();
             StringBuilder sb = new StringBuilder();

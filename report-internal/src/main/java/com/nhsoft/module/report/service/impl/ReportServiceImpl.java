@@ -569,7 +569,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByStall(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo) {
-		return reportDao.findBusinessCollectionByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		return reportDao.findBusinessCollectionByStall(systemBookCode, branchNum, merchantNum, stallNum, dateFrom, dateTo);
 	}
 
 	@Override

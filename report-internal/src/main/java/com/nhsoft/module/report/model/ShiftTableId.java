@@ -15,8 +15,6 @@ public class ShiftTableId implements java.io.Serializable {
 	private static final long serialVersionUID = 3283199860369666345L;
 	private String systemBookCode;
 	private Integer branchNum;
-	private Integer merchantNum;
-	private Integer stallNum;
 	private Integer shiftTableNum;
 	private String shiftTableBizday;
 
@@ -63,22 +61,6 @@ public class ShiftTableId implements java.io.Serializable {
 		this.shiftTableBizday = shiftTableBizday;
 	}
 
-	public Integer getMerchantNum() {
-		return merchantNum;
-	}
-
-	public void setMerchantNum(Integer merchantNum) {
-		this.merchantNum = merchantNum;
-	}
-
-	public Integer getStallNum() {
-		return stallNum;
-	}
-
-	public void setStallNum(Integer stallNum) {
-		this.stallNum = stallNum;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -89,8 +71,6 @@ public class ShiftTableId implements java.io.Serializable {
 		if (systemBookCode != null ? !systemBookCode.equals(that.systemBookCode) : that.systemBookCode != null)
 			return false;
 		if (branchNum != null ? !branchNum.equals(that.branchNum) : that.branchNum != null) return false;
-		if (merchantNum != null ? !merchantNum.equals(that.merchantNum) : that.merchantNum != null) return false;
-		if (stallNum != null ? !stallNum.equals(that.stallNum) : that.stallNum != null) return false;
 		if (shiftTableNum != null ? !shiftTableNum.equals(that.shiftTableNum) : that.shiftTableNum != null)
 			return false;
 		return shiftTableBizday != null ? shiftTableBizday.equals(that.shiftTableBizday) : that.shiftTableBizday == null;
@@ -100,8 +80,6 @@ public class ShiftTableId implements java.io.Serializable {
 	public int hashCode() {
 		int result = systemBookCode != null ? systemBookCode.hashCode() : 0;
 		result = 31 * result + (branchNum != null ? branchNum.hashCode() : 0);
-		result = 31 * result + (merchantNum != null ? merchantNum.hashCode() : 0);
-		result = 31 * result + (stallNum != null ? stallNum.hashCode() : 0);
 		result = 31 * result + (shiftTableNum != null ? shiftTableNum.hashCode() : 0);
 		result = 31 * result + (shiftTableBizday != null ? shiftTableBizday.hashCode() : 0);
 		return result;
