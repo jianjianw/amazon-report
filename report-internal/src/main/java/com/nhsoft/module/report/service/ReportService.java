@@ -64,6 +64,9 @@ public interface ReportService {
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode,
                                                                       List<Integer> branchNums, Date dateFrom, Date dateTo);
 
+	public List<BusinessCollection> findBusinessCollectionByMerchantDay(String systemBookCode,
+																	  Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo);
+
 	/**
 	 * 营业收款统计 根据终端汇总
 	 * @param systemBookCode

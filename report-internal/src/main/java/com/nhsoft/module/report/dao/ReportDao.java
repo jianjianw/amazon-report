@@ -75,6 +75,8 @@ public interface ReportDao {
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode,
                                                                       List<Integer> branchNums, Date dateFrom, Date dateTo);
 
+	public List<BusinessCollection> findBusinessCollectionByMerchantDay(String systemBookCode,
+																		Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo);
 
 
 	/**

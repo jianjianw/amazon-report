@@ -951,6 +951,135 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
+	public List<BusinessCollection> findBusinessCollectionByMerchantDay(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select merchant_num, shift_table_bizday, payment_pay_by, sum(payment_money) as money , sum(payment_balance) as balance ");
+		sb.append("from payment with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' and branch_num = " + branchNum + " and merchant_num is not null ");
+		if (merchantNum != null) {
+			sb.append("and merchant_num = " + merchantNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by merchant_num, shift_table_bizday, payment_pay_by order by merchant_num asc, payment_pay_by asc ");
+
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		List<Object[]> objects = sqlQuery.list();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			String type = (String) object[2];
+			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal unPaidMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BusinessCollection data = map.get(tempMerchantNum + shiftTableBizday);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				map.put(tempMerchantNum + shiftTableBizday, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			data.getPosIncomes().add(detail);
+			if (type.equals(AppConstants.PAYMENT_GIFTCARD)) {
+				data.setUnPaidMoney(unPaidMoney);
+			}
+			if (type.equals(AppConstants.PAYMENT_YINLIAN)) {
+				data.setAllBankMoney(data.getAllBankMoney().add(money));
+			}
+
+		}
+
+		// 补扣金额
+		sb = new StringBuffer();
+		sb.append("select merchant_num, shift_table_bizday, sum(consume_money) ");
+		sb.append("from card_consume with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " and merchant_num is not null ");
+		if (merchantNum != null) {
+			sb.append("and merchant_num = " + merchantNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= :bizFrom ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= :bizTo ");
+		}
+		sb.append("and consume_re_card_flag = 1 ");
+		sb.append("group by merchant_num, shift_table_bizday");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if (dateFrom != null) {
+			query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
+		}
+		if (dateTo != null) {
+			query.setString("bizTo", DateUtil.getDateShortStr(dateTo));
+		}
+		objects = query.list();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BusinessCollection data = map.get(tempMerchantNum + shiftTableBizday);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				map.put(tempMerchantNum + shiftTableBizday, data);
+			}
+			data.setRePaidMoney(money);
+		}
+		sb = new StringBuffer();
+		sb.append("select mercahnt_num, shift_table_bizday, sum(shift_table_actual_money) as actualCash, sum(shift_table_actual_bank_money) as bankMoney ");
+		sb.append("from shift_table with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " and merchant_num is not null ");
+		if (merchantNum != null) {
+			sb.append("and mercahnt_num = " + merchantNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= :bizFrom ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= :bizTo ");
+		}
+		sb.append("group by merchant_num,shift_table_bizday ");
+		query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if (dateFrom != null) {
+			query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
+		}
+		if (dateTo != null) {
+			query.setString("bizTo", DateUtil.getDateShortStr(dateTo));
+		}
+		objects = query.list();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal bankMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BusinessCollection data = map.get(tempMerchantNum + shiftTableBizday);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				map.put(tempMerchantNum + shiftTableBizday, data);
+			}
+			data.setReceiveCash(money);
+			data.setReceiveBankMoney(bankMoney);
+		}
+		return new ArrayList<BusinessCollection>(map.values());
+	}
+
+	@Override
 	public List<BusinessCollection> findBusinessCollectionByTerminal(String systemBookCode, List<Integer> branchNums,
 			Date dateFrom, Date dateTo) {
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
