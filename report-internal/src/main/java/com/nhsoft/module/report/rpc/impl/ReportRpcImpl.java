@@ -3936,12 +3936,14 @@ public class ReportRpcImpl implements ReportRpc {
 			String bizday = dto.getBizday();
 			Integer itemNum = dto.getItemNum();
 
-				for (int j = dateList.size() - 1; j >= 0 ; j--) {
-					PosItemLogSummaryDTO posItemDTO = dateList.get(j);
+			for (int j = dateList.size() - 1; j >= 0 ; j--) {
+				PosItemLogSummaryDTO posItemDTO = dateList.get(j);
+				if(itemNum != null && bizday != null){
 					if(itemNum.equals(posItemDTO.getItemNum()) && bizday.equals(posItemDTO.getBizday())){
 						dateList.remove(posItemDTO);
 					}
 				}
+			}
 		}
 		itemBizFlagSummary.addAll(dateList);
 
