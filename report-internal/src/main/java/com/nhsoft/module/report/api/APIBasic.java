@@ -891,17 +891,21 @@ public class APIBasic {
 
 		String systemBookCode = "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-25");
+		Date dateFrom = sdf.parse("2018-01-29");
 		Date dateTo = sdf.parse("2018-01-31");
 		List<Integer> branchNums = getBranchNums();
 		List<Integer> list = new ArrayList<>();
-		list.add(434406902);
-		list.add(434406923);
-		list.add(434406925);
-		list.add(434406927);
-		list.add(434400793);
-		list.add(434400790);
-		list.add(434400789);
+		list.add(434404819);
+		list.add(434404818);
+		list.add(434400459);
+		list.add(434404817);
+		list.add(434400458);
+		list.add(434404816);
+		list.add(434404815);
+		list.add(434401789);
+		list.add(434404814);
+		list.add(434404813);
+		list.add(434401787);
 		List<RequestAnalysisDTO> requestAnalysisDTOs = report2Rpc.findRequestAnalysisDTOs(systemBookCode, branchNums, dateFrom, dateTo, list, null);
 		return requestAnalysisDTOs;
 	}
