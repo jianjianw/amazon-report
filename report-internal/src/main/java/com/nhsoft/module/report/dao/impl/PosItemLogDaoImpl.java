@@ -7,7 +7,6 @@ import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.impl.execchain.TunnelRefusedException;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
@@ -19,7 +18,6 @@ import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -874,15 +872,18 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
 			sb.append("inner join pos_item as p on l.item_num = p.item_num ");
-			sb.append("and p.item_category in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
 		}
 
-		sb.append("with(nolock) where l.system_book_code = :systemBookCode and l.branch_num = :branchNum ");
+		sb.append("where l.system_book_code = :systemBookCode and l.branch_num = :branchNum ");
 		if(storeQueryCondition.getDateStart() != null){
 			sb.append("and l.pos_item_log_date_index >= '" + DateUtil.getDateShortStr(storeQueryCondition.getDateStart()) + "' ");
 		}
 		if(storeQueryCondition.getDateEnd() != null){
 			sb.append("and l.pos_item_log_date_index <= '" + DateUtil.getDateShortStr(storeQueryCondition.getDateEnd()) + "' ");
+
+		}
+		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0) {
+			sb.append("and p.item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
 
 		}
 		if(storeQueryCondition.getExactDateEnd() != null){
