@@ -1001,6 +1001,9 @@ public interface PosOrderDao {
 	public List<Object[]> findMerchantDiscountSummary(String systemBookCode,
 													  Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo);
 
+	public List<Object[]> findStallDiscountSummary(String systemBookCode,
+													  Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo);
+
 	/**
 	 * 按分店 营业日 汇总消费券
 	 * @param systemBookCode

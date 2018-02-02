@@ -609,6 +609,144 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
+	public List<BusinessCollection> findBusinessCollectionByStall(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo) {
+		Map<String, BusinessCollection> map = new HashMap<>();
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select merchant_num, stall_num, payment_pay_by, sum(payment_money) as money , sum(payment_balance) as balance ");
+		sb.append("from payment p with (nolock) inner join pos_order o with(nolock) on p.order_no = o.order_no ");
+		sb.append("where p.system_book_code = '" + systemBookCode + "' and p.branch_num = " + branchNum + " and o.merchant_num is not null ");
+		if (merchantNum != null) {
+			sb.append("and merchant_num = " + merchantNum + " ");
+		}
+		if (stallNum != null) {
+			sb.append("and stall_num = " + stallNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and p.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and p.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("group by merchant_num, stall_num, payment_pay_by order by merchant_num asc, stall_num asc, payment_pay_by asc ");
+
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		List<Object[]> objects = sqlQuery.list();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			Integer tempStallNum = (Integer) object[1];
+			String type = (String) object[2];
+			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal unPaidMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BusinessCollection data = map.get(tempMerchantNum+"_"+tempStallNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setStallNum(tempStallNum);
+				map.put(tempMerchantNum+"_"+tempStallNum, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			data.getPosIncomes().add(detail);
+			if (type.equals(AppConstants.PAYMENT_GIFTCARD)) {
+				data.setUnPaidMoney(unPaidMoney);
+			}
+			if (type.equals(AppConstants.PAYMENT_YINLIAN)) {
+				data.setAllBankMoney(data.getAllBankMoney().add(money));
+			}
+		}
+
+		// 补扣金额
+		sb = new StringBuffer();
+		sb.append("select merchant_num, stall_num, sum(consume_money) ");
+		sb.append("from card_consume with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " and merchant_num is not null ");
+		if (merchantNum != null) {
+			sb.append("and merchant_num = " + merchantNum + " ");
+		}
+		if(stallNum != null) {
+			sb.append("and stall_num = " + stallNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= :bizFrom ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= :bizTo ");
+		}
+		sb.append("and consume_re_card_flag = 1 ");
+		sb.append("group by merchant_num, stall_num");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if (dateFrom != null) {
+			query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
+		}
+		if (dateTo != null) {
+			query.setString("bizTo", DateUtil.getDateShortStr(dateTo));
+		}
+		objects = query.list();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			Integer tempStallNum = (Integer) object[1];
+			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BusinessCollection data = map.get(tempMerchantNum+"_"+stallNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setStallNum(tempStallNum);
+				map.put(tempMerchantNum+"_"+tempStallNum, data);
+			}
+			data.setRePaidMoney(money);
+		}
+
+		sb = new StringBuffer();
+		sb.append("select merchant_num, stall_num, sum(shift_table_actual_money) as actualCash, sum(shift_table_actual_bank_money) as bankMoney ");
+		sb.append("from shift_table with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " and merchant_num is not null ");
+		if (merchantNum != null) {
+			sb.append("and merchant_num = " + merchantNum + " ");
+		}
+		if(stallNum != null) {
+			sb.append("and stall_num = " + stallNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= :bizFrom ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= :bizTo ");
+		}
+		sb.append("group by merchant_num, stall_num ");
+		query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if (dateFrom != null) {
+			query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
+		}
+		if (dateTo != null) {
+			query.setString("bizTo", DateUtil.getDateShortStr(dateTo));
+		}
+		objects = query.list();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			Integer tempStallNum = (Integer) object[1];
+			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal bankMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BusinessCollection data = map.get(tempMerchantNum+"_"+tempStallNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setStallNum(tempStallNum);
+				map.put(tempMerchantNum+"_"+tempStallNum, data);
+			}
+			data.setReceiveCash(money);
+			data.setReceiveBankMoney(bankMoney);
+		}
+		return new ArrayList<BusinessCollection>(map.values());
+	}
+
+	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, List<Integer> branchNums,
 			Date dateFrom, Date dateTo) {
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
