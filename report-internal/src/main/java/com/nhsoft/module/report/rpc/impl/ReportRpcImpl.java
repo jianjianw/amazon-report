@@ -2059,50 +2059,17 @@ public class ReportRpcImpl implements ReportRpc {
 
     @Override
     public List<BusinessCollection> findBusinessCollectionByMerchantDay(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
-		List<BusinessCollection> list = reportService.findBusinessCollectionByBranchDay(systemBookCode, branchNums, dateFrom, dateTo);
+		List<BusinessCollection> list = reportService.findBusinessCollectionByMerchantDay(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
 		int size = list.size();
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>(size);
 		for (int i = 0; i < size ; i++) {
 			BusinessCollection collection = list.get(i);
 			StringBuilder sb = new StringBuilder();
-			String key = sb.append(collection.getBranchNum()).append(collection.getShiftTableBizday()).toString();
+			String key = sb.append(collection.getMerchantNum()).append(collection.getShiftTableBizday()).toString();
 			map.put(key,collection);
 		}
 
-		List<Object[]> detailList = posOrderService.findBranchBizdayCouponSummary(systemBookCode, branchNums, dateFrom, dateTo);
-		for (int i = 0,len = detailList.size(); i < len; i++) {
-			Object[] object = detailList.get(i);
-			Integer branchNum = (Integer) object[0];
-			String shiftTableBizday = (String) object[1];
-			String type = (String) object[2];
-			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-			StringBuilder sb = new StringBuilder();
-			String key = sb.append(branchNum).append(shiftTableBizday).toString();
-			BusinessCollection data = map.get(key);
-			if (data == null) {
-				data = new BusinessCollection();
-				data.setBranchNum(branchNum);
-				data.setShiftTableBizday(shiftTableBizday);
-				map.put(key, data);
-			}
-			BusinessCollectionIncome detail = new BusinessCollectionIncome();
-			detail.setName(type);
-			detail.setMoney(money);
-			detail.setQty(amount);
-			data.getTicketIncomes().add(detail);
-
-			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-			if (detail == null) {
-				detail = new BusinessCollectionIncome();
-				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-				detail.setMoney(BigDecimal.ZERO);
-				data.getPosIncomes().add(detail);
-			}
-			detail.setMoney(detail.getMoney().add(money));
-		}
-
-		List<Object[]> postList = posOrderService.findBranchBizdayDiscountSummary(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> postList = posOrderService.findMerchantBizdayDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
 		for (int i = 0,len = postList.size(); i < len; i++) {
 			Object[] object = postList.get(i);
 			Integer branchNum = (Integer) object[0];
