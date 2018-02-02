@@ -2169,12 +2169,114 @@ public class ReportRpcImpl implements ReportRpc {
 
     @Override
     public List<BusinessCollection> findBusinessCollectionByMerchant(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
-        return null;
+		List<BusinessCollection> list = reportService.findBusinessCollectionByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		int size = list.size();
+		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>(size);
+		for (int i = 0; i <size ; i++) {
+			BusinessCollection collection = list.get(i);
+			map.put(collection.getBranchNum(),collection);
+		}
+		List<Object[]> detailList = posOrderService.findBranchCouponSummary(systemBookCode, branchNums, dateFrom, dateTo);
+
+		for (int i = 0,len = detailList.size(); i < len; i++) {
+			Object[] object = detailList.get(i);
+			Integer branchNum = (Integer) object[0];
+			String type = (String) object[1];
+			BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BusinessCollection data = map.get(branchNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				map.put(branchNum, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+
+		List<Object[]> posList = posOrderService.findBranchDiscountSummary(systemBookCode, branchNums, dateFrom, dateTo);
+		for (int i = 0,len = posList.size(); i < len ; i++) {
+			Object[] object = posList.get(i);
+			Integer branchNum = (Integer) object[0];
+			BigDecimal money = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
+			BusinessCollection data = map.get(branchNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				map.put(branchNum, data);
+			}
+			data.setAllDiscountMoney(money);
+		}
+
+		return new ArrayList<>(map.values());
     }
 
     @Override
     public List<BusinessCollection> findBusinessCollectionByStall(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo) {
-        return null;
+		List<BusinessCollection> list = reportService.findBusinessCollectionByBranch(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
+		int size = list.size();
+		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>(size);
+		for (int i = 0; i <size ; i++) {
+			BusinessCollection collection = list.get(i);
+			map.put(collection.getBranchNum(),collection);
+		}
+		List<Object[]> detailList = posOrderService.findBranchCouponSummary(systemBookCode, branchNums, dateFrom, dateTo);
+
+		for (int i = 0,len = detailList.size(); i < len; i++) {
+			Object[] object = detailList.get(i);
+			Integer branchNum = (Integer) object[0];
+			String type = (String) object[1];
+			BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BusinessCollection data = map.get(branchNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				map.put(branchNum, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+
+		List<Object[]> posList = posOrderService.findBranchDiscountSummary(systemBookCode, branchNums, dateFrom, dateTo);
+		for (int i = 0,len = posList.size(); i < len ; i++) {
+			Object[] object = posList.get(i);
+			Integer branchNum = (Integer) object[0];
+			BigDecimal money = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
+			BusinessCollection data = map.get(branchNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				map.put(branchNum, data);
+			}
+			data.setAllDiscountMoney(money);
+		}
+
+		return new ArrayList<>(map.values());
     }
 
     @Override
