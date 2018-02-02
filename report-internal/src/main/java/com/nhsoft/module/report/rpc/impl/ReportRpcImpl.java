@@ -2072,15 +2072,15 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> postList = posOrderService.findMerchantBizdayDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
 		for (int i = 0,len = postList.size(); i < len; i++) {
 			Object[] object = postList.get(i);
-			Integer branchNum = (Integer) object[0];
+			Integer tempMerchantNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
 			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
 			StringBuilder sb = new StringBuilder();
-			String key = sb.append(branchNum).append(shiftTableBizday).toString();
+			String key = sb.append(tempMerchantNum).append(shiftTableBizday).toString();
 			BusinessCollection data = map.get(key);
 			if (data == null) {
 				data = new BusinessCollection();
-				data.setBranchNum(branchNum);
+				data.setMerchantNum(tempMerchantNum);
 				data.setShiftTableBizday(shiftTableBizday);
 				map.put(key, data);
 			}
