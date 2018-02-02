@@ -15,6 +15,8 @@ public class ShiftTableId implements java.io.Serializable {
 	private static final long serialVersionUID = 3283199860369666345L;
 	private String systemBookCode;
 	private Integer branchNum;
+	private Integer merchantNum;
+	private Integer stallNum;
 	private Integer shiftTableNum;
 	private String shiftTableBizday;
 
@@ -61,48 +63,48 @@ public class ShiftTableId implements java.io.Serializable {
 		this.shiftTableBizday = shiftTableBizday;
 	}
 
+	public Integer getMerchantNum() {
+		return merchantNum;
+	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((branchNum == null) ? 0 : branchNum.hashCode());
-		result = prime * result + ((shiftTableBizday == null) ? 0 : shiftTableBizday.hashCode());
-		result = prime * result + ((shiftTableNum == null) ? 0 : shiftTableNum.hashCode());
-		result = prime * result + ((systemBookCode == null) ? 0 : systemBookCode.hashCode());
-		return result;
+	public void setMerchantNum(Integer merchantNum) {
+		this.merchantNum = merchantNum;
+	}
+
+	public Integer getStallNum() {
+		return stallNum;
+	}
+
+	public void setStallNum(Integer stallNum) {
+		this.stallNum = stallNum;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ShiftTableId that = (ShiftTableId) o;
+
+		if (systemBookCode != null ? !systemBookCode.equals(that.systemBookCode) : that.systemBookCode != null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (branchNum != null ? !branchNum.equals(that.branchNum) : that.branchNum != null) return false;
+		if (merchantNum != null ? !merchantNum.equals(that.merchantNum) : that.merchantNum != null) return false;
+		if (stallNum != null ? !stallNum.equals(that.stallNum) : that.stallNum != null) return false;
+		if (shiftTableNum != null ? !shiftTableNum.equals(that.shiftTableNum) : that.shiftTableNum != null)
 			return false;
-		ShiftTableId other = (ShiftTableId) obj;
-		if (branchNum == null) {
-			if (other.branchNum != null)
-				return false;
-		} else if (!branchNum.equals(other.branchNum))
-			return false;
-		if (shiftTableBizday == null) {
-			if (other.shiftTableBizday != null)
-				return false;
-		} else if (!shiftTableBizday.equals(other.shiftTableBizday))
-			return false;
-		if (shiftTableNum == null) {
-			if (other.shiftTableNum != null)
-				return false;
-		} else if (!shiftTableNum.equals(other.shiftTableNum))
-			return false;
-		if (systemBookCode == null) {
-			if (other.systemBookCode != null)
-				return false;
-		} else if (!systemBookCode.equals(other.systemBookCode))
-			return false;
-		return true;
+		return shiftTableBizday != null ? shiftTableBizday.equals(that.shiftTableBizday) : that.shiftTableBizday == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = systemBookCode != null ? systemBookCode.hashCode() : 0;
+		result = 31 * result + (branchNum != null ? branchNum.hashCode() : 0);
+		result = 31 * result + (merchantNum != null ? merchantNum.hashCode() : 0);
+		result = 31 * result + (stallNum != null ? stallNum.hashCode() : 0);
+		result = 31 * result + (shiftTableNum != null ? shiftTableNum.hashCode() : 0);
+		result = 31 * result + (shiftTableBizday != null ? shiftTableBizday.hashCode() : 0);
+		return result;
 	}
 
 	public static ShiftTableId getByClosedCashId(String closedCashId) {

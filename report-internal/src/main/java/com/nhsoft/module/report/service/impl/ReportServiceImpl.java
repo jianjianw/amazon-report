@@ -558,8 +558,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
 	@Override
-	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums,
-			Date dateFrom, Date dateTo) {
+	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return reportDao.findBusinessCollectionByBranch(systemBookCode, branchNums, dateFrom, dateTo);
 	}
 
@@ -580,11 +579,20 @@ public class ReportServiceImpl implements ReportService {
 		return reportDao.findShiftTables(systemBookCode,branchNums,dateFrom,dateTo,casher);
 	}
 
+	@Override
+	public List<ShiftTable> findShiftTables(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher) {
+		return reportDao.findShiftTables(systemBookCode,branchNum, merchantNum,dateFrom,dateTo,casher);
+	}
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums,
 			Date dateFrom, Date dateTo, String casher) {
 		return reportDao.findBusinessCollectionByShiftTable(systemBookCode, branchNums, dateFrom, dateTo, casher);
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher) {
+		return reportDao.findBusinessCollectionByShiftTable(systemBookCode, branchNum, merchantNum, dateFrom, dateTo, casher);
 	}
 
 	private OrderCompare readOrderCompareFromList(List<OrderCompare> orderCompareDatas, String itemTypeCode) {

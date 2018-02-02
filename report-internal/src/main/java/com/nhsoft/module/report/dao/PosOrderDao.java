@@ -1037,6 +1037,18 @@ public interface PosOrderDao {
 	 */
 	public List<Object[]> findBranchShiftTablePaymentSummary(String systemBookCode, List<Integer> branchNums,
 																	   Date dateFrom, Date dateTo, String casher);
+
+	/**
+	 * 按分店 班次 支付方式 汇总消费金额
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findBranchShiftTablePaymentSummary(String systemBookCode, Integer branchNum, Integer merchantNum,
+															 Date dateFrom, Date dateTo, String casher);
+
 	/**
 	 * 按分店 班次 汇总消费券
 	 * @param systemBookCode
@@ -1069,5 +1081,21 @@ public interface PosOrderDao {
 	public List<Object[]> findOrderPaymentMoneys(List<String> orderNos);
 
 	public List<Object[]> findOrderPaymentMoneys(PosOrderQuery posOrderQuery);
+
+	/**
+	 * 已结账单汇总
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param orderNo
+	 * @param saleType
+	 * @param orderOperator  收银员
+	 * @param orderState
+	 * @param clientFid
+	 * @param orderExternalNo
+	 * @return
+	 */
+	public Object[] sumSettled(PosOrderQuery posOrderQuery);
 
 }

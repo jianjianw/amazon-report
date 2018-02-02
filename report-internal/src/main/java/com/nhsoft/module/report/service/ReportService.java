@@ -41,7 +41,7 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<Object[]> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
-	
+
 	/**
 	 *  营业收款统计  根据分店汇总
 	 * @param systemBookCode
@@ -51,7 +51,7 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode,
-                                                                   List<Integer> branchNums, Date dateFrom, Date dateTo);
+																   List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
 	 *  营业收款统计  根据分店、营业日汇总
@@ -86,6 +86,9 @@ public interface ReportService {
 	public List<ShiftTable> findShiftTables(String systemBookCode,
 											List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
 
+	public List<ShiftTable> findShiftTables(String systemBookCode,
+											Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher);
+
 
 	/**
 	 * 营业收款统计 根据班次汇总
@@ -97,6 +100,19 @@ public interface ReportService {
 	 */
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode,
                                                                        List<Integer> branchNums, Date dateFrom, Date dateTo, String casher);
+
+	/**
+	 * 营业收款统计 根据班次汇总
+	 * @param systemBookCode
+	 * @param branchNums 分店列表
+	 * @param dateFrom 营业日起
+	 * @param dateTo 营业日止
+	 * @return
+	 */
+	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode,
+																	   Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher);
+
+
 
 	/**
 	 * 类别同比 环比

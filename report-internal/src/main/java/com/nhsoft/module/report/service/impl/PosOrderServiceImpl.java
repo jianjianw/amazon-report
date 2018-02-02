@@ -258,6 +258,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
+	public List<Object[]> findBranchShiftTablePaymentSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher) {
+		return posOrderDao.findBranchShiftTablePaymentSummary(systemBookCode,branchNum, merchantNum, dateFrom,dateTo,casher);
+	}
+
+	@Override
 	public List<Object[]> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		return posOrderDao.findBranchShiftTableCouponSummary(systemBookCode,branchNums,dateFrom,dateTo,casher);
 	}
@@ -319,6 +324,12 @@ public class PosOrderServiceImpl implements PosOrderService {
 			}
 		}
 		return posOrders;
+	}
+
+	@Override
+	public Object[] sumSettled(PosOrderQuery posOrderQuery) {
+		Object[] objects = posOrderDao.sumSettled(posOrderQuery);
+		return objects;
 	}
 
 

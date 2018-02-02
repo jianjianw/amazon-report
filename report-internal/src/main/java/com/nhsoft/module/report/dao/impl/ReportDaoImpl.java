@@ -484,7 +484,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}
 		return new ArrayList<BusinessCollection>(map.values());
 	}
-	
+
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, List<Integer> branchNums,
 			Date dateFrom, Date dateTo) {
@@ -1373,6 +1373,24 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 	}
 
 	@Override
+	public List<ShiftTable> findShiftTables(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher) {
+		Criteria criteria = currentSession()
+				.createCriteria(ShiftTable.class, "s")
+				.add(Restrictions.eq("s.id.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("s.id.branchNum", branchNum))
+				.add(Restrictions.between("s.id.shiftTableBizday", DateUtil.getDateShortStr(dateFrom),
+						DateUtil.getDateShortStr(dateTo)));
+		if (merchantNum != null) {
+			criteria.add(Restrictions.eq("s.id.merchantNum", merchantNum));
+		}
+		if (StringUtils.isNotEmpty(casher)) {
+			criteria.add(Restrictions.in("s.shiftTableUserName", casher.split(",")));
+		}
+		List<ShiftTable> shiftTables = criteria.list();
+		return shiftTables;
+	}
+
+	@Override
 	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, List<Integer> branchNums,
 																	   Date dateFrom, Date dateTo, String casher) {
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
@@ -1764,6 +1782,109 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			detail.setName(type);
 			detail.setMoney(money);
 			data.getChangeCardIncomes().add(detail);
+
+			if (type.equals(AppConstants.PAYMENT_YINLIAN)) {
+				data.setAllBankMoney(data.getAllBankMoney().add(money));
+			}
+		}
+		return new ArrayList<BusinessCollection>(map.values());
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByShiftTable(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher) {
+		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>();
+		// 补扣金额
+		StringBuffer sb = new StringBuffer();
+		sb.append("select merchant_num, shift_table_bizday, shift_table_num, sum(consume_money) ");
+		sb.append("from card_consume with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " ");
+		if(merchantNum != null) {
+			sb.append("and merchant_num = " + merchantNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= :bizFrom ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= :bizTo ");
+		}
+		if (StringUtils.isNotEmpty(casher)) {
+			sb.append("and consume_operator in " + AppUtil.getStringParmeArray(casher.split(",")));
+		}
+		sb.append("and consume_re_card_flag = 1 ");
+		sb.append("group by merchant_num, shift_table_bizday, shift_table_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		if (dateFrom != null) {
+			query.setString("bizFrom", DateUtil.getDateShortStr(dateFrom));
+		}
+		if (dateTo != null) {
+			query.setString("bizTo", DateUtil.getDateShortStr(dateTo));
+		}
+		List<Object[]> objects = query.list();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer tMerchantNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			Integer bizNum = (Integer) object[2];
+			if (bizNum == null) {
+				bizNum = 1;
+			}
+			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BusinessCollection data = map.get(tMerchantNum.toString() + shiftTableBizday + bizNum.toString());
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tMerchantNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				data.setShiftTableNum(bizNum);
+				map.put(tMerchantNum.toString() + shiftTableBizday + bizNum.toString(), data);
+			}
+			data.setRePaidMoney(money);
+		}
+		Criteria criteria = currentSession().createCriteria(OtherInout.class, "o")
+				.add(Restrictions.eq("o.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
+				.add(Restrictions.eq("o.systemBookCode", systemBookCode));
+		if (branchNums != null && branchNums.size() > 0) {
+			criteria.add(Restrictions.in("o.branchNum", branchNums));
+		}
+		if (dateFrom != null) {
+			criteria.add(Restrictions.ge("o.otherInoutBizday", DateUtil.getDateShortStr(dateFrom)));
+		}
+		if (dateTo != null) {
+			criteria.add(Restrictions.le("o.otherInoutBizday", DateUtil.getDateShortStr(dateTo)));
+		}
+		if (StringUtils.isNotEmpty(casher)) {
+			criteria.add(Restrictions.in("o.otherInoutOperator", casher.split(",")));
+
+		}
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.groupProperty("o.branchNum"))
+				.add(Projections.groupProperty("o.otherInoutBizday"))
+				.add(Projections.groupProperty("o.otherInoutShiftTableNum"))
+				.add(Projections.groupProperty("o.otherInoutPaymentType"))
+				.add(Projections.sqlProjection("sum(case when other_inout_flag = 0 then -other_inout_money else other_inout_money end) as money"
+						, new String[]{"money"}, new Type[]{StandardBasicTypes.BIG_DECIMAL}))
+		);
+		objects = criteria.list();
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String bizDay = (String) object[1];
+			Integer bizNum = (Integer) object[2];
+			String type = (String) object[3];
+			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+
+			BusinessCollection data = map.get(branchNum.toString() + bizDay + bizNum.toString());
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setShiftTableBizday(bizDay);
+				data.setShiftTableNum(bizNum);
+				data.setBranchNum(branchNum);
+				map.put(branchNum.toString() + bizDay + bizNum.toString(), data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			data.getOtherIncomes().add(detail);
 
 			if (type.equals(AppConstants.PAYMENT_YINLIAN)) {
 				data.setAllBankMoney(data.getAllBankMoney().add(money));

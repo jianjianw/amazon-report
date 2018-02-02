@@ -14,6 +14,12 @@ public class BusinessCollection implements Serializable {
 	private static final long serialVersionUID = -8448182988576779396L;
 	private Integer branchNum;
 	private String branchName;
+	private Integer merchantNum;
+	private String merchantCode;
+	private String merchantName;
+	private Integer stallNum;
+	private String stallCode;
+	private String stallName;
 	private Integer shiftTableNum; // 交班编号
 	private String shiftTableBizday; // 营业日
 	private String posMachineName; // pos终端名称 十六进制字符串 对应的PosMachineData 中的 id
@@ -289,4 +295,51 @@ public class BusinessCollection implements Serializable {
 		this.differenceBankMoney = differenceBankMoney;
 	}
 
+	public Integer getMerchantNum() {
+		return merchantNum;
+	}
+
+	public void setMerchantNum(Integer merchantNum) {
+		this.merchantNum = merchantNum;
+	}
+
+	public String getMerchantCode() {
+		return merchantCode;
+	}
+
+	public void setMerchantCode(String merchantCode) {
+		this.merchantCode = merchantCode;
+	}
+
+	public String getMerchantName() {
+		return merchantName;
+	}
+
+	public void setMerchantName(String merchantName) {
+		this.merchantName = merchantName;
+	}
+
+	public Integer getStallNum() {
+		return stallNum;
+	}
+
+	public void setStallNum(Integer stallNum) {
+		this.stallNum = stallNum;
+	}
+
+	public String getStallCode() {
+		return stallCode;
+	}
+
+	public void setStallCode(String stallCode) {
+		this.stallCode = stallCode;
+	}
+
+	public String getStallName() {
+		return stallName;
+	}
+
+	public void setStallName(String stallName) {
+		this.stallName = stallName;
+	}
 }
