@@ -1840,56 +1840,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			}
 			data.setRePaidMoney(money);
 		}
-		Criteria criteria = currentSession().createCriteria(OtherInout.class, "o")
-				.add(Restrictions.eq("o.state.stateCode", AppConstants.STATE_INIT_AUDIT_CODE))
-				.add(Restrictions.eq("o.systemBookCode", systemBookCode));
-		if (branchNums != null && branchNums.size() > 0) {
-			criteria.add(Restrictions.in("o.branchNum", branchNums));
-		}
-		if (dateFrom != null) {
-			criteria.add(Restrictions.ge("o.otherInoutBizday", DateUtil.getDateShortStr(dateFrom)));
-		}
-		if (dateTo != null) {
-			criteria.add(Restrictions.le("o.otherInoutBizday", DateUtil.getDateShortStr(dateTo)));
-		}
-		if (StringUtils.isNotEmpty(casher)) {
-			criteria.add(Restrictions.in("o.otherInoutOperator", casher.split(",")));
-
-		}
-		criteria.setProjection(Projections.projectionList()
-				.add(Projections.groupProperty("o.branchNum"))
-				.add(Projections.groupProperty("o.otherInoutBizday"))
-				.add(Projections.groupProperty("o.otherInoutShiftTableNum"))
-				.add(Projections.groupProperty("o.otherInoutPaymentType"))
-				.add(Projections.sqlProjection("sum(case when other_inout_flag = 0 then -other_inout_money else other_inout_money end) as money"
-						, new String[]{"money"}, new Type[]{StandardBasicTypes.BIG_DECIMAL}))
-		);
-		objects = criteria.list();
-		for (int i = 0; i < objects.size(); i++) {
-			Object[] object = objects.get(i);
-			Integer branchNum = (Integer) object[0];
-			String bizDay = (String) object[1];
-			Integer bizNum = (Integer) object[2];
-			String type = (String) object[3];
-			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-
-			BusinessCollection data = map.get(branchNum.toString() + bizDay + bizNum.toString());
-			if (data == null) {
-				data = new BusinessCollection();
-				data.setShiftTableBizday(bizDay);
-				data.setShiftTableNum(bizNum);
-				data.setBranchNum(branchNum);
-				map.put(branchNum.toString() + bizDay + bizNum.toString(), data);
-			}
-			BusinessCollectionIncome detail = new BusinessCollectionIncome();
-			detail.setName(type);
-			detail.setMoney(money);
-			data.getOtherIncomes().add(detail);
-
-			if (type.equals(AppConstants.PAYMENT_YINLIAN)) {
-				data.setAllBankMoney(data.getAllBankMoney().add(money));
-			}
-		}
 		return new ArrayList<BusinessCollection>(map.values());
 	}
 
