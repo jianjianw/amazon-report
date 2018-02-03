@@ -1774,10 +1774,9 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
 			sb.append("inner join pos_item as p on l.item_num = p.item_num ");
-			sb.append("and p.item_category in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
 		}
 
-		sb.append("with(nolock) where l.system_book_code = :systemBookCode and l.branch_num = :branchNum ");
+		sb.append("where l.system_book_code = :systemBookCode and l.branch_num = :branchNum ");
 
 		if(storeQueryCondition.getDateStart() != null){
 			sb.append("and l.pos_item_log_date_index >= '" + DateUtil.getDateShortStr(storeQueryCondition.getDateStart()) + "' ");
@@ -1785,6 +1784,9 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getDateEnd() != null){
 			sb.append("and l.pos_item_log_date_index <= '" + DateUtil.getDateShortStr(storeQueryCondition.getDateEnd()) + "' ");
 
+		}
+		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
+			sb.append("and p.item_category in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
 		}
 		if(storeQueryCondition.getExactDateEnd() != null){
 			sb.append("and l.pos_item_log_date <= '" + DateUtil.getLongDateTimeStr(storeQueryCondition.getExactDateEnd()) + "' ");
