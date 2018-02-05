@@ -1771,7 +1771,9 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				.add(Restrictions.between("s.id.shiftTableBizday", DateUtil.getDateShortStr(dateFrom),
 						DateUtil.getDateShortStr(dateTo)));
 		if (merchantNum != null) {
-			criteria.add(Restrictions.eq("s.id.merchantNum", merchantNum));
+			criteria.add(Restrictions.eq("s.merchantNum", merchantNum));
+		} else {
+			criteria.add(Restrictions.isNotNull("s.merchantNum"));
 		}
 		if (StringUtils.isNotEmpty(casher)) {
 			criteria.add(Restrictions.in("s.shiftTableUserName", casher.split(",")));
@@ -2187,7 +2189,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select merchant_num, shift_table_bizday, shift_table_num, sum(consume_money) ");
 		sb.append("from card_consume with(nolock) ");
-		sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " ");
+		sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " and merchant_num is not null ");
 		if(merchantNum != null) {
 			sb.append("and merchant_num = " + merchantNum + " ");
 		}
