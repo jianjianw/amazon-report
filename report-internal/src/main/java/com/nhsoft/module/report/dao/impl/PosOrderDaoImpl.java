@@ -5254,7 +5254,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select o.merchant_num, o.shift_table_bizday, o.shift_table_num, p.payment_pay_by, sum(p.payment_money) as money, sum(p.payment_balance) as balance ");
 		sb.append("from payment as p with(nolock) inner join pos_order as o with(nolock) on p.order_no = o.order_no ");
-		sb.append("where o.system_book_code = '" + systemBookCode + "' and o.branch_num = " + branchNum + " ");
+		sb.append("where o.system_book_code = '" + systemBookCode + "' and o.branch_num = " + branchNum + " and o.merchant_num is not null ");
 		if (merchantNum != null) {
 			sb.append("and o.merchant_num = " + merchantNum + " ");
 		}
