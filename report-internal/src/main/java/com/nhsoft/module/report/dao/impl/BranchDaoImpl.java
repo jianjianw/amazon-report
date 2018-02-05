@@ -12,7 +12,6 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 
-import java.util.Date;
 import java.util.List;
 @Repository
 public class BranchDaoImpl extends DaoImpl implements BranchDao {
