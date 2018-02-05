@@ -52,6 +52,8 @@ public class APIBasic {
 	private AlipayLogService alipayLogService;
 	@Autowired
 	private AlipayLogRpc alipayLogRpc;
+	@Autowired
+	private PosItemLogRpc posItemLogRpc;
 
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
@@ -87,6 +89,7 @@ public class APIBasic {
 		return summaryByBranch;
 		//return posOrderRpc.findMoneyBizdaySummary("4344", Arrays.asList(1,2,99), AppConstants.BUSINESS_TREND_PAYMENT, DateUtil.getDateStr("20170901"), DateUtil.getDateStr("20171101"), false);
 	}
+
 	@RequestMapping(method = RequestMethod.GET,value = "/test2")
 	public List<Object[]> test2() throws Exception{		//含or没报错   含case when 不报错
 		String systemBookCode= "4344";
@@ -111,6 +114,7 @@ public class APIBasic {
 		return itemSum;
 
 	}
+
 	@RequestMapping(method=RequestMethod.GET,value="/test3/{systemBookCode}/{dateFrom}/{dateTo}")
 	public List<Object[]> test3(@PathVariable("systemBookCode") String systemBookCode,@PathVariable("dateFrom") String dateFrom, @PathVariable("dateTo") String dateTo) throws Exception{			//ok 含 case when
 
@@ -128,8 +132,6 @@ public class APIBasic {
 		List<Object[]> customReportByBizday = posOrderService.findCustomReportByBizday(systemBookCode, branchNums, from, to);
 		return customReportByBizday;
 	}
-
-
 
 	@RequestMapping(method = RequestMethod.GET, value = "/test4")
 	public List<Object[]> test4() throws Exception{						// ok 含or
@@ -152,6 +154,7 @@ public class APIBasic {
 		List<Object[]> branchItemSum = posOrderService.findBranchItemSum(systemBookCode,branchNums,dateFrom,dateTo,items, true);
 		return branchItemSum;
 	}
+
 	@RequestMapping(method=RequestMethod.GET,value="/test5")
 	public List<Object[]> test5() throws Exception{  //ok case   when
 		String systemBookCode= "4344";
@@ -220,6 +223,7 @@ public class APIBasic {
 		List<Object[]> itemSum = posOrderService.findItemSum(itemQueryDTO);
 		System.out.println();
 	}
+
 	@RequestMapping(method = RequestMethod.GET,value = "/test8")
 	public List<MobileBusinessDetailDTO> test8() throws Exception{			//ok
 		String systemBookCode= "4344";
@@ -238,6 +242,7 @@ public class APIBasic {
 		List<MobileBusinessDetailDTO> cashSummaryGroupByShop = mobileAppV2Service.findCashSummaryGroupByShop(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.CASH_TYPE_POS);
 		return cashSummaryGroupByShop;
 	}
+
 	@RequestMapping(method = RequestMethod.GET,value = "/test9")  //三张表  findDetails
 	public void test9() throws Exception{
 		String systemBookCode= "4344";				//不ok   Cannot find table rule and default data source with logic tables: '[]'
@@ -402,6 +407,7 @@ public class APIBasic {
 		List<BranchBizSummary> profitAnalysisDays = reportRpc.findProfitAnalysisDays(queryData);
 		return profitAnalysisDays;
 	}
+
 	@RequestMapping(method=RequestMethod.GET,value="/test14")
 	public void test14() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -500,12 +506,12 @@ public class APIBasic {
 		List<SupplierLianYing> supplierLianYing = reportService.findSupplierLianYing(supplierSaleQuery);
 		return supplierLianYing;
 	}
+
 	@RequestMapping(method = RequestMethod.GET,value = "/test21")
 	public List<Branch> test21(){
 		List<Branch> branchByBranchRegionNum = branchService.findBranchByBranchRegionNum("4344", 1);
 		return branchByBranchRegionNum;
 	}
-
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test22")
 	public List<Object[]> test22(){
@@ -651,7 +657,6 @@ public class APIBasic {
 		return "nimei";
 	}
 
-
 	@RequestMapping(method = RequestMethod.GET,value = "test30")
 	public List<SupplierLianYing> test30()throws Exception{
 
@@ -674,15 +679,6 @@ public class APIBasic {
 		List<SupplierLianYing> supplierLianYing = reportRpc.findSupplierLianYing(supplierSaleQuery);
 		return supplierLianYing;
 	}
-
-
-
-
-
-
-
-
-
 
     @RequestMapping(method = RequestMethod.GET,value = "test31")
     public List<ItemDailyDetail> test31()throws Exception{  //test bi   两个内连接都不行
@@ -736,7 +732,6 @@ public class APIBasic {
 		return branchDailySummary;
 	}
 
-
     @RequestMapping(method = RequestMethod.GET,value = "test32")
     public List<BusinessCollection> test32()throws Exception{
 
@@ -752,10 +747,7 @@ public class APIBasic {
         return couponSummary;
     }
 
-
     //findRetailDetails
-
-
 	@RequestMapping(method = RequestMethod.GET,value = "test33")
 	public List<RetailDetail> test33()throws Exception{
 		String systemBookCode= "4344";
@@ -830,8 +822,6 @@ public class APIBasic {
 		return test;
 	}
 
-
-
 	//test测试新加的报表
 	@RequestMapping(method = RequestMethod.GET,value = "test38")
 	public List<InventoryLostDTO> test38() throws Exception{
@@ -865,8 +855,6 @@ public class APIBasic {
 		return settled;
 	}
 
-
-
 	@RequestMapping(method = RequestMethod.GET,value = "test40")
 	public List test40() throws Exception{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -884,7 +872,6 @@ public class APIBasic {
 				thisDateFrom,thisDateTo,itemNums,categoryCodes);
 		return orderDetailCompareDatasByBranchItem;
 	}
-
 
 	@RequestMapping(method = RequestMethod.GET,value = "test41")
 	public List<RequestAnalysisDTO> test41() throws Exception{
@@ -910,6 +897,47 @@ public class APIBasic {
 		return requestAnalysisDTOs;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "test42")
+	public List test42() throws Exception{
+		StoreQueryCondition query = new StoreQueryCondition();
+		query.setSystemBookCode("4344");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-29");
+		Date dateTo = sdf.parse("2018-01-31");
+		query.setDateStart(dateFrom);
+		query.setDateEnd(dateTo);
+		List<String> categorys = new ArrayList<>();
+		categorys.add("01");
+		categorys.add("022");
+		categorys.add("023");
+		categorys.add("024");
+		query.setItemCategoryCodes(categorys);
+		query.setBranchNum(99);
+		query.setAdjustReason("调出门店[管理中心]");
 
+		List<PosItemLogSummaryDTO> dtos = posItemLogRpc.findItemSummaryInOutQtyAndMoney(query);
+		return dtos;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "test43")
+	public List test43() throws Exception{
+		StoreQueryCondition query = new StoreQueryCondition();
+		query.setSystemBookCode("4344");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-29");
+		Date dateTo = sdf.parse("2018-01-31");
+		query.setDateStart(dateFrom);
+		query.setDateEnd(dateTo);
+		List<String> categorys = new ArrayList<>();
+		categorys.add("01");
+		categorys.add("022");
+		categorys.add("023");
+		categorys.add("024");
+		query.setItemCategoryCodes(categorys);
+		query.setBranchNum(99);
+		query.setAdjustReason("调出门店[管理中心]");
+		List<PosItemLogSummaryDTO> dtos = posItemLogRpc.findItemInOutQtyAndMoney(query);
+		return dtos;
+	}
 
 }

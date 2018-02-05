@@ -77,48 +77,6 @@ public class BranchTransferGoalsRpcImpl implements BranchTransferGoalsRpc {
         return list;
     }
 
-    @Override
-    public List<DepositGoalsDTO> findDepositGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-        List<Object[]> objects = branchTransferGoalsService.findDepositGoals(systemBookCode, branchNums, dateFrom, dateTo);
-        int size = objects.size();
-        List<DepositGoalsDTO> list = new ArrayList<>(size);
-        if(objects.isEmpty()){
-            return list;
-        }
-        String biz = null;
-        for (int i = 0; i <size ; i++) {
-            Object[] object = objects.get(i);
-            DepositGoalsDTO depositGoalsDTO = new DepositGoalsDTO();
-            depositGoalsDTO.setBranchNum((Integer) object[0]);
-            biz = (String) object[1];
-            depositGoalsDTO.setBizday(biz.replace("-",""));
-            depositGoalsDTO.setDepositGoals((BigDecimal) object[2]);
-            list.add(depositGoalsDTO);
-        }
-        return list;
-    }
-
-    @Override
-    public List<NewCardGoalsDTO> findNewCardGoals(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-        List<Object[]> objects = branchTransferGoalsService.findNewCardGoals(systemBookCode, branchNums, dateFrom, dateTo);
-
-        int size = objects.size();
-        List<NewCardGoalsDTO> list = new ArrayList<>(size);
-        if(objects.isEmpty()){
-            return list;
-        }
-        String biz = null;
-        for (int i = 0; i <size ; i++) {
-            Object[] object = objects.get(i);
-            NewCardGoalsDTO newCardGoalsDTO = new NewCardGoalsDTO();
-            newCardGoalsDTO.setBranchNum((Integer) object[0]);
-            biz = (String) object[1];
-            newCardGoalsDTO.setBizday(biz.replace("-",""));
-            newCardGoalsDTO.setNewCard((Integer) object[2]);
-            list.add(newCardGoalsDTO);
-        }
-        return list;
-    }
 
 
 }
