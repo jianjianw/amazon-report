@@ -327,9 +327,5 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 		return posItem;
 	}
 
-	@Override
-	public List<Object[]> findItemLat(String systemBookCode) {
-		return posItemDao.findItemLat(systemBookCode);
-	}
 
 }

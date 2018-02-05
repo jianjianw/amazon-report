@@ -37,10 +37,4 @@ public interface AdjustmentOrderRpc {
      * */
     public List<AdjustmentCauseMoney> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-    /**
-     * bi 商品日报损汇总
-     *
-     * */
-    public List<ItemLossDailyDTO> findItemLoss(String systemBookCode, Date dateFrom, Date dateTo);
-
 }

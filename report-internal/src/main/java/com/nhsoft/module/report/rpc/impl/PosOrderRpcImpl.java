@@ -3,8 +3,6 @@ package com.nhsoft.module.report.rpc.impl;
 import com.nhsoft.amazon.server.dto.OrderQueryDTO;
 import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
-import com.nhsoft.module.azure.model.BranchDaily;
-import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
@@ -34,8 +32,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public SystemBookService systemBookService;
 	@Autowired
 	private PosOrderRemoteService posOrderRemoteService;
-	@Autowired
-	private BranchTransferGoalsRpc branchTransferGoalsRpc;
 
 
 	public boolean isToCenterData(String systemBookCode, Date dateFrom){
@@ -412,166 +408,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			}
 		}
 		return new ArrayList<BranchItemSummaryDTO>(map.values());
-	}
-
-	public List<BranchDaily> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo){
-
-		List<Object[]> objects = posOrderService.findBranchDailySummary(systemBookCode,dateFrom,dateTo);
-		List<SaleMoneyGoals> goals = branchTransferGoalsRpc.findGoalsByBranchBizday(systemBookCode, null, dateFrom, dateTo);
-		int size = objects.size();
-		List<BranchDaily> list = new ArrayList<>(size);
-		if(objects.isEmpty()){
-			return list;
-		}
-		int goalsSize = goals.size();
-		BigDecimal qty;
-		BigDecimal itemCount;
-		BigDecimal money;
-		for (int i = 0; i <size ; i++) {
-			Object[] object = objects.get(i);
-			money = (BigDecimal) object[2];
-			//移除数据营业额为0的数据
-			if(money == null || money .compareTo(BigDecimal.ZERO) == 0){
-				continue;
-			}
-			BranchDaily branchDaily = new BranchDaily();
-			branchDaily.setSystemBookCode(systemBookCode);
-			branchDaily.setBranchNum((Integer) object[0]);
-			branchDaily.setShiftTableBizday((String) object[1]);
-			branchDaily.setDailyMoney(money);
-
-			branchDaily.setDailyQty((Integer) object[3]);//客单量
-			qty = new BigDecimal(branchDaily.getDailyQty());
-			if((Integer) object[4] == null){
-				itemCount = BigDecimal.ZERO;//商品数量
-			}else{
-				itemCount = new BigDecimal((Integer) object[4]);//商品数量
-			}
-			if(qty.compareTo(BigDecimal.ZERO) == 0){
-				branchDaily.setDailyCount(BigDecimal.ZERO);
-				branchDaily.setDailyPrice(BigDecimal.ZERO);
-			}else{
-				branchDaily.setDailyCount(itemCount.divide(qty, 2, ROUND_HALF_UP));//客单购买数
-				branchDaily.setDailyPrice(branchDaily.getDailyMoney().divide(qty,4,ROUND_HALF_UP));
-			}
-			branchDaily.setShiftTableDate(DateUtil.getDateStr(branchDaily.getShiftTableBizday()));
-			//将营业额目标封装到分店日汇总中
-			for (int j = 0; j <goalsSize ; j++) {
-				SaleMoneyGoals saleMoneyGoals = goals.get(j);
-				if (saleMoneyGoals.getSystemBookCode().equals(branchDaily.getSystemBookCode()) && saleMoneyGoals.getBranchNum().equals(branchDaily.getBranchNum()) &&
-						saleMoneyGoals.getDate().replace("-","").equals(branchDaily.getShiftTableBizday())){
-					branchDaily.setTargetMoney(saleMoneyGoals.getSaleMoney());
-				}
-			}
-			list.add(branchDaily);
-		}
-		return list;
-	}
-
-	public List<ItemDailyDetail> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
-
-		List<Object[]> objects = posOrderService.findItemDailyDetailSummary(systemBookCode, dateFrom, dateTo ,itemNums);
-		int size = objects.size();
-		List<ItemDailyDetail> list = new ArrayList<>(size);
-		if (objects.isEmpty()) {
-			return list;
-		}
-		Map<String, ItemDailyDetail> map = new HashMap<>();
-		Integer branchNum;
-		String bizday;
-		Integer itemNum;
-		String source;
-		String itemPeriod;
-		for (int i = 0; i < size; i++) {
-			Object[] object = objects.get(i);
-			branchNum = (Integer) object[0];
-			bizday = (String) object[1];
-			itemPeriod = (String) object[2];
-			source = (String) object[3];
-			itemNum = (Integer) object[4];
-			String hour = itemPeriod.substring(0, 2);
-			Integer intHour = Integer.valueOf(hour);
-			Integer intMin = Integer.valueOf(itemPeriod.substring(2, 4));
-
-			if(intMin >= 0 && intMin <= 30){
-				itemPeriod = hour + "30";
-			} else {
-				itemPeriod = StringUtils.leftPad((intHour + 1) + "", 2, "0") + "00";
-			}
-			//向map添加数据
-			StringBuilder append = new StringBuilder();
-			append.append(branchNum).append(bizday).append(source).append(itemNum);
-			String key = append.toString();
-			ItemDailyDetail itemDailyDetail = map.get(key);
-			if (itemDailyDetail == null) {
-				itemDailyDetail = new ItemDailyDetail();
-				itemDailyDetail.setSystemBookCode(systemBookCode);
-				itemDailyDetail.setBranchNum(branchNum);
-				itemDailyDetail.setShiftTableBizday(bizday);
-				itemDailyDetail.setItemSource(source);
-				itemDailyDetail.setItemNum(itemNum);
-				itemDailyDetail.setItemMoney(BigDecimal.ZERO);
-				itemDailyDetail.setItemAmout(BigDecimal.ZERO);
-				itemDailyDetail.setShiftTableDate(DateUtil.getDateStr(itemDailyDetail.getShiftTableBizday()));
-				map.put(key, itemDailyDetail);
-			}
-			BigDecimal money = (BigDecimal) object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
-			BigDecimal amount = (BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
-			itemDailyDetail.append(money,amount,itemPeriod);
-		}
-
-		Collection<ItemDailyDetail> values = map.values();
-		Iterator<ItemDailyDetail> iterator = values.iterator();
-		while(iterator.hasNext()){
-			ItemDailyDetail next = iterator.next();
-			List<ItemDailyDetail> itemDailyDetails = next.toArray();
-			list.addAll(itemDailyDetails);
-		}
-		//移出营业额和数量为0的数据
-		Iterator<ItemDailyDetail> it = list.iterator();
-		while (it.hasNext()) {
-			ItemDailyDetail next = it.next();
-			BigDecimal dailyMoney = next.getItemMoney();
-			BigDecimal itemAmout = next.getItemAmout();
-			if((dailyMoney.compareTo(BigDecimal.ZERO) == 0) && (itemAmout.compareTo(BigDecimal.ZERO) == 0)){
-				it.remove();
-			}
-		}
-		return list;
-
-	}
-
-	@Override
-	public List<ItemSaleDailyDTO> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo) {
-
-		List<Object[]> objects = posOrderService.findItemSaleDailySummary(systemBookCode, dateFrom, dateTo);
-		int size = objects.size();
-		List<ItemSaleDailyDTO> list = new ArrayList<>(size);
-		if(objects.isEmpty()){
-			return list;
-		}
-		String source;
-		for (int i = 0; i < size ; i++) {
-			Object[] object = objects.get(i);
-			ItemSaleDailyDTO itemSaleDailyDTO = new ItemSaleDailyDTO();
-			itemSaleDailyDTO.setSystemBookCode(systemBookCode);
-			itemSaleDailyDTO.setBranchNum((Integer) object[0]);
-			itemSaleDailyDTO.setShiftTableBizday((String) object[1]);
-			itemSaleDailyDTO.setItemNum((Integer) object[2]);
-			source = (String) object[3];
-			itemSaleDailyDTO.setItemSource(source);
-			if((Integer) object[4] > 0){
-				itemSaleDailyDTO.setItemMemberTag("会员");
-			}else{
-				itemSaleDailyDTO.setItemMemberTag("非会员");
-			}
-			itemSaleDailyDTO.setItemMoney((BigDecimal) object[5]);
-			itemSaleDailyDTO.setItemAmount((BigDecimal) object[6]);
-			itemSaleDailyDTO.setItemCount((Integer) object[7]);
-			itemSaleDailyDTO.setShiftTableDate(DateUtil.getDateStr(itemSaleDailyDTO.getShiftTableBizday()));
-			list.add(itemSaleDailyDTO);
-		}
-		return list;
 	}
 
 	@Override

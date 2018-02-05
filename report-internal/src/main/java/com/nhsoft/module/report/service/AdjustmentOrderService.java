@@ -49,10 +49,5 @@ public interface AdjustmentOrderService {
 	 * */
 	public List<Object[]> findAdjustmentCauseMoneyByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	/**
-	 * bi 商品日报损汇总
-	 *
-	 * */
-	public List<Object[]> findItemLoss(String systemBookCode, Date dateFrom, Date dateTo);
 
 }

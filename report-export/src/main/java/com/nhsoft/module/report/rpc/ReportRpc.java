@@ -1348,12 +1348,6 @@ public interface ReportRpc {
 
 
 	/**
-	 *	bi 会员统计--按分店和营业日
-	 * */
-	public List<CardDailyDTO> findCardDailys(String systemBookCode,List<Integer> branchNums, Date dateFrom,Date dateTo);
-
-
-	/**
 	 * 缺货分析
 	 * @param systemBookCode
 	 * @param branchNum 分店号

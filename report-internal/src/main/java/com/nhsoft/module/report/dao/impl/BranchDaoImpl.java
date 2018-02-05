@@ -1,7 +1,6 @@
 package com.nhsoft.module.report.dao.impl;
 
 
-import com.nhsoft.module.azure.model.BranchLat;
 import com.nhsoft.module.report.dao.BranchDao;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.BranchRegion;

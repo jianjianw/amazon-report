@@ -84,30 +84,6 @@ public class AdjustmentOrderRpcImpl implements AdjustmentOrderRpc {
         return list;
     }
 
-    @Override
-    public List<ItemLossDailyDTO> findItemLoss(String systemBookCode, Date dateFrom, Date dateTo) {
-
-        List<Object[]> objects = adjustmentOrderService.findItemLoss(systemBookCode, dateFrom, dateTo);
-        int size = objects.size();
-        List<ItemLossDailyDTO> list = new ArrayList<>(size);
-        if(objects.isEmpty()){
-            return list;
-        }
-        for (int i = 0; i <size ; i++) {
-            Object[] object = objects.get(i);
-            ItemLossDailyDTO itemLossDailyDTO = new ItemLossDailyDTO();
-            itemLossDailyDTO.setSystemBookCode(systemBookCode);
-            itemLossDailyDTO.setBranchNum((Integer) object[0]);
-            itemLossDailyDTO.setShiftTableBizday((String) object[1]);
-            itemLossDailyDTO.setItemLossReason((String) object[2]);
-            itemLossDailyDTO.setItemNum((Integer) object[3]);
-            itemLossDailyDTO.setItemMoney((BigDecimal) object[4]);
-            itemLossDailyDTO.setItemAmount((BigDecimal) object[5]);
-            itemLossDailyDTO.setShiftTableDate(DateUtil.getDateStr(itemLossDailyDTO.getShiftTableBizday()));
-            list.add(itemLossDailyDTO);
-        }
-        return list;
-    }
 
 
 }

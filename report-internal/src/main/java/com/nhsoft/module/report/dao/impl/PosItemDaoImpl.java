@@ -741,14 +741,5 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		return query.list();
 	}
 
-	@Override
-	public List<Object[]> findItemLat(String systemBookCode) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("select item_num, item_category ");
-		sb.append("from pos_item where system_book_code = '" + systemBookCode+  "' ");
-		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		return sqlQuery.list();
-	}
-
 
 }

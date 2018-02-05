@@ -131,9 +131,5 @@ public interface PosItemService {
 	 */
 	public PosItem readWithoutDetails(Integer itemNum);
 
-	/**
-	 * bi 商品维度
-	 * */
-	public List<Object[]> findItemLat(String systemBookCode);
 
 }

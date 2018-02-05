@@ -18,15 +18,6 @@ public interface CardDepositRpc {
      */
     public List<BranchDepositReport> findBranchSum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-    /**
-     * bi 按分店和营业日查询   付款金额 存款金额
-     * @param systemBookCode
-     * @param branchNums
-     * @param dateFrom
-     * @param dateTo
-     * */
-    public List<BranchBizdayDepositSummary> findSumByBizdayBranch(String systemBookCode,
-                                                                  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
 

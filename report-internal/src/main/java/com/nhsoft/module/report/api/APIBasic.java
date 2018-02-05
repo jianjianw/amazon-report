@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.api;
 
-import com.nhsoft.module.azure.model.BranchDaily;
-import com.nhsoft.module.azure.model.ItemDailyDetail;
 import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.AlipayLog;
@@ -680,57 +678,6 @@ public class APIBasic {
 		return supplierLianYing;
 	}
 
-    @RequestMapping(method = RequestMethod.GET,value = "test31")
-    public List<ItemDailyDetail> test31()throws Exception{  //test bi   两个内连接都不行
-
-
-        String systemBookCode= "4344";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateFrom = sdf.parse("2016-05-01");
-        Date dateTo = sdf.parse("2017-10-31");
-        List<Integer> items = new ArrayList<>();
-        items.add(434400100);
-        items.add(434400126);
-        items.add(110010009);
-        items.add(110010007);
-        List<ItemDailyDetail> itemDailyDetailSummary = posOrderRpc.findItemDailyDetailSummary(systemBookCode,dateFrom,dateTo,items);
-        return itemDailyDetailSummary;
-        //findItemDailyDetailSummary
-    }
-
-	@RequestMapping(method = RequestMethod.GET,value = "test31_1")
-	public List<ItemSaleDailyDTO> test31_1()throws Exception{  //test bi   两个内连接都不行
-
-
-		String systemBookCode= "4344";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2016-05-01");
-		Date dateTo = sdf.parse("2017-10-31");
-		List<Integer> items = new ArrayList<>();
-		items.add(434400100);
-		items.add(434400126);
-		items.add(110010009);
-		items.add(110010007);
-		List<ItemSaleDailyDTO> itemSaleDailySummary = posOrderRpc.findItemSaleDailySummary(systemBookCode, dateFrom, dateTo);
-		return itemSaleDailySummary;
-	}
-
-	@RequestMapping(method = RequestMethod.GET,value = "test31_2")
-	public List<BranchDaily> test31_2()throws Exception{  //单表是ok的
-
-
-		String systemBookCode= "4344";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2016-05-01");
-		Date dateTo = sdf.parse("2017-10-31");
-		List<Integer> items = new ArrayList<>();
-		items.add(434400100);
-		items.add(434400126);
-		items.add(110010009);
-		items.add(110010007);
-		List<BranchDaily> branchDailySummary = posOrderRpc.findBranchDailySummary(systemBookCode, dateFrom, dateTo);
-		return branchDailySummary;
-	}
 
     @RequestMapping(method = RequestMethod.GET,value = "test32")
     public List<BusinessCollection> test32()throws Exception{

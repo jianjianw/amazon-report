@@ -1,7 +1,5 @@
 package com.nhsoft.module.report.rpc;
 
-import com.nhsoft.module.azure.model.Branch;
-import com.nhsoft.module.azure.model.BranchLat;
 import com.nhsoft.module.report.dto.BranchArea;
 import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.BranchRegionDTO;

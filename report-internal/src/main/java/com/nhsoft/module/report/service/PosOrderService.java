@@ -191,20 +191,6 @@ public interface PosOrderService {
 	 */
 	public List<PosOrder> findByShiftTableWithDetails(ShiftTable shiftTable);
 
-	/**
-	 *	bi 分店日销售汇总表
-	 * */
-	public List<Object[]> findBranchDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
-
-	/**
-	 * bi 商品日时段销售汇总
-	 * */
-	public List<Object[]> findItemDailyDetailSummary(String systemBookCode, Date dateFrom, Date dateTo ,List<Integer> itemNums);
-
-	/**
-	 *  bi  商品日销售汇总
-	 **/
-	public List<Object[]> findItemSaleDailySummary(String systemBookCode, Date dateFrom, Date dateTo);
 
 
 

@@ -106,9 +106,4 @@ public interface PosItemDao {
 
 	public List<PosItem> findByPosItemQuery(PosItemQuery posItemQuery, String sortField, String sortName, int first, int count);
 
-	/**
-	 * bi 商品维度
-	 * */
-	public List<Object[]> findItemLat(String systemBookCode);
-
 }
