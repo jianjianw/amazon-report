@@ -887,4 +887,17 @@ public class APIBasic {
 		return dtos;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "test44")
+	public List test44() throws Exception{
+		WholesaleProfitQuery query = new WholesaleProfitQuery();
+		query.setSystemBookCode("4344");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-29");
+		Date dateTo = sdf.parse("2018-01-31");
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		List<WholesaleProfitByClient> list = reportRpc.findWholesaleProfitByClient(query);
+		return list;
+	}
+
 }
