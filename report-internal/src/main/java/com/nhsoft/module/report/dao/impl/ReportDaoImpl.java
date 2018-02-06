@@ -691,7 +691,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 			Integer tempMerchantNum = (Integer) object[0];
 			Integer tempStallNum = (Integer) object[1];
 			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-			BusinessCollection data = map.get(tempMerchantNum+"_"+stallNum);
+			BusinessCollection data = map.get(tempMerchantNum+"_"+tempStallNum);
 			if (data == null) {
 				data = new BusinessCollection();
 				data.setMerchantNum(tempMerchantNum);
