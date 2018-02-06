@@ -2149,6 +2149,7 @@ public class ReportRpcImpl implements ReportRpc {
             BusinessCollection data = map.get(key);
             if (data == null) {
                 data = new BusinessCollection();
+                data.setMerchantNum(tempMerchantNum);
                 data.setShiftTableBizday(shiftTable.getId().getShiftTableBizday());
                 data.setShiftTableNum(shiftTable.getId().getShiftTableNum());
                 data.setBranchNum(shiftTable.getId().getBranchNum());
