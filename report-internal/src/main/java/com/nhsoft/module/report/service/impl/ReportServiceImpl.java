@@ -4153,6 +4153,7 @@ public class ReportServiceImpl implements ReportService {
 			data.setPresentUnit((String) object[22]);
 			data.setItemValidPeriod(posItem.getItemValidPeriod());
 			data.setProductDate((Date) object[23]);
+			data.setPosItemCategory(posItem.getItemCategoryCode());
 			list.add(data);
 
 		}
