@@ -54,7 +54,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 	private String DPC_URL;
 	@Value("${sharding.pos_order.book_codes}")
 	private String posOrderShardingBooks;
-	
+
 	public static class MultipleDataSource extends AbstractRoutingDataSource {
 		
 		@Override
