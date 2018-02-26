@@ -14,34 +14,8 @@ import java.util.List;
 @Aspect
 @Configuration
 public class ApiInterceptor {
+
     private static final Logger logger = LoggerFactory.getLogger(ApiInterceptor.class);
-
-    @Pointcut("execution(* com.nhsoft.module.report.api.*.*(..))")
-    public void api() {
-    }
-
-    @Around(value="ApiInterceptor.api()")
-    public Object printLog(ProceedingJoinPoint point) throws Throwable  {
-
-        String name = null;
-        Object object;
-        long diff = 0;
-        long preTime = 0;
-        try {
-            name = point.getTarget().getClass().getName() + "." + point.getSignature().getName();
-            preTime = System.currentTimeMillis();
-            object = point.proceed();
-            return object;
-        } catch (Throwable throwable) {
-            logger.error(throwable.getMessage(),throwable);
-            throw throwable;
-        } finally {
-            long afterTime = System.currentTimeMillis();
-            diff = (afterTime - preTime)/1000;
-            logger.info("API：" + name + "耗时：" + diff + "秒");
-        }
-    }
-
 
 
     @Pointcut("execution(* com.nhsoft.module.report.dao.*.*(..))")
