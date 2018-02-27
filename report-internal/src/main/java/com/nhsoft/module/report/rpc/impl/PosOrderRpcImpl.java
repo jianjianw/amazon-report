@@ -5,6 +5,7 @@ import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.SystemBook;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 import com.nhsoft.module.report.rpc.BranchTransferGoalsRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
@@ -741,6 +742,42 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	public Object[] sumSettled(String systemBookCode, PosOrderQuery posOrderQuery) {
 		return posOrderService.sumSettled(posOrderQuery);
 	}
+
+	@Override
+	public CardSummaryPageDTO findSummaryByPrintNum(CardReportQuery cardReportQuery) {
+		List<Object[]> objects = posOrderService.findSummaryByPrintNum(cardReportQuery);
+		Integer count = posOrderService.findCountByPrintNum(cardReportQuery).size();
+
+		int size = objects.size();
+		List<CardSummaryDTO> list = new ArrayList<>(size);
+
+		for (int i = 0; i <size ; i++) {
+			Object[] object = objects.get(i);
+			CardSummaryDTO dto = new CardSummaryDTO();
+			dto.setPrintedNum((String) object[0]);
+			dto.setCardUserName((String) object[1]);
+			dto.setCardType((String) object[2]);
+			dto.setCardUserNum((Integer) object[3]);
+			dto.setPaymentMoney((BigDecimal) object[4]);
+			dto.setDiscount((BigDecimal) object[5]);
+			dto.setPoint((BigDecimal) object[6]);
+			dto.setMgrMoney((BigDecimal) object[7]);
+			dto.setCouponMoney((BigDecimal) object[8]);
+			list.add(dto);
+		}
+		CardSummaryPageDTO pageDTO = new CardSummaryPageDTO();
+		pageDTO.setCount(count);
+		pageDTO.setData(list);
+
+		return pageDTO;
+	}
+
+
+
+
+
+
+
 
 	private BusinessCollectionIncome getBusinessCollectionIncome(
 			List<BusinessCollectionIncome> businessCollectionIncomes, String name) {

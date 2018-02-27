@@ -318,6 +318,21 @@ public interface PosOrderService {
 
 	public Object[] sumSettled(PosOrderQuery posOrderQuery);
 
+	/**
+	 * 根据表面卡号 姓名 卡类型汇总 单据数 单据总额 折扣总额 积分总额
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public List<Object[]> findSummaryByPrintNum(CardReportQuery cardReportQuery);
+
+
+	/**
+	 * 根据表面卡号 姓名 卡类型    汇总记录数
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public List<Object> findCountByPrintNum(CardReportQuery cardReportQuery);
+
 
 }
 

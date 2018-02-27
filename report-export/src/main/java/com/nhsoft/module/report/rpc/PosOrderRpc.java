@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.rpc;
 
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 
 import java.util.Date;
@@ -149,5 +150,13 @@ public interface PosOrderRpc  {
     public List<PosOrderDTO> findSettled(String systemBookCode, PosOrderQuery posOrderQuery, int offset, int limit);
 
     public Object[] sumSettled(String systemBookCode, PosOrderQuery posOrderQuery);
+
+
+    /**
+     * 根据表面卡号 姓名 卡类型汇总 单据数 单据总额 折扣总额 积分总额
+     * @param cardReportQuery
+     * @return
+     */
+    public CardSummaryPageDTO findSummaryByPrintNum(CardReportQuery cardReportQuery);
 
 }

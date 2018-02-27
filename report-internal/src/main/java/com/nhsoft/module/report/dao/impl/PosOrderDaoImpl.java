@@ -5480,6 +5480,33 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return objects;
 	}
 
+	@Override
+	public List<Object[]> findSummaryByPrintNum(CardReportQuery cardReportQuery) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num, sum(p.order_payment_money) as paymentMoney, ");
+		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgr, ");
+		sb.append("sum(p.order_coupon_total_money) as couponMoney ");
+		sb.append(createByCardReportQuery(cardReportQuery));
+		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
+		sb.append("order by p.order_printed_num desc ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		if(cardReportQuery.isPaging()) {
+			query.setFirstResult(cardReportQuery.getOffset());
+			query.setMaxResults(cardReportQuery.getLimit());
+		}
+		return query.list();
+	}
+
+	@Override
+	public List<Object> findCountByPrintNum(CardReportQuery cardReportQuery) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(p.order_printed_num) ");
+		sb.append(createByCardReportQuery(cardReportQuery));
+		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
+		sb.append("order by p.order_printed_num desc ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
 
 
 }
