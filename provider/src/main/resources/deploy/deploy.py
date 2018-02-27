@@ -7,7 +7,7 @@ if __name__ == "__main__":
     parser.add_argument("--dist")
     parser.add_argument("--config")
     parser.add_argument("--jar")
-    py_path = sys.argv[0]
+    py_path = os.path.abspath(__file__)
     args = parser.parse_args()
     if args.jar:
         jar = str(args.jar).replace('#', ' ')
