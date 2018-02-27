@@ -54,7 +54,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 	private String DPC_URL;
 	@Value("${sharding.pos_order.book_codes}")
 	private String posOrderShardingBooks;
-	
+
 	public static class MultipleDataSource extends AbstractRoutingDataSource {
 		
 		@Override
@@ -149,15 +149,15 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		
 		if(dsMap.containsKey("initialSize")){
 			druidDataSource.setInitialSize(Integer.parseInt(dsMap.get("initialSize").toString()));
-			
+
 		}
 		if(dsMap.containsKey("minIdle")){
 			druidDataSource.setMinIdle(Integer.parseInt(dsMap.get("minIdle").toString()));
-			
+
 		}
 		if(dsMap.containsKey("maxActive")){
 			druidDataSource.setMaxActive(Integer.parseInt(dsMap.get("maxActive").toString()));
-			
+
 		}
 		druidDataSource.setTimeBetweenEvictionRunsMillis(600000);
 		druidDataSource.setMinEvictableIdleTimeMillis(600000);

@@ -53,6 +53,9 @@ public class APIBasic {
 	@Autowired
 	private PosItemLogRpc posItemLogRpc;
 
+	@Autowired
+	private ReceiveOrderRpc receiveOrderRpc;
+
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
@@ -897,6 +900,18 @@ public class APIBasic {
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		List<WholesaleProfitByClient> list = reportRpc.findWholesaleProfitByClient(query);
+		return list;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "test45")
+	public List test45() throws Exception {
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-02-01");
+		Date dateTo = sdf.parse("2018-02-23");
+		List<Integer> branchNums = getBranchNums();
+		List<MonthPurchaseDTO> list = receiveOrderRpc.findPurchaseMonth(systemBookCode, 1, dateFrom, dateTo, AppConstants.STATE_AUDIT_TIME);
+
 		return list;
 	}
 

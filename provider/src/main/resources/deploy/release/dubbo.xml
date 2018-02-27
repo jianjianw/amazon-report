@@ -11,7 +11,7 @@
     <dubbo:application name="amazon-report"  />
     <dubbo:registry address="zookeeper://10.47.113.230:2181" />
     <!-- 用dubbo协议在20880端口暴露服务 -->
-    <dubbo:protocol name="dubbo" port="20880" threads="400"/>
+    <dubbo:protocol name="dubbo" port="20880" threads="400" payload = "10485760"/>
     <dubbo:provider loadbalance="roundrobin" timeout="600000"/>
 
 
