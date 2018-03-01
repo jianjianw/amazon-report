@@ -100,7 +100,7 @@ public interface ReportRpc {
 	 * @param branchNums 分店列表
 	 * @param dateFrom 营业日起
 	 * @param dateTo 营业日止
-	 * @param type type 0营业额 1客单量2客单价3会员客单量4会员客单价5毛利6平均毛利率
+	 * @param type type 0营业额 1客单量2客单价3会员客单量4会员客单价5毛利6平均毛利率   add 7 会员销售额 8 会员毛利
 	 * @return
 	 */
 	public List<BranchDayReport> findDayWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
@@ -111,7 +111,7 @@ public interface ReportRpc {
 	 * @param branchNums 分店列表
 	 * @param dateFrom 营业日起
 	 * @param dateTo 营业日止
-	 * @param type 0营业额 1日均客单量2客单价3会员日均客单量4会员客单价5毛利6平均毛利率
+	 * @param type 0营业额 1日均客单量2客单价3会员日均客单量4会员客单价5毛利6平均毛利率  add 7 会员销售额 8 会员毛利
 	 * @return
 	 */
 	public List<BranchMonthReport> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);

@@ -333,6 +333,16 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return objects;
 	}
 
+	@Override
+	public List<Object[]> findSummaryByPrintNum(CardReportQuery cardReportQuery) {
+		return posOrderDao.findSummaryByPrintNum(cardReportQuery);
+	}
+
+	@Override
+	public List<Object> findCountByPrintNum(CardReportQuery cardReportQuery) {
+		return posOrderDao.findCountByPrintNum(cardReportQuery);
+	}
+
 
 }
 

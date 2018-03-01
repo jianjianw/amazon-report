@@ -1737,6 +1737,9 @@ public class ReportRpcImpl implements ReportRpc {
 			branchDayReport.setBranchNum((Integer) object[0]);
 			branchDayReport.setDay((String) object[1]);
 			branchDayReport.setValue(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+			if(type == 3 || type == 4 || type ==7 || type ==8 ){
+				branchDayReport.setMember(true);
+			}
 			list.add(branchDayReport);
 		}
 		return list;
@@ -1744,7 +1747,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BranchMonthReport> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
-		
+
 		List<Object[]> objects = reportService.findMonthWholes(systemBookCode,branchNums,dateFrom,dateTo,type);
 		int size = objects.size();
 		List<BranchMonthReport> list = new ArrayList<BranchMonthReport>(size);
@@ -1761,6 +1764,9 @@ public class ReportRpcImpl implements ReportRpc {
 			branchMonthReport.setOrderCount(object[3] == null?0:(Integer) object[3]);
 			branchMonthReport.setProfit(object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4]);
 			branchMonthReport.setBizdayCount(object[5] == null?0:(Integer) object[5]);
+			if(type == 3 || type == 4 || type ==7 || type ==8 ){
+				branchMonthReport.setMember(true);
+			}
 			list.add(branchMonthReport);
 			
 		}

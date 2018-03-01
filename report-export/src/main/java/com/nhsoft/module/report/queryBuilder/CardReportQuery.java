@@ -39,6 +39,8 @@ public class CardReportQuery extends QueryBuilder {
 	private boolean isPaging = true;
 	private boolean isQueryDetail = false;
 	private boolean isQueryPayment = false;
+	private int offset;
+	private int limit;
 	
 	private List<String> clientPointOperateType = new ArrayList<String>();
 		
@@ -250,4 +252,19 @@ public class CardReportQuery extends QueryBuilder {
 		this.clientPointOperateType = clientPointOperateType;
 	}
 
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
 }

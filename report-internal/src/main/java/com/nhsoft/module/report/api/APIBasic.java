@@ -915,4 +915,21 @@ public class APIBasic {
 		return list;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "test46")
+	public CardSummaryPageDTO test46() throws Exception{
+		CardReportQuery query = new CardReportQuery();
+		query.setSystemBookCode("4020");
+		query.setPaging(true);
+		query.setOffset(0);
+		query.setLimit(1000);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-01-01");
+		Date dateTo = sdf.parse("2018-02-23");
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		query.setQueryDetail(true);
+		CardSummaryPageDTO summaryByPrintNum = posOrderRpc.findSummaryByPrintNum(query);
+		return summaryByPrintNum;
+	}
+
 }
