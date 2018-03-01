@@ -1744,7 +1744,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BranchMonthReport> findMonthWholes(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
-		
+
 		List<Object[]> objects = reportService.findMonthWholes(systemBookCode,branchNums,dateFrom,dateTo,type);
 		int size = objects.size();
 		List<BranchMonthReport> list = new ArrayList<BranchMonthReport>(size);
@@ -1761,6 +1761,10 @@ public class ReportRpcImpl implements ReportRpc {
 			branchMonthReport.setOrderCount(object[3] == null?0:(Integer) object[3]);
 			branchMonthReport.setProfit(object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4]);
 			branchMonthReport.setBizdayCount(object[5] == null?0:(Integer) object[5]);
+			branchMonthReport.setProfitRate(branchMonthReport.getProfit().divide(branchMonthReport.getBizMoney(),4, BigDecimal.ROUND_HALF_UP));
+			if(type == 3 || type == 4){
+				branchMonthReport.setMember(true);
+			}
 			list.add(branchMonthReport);
 			
 		}
