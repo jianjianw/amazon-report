@@ -13,10 +13,19 @@ public class ShipOrderBranchDetailDTO implements Serializable {
 	private String itemName;
 	private BigDecimal shipOrderItemCount;
 	private BigDecimal shipOrderItemMoney;
+	private Integer itemNum;
 	
 	public ShipOrderBranchDetailDTO() {
 		setShipOrderItemCount(BigDecimal.ZERO);
 		setShipOrderItemMoney(BigDecimal.ZERO);
+	}
+
+	public Integer getItemNum() {
+		return itemNum;
+	}
+
+	public void setItemNum(Integer itemNum) {
+		this.itemNum = itemNum;
 	}
 
 	public String getItemCode() {
