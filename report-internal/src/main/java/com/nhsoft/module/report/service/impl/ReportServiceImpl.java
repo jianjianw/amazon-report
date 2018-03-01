@@ -184,7 +184,7 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal value1;
 		BigDecimal value2;
 		Date dpcLimitTime = DateUtil.addDay(now, -2);
-		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && (type != 3 && type != 4 && type !=7 && type !=8)) {
+		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && (type != 3 && type != 4)) {
 
 			if (dpcLimitTime.compareTo(dateTo) > 0) {
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
@@ -311,7 +311,7 @@ public class ReportServiceImpl implements ReportService {
 		} else {
 			
 			List<Object[]> objects = null;
-			if(type == 3 || type == 4 || type == 7 || type == 8){
+			if(type == 3 || type == 4){
 				objects = posOrderDao.findDayWholes(systemBookCode, branchNums, dateFrom, dateTo, true);
 			} else {
 				objects = posOrderDao.findDayWholes(systemBookCode, branchNums, dateFrom, dateTo, false);
@@ -344,8 +344,6 @@ public class ReportServiceImpl implements ReportService {
 						} 
 						object[3] = value1;
 						object[4] = value2;
-					} else if(type == 8){
-						object[2] = object[4];
 					}
 				}
 			}
@@ -373,7 +371,7 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal value1;
 		BigDecimal value2;
 		Date dpcLimitTime = DateUtil.addDay(now, -2);
-		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && (type != 3 && type != 4 && type !=7 && type !=8)) {
+		if (dpcLimitTime.compareTo(dateFrom) > 0 && systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && (type != 3 && type != 4)) {
 			if (dpcLimitTime.compareTo(dateTo) > 0) {
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -515,11 +513,11 @@ public class ReportServiceImpl implements ReportService {
 			}
 		} else {
 			List<Object[]> objects = null;
-			if(type == 3 || type == 4 || type ==7 || type ==8){
+			if(type == 3 || type == 4){
 				objects = posOrderDao.findMonthWholes(systemBookCode, branchNums, dateFrom, dateTo, true);
 			} else {
 				objects = posOrderDao.findMonthWholes(systemBookCode, branchNums, dateFrom, dateTo, false);
-	//0营业额 1日均客单量2客单价3会员日均客单量4会员客单价5毛利6平均毛利率  add 7 会员销售额 8 会员毛利
+
 			}
 			if(type > 0){
 				Object[] object = null;
@@ -551,8 +549,6 @@ public class ReportServiceImpl implements ReportService {
 						if(value1.compareTo(BigDecimal.ZERO) > 0){
 							object[2] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));;
 						} 
-					}else if(type == 8){
-						object[2] = object[4];
 					}
 				}
 			}
@@ -11020,9 +11016,11 @@ public class ReportServiceImpl implements ReportService {
 		}
 		List<Object[]> objects = shipOrderDao.findBranchNewItemDetail(systemBookCode, outBranchNum, branchNum,
 				itemNums, dateFrom, dateTo, categoryCodes);
-		for (int i = 0,len = objects.size(); i < len; i++) {
-			Object[] object = objects.get(i);
-			for(ShipOrderBranchDetailDTO dto : list){
+		Object[] object;
+		for(ShipOrderBranchDetailDTO dto : list){
+
+			for (int i = 0,len = objects.size(); i < len; i++) {
+				object = objects.get(i);
 				if(dto.getItemNum().equals(object[0])){
 					dto.setShipOrderItemMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
 					break;
