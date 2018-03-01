@@ -7,7 +7,8 @@ public class BranchDayReport implements Serializable{
     private static final long serialVersionUID = 5978813697825433532L;
     private int branchNum;
     private String day;
-    private BigDecimal value;   // 根据type   返回    0营业额 1客单量2客单价3会员客单量4会员客单价5毛利6平均毛利率
+    private BigDecimal value;   // 根据type
+    private boolean member;
 
     public int getBranchNum() {
         return branchNum;
@@ -33,4 +34,11 @@ public class BranchDayReport implements Serializable{
         this.value = value;
     }
 
+    public boolean isMember() {
+        return member;
+    }
+
+    public void setMember(boolean member) {
+        this.member = member;
+    }
 }

@@ -1737,6 +1737,9 @@ public class ReportRpcImpl implements ReportRpc {
 			branchDayReport.setBranchNum((Integer) object[0]);
 			branchDayReport.setDay((String) object[1]);
 			branchDayReport.setValue(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+			if(type == 3 || type == 4 || type ==7 || type ==8 ){
+				branchDayReport.setMember(true);
+			}
 			list.add(branchDayReport);
 		}
 		return list;
@@ -1761,8 +1764,7 @@ public class ReportRpcImpl implements ReportRpc {
 			branchMonthReport.setOrderCount(object[3] == null?0:(Integer) object[3]);
 			branchMonthReport.setProfit(object[4] == null?BigDecimal.ZERO:(BigDecimal)object[4]);
 			branchMonthReport.setBizdayCount(object[5] == null?0:(Integer) object[5]);
-			branchMonthReport.setProfitRate(branchMonthReport.getProfit().divide(branchMonthReport.getBizMoney(),4, BigDecimal.ROUND_HALF_UP));
-			if(type == 3 || type == 4){
+			if(type == 3 || type == 4 || type ==7 || type ==8 ){
 				branchMonthReport.setMember(true);
 			}
 			list.add(branchMonthReport);
