@@ -573,7 +573,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("from shift_table with(nolock) ");
 		sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " and merchant_num is not null ");
 		if (merchantNum != null) {
-			sb.append("and branch_num = " + merchantNum + " ");
+			sb.append("and merchant_num = " + merchantNum + " ");
 		}
 		if (dateFrom != null) {
 			sb.append("and shift_table_bizday >= :bizFrom ");
