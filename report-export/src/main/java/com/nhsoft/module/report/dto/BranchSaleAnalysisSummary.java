@@ -11,6 +11,13 @@ public class BranchSaleAnalysisSummary implements Serializable {
     private BigDecimal memberData;         //  会员数据
 
 
+    //type = 4 时，需要返回下面的数据
+    private BigDecimal saleMoney;
+    private BigDecimal memberSaleMoney;
+
+    private BigDecimal profit;
+    private BigDecimal memberProfit;
+
     public Integer getBranchNum() {
         return branchNum;
     }
@@ -41,5 +48,38 @@ public class BranchSaleAnalysisSummary implements Serializable {
 
     public void setMemberData(BigDecimal memberData) {
         this.memberData = memberData;
+    }
+
+
+    public BigDecimal getSaleMoney() {
+        return saleMoney;
+    }
+
+    public void setSaleMoney(BigDecimal saleMoney) {
+        this.saleMoney = saleMoney;
+    }
+
+    public BigDecimal getMemberSaleMoney() {
+        return memberSaleMoney;
+    }
+
+    public void setMemberSaleMoney(BigDecimal memberSaleMoney) {
+        this.memberSaleMoney = memberSaleMoney;
+    }
+
+    public BigDecimal getProfit() {
+        return profit;
+    }
+
+    public void setProfit(BigDecimal profit) {
+        this.profit = profit;
+    }
+
+    public BigDecimal getMemberProfit() {
+        return memberProfit;
+    }
+
+    public void setMemberProfit(BigDecimal memberProfit) {
+        this.memberProfit = memberProfit;
     }
 }

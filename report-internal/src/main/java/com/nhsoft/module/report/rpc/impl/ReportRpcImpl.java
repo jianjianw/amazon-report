@@ -4075,6 +4075,12 @@ public class ReportRpcImpl implements ReportRpc {
 			String bizDay = (String) object[1];
 			BigDecimal value = null;
 			BigDecimal memberValue = null;
+			//type = 4 时需要返回 销售额 和毛利
+			BigDecimal moneyValue = null;
+			BigDecimal profitValue = null;
+			BigDecimal memberMoneyValue = null;
+			BigDecimal memberProfitValue = null;
+
 			if(type == 0 ){			//营业额
 				value = (BigDecimal) object[2];
 				memberValue = (BigDecimal) object[6];
@@ -4105,28 +4111,33 @@ public class ReportRpcImpl implements ReportRpc {
 
 			}else if(type == 4){	//毛利率
 
-				BigDecimal money  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-				BigDecimal profit = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-				if(money.compareTo(BigDecimal.ZERO) == 0){
+				moneyValue  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				profitValue = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+				if(moneyValue.compareTo(BigDecimal.ZERO) == 0){
 					value = BigDecimal.ZERO;
 				}else {
-					value = profit.divide(money, 2, BigDecimal.ROUND_HALF_UP);
+					value = profitValue.divide(moneyValue, 2, BigDecimal.ROUND_HALF_UP);
 				}
 
-				BigDecimal memberMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
-				BigDecimal memberProfit = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
-				if(memberMoney.compareTo(BigDecimal.ZERO) == 0){
+				memberMoneyValue = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				memberProfitValue = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
+				if(memberMoneyValue.compareTo(BigDecimal.ZERO) == 0){
 					memberValue = BigDecimal.ZERO;
 				}else {
-					memberValue = memberProfit.divide(memberMoney, 2, BigDecimal.ROUND_HALF_UP);
+					memberValue = memberProfitValue.divide(memberMoneyValue, 2, BigDecimal.ROUND_HALF_UP);
 				}
-
 			}
 			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
 			summary.setBranchNum(branchNum);
 			summary.setBizDate(bizDay);
 			summary.setData(value);
 			summary.setMemberData(memberValue);
+			if(type == 4){
+				summary.setSaleMoney(moneyValue);
+				summary.setProfit(profitValue);
+				summary.setMemberSaleMoney(memberMoneyValue);
+				summary.setMemberProfit(memberProfitValue);
+			}
 			list.add(summary);
 		}
 
@@ -4139,7 +4150,6 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = reportService.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
 		int size = objects.size();
 		List<BranchSaleAnalysisSummary> list = new ArrayList<>(size);
-		////0营业额          1日均客单量      2客单价         3毛利           4毛利率
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
