@@ -939,7 +939,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-02-23");
-		int type = 2;
+		int type = 4;
 		List<BranchSaleAnalysisSummary> result = reportRpc.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo, type);
 		return result;
 	}
@@ -952,7 +952,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-02-23");
-		int type = 2;
+		int type = 4;
 		List<BranchSaleAnalysisSummary> result = reportRpc.findDaySaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo, type);
 		return result;
 	}
