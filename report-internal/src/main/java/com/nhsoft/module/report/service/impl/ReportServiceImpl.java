@@ -11005,7 +11005,11 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<ShipOrderBranchDetailDTO> findShipOrderBranchDetail(String systemBookCode, Integer outBranchNum,
 			Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums, List<String> categoryCodes) {
+
 		List<ShipOrderBranchDetailDTO> list = new ArrayList<ShipOrderBranchDetailDTO>();
+		if(itemNums == null || itemNums.isEmpty()){
+			return list;
+		}
 		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
 		for(PosItem posItem : posItems){
 			ShipOrderBranchDetailDTO dto = new ShipOrderBranchDetailDTO();
