@@ -1,6 +1,5 @@
 package com.nhsoft.module.report.rpc;
 
-import com.nhsoft.module.report.dto.BranchBizItemSummary;
 import com.nhsoft.module.report.dto.BranchItemRecoredDTO;
 
 import java.util.List;

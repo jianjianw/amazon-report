@@ -18,6 +18,7 @@ import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.CopyUtil;
 import com.nhsoft.report.utils.DateUtil;
+import com.sun.org.apache.bcel.internal.generic.BIPUSH;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,6 +155,7 @@ public class ReportServiceImpl implements ReportService {
 	private PosOrderRemoteService posOrderRemoteService;
 	@Autowired
 	private PosItemDao posItemDao;
+
 	
 	
 	@Override
@@ -519,7 +521,8 @@ public class ReportServiceImpl implements ReportService {
 				objects = posOrderDao.findMonthWholes(systemBookCode, branchNums, dateFrom, dateTo, true);
 			} else {
 				objects = posOrderDao.findMonthWholes(systemBookCode, branchNums, dateFrom, dateTo, false);
-	//0营业额 1日均客单量2客单价3会员日均客单量4会员客单价5毛利6平均毛利率  add 7 会员销售额 8 会员毛利
+				//0营业额 1日均客单量 2客单价 5毛利 6平均毛利率
+				//7会员营业额 3会员日均客单量 4会员客单价 8会员毛利 9会员毛利率
 			}
 			if(type > 0){
 				Object[] object = null;
@@ -3624,6 +3627,24 @@ public class ReportServiceImpl implements ReportService {
 				data.setCurrentSaleProfit(data.getCurrentSaleProfit().add(profit));
 			}
 		}
+		//最近收货日期
+		if(query.getReceiveDate() != null){
+			List<String> types = new ArrayList<>();
+			types.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+			objects = branchItemRecoredDao.findItemAuditDate(systemBookCode, branchNum, null, null, types);
+
+			for (int i = 0,len = objects.size(); i < len ; i++) {
+				Object[] object = objects.get(i);
+				Integer itemNum = (Integer) object[0];
+
+				UnsalablePosItem data = map.get(itemNum);
+				if(data != null){
+					Date auditDate = (Date) object[1];
+					data.setLastestInDate(auditDate);
+				}
+			}
+		}
+
 
 		List<UnsalablePosItem> list = new ArrayList<UnsalablePosItem>(map.values());
 		if (query.isTransfer()) {
@@ -3710,6 +3731,29 @@ public class ReportServiceImpl implements ReportService {
 				}
 			}
 		}
+		//最近收货时间早于xxx
+		Date receiveDate = query.getReceiveDate();
+		if(receiveDate != null){
+			for(int i = list.size()-1; i >= 0; i--){
+				UnsalablePosItem data = list.get(i);
+				if(receiveDate.compareTo(data.getLastestInDate()) <= 0){
+					list.remove(i);
+				}
+			}
+		}
+		//该商品的调出数量比当前库存量少
+		if(query.isFilterOutGTInventory()){
+			for(int i = list.size()-1; i >= 0; i--) {
+
+				UnsalablePosItem data = list.get(i);
+				BigDecimal outNum = data.getCurrentOutNum()== null ? BigDecimal.ZERO : data.getCurrentOutNum();// 最近调出量
+				BigDecimal store = data.getCurrentStore() == null ? BigDecimal.ZERO : data.getCurrentStore();// 当前库存
+				if(outNum.compareTo(store) > 0){
+					list.remove(i);
+				}
+			}
+		}
+
 		return list;
 	}
 

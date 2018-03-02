@@ -201,8 +201,12 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		transferProfitQuery.setCategoryCodes(categoryCodeList);
 		transferProfitQuery.setItemNums(itemNums);
 		Criteria criteria = createProfitCriteria(transferProfitQuery);
-		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("detail.itemNum")).add(Projections.groupProperty("detail.outOrderDetailItemMatrixNum"))
-				.add(Projections.sum("detail.outOrderDetailQty")).add(Projections.sum("detail.outOrderDetailSaleSubtotal")).add(Projections.sum("detail.outOrderDetailSubtotal"))
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.groupProperty("detail.itemNum"))
+				.add(Projections.groupProperty("detail.outOrderDetailItemMatrixNum"))
+				.add(Projections.sum("detail.outOrderDetailQty"))
+				.add(Projections.sum("detail.outOrderDetailSaleSubtotal"))
+				.add(Projections.sum("detail.outOrderDetailSubtotal"))
 				.add(Projections.sum("detail.outOrderDetailPresentBasicQty")));
 		return criteria.list();
 	}
