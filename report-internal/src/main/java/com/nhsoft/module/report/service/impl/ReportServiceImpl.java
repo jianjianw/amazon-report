@@ -11019,6 +11019,7 @@ public class ReportServiceImpl implements ReportService {
 			dto.setItemCode(posItem.getItemCode());
 			dto.setItemName(posItem.getItemName());
 			dto.setItemNum(posItem.getItemNum());
+			dto.setShipOrderItemMoney(BigDecimal.ZERO);
 			list.add(dto);
 		}
 		List<Object[]> objects = shipOrderDao.findBranchNewItemDetail(systemBookCode, outBranchNum, branchNum,
