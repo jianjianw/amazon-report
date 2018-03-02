@@ -11009,23 +11009,30 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<ShipOrderBranchDetailDTO> findShipOrderBranchDetail(String systemBookCode, Integer outBranchNum,
 			Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums, List<String> categoryCodes) {
-		List<ShipOrderBranchDetailDTO> list = new ArrayList<ShipOrderBranchDetailDTO>();
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+		List<ShipOrderBranchDetailDTO> list = new ArrayList<>();
+		if(itemNums == null || itemNums.isEmpty()){
+			return list;
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
+		for(PosItem posItem : posItems){
+			ShipOrderBranchDetailDTO dto = new ShipOrderBranchDetailDTO();
+			dto.setItemCode(posItem.getItemCode());
+			dto.setItemName(posItem.getItemName());
+			dto.setItemNum(posItem.getItemNum());
+			list.add(dto);
+		}
 		List<Object[]> objects = shipOrderDao.findBranchNewItemDetail(systemBookCode, outBranchNum, branchNum,
 				itemNums, dateFrom, dateTo, categoryCodes);
-		for (int i = 0,len = objects.size(); i < len; i++) {
-			Object[] object = objects.get(i);
-			Integer itemNum = (Integer) object[0];
-			BigDecimal totalMoney = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
-			ShipOrderBranchDetailDTO dto = new ShipOrderBranchDetailDTO();
-			PosItem item = AppUtil.getPosItem(itemNum, posItems);
-			if (item == null) {
-				continue;
+		Object[] object;
+		for(ShipOrderBranchDetailDTO dto : list){
+
+			for (int i = 0,len = objects.size(); i < len; i++) {
+				object = objects.get(i);
+				if(dto.getItemNum().equals(object[0])){
+					dto.setShipOrderItemMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
+					break;
+				}
 			}
-			dto.setItemCode(item.getItemCode());
-			dto.setItemName(item.getItemName());
-			dto.setShipOrderItemMoney(totalMoney);
-			list.add(dto);
 		}
 		return list;
 	}
