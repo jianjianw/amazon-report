@@ -4072,7 +4072,7 @@ public class ReportRpcImpl implements ReportRpc {
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
-			String bizMonth = (String) object[1];
+			String bizDay = (String) object[1];
 			BigDecimal value = null;
 			BigDecimal memberValue = null;
 			if(type == 0 ){			//营业额
@@ -4105,10 +4105,26 @@ public class ReportRpcImpl implements ReportRpc {
 
 			}else if(type == 4){	//毛利率
 
+				BigDecimal money  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal profit = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+				if(money.compareTo(BigDecimal.ZERO) == 0){
+					value = BigDecimal.ZERO;
+				}else {
+					value = profit.divide(money, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
+				BigDecimal memberMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				BigDecimal memberProfit = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
+				if(memberMoney.compareTo(BigDecimal.ZERO) == 0){
+					memberValue = BigDecimal.ZERO;
+				}else {
+					memberValue = memberProfit.divide(memberMoney, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
 			}
 			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
 			summary.setBranchNum(branchNum);
-			summary.setBizDate(bizMonth);
+			summary.setBizDate(bizDay);
 			summary.setData(value);
 			summary.setMemberData(memberValue);
 			list.add(summary);
@@ -4159,8 +4175,23 @@ public class ReportRpcImpl implements ReportRpc {
 				memberValue = (BigDecimal) object[8];
 
 			}else if(type == 4){	//毛利率
+				BigDecimal money  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal profit = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+				if(money.compareTo(BigDecimal.ZERO) == 0){
+					value = BigDecimal.ZERO;
+				}else {
+					value = profit.divide(money, 2, BigDecimal.ROUND_HALF_UP);
+				}
 
+				BigDecimal memberMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				BigDecimal memberProfit = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
+				if(memberMoney.compareTo(BigDecimal.ZERO) == 0){
+					memberValue = BigDecimal.ZERO;
+				}else {
+					memberValue = memberProfit.divide(memberMoney, 2, BigDecimal.ROUND_HALF_UP);
+				}
 			}
+
 			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
 			summary.setBranchNum(branchNum);
 			summary.setBizDate(bizMonth);

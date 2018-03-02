@@ -12397,6 +12397,9 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<Object[]> findMonthSaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
+
+
+
         return posOrderDao.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
 
     }
