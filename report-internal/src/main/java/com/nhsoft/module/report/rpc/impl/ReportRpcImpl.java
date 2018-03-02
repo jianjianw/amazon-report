@@ -4063,6 +4063,116 @@ public class ReportRpcImpl implements ReportRpc {
 		return list;
 	}
 
+	@Override
+	public List<BranchSaleAnalysisSummary> findDaySaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
+		List<Object[]> objects = reportService.findDaySaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
+		int size = objects.size();
+		List<BranchSaleAnalysisSummary> list = new ArrayList<>(size);
+		////0营业额          1日均客单量      2客单价         3毛利           4毛利率
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String bizMonth = (String) object[1];
+			BigDecimal value = null;
+			BigDecimal memberValue = null;
+			if(type == 0 ){			//营业额
+				value = (BigDecimal) object[2];
+				memberValue = (BigDecimal) object[6];
+			}else if(type == 1){	//日均客单量
+				value = (BigDecimal) object[3];
+				memberValue = (BigDecimal) object[7];
+			}else if(type == 2){	//客单价
+				BigDecimal money = (BigDecimal) object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal amount = (BigDecimal) object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+				if(amount.compareTo(BigDecimal.ZERO) == 0){
+					value = BigDecimal.ZERO;
+				}else {
+					value = money.divide(amount, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
+				BigDecimal memberMoney = (BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				BigDecimal memberAmount = (BigDecimal) object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+
+				if(memberAmount.compareTo(BigDecimal.ZERO) == 0){
+					memberValue  = BigDecimal.ZERO;
+				}else {
+					memberValue = memberMoney.divide(memberAmount, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
+			}else if(type == 3){	//毛利
+				value = (BigDecimal) object[4];
+				memberValue = (BigDecimal) object[8];
+
+			}else if(type == 4){	//毛利率
+
+			}
+			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
+			summary.setBranchNum(branchNum);
+			summary.setBizDate(bizMonth);
+			summary.setData(value);
+			summary.setMemberData(memberValue);
+			list.add(summary);
+		}
+
+		return list;
+	}
+
+	@Override
+	public List<BranchSaleAnalysisSummary> findMonthSaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
+
+		List<Object[]> objects = reportService.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
+		int size = objects.size();
+		List<BranchSaleAnalysisSummary> list = new ArrayList<>(size);
+		////0营业额          1日均客单量      2客单价         3毛利           4毛利率
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String bizMonth = (String) object[1];
+			BigDecimal value = null;
+			BigDecimal memberValue = null;
+			if(type == 0 ){			//营业额
+				value = (BigDecimal) object[2];
+				memberValue = (BigDecimal) object[6];
+			}else if(type == 1){	//日均客单量
+				value = (BigDecimal) object[3];
+				memberValue = (BigDecimal) object[7];
+			}else if(type == 2){	//客单价
+				BigDecimal money = (BigDecimal) object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal amount = (BigDecimal) object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+				if(amount.compareTo(BigDecimal.ZERO) == 0){
+					value = BigDecimal.ZERO;
+				}else {
+					value = money.divide(amount, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
+				BigDecimal memberMoney = (BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				BigDecimal memberAmount = (BigDecimal) object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+
+				if(memberAmount.compareTo(BigDecimal.ZERO) == 0){
+					memberValue  = BigDecimal.ZERO;
+				}else {
+					memberValue = memberMoney.divide(memberAmount, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
+			}else if(type == 3){	//毛利
+				value = (BigDecimal) object[4];
+				memberValue = (BigDecimal) object[8];
+
+			}else if(type == 4){	//毛利率
+
+			}
+			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
+			summary.setBranchNum(branchNum);
+			summary.setBizDate(bizMonth);
+			summary.setData(value);
+			summary.setMemberData(memberValue);
+			list.add(summary);
+		}
+
+		return list;
+
+
+	}
 
 
 }
