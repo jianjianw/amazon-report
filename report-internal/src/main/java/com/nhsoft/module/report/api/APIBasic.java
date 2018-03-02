@@ -932,4 +932,29 @@ public class APIBasic {
 		return summaryByPrintNum;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "/test47")
+	public List<BranchSaleAnalysisSummary> test47() throws Exception{
+		String systemBookCode = "4020";
+		List<Integer> branchNums = getBranchNums();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-02-23");
+		int type = 2;
+		List<BranchSaleAnalysisSummary> result = reportRpc.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo, type);
+		return result;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test48")
+	public List<BranchSaleAnalysisSummary> test48() throws Exception{
+		String systemBookCode = "4020";
+		List<Integer> branchNums = getBranchNums();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-02-23");
+		int type = 2;
+		List<BranchSaleAnalysisSummary> result = reportRpc.findDaySaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo, type);
+		return result;
+	}
+
 }

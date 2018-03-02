@@ -4079,19 +4079,19 @@ public class ReportRpcImpl implements ReportRpc {
 				value = (BigDecimal) object[2];
 				memberValue = (BigDecimal) object[6];
 			}else if(type == 1){	//日均客单量
-				value = (BigDecimal) object[3];
-				memberValue = (BigDecimal) object[7];
+				value = BigDecimal.valueOf((Integer)object[3]);
+				memberValue = BigDecimal.valueOf((Integer) object[7]);
 			}else if(type == 2){	//客单价
-				BigDecimal money = (BigDecimal) object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-				BigDecimal amount = (BigDecimal) object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+				BigDecimal money  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal amount = object[3] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer)object[3]);
 				if(amount.compareTo(BigDecimal.ZERO) == 0){
 					value = BigDecimal.ZERO;
 				}else {
 					value = money.divide(amount, 2, BigDecimal.ROUND_HALF_UP);
 				}
 
-				BigDecimal memberMoney = (BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
-				BigDecimal memberAmount = (BigDecimal) object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+				BigDecimal memberMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				BigDecimal memberAmount = object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer) object[7]);
 
 				if(memberAmount.compareTo(BigDecimal.ZERO) == 0){
 					memberValue  = BigDecimal.ZERO;
@@ -4134,19 +4134,19 @@ public class ReportRpcImpl implements ReportRpc {
 				value = (BigDecimal) object[2];
 				memberValue = (BigDecimal) object[6];
 			}else if(type == 1){	//日均客单量
-				value = (BigDecimal) object[3];
-				memberValue = (BigDecimal) object[7];
+				value = BigDecimal.valueOf((Integer)object[3]);
+				memberValue = BigDecimal.valueOf((Integer) object[7]);
 			}else if(type == 2){	//客单价
-				BigDecimal money = (BigDecimal) object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
-				BigDecimal amount = (BigDecimal) object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+				BigDecimal money  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal amount = object[3] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer)object[3]);
 				if(amount.compareTo(BigDecimal.ZERO) == 0){
 					value = BigDecimal.ZERO;
 				}else {
 					value = money.divide(amount, 2, BigDecimal.ROUND_HALF_UP);
 				}
 
-				BigDecimal memberMoney = (BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
-				BigDecimal memberAmount = (BigDecimal) object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+				BigDecimal memberMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				BigDecimal memberAmount = object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer) object[7]);
 
 				if(memberAmount.compareTo(BigDecimal.ZERO) == 0){
 					memberValue  = BigDecimal.ZERO;
