@@ -1171,6 +1171,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findBranchItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
+		List<Integer> itemNums = new ArrayList<>(100);
 		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
@@ -1208,6 +1209,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setInQty(data.getInQty().add(amount));
 			data.setInMoney(data.getInMoney().add(saleMoney));
@@ -1252,6 +1256,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setInQty(data.getInQty().subtract(amount));
 			data.setInMoney(data.getInMoney().subtract(saleMoney));
@@ -1297,6 +1304,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setSaleQty(data.getSaleQty().add(amount));
 			data.setSaleMoney(data.getSaleMoney().add(saleMoney));
@@ -1345,6 +1355,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setSaleQty(data.getSaleQty().subtract(amount));
 			data.setSaleMoney(data.getSaleMoney().subtract(saleMoney));
@@ -1391,6 +1404,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setSaleQty(data.getSaleQty().add(amount));
 			data.setSaleMoney(data.getSaleMoney().add(saleMoney));
@@ -1398,7 +1414,10 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setSaleProfit(data.getSaleProfit().add(profit));
 		}
 		List<SupplierComplexReportDTO> list = new ArrayList<SupplierComplexReportDTO>(map.values());
-		objects = inventoryService.findBranchItemSummary(systemBookCode, supplierSaleQuery.getBranchNums());
+		if(itemNums.isEmpty()){
+			return list;
+		}
+		objects = inventoryService.findBranchItemSummary(systemBookCode, supplierSaleQuery.getBranchNums(), itemNums);
 		// 算毛利率 读取库存金额 数量
 		for (SupplierComplexReportDTO supplierComplexReportDTO : list) {
 			Object[] object = readInventoryObjects(objects, supplierComplexReportDTO.getBranchNum(),
@@ -1430,7 +1449,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	private Object[] readInventoryObjects(List<Object[]> objects, Integer branchNum, Integer itemNum) {
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0, len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			if (object[0] == null || object[1] == null) {
 				continue;

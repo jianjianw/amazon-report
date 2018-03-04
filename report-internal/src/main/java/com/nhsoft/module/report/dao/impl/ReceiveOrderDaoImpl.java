@@ -62,6 +62,8 @@ public class ReceiveOrderDaoImpl extends DaoImpl implements ReceiveOrderDao {
 				.add(Projections.property("detail.receiveOrderDetailPresentUnit"))
 				.add(Projections.property("detail.receiveOrderDetailPresentUseQty"))
 				.add(Projections.property("detail.itemNum")));
+		criteria.setMaxResults(100000);
+		criteria.setLockMode(LockMode.NONE);
 		return criteria.list();
 	}
 

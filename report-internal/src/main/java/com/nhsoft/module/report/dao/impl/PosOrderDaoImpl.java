@@ -809,6 +809,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("and (detail.order_detail_has_kit is null or  detail.order_detail_has_kit = 0) ");
 			}
 			SQLQuery query = currentSession().createSQLQuery(sb.toString());
+			query.setMaxResults(100000);
 			List<Object[]> objects = query.list();
 			if (queryKit) {
 				sb = new StringBuffer();
@@ -825,6 +826,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("and detail.order_kit_detail_order_state in (5, 7) ");
 				sb.append("and detail.order_kit_detail_state_code != 8 ");
 				query = currentSession().createSQLQuery(sb.toString());
+				query.setMaxResults(100000);
 				List<Object[]> kitObjects = query.list();
 				objects.addAll(kitObjects);
 			}
@@ -855,7 +857,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 					.add(Projections.property("detail.orderDetailPrice"))
 					.add(Projections.property("detail.orderDetailAmount"))
 					.add(Projections.property("detail.orderDetailStateCode")));
-
+			criteria.setLockMode(LockMode.NONE);
+			criteria.setMaxResults(100000);
 			List<Object[]> objects = criteria.list();
 			return objects;
 		}
