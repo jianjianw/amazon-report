@@ -957,4 +957,20 @@ public class APIBasic {
 		return result;
 	}
 
+	@Autowired
+	private BranchItemRecoredRpc branchItemRecoredRpc;
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test49")
+	public List<BranchItemRecoredDTO> test49() throws Exception{
+		String systemBookCode = "4020";
+		List<Integer> branchNums = getBranchNums();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-02-23");
+		List<String> types = new ArrayList<>();
+		types.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+		List<BranchItemRecoredDTO> itemReceiveDate = branchItemRecoredRpc.findItemReceiveDate(systemBookCode, null, null, null, types);
+		return itemReceiveDate;
+	}
+
 }

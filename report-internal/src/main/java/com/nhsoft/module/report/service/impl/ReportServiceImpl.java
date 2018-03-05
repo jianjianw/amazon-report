@@ -154,7 +154,10 @@ public class ReportServiceImpl implements ReportService {
 	private PosOrderRemoteService posOrderRemoteService;
 	@Autowired
 	private PosItemDao posItemDao;
-	
+
+	@Autowired
+	private BranchItemRecoredService branchItemRecoredService;
+
 	
 	@Override
 	public Object excuteSql(String systemBookCode, String sql) {
@@ -3625,6 +3628,25 @@ public class ReportServiceImpl implements ReportService {
 			}
 		}
 
+		if(query.getReceiveDate() != null){
+			List<String> list = new ArrayList<>();
+			list.add(AppConstants.POS_ITEM_LOG_IN_ORDER);
+			objects = branchItemRecoredDao.findItemReceiveDate(systemBookCode, branchNums, null, null, list);
+
+			for (int i = 0,len = objects.size(); i < len ; i++) {
+				Object[] object = objects.get(i);
+				Integer itemNum = (Integer)object[0];
+				UnsalablePosItem data = map.get(itemNum);
+				if(data != null){
+					data.setLastestInDate((Date)object[1]);
+				}
+
+			}
+		}
+
+
+
+
 		List<UnsalablePosItem> list = new ArrayList<UnsalablePosItem>(map.values());
 		if (query.isTransfer()) {
 			objects = inventoryDao.findCenterStore(systemBookCode, branchNum, null);
@@ -3708,6 +3730,28 @@ public class ReportServiceImpl implements ReportService {
 					list.remove(i);
 					continue;
 				}
+			}
+		}
+
+		if(query.getReceiveDate() != null){
+			for (int i = list.size() - 1; i >= 0; i--) {
+				UnsalablePosItem unsalablePosItem = list.get(i);
+				Date lastestInDate = unsalablePosItem.getLastestInDate();
+				if(lastestInDate.compareTo(query.getReceiveDate()) > 0){
+					list.remove(i);
+				}
+			}
+		}
+
+		if(query.isFilterOutGTInventory()){
+			for (int i = list.size() - 1; i >= 0; i--) {
+				UnsalablePosItem unsalablePosItem = list.get(i);
+				BigDecimal currentStore = unsalablePosItem.getCurrentStore();
+				BigDecimal currentOutNum = unsalablePosItem.getCurrentOutNum();
+				if(currentOutNum.compareTo(currentStore) > 0){
+					list.remove(i);
+				}
+
 			}
 		}
 		return list;
