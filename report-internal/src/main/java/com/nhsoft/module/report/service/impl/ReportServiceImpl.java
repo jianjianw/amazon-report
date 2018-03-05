@@ -3630,8 +3630,8 @@ public class ReportServiceImpl implements ReportService {
 
 		if(query.getReceiveDate() != null){
 			List<String> list = new ArrayList<>();
-			list.add(AppConstants.POS_ITEM_LOG_IN_ORDER);
-			objects = branchItemRecoredDao.findItemReceiveDate(systemBookCode, branchNums, null, null, list);
+			list.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+			objects = branchItemRecoredDao.findItemReceiveDate(systemBookCode, transferBranchNums, null, null, list);
 
 			for (int i = 0,len = objects.size(); i < len ; i++) {
 				Object[] object = objects.get(i);
@@ -3643,9 +3643,6 @@ public class ReportServiceImpl implements ReportService {
 
 			}
 		}
-
-
-
 
 		List<UnsalablePosItem> list = new ArrayList<UnsalablePosItem>(map.values());
 		if (query.isTransfer()) {
