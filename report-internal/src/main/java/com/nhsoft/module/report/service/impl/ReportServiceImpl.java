@@ -3723,7 +3723,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 		// 过滤从没出入库的商品
 		if (query.isFilterInAndOut() != null && query.isFilterInAndOut()) {
-			List<Integer> itemNums = posItemLogDao.findItemNum(systemBookCode, branchNum, null, null, null);
+			List<Integer> itemNums = posItemLogDao.findItemNum(systemBookCode, branchNum, dateFrom, dateTo, null);
 			for (int i = list.size() - 1; i >= 0; i--) {
 				UnsalablePosItem data = list.get(i);
 				if (!itemNums.contains(data.getItemNum())) {

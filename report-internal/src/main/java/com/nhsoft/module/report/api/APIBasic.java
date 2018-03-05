@@ -992,6 +992,7 @@ public class APIBasic {
 		query.setDateTo(dateTo);
 		query.setUnit(AppConstants.UNIT_BASIC);
 		query.setBranchNum(99);
+		query.setIsFilterInAndOut(true);
 
 
 
