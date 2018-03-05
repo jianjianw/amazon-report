@@ -4135,7 +4135,7 @@ public class ReportRpcImpl implements ReportRpc {
 				if(moneyValue.compareTo(BigDecimal.ZERO) == 0){
 					value = BigDecimal.ZERO;
 				}else {
-					value = profitValue.divide(moneyValue, 2, BigDecimal.ROUND_HALF_UP);
+					value = profitValue.divide(moneyValue, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
 				}
 
 				memberMoneyValue = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
@@ -4143,7 +4143,7 @@ public class ReportRpcImpl implements ReportRpc {
 				if(memberMoneyValue.compareTo(BigDecimal.ZERO) == 0){
 					memberValue = BigDecimal.ZERO;
 				}else {
-					memberValue = memberProfitValue.divide(memberMoneyValue, 2, BigDecimal.ROUND_HALF_UP);
+					memberValue = memberProfitValue.divide(memberMoneyValue, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
 				}
 			}
 			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
@@ -4209,7 +4209,7 @@ public class ReportRpcImpl implements ReportRpc {
 				if(money.compareTo(BigDecimal.ZERO) == 0){
 					value = BigDecimal.ZERO;
 				}else {
-					value = profit.divide(money, 2, BigDecimal.ROUND_HALF_UP);
+					value = profit.divide(money, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
 				}
 
 				BigDecimal memberMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
@@ -4217,7 +4217,7 @@ public class ReportRpcImpl implements ReportRpc {
 				if(memberMoney.compareTo(BigDecimal.ZERO) == 0){
 					memberValue = BigDecimal.ZERO;
 				}else {
-					memberValue = memberProfit.divide(memberMoney, 2, BigDecimal.ROUND_HALF_UP);
+					memberValue = memberProfit.divide(memberMoney, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
 				}
 			}
 

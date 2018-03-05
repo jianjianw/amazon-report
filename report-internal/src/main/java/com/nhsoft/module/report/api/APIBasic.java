@@ -934,10 +934,10 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test47")
 	public List<BranchSaleAnalysisSummary> test47() throws Exception{
-		String systemBookCode = "4301";
+		String systemBookCode = "4020";
 		List<Integer> branchNums = getBranchNums();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateFrom = sdf.parse("2017-07-01");
 		Date dateTo = sdf.parse("2018-02-23");
 		int type = 4;
 		List<BranchSaleAnalysisSummary> result = reportRpc.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo, type);
