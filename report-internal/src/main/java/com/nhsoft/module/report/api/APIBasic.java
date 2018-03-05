@@ -934,7 +934,7 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test47")
 	public List<BranchSaleAnalysisSummary> test47() throws Exception{
-		String systemBookCode = "4020";
+		String systemBookCode = "4301";
 		List<Integer> branchNums = getBranchNums();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
@@ -972,5 +972,33 @@ public class APIBasic {
 		List<BranchItemRecoredDTO> itemReceiveDate = branchItemRecoredRpc.findItemReceiveDate(systemBookCode, null, null, null, types);
 		return itemReceiveDate;
 	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test50")
+	public List<UnsalablePosItem> test50() throws Exception{
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = sdf.parse("2018-02-28");
+
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-02-28");
+
+		UnsalableQuery query = new UnsalableQuery();
+		query.setSystemBookCode("4344");
+		query.setBranchNums(getBranchNums());
+		query.setFilterOutGTInventory(true);
+		query.setReceiveDate(date);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		query.setUnit(AppConstants.UNIT_BASIC);
+		query.setBranchNum(99);
+
+
+
+		List<UnsalablePosItem> unsalableItems = reportRpc.findUnsalableItems(query);
+		return unsalableItems;
+	}
+
+
 
 }

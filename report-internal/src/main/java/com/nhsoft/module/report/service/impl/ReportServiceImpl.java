@@ -3548,7 +3548,7 @@ public class ReportServiceImpl implements ReportService {
 				UnsalablePosItem data = map.get(itemNum);
 				if (data != null) {
 					// 调出量大于设定值的过滤
-					if (amount.compareTo(query.getItemAmount()) > 0) {
+					if (amount.compareTo(query.getItemAmount() == null ? BigDecimal.ZERO : query.getItemAmount()) > 0) {
 						map.remove(itemNum);
 						continue;
 					}
@@ -3591,7 +3591,7 @@ public class ReportServiceImpl implements ReportService {
 				UnsalablePosItem data = map.get(itemNum);
 				if (data != null) {
 					// 批发量大于设定值的过滤
-					if (amount.compareTo(query.getItemAmount()) > 0) {
+					if (amount.compareTo(query.getItemAmount() == null ? BigDecimal.ZERO : query.getItemAmount()) > 0) {
 						map.remove(itemNum);
 						continue;
 					}
@@ -3618,7 +3618,7 @@ public class ReportServiceImpl implements ReportService {
 			UnsalablePosItem data = map.get(itemNum);
 			if (data != null) {
 				// 销售量大于设定值 过滤
-				if (amount.compareTo(query.getItemAmount()) > 0) {
+				if (amount.compareTo(query.getItemAmount() == null ? BigDecimal.ZERO : query.getItemAmount()) > 0) {
 					map.remove(itemNum);
 					continue;
 				}
@@ -3662,7 +3662,7 @@ public class ReportServiceImpl implements ReportService {
 			// 总调出量大于设定值的过滤
 			BigDecimal totalAmount = data.getCurrentSaleNum().add(data.getCurrentPifaNum())
 					.add(data.getCurrentOutNum());
-			if (totalAmount.compareTo(query.getItemAmount()) > 0) {
+			if (totalAmount.compareTo(query.getItemAmount() == null ? BigDecimal.ZERO : query.getItemAmount()) > 0) {
 				list.remove(i);
 				continue;
 			}
@@ -3737,6 +3737,10 @@ public class ReportServiceImpl implements ReportService {
 			for (int i = list.size() - 1; i >= 0; i--) {
 				UnsalablePosItem unsalablePosItem = list.get(i);
 				Date lastestInDate = unsalablePosItem.getLastestInDate();
+				if(lastestInDate == null){
+					list.remove(i);
+					continue;
+				}
 				if(lastestInDate.compareTo(query.getReceiveDate()) > 0){
 					list.remove(i);
 				}

@@ -60,7 +60,7 @@ public class BranchItemRecoredDaoImpl extends DaoImpl implements BranchItemRecor
 		sb.append("where system_book_code = '" + systemBookCode + "' ");
 
 		if(branchNums != null && branchNums.size() > 0){
-			sb.append("and branch_num in " +  AppUtil.getIntegerParmeList(itemNums));
+			sb.append("and branch_num in " +  AppUtil.getIntegerParmeList(branchNums));
 		}
 		if(storehouseNum != null){
 			sb.append("and storehouse_num = " + storehouseNum + " ");
