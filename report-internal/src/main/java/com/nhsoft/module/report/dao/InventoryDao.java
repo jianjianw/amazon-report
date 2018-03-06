@@ -19,7 +19,7 @@ public interface InventoryDao {
 	
 	public List<Object[]> findItemAmount(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
 	
-	public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums, Integer storehouseNum);
+	public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums, Integer storehouseNum, List<Integer> itemNums);
 	
 	/**
 	 * 按门店 汇总库存数量 金额

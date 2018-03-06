@@ -10,6 +10,7 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.criterion.*;
@@ -247,6 +248,8 @@ public class WholesaleReturnDaoImpl extends DaoImpl implements WholesaleReturnDa
 				.add(Projections.property("w.wholesaleReturnAuditTime"))
 				.add(Projections.property("detail.returnDetailItemName"))
 		);
+		criteria.setMaxResults(100000);
+		criteria.setLockMode(LockMode.NONE);
 		return criteria.list();
 	}
 

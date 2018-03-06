@@ -9,6 +9,7 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.*;
@@ -64,6 +65,8 @@ public class ReturnOrderDaoImpl extends DaoImpl implements ReturnOrderDao {
 				.add(Projections.property("detail.returnOrderDetailPresentUseQty"))
 				.add(Projections.property("detail.itemNum"))
 		);
+		criteria.setMaxResults(100000);
+		criteria.setLockMode(LockMode.NONE);
 		return criteria.list();
 	}
 

@@ -932,4 +932,74 @@ public class APIBasic {
 		return summaryByPrintNum;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "/test47")
+	public List<BranchSaleAnalysisSummary> test47() throws Exception{
+		String systemBookCode = "4020";
+		List<Integer> branchNums = getBranchNums();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-07-01");
+		Date dateTo = sdf.parse("2018-02-23");
+		int type = 4;
+		List<BranchSaleAnalysisSummary> result = reportRpc.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo, type);
+		return result;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test48")
+	public List<BranchSaleAnalysisSummary> test48() throws Exception{
+		String systemBookCode = "4020";
+		List<Integer> branchNums = getBranchNums();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-02-23");
+		int type = 4;
+		List<BranchSaleAnalysisSummary> result = reportRpc.findDaySaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo, type);
+		return result;
+	}
+
+	@Autowired
+	private BranchItemRecoredRpc branchItemRecoredRpc;
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test49")
+	public List<BranchItemRecoredDTO> test49() throws Exception{
+		String systemBookCode = "4020";
+		List<Integer> branchNums = getBranchNums();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-02-23");
+		List<String> types = new ArrayList<>();
+		types.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+		List<BranchItemRecoredDTO> itemReceiveDate = branchItemRecoredRpc.findItemReceiveDate(systemBookCode, null, null, null, types);
+		return itemReceiveDate;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test50")
+	public List<UnsalablePosItem> test50() throws Exception{
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = sdf.parse("2018-02-28");
+
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-02-28");
+
+		UnsalableQuery query = new UnsalableQuery();
+		query.setSystemBookCode("4344");
+		query.setBranchNums(getBranchNums());
+		query.setFilterOutGTInventory(true);
+		query.setReceiveDate(date);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		query.setUnit(AppConstants.UNIT_BASIC);
+		query.setBranchNum(99);
+		query.setIsFilterInAndOut(true);
+
+
+
+		List<UnsalablePosItem> unsalableItems = reportRpc.findUnsalableItems(query);
+		return unsalableItems;
+	}
+
+
+
 }

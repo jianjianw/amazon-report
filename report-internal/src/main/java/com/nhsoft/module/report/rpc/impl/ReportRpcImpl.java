@@ -1171,6 +1171,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Object[]> objects = receiveOrderService.findBranchItemSupplierAmountAndMoney(systemBookCode, branchNums,
 				supplierSaleQuery.getDateFrom(), supplierSaleQuery.getDateTo(), supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums());
+		List<Integer> itemNums = new ArrayList<>(100);
 		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer branchNum = (Integer) object[0];
@@ -1208,6 +1209,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setInQty(data.getInQty().add(amount));
 			data.setInMoney(data.getInMoney().add(saleMoney));
@@ -1252,6 +1256,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setInQty(data.getInQty().subtract(amount));
 			data.setInMoney(data.getInMoney().subtract(saleMoney));
@@ -1297,6 +1304,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setSaleQty(data.getSaleQty().add(amount));
 			data.setSaleMoney(data.getSaleMoney().add(saleMoney));
@@ -1345,6 +1355,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setSaleQty(data.getSaleQty().subtract(amount));
 			data.setSaleMoney(data.getSaleMoney().subtract(saleMoney));
@@ -1391,6 +1404,9 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setSupplierCode(supplier.getSupplierCode());
 				data.setSupplierName(supplier.getSupplierName());
 				map.put(key, data);
+				if(!itemNums.contains(itemNum)){
+					itemNums.add(itemNum);
+				}
 			}
 			data.setSaleQty(data.getSaleQty().add(amount));
 			data.setSaleMoney(data.getSaleMoney().add(saleMoney));
@@ -1398,7 +1414,10 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setSaleProfit(data.getSaleProfit().add(profit));
 		}
 		List<SupplierComplexReportDTO> list = new ArrayList<SupplierComplexReportDTO>(map.values());
-		objects = inventoryService.findBranchItemSummary(systemBookCode, supplierSaleQuery.getBranchNums());
+		if(itemNums.isEmpty()){
+			return list;
+		}
+		objects = inventoryService.findBranchItemSummary(systemBookCode, supplierSaleQuery.getBranchNums(), itemNums);
 		// 算毛利率 读取库存金额 数量
 		for (SupplierComplexReportDTO supplierComplexReportDTO : list) {
 			Object[] object = readInventoryObjects(objects, supplierComplexReportDTO.getBranchNum(),
@@ -1430,7 +1449,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	private Object[] readInventoryObjects(List<Object[]> objects, Integer branchNum, Integer itemNum) {
-		for (int i = 0; i < objects.size(); i++) {
+		for (int i = 0, len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			if (object[0] == null || object[1] == null) {
 				continue;
@@ -4063,6 +4082,157 @@ public class ReportRpcImpl implements ReportRpc {
 		return list;
 	}
 
+	@Override
+	public List<BranchSaleAnalysisSummary> findDaySaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
+		List<Object[]> objects = reportService.findDaySaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
+		int size = objects.size();
+		List<BranchSaleAnalysisSummary> list = new ArrayList<>(size);
+		////0营业额          1日均客单量      2客单价         3毛利           4毛利率
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String bizDay = (String) object[1];
+			BigDecimal value = null;
+			BigDecimal memberValue = null;
+			//type = 4 时需要返回 销售额 和毛利
+			BigDecimal moneyValue = null;
+			BigDecimal profitValue = null;
+			BigDecimal memberMoneyValue = null;
+			BigDecimal memberProfitValue = null;
+
+			if(type == 0 ){			//营业额
+				value = (BigDecimal) object[2];
+				memberValue = (BigDecimal) object[6];
+			}else if(type == 1){	//日均客单量
+				value = BigDecimal.valueOf((Integer)object[3]);
+				memberValue = BigDecimal.valueOf((Integer) object[7]);
+			}else if(type == 2){	//客单价
+				BigDecimal money  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal amount = object[3] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer)object[3]);
+				if(amount.compareTo(BigDecimal.ZERO) == 0){
+					value = BigDecimal.ZERO;
+				}else {
+					value = money.divide(amount, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
+				BigDecimal memberMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				BigDecimal memberAmount = object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer) object[7]);
+
+				if(memberAmount.compareTo(BigDecimal.ZERO) == 0){
+					memberValue  = BigDecimal.ZERO;
+				}else {
+					memberValue = memberMoney.divide(memberAmount, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
+			}else if(type == 3){	//毛利
+				value = (BigDecimal) object[4];
+				memberValue = (BigDecimal) object[8];
+
+			}else if(type == 4){	//毛利率
+
+				moneyValue  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				profitValue = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+				if(moneyValue.compareTo(BigDecimal.ZERO) == 0){
+					value = BigDecimal.ZERO;
+				}else {
+					value = profitValue.divide(moneyValue, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
+				}
+
+				memberMoneyValue = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				memberProfitValue = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
+				if(memberMoneyValue.compareTo(BigDecimal.ZERO) == 0){
+					memberValue = BigDecimal.ZERO;
+				}else {
+					memberValue = memberProfitValue.divide(memberMoneyValue, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
+				}
+			}
+			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
+			summary.setBranchNum(branchNum);
+			summary.setBizDate(bizDay);
+			summary.setData(value);
+			summary.setMemberData(memberValue);
+			if(type == 4){
+				summary.setSaleMoney(moneyValue);
+				summary.setProfit(profitValue);
+				summary.setMemberSaleMoney(memberMoneyValue);
+				summary.setMemberProfit(memberProfitValue);
+			}
+			list.add(summary);
+		}
+
+		return list;
+	}
+
+	@Override
+	public List<BranchSaleAnalysisSummary> findMonthSaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type) {
+
+		List<Object[]> objects = reportService.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
+		int size = objects.size();
+		List<BranchSaleAnalysisSummary> list = new ArrayList<>(size);
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			Integer branchNum = (Integer) object[0];
+			String bizMonth = (String) object[1];
+			BigDecimal value = null;
+			BigDecimal memberValue = null;
+			if(type == 0 ){			//营业额
+				value = (BigDecimal) object[2];
+				memberValue = (BigDecimal) object[6];
+			}else if(type == 1){	//日均客单量
+				value = BigDecimal.valueOf((Integer)object[3]);
+				memberValue = BigDecimal.valueOf((Integer) object[7]);
+			}else if(type == 2){	//客单价
+				BigDecimal money  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal amount = object[3] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer)object[3]);
+				if(amount.compareTo(BigDecimal.ZERO) == 0){
+					value = BigDecimal.ZERO;
+				}else {
+					value = money.divide(amount, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
+				BigDecimal memberMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				BigDecimal memberAmount = object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer) object[7]);
+
+				if(memberAmount.compareTo(BigDecimal.ZERO) == 0){
+					memberValue  = BigDecimal.ZERO;
+				}else {
+					memberValue = memberMoney.divide(memberAmount, 2, BigDecimal.ROUND_HALF_UP);
+				}
+
+			}else if(type == 3){	//毛利
+				value = (BigDecimal) object[4];
+				memberValue = (BigDecimal) object[8];
+
+			}else if(type == 4){	//毛利率
+				BigDecimal money  = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal profit = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+				if(money.compareTo(BigDecimal.ZERO) == 0){
+					value = BigDecimal.ZERO;
+				}else {
+					value = profit.divide(money, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
+				}
+
+				BigDecimal memberMoney = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+				BigDecimal memberProfit = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
+				if(memberMoney.compareTo(BigDecimal.ZERO) == 0){
+					memberValue = BigDecimal.ZERO;
+				}else {
+					memberValue = memberProfit.divide(memberMoney, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
+				}
+			}
+
+			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
+			summary.setBranchNum(branchNum);
+			summary.setBizDate(bizMonth);
+			summary.setData(value);
+			summary.setMemberData(memberValue);
+			list.add(summary);
+		}
+
+		return list;
+
+
+	}
 
 
 }

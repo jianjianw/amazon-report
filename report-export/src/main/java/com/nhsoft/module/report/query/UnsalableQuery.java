@@ -26,6 +26,8 @@ public class UnsalableQuery extends QueryBuilder {
 	private Date dateFrom;
 	private Date dateTo;
 	private Integer itemTransferDayMultiple = 1;//动销天数倍数
+	private Date receiveDate;//收货日期
+	private boolean filterOutGTInventory;// 过滤调出大于当前库存的
 
 	public Integer getItemTransferDayMultiple() {
 		return itemTransferDayMultiple;
@@ -186,5 +188,20 @@ public class UnsalableQuery extends QueryBuilder {
 	public void setIsFilterStopPurchase(Boolean isFilterStopPurchase) {
 		this.isFilterStopPurchase = isFilterStopPurchase;
 	}
-	
+
+	public Date getReceiveDate() {
+		return receiveDate;
+	}
+
+	public void setReceiveDate(Date receiveDate) {
+		this.receiveDate = receiveDate;
+	}
+
+	public boolean isFilterOutGTInventory() {
+		return filterOutGTInventory;
+	}
+
+	public void setFilterOutGTInventory(boolean filterOutGTInventory) {
+		this.filterOutGTInventory = filterOutGTInventory;
+	}
 }

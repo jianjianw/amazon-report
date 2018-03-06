@@ -1358,8 +1358,10 @@ public interface ReportRpc {
 	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums,String unitType,
 															List<String> itemDepartments, List<String> itemCategoryCodes);
 
+	//日销售分析
+	public List<BranchSaleAnalysisSummary> findDaySaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
 
-
-
+	//月销售分析
+	public List<BranchSaleAnalysisSummary> findMonthSaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
 
 }

@@ -19,8 +19,8 @@ public class InventoryServiceImpl implements InventoryService {
 
 
 	@Override
-	public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums) {
-		return inventoryDao.findBranchItemSummary(systemBookCode, branchNums, null);
+	public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums) {
+		return inventoryDao.findBranchItemSummary(systemBookCode, branchNums, null, itemNums);
 	}
 	
 	@Override

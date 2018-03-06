@@ -51,4 +51,29 @@ public class BranchItemRecoredDaoImpl extends DaoImpl implements BranchItemRecor
 		Query query = currentSession().createSQLQuery(sb.toString());
 		return query.list();
 	}
+
+	@Override
+	public List<Object[]> findItemReceiveDate(String systemBookCode, List<Integer> branchNums, Integer storehouseNum, List<Integer> itemNums, List<String> branchItemRecoredTypes) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("select item_num, MAX (CONVERT(datetime, branch_item_recored_in_date,101)) from branch_item_recored with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' ");
+
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and branch_num in " +  AppUtil.getIntegerParmeList(branchNums));
+		}
+		if(storehouseNum != null){
+			sb.append("and storehouse_num = " + storehouseNum + " ");
+
+		}
+		if(itemNums != null && itemNums.size() > 0){
+			sb.append("and item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		if(branchItemRecoredTypes != null && branchItemRecoredTypes.size() > 0){
+			sb.append("and branch_item_recored_type in " + AppUtil.getStringParmeList(branchItemRecoredTypes));
+		}
+		sb.append("group by item_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
 }

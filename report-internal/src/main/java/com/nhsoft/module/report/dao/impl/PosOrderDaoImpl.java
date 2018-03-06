@@ -809,6 +809,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("and (detail.order_detail_has_kit is null or  detail.order_detail_has_kit = 0) ");
 			}
 			SQLQuery query = currentSession().createSQLQuery(sb.toString());
+			query.setMaxResults(100000);
 			List<Object[]> objects = query.list();
 			if (queryKit) {
 				sb = new StringBuffer();
@@ -825,6 +826,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("and detail.order_kit_detail_order_state in (5, 7) ");
 				sb.append("and detail.order_kit_detail_state_code != 8 ");
 				query = currentSession().createSQLQuery(sb.toString());
+				query.setMaxResults(100000);
 				List<Object[]> kitObjects = query.list();
 				objects.addAll(kitObjects);
 			}
@@ -855,7 +857,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 					.add(Projections.property("detail.orderDetailPrice"))
 					.add(Projections.property("detail.orderDetailAmount"))
 					.add(Projections.property("detail.orderDetailStateCode")));
-
+			criteria.setLockMode(LockMode.NONE);
+			criteria.setMaxResults(100000);
 			List<Object[]> objects = criteria.list();
 			return objects;
 		}
@@ -5519,6 +5522,62 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("order by p.order_printed_num desc ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findDaySaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, shift_table_bizday, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
+		sb.append("count(shift_table_bizday) as amount, sum(order_gross_profit) as profit,count(distinct shift_table_bizday) as bizAmount, ");
+		sb.append("sum(case when order_card_user_num > 0 then (order_payment_money + order_coupon_total_money - order_mgr_discount_money) end) as memberMoney, ");//会员营业额
+		sb.append("count(case when order_card_user_num > 0 then shift_table_bizday end) as memberAmount, ");//会员客单量
+		sb.append("sum(case when order_card_user_num > 0 then order_gross_profit end) as memberProfit ");//会员毛利
+
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code in (5, 7)  ");
+
+		sb.append("group by branch_num, shift_table_bizday order by branch_num asc");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findMonthSaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num, subString(shift_table_bizday, 0, 7) as month, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
+		sb.append("count(shift_table_bizday) as amount, sum(order_gross_profit) as profit, count(distinct shift_table_bizday) as bizAmount, ");
+		sb.append("sum(case when order_card_user_num > 0 then (order_payment_money + order_coupon_total_money - order_mgr_discount_money) end) as memberMoney, ");//会员营业额
+		sb.append("count(case when order_card_user_num > 0 then shift_table_bizday end) as memberAmount, ");//会员客单量
+		sb.append("sum(case when order_card_user_num > 0 then order_gross_profit end) as memberProfit ");//会员毛利
+
+		sb.append("from pos_order with(nolock) ");
+		sb.append(" where system_book_code = :systemBookCode  ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code in (5, 7) ");
+		sb.append("group by branch_num, subString(shift_table_bizday, 0, 7) order by branch_num asc");
+
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return sqlQuery.list();
 	}
 
 

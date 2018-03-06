@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Component
 public class BranchItemRecoredRpcImpl implements BranchItemRecoredRpc {
@@ -42,6 +43,23 @@ public class BranchItemRecoredRpcImpl implements BranchItemRecoredRpc {
             BranchItemRecoredDTO dto = new BranchItemRecoredDTO();
             dto.setItemNum((Integer) object[0]);
             dto.setAuditDate((String) object[1]);
+            list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public List<BranchItemRecoredDTO> findItemReceiveDate(String systemBookCode, List<Integer> branchNums, Integer storehouseNum, List<Integer> itemNums, List<String> branchItemRecoredTypes) {
+
+        List<Object[]> objects = branchItemRecoredService.findItemReceiveDate(systemBookCode, branchNums, storehouseNum, itemNums, branchItemRecoredTypes);
+
+        int size = objects.size();
+        List<BranchItemRecoredDTO> list = new ArrayList<>(size);
+        for (int i = 0; i <size ; i++) {
+            Object[] object = objects.get(i);
+            BranchItemRecoredDTO dto = new BranchItemRecoredDTO();
+            dto.setItemNum((Integer) object[0]);
+            dto.setReceiveDate((Date) object[1]);
             list.add(dto);
         }
         return list;

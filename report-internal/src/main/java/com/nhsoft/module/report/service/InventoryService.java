@@ -21,9 +21,10 @@ public interface InventoryService {
 	 * 按分店 商品主键汇总 库存数量 金额
 	 * @param systemBookCode
 	 * @param branchNums 分店号列表
-	 * @return
+	 * @param itemNums
+     * @return
 	 */
-	public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums);
+	public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
 	
 	/**
 	 * 按商品主键汇总配送仓库库存数量 金额

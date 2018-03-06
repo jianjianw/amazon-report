@@ -11,10 +11,7 @@ import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.LockOptions;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
+import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
@@ -986,6 +983,8 @@ public class WholesaleOrderDaoImpl extends DaoImpl implements WholesaleOrderDao 
 				.add(Projections.property("w.wholesaleOrderAuditTime"))
 				.add(Projections.property("detail.orderDetailItemName"))
 		);
+		criteria.setMaxResults(100000);
+		criteria.setLockMode(LockMode.NONE);
 		return criteria.list();
 	}
 

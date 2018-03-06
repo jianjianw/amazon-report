@@ -154,7 +154,10 @@ public class ReportServiceImpl implements ReportService {
 	private PosOrderRemoteService posOrderRemoteService;
 	@Autowired
 	private PosItemDao posItemDao;
-	
+
+	@Autowired
+	private BranchItemRecoredService branchItemRecoredService;
+
 	
 	@Override
 	public Object excuteSql(String systemBookCode, String sql) {
@@ -3545,7 +3548,7 @@ public class ReportServiceImpl implements ReportService {
 				UnsalablePosItem data = map.get(itemNum);
 				if (data != null) {
 					// 调出量大于设定值的过滤
-					if (amount.compareTo(query.getItemAmount()) > 0) {
+					if (amount.compareTo(query.getItemAmount() == null ? BigDecimal.ZERO : query.getItemAmount()) > 0) {
 						map.remove(itemNum);
 						continue;
 					}
@@ -3588,7 +3591,7 @@ public class ReportServiceImpl implements ReportService {
 				UnsalablePosItem data = map.get(itemNum);
 				if (data != null) {
 					// 批发量大于设定值的过滤
-					if (amount.compareTo(query.getItemAmount()) > 0) {
+					if (amount.compareTo(query.getItemAmount() == null ? BigDecimal.ZERO : query.getItemAmount()) > 0) {
 						map.remove(itemNum);
 						continue;
 					}
@@ -3615,13 +3618,29 @@ public class ReportServiceImpl implements ReportService {
 			UnsalablePosItem data = map.get(itemNum);
 			if (data != null) {
 				// 销售量大于设定值 过滤
-				if (amount.compareTo(query.getItemAmount()) > 0) {
+				if (amount.compareTo(query.getItemAmount() == null ? BigDecimal.ZERO : query.getItemAmount()) > 0) {
 					map.remove(itemNum);
 					continue;
 				}
 				data.setCurrentSaleNum(data.getCurrentSaleNum().add(amount));
 				data.setCurrentSaleMoney(data.getCurrentSaleMoney().add(saleMoney));
 				data.setCurrentSaleProfit(data.getCurrentSaleProfit().add(profit));
+			}
+		}
+
+		if(query.getReceiveDate() != null){
+			List<String> list = new ArrayList<>();
+			list.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+			objects = branchItemRecoredDao.findItemReceiveDate(systemBookCode, transferBranchNums, null, null, list);
+
+			for (int i = 0,len = objects.size(); i < len ; i++) {
+				Object[] object = objects.get(i);
+				Integer itemNum = (Integer)object[0];
+				UnsalablePosItem data = map.get(itemNum);
+				if(data != null){
+					data.setLastestInDate((Date)object[1]);
+				}
+
 			}
 		}
 
@@ -3640,7 +3659,7 @@ public class ReportServiceImpl implements ReportService {
 			// 总调出量大于设定值的过滤
 			BigDecimal totalAmount = data.getCurrentSaleNum().add(data.getCurrentPifaNum())
 					.add(data.getCurrentOutNum());
-			if (totalAmount.compareTo(query.getItemAmount()) > 0) {
+			if (totalAmount.compareTo(query.getItemAmount() == null ? BigDecimal.ZERO : query.getItemAmount()) > 0) {
 				list.remove(i);
 				continue;
 			}
@@ -3701,13 +3720,39 @@ public class ReportServiceImpl implements ReportService {
 		}
 		// 过滤从没出入库的商品
 		if (query.isFilterInAndOut() != null && query.isFilterInAndOut()) {
-			List<Integer> itemNums = posItemLogDao.findItemNum(systemBookCode, branchNum, null, null, null);
+			List<Integer> itemNums = posItemLogDao.findItemNum(systemBookCode, branchNum, dateFrom, dateTo, null);
 			for (int i = list.size() - 1; i >= 0; i--) {
 				UnsalablePosItem data = list.get(i);
 				if (!itemNums.contains(data.getItemNum())) {
 					list.remove(i);
 					continue;
 				}
+			}
+		}
+
+		if(query.getReceiveDate() != null){
+			for (int i = list.size() - 1; i >= 0; i--) {
+				UnsalablePosItem unsalablePosItem = list.get(i);
+				Date lastestInDate = unsalablePosItem.getLastestInDate();
+				if(lastestInDate == null){
+					list.remove(i);
+					continue;
+				}
+				if(lastestInDate.compareTo(query.getReceiveDate()) > 0){
+					list.remove(i);
+				}
+			}
+		}
+
+		if(query.isFilterOutGTInventory()){
+			for (int i = list.size() - 1; i >= 0; i--) {
+				UnsalablePosItem unsalablePosItem = list.get(i);
+				BigDecimal currentStore = unsalablePosItem.getCurrentStore();
+				BigDecimal currentOutNum = unsalablePosItem.getCurrentOutNum();
+				if(currentOutNum.compareTo(currentStore) > 0){
+					list.remove(i);
+				}
+
 			}
 		}
 		return list;
@@ -11009,23 +11054,31 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<ShipOrderBranchDetailDTO> findShipOrderBranchDetail(String systemBookCode, Integer outBranchNum,
 			Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums, List<String> categoryCodes) {
-		List<ShipOrderBranchDetailDTO> list = new ArrayList<ShipOrderBranchDetailDTO>();
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+		List<ShipOrderBranchDetailDTO> list = new ArrayList<>();
+		if(itemNums == null || itemNums.isEmpty()){
+			return list;
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
+		for(PosItem posItem : posItems){
+			ShipOrderBranchDetailDTO dto = new ShipOrderBranchDetailDTO();
+			dto.setItemCode(posItem.getItemCode());
+			dto.setItemName(posItem.getItemName());
+			dto.setItemNum(posItem.getItemNum());
+			dto.setShipOrderItemMoney(BigDecimal.ZERO);
+			list.add(dto);
+		}
 		List<Object[]> objects = shipOrderDao.findBranchNewItemDetail(systemBookCode, outBranchNum, branchNum,
 				itemNums, dateFrom, dateTo, categoryCodes);
-		for (int i = 0,len = objects.size(); i < len; i++) {
-			Object[] object = objects.get(i);
-			Integer itemNum = (Integer) object[0];
-			BigDecimal totalMoney = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
-			ShipOrderBranchDetailDTO dto = new ShipOrderBranchDetailDTO();
-			PosItem item = AppUtil.getPosItem(itemNum, posItems);
-			if (item == null) {
-				continue;
+		Object[] object;
+		for(ShipOrderBranchDetailDTO dto : list){
+
+			for (int i = 0,len = objects.size(); i < len; i++) {
+				object = objects.get(i);
+				if(dto.getItemNum().equals(object[0])){
+					dto.setShipOrderItemMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
+					break;
+				}
 			}
-			dto.setItemCode(item.getItemCode());
-			dto.setItemName(item.getItemName());
-			dto.setShipOrderItemMoney(totalMoney);
-			list.add(dto);
 		}
 		return list;
 	}
@@ -12388,6 +12441,18 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return list;
 	}
+
+    @Override
+    public List<Object[]> findDaySaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        return posOrderDao.findDaySaleAnalysis(systemBookCode,branchNums,dateFrom,dateTo);
+    }
+
+    @Override
+    public List<Object[]> findMonthSaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+
+        return posOrderDao.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
+
+    }
 
 
 }

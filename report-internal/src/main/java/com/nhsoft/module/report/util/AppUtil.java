@@ -75,7 +75,7 @@ public class AppUtil {
 	}
 
 	public static Branch getBranch(List<Branch> branchs, Integer branchNum) {
-		for (int i = 0; i < branchs.size(); i++) {
+		for (int i = 0, len = branchs.size(); i < len; i++) {
 			if (branchs.get(i).getId().getBranchNum().equals(branchNum)) {
 				return branchs.get(i);
 			}
@@ -105,7 +105,7 @@ public class AppUtil {
 	}
 
 	public static Supplier getSupplier(Integer supplierNum, List<Supplier> suppliers) {
-		for (int i = 0; i < suppliers.size(); i++) {
+		for (int i = 0, len = suppliers.size(); i < len; i++) {
 			if (suppliers.get(i).getSupplierNum().equals(supplierNum)) {
 				return suppliers.get(i);
 			}

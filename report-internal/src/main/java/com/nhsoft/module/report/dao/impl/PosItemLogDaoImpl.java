@@ -63,8 +63,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append("and l.pos_item_log_lot_number = :lotNumber ");
 		}
 
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in (:categoryCodes) ");
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -99,9 +99,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
-		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sqlQuery.setParameterList("categoryCodes", storeQueryCondition.getItemCategoryCodes());
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sqlQuery.setInteger("storehouseNum", storeQueryCondition.getStorehouseNum());
@@ -201,8 +198,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in (:itemNums) ");
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in (:categoryCodes) ");
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -222,9 +219,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sqlQuery.setString("systemBookCode", storeQueryCondition.getSystemBookCode());
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
-		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sqlQuery.setParameterList("categoryCodes", storeQueryCondition.getItemCategoryCodes());
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sqlQuery.setInteger("storehouseNum", storeQueryCondition.getStorehouseNum());
@@ -399,8 +393,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in (:itemNums) ");
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in (:categoryCodes) ");
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -421,9 +415,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
-		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sqlQuery.setParameterList("categoryCodes", storeQueryCondition.getItemCategoryCodes());
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sqlQuery.setInteger("storehouseNum", storeQueryCondition.getStorehouseNum());
@@ -456,8 +447,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in (:itemNums) ");
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in (:categoryCodes) ");
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -478,9 +469,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
-		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sqlQuery.setParameterList("categoryCodes", storeQueryCondition.getItemCategoryCodes());
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sqlQuery.setInteger("storehouseNum", storeQueryCondition.getStorehouseNum());
@@ -525,8 +513,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in (:itemNums) ");
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in (:categoryCodes) ");
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -548,9 +536,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
-		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sqlQuery.setParameterList("categoryCodes", storeQueryCondition.getItemCategoryCodes());
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sqlQuery.setInteger("storehouseNum", storeQueryCondition.getStorehouseNum());
@@ -583,8 +568,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in (:itemNums) ");
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in (:categoryCodes) ");
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -606,9 +591,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
-		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sqlQuery.setParameterList("categoryCodes", storeQueryCondition.getItemCategoryCodes());
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sqlQuery.setInteger("storehouseNum", storeQueryCondition.getStorehouseNum());
@@ -729,8 +711,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getItemNums()));
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -799,9 +781,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 				sb.append("and l.item_num in (:itemNums) ");
 			}
-			if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-				sb.append("and l.pos_item_log_item_category in (:categoryCodes) ");
-			}
 			if(storeQueryCondition.getStorehouseNum() != null){
 				sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
 			}
@@ -822,9 +801,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 			if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 				sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());
-			}
-			if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-				sqlQuery.setParameterList("categoryCodes", storeQueryCondition.getItemCategoryCodes());
 			}
 			if(storeQueryCondition.getStorehouseNum() != null){
 				sqlQuery.setInteger("storehouseNum", storeQueryCondition.getStorehouseNum());
@@ -882,9 +858,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append("and l.pos_item_log_date_index <= '" + DateUtil.getDateShortStr(storeQueryCondition.getDateEnd()) + "' ");
 
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0) {
-			sb.append("and p.item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
-
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getExactDateEnd() != null){
 			sb.append("and l.pos_item_log_date <= '" + DateUtil.getLongDateTimeStr(storeQueryCondition.getExactDateEnd()) + "' ");
@@ -960,8 +935,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getItemNums()));
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -1028,8 +1003,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getItemNums()));
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -1548,8 +1523,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getItemNums()));
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -1785,17 +1760,14 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append("and l.pos_item_log_date_index <= '" + DateUtil.getDateShortStr(storeQueryCondition.getDateEnd()) + "' ");
 
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and p.item_category in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
-		}
 		if(storeQueryCondition.getExactDateEnd() != null){
 			sb.append("and l.pos_item_log_date <= '" + DateUtil.getLongDateTimeStr(storeQueryCondition.getExactDateEnd()) + "' ");
 		}
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(storeQueryCondition.getItemNums()));
 		}
-		if(storeQueryCondition.getItemCategoryCodes() != null && storeQueryCondition.getItemCategoryCodes().size() > 0){
-			sb.append("and l.pos_item_log_item_category in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()));
+		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
