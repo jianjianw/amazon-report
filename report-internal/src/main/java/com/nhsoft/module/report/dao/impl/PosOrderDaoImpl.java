@@ -3002,6 +3002,19 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
                 sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
             }
+            if(queryData.getMerchantNum() != null) {
+                sb.append("and p.merchant_num = " + queryData.getMerchantNum() + " ");
+            }
+            if(queryData.getStallNum() != null) {
+                sb.append("and p.stall_num = " + queryData.getStallNum() + " ");
+            }
+            if(queryData.getPolicy() != null) {
+                if(queryData.getPolicy()) {
+                    sb.append("and detail.order_detail_policy_fid is not null ");
+                } else {
+                    sb.append("and detail.order_detail_policy_fid is null ");
+                }
+            }
             sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
                     + "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
             sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
