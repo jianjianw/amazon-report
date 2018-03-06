@@ -1624,9 +1624,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		if(queryData.getPolicy() != null) {
         	if(queryData.getPolicy()) {
-        		sb.append("and detail.orderDetailPolicyFid is not null ");
+        		sb.append("and detail.order_detail_policy_fid is not null ");
 			} else {
-				sb.append("and detail.orderDetailPolicyFid is null ");
+				sb.append("and detail.order_detail_policy_fid is null ");
 			}
 		}
         sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFromShiftTable()) + "' ");
