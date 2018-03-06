@@ -1613,6 +1613,19 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         if(queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0){
             sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
         }
+        if(queryData.getMerchantNum() != null) {
+        	sb.append("and p.merchant_num = " + queryData.getMerchantNum() + " ");
+		}
+		if(queryData.getStallNum() != null) {
+        	sb.append("and p.stall_num = " + queryData.getStallNum() + " ");
+		}
+		if(queryData.getPolicy() != null) {
+        	if(queryData.getPolicy()) {
+        		sb.append("and detail.orderDetailPolicyFid is not null ");
+			} else {
+				sb.append("and detail.orderDetailPolicyFid is null ");
+			}
+		}
         sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFromShiftTable()) + "' ");
         sb.append("and '" + DateUtil.getDateShortStr(queryData.getDtToShiftTable()) + "' ");
 

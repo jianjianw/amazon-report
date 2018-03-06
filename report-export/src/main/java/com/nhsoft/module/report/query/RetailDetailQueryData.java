@@ -27,6 +27,10 @@ public class RetailDetailQueryData extends QueryBuilder {
 	private String saleType;//销售方式：微商城、实体店
 	private Date timeFrom;
 	private Date timeTo;
+
+	private Integer merchantNum;
+	private Integer stallNum;
+	private Boolean isPolicy;
 	
 	
 	public Date getTimeFrom() {
@@ -163,6 +167,30 @@ public class RetailDetailQueryData extends QueryBuilder {
 
 	public void setExceptionConditon(String exceptionConditon) {
 		this.exceptionConditon = exceptionConditon;
+	}
+
+	public Integer getMerchantNum() {
+		return merchantNum;
+	}
+
+	public void setMerchantNum(Integer merchantNum) {
+		this.merchantNum = merchantNum;
+	}
+
+	public Integer getStallNum() {
+		return stallNum;
+	}
+
+	public void setStallNum(Integer stallNum) {
+		this.stallNum = stallNum;
+	}
+
+	public Boolean getPolicy() {
+		return isPolicy;
+	}
+
+	public void setPolicy(Boolean policy) {
+		isPolicy = policy;
 	}
 
 	public void clear(){
