@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface StoreMatrixDao {
 
-	public List<StoreMatrix> findByBranch(String systemBookCode, Integer branchNum, List<Integer> itemNums);
+	public List<StoreMatrix> findByBranch(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
 	
 	public List<StoreMatrix> find(String systemBookCode, Integer itemNum);
 

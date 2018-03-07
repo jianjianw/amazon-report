@@ -57,36 +57,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	@Override
 	public List<Object[]> findItemSum(ItemQueryDTO itemQueryDTO) {
 
-		List<Object[]> objects = posOrderDao.findItemSum(itemQueryDTO);
-		/*if(itemQueryDTO.getQueryKit()){
-			List<Object[]> returnObjects = new ArrayList<>(objects.size());
-			Set<Integer> itemNumSet = new HashSet<>(objects.size());
-			for(Object[] object : objects){
-
-				if(!itemNumSet.contains(object[0])){
-					returnObjects.add(object);
-					itemNumSet.add((Integer) object[0]);
-					continue;
-				}
-
-				for(Object[] returnObject : returnObjects){
-					if(returnObject[0].equals(object[0])){
-						returnObject[1] = (returnObject[1] == null? BigDecimal.ZERO:(BigDecimal)returnObject[1]).add(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
-						returnObject[2] = (returnObject[2] == null?BigDecimal.ZERO:(BigDecimal)returnObject[2]).add(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
-						returnObject[3] = (returnObject[3] == null?BigDecimal.ZERO:(BigDecimal)returnObject[3]).add(object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3]);
-						returnObject[4] = returnObject[4] == null?0:(Integer)returnObject[4] + (object[4] == null?0:(Integer)object[4]);
-						returnObject[5] = (returnObject[5] == null?BigDecimal.ZERO:(BigDecimal)returnObject[5]).add(object[5] == null?BigDecimal.ZERO:(BigDecimal)object[5]);
-						break;
-					}
-				}
-			}
-			return returnObjects;
-
-		} else {
-			return objects;
-
-		}*/
-		return objects;
+		return posOrderDao.findItemSum(itemQueryDTO);
 	}
 
 

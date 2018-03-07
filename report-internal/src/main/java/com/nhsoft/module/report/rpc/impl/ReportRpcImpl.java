@@ -897,7 +897,7 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setCategoryName(posItem.getItemCategory());
 			baseMap.put(data.getItemNum(), data);
 		}
-		List<Object[]> objects = inventoryService.findItemAmount(systemBookCode, branchNums, null);
+		List<Object[]> objects = inventoryService.findItemAmount(systemBookCode, branchNums, null, null);
 		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];

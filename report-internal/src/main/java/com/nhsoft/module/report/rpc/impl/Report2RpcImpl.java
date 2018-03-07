@@ -1103,7 +1103,7 @@ public class Report2RpcImpl implements Report2Rpc {
 		if(innerItemNums.size() > 0) {
 			List<Integer> itemNumList = new ArrayList<Integer>(innerItemNums);
 			posItems = posItemService.findByItemNums(itemNumList);
-			objects = inventoryService.findItemAmount(systemBookCode, branchNums, itemNumList);
+			objects = inventoryService.findItemAmount(systemBookCode, branchNums, itemNumList, null);
 			storeItemSuppliers = storeItemSupplierService.findDefaults(systemBookCode, Arrays.asList(branchNums.get(0)), itemNumList);
 			storeMatrices = storeMatrixService.findByBranch(systemBookCode, branchNums.get(0), itemNumList);
 		}
@@ -1324,5 +1324,205 @@ public class Report2RpcImpl implements Report2Rpc {
 	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String infoType) {
 		return mobileAppV2Service.findOtherInfoDetails(systemBookCode, branchNum, dateFrom, dateTo, infoType);
 	}
-	
+
+	@Override
+	public List<SaleInventoryDTO> findSaleInventorys(SaleInventoryQuery saleInventoryQuery) {
+
+	    String systemBookCode = saleInventoryQuery.getSystemBookCode();
+	    List<Integer> branchNums = saleInventoryQuery.getBranchNums();
+	    List<Integer> itemNums = saleInventoryQuery.getItemNums();
+	    Date dateFrom = saleInventoryQuery.getDateFrom();
+	    Date dateTo = saleInventoryQuery.getDateTo();
+	    Integer storehouseNum = saleInventoryQuery.getStorehouseNum();
+	    List<String> categoryCodes = saleInventoryQuery.getCategoryCodes();
+
+		List<Object[]> objects = inventoryService.findItemAmount(systemBookCode, branchNums, itemNums, storehouseNum);
+		Map<Integer, SaleInventoryDTO> map = new HashMap<>();
+		List<Integer> queryItemNums = null;
+
+		boolean addItems = true;
+		if(itemNums != null && !itemNums.isEmpty()){
+			addItems = false;
+		} else {
+            queryItemNums = new ArrayList<>(20);
+        }
+
+		for(Object[] object : objects){
+			SaleInventoryDTO dto = new SaleInventoryDTO();
+			dto.setItemNum((Integer) object[0]);
+			dto.setInventoryQty((BigDecimal) object[1]);
+			map.put(dto.getItemNum(), dto);
+			if(addItems){
+				queryItemNums.add(dto.getItemNum());
+
+			}
+
+		}
+		ItemQueryDTO queryDTO = new ItemQueryDTO();
+		queryDTO.setSystemBookCode(systemBookCode);
+		queryDTO.setBranchNums(branchNums);
+		queryDTO.setDateFrom(dateFrom);
+		queryDTO.setDateTo(dateTo);
+		queryDTO.setQueryKit(saleInventoryQuery.isQueryKit());
+		queryDTO.setItemNums(itemNums);
+		objects = posOrderService.findItemSum(queryDTO);
+
+		Integer itemNum;
+		BigDecimal saleQty;
+		for(Object[] object : objects){
+			itemNum = (Integer) object[0];
+			saleQty = object[1] == null?BigDecimal.ZERO:(BigDecimal) object[1];
+
+			SaleInventoryDTO dto = map.get(itemNum);
+			if(dto == null){
+				dto = new SaleInventoryDTO();
+				dto.setItemNum(itemNum);
+				map.put(itemNum, dto);
+				if(addItems){
+					queryItemNums.add(dto.getItemNum());
+
+				}
+
+			}
+			dto.setSaleQty(dto.getSaleQty().add(saleQty));
+
+		}
+		if(map.isEmpty()){
+			return Collections.emptyList();
+		}
+		List<PosItem> posItems;
+		if(addItems){
+			posItems = posItemService.findByItemNumsWithoutDetails(queryItemNums);
+		} else {
+			posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
+
+		}
+		BigDecimal diffDay = BigDecimal.valueOf(DateUtil.getDaysBetween(dateFrom, dateTo) + 1);
+		List<SaleInventoryDTO> list = new ArrayList<>(map.values());
+		for(int  i = list.size() - 1;i >= 0;i--){
+            SaleInventoryDTO dto = list.get(i);
+
+			PosItem posItem = AppUtil.getPosItem(dto.getItemNum(), posItems);
+            if(posItem.getItemDelTag()){
+                list.remove(i);
+                continue;
+            }
+			if(categoryCodes != null && !categoryCodes.isEmpty()){
+                if(!categoryCodes.contains(posItem.getItemCategoryCode())){
+                    list.remove(i);
+                    continue;
+                }
+            }
+            if(saleInventoryQuery.isFilterEliminativeItems()){
+			    if(posItem.getItemEliminativeFlag() != null && posItem.getItemEliminativeFlag()){
+                    list.remove(i);
+                    continue;
+                }
+            }
+			dto.setItemName(posItem.getItemName());
+			dto.setItemCode(posItem.getItemCode());
+			dto.setItemBarcode(posItem.getItemBarcode());
+			dto.setItemCategory(posItem.getItemCategory());
+			dto.setItemCategoryCode(posItem.getItemCategoryCode());
+			dto.setItemCostMode(posItem.getItemCostMode());
+			dto.setSalePrice(posItem.getItemRegularPrice());
+			dto.setSalePrice2(posItem.getItemLevel2Price());
+            dto.setSaleAveQty(dto.getSaleQty().divide(diffDay, 4, BigDecimal.ROUND_HALF_UP));
+
+		}
+		return list;
+	}
+
+	@Override
+	public List<SaleInventoryDetailDTO> findSaleInventoryDetails(SaleInventoryQuery saleInventoryQuery) {
+		String systemBookCode = saleInventoryQuery.getSystemBookCode();
+		List<Integer> branchNums = saleInventoryQuery.getBranchNums();
+		Integer itemNum = saleInventoryQuery.getItemNums().get(0);
+		Date dateFrom = saleInventoryQuery.getDateFrom();
+		Date dateTo = saleInventoryQuery.getDateTo();
+		Integer storehouseNum = saleInventoryQuery.getStorehouseNum();
+		List<String> categoryCodes = saleInventoryQuery.getCategoryCodes();
+
+		List<Object[]> objects = inventoryService.findBranchItemSummary(systemBookCode, branchNums, Collections.singletonList(itemNum));
+		Map<Integer, SaleInventoryDetailDTO> map = new HashMap<>();
+
+		for(Object[] object : objects){
+			SaleInventoryDetailDTO dto = new SaleInventoryDetailDTO();
+			dto.setBranchNum((Integer) object[0]);
+			dto.setInventoryQty((BigDecimal) object[2]);
+			map.put(dto.getBranchNum(), dto);
+
+		}
+		ItemQueryDTO queryDTO = new ItemQueryDTO();
+		queryDTO.setSystemBookCode(systemBookCode);
+		queryDTO.setBranchNums(branchNums);
+		queryDTO.setDateFrom(dateFrom);
+		queryDTO.setDateTo(dateTo);
+		queryDTO.setQueryKit(saleInventoryQuery.isQueryKit());
+		queryDTO.setItemNums(Collections.singletonList(itemNum));
+		objects = posOrderService.findBranchItemSum(queryDTO);
+
+		BigDecimal qty;
+		Integer branchNum;
+		for(Object[] object : objects){
+			branchNum = (Integer) object[0];
+            qty = object[2] == null?BigDecimal.ZERO:(BigDecimal) object[2];
+
+			SaleInventoryDetailDTO dto = map.get(itemNum);
+			if(dto == null){
+				dto = new SaleInventoryDetailDTO();
+				dto.setBranchNum(branchNum);
+				map.put(branchNum, dto);
+			}
+			dto.setSaleQty(dto.getSaleQty().add(qty));
+
+		}
+
+        objects = transferOutOrderService.findUnInBranchItemSummary(systemBookCode, Collections.singletonList(saleInventoryQuery.getBranchNum()), branchNums, dateFrom, dateTo, Collections.singletonList(itemNum));
+        for(Object[] object : objects){
+            branchNum = (Integer) object[0];
+            qty = object[2] == null?BigDecimal.ZERO:(BigDecimal) object[2];
+
+            SaleInventoryDetailDTO dto = map.get(itemNum);
+            if(dto == null){
+                dto = new SaleInventoryDetailDTO();
+                dto.setBranchNum(branchNum);
+                map.put(branchNum, dto);
+            }
+            dto.setOnloadQty(qty);
+
+        }
+
+        if(map.isEmpty()){
+			return Collections.emptyList();
+		}
+		BigDecimal diffDay = BigDecimal.valueOf(DateUtil.getDaysBetween(dateFrom, dateTo) + 1);
+		List<SaleInventoryDetailDTO> list = new ArrayList<>(map.values());
+		List<StoreMatrix> storeMatrices = storeMatrixService.findByBranch(systemBookCode, branchNums, Collections.singletonList(itemNum));
+		List<Branch> branches = branchService.findInCache(systemBookCode);
+		PosItem posItem = posItemService.readWithoutDetails(itemNum);
+		for(int  i = list.size() - 1;i >= 0;i--){
+			SaleInventoryDetailDTO dto = list.get(i);
+			Branch branch = Branch.get(branches, dto.getBranchNum());
+			dto.setBranchName(branch.getBranchName());
+
+			dto.setSalePrice(posItem.getItemRegularPrice());
+			dto.setSalePrice2(posItem.getItemLevel2Price());
+			if(branch.getBranchMatrixPriceActived() != null && branch.getBranchMatrixPriceActived()){
+                StoreMatrix storeMatrix = StoreMatrix.get(dto.getBranchNum(), itemNum, storeMatrices);
+                if(storeMatrix != null && storeMatrix.getStoreMatrixPriceEnabled()){
+                    if(storeMatrix.getStoreMatrixRegularPrice() != null && storeMatrix.getStoreMatrixRegularPrice().compareTo(BigDecimal.ZERO) > 0){
+                        dto.setSalePrice(storeMatrix.getStoreMatrixRegularPrice());
+                    }
+                    if(storeMatrix.getStoreMatrixLevel2Price() != null && storeMatrix.getStoreMatrixLevel2Price().compareTo(BigDecimal.ZERO) > 0){
+                        dto.setSalePrice2(storeMatrix.getStoreMatrixLevel2Price());
+                    }
+                }
+            }
+			dto.setSaleAveQty(dto.getSaleQty().divide(diffDay, 4, BigDecimal.ROUND_HALF_UP));
+
+		}
+		return list;
+	}
+
 }

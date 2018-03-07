@@ -308,6 +308,18 @@ public class StoreMatrix implements java.io.Serializable {
 		return null;
 	}
 
+	public static StoreMatrix get(Integer branchNum, Integer itemNum,
+								  List<StoreMatrix> storeMatrixs) {
+		for (int i = 0; i < storeMatrixs.size(); i++) {
+			StoreMatrix storeMatrix = storeMatrixs.get(i);
+			if (storeMatrix.getId().getBranchNum().equals(branchNum)
+					&& storeMatrix.getId().getItemNum().equals(itemNum)) {
+				return storeMatrix;
+			}
+		}
+		return null;
+	}
+
 	public static BigDecimal getTransferPrice(StoreMatrix storeMatrix) {
 		if (storeMatrix == null) {
 			return null;

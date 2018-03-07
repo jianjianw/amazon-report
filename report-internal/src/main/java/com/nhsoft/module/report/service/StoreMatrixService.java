@@ -11,5 +11,8 @@ import java.util.List;
 public interface StoreMatrixService {
 	
 	public List<StoreMatrix> findByBranch(String systemBookCode, Integer branchNum, List<Integer> itemNums);
-	
+
+	public List<StoreMatrix> findByBranch(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
+
+
 }

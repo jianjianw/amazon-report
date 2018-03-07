@@ -271,8 +271,8 @@ public interface Report2Rpc {
 	 * @return
 	 */
 	public List<OtherInfoSummaryDTO> findOtherInfos(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
-	
-	
+
+
 	/**
 	 * 异动明细
 	 * @param systemBookCode
@@ -283,5 +283,19 @@ public interface Report2Rpc {
 	 * @return
 	 */
 	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String infoType);
+
+	/**
+	 * 销售库存分析
+	 * @param saleInventoryQuery
+	 * @return
+	 */
+	public List<SaleInventoryDTO> findSaleInventorys(SaleInventoryQuery saleInventoryQuery);
+
+	/**
+	 * 销售库存分析明细
+	 * @param saleInventoryQuery
+	 * @return
+	 */
+	public List<SaleInventoryDetailDTO> findSaleInventoryDetails(SaleInventoryQuery saleInventoryQuery);
 
 }

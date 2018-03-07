@@ -18,11 +18,11 @@ import java.util.List;
 @Repository
 public class StoreMatrixDaoImpl extends  DaoImpl implements StoreMatrixDao {
 	@Override
-	public List<StoreMatrix> findByBranch(String systemBookCode, Integer branchNum, List<Integer> itemNums) {
+	public List<StoreMatrix> findByBranch(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select * from store_matrix with(nolock) where system_book_code = :systemBookCode ");
-		if(branchNum != null){
-			sb.append("and branch_num = :branchNum ");
+		if(branchNums != null && !branchNums.isEmpty()){
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 			
 		}
 		if(itemNums != null && itemNums.size() > 0){
@@ -30,9 +30,6 @@ public class StoreMatrixDaoImpl extends  DaoImpl implements StoreMatrixDao {
 		}
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", systemBookCode);
-		if(branchNum != null){
-			query.setInteger("branchNum", branchNum);
-		}
 		query.addEntity(StoreMatrix.class);
 		return query.list();
 	}

@@ -137,4 +137,17 @@ public interface TransferOutOrderService {
 	 */
 	public List<Object[]> findItemSummary(String systemBookCode, List<Integer> outBranchNums, List<Integer> branchNums,
 										  Date dateFrom, Date dateTo, List<Integer> itemNums);
+
+	/**
+	 * 按调入分店、商品汇总未调入数量和金额
+	 * @param systemBookCode
+	 * @param centerBranchNums
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param itemNums
+	 * @return
+	 */
+	public List<Object[]> findUnInBranchItemSummary(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums,
+													Date dateFrom, Date dateTo, List<Integer> itemNums);
 }

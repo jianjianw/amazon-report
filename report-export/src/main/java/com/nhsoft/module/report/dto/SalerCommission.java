@@ -22,7 +22,7 @@ public class SalerCommission implements Serializable {
 	private String branchName;//所属门店（销售员对应门店）
 	private Integer branchNum;
 	private BigDecimal saleCost;//成本
-	
+
 	private List<Integer> rank = new ArrayList<Integer>();
 	
 	public SalerCommission() {
@@ -31,9 +31,6 @@ public class SalerCommission implements Serializable {
 		}
 	}
 
-	
-	
-	
 	public BigDecimal getSaleCost() {
 		return saleCost;
 	}

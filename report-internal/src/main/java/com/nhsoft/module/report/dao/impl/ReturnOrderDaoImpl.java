@@ -127,6 +127,8 @@ public class ReturnOrderDaoImpl extends DaoImpl implements ReturnOrderDao {
 				.add(Projections.property("detail.returnOrderDetailUseRate"))
 
 		);
+		criteria.setMaxResults(500000);
+		criteria.setLockMode(LockMode.NONE);
 		return criteria.list();
 	}
 

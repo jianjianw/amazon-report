@@ -976,6 +976,30 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		
 		return criteria.list();
 	}
-	
-	
+
+	@Override
+	public List<Object[]> findUnInBranchItemSummary(String systemBookCode, List<Integer> centerBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select t.branch_num, detail.item_num, sum(detail.out_order_detail_qty) as qty, sum(detail.out_order_detail_subtotal) as subtotal, sum(detail.out_order_detail_sale_subtotal) as saleSubtotal ");
+		sb.append("from out_order_detail as detail with(nolock) inner join transfer_out_order as t with(nolock) on t.out_order_fid = detail.out_order_fid ");
+		sb.append("where t.system_book_code = '" + systemBookCode + "' and t.out_branch_num in " + AppUtil.getIntegerParmeList(centerBranchNums));
+		if(branchNums != null && !branchNums.isEmpty()){
+			sb.append("and t.branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and t.out_order_audit_time >=  '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and t.out_order_audit_time <=  '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
+		}
+		if(itemNums != null && !itemNums.isEmpty()){
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		sb.append("and t.out_order_state_code = " + AppConstants.STATE_INIT_AUDIT_CODE + " ");
+		sb.append("group by t.branch_num, detail.item_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
+
 }
