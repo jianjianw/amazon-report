@@ -5143,8 +5143,8 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData) {
-		List<RetailDetail> retailDetails = posOrderDao.findRetailDetails(retailDetailQueryData);
+	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData, boolean isFm) {
+		List<RetailDetail> retailDetails = posOrderDao.findRetailDetails(retailDetailQueryData, isFm);
 		int size = retailDetails.size();
 		if (size == 0) {
 			return retailDetails;

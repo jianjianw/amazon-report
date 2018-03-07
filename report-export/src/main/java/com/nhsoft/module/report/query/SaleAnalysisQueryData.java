@@ -27,6 +27,10 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 	private Boolean queryItemExtendAttribute;
 	private Integer appUserNum;
 
+	private Integer merchantNum;
+	private Integer stallNum;
+	private Boolean isPolicy;
+
 	public Integer getAppUserNum() {
 		return appUserNum;
 	}
@@ -163,7 +167,31 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 	public void setItemDepartments(String itemDepartments) {
 		this.itemDepartments = itemDepartments;
 	}
-	
+
+	public Integer getMerchantNum() {
+		return merchantNum;
+	}
+
+	public void setMerchantNum(Integer merchantNum) {
+		this.merchantNum = merchantNum;
+	}
+
+	public Integer getStallNum() {
+		return stallNum;
+	}
+
+	public void setStallNum(Integer stallNum) {
+		this.stallNum = stallNum;
+	}
+
+	public Boolean getPolicy() {
+		return isPolicy;
+	}
+
+	public void setPolicy(Boolean policy) {
+		isPolicy = policy;
+	}
+
 	private String getDateStr(Date date){
 		StringBuffer sb = new StringBuffer();
 		sb.append(date.getYear() + 1900).append("-").append(date.getMonth() + 1).append("-").append(date.getDate());

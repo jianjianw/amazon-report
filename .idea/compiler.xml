@@ -7,10 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="provider" />
-        <module name="report-azure" />
         <module name="report-export" />
         <module name="report-internal" />
-        <module name="report-timer" />
         <module name="utils" />
       </profile>
     </annotationProcessing>

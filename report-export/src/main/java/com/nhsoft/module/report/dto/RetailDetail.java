@@ -35,6 +35,9 @@ public class RetailDetail implements Serializable {
 	private BigDecimal saleProfit;
 	private String itemBarCode;
 
+	private Integer merchantNum;
+	private Integer stallNum;
+
 
 	public BigDecimal getSaleCost() {
 		return saleCost;
@@ -226,5 +229,21 @@ public class RetailDetail implements Serializable {
 
 	public void setItemBarCode(String itemBarCode) {
 		this.itemBarCode = itemBarCode;
+	}
+
+	public Integer getMerchantNum() {
+		return merchantNum;
+	}
+
+	public void setMerchantNum(Integer merchantNum) {
+		this.merchantNum = merchantNum;
+	}
+
+	public Integer getStallNum() {
+		return stallNum;
+	}
+
+	public void setStallNum(Integer stallNum) {
+		this.stallNum = stallNum;
 	}
 }

@@ -369,7 +369,7 @@ public interface ReportService {
 	 * @param retailDetailQueryData
 	 * @return
 	 */
-	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData);
+	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData, boolean isFm);
 
 	/**
 	 * 查询采购商品明细

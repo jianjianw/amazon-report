@@ -470,7 +470,7 @@ public interface PosOrderDao {
 	 * @param retailDetailQueryData
 	 * @return
 	 */
-	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData);
+	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData, boolean isFm);
 
 	/**
 	 * 毛利分析 日毛利汇总
