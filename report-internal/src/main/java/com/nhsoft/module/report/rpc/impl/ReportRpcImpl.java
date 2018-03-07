@@ -2405,8 +2405,13 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<RetailDetail> findRetailDetails(String systemBookCode, RetailDetailQueryData retailDetailQueryData) {
 		return reportService.findRetailDetails(retailDetailQueryData);
 	}
-	
-	@Override
+
+    @Override
+    public List<RetailDetail> findMerchantRetailDetails(String systemBookCode, RetailDetailQueryData retailDetailQueryData) {
+        return null;
+    }
+
+    @Override
 	public List<RetailDetail> findRetailDetails(RetailDetailQueryData retailDetailQueryData) {
 		return reportService.findRetailDetails(retailDetailQueryData);
 	}

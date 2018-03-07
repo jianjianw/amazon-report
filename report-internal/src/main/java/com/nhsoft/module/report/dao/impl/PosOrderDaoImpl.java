@@ -1603,7 +1603,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
     }
 
     @Override
-    public List<RetailDetail> findRetailDetails(RetailDetailQueryData queryData) {
+    public List<RetailDetail> findRetailDetails(RetailDetailQueryData queryData, boolean isFm) {
 
         StringBuffer sb = new StringBuffer();
         sb.append("select p.branch_num, p.order_no, p.order_operator, p.order_machine, p.order_time, ");
@@ -1611,22 +1611,31 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         sb.append("detail.order_detail_discount, detail.order_detail_item_matrix_num, detail.order_detail_state_code, ");
         sb.append("p.order_sold_by, detail.item_grade_num, p.order_state_code, detail.order_detail_commission, ");
         sb.append("detail.order_detail_memo, detail.order_detail_gross_profit, detail.order_detail_cost ");
+        if(isFm) {
+        	sb.append(", p.merchant_num, p.stall_num ");
+		}
         sb.append("from pos_order_detail as detail with(nolock, forceseek) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
         if(queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0){
             sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
         }
-        if(queryData.getMerchantNum() != null) {
-        	sb.append("and p.merchant_num = " + queryData.getMerchantNum() + " ");
-		}
-		if(queryData.getStallNum() != null) {
-        	sb.append("and p.stall_num = " + queryData.getStallNum() + " ");
-		}
-		if(queryData.getPolicy() != null) {
-        	if(queryData.getPolicy()) {
-        		sb.append("and detail.order_detail_policy_fid is not null ");
+        if(isFm) {
+			if(queryData.getMerchantNum() != null) {
+				sb.append("and p.merchant_num = " + queryData.getMerchantNum() + " ");
 			} else {
-				sb.append("and detail.order_detail_policy_fid is null ");
+				sb.append("and p.merchant_num is not null ");
+			}
+			if(queryData.getStallNum() != null) {
+				sb.append("and p.stall_num = " + queryData.getStallNum() + " ");
+			} else {
+				sb.append("and p.stall_num is not null ");
+			}
+			if(queryData.getPolicy() != null) {
+				if(queryData.getPolicy()) {
+					sb.append("and detail.order_detail_policy_fid is not null ");
+				} else {
+					sb.append("and detail.order_detail_policy_fid is null ");
+				}
 			}
 		}
         sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFromShiftTable()) + "' ");
@@ -1777,7 +1786,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             retailDetail.setMemo((String)object[16]);
             retailDetail.setSaleProfit((BigDecimal) object[17]);
             retailDetail.setSaleCost(((BigDecimal) object[18]).multiply(retailDetail.getAmount()));
-
+			retailDetail.setMerchantNum((Integer)object[19]);
+			retailDetail.setStallNum((Integer)object[20]);
             Integer stateCode = (Integer) object[11];
             retailDetail.setStateCode(stateCode);
             if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_CANCEL) {
