@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 public class SaleInventoryDetailDTO implements Serializable{
 
     private static final long serialVersionUID = 915998549862979618L;
+    private String branchCode;
     private String branchName;
     private Integer branchNum;
     private BigDecimal salePrice;
@@ -15,6 +16,20 @@ public class SaleInventoryDetailDTO implements Serializable{
     private BigDecimal saleDays;// 可售天数
     private BigDecimal inventoryQty;
     private BigDecimal onloadQty;// 在途数量
+
+    public SaleInventoryDetailDTO(){
+        setSaleQty(BigDecimal.ZERO);
+        setOnloadQty(BigDecimal.ZERO);
+        setInventoryQty(BigDecimal.ZERO);
+    }
+
+    public String getBranchCode() {
+        return branchCode;
+    }
+
+    public void setBranchCode(String branchCode) {
+        this.branchCode = branchCode;
+    }
 
     public String getBranchName() {
         return branchName;

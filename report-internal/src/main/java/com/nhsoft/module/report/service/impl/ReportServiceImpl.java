@@ -4776,7 +4776,7 @@ public class ReportServiceImpl implements ReportService {
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 		List<StoreMatrix> storeMatrixs = null;
 		if(!branchNum.equals(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
-			storeMatrixs = storeMatrixDao.findByBranch(systemBookCode, branchNum, null);
+			storeMatrixs = storeMatrixDao.findByBranch(systemBookCode, Collections.singletonList(branchNum), null);
 		}
 		BigDecimal transferPrice = null;
 		for (int i = posItems.size() - 1; i >= 0; i--) {
@@ -7698,7 +7698,7 @@ public class ReportServiceImpl implements ReportService {
 		List<ExceptInventory> list = new ArrayList<ExceptInventory>();
 		List<StoreMatrix> storeMatrixs = null;
 		if (highExceptFlag) {
-			storeMatrixs = storeMatrixDao.findByBranch(systemBookCode, branchNum, null);
+			storeMatrixs = storeMatrixDao.findByBranch(systemBookCode, Collections.singletonList(branchNum), null);
 		}
 		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);

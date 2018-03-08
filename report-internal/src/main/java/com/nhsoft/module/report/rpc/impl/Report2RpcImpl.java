@@ -1335,29 +1335,9 @@ public class Report2RpcImpl implements Report2Rpc {
 	    Date dateTo = saleInventoryQuery.getDateTo();
 	    Integer storehouseNum = saleInventoryQuery.getStorehouseNum();
 	    List<String> categoryCodes = saleInventoryQuery.getCategoryCodes();
-
-		List<Object[]> objects = inventoryService.findItemAmount(systemBookCode, branchNums, itemNums, storehouseNum);
 		Map<Integer, SaleInventoryDTO> map = new HashMap<>();
-		List<Integer> queryItemNums = null;
 
-		boolean addItems = true;
-		if(itemNums != null && !itemNums.isEmpty()){
-			addItems = false;
-		} else {
-            queryItemNums = new ArrayList<>(20);
-        }
 
-		for(Object[] object : objects){
-			SaleInventoryDTO dto = new SaleInventoryDTO();
-			dto.setItemNum((Integer) object[0]);
-			dto.setInventoryQty((BigDecimal) object[1]);
-			map.put(dto.getItemNum(), dto);
-			if(addItems){
-				queryItemNums.add(dto.getItemNum());
-
-			}
-
-		}
 		ItemQueryDTO queryDTO = new ItemQueryDTO();
 		queryDTO.setSystemBookCode(systemBookCode);
 		queryDTO.setBranchNums(branchNums);
@@ -1365,10 +1345,18 @@ public class Report2RpcImpl implements Report2Rpc {
 		queryDTO.setDateTo(dateTo);
 		queryDTO.setQueryKit(saleInventoryQuery.isQueryKit());
 		queryDTO.setItemNums(itemNums);
-		objects = posOrderService.findItemSum(queryDTO);
+		List<Object[]> objects = posOrderService.findItemSum(queryDTO);
 
 		Integer itemNum;
 		BigDecimal saleQty;
+		boolean addItems = true;
+		List<Integer> queryItemNums = null;
+		if(itemNums != null && !itemNums.isEmpty()){
+			addItems = false;
+		} else {
+			queryItemNums = new ArrayList<>(20);
+		}
+
 		for(Object[] object : objects){
 			itemNum = (Integer) object[0];
 			saleQty = object[1] == null?BigDecimal.ZERO:(BigDecimal) object[1];
@@ -1379,7 +1367,10 @@ public class Report2RpcImpl implements Report2Rpc {
 				dto.setItemNum(itemNum);
 				map.put(itemNum, dto);
 				if(addItems){
-					queryItemNums.add(dto.getItemNum());
+					if(!queryItemNums.contains(dto.getItemNum())){
+						queryItemNums.add(dto.getItemNum());
+
+					}
 
 				}
 
@@ -1387,16 +1378,25 @@ public class Report2RpcImpl implements Report2Rpc {
 			dto.setSaleQty(dto.getSaleQty().add(saleQty));
 
 		}
+		if(addItems){
+			itemNums = queryItemNums;
+		}
+		objects = inventoryService.findItemAmount(systemBookCode, branchNums, itemNums, storehouseNum);
+		for(Object[] object : objects){
+			itemNum = (Integer) object[0];
+
+			SaleInventoryDTO dto = map.get(itemNum);
+			if(dto != null){
+				dto.setInventoryQty((BigDecimal) object[1]);
+
+			}
+		}
+
 		if(map.isEmpty()){
 			return Collections.emptyList();
 		}
-		List<PosItem> posItems;
-		if(addItems){
-			posItems = posItemService.findByItemNumsWithoutDetails(queryItemNums);
-		} else {
-			posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
 
-		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
 		BigDecimal diffDay = BigDecimal.valueOf(DateUtil.getDaysBetween(dateFrom, dateTo) + 1);
 		List<SaleInventoryDTO> list = new ArrayList<>(map.values());
 		for(int  i = list.size() - 1;i >= 0;i--){
@@ -1440,8 +1440,6 @@ public class Report2RpcImpl implements Report2Rpc {
 		Integer itemNum = saleInventoryQuery.getItemNums().get(0);
 		Date dateFrom = saleInventoryQuery.getDateFrom();
 		Date dateTo = saleInventoryQuery.getDateTo();
-		Integer storehouseNum = saleInventoryQuery.getStorehouseNum();
-		List<String> categoryCodes = saleInventoryQuery.getCategoryCodes();
 
 		List<Object[]> objects = inventoryService.findBranchItemSummary(systemBookCode, branchNums, Collections.singletonList(itemNum));
 		Map<Integer, SaleInventoryDetailDTO> map = new HashMap<>();
@@ -1468,7 +1466,7 @@ public class Report2RpcImpl implements Report2Rpc {
 			branchNum = (Integer) object[0];
             qty = object[2] == null?BigDecimal.ZERO:(BigDecimal) object[2];
 
-			SaleInventoryDetailDTO dto = map.get(itemNum);
+			SaleInventoryDetailDTO dto = map.get(branchNum);
 			if(dto == null){
 				dto = new SaleInventoryDetailDTO();
 				dto.setBranchNum(branchNum);
@@ -1483,7 +1481,7 @@ public class Report2RpcImpl implements Report2Rpc {
             branchNum = (Integer) object[0];
             qty = object[2] == null?BigDecimal.ZERO:(BigDecimal) object[2];
 
-            SaleInventoryDetailDTO dto = map.get(itemNum);
+            SaleInventoryDetailDTO dto = map.get(branchNum);
             if(dto == null){
                 dto = new SaleInventoryDetailDTO();
                 dto.setBranchNum(branchNum);
@@ -1505,6 +1503,7 @@ public class Report2RpcImpl implements Report2Rpc {
 			SaleInventoryDetailDTO dto = list.get(i);
 			Branch branch = Branch.get(branches, dto.getBranchNum());
 			dto.setBranchName(branch.getBranchName());
+			dto.setBranchCode(branch.getBranchCode());
 
 			dto.setSalePrice(posItem.getItemRegularPrice());
 			dto.setSalePrice2(posItem.getItemLevel2Price());
