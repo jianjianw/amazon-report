@@ -3010,9 +3010,71 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         return objects;
     }
 
+	@Override
+	public List<Object[]> findMerchantSaleAnalysisCommon(SaleAnalysisQueryData queryData) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select detail.item_num, detail.order_detail_state_code, ");
+		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_, ");
+		sb.append("sum(detail.order_detail_discount) as discount, ");
+		sb.append("p.merchant_num, p.stall_num ");
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+		sb.append("where detail.order_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
+		if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
+			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
+		}
+		if(queryData.getMerchantNum() != null) {
+			sb.append("and p.merchant_num = " + queryData.getMerchantNum() + " ");
+		}
+		if(queryData.getStallNum() != null) {
+			sb.append("and p.stall_num = " + queryData.getStallNum() + " ");
+		}
+		if(queryData.getPolicy() != null) {
+			if(queryData.getPolicy()) {
+				sb.append("and detail.order_detail_policy_fid is not null ");
+			} else {
+				sb.append("and detail.order_detail_policy_fid is null ");
+			}
+		}
+		sb.append("and detail.order_detail_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
+				+ "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
+		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
+		if (queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
+		}
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
+		}
+		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + queryData.getSaleType() + "' ");
+			}
+		}
+		if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
+			sb.append("and detail.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
+		}
+		if(queryData.getTwoStringValueDatas() != null && queryData.getTwoStringValueDatas().size() > 0){
+			sb.append("and exists (select 1 from item_extend_attribute with(nolock) where item_extend_attribute.item_num = detail.item_num and (");
+			for(int i = 0;i < queryData.getTwoStringValueDatas().size();i++){
+				TwoStringValueData twoStringValueData = queryData.getTwoStringValueDatas().get(i);
+				if(i > 0){
+					sb.append(" or ");
+				}
+				sb.append("(item_extend_attribute.attribute_name = '" + twoStringValueData.getKey() + "' and item_extend_attribute.attribute_value like '%" + twoStringValueData.getValue() + "%') ");
+			}
 
+			sb.append(")) ");
+		}
+		sb.append("group by detail.item_num, detail.order_detail_state_code, p.merchant_num, p.stall_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		List<Object[]> objects = query.list();
+		return objects;
+	}
 
-    @Override
+	@Override
     public List<Object[]> findSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData) {////
         StringBuffer sb = new StringBuffer();
         if(queryData.getIsQueryCardUser()){
@@ -3024,19 +3086,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
             if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
                 sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
-            }
-            if(queryData.getMerchantNum() != null) {
-                sb.append("and p.merchant_num = " + queryData.getMerchantNum() + " ");
-            }
-            if(queryData.getStallNum() != null) {
-                sb.append("and p.stall_num = " + queryData.getStallNum() + " ");
-            }
-            if(queryData.getPolicy() != null) {
-                if(queryData.getPolicy()) {
-                    sb.append("and detail.order_detail_policy_fid is not null ");
-                } else {
-                    sb.append("and detail.order_detail_policy_fid is null ");
-                }
             }
             sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
                     + "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
@@ -3186,6 +3235,74 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         }
         return objects;
     }
+
+	@Override
+	public List<Object[]> findMerchantSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData) {////
+		StringBuffer sb = new StringBuffer();
+		sb.append("select detail.item_num, detail.order_detail_item_matrix_num, detail.order_detail_state_code, ");
+		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_, ");
+		sb.append("sum(detail.order_detail_discount) as discount, count(distinct detail.order_detail_branch_num) as branchCount, ");
+		sb.append("p.merchant_num, p.stall_num ");
+		sb.append("from pos_order_detail as detail with(nolock)  inner join pos_order p with(nolock) on p.order_no = detail.order_no ");
+		sb.append("where detail.order_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
+		if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
+			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
+		}
+		sb.append("and detail.order_detail_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
+				+ "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
+		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null and p.merchant_num is not null and p.stall_num is not null ");
+		if (queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
+		}
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
+		}
+		if (queryData.getIsQueryGrade()) {
+			sb.append("and (detail.item_grade_num is null or detail.item_grade_num = 0 ) ");
+		}
+		if(queryData.getMerchantNum() != null) {
+			sb.append("and p.merchant_num = " + queryData.getMerchantNum() + " ");
+		}
+		if(queryData.getStallNum() != null) {
+			sb.append("and p.stall_num = " + queryData.getStallNum() + " ");
+		}
+		if(queryData.getPolicy() != null) {
+			if(queryData.getPolicy()) {
+				sb.append("and detail.order_detail_policy_fid is not null ");
+			} else {
+				sb.append("and detail.order_detail_policy_fid is null ");
+			}
+		}
+		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + queryData.getSaleType() + "' ");
+			}
+		}
+		if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
+			sb.append("and detail.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
+		}
+		if(queryData.getTwoStringValueDatas() != null && queryData.getTwoStringValueDatas().size() > 0){
+			sb.append("and exists (select 1 from item_extend_attribute with(nolock) where item_extend_attribute.item_num = detail.item_num and (");
+			for(int i = 0;i < queryData.getTwoStringValueDatas().size();i++){
+				TwoStringValueData twoStringValueData = queryData.getTwoStringValueDatas().get(i);
+				if(i > 0){
+					sb.append(" or ");
+				}
+				sb.append("(item_extend_attribute.attribute_name = '" + twoStringValueData.getKey() + "' and item_extend_attribute.attribute_value like '%" + twoStringValueData.getValue() + "%') ");
+			}
+
+			sb.append(")) ");
+		}
+
+		sb.append("group by detail.item_num, detail.order_detail_item_matrix_num, detail.order_detail_state_code, p.merchant_num, p.stall_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		List<Object[]> objects = query.list();
+		return objects;
+	}
 
 	@Override
 	public List<PosOrder> findByShiftTable(ShiftTable shiftTable) {

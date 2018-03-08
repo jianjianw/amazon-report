@@ -617,6 +617,13 @@ public interface ReportRpc {
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByPosItems(SaleAnalysisQueryData queryData);
 
 	/**
+	 * 销售分析 -- 商品汇总(农贸市场)
+	 * @param queryData
+	 * @return
+	 */
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByMerchantPosItems(SaleAnalysisQueryData queryData);
+
+	/**
 	 * 销售分析 -- 分店汇总
 	 * @param queryData
 	 * @return
@@ -629,6 +636,13 @@ public interface ReportRpc {
 	 * @return
 	 */
 	public List<SaleByCategorySummary> findSaleAnalysisByCategorys(SaleAnalysisQueryData queryData);
+
+    /**
+     * 销售分析 -- 类别汇总
+     * @param queryData
+     * @return
+     */
+    public List<SaleByCategorySummary> findSaleAnalysisByMerchantCategorys(SaleAnalysisQueryData queryData);
 
 	/**
 	 * 销售分析 -- 类别-分店汇总
@@ -1345,7 +1359,7 @@ public interface ReportRpc {
 	 * @return
 	 */
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode, SaleAnalysisQueryData saleAnalysisQueryData);
-	
+
 	/**
 	 * 销售分析 -- 按分店汇总商品信息
 	 * @param saleAnalysisQueryData

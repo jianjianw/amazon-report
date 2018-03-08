@@ -13,6 +13,10 @@ public class SaleByCategorySummary implements Serializable {
     private Integer itemCount;
     private BigDecimal discount;
 
+    private Integer merchantNum;
+    private Integer stallNum;
+    private Boolean isPolicy;
+
     public Integer getItemNum() {
         return itemNum;
     }
@@ -67,5 +71,29 @@ public class SaleByCategorySummary implements Serializable {
 
     public void setDiscount(BigDecimal discount) {
         this.discount = discount;
+    }
+
+    public Integer getMerchantNum() {
+        return merchantNum;
+    }
+
+    public void setMerchantNum(Integer merchantNum) {
+        this.merchantNum = merchantNum;
+    }
+
+    public Integer getStallNum() {
+        return stallNum;
+    }
+
+    public void setStallNum(Integer stallNum) {
+        this.stallNum = stallNum;
+    }
+
+    public Boolean getPolicy() {
+        return isPolicy;
+    }
+
+    public void setPolicy(Boolean policy) {
+        isPolicy = policy;
     }
 }

@@ -578,6 +578,14 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByPosItems(SaleAnalysisQueryData queryData);
+
+	/**
+	 * 销售分析 -- 商品汇总
+	 * @param queryData
+	 * @return
+	 */
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByMerchantPosItems(SaleAnalysisQueryData queryData);
+
 	/**
 	 * 销售分析 -- 分店汇总
 	 * @param queryData
@@ -591,6 +599,13 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<Object[]>  findSaleAnalysisByCategorys(SaleAnalysisQueryData queryData);
+
+	/**
+	 * 销售分析 -- 类别汇总
+	 * @param queryData
+	 * @return
+	 */
+	public List<Object[]>  findSaleAnalysisByMerchantCategorys(SaleAnalysisQueryData queryData);
 
 	/**
 	 * 销售分析 -- 类别-分店汇总
