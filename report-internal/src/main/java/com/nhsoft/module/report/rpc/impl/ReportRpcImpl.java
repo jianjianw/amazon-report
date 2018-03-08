@@ -2672,6 +2672,41 @@ public class ReportRpcImpl implements ReportRpc {
 		return list;
 	}
 
+	@Override
+	@Deprecated
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByMerchantCategorys' + #p0.getKey()")
+	public List<SaleByCategorySummary> findSaleAnalysisByMerchantCategorys(SaleAnalysisQueryData queryData) {
+
+		List<Object[]> objects = reportService.findSaleAnalysisByMerchantCategorys(queryData);
+		int size = objects.size();
+		List<SaleByCategorySummary> list = new ArrayList<SaleByCategorySummary>(size);
+		if(objects.isEmpty()){
+			return list;
+		}
+
+		for (int i = 0; i <size ; i++) {
+			Object[] object = objects.get(i);
+			SaleByCategorySummary saleByCategorySummary = new SaleByCategorySummary();
+			saleByCategorySummary.setItemNum((Integer) object[0]);
+			saleByCategorySummary.setStateCode((int)object[1]);
+			saleByCategorySummary.setAmount((BigDecimal) object[2]);
+			saleByCategorySummary.setPaymentMoney((BigDecimal) object[3]);
+			saleByCategorySummary.setAssistAmount((BigDecimal) object[4]);
+			saleByCategorySummary.setItemCount((Integer) object[5]);
+			if(object[6] instanceof  Double){
+				saleByCategorySummary.setDiscount(new BigDecimal((Double) object[6]));
+
+			} else {
+				saleByCategorySummary.setDiscount(object[6] == null?BigDecimal.ZERO:(BigDecimal)object[6]);
+
+			}
+			saleByCategorySummary.setMerchantNum((Integer) object[8]);
+			saleByCategorySummary.setStallNum((Integer)object[9]);
+			list.add(saleByCategorySummary);
+		}
+		return list;
+	}
+
 
 	@Override
 	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByCategoryBranchs' + #p0.getKey()")

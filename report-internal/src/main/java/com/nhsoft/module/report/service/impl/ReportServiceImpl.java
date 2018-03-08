@@ -3931,7 +3931,7 @@ public class ReportServiceImpl implements ReportService {
 			presentUseQty = object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8];
 			presentCostMoney = object[9] == null ? BigDecimal.ZERO : ((BigDecimal) object[9]);
 			presentMoney = object[10] == null ? BigDecimal.ZERO : ((BigDecimal) object[10]);
-			
+
 			WholesaleProfitByPosItem data = new WholesaleProfitByPosItem();
 			data.setPosItemNum(itemNum);
 			data.setItemMatrixNum(itemMatrixNum);
@@ -4157,7 +4157,7 @@ public class ReportServiceImpl implements ReportService {
 			presentQty = object[18] == null ? BigDecimal.ZERO : (BigDecimal) object[18];
 			presentCostMoney = presentQty.multiply(object[19] == null ? BigDecimal.ZERO : ((BigDecimal) object[19])).setScale(2, BigDecimal.ROUND_HALF_UP);
 			presentMoney = presentQty.multiply(object[20] == null ? BigDecimal.ZERO : ((BigDecimal) object[20])).setScale(2, BigDecimal.ROUND_HALF_UP);
-			
+
 			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
 			if (posItem == null) {
 				continue;
@@ -4803,13 +4803,13 @@ public class ReportServiceImpl implements ReportService {
 			data.setItemNum(posItem.getItemNum());
 			data.setInventoryUnit(posItem.getItemInventoryUnit());
 			data.setItemTransfer(posItem.getItemTransferPrice());
-			
+
 			transferPrice = AppUtil.getTransferPrice(storeMatrixs, branchNum, data.getItemNum());
 			if(transferPrice != null){
 				data.setItemTransfer(transferPrice);
 
 			}
-			
+
 			data.setRate(posItem.getItemInventoryRate());
 			map.put(data.getItemNum(), data);
 		}
@@ -4819,7 +4819,7 @@ public class ReportServiceImpl implements ReportService {
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];
-			
+
 			BigDecimal price = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
 			SingularPrice data = map.get(itemNum);
 			if (data != null) {
@@ -4849,7 +4849,7 @@ public class ReportServiceImpl implements ReportService {
 		// 进价大于配送价
 		for (int i = list.size() - 1; i >= 0; i--) {
 			SingularPrice data = list.get(i);
-			
+
 			if (data.getItemLogPrice() == null) {
 				list.remove(data);
 				continue;
@@ -6900,7 +6900,7 @@ public class ReportServiceImpl implements ReportService {
 			saleAnalysisQueryData.setIsQueryCardUser(false);
 		}
 		if (systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc()
-				&& StringUtils.isEmpty(saleAnalysisQueryData.getSaleType()) 
+				&& StringUtils.isEmpty(saleAnalysisQueryData.getSaleType())
 				&& !saleAnalysisQueryData.getIsQueryCF()
 				&& !saleAnalysisQueryData.getIsQueryCardUser()) {
 			Date dpcLimitTime = DateUtil.addDay(now, -2);
@@ -6992,7 +6992,18 @@ public class ReportServiceImpl implements ReportService {
 
 	}
 
-	@Override
+    @Override
+    public List<Object[]> findSaleAnalysisByMerchantCategorys(SaleAnalysisQueryData saleAnalysisQueryData) {
+        if (saleAnalysisQueryData.getIsQueryCF() == null) {
+            saleAnalysisQueryData.setIsQueryCF(false);
+        }
+        if (saleAnalysisQueryData.getIsQueryCardUser() == null) {
+            saleAnalysisQueryData.setIsQueryCardUser(false);
+        }
+        return posOrderDao.findMerchantSaleAnalysisCommon(saleAnalysisQueryData);
+    }
+
+    @Override
 	public List<Object[]> findSaleAnalysisByCategoryBranchs(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return posOrderDao.findSaleAnalysisByCategoryBranchs(saleAnalysisQueryData);
 	}

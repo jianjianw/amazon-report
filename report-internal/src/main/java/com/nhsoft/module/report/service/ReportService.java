@@ -601,6 +601,13 @@ public interface ReportService {
 	public List<Object[]>  findSaleAnalysisByCategorys(SaleAnalysisQueryData queryData);
 
 	/**
+	 * 销售分析 -- 类别汇总
+	 * @param queryData
+	 * @return
+	 */
+	public List<Object[]>  findSaleAnalysisByMerchantCategorys(SaleAnalysisQueryData queryData);
+
+	/**
 	 * 销售分析 -- 类别-分店汇总
 	 * @param queryData
 	 * @return

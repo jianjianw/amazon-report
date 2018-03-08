@@ -660,6 +660,8 @@ public interface PosOrderDao {
 	 */
 	public List<Object[]>  findSaleAnalysisCommon(SaleAnalysisQueryData queryData);
 
+	public List<Object[]>  findMerchantSaleAnalysisCommon(SaleAnalysisQueryData queryData);
+
 
 	/**
 	 * 销售分析 -- 商品汇总
