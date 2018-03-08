@@ -2700,8 +2700,8 @@ public class ReportRpcImpl implements ReportRpc {
 				saleByCategorySummary.setDiscount(object[6] == null?BigDecimal.ZERO:(BigDecimal)object[6]);
 
 			}
-			saleByCategorySummary.setMerchantNum((Integer) object[8]);
-			saleByCategorySummary.setStallNum((Integer)object[9]);
+			saleByCategorySummary.setMerchantNum((Integer) object[7]);
+			saleByCategorySummary.setStallNum((Integer)object[8]);
 			list.add(saleByCategorySummary);
 		}
 		return list;

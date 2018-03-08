@@ -1632,9 +1632,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			}
 			if(queryData.getPolicy() != null) {
 				if(queryData.getPolicy()) {
-					sb.append("and detail.order_detail_policy_fid is not null ");
+					sb.append("and detail.order_detail_policy_fid != '' ");
 				} else {
-					sb.append("and detail.order_detail_policy_fid is null ");
+					sb.append("and detail.order_detail_policy_fid = '' ");
 				}
 			}
 		}
@@ -2870,9 +2870,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			}
 			if(queryData.getPolicy() != null) {
 				if(queryData.getPolicy()) {
-					sb.append("and detail.order_detail_policy_fid is not null ");
+					sb.append("and detail.order_detail_policy_fid != '' ");
 				} else {
-					sb.append("and detail.order_detail_policy_fid is null ");
+					sb.append("and detail.order_detail_policy_fid = '' ");
 				}
 			}
             sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
@@ -3031,9 +3031,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		if(queryData.getPolicy() != null) {
 			if(queryData.getPolicy()) {
-				sb.append("and detail.order_detail_policy_fid is not null ");
+				sb.append("and detail.order_detail_policy_fid != '' ");
 			} else {
-				sb.append("and detail.order_detail_policy_fid is null ");
+				sb.append("and detail.order_detail_policy_fid = '' ");
 			}
 		}
 		sb.append("and detail.order_detail_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
@@ -3269,9 +3269,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		if(queryData.getPolicy() != null) {
 			if(queryData.getPolicy()) {
-				sb.append("and detail.order_detail_policy_fid is not null ");
+				sb.append("and detail.order_detail_policy_fid != '' ");
 			} else {
-				sb.append("and detail.order_detail_policy_fid is null ");
+				sb.append("and detail.order_detail_policy_fid = '' ");
 			}
 		}
 		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
@@ -3386,9 +3386,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			}
 			if(queryData.getPolicy() != null) {
 				if(queryData.getPolicy()) {
-					sb.append("and detail.order_detail_policy_fid is not null ");
+					sb.append("and detail.order_detail_policy_fid != '' ");
 				} else {
-					sb.append("and detail.order_detail_policy_fid is null ");
+					sb.append("and detail.order_detail_policy_fid = '' ");
 				}
 			}
 			sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
