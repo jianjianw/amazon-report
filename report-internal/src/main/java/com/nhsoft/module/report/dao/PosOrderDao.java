@@ -669,6 +669,13 @@ public interface PosOrderDao {
 	public List<Object[]>  findSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData);
 
 	/**
+	 * 销售分析 -- 商品汇总
+	 * @param queryData
+	 * @return
+	 */
+	public List<Object[]>  findMerchantSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData);
+
+	/**
 	 * 按班次查询POS单据 包含明细
 	 * @param shiftTable
 	 * @return
@@ -960,7 +967,6 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public List<Object[]> findSaleAnalysisByBranchPosItems(String systemBookCode, SaleAnalysisQueryData queryData);
-
 
 	/**
 	 * 按分店汇总消费券

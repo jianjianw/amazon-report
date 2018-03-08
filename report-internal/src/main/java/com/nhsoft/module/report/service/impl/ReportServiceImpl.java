@@ -6697,6 +6697,179 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByMerchantPosItems(SaleAnalysisQueryData queryData) {
+		List<Object[]> objects = posOrderDao.findMerchantSaleAnalysisCommonItemMatrix(queryData);
+		Integer itemNum;
+		Integer itemMatrixNum;
+		Integer stateCode;
+		Integer merchantNum;
+		Integer stallNum;
+		BigDecimal amount;
+		BigDecimal money;
+		BigDecimal assistAmount;
+		BigDecimal count_;
+		BigDecimal discount;
+		Integer itemGradeNum;
+		Integer saleBranchCount;
+		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
+		StringBuilder stringBuilder;
+		String key;
+		for (int i = 0,len = objects.size(); i < len; i++) {
+			Object[] object = objects.get(i);
+			itemNum = (Integer) object[0];
+			itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+			stateCode = (Integer) object[2];
+			merchantNum = (Integer) object[9];
+			stallNum = (Integer) object[10];
+			amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			count_ = BigDecimal.valueOf(object[6] == null ? 0 : (Integer) object[6]);
+			if (object[7] instanceof BigDecimal) {
+				discount = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+
+			} else if (object[7] instanceof Double) {
+				discount = object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Double) object[7]);
+			} else {
+				discount = BigDecimal.ZERO;
+			}
+			saleBranchCount = 0;
+			if(object.length > 8){
+				saleBranchCount = (Integer) object[8];
+			}
+
+			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
+				continue;
+			}
+			stringBuilder = new StringBuilder();
+			key = stringBuilder.append(itemNum).append("|").append(itemMatrixNum).append("|").append(merchantNum).append("|").append(stallNum).toString();
+			SaleAnalysisByPosItemDTO data = map.get(key);
+			if (data == null) {
+				data = new SaleAnalysisByPosItemDTO();
+				data.setItemNum(itemNum);
+				data.setItemMatrixNum(itemMatrixNum);
+				data.setMerchantNum(merchantNum);
+				data.setStallNum(stallNum);
+				map.put(key, data);
+			}
+			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
+				data.setTotalNum(data.getTotalNum().subtract(amount));
+				data.setTotalMoney(data.getTotalMoney().subtract(money));
+				data.setCountTotal(data.getCountTotal().subtract(count_));
+				data.setReturnNum(data.getReturnNum().add(amount));
+				data.setReturnMoney(data.getReturnMoney().add(money));
+				data.setReturnAssist(data.getReturnAssist().add(assistAmount));
+				data.setItemDiscount(data.getItemDiscount().subtract(discount));
+
+			}
+			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_PRESENT)) {
+				data.setPresentNum(data.getPresentNum().add(amount));
+				data.setPresentMoney(data.getPresentMoney().add(money));
+				data.setPresentAssist(data.getPresentAssist().add(assistAmount));
+				data.setCountTotal(data.getCountTotal().add(count_));
+				data.setTotalNum(data.getTotalNum().add(amount));
+			}
+			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_SALE)) {
+				data.setTotalNum(data.getTotalNum().add(amount));
+				data.setTotalMoney(data.getTotalMoney().add(money));
+				data.setCountTotal(data.getCountTotal().add(count_));
+				data.setSaleNum(data.getSaleNum().add(amount));
+				data.setSaleMoney(data.getSaleMoney().add(money));
+				data.setSaleAssist(data.getSaleAssist().add(assistAmount));
+				data.setItemDiscount(data.getItemDiscount().add(discount));
+				data.setSaleBranchCount(saleBranchCount);
+			}
+
+		}
+		List<PosItemGrade> posItemGrades = new ArrayList<>();
+		List<SaleAnalysisByPosItemDTO> list = new ArrayList<>(map.values());
+		if (list.isEmpty()) {
+			return list;
+		}
+
+		List<PosItem> posItems = posItemService.findShortItems(queryData.getSystemBookCode());
+
+		List<ItemExtendAttribute> itemExtendAttributes = null;
+		if((queryData.getQueryItemExtendAttribute() != null
+				&& queryData.getQueryItemExtendAttribute())
+
+				|| (queryData.getTwoStringValueDatas() != null && queryData.getTwoStringValueDatas().size() > 0)){
+			itemExtendAttributes = itemExtendAttributeDao.find(queryData.getSystemBookCode());
+		}
+
+		PosItemGrade posItemGrade;
+		List<ItemExtendAttributeDTO> itemItemExtendAttributes = null;
+		for (int i = list.size() - 1; i >= 0; i--) {
+			SaleAnalysisByPosItemDTO data = list.get(i);
+
+			Integer posItemNum = data.getItemNum();
+			itemMatrixNum = data.getItemMatrixNum();
+			itemGradeNum = data.getItemGradeNum();
+
+			if(itemExtendAttributes != null){
+				itemItemExtendAttributes = CopyUtil.toList(ItemExtendAttribute.find(itemExtendAttributes, posItemNum),ItemExtendAttributeDTO.class);
+				if(queryData.getTwoStringValueDatas() != null && queryData.getTwoStringValueDatas().size() > 0
+						&& !ItemExtendAttributeDTO.exists(itemItemExtendAttributes, queryData.getTwoStringValueDatas())){
+					list.remove(i);
+					continue;
+				}
+
+				if(queryData.getQueryItemExtendAttribute() != null && queryData.getQueryItemExtendAttribute()){
+					data.setItemExtendAttributes(itemItemExtendAttributes);
+				}
+
+			}
+
+			PosItem posItem = AppUtil.getPosItem(posItemNum, posItems);
+			if (posItem == null) {
+				list.remove(i);
+				continue;
+			}
+			if (queryData.getBrandCodes() != null && queryData.getBrandCodes().size() > 0) {
+				if (!queryData.getBrandCodes().contains(posItem.getItemBrand())) {
+					list.remove(i);
+					continue;
+				}
+			}
+			if (queryData.getPosItemTypeCodes() != null
+					&& queryData.getPosItemTypeCodes().size() > 0) {
+				if (!queryData.getPosItemTypeCodes().contains(posItem.getItemCategoryCode())) {
+					list.remove(i);
+					continue;
+				}
+			}
+			if (StringUtils.isNotEmpty(queryData.getItemDepartments())) {
+				if (!queryData.getItemDepartments().contains(posItem.getItemDepartment())) {
+					list.remove(i);
+					continue;
+				}
+			}
+			data.setItemName(posItem.getItemName());
+			data.setItemCode(posItem.getItemCode());
+			data.setSpec(posItem.getItemSpec());
+			data.setUnit(posItem.getItemUnit());
+			data.setCategoryName(posItem.getItemCategory());
+			data.setCategoryCode(posItem.getItemCategoryCode());
+			data.setItemBarCode(posItem.getItemBarcode());
+
+			if (itemMatrixNum > 0) {
+				ItemMatrix itemMatrix = AppUtil.getItemMatrix(posItem.getItemMatrixs(), posItemNum, itemMatrixNum);
+				if (itemMatrix != null) {
+					data.setItemName(data.getItemName().concat(AppUtil.getMatrixName(itemMatrix)));
+				}
+			}
+			if (itemGradeNum != null) {
+				posItemGrade = AppUtil.getPosItemGrade(posItemGrades, itemGradeNum);
+				if (posItemGrade != null) {
+					data.setItemName(data.getItemName().concat("(" + posItemGrade.getItemGradeName() + ")"));
+					data.setItemCode(posItemGrade.getItemGradeCode());
+				}
+			}
+		}
+		return list;
+	}
+
+	@Override
 	public List<Object[]> findSaleAnalysisByBranchs(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return posOrderDao.findSaleAnalysisByBranchs(saleAnalysisQueryData);
 	}

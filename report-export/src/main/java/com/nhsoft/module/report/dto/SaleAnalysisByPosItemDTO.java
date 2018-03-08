@@ -30,6 +30,9 @@ public class SaleAnalysisByPosItemDTO extends SaleAnalysisDTO {
 	private List<ItemExtendAttributeDTO> itemExtendAttributes;
 	private String itemBarCode;
 
+	private Integer merchantNum;
+	private Integer stallNum;
+
 	public SaleAnalysisByPosItemDTO() {
 		setSaleNum(BigDecimal.ZERO);
 		setSaleMoney(BigDecimal.ZERO);
@@ -189,5 +192,21 @@ public class SaleAnalysisByPosItemDTO extends SaleAnalysisDTO {
 
 	public void setItemBarCode(String itemBarCode) {
 		this.itemBarCode = itemBarCode;
+	}
+
+	public Integer getMerchantNum() {
+		return merchantNum;
+	}
+
+	public void setMerchantNum(Integer merchantNum) {
+		this.merchantNum = merchantNum;
+	}
+
+	public Integer getStallNum() {
+		return stallNum;
+	}
+
+	public void setStallNum(Integer stallNum) {
+		this.stallNum = stallNum;
 	}
 }

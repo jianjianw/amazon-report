@@ -578,6 +578,14 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByPosItems(SaleAnalysisQueryData queryData);
+
+	/**
+	 * 销售分析 -- 商品汇总
+	 * @param queryData
+	 * @return
+	 */
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByMerchantPosItems(SaleAnalysisQueryData queryData);
+
 	/**
 	 * 销售分析 -- 分店汇总
 	 * @param queryData

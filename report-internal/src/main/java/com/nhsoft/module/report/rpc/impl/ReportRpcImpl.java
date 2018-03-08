@@ -2610,6 +2610,12 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByMerchantPosItems' + #p0.getKey()")
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByMerchantPosItems(SaleAnalysisQueryData queryData) {
+		return reportService.findSaleAnalysisByMerchantPosItems(queryData);
+	}
+
+	@Override
 	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBranchs' + #p0.getKey()")
 	public List<SaleByBranchSummary> findSaleAnalysisByBranchs(SaleAnalysisQueryData queryData) {
 
@@ -3785,7 +3791,7 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(String systemBookCode, SaleAnalysisQueryData saleAnalysisQueryData) {
 		return reportService.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
 	}
-	
+
 	@Override
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItems(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return reportService.findSaleAnalysisByBranchPosItems(saleAnalysisQueryData.getSystemBookCode() ,saleAnalysisQueryData);
