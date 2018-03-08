@@ -13,9 +13,10 @@ public interface InventoryService {
 	 * @param systemBookCode
 	 * @param branchNums 分店号
 	 * @param itemNums 商品主键列表
+	 * @param storehouseNum
 	 * @return
 	 */
-	public List<Object[]> findItemAmount(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
+	public List<Object[]> findItemAmount(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums, Integer storehouseNum);
 
 	/**
 	 * 按分店 商品主键汇总 库存数量 金额

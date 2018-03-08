@@ -13,12 +13,10 @@ import java.util.List;
 public interface InventoryDao {
 
 	
-	public List<Object[]> findItemAmount(String systemBookCode, Integer branchNum, List<Integer> itemNums);
+	public List<Object[]> findItemAmount(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums, Integer storehouseNum);
 
 	public List<Object[]> findItemAmountByStorehouse(String systemBookCode, Integer branchNum, List<Integer> itemNums,List<Integer> storehouseNums);
-	
-	public List<Object[]> findItemAmount(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
-	
+
 	public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums, Integer storehouseNum, List<Integer> itemNums);
 	
 	/**

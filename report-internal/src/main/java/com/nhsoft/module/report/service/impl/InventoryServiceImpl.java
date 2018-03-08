@@ -13,8 +13,11 @@ public class InventoryServiceImpl implements InventoryService {
 	private InventoryDao inventoryDao;
 
 	@Override
-	public List<Object[]> findItemAmount(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums) {
-		return inventoryDao.findItemAmount(systemBookCode, branchNums, itemNums);
+	public List<Object[]> findItemAmount(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums, Integer storehouseNum) {
+
+		return inventoryDao.findItemAmount(systemBookCode, branchNums, itemNums, storehouseNum);
+
+
 	}
 
 

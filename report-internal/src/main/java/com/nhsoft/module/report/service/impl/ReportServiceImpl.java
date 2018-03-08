@@ -3648,7 +3648,7 @@ public class ReportServiceImpl implements ReportService {
 		if (query.isTransfer()) {
 			objects = inventoryDao.findCenterStore(systemBookCode, branchNum, null);
 		} else {
-			objects = inventoryDao.findItemAmount(systemBookCode, branchNum, null);
+			objects = inventoryDao.findItemAmount(systemBookCode, Collections.singletonList(branchNum), null, null);
 
 		}
 		for (int i = list.size() - 1; i >= 0; i--) {
@@ -4594,7 +4594,7 @@ public class ReportServiceImpl implements ReportService {
 			}
 		}
 		List<UnsalablePosItem> list = new ArrayList<UnsalablePosItem>(map.values());
-		objects = inventoryDao.findItemAmount(systemBookCode, branchNum, null);
+		objects = inventoryDao.findItemAmount(systemBookCode, Collections.singletonList(branchNum), null, null);
 		for (int i = list.size() - 1; i >= 0; i--) {
 			UnsalablePosItem data = list.get(i);
 			Integer itemNum = data.getItemNum();
@@ -4876,7 +4876,7 @@ public class ReportServiceImpl implements ReportService {
 				}
 			}
 		}
-		objects = inventoryDao.findItemAmount(systemBookCode, branchNum, null);
+		objects = inventoryDao.findItemAmount(systemBookCode, Collections.singletonList(branchNum), null, null);
 		for (int i = list.size() - 1; i >= 0; i--) {
 			SingularPrice data = list.get(i);
 			Integer itemNum = data.getItemNum();

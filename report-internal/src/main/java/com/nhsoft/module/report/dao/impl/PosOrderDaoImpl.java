@@ -2479,7 +2479,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         sb.append("select order_sold_by, branch_num, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as receiptMoney, ");
         sb.append("count(order_no) as amount, sum(order_payment_money + order_coupon_total_money) as money, sum(order_commission) as commission, ");
         sb.append("sum(order_detail_item_count) as itemCount, ");
-        sb.append("sum(case when order_detail_item_count > 0 then 1 when order_detail_item_count is null then 1 else 0 end) as validOrderNo ,");
+        sb.append("sum(case when order_detail_item_count > 0 then 1 when order_detail_item_count is null then 1 else 0 end) as validOrderNo,");
         sb.append("sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money - order_gross_profit) as cost ");
         sb.append("from pos_order with(nolock) ");
         sb.append("where system_book_code = '" + systemBookCode + "' ");

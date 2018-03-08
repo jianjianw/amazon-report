@@ -6,6 +6,7 @@ import com.nhsoft.module.report.service.StoreMatrixService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,6 +20,11 @@ public class StoreMatrixServiceImpl implements StoreMatrixService {
 	
 	@Override
 	public List<StoreMatrix> findByBranch(String systemBookCode, Integer branchNum, List<Integer> itemNums) {
-		return storeMatrixDao.findByBranch(systemBookCode, branchNum, itemNums);
+		return storeMatrixDao.findByBranch(systemBookCode, Collections.singletonList(branchNum), itemNums);
+	}
+
+	@Override
+	public List<StoreMatrix> findByBranch(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums) {
+		return storeMatrixDao.findByBranch(systemBookCode, branchNums, itemNums);
 	}
 }
