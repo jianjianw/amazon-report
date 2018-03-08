@@ -241,6 +241,18 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 		if(isQueryGrade == null){
 			isQueryGrade = false;
 		}
+		if(merchantNum != null) {
+			sb.append("merchantNum:");
+			sb.append(merchantNum);
+		}
+		if(stallNum != null) {
+			sb.append("stallNum:");
+			sb.append(stallNum);
+		}
+		if(isPolicy != null) {
+			sb.append("isPolicy:");
+			sb.append(isPolicy);
+		}
 		sb.append("isQueryGrade:");
 		sb.append(isQueryGrade.toString());
 		if(isQueryCardUser == null){
