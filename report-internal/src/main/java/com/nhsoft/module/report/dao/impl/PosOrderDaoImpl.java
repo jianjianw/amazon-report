@@ -1674,16 +1674,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 
             }
-//			else if(queryData.getExceptionConditon().equals(AppConstants.ANTI_SETTLEMENT)){
-
-//				sb.append("and exists (select 1 from invoice_change as i with(nolock) where i.order_no = p.order_no and i.system_book_code  = '" + queryData.getSystemBookCode() + "' ");
-//				if(queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0){
-//					sb.append("and i.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
-//				}
-//				sb.append("and i.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFromShiftTable()) + "' ");
-//				sb.append("and '" + DateUtil.getDateShortStr(queryData.getDtToShiftTable()) + "' )");
-
-//			}
         }
         if (StringUtils.isNotEmpty(queryData.getSaleMoneyFlag())) {
             if (queryData.getSaleMoney() == null) {
@@ -1786,8 +1776,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             retailDetail.setMemo((String)object[16]);
             retailDetail.setSaleProfit((BigDecimal) object[17]);
             retailDetail.setSaleCost(((BigDecimal) object[18]).multiply(retailDetail.getAmount()));
-			retailDetail.setMerchantNum((Integer)object[19]);
-			retailDetail.setStallNum((Integer)object[20]);
             Integer stateCode = (Integer) object[11];
             retailDetail.setStateCode(stateCode);
             if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_CANCEL) {
@@ -1812,7 +1800,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
                 retailDetail.setDiscountMoney(BigDecimal.ZERO);
                 retailDetail.setSaleMoney(BigDecimal.ZERO);
             }
-
+			if(isFm){
+				retailDetail.setMerchantNum((Integer)object[19]);
+				retailDetail.setStallNum((Integer)object[20]);
+			}
             list.add(retailDetail);
         }
         return list;
