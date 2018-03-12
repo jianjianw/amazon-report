@@ -1414,6 +1414,10 @@ public class Report2RpcImpl implements Report2Rpc {
             SaleInventoryDTO dto = list.get(i);
 
 			PosItem posItem = AppUtil.getPosItem(dto.getItemNum(), posItems);
+			if(posItem == null){
+				list.remove(i);
+				continue;
+			}
             if(posItem.getItemDelTag()){
                 list.remove(i);
                 continue;
