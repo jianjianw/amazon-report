@@ -1849,15 +1849,15 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 
-		BigDecimal payMoney = marketActionOpenIdService.findInCacheByBranch(systemBookCode, dateFrom, dateTo);
-		Integer branchNum = 99;
-		BusinessCollection data = map.get(branchNum);
-		if(data == null){
-			data = new BusinessCollection();
-			data.setBranchNum(branchNum);
-			map.put(branchNum, data);
-		}
-		data.setPayMoney(payMoney);
+//		BigDecimal payMoney = marketActionOpenIdService.findInCacheByBranch(systemBookCode, dateFrom, dateTo);
+//		Integer branchNum = 99;
+//		BusinessCollection data = map.get(branchNum);
+//		if(data == null){
+//			data = new BusinessCollection();
+//			data.setBranchNum(branchNum);
+//			map.put(branchNum, data);
+//		}
+//		data.setPayMoney(payMoney);
 
 		return new ArrayList<>(map.values());
 	}
@@ -1926,23 +1926,23 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setAllDiscountMoney(money);
 		}
 
-		List<Object[]> payMoneyList = marketActionOpenIdService.findInCacheByBranchBizday(systemBookCode,dateFrom, dateTo);
-		for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
-			Object[] object = payMoneyList.get(i);
-			int branchNum = 99;
-			String  shiftTableBizday = (String)object[0];
-			BigDecimal payMoney = (BigDecimal)object[1];
-			StringBuilder sb = new StringBuilder();
-			String key = sb.append(branchNum).append(shiftTableBizday).toString();
-			BusinessCollection data = map.get(key);
-			if(data == null){
-				data = new BusinessCollection();
-				data.setBranchNum(branchNum);
-				data.setShiftTableBizday(shiftTableBizday);
-				map.put(key, data);
-			}
-			data.setPayMoney(payMoney);
-		}
+//		List<Object[]> payMoneyList = marketActionOpenIdService.findInCacheByBranchBizday(systemBookCode,dateFrom, dateTo);
+//		for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
+//			Object[] object = payMoneyList.get(i);
+//			int branchNum = 99;
+//			String  shiftTableBizday = (String)object[0];
+//			BigDecimal payMoney = (BigDecimal)object[1];
+//			StringBuilder sb = new StringBuilder();
+//			String key = sb.append(branchNum).append(shiftTableBizday).toString();
+//			BusinessCollection data = map.get(key);
+//			if(data == null){
+//				data = new BusinessCollection();
+//				data.setBranchNum(branchNum);
+//				data.setShiftTableBizday(shiftTableBizday);
+//				map.put(key, data);
+//			}
+//			data.setPayMoney(payMoney);
+//		}
 
 		return new ArrayList<BusinessCollection>(map.values());
 	}

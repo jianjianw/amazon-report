@@ -16,6 +16,15 @@ public class SaleInventoryQuery extends QueryBuilder {
     private List<Integer> itemNums;
     private boolean queryKit = false;
     private boolean filterEliminativeItems = false;
+    private boolean showZeroInventory = false;
+
+    public boolean isShowZeroInventory() {
+        return showZeroInventory;
+    }
+
+    public void setShowZeroInventory(boolean showZeroInventory) {
+        this.showZeroInventory = showZeroInventory;
+    }
 
     public Integer getBranchNum() {
         return branchNum;

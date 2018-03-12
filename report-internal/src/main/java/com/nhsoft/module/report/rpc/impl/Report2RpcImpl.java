@@ -1349,13 +1349,7 @@ public class Report2RpcImpl implements Report2Rpc {
 
 		Integer itemNum;
 		BigDecimal saleQty;
-		boolean addItems = true;
-		List<Integer> queryItemNums = null;
-		if(itemNums != null && !itemNums.isEmpty()){
-			addItems = false;
-		} else {
-			queryItemNums = new ArrayList<>(20);
-		}
+		List<Integer> queryItemNums = new ArrayList<>(100);
 
 		for(Object[] object : objects){
 			itemNum = (Integer) object[0];
@@ -1366,37 +1360,54 @@ public class Report2RpcImpl implements Report2Rpc {
 				dto = new SaleInventoryDTO();
 				dto.setItemNum(itemNum);
 				map.put(itemNum, dto);
-				if(addItems){
+				if(!queryItemNums.contains(dto.getItemNum())){
+					queryItemNums.add(dto.getItemNum());
+
+				}
+			}
+			dto.setSaleQty(dto.getSaleQty().add(saleQty));
+
+		}
+		if(saleInventoryQuery.isShowZeroInventory()){
+			objects = inventoryService.findItemAmount(systemBookCode, branchNums, saleInventoryQuery.getItemNums(), storehouseNum);
+			for(Object[] object : objects){
+				itemNum = (Integer) object[0];
+
+				SaleInventoryDTO dto = map.get(itemNum);
+				if(dto == null){
+					dto = new SaleInventoryDTO();
+					dto.setItemNum(itemNum);
+					map.put(itemNum, dto);
+
 					if(!queryItemNums.contains(dto.getItemNum())){
 						queryItemNums.add(dto.getItemNum());
 
 					}
 
 				}
-
-			}
-			dto.setSaleQty(dto.getSaleQty().add(saleQty));
-
-		}
-		if(addItems){
-			itemNums = queryItemNums;
-		}
-		objects = inventoryService.findItemAmount(systemBookCode, branchNums, itemNums, storehouseNum);
-		for(Object[] object : objects){
-			itemNum = (Integer) object[0];
-
-			SaleInventoryDTO dto = map.get(itemNum);
-			if(dto != null){
 				dto.setInventoryQty((BigDecimal) object[1]);
 
 			}
+
+		} else {
+			objects = inventoryService.findItemAmount(systemBookCode, branchNums, queryItemNums, storehouseNum);
+			for(Object[] object : objects){
+				itemNum = (Integer) object[0];
+
+				SaleInventoryDTO dto = map.get(itemNum);
+				if(dto != null){
+					dto.setInventoryQty((BigDecimal) object[1]);
+
+				}
+			}
 		}
+
 
 		if(map.isEmpty()){
 			return Collections.emptyList();
 		}
 
-		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(queryItemNums);
 		BigDecimal diffDay = BigDecimal.valueOf(DateUtil.getDaysBetween(dateFrom, dateTo) + 1);
 		List<SaleInventoryDTO> list = new ArrayList<>(map.values());
 		for(int  i = list.size() - 1;i >= 0;i--){

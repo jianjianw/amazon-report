@@ -1662,7 +1662,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         if(queryData.getPosClientFid() != null && queryData.getPosClientFid().size() > 0){
             sb.append("and p.client_fid in " + AppUtil.getStringParmeList(queryData.getPosClientFid()));
         }
-        if(queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0){
+        if(queryData.getPosItemNums() != null && !queryData.getPosItemNums().isEmpty()){
             sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
         }
         if (StringUtils.isNotEmpty(queryData.getExceptionConditon())) {
