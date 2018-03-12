@@ -1055,4 +1055,19 @@ public class APIBasic {
 	}
 
 
+	@RequestMapping(method = RequestMethod.GET,value = "/test54")
+	public List<PosItemLogSummaryDTO> test54() throws Exception{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-01-07");
+		StoreQueryCondition query = new StoreQueryCondition();
+		query.setSystemBookCode("4020");
+		query.setDateStart(dateFrom);
+		query.setDateEnd(dateTo);
+
+		List<PosItemLogSummaryDTO> list = posItemLogRpc.findItemBizTypeFlagSummary(query);
+		return list;
+	}
+
 }

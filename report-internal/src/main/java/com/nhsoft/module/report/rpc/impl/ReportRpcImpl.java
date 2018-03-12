@@ -1852,12 +1852,15 @@ public class ReportRpcImpl implements ReportRpc {
 		BigDecimal payMoney = marketActionOpenIdService.findInCacheByBranch(systemBookCode, dateFrom, dateTo);
 		Set<Integer> keys = map.keySet();
 		Iterator<Integer> iterator = keys.iterator();
+		Integer branchNum = 99;
 		while(iterator.hasNext()){
-			Integer key = iterator.next();
-			if(key == 99){
-				BusinessCollection businessCollection = map.get(key);
-				businessCollection.setPayMoney(payMoney);
+			BusinessCollection data = map.get(branchNum);
+			if(data == null){
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				map.put(branchNum, data);
 			}
+			data.setPayMoney(payMoney);
 		}
 
 		return new ArrayList<>(map.values());
