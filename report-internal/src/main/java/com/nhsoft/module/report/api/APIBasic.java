@@ -566,15 +566,13 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test25")
 	public List test25() throws Exception{
-		String systemBookCode = "4344";
-		List<Integer> branchNums = new ArrayList();
-		branchNums.add(1);
-		branchNums.add(2);
-		//branchNums.add(3);
-
+		String systemBookCode = "4173";
+		//List<Integer> branchNums = getBranchNums();
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(139);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2015-05-01");
-		Date dateTo = sdf.parse("2017-10-31");
+		Date dateFrom = sdf.parse("2018-02-12");
+		Date dateTo = sdf.parse("2018-02-12");
 		String payType = "微信二维码支付";//微信二维码支付
 
 		List<AlipaySumDTO> list = reportRpc.findAlipaySumDTOs(systemBookCode, branchNums, dateFrom, dateTo, payType);
@@ -1000,6 +998,61 @@ public class APIBasic {
 		return unsalableItems;
 	}
 
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test51")
+	public List<BusinessCollection> test51() throws Exception {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-09");
+
+		String systemBookCode = "4020";
+
+
+		List<BusinessCollection> result = reportRpc.findBusinessCollectionByBranch(systemBookCode,getBranchNums(),dateFrom,dateTo);
+
+		return result;
+
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test52")
+	public List<BusinessCollection> test52() throws Exception {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-09");
+
+		String systemBookCode = "4020";
+
+
+		List<BusinessCollection> result = reportRpc.findBusinessCollectionByBranchDay(systemBookCode,getBranchNums(),dateFrom,dateTo);
+
+		return result;
+
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test53")
+	public CardAnalysisSummaryDTO test53() throws Exception{
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-01-31");
+
+		String systemBookCode = "4020";
+
+
+		CardUserQuery query = new CardUserQuery();
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		query.setSystemBookCode(systemBookCode);
+		CardAnalysisSummaryDTO cardAnalysisSummaryDTO = reportRpc.getCardAnalysisSummaryDTO(query);
+
+		return cardAnalysisSummaryDTO;
+	}
 
 
 }

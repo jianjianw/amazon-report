@@ -333,7 +333,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				.add(Restrictions.eq("a.alipayLogTradeValid", true))
 				.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
 		criteria.add(Restrictions.eq("a.alipayLogOrderNo", ""));
-		
+
 		criteria.setProjection(Projections.projectionList()
 				.add(Projections.groupProperty("a.branchNum"))
 				.add(Projections.sum("a.alipayLogMoney"))

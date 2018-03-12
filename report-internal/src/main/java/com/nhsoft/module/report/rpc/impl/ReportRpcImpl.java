@@ -10,6 +10,7 @@ import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
+import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.report.utils.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -79,6 +80,8 @@ public class ReportRpcImpl implements ReportRpc {
 	private BranchItemRecoredRpc branchItemRecoredRpc;
 	@Autowired
 	private PosItemLogRpc posItemLogRpc;
+	@Autowired
+	private MarketActionOpenIdService marketActionOpenIdService;
 
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -1845,6 +1848,18 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setAllDiscountMoney(money);
 		}
 
+
+		BigDecimal payMoney = marketActionOpenIdService.findInCacheByBranch(systemBookCode, dateFrom, dateTo);
+		Set<Integer> keys = map.keySet();
+		Iterator<Integer> iterator = keys.iterator();
+		while(iterator.hasNext()){
+			Integer key = iterator.next();
+			if(key == 99){
+				BusinessCollection businessCollection = map.get(key);
+				businessCollection.setPayMoney(payMoney);
+			}
+		}
+
 		return new ArrayList<>(map.values());
 	}
 
@@ -1911,6 +1926,25 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			data.setAllDiscountMoney(money);
 		}
+
+		List<Object[]> payMoneyList = marketActionOpenIdService.findInCacheByBranchBizday(systemBookCode,dateFrom, dateTo);
+		for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
+			Object[] object = payMoneyList.get(i);
+			int branchNum = 99;
+			String  shiftTableBizday = (String)object[0];
+			BigDecimal payMoney = (BigDecimal)object[1];
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(branchNum).append(shiftTableBizday).toString();
+			BusinessCollection data = map.get(key);
+			if(data == null){
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				map.put(key, data);
+			}
+			data.setPayMoney(payMoney);
+		}
+
 		return new ArrayList<BusinessCollection>(map.values());
 	}
 

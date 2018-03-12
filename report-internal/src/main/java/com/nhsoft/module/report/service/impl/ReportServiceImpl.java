@@ -11105,7 +11105,7 @@ public class ReportServiceImpl implements ReportService {
 			depositMoney = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
 			cardAnalysisSummaryDTO.setLastCardBalance(cardAnalysisSummaryDTO.getLastCardBalance().subtract(depositMoney));
 			cardAnalysisSummaryDTO.setBalanceMoney(cardAnalysisSummaryDTO.getBalanceMoney().subtract(depositMoney));
-			
+
 			revokeMoney = cardUserDao.getRevokeMoney(cardReportQuery.getSystemBookCode(), null, cardReportQuery.getDateFrom(), cardReportQuery.getDateTo());
 			cardAnalysisSummaryDTO.setBalanceMoney(cardAnalysisSummaryDTO.getBalanceMoney().add(revokeMoney));
 			cardAnalysisSummaryDTO.setLastCardBalance(cardAnalysisSummaryDTO.getLastCardBalance().add(revokeMoney));
