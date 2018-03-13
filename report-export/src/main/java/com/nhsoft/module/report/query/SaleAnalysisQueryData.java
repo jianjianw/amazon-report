@@ -31,6 +31,9 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 	private Integer stallNum;
 	private Boolean isPolicy;
 
+	public Integer offset;
+	public Integer limit;
+
 	public Integer getAppUserNum() {
 		return appUserNum;
 	}
@@ -192,6 +195,22 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 		isPolicy = policy;
 	}
 
+	public Integer getOffset() {
+		return offset;
+	}
+
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
+
 	private String getDateStr(Date date){
 		StringBuffer sb = new StringBuffer();
 		sb.append(date.getYear() + 1900).append("-").append(date.getMonth() + 1).append("-").append(date.getDate());
@@ -253,6 +272,16 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 			sb.append("isPolicy:");
 			sb.append(isPolicy);
 		}
+
+		if(offset != null){
+			sb.append("offset:");
+			sb.append(offset);
+		}
+		if(limit != null){
+			sb.append("limit:");
+			sb.append(limit);
+		}
+
 		sb.append("isQueryGrade:");
 		sb.append(isQueryGrade.toString());
 		if(isQueryCardUser == null){

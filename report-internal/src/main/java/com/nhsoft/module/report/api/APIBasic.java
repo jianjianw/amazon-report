@@ -1070,4 +1070,36 @@ public class APIBasic {
 		return list;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "/test55")
+	public List<ItemSummary> test55() throws Exception{
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-08");
+
+		String systemBookCode = "4020";
+		ItemQueryDTO query = new ItemQueryDTO();
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		List<ItemSummary> result = posOrderRpc.findItemSum(systemBookCode,query);
+		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test56")
+	public List test56() throws Exception{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-08");
+
+		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
+		query.setSystemBookCode("4020");
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		List<SaleAnalysisByPosItemDTO> result = reportRpc.findSaleAnalysisByPosItems(query);
+		return result;
+	}
+
+
 }

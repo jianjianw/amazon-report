@@ -1374,5 +1374,16 @@ public interface ReportService {
 	//月销售分析
 	public List<Object[]> findMonthSaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
+	/**
+	 * 客单分析 历史客单分析  分页查询
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param saleType
+	 * @return
+	 */
+	public List<CustomerAnalysisHistory> findCustomerAnalysisHistorysByPage(String systemBookCode,
+															 Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType,Integer offset, Integer limit);
 
 }
