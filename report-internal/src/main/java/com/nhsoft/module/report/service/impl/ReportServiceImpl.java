@@ -6487,6 +6487,7 @@ public class ReportServiceImpl implements ReportService {
 			money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			count_ = BigDecimal.valueOf(object[6] == null ? 0 : (Integer) object[6]);
+
 			if (object[7] instanceof BigDecimal) {
 				discount = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
 
@@ -12479,7 +12480,10 @@ public class ReportServiceImpl implements ReportService {
 
 
 		List<Object[]> objects = posOrderDao.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
-		
+		if(objects.isEmpty()){
+			return Collections.emptyList();
+
+		}
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		Integer branchNum;
 		Integer itemNum;
