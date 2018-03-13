@@ -12642,5 +12642,39 @@ public class ReportServiceImpl implements ReportService {
 
     }
 
+	@Override
+	public List<CustomerAnalysisHistory> findCustomerAnalysisHistorysByPage(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType, Integer offset, Integer limit) {
+		List<Object[]> objects = posOrderDao.findCustomerAnalysisHistorysByPage(systemBookCode, dtFrom, dtTo, branchNums,
+				saleType,offset,limit);
+		int size = objects.size();
+		List<CustomerAnalysisHistory> list = new ArrayList<CustomerAnalysisHistory>(size);
+		List<Branch> branchs = branchService.findInCache(systemBookCode);
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			BigDecimal couponMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal mgrDiscount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+
+			CustomerAnalysisHistory data = new CustomerAnalysisHistory();
+			data.setBranchNum((Integer) object[0]);
+			Branch branch = AppUtil.getBranch(branchs, data.getBranchNum());
+			if (branch != null) {
+				data.setBranchName(branch.getBranchName());
+				data.setBranchRegionNum(branch.getBranchRegionNum());
+			}
+
+			data.setShiftTableDate((String) object[1]);
+			data.setTotalMoney(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
+			data.setTotalMoney(data.getTotalMoney().add(couponMoney).subtract(mgrDiscount));
+			data.setCustomerNums(BigDecimal.valueOf((Long) object[3]));
+			data.setCustomerAvePrice(BigDecimal.ZERO);
+			if (data.getCustomerNums().compareTo(BigDecimal.ZERO) > 0) {
+				data.setCustomerAvePrice(data.getTotalMoney().divide(data.getCustomerNums(), 4,
+						BigDecimal.ROUND_HALF_UP));
+			}
+			list.add(data);
+		}
+		return list;
+	}
+
 
 }
