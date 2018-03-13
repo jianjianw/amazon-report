@@ -5656,12 +5656,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findSummaryByPrintNum(CardReportQuery cardReportQuery) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num, sum(p.order_payment_money) as paymentMoney, ");
-		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgr, ");
+		sb.append("select p.order_printed_num as printedNum , p.order_card_user as cardUserName , p.order_card_type_desc as cardType, p.order_card_user_num as cardUserNum, sum(p.order_payment_money) as paymentMoney, ");
+		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgrMoney, ");
 		sb.append("sum(p.order_coupon_total_money) as couponMoney ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
-		sb.append("order by p.order_printed_num desc ");
+		sb.append("order by printedNum,cardUserName,cardType,cardUserNum,paymentMoney,discount,point,mgrMoney,couponMoney desc ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		if(cardReportQuery.isPaging()) {
 			query.setFirstResult(cardReportQuery.getOffset());
