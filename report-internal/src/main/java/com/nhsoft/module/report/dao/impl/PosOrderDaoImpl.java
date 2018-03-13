@@ -1006,13 +1006,13 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 
 	@Override
-	public List<Object[]> findItemSum(ItemQueryDTO itemQueryDTO) {
+	public List<Object[]> findItemSum(ItemQueryDTO itemQueryDTO) {///////
 		StringBuffer sb = new StringBuffer();
 		sb.append("select detail.item_num, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else order_detail_amount end) as amount,");
 		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
-		sb.append("count(detail.item_num) as saleCount, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 when detail.order_detail_state_code = 1 then 1 when detail.order_detail_state_code = 2 then 1 end) as saleCount, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
 		sb.append("from pos_order_detail as detail with(nolock) ");
 		sb.append("where detail.order_detail_book_code = :systemBookCode ");
@@ -3066,7 +3066,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-    public List<Object[]> findSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData) {////
+    public List<Object[]> findSaleAnalysisCommonItemMatrix(SaleAnalysisQueryData queryData) {///////
         StringBuffer sb = new StringBuffer();
         if(queryData.getIsQueryCardUser()){
             sb.append("select detail.item_num, detail.order_detail_item_matrix_num, detail.order_detail_state_code, ");
@@ -5735,6 +5735,48 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findCustomerAnalysisHistorysByPage(String systemBookCode, Date dtFrom, Date dtTo, List<Integer>
+			branchNums, String saleType,Integer offset, Integer limit) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num as branchNum, shift_table_bizday as bizday, sum(order_payment_money) as paymentMoney, count(order_no) as orderNo, ");
+		sb.append("sum(order_coupon_total_money) as conponMoney, sum(order_mgr_discount_money) as mgrDiscount ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' ");
+		sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dtFrom) + "' and '" + DateUtil.getDateShortStr(dtTo) + "' ");
+		sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
+
+		if (StringUtils.isNotEmpty(saleType)) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and order_source = '" + saleType + "' ");
+			}
+		}
+
+		sb.append("group by branch_num, shift_table_bizday ");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.addScalar("branchNum", StandardBasicTypes.INTEGER)
+				.addScalar("bizday", StandardBasicTypes.STRING)
+				.addScalar("paymentMoney", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("orderNo", StandardBasicTypes.LONG)
+				.addScalar("conponMoney", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("mgrDiscount", StandardBasicTypes.BIG_DECIMAL);
+
+		if (offset != null && limit != null) {
+			query.setFirstResult(offset);
+			query.setMaxResults(limit);
+		}
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		return null;
 	}
 
 

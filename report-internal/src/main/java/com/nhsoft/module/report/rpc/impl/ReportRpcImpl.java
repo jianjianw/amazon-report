@@ -1850,7 +1850,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 
 		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
-		Object object = RedisUtil.get(redisKey);
+		Object object = RedisUtil.hashGet(redisKey,AppConstants.MARKETACTION_SELF_ACTION);
 		if(object != null){
 			BigDecimal payMoney = marketActionOpenIdService.findPayMoneyByBranch(systemBookCode, dateFrom, dateTo);
 			Integer branchNum = 99;
@@ -1946,8 +1946,10 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 
+
+
 		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
-		Object obj = RedisUtil.get(redisKey);
+		Object obj = RedisUtil.hashGet(redisKey,AppConstants.MARKETACTION_SELF_ACTION);
 		if(obj != null){
 			List<Object[]> payMoneyList = marketActionOpenIdService.findPayMoneyByBranchBizday(systemBookCode,dateFrom, dateTo);
 			for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
@@ -4337,6 +4339,24 @@ public class ReportRpcImpl implements ReportRpc {
 
 
 	}
+
+	@Override
+	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(String systemBookCode, Date dtFrom, Date dtTo,
+																			List<Integer> branchNums, String saleType, Integer offset, Integer limit) {
+		int days = DateUtil.diffDay(dtFrom, dtFrom);
+		int branchSize = branchNums.size();
+		List<CustomerAnalysisHistory> result = null;
+		if(days * branchSize > 1000){
+			result = reportService.findCustomerAnalysisHistorysByPage(systemBookCode, dtFrom, dtTo, branchNums, saleType, offset, limit);
+		}else{
+			result = reportService.findCustomerAnalysisHistorysByPage(systemBookCode, dtFrom, dtTo, branchNums, saleType, null, null);
+		}
+		int count = result.size();
+		CustomerAnalysisHistoryPageDTO pageDTO = new CustomerAnalysisHistoryPageDTO(count,result);
+		return pageDTO;
+
+	}
+
 
 
 }
