@@ -1866,7 +1866,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		List<BusinessCollection> result = new ArrayList<>(map.values());
 
-		List<BranchDTO> branchDTOS = branchRpc.findInCache(systemBookCode);
+		List<BranchDTO> branchDTOS = branchRpc.findInCache(systemBookCode);//返回数据增加branchName
 		for (int i = 0,len = result.size(); i < len ; i++) {
 			BusinessCollection data = result.get(i);
 			Integer branchNum = data.getBranchNum();
