@@ -28,43 +28,4 @@ public class MarketActionOpenIdServiceImpl implements MarketActionOpenIdService{
         return marketActionOpenIdDao.findPayMoneyByBranchBizday(systemBookCode,dateFrom,dateTo);
     }
 
-    @Override
-    public BigDecimal findInCacheByBranch(String systemBookCode,Date dateFrom, Date dateTo) {
-
-        String key = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
-        Object object = RedisUtil.get(key);
-        if(object != null){
-            Object obj = RedisUtil.hashGet(key, AppConstants.MARKETACTION_SELF_ACTION);
-            if(obj == null){
-                BigDecimal payMoney = marketActionOpenIdDao.findPayMoneyByBranch(systemBookCode, dateFrom, dateTo);
-                RedisUtil.hashPut(key,AppConstants.MARKETACTION_SELF_ACTION,payMoney, AppConstants.CACHE_LIVE_THREE_MINUTES);
-                return payMoney;
-            }else {
-                return (BigDecimal) obj;
-            }
-        }else{
-            return marketActionOpenIdDao.findPayMoneyByBranch(systemBookCode, dateFrom, dateTo);
-        }
-
-
-    }
-
-    @Override
-    public List<Object[]> findInCacheByBranchBizday(String systemBookCode,Date dateFrom, Date dateTo) {
-        String key = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
-        Object object = RedisUtil.get(key);
-        if(object != null){
-            Object obj = RedisUtil.hashGet(key, AppConstants.MARKETACTION_SELF_ACTION);
-            if(obj == null){
-                List<Object[]> payMoneyList = marketActionOpenIdDao.findPayMoneyByBranchBizday(systemBookCode, dateFrom, dateTo);
-                RedisUtil.hashPut(key,AppConstants.MARKETACTION_SELF_ACTION,payMoneyList, AppConstants.CACHE_LIVE_THREE_MINUTES);
-                return payMoneyList;
-            }else {
-                return (List<Object[]>) obj;
-            }
-        }else{
-            return marketActionOpenIdDao.findPayMoneyByBranchBizday(systemBookCode, dateFrom, dateTo);
-        }
-    }
-
 }

@@ -1849,17 +1849,36 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 
-//		BigDecimal payMoney = marketActionOpenIdService.findInCacheByBranch(systemBookCode, dateFrom, dateTo);
-//		Integer branchNum = 99;
-//		BusinessCollection data = map.get(branchNum);
-//		if(data == null){
-//			data = new BusinessCollection();
-//			data.setBranchNum(branchNum);
-//			map.put(branchNum, data);
-//		}
-//		data.setPayMoney(payMoney);
+		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
+		Object object = RedisUtil.get(redisKey);
+		if(object != null){
+			BigDecimal payMoney = marketActionOpenIdService.findPayMoneyByBranch(systemBookCode, dateFrom, dateTo);
+			Integer branchNum = 99;
+			BusinessCollection data = map.get(branchNum);
+			if(data == null){
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				map.put(branchNum, data);
+			}
+			data.setPayMoney(payMoney);
+		}
 
-		return new ArrayList<>(map.values());
+
+		List<BusinessCollection> result = new ArrayList<>(map.values());
+
+		List<BranchDTO> branchDTOS = branchRpc.findInCache(systemBookCode);
+		for (int i = 0,len = result.size(); i < len ; i++) {
+			BusinessCollection data = result.get(i);
+			Integer branchNum = data.getBranchNum();
+			for (int j = 0; j <branchDTOS.size() ; j++) {
+				BranchDTO branchDTO = branchDTOS.get(i);
+				if(branchNum.equals(branchDTO.getBranchNum())){
+					data.setBranchName(branchDTO.getBranchName());
+				}
+			}
+		}
+
+		return result;
 	}
 
 	@Override
@@ -1926,23 +1945,29 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setAllDiscountMoney(money);
 		}
 
-//		List<Object[]> payMoneyList = marketActionOpenIdService.findInCacheByBranchBizday(systemBookCode,dateFrom, dateTo);
-//		for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
-//			Object[] object = payMoneyList.get(i);
-//			int branchNum = 99;
-//			String  shiftTableBizday = (String)object[0];
-//			BigDecimal payMoney = (BigDecimal)object[1];
-//			StringBuilder sb = new StringBuilder();
-//			String key = sb.append(branchNum).append(shiftTableBizday).toString();
-//			BusinessCollection data = map.get(key);
-//			if(data == null){
-//				data = new BusinessCollection();
-//				data.setBranchNum(branchNum);
-//				data.setShiftTableBizday(shiftTableBizday);
-//				map.put(key, data);
-//			}
-//			data.setPayMoney(payMoney);
-//		}
+
+		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
+		Object obj = RedisUtil.get(redisKey);
+		if(obj != null){
+			List<Object[]> payMoneyList = marketActionOpenIdService.findPayMoneyByBranchBizday(systemBookCode,dateFrom, dateTo);
+			for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
+				Object[] object = payMoneyList.get(i);
+				int branchNum = 99;
+				String  shiftTableBizday = (String)object[0];
+				BigDecimal payMoney = (BigDecimal)object[1];
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(branchNum).append(shiftTableBizday).toString();
+				BusinessCollection data = map.get(key);
+				if(data == null){
+					data = new BusinessCollection();
+					data.setBranchNum(branchNum);
+					data.setShiftTableBizday(shiftTableBizday);
+					map.put(key, data);
+				}
+				data.setPayMoney(payMoney);
+			}
+		}
+
 
 		return new ArrayList<BusinessCollection>(map.values());
 	}

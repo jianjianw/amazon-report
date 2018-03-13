@@ -11,7 +11,7 @@ public interface MarketActionOpenIdService {
     /**
      * 根据分店汇总线上购券
      */
-    public Object findPayMoneyByBranch(String systemBookCode, Date dateFrom, Date dateTo);
+    public BigDecimal findPayMoneyByBranch(String systemBookCode, Date dateFrom, Date dateTo);
 
 
     /**
@@ -19,10 +19,5 @@ public interface MarketActionOpenIdService {
      * */
     public List<Object[]> findPayMoneyByBranchBizday(String systemBookCode,Date dateFrom, Date dateTo);
 
-
-    public BigDecimal findInCacheByBranch(String systemBookCode, Date dateFrom, Date dateTo);
-
-
-    public List<Object[]> findInCacheByBranchBizday(String systemBookCode,Date dateFrom, Date dateTo);
 
 }
