@@ -1180,14 +1180,14 @@ public class Report2RpcImpl implements Report2Rpc {
 				continue;
 			}
 			Supplier supplier = AppUtil.getSupplier(storeItemSupplier.getId().getSupplierNum(), suppliers);
-			if(supplier == null) {
-				continue;
+			if(supplier != null) {
+				dto.setSupplierNum(supplier.getSupplierNum());
+				dto.setSupplierCode(supplier.getSupplierCode());
+				dto.setSupplierName(supplier.getSupplierName());
+				dto.setSupplierMethod(supplier.getSupplierMethod());
+				dto.setSupplierKind(supplier.getSupplierKind());
 			}
-			dto.setSupplierNum(supplier.getSupplierNum());
-			dto.setSupplierCode(supplier.getSupplierCode());
-			dto.setSupplierName(supplier.getSupplierName());
-			dto.setSupplierMethod(supplier.getSupplierMethod());
-			dto.setSupplierKind(supplier.getSupplierKind());
+
 		}
 		return dtos;
 	}
