@@ -751,6 +751,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		int size = objects.size();
 		List<CardSummaryDTO> list = new ArrayList<>(size);
 
+		BigDecimal paymentMoneySum = BigDecimal.ZERO;
+		BigDecimal discountMoneySum = BigDecimal.ZERO;
+		BigDecimal pointSum = BigDecimal.ZERO;
 		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			CardSummaryDTO dto = new CardSummaryDTO();
@@ -763,9 +766,16 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			dto.setPoint((BigDecimal) object[6]);
 			dto.setMgrMoney((BigDecimal) object[7]);
 			dto.setCouponMoney((BigDecimal) object[8]);
+
+			paymentMoneySum = paymentMoneySum.add(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4] );
+			discountMoneySum = discountMoneySum.add(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
+			pointSum = pointSum.add( object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
 			list.add(dto);
 		}
 		CardSummaryPageDTO pageDTO = new CardSummaryPageDTO();
+		pageDTO.setPaymentMoneySum(paymentMoneySum);
+		pageDTO.setDiscountMoneySum(discountMoneySum);
+		pageDTO.setPointSum(pointSum);
 		pageDTO.setCount(count);
 		pageDTO.setData(list);
 

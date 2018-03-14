@@ -1012,7 +1012,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else order_detail_amount end) as amount,");
 		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 when detail.order_detail_state_code = 1 then 1 when detail.order_detail_state_code = 2 then 1 end) as saleCount, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end) as saleCount, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
 		sb.append("from pos_order_detail as detail with(nolock) ");
 		sb.append("where detail.order_detail_book_code = :systemBookCode ");
@@ -1043,7 +1043,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else order_kit_detail_amount end) as amount,");
 			sb.append("sum(case when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money end) as money, ");
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
-			sb.append("count(detail.item_num) as saleCount, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end) as saleCount, ");
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
 			sb.append("from pos_order_kit_detail as detail with(nolock) ");
 			sb.append("where detail.order_kit_detail_book_code = :systemBookCode ");
@@ -5758,7 +5758,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			}
 		}
 
-		sb.append("group by branch_num, shift_table_bizday ");
+		sb.append("group by branch_num, shift_table_bizday,paymentMoney,orderNo,conponMoney,mgrDiscount desc ");
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.addScalar("branchNum", StandardBasicTypes.INTEGER)
 				.addScalar("bizday", StandardBasicTypes.STRING)
