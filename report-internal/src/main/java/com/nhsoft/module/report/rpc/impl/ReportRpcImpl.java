@@ -4347,7 +4347,7 @@ public class ReportRpcImpl implements ReportRpc {
 		int branchSize = branchNums.size();
 		List<CustomerAnalysisHistory> result = null;
 		Integer count = null;
-		if(days * branchSize > 10){
+		if(days * branchSize > 1000){
 
 			result = reportService.findCustomerAnalysisHistorysByPage(systemBookCode, dtFrom, dtTo, branchNums, saleType, offset, limit);
 			 count = reportService.findCustomerAnalysisHistorysCount(systemBookCode, dtFrom, dtTo, branchNums, saleType).size();
