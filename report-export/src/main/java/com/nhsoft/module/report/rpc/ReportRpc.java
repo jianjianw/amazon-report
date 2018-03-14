@@ -1400,6 +1400,13 @@ public interface ReportRpc {
 	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(String systemBookCode,
 																			Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType,Integer offset, Integer limit);
 
+	/**
+	 * 毛利分析 商品毛利汇总  分页查询
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<ProfitByBranchAndItemSummary> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
 
 
 }

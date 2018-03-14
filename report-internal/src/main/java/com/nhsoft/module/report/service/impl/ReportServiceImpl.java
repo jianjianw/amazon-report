@@ -12676,5 +12676,20 @@ public class ReportServiceImpl implements ReportService {
 		return list;
 	}
 
+	@Override
+	public List<Object> findCustomerAnalysisHistorysCount(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
+		return posOrderDao.findCustomerAnalysisHistorysCount(systemBookCode,dtFrom,dtTo,branchNums,saleType);
+	}
+
+	@Override
+	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		List<Object[]> objects = posOrderDao.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
+		if (profitAnalysisQueryData.getIsQueryCF()) {
+			/*List<Object[]> kitObjects = posOrderDao.findKitProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
+			objects.addAll(kitObjects);*/
+		}
+		return objects;
+	}
+
 
 }

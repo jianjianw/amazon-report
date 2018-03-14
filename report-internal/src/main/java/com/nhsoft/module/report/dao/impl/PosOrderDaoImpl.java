@@ -5775,7 +5775,35 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
+	public List<Object> findCustomerAnalysisHistorysCount(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("select branch_num ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' ");
+		sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dtFrom) + "' and '" + DateUtil.getDateShortStr(dtTo) + "' ");
+		sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
+
+		if (StringUtils.isNotEmpty(saleType)) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and order_source = '" + saleType + "' ");
+			}
+		}
+		sb.append("group by branch_num, shift_table_bizday ");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+
+		List list = query.list();
+		return list;
+	}
+
+	@Override
 	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+		//findProfitAnalysisByBranchAndItem
 		return null;
 	}
 

@@ -1113,6 +1113,9 @@ public class APIBasic {
 		query.setSystemBookCode("4020");
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
+		query.setPaging(true);
+		query.setOffset(0);
+		query.setLimit(2);
 		CardSummaryPageDTO list = posOrderRpc.findSummaryByPrintNum(query);
 		return list;
 	}
@@ -1125,9 +1128,11 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-03-08");
 
-		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(systemBookCode, dateFrom, dateTo, getBranchNums(), null, 0, 1000);
+		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(systemBookCode, dateFrom, dateTo, getBranchNums(), null, 0, 2);
 		return result;
 	}
+
+
 
 
 }
