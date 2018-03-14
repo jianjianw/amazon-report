@@ -1053,6 +1053,7 @@ public class Report2RpcImpl implements Report2Rpc {
 		posItemQuery.setCategoryCodes(itemCategoryCodes);
 		posItemQuery.setPaging(false);
 		posItemQuery.setItemNums(itemNums);
+        posItemQuery.setFilterItemTypes(Arrays.asList(AppConstants.C_ITEM_TYPE_KIT, AppConstants.C_ITEM_TYPE_ELEMENT));
 		List<Integer> chainItemNums = posItemService.findItemNumsByPosItemQuery(posItemQuery, 0, 0);
 		if(chainItemNums.isEmpty()){
 			return new ArrayList<RequestAnalysisDTO>();
@@ -1121,9 +1122,13 @@ public class Report2RpcImpl implements Report2Rpc {
 			RequestAnalysisDTO dto = dtos.get(i);
 			PosItem item = AppUtil.getPosItem(dto.getItemNum(), posItems);
 			if(item == null) {
-				dtos.remove(i);
-				continue;
-			}
+                dtos.remove(i);
+                continue;
+            }
+            if(item.getItemStatus() != null && item.getItemStatus() == AppConstants.ITEM_STATUS_SLEEP) {
+                dtos.remove(i);
+                continue;
+            }
 			StoreMatrix storeMatrix = AppUtil.getStoreMatrix(systemBookCode, branchNum, dto.getItemNum(), storeMatrices);
 			dto.setItemCode(item.getItemCode());
 			dto.setItemBarcode(item.getItemBarcode());
@@ -1156,6 +1161,7 @@ public class Report2RpcImpl implements Report2Rpc {
 			dto.setItemTransferUnit(item.getItemTransferUnit());
 			dto.setItemTransferRate(item.getItemTransferRate());
 			dto.setItemType(item.getItemType());
+            dto.setItemPurchaseScope(item.getItemPurchaseScope());
 
 			if(dto.getItemType() == AppConstants.C_ITEM_TYPE_ASSEMBLE){
 				List<PosItemKit> posItemKits = posItemService.findPosItemKits(dto.getItemNum());
