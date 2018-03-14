@@ -4343,20 +4343,69 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(String systemBookCode, Date dtFrom, Date dtTo,
 																			List<Integer> branchNums, String saleType, Integer offset, Integer limit) {
-		int days = DateUtil.diffDay(dtFrom, dtFrom);
+		int days = DateUtil.diffDay(dtFrom, dtTo);
 		int branchSize = branchNums.size();
 		List<CustomerAnalysisHistory> result = null;
+		Integer count = null;
 		if(days * branchSize > 1000){
+
 			result = reportService.findCustomerAnalysisHistorysByPage(systemBookCode, dtFrom, dtTo, branchNums, saleType, offset, limit);
+			 count = reportService.findCustomerAnalysisHistorysCount(systemBookCode, dtFrom, dtTo, branchNums, saleType).size();
 		}else{
 			result = reportService.findCustomerAnalysisHistorysByPage(systemBookCode, dtFrom, dtTo, branchNums, saleType, null, null);
 		}
-		int count = result.size();
+
 		CustomerAnalysisHistoryPageDTO pageDTO = new CustomerAnalysisHistoryPageDTO(count,result);
 		return pageDTO;
 
 	}
 
+	@Override
+	public List<ProfitByBranchAndItemSummary> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+		/*List<Object[]> objects = null;
+		List<Integer> branchNums = profitAnalysisQueryData.getBranchNums();
+		if(branchNums.size() < 10){
+			profitAnalysisQueryData.setPage(false);//不分页
+		}
+
+		Boolean isQueryCF = profitAnalysisQueryData.getIsQueryCF();
+		if(isQueryCF){ //500-1000
+			objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
+			//查询成分商品
+			List<Object[]> kitObjects = posOrderService.findKitProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
+			objects.addAll(kitObjects);
+
+		}else{
+			objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
+
+		}
+
+		int size = objects.size();
+		List<ProfitByBranchAndItemSummary> list = new ArrayList<ProfitByBranchAndItemSummary>(size);
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();
+			profitByBranchAndItemSummary.setBranchNum((Integer) object[0]);
+			profitByBranchAndItemSummary.setItemNum((Integer) object[1]);
+			profitByBranchAndItemSummary.setMatrixNum((int)object[2]);
+			profitByBranchAndItemSummary.setProfit((BigDecimal) object[3]);
+			profitByBranchAndItemSummary.setAmount((BigDecimal) object[4]);
+			profitByBranchAndItemSummary.setMoney((BigDecimal) object[5]);
+			profitByBranchAndItemSummary.setCost((BigDecimal) object[6]);
+			list.add(profitByBranchAndItemSummary);
+		}
+
+		Comparator<ProfitByBranchAndItemSummary> comparing = Comparator.comparing(ProfitByBranchAndItemSummary::getBranchNum)
+				.thenComparing(ProfitByBranchAndItemSummary::getItemNum);
+		list.sort(comparing);//排序，默认是升序
+
+		return list;*/
+		return null;
+	}
 
 
 }

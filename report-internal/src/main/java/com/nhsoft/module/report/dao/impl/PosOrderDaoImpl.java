@@ -1012,7 +1012,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else order_detail_amount end) as amount,");
 		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 when detail.order_detail_state_code = 1 then 1 when detail.order_detail_state_code = 2 then 1 end) as saleCount, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end) as saleCount, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
 		sb.append("from pos_order_detail as detail with(nolock) ");
 		sb.append("where detail.order_detail_book_code = :systemBookCode ");
@@ -1043,7 +1043,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else order_kit_detail_amount end) as amount,");
 			sb.append("sum(case when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money end) as money, ");
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
-			sb.append("count(detail.item_num) as saleCount, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end) as saleCount, ");
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
 			sb.append("from pos_order_kit_detail as detail with(nolock) ");
 			sb.append("where detail.order_kit_detail_book_code = :systemBookCode ");
@@ -5656,12 +5656,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findSummaryByPrintNum(CardReportQuery cardReportQuery) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num, sum(p.order_payment_money) as paymentMoney, ");
-		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgr, ");
+		sb.append("select p.order_printed_num as printedNum , p.order_card_user as cardUserName , p.order_card_type_desc as cardType, p.order_card_user_num as cardUserNum, sum(p.order_payment_money) as paymentMoney, ");
+		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgrMoney, ");
 		sb.append("sum(p.order_coupon_total_money) as couponMoney ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
-		sb.append("order by p.order_printed_num desc ");
+		sb.append("order by printedNum,cardUserName,cardType,cardUserNum,paymentMoney,discount,point,mgrMoney,couponMoney ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		if(cardReportQuery.isPaging()) {
 			query.setFirstResult(cardReportQuery.getOffset());
@@ -5757,8 +5757,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("and order_source = '" + saleType + "' ");
 			}
 		}
-
 		sb.append("group by branch_num, shift_table_bizday ");
+		sb.append("order by branch_num,shift_table_bizday,paymentMoney,orderNo,conponMoney,mgrDiscount ");
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.addScalar("branchNum", StandardBasicTypes.INTEGER)
 				.addScalar("bizday", StandardBasicTypes.STRING)
@@ -5775,7 +5775,35 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
+	public List<Object> findCustomerAnalysisHistorysCount(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("select branch_num ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' ");
+		sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dtFrom) + "' and '" + DateUtil.getDateShortStr(dtTo) + "' ");
+		sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
+
+		if (StringUtils.isNotEmpty(saleType)) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and order_source = '" + saleType + "' ");
+			}
+		}
+		sb.append("group by branch_num, shift_table_bizday ");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+
+		List list = query.list();
+		return list;
+	}
+
+	@Override
 	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+		//findProfitAnalysisByBranchAndItem
 		return null;
 	}
 

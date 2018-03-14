@@ -26,6 +26,9 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 	private boolean isQueryPresent = false; //是否查询赠品
 	private String saleType;//销售方式：微商城、实体店
 	private List<String> orderSources;
+	private boolean page = true;
+	private Integer offset;
+	private Integer limit;
 
 	private Integer max = 50000;
 
@@ -197,4 +200,28 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 		this.checkTo = checkTo;
 	}
 
+
+	public boolean isPage() {
+		return page;
+	}
+
+	public void setPage(boolean page) {
+		this.page = page;
+	}
+
+	public Integer getOffset() {
+		return offset;
+	}
+
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
 }

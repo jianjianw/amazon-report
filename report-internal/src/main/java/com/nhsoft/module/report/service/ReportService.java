@@ -1386,4 +1386,16 @@ public interface ReportService {
 	public List<CustomerAnalysisHistory> findCustomerAnalysisHistorysByPage(String systemBookCode,
 															 Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType,Integer offset, Integer limit);
 
+	/**
+	 * 客单分析 历史客单分析  统计总条数
+	 * */
+	public List<Object> findCustomerAnalysisHistorysCount(String systemBookCode,
+									  Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
+	/**
+	 * 毛利分析 商品毛利汇总  分页查询
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
 }
