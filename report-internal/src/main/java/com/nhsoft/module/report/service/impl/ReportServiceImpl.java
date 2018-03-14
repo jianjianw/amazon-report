@@ -12683,7 +12683,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
-		return posOrderDao.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);;
+		return posOrderDao.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
 	}
 
 	@Override
