@@ -4361,31 +4361,27 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<ProfitByBranchAndItemSummary> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
-		/*List<Object[]> objects = null;
+
+        Integer count = null;
 		List<Integer> branchNums = profitAnalysisQueryData.getBranchNums();
 		if(branchNums.size() < 10){
 			profitAnalysisQueryData.setPage(false);//不分页
-		}
-
-		Boolean isQueryCF = profitAnalysisQueryData.getIsQueryCF();
-		if(isQueryCF){ //500-1000
-			objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
-			//查询成分商品
-			List<Object[]> kitObjects = posOrderService.findKitProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
-			objects.addAll(kitObjects);
-
 		}else{
-			objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
+            count = reportService.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData).size();//返回条数
+        }
+		List<Object[]> objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);//500-1000
 
+		if(profitAnalysisQueryData.getIsQueryCF()){ //500-1000
+			//查询成分商品
+			//List<Object[]> kitObjects = posOrderService.findKitProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
+			//objects.addAll(kitObjects);
 		}
 
 		int size = objects.size();
 		List<ProfitByBranchAndItemSummary> list = new ArrayList<ProfitByBranchAndItemSummary>(size);
-		if(objects.isEmpty()){
-			return list;
-		}
+
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();
@@ -4403,8 +4399,8 @@ public class ReportRpcImpl implements ReportRpc {
 				.thenComparing(ProfitByBranchAndItemSummary::getItemNum);
 		list.sort(comparing);//排序，默认是升序
 
-		return list;*/
-		return null;
+		ProfitByBranchAndItemSummaryPageDTO result = new ProfitByBranchAndItemSummaryPageDTO(count,list);
+		return result;
 	}
 
 

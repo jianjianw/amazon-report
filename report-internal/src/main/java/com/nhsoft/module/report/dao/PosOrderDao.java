@@ -1152,4 +1152,11 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
+	 * 毛利分析 商品毛利汇总  分页查询  查询总条数
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object> findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData);
 }

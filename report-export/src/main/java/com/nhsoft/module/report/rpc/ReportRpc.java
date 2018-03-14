@@ -1405,7 +1405,7 @@ public interface ReportRpc {
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
-	public List<ProfitByBranchAndItemSummary> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 
 

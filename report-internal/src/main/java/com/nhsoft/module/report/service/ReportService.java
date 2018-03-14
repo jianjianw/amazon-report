@@ -1387,15 +1387,25 @@ public interface ReportService {
 															 Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType,Integer offset, Integer limit);
 
 	/**
-	 * 客单分析 历史客单分析  统计总条数
+	 * 客单分析 历史客单分析 分页查询  统计总条数
 	 * */
 	public List<Object> findCustomerAnalysisHistorysCount(String systemBookCode,
 									  Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
+
+
+
 	/**
 	 * 毛利分析 商品毛利汇总  分页查询
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
 	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
+	 * 毛利分析 商品毛利汇总  分页查询  查询总条数
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object> findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 }

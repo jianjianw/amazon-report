@@ -1131,6 +1131,27 @@ public class APIBasic {
 		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(systemBookCode, dateFrom, dateTo, getBranchNums(), null, 0, 2);
 		return result;
 	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test59")				//byPage
+
+	public List<ProfitByBranchAndItemSummary> test59() throws Exception {
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-08");
+
+		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
+		query.setSystemBookCode(systemBookCode);
+		query.setBranchNums(getBranchNums());
+		query.setShiftTableFrom(dateFrom);
+		query.setShiftTableTo(dateTo);
+		query.setIsQueryCF(false);
+		query.setOffset(0);
+		query.setLimit(10);
+
+		List<ProfitByBranchAndItemSummary> list = reportRpc.findProfitAnalysisByBranchAndItemByPage(query);
+		return list;
+	}
 
 
 

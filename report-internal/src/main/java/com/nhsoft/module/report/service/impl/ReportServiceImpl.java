@@ -12683,12 +12683,12 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
-		List<Object[]> objects = posOrderDao.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
-		if (profitAnalysisQueryData.getIsQueryCF()) {
-			/*List<Object[]> kitObjects = posOrderDao.findKitProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
-			objects.addAll(kitObjects);*/
-		}
-		return objects;
+		return posOrderDao.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);;
+	}
+
+	@Override
+	public List<Object> findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		return posOrderDao.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData);
 	}
 
 
