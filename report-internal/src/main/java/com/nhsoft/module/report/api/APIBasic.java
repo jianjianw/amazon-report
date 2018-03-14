@@ -1087,7 +1087,7 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test56")
-	public List test56() throws Exception{
+	public List<SaleAnalysisByPosItemDTO> test56() throws Exception{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		Date dateFrom = sdf.parse("2018-01-01");
@@ -1098,6 +1098,34 @@ public class APIBasic {
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
 		List<SaleAnalysisByPosItemDTO> result = reportRpc.findSaleAnalysisByPosItems(query);
+		return result;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test57")				//byPage
+	public CardSummaryPageDTO test57() throws Exception{//周
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-08");
+
+		CardReportQuery query = new CardReportQuery();
+		query.setSystemBookCode("4020");
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		CardSummaryPageDTO list = posOrderRpc.findSummaryByPrintNum(query);
+		return list;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test58")				//byPage
+	public CustomerAnalysisHistoryPageDTO test58() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-08");
+
+		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(systemBookCode, dateFrom, dateTo, getBranchNums(), null, 0, 1000);
 		return result;
 	}
 

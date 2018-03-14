@@ -5661,7 +5661,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(p.order_coupon_total_money) as couponMoney ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
-		sb.append("order by printedNum,cardUserName,cardType,cardUserNum,paymentMoney,discount,point,mgrMoney,couponMoney desc ");
+		sb.append("order by printedNum,cardUserName,cardType,cardUserNum,paymentMoney,discount,point,mgrMoney,couponMoney ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		if(cardReportQuery.isPaging()) {
 			query.setFirstResult(cardReportQuery.getOffset());
@@ -5757,8 +5757,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("and order_source = '" + saleType + "' ");
 			}
 		}
-
-		sb.append("group by branch_num, shift_table_bizday,paymentMoney,orderNo,conponMoney,mgrDiscount desc ");
+		sb.append("group by branch_num, shift_table_bizday ");
+		sb.append("order by branch_num,shift_table_bizday,paymentMoney,orderNo,conponMoney,mgrDiscount ");
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.addScalar("branchNum", StandardBasicTypes.INTEGER)
 				.addScalar("bizday", StandardBasicTypes.STRING)
