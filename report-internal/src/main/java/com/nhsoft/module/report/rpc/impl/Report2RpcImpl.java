@@ -1182,16 +1182,16 @@ public class Report2RpcImpl implements Report2Rpc {
 
 			}
 			StoreItemSupplier storeItemSupplier = StoreItemSupplier.getDefault(storeItemSuppliers, branchNums.get(0), dto.getItemNum());
-			if(storeItemSupplier == null) {
-				continue;
-			}
-			Supplier supplier = AppUtil.getSupplier(storeItemSupplier.getId().getSupplierNum(), suppliers);
-			if(supplier != null) {
-				dto.setSupplierNum(supplier.getSupplierNum());
-				dto.setSupplierCode(supplier.getSupplierCode());
-				dto.setSupplierName(supplier.getSupplierName());
-				dto.setSupplierMethod(supplier.getSupplierMethod());
-				dto.setSupplierKind(supplier.getSupplierKind());
+			if(storeItemSupplier != null) {
+				Supplier supplier = AppUtil.getSupplier(storeItemSupplier.getId().getSupplierNum(), suppliers);
+				if(supplier != null) {
+					dto.setSupplierNum(supplier.getSupplierNum());
+					dto.setSupplierCode(supplier.getSupplierCode());
+					dto.setSupplierName(supplier.getSupplierName());
+					dto.setSupplierMethod(supplier.getSupplierMethod());
+					dto.setSupplierKind(supplier.getSupplierKind());
+				}
+
 			}
 
 		}
