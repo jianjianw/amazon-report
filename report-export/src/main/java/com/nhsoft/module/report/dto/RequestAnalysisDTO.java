@@ -21,6 +21,7 @@ public class RequestAnalysisDTO implements Serializable {
 	private String itemName;
 	private String itemSpec;
 	private Boolean itemSaleCease;
+	private Boolean itemStockCease;
 	private BigDecimal itemSalePrice;
 	private BigDecimal itemLevel2Price;
 	private String itemUnit;
@@ -36,7 +37,15 @@ public class RequestAnalysisDTO implements Serializable {
 	private Integer itemType;
 	private String itemPurchaseScope;
 	private List<RequestAnalysisDTO> details;
-	
+
+	public Boolean getItemStockCease() {
+		return itemStockCease;
+	}
+
+	public void setItemStockCease(Boolean itemStockCease) {
+		this.itemStockCease = itemStockCease;
+	}
+
 	public String getItemPurchaseScope() {
 		return itemPurchaseScope;
 	}

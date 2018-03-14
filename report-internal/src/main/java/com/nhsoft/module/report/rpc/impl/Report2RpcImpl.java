@@ -1051,7 +1051,6 @@ public class Report2RpcImpl implements Report2Rpc {
 		posItemQuery.setSystemBookCode(systemBookCode);
 		posItemQuery.setBranchNum(branchNum);
 		posItemQuery.setCategoryCodes(itemCategoryCodes);
-		posItemQuery.setIsFindNoStock(false);
 		posItemQuery.setPaging(false);
 		posItemQuery.setItemNums(itemNums);
 		List<Integer> chainItemNums = posItemService.findItemNumsByPosItemQuery(posItemQuery, 0, 0);
@@ -1130,10 +1129,17 @@ public class Report2RpcImpl implements Report2Rpc {
 			dto.setItemBarcode(item.getItemBarcode());
 			dto.setItemName(item.getItemName());
 			dto.setItemSpec(item.getItemSpec());
-			if(storeMatrix != null && storeMatrix.getStoreMatrixSaleCeaseFlag() != null) {
+			if(storeMatrix != null && storeMatrix.getStoreMatrixSaleCeaseFlag() != null
+					&& storeMatrix.getStoreMatrixSaleEnabled() != null && storeMatrix.getStoreMatrixSaleEnabled()) {
 				dto.setItemSaleCease(storeMatrix.getStoreMatrixSaleCeaseFlag());
 			} else {
 				dto.setItemSaleCease(item.getItemSaleCeaseFlag());
+			}
+			if(storeMatrix != null && storeMatrix.getStoreMatrixStockCeaseFlag() != null
+					&& (storeMatrix.getStoreMatrixStockEnabled() == null || storeMatrix.getStoreMatrixStockEnabled())) {
+				dto.setItemStockCease(storeMatrix.getStoreMatrixStockCeaseFlag());
+			} else {
+				dto.setItemStockCease(item.getItemStockCeaseFlag());
 			}
 			dto.setItemSalePrice(item.getItemRegularPrice());
 			dto.setItemLevel2Price(item.getItemLevel2Price());
