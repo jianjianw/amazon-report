@@ -170,6 +170,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				.add(Projections.property("a.alipayLogBuyerMoney"))
 		);
 		criteria.setLockMode(LockMode.NONE);
+		criteria.setMaxResults(50000);
 		List<Object[]> objects = criteria.list();
 		int size = objects.size();
 		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>(size);
@@ -258,6 +259,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 				.add(Projections.property("a.alipayLogBuyerMoney"))
 		);
 		criteria.setLockMode(LockMode.NONE);
+		criteria.setMaxResults(50000);
 		List<Object[]> objects = criteria.list();
 		int size = objects.size();
 		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>(size);

@@ -2665,7 +2665,7 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				.add(Projections.property("p.paymentBuyerMoney"))
 				.add(Projections.property("p.paymentReceive"))
 				);
-		criteria.setMaxResults(10000);
+		criteria.setMaxResults(50000);
 		List<Object[]> objects = criteria.list();
 		int size = objects.size();
 		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>(size);
