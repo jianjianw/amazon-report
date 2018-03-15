@@ -1051,9 +1051,9 @@ public class Report2RpcImpl implements Report2Rpc {
 		posItemQuery.setSystemBookCode(systemBookCode);
 		posItemQuery.setBranchNum(branchNum);
 		posItemQuery.setCategoryCodes(itemCategoryCodes);
-		posItemQuery.setIsFindNoStock(false);
 		posItemQuery.setPaging(false);
 		posItemQuery.setItemNums(itemNums);
+        posItemQuery.setFilterItemTypes(Arrays.asList(AppConstants.C_ITEM_TYPE_KIT, AppConstants.C_ITEM_TYPE_ELEMENT));
 		List<Integer> chainItemNums = posItemService.findItemNumsByPosItemQuery(posItemQuery, 0, 0);
 		if(chainItemNums.isEmpty()){
 			return new ArrayList<RequestAnalysisDTO>();
@@ -1122,18 +1122,29 @@ public class Report2RpcImpl implements Report2Rpc {
 			RequestAnalysisDTO dto = dtos.get(i);
 			PosItem item = AppUtil.getPosItem(dto.getItemNum(), posItems);
 			if(item == null) {
-				dtos.remove(i);
-				continue;
-			}
+                dtos.remove(i);
+                continue;
+            }
+            if(item.getItemStatus() != null && item.getItemStatus() == AppConstants.ITEM_STATUS_SLEEP) {
+                dtos.remove(i);
+                continue;
+            }
 			StoreMatrix storeMatrix = AppUtil.getStoreMatrix(systemBookCode, branchNum, dto.getItemNum(), storeMatrices);
 			dto.setItemCode(item.getItemCode());
 			dto.setItemBarcode(item.getItemBarcode());
 			dto.setItemName(item.getItemName());
 			dto.setItemSpec(item.getItemSpec());
-			if(storeMatrix != null && storeMatrix.getStoreMatrixSaleCeaseFlag() != null) {
+			if(storeMatrix != null && storeMatrix.getStoreMatrixSaleCeaseFlag() != null
+					&& storeMatrix.getStoreMatrixSaleEnabled() != null && storeMatrix.getStoreMatrixSaleEnabled()) {
 				dto.setItemSaleCease(storeMatrix.getStoreMatrixSaleCeaseFlag());
 			} else {
 				dto.setItemSaleCease(item.getItemSaleCeaseFlag());
+			}
+			if(storeMatrix != null && storeMatrix.getStoreMatrixStockCeaseFlag() != null
+					&& (storeMatrix.getStoreMatrixStockEnabled() == null || storeMatrix.getStoreMatrixStockEnabled())) {
+				dto.setItemStockCease(storeMatrix.getStoreMatrixStockCeaseFlag());
+			} else {
+				dto.setItemStockCease(item.getItemStockCeaseFlag());
 			}
 			dto.setItemSalePrice(item.getItemRegularPrice());
 			dto.setItemLevel2Price(item.getItemLevel2Price());
@@ -1150,6 +1161,7 @@ public class Report2RpcImpl implements Report2Rpc {
 			dto.setItemTransferUnit(item.getItemTransferUnit());
 			dto.setItemTransferRate(item.getItemTransferRate());
 			dto.setItemType(item.getItemType());
+            dto.setItemPurchaseScope(item.getItemPurchaseScope());
 
 			if(dto.getItemType() == AppConstants.C_ITEM_TYPE_ASSEMBLE){
 				List<PosItemKit> posItemKits = posItemService.findPosItemKits(dto.getItemNum());
@@ -1170,18 +1182,18 @@ public class Report2RpcImpl implements Report2Rpc {
 
 			}
 			StoreItemSupplier storeItemSupplier = StoreItemSupplier.getDefault(storeItemSuppliers, branchNums.get(0), dto.getItemNum());
-			if(storeItemSupplier == null) {
-				continue;
+			if(storeItemSupplier != null) {
+				Supplier supplier = AppUtil.getSupplier(storeItemSupplier.getId().getSupplierNum(), suppliers);
+				if(supplier != null) {
+					dto.setSupplierNum(supplier.getSupplierNum());
+					dto.setSupplierCode(supplier.getSupplierCode());
+					dto.setSupplierName(supplier.getSupplierName());
+					dto.setSupplierMethod(supplier.getSupplierMethod());
+					dto.setSupplierKind(supplier.getSupplierKind());
+				}
+
 			}
-			Supplier supplier = AppUtil.getSupplier(storeItemSupplier.getId().getSupplierNum(), suppliers);
-			if(supplier == null) {
-				continue;
-			}
-			dto.setSupplierNum(supplier.getSupplierNum());
-			dto.setSupplierCode(supplier.getSupplierCode());
-			dto.setSupplierName(supplier.getSupplierName());
-			dto.setSupplierMethod(supplier.getSupplierMethod());
-			dto.setSupplierKind(supplier.getSupplierKind());
+
 		}
 		return dtos;
 	}

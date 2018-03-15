@@ -163,7 +163,7 @@ public class ReceiveOrderDaoImpl extends DaoImpl implements ReceiveOrderDao {
 
 		);
 		criteria.setLockMode(LockMode.NONE);
-		criteria.setMaxResults(500000);
+		criteria.setMaxResults(50000);
 		return criteria.list();
 	}
 
