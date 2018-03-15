@@ -1130,12 +1130,18 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-03-08");
 		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
+		query.setSystemBookCode(systemBookCode);
+		query.setBranchNums(getBranchNums());
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		query.setOffset(0);
+		query.setLimit(5);
 		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(query);
 		return result;
 	}
 	/*@RequestMapping(method = RequestMethod.GET,value = "/test59")				//byPage
 
-	*//*public List<ProfitByBranchAndItemSummary> test59() throws Exception {
+	public List<ProfitByBranchAndItemSummary> test59() throws Exception {
 
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -1151,7 +1157,7 @@ public class APIBasic {
 		query.setOffset(0);
 		query.setLimit(10);
 
-		//List<ProfitByBranchAndItemSummary> list = reportRpc.findProfitAnalysisByBranchAndItemByPage(query);
+		List<ProfitByBranchAndItemSummary> list = reportRpc.findProfitAnalysisByBranchAndItemByPage(query);
 		return list;
 	}*/
 

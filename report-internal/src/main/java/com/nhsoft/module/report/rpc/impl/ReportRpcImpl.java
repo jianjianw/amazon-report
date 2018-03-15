@@ -4342,16 +4342,25 @@ public class ReportRpcImpl implements ReportRpc {
 		int days = DateUtil.diffDay(saleAnalysisQueryData.getDtFrom(), saleAnalysisQueryData.getDtTo());
 		int branchSize = saleAnalysisQueryData.getBranchNums().size();
 		List<CustomerAnalysisHistory> result = null;
-		Integer count = null;
-		if(days * branchSize > 1000){
-
-			result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
-			 count = reportService.findCustomerAnalysisHistorysCount(saleAnalysisQueryData).size();
+		Object[] object = null;
+		if(days * branchSize < 1000){
+			saleAnalysisQueryData.setPage(false);
 		}else{
-			result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
+			object = reportService.findCustomerAnalysisHistorysCount(saleAnalysisQueryData);
 		}
+		result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
 
-		CustomerAnalysisHistoryPageDTO pageDTO = new CustomerAnalysisHistoryPageDTO(count,result);
+		CustomerAnalysisHistoryPageDTO pageDTO = new CustomerAnalysisHistoryPageDTO();
+		if(object != null){
+			pageDTO.setCount((Integer) object[0]);
+			pageDTO.setTotalMoneySum((BigDecimal) object[1]);
+			pageDTO.setCustomerSum(BigDecimal.valueOf((Integer) object[2]));
+			if(pageDTO.getCustomerSum().compareTo(BigDecimal.ZERO) == 0){
+				pageDTO.setCustomerAvgPriceSum(BigDecimal.ZERO);
+			}
+			pageDTO.setCustomerAvgPriceSum(pageDTO.getTotalMoneySum().divide(pageDTO.getCustomerSum(),2,BigDecimal.ROUND_HALF_UP));
+		}
+		pageDTO.setData(result);
 		return pageDTO;
 
 	}

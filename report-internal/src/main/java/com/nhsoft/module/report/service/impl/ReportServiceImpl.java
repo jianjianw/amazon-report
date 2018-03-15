@@ -12676,7 +12676,7 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<Object> findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData) {
+	public Object[] findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData) {
 		return posOrderDao.findCustomerAnalysisHistorysCount(saleAnalysisQueryData);
 	}
 

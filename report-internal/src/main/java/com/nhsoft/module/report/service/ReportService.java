@@ -1383,7 +1383,7 @@ public interface ReportService {
 	/**
 	 * 客单分析 历史客单分析 分页查询  统计总条数
 	 * */
-	public List<Object> findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData);
+	public Object[] findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 

@@ -1135,7 +1135,7 @@ public interface PosOrderDao {
 	/**
 	 * 客单分析 历史客单分析  统计总条数
 	 * */
-	public List<Object> findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData);
+	public Object[] findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 

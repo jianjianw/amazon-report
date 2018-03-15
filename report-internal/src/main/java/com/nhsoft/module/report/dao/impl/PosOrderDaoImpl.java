@@ -5799,16 +5799,15 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object> findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData) {
+	public Object[] findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData) {
 		StringBuffer sb = new StringBuffer();
-
-		sb.append("select sum(order_payment_money) as paymentMoney, ");
+		sb.append("select count(*) as count_, sum(paymentMoney) as paymentMoney_ , sum(orderNo) as orderNo_ from ( ");
+		sb.append("select sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money ) as paymentMoney, count(order_no) as orderNo ");
 		sb.append(createByCustomerAnalysisQuery(saleAnalysisQueryData));
 		sb.append("group by branch_num, shift_table_bizday ");
+		sb.append(") temp ");
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-
-		List list = query.list();
-		return list;
+		return (Object[]) query.uniqueResult();
 	}
 
 	@Override
