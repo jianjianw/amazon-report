@@ -1111,11 +1111,11 @@ public interface PosOrderDao {
 	public List<Object[]> findSummaryByPrintNum(CardReportQuery cardReportQuery);
 
 	/**
-	 * 根据表面卡号 姓名 卡类型    汇总记录数
+	 * 根据表面卡号 姓名 卡类型    汇总记录数,
 	 * @param cardReportQuery
 	 * @return
 	 */
-	public List<Object> findCountByPrintNum(CardReportQuery cardReportQuery);
+	public Object[] findCountByPrintNum(CardReportQuery cardReportQuery);
 
 
 	//日销售分析
@@ -1127,22 +1127,15 @@ public interface PosOrderDao {
 
 	/**
 	 * 客单分析 历史客单分析  分页查询
-	 * @param systemBookCode
-	 * @param dtFrom
-	 * @param dtTo
-	 * @param branchNums
-	 * @param saleType
 	 * @return
 	 */
-	public List<Object[]> findCustomerAnalysisHistorysByPage(String systemBookCode,
-													   Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType,Integer offset, Integer limit);
+	public List<Object[]> findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 	/**
 	 * 客单分析 历史客单分析  统计总条数
 	 * */
-	public List<Object> findCustomerAnalysisHistorysCount(String systemBookCode,
-												  Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
+	public List<Object> findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 

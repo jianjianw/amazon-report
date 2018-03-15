@@ -1390,15 +1390,9 @@ public interface ReportRpc {
 
 	/**
 	 * 客单分析 历史客单分析  分页查询
-	 * @param systemBookCode
-	 * @param dtFrom
-	 * @param dtTo
-	 * @param branchNums
-	 * @param saleType
 	 * @return
 	 */
-	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(String systemBookCode,
-																			Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType,Integer offset, Integer limit);
+	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData);
 
 	/**
 	 * 毛利分析 商品毛利汇总  分页查询

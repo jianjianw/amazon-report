@@ -12643,12 +12643,11 @@ public class ReportServiceImpl implements ReportService {
     }
 
 	@Override
-	public List<CustomerAnalysisHistory> findCustomerAnalysisHistorysByPage(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType, Integer offset, Integer limit) {
-		List<Object[]> objects = posOrderDao.findCustomerAnalysisHistorysByPage(systemBookCode, dtFrom, dtTo, branchNums,
-				saleType,offset,limit);
+	public List<CustomerAnalysisHistory> findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
+		List<Object[]> objects = posOrderDao.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
 		int size = objects.size();
 		List<CustomerAnalysisHistory> list = new ArrayList<CustomerAnalysisHistory>(size);
-		List<Branch> branchs = branchService.findInCache(systemBookCode);
+		List<Branch> branchs = branchService.findInCache(saleAnalysisQueryData.getSystemBookCode());
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			BigDecimal couponMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
@@ -12677,8 +12676,8 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<Object> findCustomerAnalysisHistorysCount(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
-		return posOrderDao.findCustomerAnalysisHistorysCount(systemBookCode,dtFrom,dtTo,branchNums,saleType);
+	public List<Object> findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData) {
+		return posOrderDao.findCustomerAnalysisHistorysCount(saleAnalysisQueryData);
 	}
 
 	@Override
