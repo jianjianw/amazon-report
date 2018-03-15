@@ -310,7 +310,7 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	public List<Object> findCountByPrintNum(CardReportQuery cardReportQuery) {
+	public Object[] findCountByPrintNum(CardReportQuery cardReportQuery) {
 		return posOrderDao.findCountByPrintNum(cardReportQuery);
 	}
 

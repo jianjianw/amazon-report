@@ -210,7 +210,7 @@ public class APIBasic {
 		}
 		Calendar calendar = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-01");
+		Date dateFrom = sdf.parse("2017-05-02");
 		Date dateTo = sdf.parse("2017-10-31");
 		List<Integer> items = new ArrayList<>();
 		items.add(434400126);
@@ -1106,16 +1106,18 @@ public class APIBasic {
 	public CardSummaryPageDTO test57() throws Exception{//周
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-03-08");
+		Date dateFrom = sdf.parse("2018-02-01");
+		Date dateTo = sdf.parse("2018-02-28");
 
 		CardReportQuery query = new CardReportQuery();
-		query.setSystemBookCode("4020");
+		query.setSystemBookCode("4173");
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		query.setPaging(true);
 		query.setOffset(0);
-		query.setLimit(2);
+		query.setLimit(100);
+		query.setSortField("printedNum");
+		query.setSortType("desc");
 		CardSummaryPageDTO list = posOrderRpc.findSummaryByPrintNum(query);
 		return list;
 	}
@@ -1127,8 +1129,8 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-03-08");
-
-		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(systemBookCode, dateFrom, dateTo, getBranchNums(), null, 0, 2);
+		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
+		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(query);
 		return result;
 	}
 	/*@RequestMapping(method = RequestMethod.GET,value = "/test59")				//byPage

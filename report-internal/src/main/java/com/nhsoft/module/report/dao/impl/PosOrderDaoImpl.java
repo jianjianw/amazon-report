@@ -5661,7 +5661,15 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(p.order_coupon_total_money) as couponMoney ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
-		sb.append("order by printedNum,cardUserName,cardType,cardUserNum,paymentMoney,discount,point,mgrMoney,couponMoney ");
+
+		if(cardReportQuery.isPaging()){
+			if (StringUtils.isNotEmpty(cardReportQuery.getSortField())){
+				sb.append("order by " + cardReportQuery.getSortField() + " " +cardReportQuery.getSortType());
+			}
+		}else{
+			sb.append("order by printedNum asc");
+		}
+
 		Query query = currentSession().createSQLQuery(sb.toString());
 		if(cardReportQuery.isPaging()) {
 			query.setFirstResult(cardReportQuery.getOffset());
@@ -5671,14 +5679,16 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object> findCountByPrintNum(CardReportQuery cardReportQuery) {
+	public Object[] findCountByPrintNum(CardReportQuery cardReportQuery) {
+
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(p.order_printed_num) ");
+		sb.append("select count(*) as count_, sum(paymentMoney) as paymentMoney_ , sum(discount) as discount_ , sum(point) as point_ from ( ");
+		sb.append("select sum(p.order_payment_money) as paymentMoney, sum(p.order_discount_money) as discount, sum(p.order_point) as point ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
-		sb.append("order by p.order_printed_num desc ");
+		sb.append(") as temp");
 		Query query = currentSession().createSQLQuery(sb.toString());
-		return query.list();
+		return (Object[])query.uniqueResult();
 	}
 
 	@Override
@@ -5737,28 +5747,42 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sqlQuery.list();
 	}
 
+	public String createByCustomerAnalysisQuery(SaleAnalysisQueryData saleAnalysisQueryData){
+		StringBuilder sb = new StringBuilder();
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = '" + saleAnalysisQueryData.getSystemBookCode() + "' ");
+		sb.append("and branch_num in " + AppUtil.getIntegerParmeList(saleAnalysisQueryData.getBranchNums()));
+		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(saleAnalysisQueryData.getDtFrom()) + "' and '" + DateUtil.getDateShortStr(saleAnalysisQueryData.getDtTo()) + "' ");
+		sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
+
+		if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and order_source = '" + saleAnalysisQueryData.getSaleType() + "' ");
+			}
+		}
+		return sb.toString();
+	}
+
+
 	@Override
-	public List<Object[]> findCustomerAnalysisHistorysByPage(String systemBookCode, Date dtFrom, Date dtTo, List<Integer>
-			branchNums, String saleType,Integer offset, Integer limit) {
+	public List<Object[]> findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
+
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num as branchNum, shift_table_bizday as bizday, sum(order_payment_money) as paymentMoney, count(order_no) as orderNo, ");
 		sb.append("sum(order_coupon_total_money) as conponMoney, sum(order_mgr_discount_money) as mgrDiscount ");
-		sb.append("from pos_order with(nolock) ");
-		sb.append("where system_book_code = '" + systemBookCode + "' ");
-		sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dtFrom) + "' and '" + DateUtil.getDateShortStr(dtTo) + "' ");
-		sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
-
-		if (StringUtils.isNotEmpty(saleType)) {
-			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-				sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-			} else {
-				sb.append("and order_source = '" + saleType + "' ");
-			}
-		}
+		sb.append(createByCustomerAnalysisQuery(saleAnalysisQueryData));
 		sb.append("group by branch_num, shift_table_bizday ");
-		sb.append("order by branch_num,shift_table_bizday,paymentMoney,orderNo,conponMoney,mgrDiscount ");
+
+		if(saleAnalysisQueryData.isPage()){
+			if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSortField())){
+				sb.append("order by " + saleAnalysisQueryData.getSortField() + " " + saleAnalysisQueryData.getSortType());
+			}
+		}else{
+			sb.append("order by branchNum asc");
+		}
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.addScalar("branchNum", StandardBasicTypes.INTEGER)
 				.addScalar("bizday", StandardBasicTypes.STRING)
@@ -5767,32 +5791,19 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				.addScalar("conponMoney", StandardBasicTypes.BIG_DECIMAL)
 				.addScalar("mgrDiscount", StandardBasicTypes.BIG_DECIMAL);
 
-		if (offset != null && limit != null) {
-			query.setFirstResult(offset);
-			query.setMaxResults(limit);
+		if(saleAnalysisQueryData.isPage()){
+			query.setFirstResult(saleAnalysisQueryData.getOffset());
+			query.setMaxResults(saleAnalysisQueryData.getLimit());
 		}
 		return query.list();
 	}
 
 	@Override
-	public List<Object> findCustomerAnalysisHistorysCount(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType) {
+	public List<Object> findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData) {
 		StringBuffer sb = new StringBuffer();
 
-		sb.append("select branch_num ");
-		sb.append("from pos_order with(nolock) ");
-		sb.append("where system_book_code = '" + systemBookCode + "' ");
-		sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
-		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dtFrom) + "' and '" + DateUtil.getDateShortStr(dtTo) + "' ");
-		sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
-
-		if (StringUtils.isNotEmpty(saleType)) {
-			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-				sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-			} else {
-				sb.append("and order_source = '" + saleType + "' ");
-			}
-		}
+		sb.append("select sum(order_payment_money) as paymentMoney, ");
+		sb.append(createByCustomerAnalysisQuery(saleAnalysisQueryData));
 		sb.append("group by branch_num, shift_table_bizday ");
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 

@@ -331,7 +331,7 @@ public interface PosOrderService {
 	 * @param cardReportQuery
 	 * @return
 	 */
-	public List<Object> findCountByPrintNum(CardReportQuery cardReportQuery);
+	public Object[] findCountByPrintNum(CardReportQuery cardReportQuery);
 
 
 }

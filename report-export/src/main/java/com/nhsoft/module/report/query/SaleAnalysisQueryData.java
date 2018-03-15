@@ -31,8 +31,11 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 	private Integer stallNum;
 	private Boolean isPolicy;
 
-	public Integer offset;
-	public Integer limit;
+	private Integer offset;
+	private Integer limit;
+	private boolean page = true;
+	private String sortField;
+	private String sortType;
 
 	public Integer getAppUserNum() {
 		return appUserNum;
@@ -211,6 +214,30 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 		this.limit = limit;
 	}
 
+	public boolean isPage() {
+		return page;
+	}
+
+	public void setPage(boolean page) {
+		this.page = page;
+	}
+
+	public String getSortField() {
+		return sortField;
+	}
+
+	public void setSortField(String sortField) {
+		this.sortField = sortField;
+	}
+
+	public String getSortType() {
+		return sortType;
+	}
+
+	public void setSortType(String sortType) {
+		this.sortType = sortType;
+	}
+
 	private String getDateStr(Date date){
 		StringBuffer sb = new StringBuffer();
 		sb.append(date.getYear() + 1900).append("-").append(date.getMonth() + 1).append("-").append(date.getDate());
@@ -280,6 +307,15 @@ public class SaleAnalysisQueryData extends QueryBuilder {
 		if(limit != null){
 			sb.append("limit:");
 			sb.append(limit);
+		}
+
+		if(sortField != null){
+			sb.append("sortField:");
+			sb.append(sortField);
+		}
+		if(sortType != null){
+			sb.append("sortType:");
+			sb.append(sortType);
 		}
 
 		sb.append("isQueryGrade:");

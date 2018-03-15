@@ -4326,7 +4326,6 @@ public class ReportRpcImpl implements ReportRpc {
 					memberValue = memberProfit.divide(memberMoney, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
 				}
 			}
-
 			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
 			summary.setBranchNum(branchNum);
 			summary.setBizDate(bizMonth);
@@ -4334,25 +4333,22 @@ public class ReportRpcImpl implements ReportRpc {
 			summary.setMemberData(memberValue);
 			list.add(summary);
 		}
-
 		return list;
-
 
 	}
 
 	@Override
-	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(String systemBookCode, Date dtFrom, Date dtTo,
-																			List<Integer> branchNums, String saleType, Integer offset, Integer limit) {
-		int days = DateUtil.diffDay(dtFrom, dtTo);
-		int branchSize = branchNums.size();
+	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
+		int days = DateUtil.diffDay(saleAnalysisQueryData.getDtFrom(), saleAnalysisQueryData.getDtTo());
+		int branchSize = saleAnalysisQueryData.getBranchNums().size();
 		List<CustomerAnalysisHistory> result = null;
 		Integer count = null;
 		if(days * branchSize > 1000){
 
-			result = reportService.findCustomerAnalysisHistorysByPage(systemBookCode, dtFrom, dtTo, branchNums, saleType, offset, limit);
-			 count = reportService.findCustomerAnalysisHistorysCount(systemBookCode, dtFrom, dtTo, branchNums, saleType).size();
+			result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
+			 count = reportService.findCustomerAnalysisHistorysCount(saleAnalysisQueryData).size();
 		}else{
-			result = reportService.findCustomerAnalysisHistorysByPage(systemBookCode, dtFrom, dtTo, branchNums, saleType, null, null);
+			result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
 		}
 
 		CustomerAnalysisHistoryPageDTO pageDTO = new CustomerAnalysisHistoryPageDTO(count,result);

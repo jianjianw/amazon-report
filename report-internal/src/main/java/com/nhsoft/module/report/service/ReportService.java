@@ -1376,21 +1376,14 @@ public interface ReportService {
 
 	/**
 	 * 客单分析 历史客单分析  分页查询
-	 * @param systemBookCode
-	 * @param dtFrom
-	 * @param dtTo
-	 * @param branchNums
-	 * @param saleType
 	 * @return
 	 */
-	public List<CustomerAnalysisHistory> findCustomerAnalysisHistorysByPage(String systemBookCode,
-															 Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType,Integer offset, Integer limit);
+	public List<CustomerAnalysisHistory> findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData);
 
 	/**
 	 * 客单分析 历史客单分析 分页查询  统计总条数
 	 * */
-	public List<Object> findCustomerAnalysisHistorysCount(String systemBookCode,
-									  Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
+	public List<Object> findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData);
 
 
 
