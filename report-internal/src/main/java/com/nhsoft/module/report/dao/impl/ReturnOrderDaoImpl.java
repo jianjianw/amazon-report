@@ -382,7 +382,6 @@ public class ReturnOrderDaoImpl extends DaoImpl implements ReturnOrderDao {
 		if(dateTo != null){
 			query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
 		}
-		System.out.println(sql);
 		return query.list();
     }
 
