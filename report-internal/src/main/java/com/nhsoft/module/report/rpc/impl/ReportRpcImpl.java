@@ -1871,9 +1871,10 @@ public class ReportRpcImpl implements ReportRpc {
 			BusinessCollection data = result.get(i);
 			Integer branchNum = data.getBranchNum();
 			for (int j = 0; j <branchDTOS.size() ; j++) {
-				BranchDTO branchDTO = branchDTOS.get(i);
+				BranchDTO branchDTO = branchDTOS.get(j);
 				if(branchNum.equals(branchDTO.getBranchNum())){
 					data.setBranchName(branchDTO.getBranchName());
+					break;
 				}
 			}
 		}
@@ -4377,6 +4378,7 @@ public class ReportRpcImpl implements ReportRpc {
             count = reportService.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData).size();//返回条数
         }
 		List<Object[]> objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);//500-1000
+		List<Object[]> subList = objects.subList(0, 500);
 
 		if(profitAnalysisQueryData.getIsQueryCF()){ //500-1000
 			//查询成分商品
