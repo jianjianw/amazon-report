@@ -1,6 +1,5 @@
 package com.nhsoft.module.report.api;
 
-import com.nhsoft.module.report.dao.PosOrderDao;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.AlipayLog;
 import com.nhsoft.module.report.model.Branch;
@@ -11,8 +10,6 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
-import jdk.nashorn.internal.runtime.ECMAException;
-import jdk.nashorn.internal.runtime.Source;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,17 +42,19 @@ public class APIBasic {
 	@Autowired
 	private CardUserService cardUserService;
 	@Autowired
-	private PosOrderDao posOrderDao;
-	@Autowired
 	private AlipayLogService alipayLogService;
 	@Autowired
 	private AlipayLogRpc alipayLogRpc;
 	@Autowired
 	private PosItemLogRpc posItemLogRpc;
-
 	@Autowired
 	private ReceiveOrderRpc receiveOrderRpc;
-
+	@Autowired
+	private ReturnOrderRpc returnOrderRpc;
+	@Autowired
+	private TransferOutOrderRpc transferOutOrderRpc;
+	@Autowired
+	private ShipOrderRpc shipOrderRpc;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
@@ -1161,6 +1160,57 @@ public class APIBasic {
 		return list;
 	}*/
 
+
+
+
+	//新加的四张报表
+	@RequestMapping(method = RequestMethod.GET,value = "/test60")
+	public List<MonthPurchaseDTO> test60() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		List<MonthPurchaseDTO> list = receiveOrderRpc.findPurchaseMonth(systemBookCode, 99, dateFrom,
+				dateTo, AppConstants.STATE_AUDIT_TIME, AppConstants.BUSINESS_DATE_DAY);
+
+		return list;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test61")
+	public List<MonthReturnDTO> test61() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		List<MonthReturnDTO> list = returnOrderRpc.findReturnMonth(systemBookCode, 99, dateFrom, dateTo, AppConstants.BUSINESS_DATE_DAY);
+		return list;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test62")
+	public List<TransferOutMoneyDateDTO> test62() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+
+		List<TransferOutMoneyDateDTO> list = transferOutOrderRpc.findDateSummary(systemBookCode, 99, getBranchNums(), dateFrom, dateTo, AppConstants.BUSINESS_DATE_DAY);
+		return list;
+	}
+
+
+	//findDateSummary
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test63")
+	public List<ShipOrderMoneyDateDTO> test63() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+
+		List<ShipOrderMoneyDateDTO> list = shipOrderRpc.findDateSummary(systemBookCode, 99, getBranchNums(), dateFrom, dateTo, AppConstants.BUSINESS_DATE_DAY);
+		return list;
+	}
 
 
 

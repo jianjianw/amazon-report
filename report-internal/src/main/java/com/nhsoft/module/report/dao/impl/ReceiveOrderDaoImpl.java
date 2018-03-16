@@ -557,39 +557,22 @@ public class ReceiveOrderDaoImpl extends DaoImpl implements ReceiveOrderDao {
 	}
 
 	@Override
-	public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType) {
+	public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType,String strDate) {
+
 		StringBuffer sb = new StringBuffer();
-		if(AppConstants.RECEIVE_ORDER_TIME.equals(dateType)){
-			sb.append("select convert(varchar(8), receive_order_date, 112) as bizday, ");
-		}else{
-			sb.append("select convert(varchar(8), receive_order_audit_time, 112) as bizday, ");
-		}
-		sb.append("d.item_num, sum(d.receive_order_detail_subtotal) as subTotal, sum(d.receive_order_detail_other_money) as otherMoney ");
+		sb.append("select %s as bizday,d.item_num as itemNum, sum(d.receive_order_detail_subtotal) as subTotal, sum(d.receive_order_detail_other_money) as otherMoney ");
 		sb.append("from receive_order as r with(nolock) inner join receive_order_detail as d with(nolock) on r.receive_order_fid = d.receive_order_fid ");
 		sb.append("where r.system_book_code = :systemBookCode and r.branch_num = :branchNum and r.receive_order_state_code=3 ");
-
-
-		if(AppConstants.RECEIVE_ORDER_TIME.equals(dateType)){
-			if (dateFrom != null) {
-				sb.append("and r.receive_order_date >= :dateFrom ");
-			}
-			if (dateTo != null) {
-				sb.append("and r.receive_order_date <= :dateTo ");
-			}
-			sb.append("group by convert(varchar(8), receive_order_date, 112), d.item_num ");
-		}else{
-
-			if (dateFrom != null) {
-				sb.append("and r.receive_order_audit_time >= :dateFrom ");
-			}
-			if (dateTo != null) {
-				sb.append("and r.receive_order_audit_time <= :dateTo ");
-			}
-
-			sb.append("group by convert(varchar(8), receive_order_audit_time, 112), d.item_num ");
+		if (dateFrom != null) {
+			sb.append("and %date >= :dateFrom ");
 		}
+		if (dateTo != null) {
+			sb.append("and %date <= :dateTo ");
+		}
+		sb.append("group by %s , d.item_num ");
+		String sql = replaceStr(sb.toString(),dateType, strDate);
 
-		Query query = currentSession().createSQLQuery(sb.toString());
+		Query query = currentSession().createSQLQuery(sql);
 		query.setString("systemBookCode", systemBookCode);
 		query.setInteger("branchNum", branchNum);
 		if (dateFrom != null) {
@@ -601,33 +584,24 @@ public class ReceiveOrderDaoImpl extends DaoImpl implements ReceiveOrderDao {
 		return query.list();
 	}
 
-	@Override
-	public List<Object[]> findPurchaseMonth(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append("select convert(varchar(8), receive_order_audit_time, 112) as bizday, ");
-		sb.append("d.item_num, sum(d.receive_order_detail_subtotal) as subTotal, sum(d.receive_order_detail_other_money) as otherMoney ");
-		sb.append("from receive_order as r with(nolock) inner join receive_order_detail as d with(nolock) on r.receive_order_fid = d.receive_order_fid ");
-		sb.append("where r.system_book_code = :systemBookCode ");
-		sb.append("and r.branch_num = " + AppUtil.getIntegerParmeList(branchNums));
-		sb.append("and r.receive_order_state_code=3 ");
-		if (dateFrom != null) {
-			sb.append("and r.receive_order_audit_time >= :dateFrom ");
+	public String replaceStr(String sql,String dateType,String strDate){
+		if(AppConstants.RECEIVE_ORDER_TIME.equals(dateType)){
+			if(AppConstants.BUSINESS_DATE_DAY.equals(strDate)){
+				sql = sql.replaceAll("%s", "convert(varchar(8), receive_order_date, 112)");
+				sql = sql.replaceAll("%date", "r.receive_order_date");
+			}else {
+				sql = sql.replaceAll("%s", "convert(varchar(6), receive_order_date, 112)");
+				sql = sql.replaceAll("%date", "r.receive_order_date");
+			}
+		}else{
+			if(AppConstants.BUSINESS_DATE_DAY.equals(strDate)){
+				sql = sql.replaceAll("%s", "convert(varchar(8), receive_order_audit_time, 112)");
+				sql = sql.replaceAll("%date", "r.receive_order_audit_time");
+			}else {
+				sql = sql.replaceAll("%s", "convert(varchar(6), receive_order_audit_time, 112)");
+				sql = sql.replaceAll("%date", "r.receive_order_audit_time");
+			}
 		}
-		if (dateTo != null) {
-			sb.append("and r.receive_order_audit_time <= :dateTo ");
-		}
-		sb.append("group by convert(varchar(8), receive_order_audit_time, 112), d.item_num ");
-
-		Query query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", systemBookCode);
-		if (dateFrom != null) {
-			query.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
-		}
-		if (dateTo != null) {
-			query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
-		}
-		return query.list();
+		return sql;
 	}
-
 }

@@ -4,6 +4,7 @@ import com.nhsoft.module.report.dto.MonthPurchaseDTO;
 import com.nhsoft.module.report.dto.ReceiveOrderInfoDTO;
 import com.nhsoft.module.report.rpc.ReceiveOrderRpc;
 import com.nhsoft.module.report.service.ReceiveOrderService;
+import com.nhsoft.module.report.util.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class ReceiveOrderRpcImpl implements ReceiveOrderRpc {
 
     @Override
     public List<MonthPurchaseDTO> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String dateType) {
-        List<Object[]> objects = receiveOrderService.findPurchaseMonth(systemBookCode, branchNum, dateFrom, dateTo, dateType);
+        List<Object[]> objects = receiveOrderService.findPurchaseMonth(systemBookCode, branchNum, dateFrom, dateTo, dateType, AppConstants.BUSINESS_DATE_DAY);
         int size = objects.size();
         List<MonthPurchaseDTO> list = new ArrayList<>(size);
         String bizday;
@@ -51,6 +52,24 @@ public class ReceiveOrderRpcImpl implements ReceiveOrderRpc {
             }else{
                 dto.setBizday(bizday);
             }
+            dto.setItemNum((Integer) object[1]);
+            dto.setSubTotal((BigDecimal) object[2]);
+            dto.setOtherMoney((BigDecimal) object[3]);
+            list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public List<MonthPurchaseDTO> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String dateType, String strDate) {
+
+        List<Object[]> objects = receiveOrderService.findPurchaseMonth(systemBookCode, branchNum, dateFrom, dateTo, dateType, strDate);
+        int size = objects.size();
+        List<MonthPurchaseDTO> list = new ArrayList<>(size);
+        for (int i = 0; i < size ; i++) {
+            Object[] object = objects.get(i);
+            MonthPurchaseDTO dto = new MonthPurchaseDTO();
+            dto.setBizday((String) object[0]);
             dto.setItemNum((Integer) object[1]);
             dto.setSubTotal((BigDecimal) object[2]);
             dto.setOtherMoney((BigDecimal) object[3]);

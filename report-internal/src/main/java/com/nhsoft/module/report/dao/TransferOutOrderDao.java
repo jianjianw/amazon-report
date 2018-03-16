@@ -345,5 +345,18 @@ public interface TransferOutOrderDao{
 													Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 
+	/**
+	 * 按营业日 汇总金额
+	 * @param systemBookCode
+	 * @param centerBranchNum
+	 * @param branchNums
+	 * @param dateFrom 审核时间起
+	 * @param dateTo 审核时间止
+	 * @return
+	 */
+	public List<Object[]> findDateSummary(String systemBookCode, Integer centerBranchNum,
+										  List<Integer> branchNums, Date dateFrom, Date dateTo,String strDate);
+
+
 
 }

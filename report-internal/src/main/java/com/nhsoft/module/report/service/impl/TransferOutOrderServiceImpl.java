@@ -115,4 +115,9 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 		return transferOutOrderDao.findUnInBranchItemSummary(systemBookCode, centerBranchNums, branchNums, dateFrom, dateTo, itemNums);
 	}
 
+	@Override
+	public List<Object[]> findDateSummary(String systemBookCode, Integer centerBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo, String strDate) {
+		return transferOutOrderDao.findDateSummary(systemBookCode,centerBranchNum,branchNums,dateFrom,dateTo,strDate);
+	}
+
 }

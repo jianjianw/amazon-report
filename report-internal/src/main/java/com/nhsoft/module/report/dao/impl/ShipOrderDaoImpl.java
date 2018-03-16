@@ -3,6 +3,7 @@ package com.nhsoft.module.report.dao.impl;
 
 import com.nhsoft.module.report.dao.ShipOrderDao;
 import com.nhsoft.module.report.dto.ShipOrderDTO;
+import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import org.hibernate.Query;
@@ -255,4 +256,30 @@ public class ShipOrderDaoImpl extends DaoImpl implements ShipOrderDao {
 		sqlQuery.setString("systemBookCode",systemBookCode);
 		return sqlQuery.list();
 	}
+
+    @Override
+    public List<Object[]> findDateSummary(String systemBookCode, Integer branchNum, List<Integer> branchNums, Date dateFrom, Date dateTo, String strDate) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select %s , sum(ship_order_carriage) as feeMoney, sum(ship_order_money) as totalMoney ");
+		sb.append("from ship_order with(nolock) where system_book_code = :systemBookCode and ship_branch_num is not null ");
+		sb.append("and branch_num = :branchNum ");
+		if(branchNums != null && branchNums.size() > 0){
+			sb.append("and ship_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and ship_order_audit_time between :dateFrom and :dateTo and ship_order_state_code = 3 ");
+		sb.append("group by %s ");
+		String sql = sb.toString();
+		if(AppConstants.BUSINESS_DATE_DAY.equals(strDate)){
+			sql = sql.replaceAll("%s","convert(varchar(8) , ship_order_audit_time, 112)");
+		}else {
+			sql = sql.replaceAll("%s","convert(varchar(6) , ship_order_audit_time, 112)");
+
+		}
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		sqlQuery.setInteger("branchNum", branchNum);
+		sqlQuery.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		sqlQuery.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		return sqlQuery.list();
+    }
 }

@@ -117,9 +117,11 @@ public interface ReceiveOrderService{
 		 * @param branchNum
 		 * @param dateFrom
 		 * @param dateTo
+		 * @param dateType  收获期日 or 审核日期
+		 * @param strDate 按时间汇总   按日 or  按月
 		 * @return
 		 */
-		public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType);
+		public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType,String strDate);
 
 
 }

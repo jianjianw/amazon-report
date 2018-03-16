@@ -66,8 +66,8 @@ public class ReceiveOrderServiceImpl extends BaseManager implements ReceiveOrder
 	}
 
 	@Override
-	public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType) {
-		return receiveOrderDao.findPurchaseMonth(systemBookCode,branchNum,dateFrom,dateTo,dateType);
+	public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType,String strDate) {
+		return receiveOrderDao.findPurchaseMonth(systemBookCode,branchNum,dateFrom,dateTo,dateType,strDate);
 	}
 
 

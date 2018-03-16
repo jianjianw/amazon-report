@@ -1001,5 +1001,30 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		return query.list();
 	}
 
+	@Override
+	public List<Object[]> findDateSummary(String systemBookCode, Integer centerBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo,String strDate) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select %s , sum(out_order_total_money) as totalMoney, sum(out_order_other_fee) as feeMoney  ");
+		sb.append("from transfer_out_order with(nolock) where system_book_code = :systemBookCode and out_branch_num = " + centerBranchNum + " ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and out_order_audit_time between :dateFrom and :dateTo and out_order_state_code = 3 ");
+		sb.append("group by %s ");
+		String sql = sb.toString();
+
+		if(AppConstants.BUSINESS_DATE_DAY.equals(strDate)){//按日
+			sql = sql.replaceAll("%s","convert(varchar(8) , out_order_audit_time, 112)");
+		}else{
+			sql = sql.replaceAll("%s","convert(varchar(6) , out_order_audit_time, 112)");
+
+		}
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sql);
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		sqlQuery.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		sqlQuery.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		return sqlQuery.list();
+	}
+
 
 }

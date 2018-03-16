@@ -33,4 +33,6 @@
     <dubbo:service interface="com.nhsoft.module.report.rpc.PosItemLogRpc" ref="posItemLogRpcImpl"/>
     <dubbo:service interface="com.nhsoft.module.report.rpc.MobileAppV2Rpc" ref="mobileAppV2RpcImpl"/>
     <dubbo:service interface="com.nhsoft.module.report.rpc.ReceiveOrderRpc" ref="receiveOrderRpcImpl"/>
+    <dubbo:service interface="com.nhsoft.module.report.rpc.ReturnOrderRpc" ref="returnOrderRpcImpl"/>
+
 </beans>
