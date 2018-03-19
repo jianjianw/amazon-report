@@ -29,6 +29,8 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 	private boolean page = true;
 	private Integer offset;
 	private Integer limit;
+	private String sortField;
+	private String sortType;
 
 	private Integer max = 50000;
 
@@ -223,5 +225,21 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 
 	public void setLimit(Integer limit) {
 		this.limit = limit;
+	}
+
+	public String getSortField() {
+		return sortField;
+	}
+
+	public void setSortField(String sortField) {
+		this.sortField = sortField;
+	}
+
+	public String getSortType() {
+		return sortType;
+	}
+
+	public void setSortType(String sortType) {
+		this.sortType = sortType;
 	}
 }

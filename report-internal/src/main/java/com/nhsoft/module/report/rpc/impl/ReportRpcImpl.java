@@ -3379,6 +3379,10 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<AlipayDetailDTO> findAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String type, String paymentType, Boolean queryAll) {
+
+		if(dateFrom != null && dateTo != null && dateFrom.compareTo(dateTo) > 0){
+			return new ArrayList<AlipayDetailDTO>();
+		}
 		List<AlipayDetailDTO> list = reportService.findAlipayDetailDTOs(systemBookCode,branchNums,dateFrom,dateTo,type,paymentType,queryAll);
 		return list;
 	}
@@ -4375,14 +4379,14 @@ public class ReportRpcImpl implements ReportRpc {
 		if(branchNums.size() < 10){
 			profitAnalysisQueryData.setPage(false);//不分页
 		}else{
-            count = reportService.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData).size();//返回条数
-        }
+			Object[] profitAnalysisByBranchAndItemCount = reportService.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData);
+		}
 		List<Object[]> objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);//500-1000
-		List<Object[]> subList = objects.subList(0, 500);
+
 
 		if(profitAnalysisQueryData.getIsQueryCF()){ //500-1000
 			//查询成分商品
-			//List<Object[]> kitObjects = posOrderService.findKitProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
+			List<Object> kitObjects = reportService.findKitProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
 			//objects.addAll(kitObjects);
 		}
 

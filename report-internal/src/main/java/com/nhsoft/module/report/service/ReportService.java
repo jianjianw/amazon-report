@@ -1399,6 +1399,21 @@ public interface ReportService {
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
-	public List<Object> findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData);
+	public Object[] findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
+	 * 毛利分析 商品毛利汇总(成分商品)   分页查询
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public List<Object> findKitProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
+	 * 毛利分析 商品毛利汇总(成分商品)  查询总条数
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public Object[] findKitProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData);
+
 
 }

@@ -132,6 +132,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
 		sb.append("count(detail.item_num) as saleCount ");
+		if(!queryKit){
+			sb.append(", sum(case when detail.order_detail_state_code = 1 then detail.order_detail_commission when detail.order_detail_state_code = 4 then -order_detail_commission end) as commission ");
+		}
 		sb.append("from pos_order_detail as detail with(nolock) ");
 		sb.append("where detail.order_detail_book_code = :systemBookCode ");
 		if (branchNums != null && branchNums.size() > 0) {
@@ -2123,11 +2126,11 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
         } else {
             sb.append("select detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num, ");
-            sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
-            sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
-            sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
-            sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-            sb.append("from pos_order_detail as detail with(nolock) ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
+			sb.append("from pos_order_detail as detail with(nolock) ");
             sb.append("where detail.order_detail_book_code = :systemBookCode ");
             if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
                 sb.append("and detail.order_detail_branch_num in "
@@ -5810,6 +5813,119 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return (Object[]) query.uniqueResult();
 	}
 
+
+
+
+	private String createProfitAnalysisIsQueryClient(ProfitAnalysisQueryData profitAnalysisQueryData){
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+		sb.append("where p.system_book_code = :systemBookCode  ");
+		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
+			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums())
+					+ " ");
+		}
+		sb.append("and p.shift_table_bizday between :bizFrom and :bizTo ");
+		sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
+		sb.append("and detail.order_detail_state_code != 8 ");
+		if(profitAnalysisQueryData.isQueryPresent()){
+			sb.append("and detail.order_detail_state_code = 2 ");
+		}
+		if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
+			sb.append("and detail.item_num in "
+					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
+		}
+		if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
+				|| (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
+				.getPosItemTypeCodes().size() > 0)) {
+			sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
+			if (profitAnalysisQueryData.getPosItemTypeCodes() != null
+					&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
+				sb.append("and item.item_category_code in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
+			}
+			if (profitAnalysisQueryData.getBrandCodes() != null
+					&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
+				sb.append("and item.item_brand in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
+			}
+			sb.append(") ");
+		}
+		if (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0) {
+			sb.append("and p.client_fid in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getClientFids())
+					+ " ");
+		}
+		if (profitAnalysisQueryData.isQueryClient()) {
+			sb.append("and p.client_fid != '' ");
+		}
+		if (profitAnalysisQueryData.getIsQueryCF()) {
+			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
+		}
+		if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+			}
+		}
+		if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
+			sb.append("and p.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
+		}
+		return sb.toString();
+	}
+
+	private String createProfitAnalysisQuery(ProfitAnalysisQueryData profitAnalysisQueryData){
+		StringBuilder sb = new StringBuilder();
+		sb.append("from pos_order_detail as detail with(nolock) ");
+		sb.append("where detail.order_detail_book_code = :systemBookCode ");
+		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
+			sb.append("and detail.order_detail_branch_num in "
+					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
+		}
+		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
+		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
+		sb.append("and detail.order_detail_state_code != 8 ");
+		if(profitAnalysisQueryData.isQueryPresent()){
+			sb.append("and detail.order_detail_state_code = 2 ");
+		}
+		if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
+			sb.append("and detail.item_num in "
+					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
+		}
+		if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
+				|| (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
+				.getPosItemTypeCodes().size() > 0)) {
+			sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
+			if (profitAnalysisQueryData.getPosItemTypeCodes() != null
+					&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
+				sb.append("and item.item_category_code in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
+			}
+			if (profitAnalysisQueryData.getBrandCodes() != null
+					&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
+				sb.append("and item.item_brand in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
+			}
+			sb.append(") ");
+		}
+		if (profitAnalysisQueryData.getIsQueryCF()) {
+			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
+		}
+		if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+			}
+		}
+		if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
+			sb.append("and detail.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
+		}
+		return sb.toString();
+	}
+
 	@Override
 	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
@@ -5823,115 +5939,32 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-			sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
-			sb.append("where p.system_book_code = :systemBookCode  ");
-			if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
-				sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums())
-						+ " ");
-			}
-			sb.append("and p.shift_table_bizday between :bizFrom and :bizTo ");
-			sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
-			sb.append("and detail.order_detail_state_code != 8 ");
-			if(profitAnalysisQueryData.isQueryPresent()){
-				sb.append("and detail.order_detail_state_code = 2 ");
-			}
-			if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
-				sb.append("and detail.item_num in "
-						+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
-			}
-			if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
-					|| (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
-					.getPosItemTypeCodes().size() > 0)) {
-				sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
-				if (profitAnalysisQueryData.getPosItemTypeCodes() != null
-						&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
-					sb.append("and item.item_category_code in "
-							+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
-				}
-				if (profitAnalysisQueryData.getBrandCodes() != null
-						&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
-					sb.append("and item.item_brand in "
-							+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
-				}
-				sb.append(") ");
-			}
-			if (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0) {
-				sb.append("and p.client_fid in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getClientFids())
-						+ " ");
-			}
-			if (profitAnalysisQueryData.isQueryClient()) {
-				sb.append("and p.client_fid != '' ");
-			}
-			if (profitAnalysisQueryData.getIsQueryCF()) {
-				sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
-			}
-			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-				} else {
-					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
-				}
-			}
-			if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
-				sb.append("and p.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
-			}
+			sb.append(createProfitAnalysisIsQueryClient(profitAnalysisQueryData));
 			sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
-			sb.append("order by branchNum,itemNum,matrixNum,profit,amount,money,cost ");
+
+			if(profitAnalysisQueryData.isPage()){
+				if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
+					sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
+				}
+			}else{
+				sb.append("order by branchNum asc");
+			}
+
 		} else {
 			sb.append("select detail.order_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_detail_item_matrix_num as matrixNum, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-			sb.append("from pos_order_detail as detail with(nolock) ");
-			sb.append("where detail.order_detail_book_code = :systemBookCode ");
-			if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
-				sb.append("and detail.order_detail_branch_num in "
-						+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
-			}
-			sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
-			sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
-			sb.append("and detail.order_detail_state_code != 8 ");
-			if(profitAnalysisQueryData.isQueryPresent()){
-				sb.append("and detail.order_detail_state_code = 2 ");
-			}
-			if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
-				sb.append("and detail.item_num in "
-						+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
-			}
-			if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
-					|| (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
-					.getPosItemTypeCodes().size() > 0)) {
-				sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
-				if (profitAnalysisQueryData.getPosItemTypeCodes() != null
-						&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
-					sb.append("and item.item_category_code in "
-							+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
-				}
-				if (profitAnalysisQueryData.getBrandCodes() != null
-						&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
-					sb.append("and item.item_brand in "
-							+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
-				}
-				sb.append(") ");
-			}
-			if (profitAnalysisQueryData.getIsQueryCF()) {
-				sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
-			}
-			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-				} else {
-					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
-				}
-			}
-			if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
-				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
-			}
+			createProfitAnalysisQuery(profitAnalysisQueryData);
 			sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
-			sb.append("order by branchNum,itemNum,matrixNum,profit,amount,money,cost ");
+			if(profitAnalysisQueryData.isPage()){
+				if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
+					sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
+				}
+			}else{
+				sb.append("order by branchNum asc");
+			}
 		}
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
@@ -5946,121 +5979,119 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object> findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
+	public Object[] findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
 		StringBuffer sb = new StringBuffer();
 
+		sb.append("select count(*) as count_ ,sum(profit) as profit_ ,sum(amount) as amount_ , sum(money) as money_ , sum(cost) as cost_ from ( ");
 		if (profitAnalysisQueryData.isQueryClient()
 				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
-
-			sb.append("select p.branch_num ");
-			sb.append("where p.system_book_code = :systemBookCode  ");
-			if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
-				sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums())
-						+ " ");
-			}
-			sb.append("and p.shift_table_bizday between :bizFrom and :bizTo ");
-			sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
-			sb.append("and detail.order_detail_state_code != 8 ");
-			if(profitAnalysisQueryData.isQueryPresent()){
-				sb.append("and detail.order_detail_state_code = 2 ");
-			}
-			if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
-				sb.append("and detail.item_num in "
-						+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
-			}
-			if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
-					|| (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
-					.getPosItemTypeCodes().size() > 0)) {
-				sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
-				if (profitAnalysisQueryData.getPosItemTypeCodes() != null
-						&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
-					sb.append("and item.item_category_code in "
-							+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
-				}
-				if (profitAnalysisQueryData.getBrandCodes() != null
-						&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
-					sb.append("and item.item_brand in "
-							+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
-				}
-				sb.append(") ");
-			}
-			if (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0) {
-				sb.append("and p.client_fid in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getClientFids())
-						+ " ");
-			}
-			if (profitAnalysisQueryData.isQueryClient()) {
-				sb.append("and p.client_fid != '' ");
-			}
-			if (profitAnalysisQueryData.getIsQueryCF()) {
-				sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
-			}
-			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-				} else {
-					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
-				}
-			}
-			if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
-				sb.append("and p.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
-			}
+			sb.append("select sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
+			createProfitAnalysisIsQueryClient(profitAnalysisQueryData);
 			sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
 		} else {
-			sb.append("select detail.order_detail_branch_num ");
-			sb.append("from pos_order_detail as detail with(nolock) ");
-			sb.append("where detail.order_detail_book_code = :systemBookCode ");
-			if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
-				sb.append("and detail.order_detail_branch_num in "
-						+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
+			sb.append("select sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
+			createProfitAnalysisQuery(profitAnalysisQueryData);
+			sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
+		}
+		sb.append(") temp");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
+		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
+		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
+		return (Object[]) query.uniqueResult();
+	}
+
+	private String createKitProfitAnalysisQuery(ProfitAnalysisQueryData profitAnalysisQueryData){
+		StringBuffer sb = new StringBuffer();
+		sb.append("from pos_order_kit_detail as detail with(nolock) ");
+		sb.append("where detail.order_kit_detail_book_code = :systemBookCode ");
+		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
+			sb.append("and detail.order_kit_detail_branch_num in "
+					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
+		}
+		sb.append("and detail.order_kit_detail_bizday between :bizFrom and :bizTo ");
+		sb.append("and detail.order_kit_detail_order_state in (5, 7) and detail.item_num is not null ");
+		sb.append("and detail.order_kit_detail_state_code != 8 ");
+		if(profitAnalysisQueryData.isQueryPresent()){
+			sb.append("and detail.order_kit_detail_state_code = 2 ");
+		}
+		if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
+			sb.append("and detail.item_num in "
+					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
+		}
+		if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
+				|| (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
+				.getPosItemTypeCodes().size() > 0)) {
+			sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
+			if (profitAnalysisQueryData.getPosItemTypeCodes() != null
+					&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
+				sb.append("and item.item_category_code in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
 			}
-			sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
-			sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
-			sb.append("and detail.order_detail_state_code != 8 ");
-			if(profitAnalysisQueryData.isQueryPresent()){
-				sb.append("and detail.order_detail_state_code = 2 ");
+			if (profitAnalysisQueryData.getBrandCodes() != null
+					&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
+				sb.append("and item.item_brand in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
 			}
-			if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
-				sb.append("and detail.item_num in "
-						+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
+			sb.append(") ");
+		}
+		if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
+			sb.append("and detail.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public List<Object> findKitProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select detail.order_kit_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_kit_detail_item_matrix_num as matrixNum, ");
+		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
+		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else detail.order_kit_detail_amount end) as amount, ");
+		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
+		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
+		createKitProfitAnalysisQuery(profitAnalysisQueryData);
+		sb.append("group by detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num ");
+
+		if(profitAnalysisQueryData.isPage()){
+			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
+				sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
 			}
-			if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
-					|| (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
-					.getPosItemTypeCodes().size() > 0)) {
-				sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
-				if (profitAnalysisQueryData.getPosItemTypeCodes() != null
-						&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
-					sb.append("and item.item_category_code in "
-							+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
-				}
-				if (profitAnalysisQueryData.getBrandCodes() != null
-						&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
-					sb.append("and item.item_brand in "
-							+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
-				}
-				sb.append(") ");
-			}
-			if (profitAnalysisQueryData.getIsQueryCF()) {
-				sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
-			}
-			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
-				List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
-				if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
-					sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
-				} else {
-					sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
-				}
-			}
-			if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
-				sb.append("and detail.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
-			}
-			sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num");
+		}else{
+			sb.append("order by branchNum asc");
 		}
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
 		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
 		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
 		return query.list();
+	}
+
+	@Override
+	public Object[] findKitProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select count(*),sum(profit) as profit_ ,sum(amount) as amount_ , sum(money) as money_ , sum(cost) as cost_ from ( ");
+		sb.append("select sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
+		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else detail.order_kit_detail_amount end) as amount, ");
+		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
+		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
+		createKitProfitAnalysisQuery(profitAnalysisQueryData);
+		sb.append("group by detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num ");
+		sb.append(") temp");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
+		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
+		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
+		return (Object[]) query.uniqueResult();
+
+
 	}
 
 
