@@ -1402,5 +1402,16 @@ public interface ReportRpc {
 	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 
+	/**
+	 * 毛利分析 日毛利汇总   分页查询
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public BranchBizSummaryPageDTO findProfitAnalysisDaysByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+
+
+
+
 
 }

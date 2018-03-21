@@ -31,6 +31,7 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 	private Integer limit;
 	private String sortField;
 	private String sortType;
+	private boolean queryPosItem = false;
 
 	private Integer max = 50000;
 
@@ -241,5 +242,13 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 
 	public void setSortType(String sortType) {
 		this.sortType = sortType;
+	}
+
+	public boolean isQueryPosItem() {
+		return queryPosItem;
+	}
+
+	public void setQueryPosItem(boolean queryPosItem) {
+		this.queryPosItem = queryPosItem;
 	}
 }

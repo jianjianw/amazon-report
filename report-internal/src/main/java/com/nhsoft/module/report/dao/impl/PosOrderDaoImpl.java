@@ -5933,7 +5933,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		if (profitAnalysisQueryData.isQueryClient()
 				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
-
 			sb.append("select p.branch_num as branchNum, detail.item_num as itemNum, detail.order_detail_item_matrix_num as matrixNum, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
@@ -5941,31 +5940,34 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
 			sb.append(createProfitAnalysisIsQueryClient(profitAnalysisQueryData));
 			sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
-
-			if(profitAnalysisQueryData.isPage()){
-				if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-					sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
-				}
-			}else{
-				sb.append("order by branchNum asc");
-			}
-
 		} else {
 			sb.append("select detail.order_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_detail_item_matrix_num as matrixNum, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-			createProfitAnalysisQuery(profitAnalysisQueryData);
+			sb.append(createProfitAnalysisQuery(profitAnalysisQueryData));
 			sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
-			if(profitAnalysisQueryData.isPage()){
-				if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-					sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
-				}
-			}else{
-				sb.append("order by branchNum asc");
-			}
 		}
+		if(profitAnalysisQueryData.getIsQueryCF()){
+			sb.append("union ");
+			sb.append("select detail.order_kit_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_kit_detail_item_matrix_num as matrixNum, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else detail.order_kit_detail_amount end) as amount, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
+			sb.append(createKitProfitAnalysisQuery(profitAnalysisQueryData));
+			sb.append("group by detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num ");
+		}
+
+		if(profitAnalysisQueryData.isPage()){
+			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
+				sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
+			}
+		}else{
+			sb.append("order by branchNum asc");
+		}
+
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
 		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
@@ -5974,37 +5976,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			query.setFirstResult(profitAnalysisQueryData.getOffset());
 			query.setMaxResults(profitAnalysisQueryData.getLimit());
 		}
+
 		return query.list();
 
-	}
-
-	@Override
-	public Object[] findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append("select count(*) as count_ ,sum(profit) as profit_ ,sum(amount) as amount_ , sum(money) as money_ , sum(cost) as cost_ from ( ");
-		if (profitAnalysisQueryData.isQueryClient()
-				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
-			sb.append("select sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
-			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
-			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
-			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-			createProfitAnalysisIsQueryClient(profitAnalysisQueryData);
-			sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
-		} else {
-			sb.append("select sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
-			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
-			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
-			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-			createProfitAnalysisQuery(profitAnalysisQueryData);
-			sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
-		}
-		sb.append(") temp");
-		Query query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
-		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
-		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
-		return (Object[]) query.uniqueResult();
 	}
 
 	private String createKitProfitAnalysisQuery(ProfitAnalysisQueryData profitAnalysisQueryData){
@@ -6048,50 +6022,406 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public List<Object> findKitProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+	public Object[] findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select detail.order_kit_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_kit_detail_item_matrix_num as matrixNum, ");
-		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
-		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else detail.order_kit_detail_amount end) as amount, ");
-		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
-		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
-		createKitProfitAnalysisQuery(profitAnalysisQueryData);
-		sb.append("group by detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num ");
 
-		if(profitAnalysisQueryData.isPage()){
-			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-				sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
-			}
-		}else{
-			sb.append("order by branchNum asc");
+		sb.append("select count(*) as count_ ,sum(profit) as profit_ , sum(money) as money_ , sum(cost) as cost_ from ( ");
+		if (profitAnalysisQueryData.isQueryClient()
+				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
+			sb.append("select p.branch_num as branchNum, detail.item_num as itemNum, detail.order_detail_item_matrix_num as matrixNum, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
+			sb.append(createProfitAnalysisIsQueryClient(profitAnalysisQueryData));
+			sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
+
+		} else {
+			sb.append("select detail.order_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_detail_item_matrix_num as matrixNum, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
+			sb.append(createProfitAnalysisQuery(profitAnalysisQueryData));
+			sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
+
 		}
-		Query query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
-		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
-		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
-		return query.list();
-	}
+		if(profitAnalysisQueryData.getIsQueryCF()){
+			sb.append("union ");
+			sb.append("select detail.order_kit_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_kit_detail_item_matrix_num as matrixNum, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
+			sb.append(createKitProfitAnalysisQuery(profitAnalysisQueryData));
+			sb.append("group by detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num ");
+		}
+		sb.append(") as temp");
 
-	@Override
-	public Object[] findKitProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
-
-
-		StringBuffer sb = new StringBuffer();
-		sb.append("select count(*),sum(profit) as profit_ ,sum(amount) as amount_ , sum(money) as money_ , sum(cost) as cost_ from ( ");
-		sb.append("select sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
-		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else detail.order_kit_detail_amount end) as amount, ");
-		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
-		sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
-		createKitProfitAnalysisQuery(profitAnalysisQueryData);
-		sb.append("group by detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num ");
-		sb.append(") temp");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
 		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
 		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
 		return (Object[]) query.uniqueResult();
+	}
 
 
+	private String createProfitAnalysisDaysIsQueryClient(ProfitAnalysisQueryData profitAnalysisQueryData){
+		StringBuilder sb = new StringBuilder();
+		sb.append("from pos_order as p inner join pos_order_detail as detail on p.order_no = detail.order_no ");
+
+		if(profitAnalysisQueryData.isQueryPosItem()){
+			sb.append("inner join pos_item as item on item.item_num = detail.item_num ");
+		}
+		sb.append("where p.system_book_code = :systemBookCode ");
+		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
+			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums())
+					+ " ");
+		}
+		sb.append("and p.shift_table_bizday between :bizFrom and :bizTo ");
+		sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
+		sb.append("and detail.order_detail_state_code != 8 ");
+		if(profitAnalysisQueryData.isQueryPresent()){
+			sb.append("and detail.order_detail_state_code = 2 ");
+		}
+		if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
+			sb.append("and detail.item_num in "
+					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
+		}
+		if (profitAnalysisQueryData.isQueryPosItem()) {
+			if (profitAnalysisQueryData.getPosItemTypeCodes() != null
+					&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
+				sb.append("and item.item_category_code in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
+			}
+			if (profitAnalysisQueryData.getBrandCodes() != null
+					&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
+				sb.append("and item.item_brand in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
+			}
+		}
+		if (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0) {
+			sb.append("and p.client_fid in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getClientFids()));
+		}
+		if (profitAnalysisQueryData.isQueryClient()) {
+			sb.append("and p.client_fid != '' ");
+		}
+		if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+			}
+		}
+		if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
+			sb.append("and p.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
+		}
+		return sb.toString();
+	}
+
+	public String createProfitAnalysisDaysQuery(ProfitAnalysisQueryData profitAnalysisQueryData){
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("from pos_order_detail as detail ");
+		if(profitAnalysisQueryData.isQueryPosItem()){
+			sb.append("inner join pos_item as item on detail.item_num = item.item_num ");
+		}
+		sb.append("where detail.order_detail_book_code = :systemBookCode ");
+		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
+			sb.append("and detail.order_detail_branch_num in "
+					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
+		}
+		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
+		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
+		sb.append("and detail.order_detail_state_code != 8 ");
+		if(profitAnalysisQueryData.isQueryPresent()){
+			sb.append("and detail.order_detail_state_code = 2 ");
+		}
+		if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
+			sb.append("and detail.item_num in "
+					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
+		}
+		if (profitAnalysisQueryData.isQueryPosItem()) {
+			if (profitAnalysisQueryData.getPosItemTypeCodes() != null
+					&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
+				sb.append("and item.item_category_code in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
+			}
+			if (profitAnalysisQueryData.getBrandCodes() != null
+					&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
+				sb.append("and item.item_brand in "
+						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
+			}
+		}
+		if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(profitAnalysisQueryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and detail.order_source = '" + profitAnalysisQueryData.getSaleType() + "' ");
+			}
+		}
+
+		if (profitAnalysisQueryData.getIsQueryCF()) {
+			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
+		}
+		if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
+			sb.append("and detail.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
+		}
+
+		return sb.toString();
+	}
+
+	@Override
+	public List<Object[]> findProfitAnalysisDaysByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		StringBuffer sb = new StringBuffer();
+
+		if (profitAnalysisQueryData.isQueryClient()
+				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
+			sb.append("select p.branch_num as branchNum, p.shift_table_bizday as biz, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
+			sb.append(createProfitAnalysisDaysIsQueryClient(profitAnalysisQueryData));
+			sb.append("group by p.branch_num,p.shift_table_bizday ");
+		} else {
+			sb.append("select detail.order_detail_branch_num as branchNum,detail.order_detail_bizday as biz, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
+			sb.append(createProfitAnalysisDaysQuery(profitAnalysisQueryData));
+			sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday ");
+		}
+
+		if(profitAnalysisQueryData.getIsQueryCF()){
+			sb.append("union ");
+			sb.append("select detail.order_kit_detail_branch_num as branchNum, detail.order_kit_detail_bizday as biz, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
+			sb.append(createKitProfitAnalysisQuery(profitAnalysisQueryData));
+			sb.append("group by detail.order_kit_detail_branch_num, detail.order_kit_detail_bizday ");
+		}
+
+		if(profitAnalysisQueryData.isPage()){
+			if(StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
+				sb.append("order by " + profitAnalysisQueryData.getSortField() + " "+profitAnalysisQueryData.getSortType());
+			}
+		}else{
+			sb.append("order by branchNum desc");
+		}
+
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
+		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
+		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
+		if(profitAnalysisQueryData.isPage()){
+			query.setFirstResult(profitAnalysisQueryData.getOffset());
+			query.setMaxResults(profitAnalysisQueryData.getLimit());
+		}
+		return query.list();
+	}
+
+	@Override
+	public Object[] findProfitAnalysisDaysCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("select count(*) as count_, sum(profit) as profit_, sum(money) as money_, sum(cost) as cost_ from ( ");
+		if (profitAnalysisQueryData.isQueryClient()
+				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
+			sb.append("select p.branch_num as branchNum, p.shift_table_bizday as biz, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
+			sb.append(createProfitAnalysisDaysIsQueryClient(profitAnalysisQueryData));
+			sb.append("group by p.branch_num,p.shift_table_bizday ");
+		} else {
+			sb.append("select detail.order_detail_branch_num as branchNum,detail.order_detail_bizday as biz, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
+			sb.append(createProfitAnalysisDaysQuery(profitAnalysisQueryData));
+			sb.append("group by detail.order_detail_branch_num, detail.order_detail_bizday ");
+		}
+
+		if(profitAnalysisQueryData.getIsQueryCF()){
+			sb.append("union ");
+			sb.append("select detail.order_kit_detail_branch_num as branchNum, detail.order_kit_detail_bizday as biz, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
+			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
+			sb.append(createKitProfitAnalysisQuery(profitAnalysisQueryData));
+			sb.append("group by detail.order_kit_detail_branch_num, detail.order_kit_detail_bizday ");
+		}
+
+		sb.append(") temp");
+
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
+		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
+		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
+		List list = query.list();
+		return (Object[]) query.uniqueResult();
+
+	}
+
+	@Override
+	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select detail.order_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_detail_state_code as stateCode, ");
+		sb.append("sum(detail.order_detail_amount) as amount, ");
+		sb.append("sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, ");
+		sb.append("count(detail.item_num) as amount_, ");
+		sb.append("sum(detail.order_detail_discount) as discount  ");
+		sb.append(createSaleAnalysisBranchItemQuery(queryData));
+		sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_state_code ");
+
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb.append("union ");
+			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.item_num as itemNum,kitDetail.order_kit_detail_state_code as stateCode, ");
+			sb.append("sum(kitDetail.order_kit_detail_amount) as amount, ");
+			sb.append("sum(kitDetail.order_kit_detail_payment_money) as money, ");
+			sb.append("sum(0.00) as assistAmount, ");
+			sb.append("count(kitDetail.item_num) as amount_, ");
+			sb.append("sum(kitDetail.order_kit_detail_discount) as discount ");
+			sb.append(createKitSaleAnalysisBranchItemQuery(queryData));
+			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
+		}
+		if(queryData.isPage()){
+			if(StringUtils.isNotEmpty(queryData.getSortField())){
+				sb.append("order by " + queryData.getSortField() + " "+queryData.getSortType());
+			}
+		}else{
+			sb.append("order by branchNum desc");
+		}
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		if(queryData.isPage()){
+			query.setFirstResult(queryData.getOffset());
+			query.setMaxResults(queryData.getLimit());
+		}
+		return query.list();
+	}
+
+	public String createSaleAnalysisBranchItemQuery(SaleAnalysisQueryData queryData){
+		StringBuilder sb = new StringBuilder();
+		sb.append("from pos_order_detail as detail with(nolock) ");
+		sb.append("where detail.order_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
+		if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
+			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
+		}
+		sb.append("and detail.order_detail_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
+				+ "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
+		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
+		if (queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
+		}
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
+		}
+		if (queryData.getIsQueryGrade()) {
+			sb.append("and (detail.item_grade_num is null or detail.item_grade_num = 0 ) ");
+		}
+		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (detail.order_source is null or detail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+
+
+			} else {
+
+				sb.append("and detail.order_source = '" + queryData.getSaleType() + "' ");
+			}
+		}
+		if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
+			sb.append("and detail.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
+		}
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb.append("and (detail.order_detail_has_kit = 0 or detail.order_detail_has_kit is null) ");
+		}
+		if(queryData.getTwoStringValueDatas() != null && queryData.getTwoStringValueDatas().size() > 0){
+			sb.append("and exists (select 1 from item_extend_attribute with(nolock) where item_extend_attribute.item_num = detail.item_num and (");
+			for(int i = 0;i < queryData.getTwoStringValueDatas().size();i++){
+				TwoStringValueData twoStringValueData = queryData.getTwoStringValueDatas().get(i);
+				if(i > 0){
+					sb.append(" or ");
+				}
+				sb.append("(item_extend_attribute.attribute_name = '" + twoStringValueData.getKey() + "' and item_extend_attribute.attribute_value like '%" + twoStringValueData.getValue() + "%') ");
+			}
+
+			sb.append(")) ");
+		}
+		return sb.toString();
+	}
+
+	public String createKitSaleAnalysisBranchItemQuery(SaleAnalysisQueryData queryData){
+		StringBuilder sb = new StringBuilder();
+		sb.append("from pos_order_kit_detail as kitDetail with(nolock) ");
+		sb.append("where kitDetail.order_kit_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
+		if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
+			sb.append("and kitDetail.order_kit_detail_branch_num in "
+					+ AppUtil.getIntegerParmeList(queryData.getBranchNums()));
+		}
+		sb.append("and kitDetail.order_kit_detail_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
+				+ "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
+		sb.append("and kitDetail.order_kit_detail_order_state in (5, 7) ");
+		if (queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0) {
+			sb.append("and kitDetail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
+		}
+		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (kitDetail.order_source is null or kitDetail.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+
+
+			} else {
+
+				sb.append("and kitDetail.order_source = '" + queryData.getSaleType() + "' ");
+			}
+		}
+		if (queryData.getOrderSources() != null && queryData.getOrderSources().size() > 0) {
+			sb.append("and kitDetail.order_source in " + AppUtil.getStringParmeList(queryData.getOrderSources()));
+		}
+		if(queryData.getTwoStringValueDatas() != null && queryData.getTwoStringValueDatas().size() > 0){
+			sb.append("and exists (select 1 from item_extend_attribute with(nolock) where item_extend_attribute.item_num = kitDetail.item_num and (");
+			for(int i = 0;i < queryData.getTwoStringValueDatas().size();i++){
+				TwoStringValueData twoStringValueData = queryData.getTwoStringValueDatas().get(i);
+				if(i > 0){
+					sb.append(" or ");
+				}
+				sb.append("(item_extend_attribute.attribute_name = '" + twoStringValueData.getKey() + "' and item_extend_attribute.attribute_value like '%" + twoStringValueData.getValue() + "%') ");
+			}
+
+			sb.append(")) ");
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public Object[] findSaleAnalysisByBranchPosItemsCount(SaleAnalysisQueryData queryData) {
+
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("select count(*) as count_, sum(amount) as amount_, sum(money) as money_, sum(assistAmount) as assistAmount_, sum(amount_) as amount__, sum(discount) as discount_ from( ");
+		sb.append("select detail.order_detail_branch_num as branchNum,detail.item_num as itemNum ,detail.order_detail_state_code as stateCode, ");
+		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_, ");
+		sb.append("sum(detail.order_detail_discount) as discount  ");
+		sb.append(createSaleAnalysisBranchItemQuery(queryData));
+		sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_state_code ");
+
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb.append("union ");
+			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.item_num as itemNum, kitDetail.order_kit_detail_state_code as stateCode, ");
+			sb.append("sum(kitDetail.order_kit_detail_amount) as amount, sum(kitDetail.order_kit_detail_payment_money) as money, ");
+			sb.append("sum(0.00) as assistAmount, count(kitDetail.item_num) as amount_, ");
+			sb.append("sum(kitDetail.order_kit_detail_discount) as discount ");
+			sb.append(createKitSaleAnalysisBranchItemQuery(queryData));
+			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
+		}
+		sb.append(") temp");
+
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return (Object[])query.uniqueResult();
 	}
 
 

@@ -1153,17 +1153,37 @@ public interface PosOrderDao {
 	 */
 	public Object[] findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData);
 
-	/**
-	 * 毛利分析 商品毛利汇总(成分商品)   分页查询
-	 * @param profitAnalysisQueryData
-	 * @return
-	 */
-	public List<Object> findKitProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
 
 	/**
-	 * 毛利分析 商品毛利汇总(成分商品)  查询总条数
+	 * 毛利分析 日毛利汇总  分页查询
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
-	public Object[] findKitProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData);
+	public List<Object[]> findProfitAnalysisDaysByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
+	 * 毛利分析 日毛利汇总  分页查询   查询总条数
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public Object[] findProfitAnalysisDaysCount(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+
+	/**
+	 * 销售分析 -- 按分店汇总商品信息   分页查询
+	 * @param queryData
+	 * @return
+	 */
+	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
+
+
+	/**
+	 * 销售分析 -- 按分店汇总商品信息   分页查询    查询总条数
+	 * @param queryData
+	 * @return
+	 */
+	public Object[] findSaleAnalysisByBranchPosItemsCount(SaleAnalysisQueryData queryData);
+
+
+
 }

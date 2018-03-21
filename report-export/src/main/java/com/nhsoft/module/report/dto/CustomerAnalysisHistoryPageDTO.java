@@ -6,6 +6,7 @@ import java.util.List;
 
 public class CustomerAnalysisHistoryPageDTO implements Serializable {
 
+    private static final long serialVersionUID = 6113707315697971608L;
     private Integer count;
     private List<CustomerAnalysisHistory> data;
 
