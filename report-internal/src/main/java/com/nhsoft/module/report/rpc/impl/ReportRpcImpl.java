@@ -4471,5 +4471,10 @@ public class ReportRpcImpl implements ReportRpc {
 		return result;
 	}
 
+	@Override
+	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
+		return null;
+	}
+
 
 }

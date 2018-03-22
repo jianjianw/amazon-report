@@ -5968,7 +5968,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("order by branchNum asc");
 		}
 
-		Query query = currentSession().createSQLQuery(sb.toString());
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
 		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
 		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
@@ -6055,7 +6055,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		sb.append(") as temp");
 
-		Query query = currentSession().createSQLQuery(sb.toString());
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
 		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
 		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
@@ -6209,7 +6209,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("order by branchNum desc");
 		}
 
-		Query query = currentSession().createSQLQuery(sb.toString());
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
 		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
 		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
@@ -6254,12 +6254,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		sb.append(") temp");
 
-		Query query = currentSession().createSQLQuery(sb.toString());
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
 		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
 		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
-		List list = query.list();
-		return (Object[]) query.uniqueResult();
+		Object[] object = (Object[]) query.uniqueResult();
+		return object;
 
 	}
 
@@ -6267,23 +6267,23 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append("select detail.order_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_detail_state_code as stateCode, ");
-		sb.append("sum(detail.order_detail_amount) as amount, ");
-		sb.append("sum(detail.order_detail_payment_money) as money, ");
+		sb.append("select detail.order_detail_branch_num as branchNum,detail.item_num as itemNum , ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) as money, ");
 		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, ");
-		sb.append("count(detail.item_num) as amount_, ");
-		sb.append("sum(detail.order_detail_discount) as discount  ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end ) as amount_, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then then -detail.order_detail_discount else detail.order_detail_discount end) as discount  ");
 		sb.append(createSaleAnalysisBranchItemQuery(queryData));
 		sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_state_code ");
 
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
 			sb.append("union ");
-			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.item_num as itemNum,kitDetail.order_kit_detail_state_code as stateCode, ");
-			sb.append("sum(kitDetail.order_kit_detail_amount) as amount, ");
-			sb.append("sum(kitDetail.order_kit_detail_payment_money) as money, ");
+			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.item_num as itemNum, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_amount else kitDetail.order_kit_detail_amount end) as amount, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_payment_money else kitDetail.order_kit_detail_payment_money end) as money, ");
 			sb.append("sum(0.00) as assistAmount, ");
-			sb.append("count(kitDetail.item_num) as amount_, ");
-			sb.append("sum(kitDetail.order_kit_detail_discount) as discount ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -1 else 1 end) as amount_, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_discount else kitDetail.order_kit_detail_discount end) as discount ");
 			sb.append(createKitSaleAnalysisBranchItemQuery(queryData));
 			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
 		}
@@ -6302,6 +6302,38 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return query.list();
 	}
 
+
+	@Override
+	public Object[] findSaleAnalysisByBranchPosItemsCount(SaleAnalysisQueryData queryData) {
+		//上面的page这个也要变。因为如果不统计状态（code）总条数会变。
+		StringBuffer sb = new StringBuffer();
+		sb.append("select count(*) as count_, sum(amount) as amount_, sum(money) as money_, sum(assistAmount) as assistAmount_, sum(amount_) as amount__, sum(discount) as discount_ from( ");
+		sb.append("select detail.order_detail_branch_num as branchNum,detail.item_num as itemNum , ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) as money, ");
+		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end ) as amount_, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then then -detail.order_detail_discount else detail.order_detail_discount end) as discount  ");
+		sb.append(createSaleAnalysisBranchItemQuery(queryData));
+		sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_state_code ");
+
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
+			sb.append("union ");
+			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.item_num as itemNum, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_amount else kitDetail.order_kit_detail_amount end) as amount, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_payment_money else kitDetail.order_kit_detail_payment_money end) as money, ");
+			sb.append("sum(0.00) as assistAmount, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -1 else 1 end) as amount_, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_discount else kitDetail.order_kit_detail_discount end) as discount ");
+			sb.append(createKitSaleAnalysisBranchItemQuery(queryData));
+			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
+		}
+		sb.append(") temp");
+
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return (Object[])query.uniqueResult();
+	}
+
 	public String createSaleAnalysisBranchItemQuery(SaleAnalysisQueryData queryData){
 		StringBuilder sb = new StringBuilder();
 		sb.append("from pos_order_detail as detail with(nolock) ");
@@ -6312,6 +6344,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("and detail.order_detail_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
 				+ "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
 		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
+		sb.append("and detail.order_detail_state_code != 8 ");
 		if (queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0) {
 			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
 		}
@@ -6364,6 +6397,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("and kitDetail.order_kit_detail_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFrom())
 				+ "' and '" + DateUtil.getDateShortStr(queryData.getDtTo()) + "' ");
 		sb.append("and kitDetail.order_kit_detail_order_state in (5, 7) ");
+		sb.append("and kitDetail.order_kit_detail_state_code != 8 ");
 		if (queryData.getPosItemNums() != null && queryData.getPosItemNums().size() > 0) {
 			sb.append("and kitDetail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
 		}
@@ -6396,33 +6430,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sb.toString();
 	}
 
-	@Override
-	public Object[] findSaleAnalysisByBranchPosItemsCount(SaleAnalysisQueryData queryData) {
-
-
-		StringBuffer sb = new StringBuffer();
-		sb.append("select count(*) as count_, sum(amount) as amount_, sum(money) as money_, sum(assistAmount) as assistAmount_, sum(amount_) as amount__, sum(discount) as discount_ from( ");
-		sb.append("select detail.order_detail_branch_num as branchNum,detail.item_num as itemNum ,detail.order_detail_state_code as stateCode, ");
-		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
-		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_, ");
-		sb.append("sum(detail.order_detail_discount) as discount  ");
-		sb.append(createSaleAnalysisBranchItemQuery(queryData));
-		sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_state_code ");
-
-		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
-			sb.append("union ");
-			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.item_num as itemNum, kitDetail.order_kit_detail_state_code as stateCode, ");
-			sb.append("sum(kitDetail.order_kit_detail_amount) as amount, sum(kitDetail.order_kit_detail_payment_money) as money, ");
-			sb.append("sum(0.00) as assistAmount, count(kitDetail.item_num) as amount_, ");
-			sb.append("sum(kitDetail.order_kit_detail_discount) as discount ");
-			sb.append(createKitSaleAnalysisBranchItemQuery(queryData));
-			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
-		}
-		sb.append(") temp");
-
-		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-		return (Object[])query.uniqueResult();
-	}
 
 
 }
