@@ -4407,7 +4407,7 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setMoneySum(moneySum == null ? BigDecimal.ZERO : moneySum);
 			result.setCostSum((BigDecimal) pageCount [3]);
 
-			if(moneySum == null || moneySum.compareTo(BigDecimal.ZERO) == 0){
+			if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
 				result.setProfitRateSum(BigDecimal.ZERO);
 			}else{
 				result.setProfitRateSum(profitSum.divide(moneySum, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
@@ -4461,7 +4461,7 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setProfitSum(profitSum == null ? BigDecimal.ZERO :  profitSum);
 			result.setMoneySum(moneySum == null ? BigDecimal.ZERO : moneySum);
 			result.setCostSum((BigDecimal) pageCount[3]);
-			if(moneySum.compareTo(BigDecimal.ZERO) == 0){
+			if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
 				result.setProfitRateSum(BigDecimal.ZERO);
 			}else{
 				result.setProfitRateSum(profitSum.divide(moneySum,4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));

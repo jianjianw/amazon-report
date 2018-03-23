@@ -1137,43 +1137,7 @@ public class APIBasic {
 	}
 
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test58")				//byPage
-	public CustomerAnalysisHistoryPageDTO test58() throws Exception{
-		String systemBookCode = "4020";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-03-08");
-		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
-		query.setSystemBookCode(systemBookCode);
-		query.setBranchNums(getBranchNums());
-		query.setDtFrom(dateFrom);
-		query.setDtTo(dateTo);
-		query.setOffset(0);
-		query.setLimit(5);
-		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(query);
-		return result;
-	}
-	@RequestMapping(method = RequestMethod.GET,value = "/test59")				//byPage
 
-	public ProfitByBranchAndItemSummaryPageDTO test59() throws Exception {
-
-		String systemBookCode = "4173";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-01-07");
-
-		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
-		query.setSystemBookCode(systemBookCode);
-		query.setBranchNums(getBranchNums());
-		query.setShiftTableFrom(dateFrom);
-		query.setShiftTableTo(dateTo);
-		query.setIsQueryCF(true);
-		query.setOffset(0);
-		query.setLimit(100);
-
-		ProfitByBranchAndItemSummaryPageDTO result = reportRpc.findProfitAnalysisByBranchAndItemByPage(query);
-		return result;
-	}
 
 
 
@@ -1254,8 +1218,48 @@ public class APIBasic {
 		return result;
 	}
 
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test58")				//byPage		客单分析 历史客单分析   ok
+	public CustomerAnalysisHistoryPageDTO test58() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-08");
+		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
+		query.setSystemBookCode(systemBookCode);
+		//query.setBranchNums(getBranchNums());
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		query.setOffset(0);
+		query.setLimit(5);
+		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(query);
+		return result;
+	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test59")				//byPage	毛利分析 商品毛利汇总   ok
+
+	public ProfitByBranchAndItemSummaryPageDTO test59() throws Exception {
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-22");
+
+		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
+		query.setSystemBookCode(systemBookCode);
+		query.setBranchNums(getBranchNums());
+		query.setShiftTableFrom(dateFrom);
+		query.setShiftTableTo(dateTo);
+		query.setIsQueryCF(false);
+		query.setOffset(0);
+		query.setLimit(100);
+
+		ProfitByBranchAndItemSummaryPageDTO result = reportRpc.findProfitAnalysisByBranchAndItemByPage(query);
+		return result;
+	}
+
 	@RequestMapping(method = RequestMethod.GET,value = "/test66")
-	public BranchBizSummaryPageDTO test66() throws Exception{
+	public BranchBizSummaryPageDTO test66() throws Exception{		//page  毛利分析 日毛利汇总   count 太慢
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
@@ -1264,6 +1268,7 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
+		//query.setIsQueryCF(false);
 		query.setOffset(0);
 		query.setLimit(100);
 

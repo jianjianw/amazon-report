@@ -5926,6 +5926,47 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sb.toString();
 	}
 
+
+    private String createKitProfitAnalysisQuery(ProfitAnalysisQueryData profitAnalysisQueryData){
+        StringBuffer sb = new StringBuffer();
+        sb.append("from pos_order_kit_detail as detail with(nolock) ");
+        sb.append("where detail.order_kit_detail_book_code = :systemBookCode ");
+        if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
+            sb.append("and detail.order_kit_detail_branch_num in "
+                    + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
+        }
+        sb.append("and detail.order_kit_detail_bizday between :bizFrom and :bizTo ");
+        sb.append("and detail.order_kit_detail_order_state in (5, 7) and detail.item_num is not null ");
+        sb.append("and detail.order_kit_detail_state_code != 8 ");
+        if(profitAnalysisQueryData.isQueryPresent()){
+            sb.append("and detail.order_kit_detail_state_code = 2 ");
+        }
+        if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
+            sb.append("and detail.item_num in "
+                    + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
+        }
+        if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
+                || (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
+                .getPosItemTypeCodes().size() > 0)) {
+            sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
+            if (profitAnalysisQueryData.getPosItemTypeCodes() != null
+                    && profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
+                sb.append("and item.item_category_code in "
+                        + AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
+            }
+            if (profitAnalysisQueryData.getBrandCodes() != null
+                    && profitAnalysisQueryData.getBrandCodes().size() > 0) {
+                sb.append("and item.item_brand in "
+                        + AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
+            }
+            sb.append(") ");
+        }
+        if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
+            sb.append("and detail.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
+        }
+        return sb.toString();
+    }
+
 	@Override
 	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
@@ -5979,46 +6020,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		return query.list();
 
-	}
-
-	private String createKitProfitAnalysisQuery(ProfitAnalysisQueryData profitAnalysisQueryData){
-		StringBuffer sb = new StringBuffer();
-		sb.append("from pos_order_kit_detail as detail with(nolock) ");
-		sb.append("where detail.order_kit_detail_book_code = :systemBookCode ");
-		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
-			sb.append("and detail.order_kit_detail_branch_num in "
-					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
-		}
-		sb.append("and detail.order_kit_detail_bizday between :bizFrom and :bizTo ");
-		sb.append("and detail.order_kit_detail_order_state in (5, 7) and detail.item_num is not null ");
-		sb.append("and detail.order_kit_detail_state_code != 8 ");
-		if(profitAnalysisQueryData.isQueryPresent()){
-			sb.append("and detail.order_kit_detail_state_code = 2 ");
-		}
-		if (profitAnalysisQueryData.getPosItemNums() != null && profitAnalysisQueryData.getPosItemNums().size() > 0) {
-			sb.append("and detail.item_num in "
-					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getPosItemNums()) + " ");
-		}
-		if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
-				|| (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
-				.getPosItemTypeCodes().size() > 0)) {
-			sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
-			if (profitAnalysisQueryData.getPosItemTypeCodes() != null
-					&& profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
-				sb.append("and item.item_category_code in "
-						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getPosItemTypeCodes()) + " ");
-			}
-			if (profitAnalysisQueryData.getBrandCodes() != null
-					&& profitAnalysisQueryData.getBrandCodes().size() > 0) {
-				sb.append("and item.item_brand in "
-						+ AppUtil.getStringParmeList(profitAnalysisQueryData.getBrandCodes()) + " ");
-			}
-			sb.append(") ");
-		}
-		if (profitAnalysisQueryData.getOrderSources() != null && profitAnalysisQueryData.getOrderSources().size() > 0) {
-			sb.append("and detail.order_source in " + AppUtil.getStringParmeList(profitAnalysisQueryData.getOrderSources()));
-		}
-		return sb.toString();
 	}
 
 	@Override
