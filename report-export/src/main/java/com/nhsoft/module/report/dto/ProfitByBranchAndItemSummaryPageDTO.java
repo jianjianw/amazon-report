@@ -13,6 +13,7 @@ public class ProfitByBranchAndItemSummaryPageDTO implements Serializable {
     private BigDecimal profitRateSum;
     private BigDecimal costSum;
     private BigDecimal moneySum;
+    private BigDecimal amountSum;
 
     public Integer getCount() {
         return count;
@@ -60,5 +61,13 @@ public class ProfitByBranchAndItemSummaryPageDTO implements Serializable {
 
     public void setMoneySum(BigDecimal moneySum) {
         this.moneySum = moneySum;
+    }
+
+    public BigDecimal getAmountSum() {
+        return amountSum;
+    }
+
+    public void setAmountSum(BigDecimal amountSum) {
+        this.amountSum = amountSum;
     }
 }

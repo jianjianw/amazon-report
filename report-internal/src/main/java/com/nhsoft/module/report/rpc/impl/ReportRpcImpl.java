@@ -4375,7 +4375,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		Object[] pageCount = null;
 		List<Integer> branchNums = profitAnalysisQueryData.getBranchNums();
-		if(branchNums.size() > 10){
+		if(branchNums == null || branchNums.size() > 10){
 			pageCount = reportService.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData);
 		}else{
 			profitAnalysisQueryData.setPage(false);
@@ -4401,11 +4401,12 @@ public class ReportRpcImpl implements ReportRpc {
 		ProfitByBranchAndItemSummaryPageDTO result = new ProfitByBranchAndItemSummaryPageDTO();
 		if(pageCount != null ){
 			BigDecimal profitSum = (BigDecimal) pageCount[1];
-			BigDecimal moneySum = (BigDecimal) pageCount [2];
+			BigDecimal moneySum = (BigDecimal) pageCount [3];
 			result.setCount((Integer) pageCount[0]);
 			result.setProfitSum(profitSum == null ? BigDecimal.ZERO : profitSum);
+			result.setAmountSum((BigDecimal) pageCount[2] );
 			result.setMoneySum(moneySum == null ? BigDecimal.ZERO : moneySum);
-			result.setCostSum((BigDecimal) pageCount [3]);
+			result.setCostSum((BigDecimal) pageCount [4]);
 
 			if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
 				result.setProfitRateSum(BigDecimal.ZERO);

@@ -5820,12 +5820,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
-		sb.append("where p.system_book_code = :systemBookCode  ");
+		sb.append("where p.system_book_code = '" + profitAnalysisQueryData.getSystemBookCode() + "' ");
 		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums())
 					+ " ");
 		}
-		sb.append("and p.shift_table_bizday between :bizFrom and :bizTo ");
+		sb.append("and p.shift_table_bizday between '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()) + "' and '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo())+"' ");
 		sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
 		sb.append("and detail.order_detail_state_code != 8 ");
 		if(profitAnalysisQueryData.isQueryPresent()){
@@ -5878,12 +5878,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	private String createProfitAnalysisQuery(ProfitAnalysisQueryData profitAnalysisQueryData){
 		StringBuilder sb = new StringBuilder();
 		sb.append("from pos_order_detail as detail with(nolock) ");
-		sb.append("where detail.order_detail_book_code = :systemBookCode ");
+		sb.append("where detail.order_detail_book_code = '"+profitAnalysisQueryData.getSystemBookCode()+"' ");
 		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
 			sb.append("and detail.order_detail_branch_num in "
 					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
 		}
-		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
+		sb.append("and detail.order_detail_bizday between '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom())+"' and '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo())+"' ");
 		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
 		sb.append("and detail.order_detail_state_code != 8 ");
 		if(profitAnalysisQueryData.isQueryPresent()){
@@ -5930,12 +5930,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
     private String createKitProfitAnalysisQuery(ProfitAnalysisQueryData profitAnalysisQueryData){
         StringBuffer sb = new StringBuffer();
         sb.append("from pos_order_kit_detail as detail with(nolock) ");
-        sb.append("where detail.order_kit_detail_book_code = :systemBookCode ");
+        sb.append("where detail.order_kit_detail_book_code = '" + profitAnalysisQueryData.getSystemBookCode() + "' ");
         if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
             sb.append("and detail.order_kit_detail_branch_num in "
                     + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
         }
-        sb.append("and detail.order_kit_detail_bizday between :bizFrom and :bizTo ");
+		sb.append("and detail.order_kit_detail_bizday between '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()) +"' and '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()) +"' ");
         sb.append("and detail.order_kit_detail_order_state in (5, 7) and detail.item_num is not null ");
         sb.append("and detail.order_kit_detail_state_code != 8 ");
         if(profitAnalysisQueryData.isQueryPresent()){
@@ -5971,6 +5971,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
 		StringBuffer sb = new StringBuffer();
+		if(profitAnalysisQueryData.getIsQueryCF()){
+		    sb.append("select branchNum as branchNum_, itemNum as itemNum_, matrixNum as matrixNum_, sum(profit) as profit_,sum(amount) as amount_,sum(money) as money_, sum(cost) as cost_ from( ");
+        }
 
 		if (profitAnalysisQueryData.isQueryClient()
 				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
@@ -5999,6 +6002,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
 			sb.append(createKitProfitAnalysisQuery(profitAnalysisQueryData));
 			sb.append("group by detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num ");
+			sb.append(" ) temp ");
+			sb.append("group by branchNum,itemNum,matrixNum ");
 		}
 
 		if(profitAnalysisQueryData.isPage()){
@@ -6006,13 +6011,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
 			}
 		}else{
-			sb.append("order by branchNum asc");
+			sb.append("order by branchNum asc ");
 		}
 
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
-		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
-		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
 		if(profitAnalysisQueryData.isPage()){
 			query.setFirstResult(profitAnalysisQueryData.getOffset());
 			query.setMaxResults(profitAnalysisQueryData.getLimit());
@@ -6026,12 +6028,19 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public Object[] findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
 		StringBuffer sb = new StringBuffer();
 
-		sb.append("select count(*) as count_ ,sum(profit) as profit_ , sum(money) as money_ , sum(cost) as cost_ from ( ");
+
+        if(profitAnalysisQueryData.getIsQueryCF()){
+            sb.append("select count(*) as count_ ,sum(profit_) as profitSum ,sum(amount_) as amountSum, sum(money_) as moneySum , sum(cost_) as costSum from ( ");
+            sb.append("select branchNum as branchNum_, itemNum as itemNum_, matrixNum as matrixNum_, sum(profit) as profit_, sum(amount) as amount_, sum(money) as money_, sum(cost) as cost_ from( ");
+        }else{
+            sb.append("select count(*) as count_ ,sum(profit) as profit_ , sum(amount) as amount_, sum(money) as money_ , sum(cost) as cost_ from ( ");
+        }
 		if (profitAnalysisQueryData.isQueryClient()
 				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
 			sb.append("select p.branch_num as branchNum, detail.item_num as itemNum, detail.order_detail_item_matrix_num as matrixNum, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
-			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+            sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+            sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
 			sb.append(createProfitAnalysisIsQueryClient(profitAnalysisQueryData));
 			sb.append("group by p.branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
@@ -6039,7 +6048,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		} else {
 			sb.append("select detail.order_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_detail_item_matrix_num as matrixNum, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
-			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
+            sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
+            sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as money, ");
 			sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
 			sb.append(createProfitAnalysisQuery(profitAnalysisQueryData));
 			sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_item_matrix_num ");
@@ -6049,18 +6059,18 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("union ");
 			sb.append("select detail.order_kit_detail_branch_num as branchNum, detail.item_num as itemNum, detail.order_kit_detail_item_matrix_num as matrixNum, ");
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_gross_profit else detail.order_kit_detail_gross_profit end) as profit, ");
-			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
+            sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else detail.order_kit_detail_amount end) as amount, ");
+            sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_payment_money when detail.order_kit_detail_state_code = 1 then detail.order_kit_detail_payment_money end) as money, ");
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
 			sb.append(createKitProfitAnalysisQuery(profitAnalysisQueryData));
 			sb.append("group by detail.order_kit_detail_branch_num, detail.item_num, detail.order_kit_detail_item_matrix_num ");
+            sb.append(" ) temp ");
+            sb.append("group by branchNum,itemNum,matrixNum ");
 		}
-		sb.append(") as temp");
+		sb.append(") as countSum");
 
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
-		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
-		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
-		return (Object[]) query.uniqueResult();
+        return (Object[]) query.uniqueResult();
 	}
 
 
@@ -6071,12 +6081,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(profitAnalysisQueryData.isQueryPosItem()){
 			sb.append("inner join pos_item as item on item.item_num = detail.item_num ");
 		}
-		sb.append("where p.system_book_code = :systemBookCode ");
+		sb.append("where p.system_book_code = '" + profitAnalysisQueryData.getSystemBookCode()+"' ");
 		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums())
 					+ " ");
 		}
-		sb.append("and p.shift_table_bizday between :bizFrom and :bizTo ");
+		sb.append("and p.shift_table_bizday between '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()) +"' and '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()) +"' ");
 		sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
 		sb.append("and detail.order_detail_state_code != 8 ");
 		if(profitAnalysisQueryData.isQueryPresent()){
@@ -6125,12 +6135,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(profitAnalysisQueryData.isQueryPosItem()){
 			sb.append("inner join pos_item as item on detail.item_num = item.item_num ");
 		}
-		sb.append("where detail.order_detail_book_code = :systemBookCode ");
+		sb.append("where detail.order_detail_book_code = '"+profitAnalysisQueryData.getSystemBookCode()+"' ");
 		if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
 			sb.append("and detail.order_detail_branch_num in "
 					+ AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
 		}
-		sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
+		sb.append("and detail.order_detail_bizday between '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()) +"' and '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()) +"' ");
 		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
 		sb.append("and detail.order_detail_state_code != 8 ");
 		if(profitAnalysisQueryData.isQueryPresent()){
@@ -6175,6 +6185,11 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findProfitAnalysisDaysByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
 		StringBuffer sb = new StringBuffer();
 
+
+        if(profitAnalysisQueryData.getIsQueryCF()){
+            sb.append("select branchNum as branchNum_, biz as biz_,sum(profit) as profit_, sum(money) as money_, sum(cost) as cost_ from (");
+        }
+
 		if (profitAnalysisQueryData.isQueryClient()
 				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
 			sb.append("select p.branch_num as branchNum, p.shift_table_bizday as biz, ");
@@ -6200,6 +6215,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
 			sb.append(createKitProfitAnalysisQuery(profitAnalysisQueryData));
 			sb.append("group by detail.order_kit_detail_branch_num, detail.order_kit_detail_bizday ");
+            sb.append(" ) temp ");
+            sb.append("group by branchNum,biz ");
 		}
 
 		if(profitAnalysisQueryData.isPage()){
@@ -6207,13 +6224,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("order by " + profitAnalysisQueryData.getSortField() + " "+profitAnalysisQueryData.getSortType());
 			}
 		}else{
-			sb.append("order by branchNum desc");
+			sb.append("order by branchNum desc ");
 		}
-
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
-		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
-		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
 		if(profitAnalysisQueryData.isPage()){
 			query.setFirstResult(profitAnalysisQueryData.getOffset());
 			query.setMaxResults(profitAnalysisQueryData.getLimit());
@@ -6225,7 +6238,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public Object[] findProfitAnalysisDaysCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("select count(*) as count_, sum(profit) as profit_, sum(money) as money_, sum(cost) as cost_ from ( ");
+
+
+        if(profitAnalysisQueryData.getIsQueryCF()){
+            sb.append("select count(*) as count_, sum(profit_) as profitSum, sum(money_) as moneySum, sum(cost_) as costSum from ( ");
+            sb.append("select branchNum as branchNum_, biz as biz_,sum(profit) as profit_, sum(money) as money_, sum(cost) as cost_ from ( ");
+        }else{
+            sb.append("select count(*) as count_, sum(profit) as profit_, sum(money) as money_, sum(cost) as cost_ from ( ");
+        }
 		if (profitAnalysisQueryData.isQueryClient()
 				|| (profitAnalysisQueryData.getClientFids() != null && profitAnalysisQueryData.getClientFids().size() > 0)) {
 			sb.append("select p.branch_num as branchNum, p.shift_table_bizday as biz, ");
@@ -6251,16 +6271,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then (-detail.order_kit_detail_amount * detail.order_kit_detail_cost) else (detail.order_kit_detail_amount * detail.order_kit_detail_cost) end) as cost ");
 			sb.append(createKitProfitAnalysisQuery(profitAnalysisQueryData));
 			sb.append("group by detail.order_kit_detail_branch_num, detail.order_kit_detail_bizday ");
+			sb.append(") temp ");
+			sb.append("group by branchNum,biz ");
 		}
 
-		sb.append(") temp");
+		sb.append(") countSum ");
 
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
-		query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
-		query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
-		Object[] object = (Object[]) query.uniqueResult();
-		return object;
+		return (Object[]) query.uniqueResult();
 
 	}
 
