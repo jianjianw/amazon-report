@@ -2798,7 +2798,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	@Deprecated
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByDepartments' + #p0.getKey()")
 	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByDepartments(queryData);
@@ -2860,7 +2860,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBrands' + #p0.getKey()")
 	public List<SaleByBrandSummary> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByBrands(queryData);
