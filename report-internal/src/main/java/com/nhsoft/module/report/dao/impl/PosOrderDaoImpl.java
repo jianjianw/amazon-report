@@ -5282,6 +5282,31 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
+	public List<Object[]> findStallBizdayCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select merchant_num, stall_num, detail.order_detail_bizday, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
+		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' and branch_num = " + branchNum + " ");
+		if (merchantNum != null) {
+			sb.append("and merchant_num = " + merchantNum + " ");
+		}
+		if(stallNum != null) {
+			sb.append("and stall_num = " + stallNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and detail.order_detail_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and detail.order_detail_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is null ");
+		sb.append("and detail.order_detail_state_code = 1 ");
+		sb.append("group by merchant_num, stall_num, detail.order_detail_bizday, detail.order_detail_item order by merchant_num asc ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+	}
+
+	@Override
 	public List<Object[]> findBranchBizdayDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		StringBuilder sb = new StringBuilder();

@@ -589,7 +589,7 @@ public class ReportServiceImpl implements ReportService {
 			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			StringBuilder sb = new StringBuilder();
-			String key = sb.append(branchNum).append(shiftTableBizday).toString();
+			String key = sb.append(tempMerchantNum).append(shiftTableBizday).toString();
 			BusinessCollection data = map.get(key);
 			if (data == null) {
 				data = new BusinessCollection();
@@ -612,6 +612,7 @@ public class ReportServiceImpl implements ReportService {
 			}
 			detail.setMoney(detail.getMoney().add(money));
 		}
+		return new ArrayList<>(map.values());
 	}
 
 	private BusinessCollectionIncome getBusinessCollectionIncome(

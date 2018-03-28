@@ -2159,7 +2159,9 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = postList.get(i);
 			Integer tempMerchantNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
-			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			String type = (String) object[2];
+			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal money = AppUtil.getValue(object[4], BigDecimal.class);
 			StringBuilder sb = new StringBuilder();
 			String key = sb.append(tempMerchantNum).append(shiftTableBizday).toString();
 			BusinessCollection data = map.get(key);
@@ -2169,7 +2171,20 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setShiftTableBizday(shiftTableBizday);
 				map.put(key, data);
 			}
-			data.setAllDiscountMoney(money);
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
 		}
 		postList = posOrderService.findMerchantBizdayDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
 		for (int i = 0,len = postList.size(); i < len; i++) {
