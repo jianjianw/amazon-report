@@ -3149,7 +3149,6 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		List<String> ranges = new ArrayList<>();
-		//Integer count = 0;
 		BigDecimal count = BigDecimal.ZERO;
 		BigDecimal moneySpace = cardConsuemAnalysisQuery.getMoneySpace();
 		if(moneySpace == null || moneySpace.compareTo(BigDecimal.ZERO) == 0){
@@ -3163,7 +3162,6 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			ranges.add(String.valueOf(count));
 			count = count.add(moneySpace);
-			//count+=moneySpace.intValue();
 		}
 
 		List<CardConsumeAnalysis> list = new ArrayList<>();
@@ -3171,17 +3169,8 @@ public class ReportRpcImpl implements ReportRpc {
 			String range = ranges.get(i);
 
 			String strRange = null;
-			//Integer intRange = Integer.valueOf(range);
 			BigDecimal intRange = new BigDecimal(range);
 			StringBuilder sb = new StringBuilder();
-
-		/*	if(BigDecimal.valueOf(1000).subtract(BigDecimal.valueOf(intRange)).compareTo(moneySpace) < 0 && intRange<1000) {
-				strRange = sb.append(range).append("-").append(BigDecimal.valueOf(1000)).toString();
-			} else if (intRange < 1000){
-				strRange = sb.append(range).append("-").append(intRange + moneySpace.intValue()).toString();
-			}else {
-				strRange = "1000以上";
-			}*/
 
 			if(BigDecimal.valueOf(1000).subtract(intRange).compareTo(moneySpace) < 0 && intRange.compareTo(BigDecimal.valueOf(1000)) < 0) {
 				strRange = sb.append(range).append("-").append(BigDecimal.valueOf(1000)).toString();
