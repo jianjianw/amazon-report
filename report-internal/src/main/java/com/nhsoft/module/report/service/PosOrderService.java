@@ -1,12 +1,14 @@
 package com.nhsoft.module.report.service;
 
 
+import com.nhsoft.module.report.dto.CardConsuemAnalysisQuery;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.ShiftTable;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -335,6 +337,29 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public Object[] findCountByPrintNum(CardReportQuery cardReportQuery);
+
+
+	/**
+	 * 卡消费 收入汇总
+	 * @param cardConsuemAnalysisQuery
+	 * @return
+	 */
+	public BigDecimal sumPosMoneyByCardConsuemAnalysisQuery(CardConsuemAnalysisQuery cardConsuemAnalysisQuery);
+
+
+	/**
+	 * 查询单据  分页查询
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public List<PosOrder> findByCardReportQueryPage(CardReportQuery cardReportQuery);
+
+	/**
+	 * 查询单据  分页查询   查询总条数
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery);
 
 
 }

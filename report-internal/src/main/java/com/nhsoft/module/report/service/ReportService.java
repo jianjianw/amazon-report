@@ -761,7 +761,7 @@ public interface ReportService {
 	 * @param cardConsuemAnalysisQuery
 	 * @return
 	 */
-	public List<CardConsumeAnalysis> findCardConsumeAnalysis(CardConsuemAnalysisQuery cardConsuemAnalysisQuery);
+	public List<Object[]> findCardConsumeAnalysis(CardConsuemAnalysisQuery cardConsuemAnalysisQuery);
 
 	/**
 	 * 会员指标消费分析 明细

@@ -2535,16 +2535,50 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		return sqlQuery.list();
 	}
 
+
+		private String createRange(BigDecimal moneySpace){
+			if (moneySpace == null || moneySpace.compareTo(BigDecimal.ZERO) == 0) {
+				moneySpace = BigDecimal.ONE;
+			}
+			int size = BigDecimal.valueOf(1000).divide(moneySpace, 0, BigDecimal.ROUND_UP).intValue() + 1;
+			BigDecimal money = BigDecimal.ZERO;
+			StringBuilder sb = new StringBuilder();
+			sb.append("(case ");
+			for (int i = 0; i < size; i++) {
+				if (i == size - 1) {
+					sb.append("when a.money > 1000 then '1000' END) as range ");
+					break;
+				}
+				if (i == 0) {
+					money = BigDecimal.ZERO;
+				} else {
+					money = money.add(moneySpace);
+				}
+
+				if(i == size - 2){
+					sb.append("when a.money >= ").append(money).append(" AND a.money <= ").append(BigDecimal.valueOf(1000)).append(" then '").append(money).append("' ");
+				} else {
+					sb.append("when a.money >= ").append(money).append(" AND a.money < ").append(money.add(moneySpace)).append(" then '").append(money).append("' ");
+				}
+			}
+			return sb.toString();
+	}
+
 	@Override
 	public List<Object[]> findCustomerConusmeByCardConsuemAnalysisQuery(
 			CardConsuemAnalysisQuery cardConsuemAnalysisQuery) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("select p.payment_cust_num, sum(p.payment_money) ");
-		sb.append("from payment as p with(nolock) ");
-		sb.append("where p.system_book_code = '" + cardConsuemAnalysisQuery.getSystemBookCode() + "' ");
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT temp.range,sum(temp.custMoney) as custMoney_, sum(temp.custCount) as custCount_ from ( ");
+		sb.append("SELECT a.money AS custMoney, a.count_ AS custCount, ");
+		sb.append(createRange(cardConsuemAnalysisQuery.getMoneySpace()));
+		sb.append("from ( ");
+		sb.append("select SUM (p.payment_money) AS money, COUNT (DISTINCT p.payment_cust_num) AS count_, p.payment_cust_num AS custNum ");
+		sb.append("from payment AS p WITH (nolock) ");
+		sb.append("where p.system_book_code = '"+cardConsuemAnalysisQuery.getSystemBookCode()+"' ");
+		sb.append("and p.payment_cust_num != 0 ");
 		if (cardConsuemAnalysisQuery.getBranchNums() != null && cardConsuemAnalysisQuery.getBranchNums().size() > 0) {
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(cardConsuemAnalysisQuery.getBranchNums()));
-
 		}
 		sb.append("and p.shift_table_bizday between '"
 				+ DateUtil.getDateShortStr(cardConsuemAnalysisQuery.getDateFrom()) + "' and '"
@@ -2554,8 +2588,18 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 				+ DateUtil.getTimeStr(cardConsuemAnalysisQuery.getTimeFrom()) + "' and '"
 				+ DateUtil.getTimeStr(cardConsuemAnalysisQuery.getTimeTo()) + "' ");
 		sb.append("group by p.payment_cust_num ");
+		if(cardConsuemAnalysisQuery.getMoneyFrom() != null ){
+			sb.append("having SUM (p.payment_money) >= " +cardConsuemAnalysisQuery.getMoneyFrom()+" ");
+			if(cardConsuemAnalysisQuery.getMoneyTo() != null){
+				sb.append("and SUM (p.payment_money) <= "+cardConsuemAnalysisQuery.getMoneyTo()+" ");
+			}
+		}
+		sb.append(") as a ");
+		sb.append(") as temp ");
+		sb.append("group by temp.range ");
+
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		return sqlQuery.list();
+		return  sqlQuery.list();
 	}
 
 
@@ -4716,5 +4760,71 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		}		
 		
 		return list;
+	}
+
+
+
+	public List<Object[]> test(CardConsuemAnalysisQuery cardConsuemAnalysisQuery) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select temp.rage as r, sum(temp.money) as sumMoney ,count(*) as COUNT_ from ( ");
+
+		sb.append("select p.payment_money as money,p.payment_cust_num as custNum ");
+		sb.append("(case when p.payment_money >= 0 AND p.payment_money < 100 THEN '100' ");
+		sb.append("when p.payment_money >= 100 AND p.payment_money < 200 THEN '200' ");
+		sb.append("when p.payment_money >= 200 AND p.payment_money < 300 THEN '300' ");
+		sb.append("when p.payment_money >= 300 AND p.payment_money < 400 THEN '400' ");
+		sb.append("when p.payment_money >= 400 AND p.payment_money < 500 THEN '500' ");
+		sb.append("when p.payment_money >= 500 AND p.payment_money < 600 THEN '600' ");
+		sb.append("when p.payment_money >= 600 AND p.payment_money < 700 THEN '700' ");
+		sb.append("when p.payment_money >= 700 AND p.payment_money < 800 THEN '800' ");
+		sb.append("when p.payment_money >= 800 AND p.payment_money < 900 THEN '900' ");
+		sb.append("when p.payment_money >= 900 AND p.payment_money < 1000 THEN '1000' ");
+		sb.append("else '1000' END) as rage ");
+		sb.append("from payment as p with(nolock) ");
+		sb.append("where p.system_book_code = '" + cardConsuemAnalysisQuery.getSystemBookCode() + "' ");
+		if (cardConsuemAnalysisQuery.getBranchNums() != null && cardConsuemAnalysisQuery.getBranchNums().size() > 0) {
+			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(cardConsuemAnalysisQuery.getBranchNums()));
+		}
+		sb.append("and p.shift_table_bizday between '"
+				+ DateUtil.getDateShortStr(cardConsuemAnalysisQuery.getDateFrom()) + "' and '"
+				+ DateUtil.getDateShortStr(cardConsuemAnalysisQuery.getDateTo()) + "' ");
+		sb.append("and p.payment_pay_by = '储值卡' ");
+		sb.append("and convert(varchar(8),p.payment_time,108) between '"
+				+ DateUtil.getTimeStr(cardConsuemAnalysisQuery.getTimeFrom()) + "' and '"
+				+ DateUtil.getTimeStr(cardConsuemAnalysisQuery.getTimeTo()) + "' ");
+		sb.append(") temp");
+
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+
+		/**
+		 *
+		 * select temp.rage as r, sum(temp.money) as sumMoney ,count(*) as COUNT_ from
+
+		 (SELECT
+		 p.payment_money as money  ,
+		 p.payment_cust_num as num,
+		 (CASE WHEN p.payment_money >= 0 AND p.payment_money < 100 THEN '100'
+		 WHEN p.payment_money >= 100 AND p.payment_money < 200 THEN '200'
+		 WHEN p.payment_money >= 200 AND p.payment_money < 300 THEN '300'
+		 WHEN p.payment_money >= 300 AND p.payment_money < 400 THEN '400'
+		 WHEN p.payment_money >= 400 AND p.payment_money < 500 THEN '500'
+		 WHEN p.payment_money >= 500 AND p.payment_money < 600 THEN '600'
+		 WHEN p.payment_money >= 600 AND p.payment_money < 700 THEN '700'
+		 WHEN p.payment_money >= 700 AND p.payment_money < 800 THEN '800'
+		 WHEN p.payment_money >= 800 AND p.payment_money < 900 THEN '900'
+		 WHEN p.payment_money >= 900 AND p.payment_money <= 1000 THEN '1000'
+		 else '1000'END) as rage
+		 FROM
+		 payment AS p
+		 WHERE
+		 system_book_code = '4020'
+		 and p.shift_table_bizday >= '20180101' and p.shift_table_bizday <= '20180326'
+		 and convert(varchar(8),p.payment_time,108) between '00:00:00' and '23:59:59'
+
+		 ) as temp
+
+		 group by temp.rage order by r desc
+		 * */
 	}
 }

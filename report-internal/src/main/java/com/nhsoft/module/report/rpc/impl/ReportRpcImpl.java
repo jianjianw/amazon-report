@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.rpc.impl;
 
 
+import com.nhsoft.module.report.api.dto.YearMoneyAddRateDTO;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.*;
@@ -13,6 +14,7 @@ import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.report.utils.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.protocol.RequestUserAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -3121,7 +3123,80 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<CardConsumeAnalysis> findCardConsumeAnalysis(CardConsuemAnalysisQuery cardConsuemAnalysisQuery) {
-		return reportService.findCardConsumeAnalysis(cardConsuemAnalysisQuery);
+
+		List<Object[]> objects = reportService.findCardConsumeAnalysis(cardConsuemAnalysisQuery);
+		BigDecimal posMoneyTotal = posOrderService.sumPosMoneyByCardConsuemAnalysisQuery(cardConsuemAnalysisQuery);//营业额
+		BigDecimal consumeMoneyTotal = BigDecimal.ZERO;
+		Map<String,CardConsumeAnalysis> map = new HashMap<>(16);
+
+		for (int i = 0,len = objects.size(); i < len; i++) {
+			Object[] object = objects.get(i);
+			CardConsumeAnalysis card = new CardConsumeAnalysis();
+			card.setRang((String) object[0]);
+			if(card.getRang() == null ){
+				continue;
+			}
+			card.setConsumeMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1] );
+			card.setCardUserNum((Integer) object[2]);
+
+			if(posMoneyTotal.compareTo(BigDecimal.ZERO) == 0){
+				card.setBusiRate(BigDecimal.ZERO);//营业占比
+			}else{
+				card.setBusiRate(card.getConsumeMoney().divide(posMoneyTotal, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100).setScale(2)));
+			}
+			consumeMoneyTotal = consumeMoneyTotal.add(card.getConsumeMoney());
+			map.put(card.getRang(),card);
+		}
+
+		List<String> ranges = new ArrayList<>();
+		BigDecimal count = BigDecimal.ZERO;
+		BigDecimal moneySpace = cardConsuemAnalysisQuery.getMoneySpace();
+		if(moneySpace == null || moneySpace.compareTo(BigDecimal.ZERO) == 0){
+			moneySpace = BigDecimal.ONE;
+		}
+		int size = BigDecimal.valueOf(1000).divide(moneySpace, 0, BigDecimal.ROUND_UP).intValue() + 1;
+		for (int i = 0; i <size ; i++) {
+			if(i == size-1){
+				ranges.add("1000");
+				continue;
+			}
+			ranges.add(String.valueOf(count));
+			count = count.add(moneySpace);
+		}
+
+		List<CardConsumeAnalysis> list = new ArrayList<>();
+		for (int i = 0; i <ranges.size() ; i++) {
+			String range = ranges.get(i);
+
+			String strRange = null;
+			BigDecimal intRange = new BigDecimal(range);
+			StringBuilder sb = new StringBuilder();
+
+			if(BigDecimal.valueOf(1000).subtract(intRange).compareTo(moneySpace) < 0 && intRange.compareTo(BigDecimal.valueOf(1000)) < 0) {
+				strRange = sb.append(range).append("-").append(BigDecimal.valueOf(1000)).toString();
+			} else if (intRange.compareTo(BigDecimal.valueOf(1000)) < 0){
+				strRange = sb.append(range).append("-").append(intRange.add(moneySpace)).toString();
+			}else {
+				strRange = "1000以上";
+			}
+
+
+			CardConsumeAnalysis data = map.get(range);
+			if(data == null){
+				CardConsumeAnalysis cardConsumeAnalysis = new CardConsumeAnalysis(0,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO);
+				cardConsumeAnalysis.setRang(strRange);
+				list.add(cardConsumeAnalysis);
+			}else{
+				data.setRang(strRange);
+				if(consumeMoneyTotal.compareTo(BigDecimal.ZERO) == 0){
+					data.setConsumeRate(BigDecimal.ZERO);
+				}else{
+					data.setConsumeRate(data.getConsumeMoney().divide(consumeMoneyTotal,4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100).setScale(2)));
+				}
+			}
+		}
+		list.addAll(map.values());
+		return list;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import com.nhsoft.amazon.server.dto.OrderQueryDTO;
 import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
@@ -775,10 +776,21 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 
+	@Override
+	public CardReportPageDTO findByCardReportQueryPage(CardReportQuery cardReportQuery) {
 
-
-
-
+		List<PosOrderDTO> data = CopyUtil.toList(posOrderService.findByCardReportQueryPage(cardReportQuery), PosOrderDTO.class);
+		Object[] object = posOrderService.findByCardReportQueryCount(cardReportQuery);
+		CardReportPageDTO dto = new CardReportPageDTO();
+		dto.setData(data);
+		if(object != null){
+			dto.setCount((Integer) object[0]);
+			dto.setPaymentMoneySum((BigDecimal) object[1]);
+			dto.setDiscountMoneySum((BigDecimal) object[2]);
+			dto.setPointSum((BigDecimal) object[3]);
+		}
+		return dto;
+	}
 
 
 	private BusinessCollectionIncome getBusinessCollectionIncome(

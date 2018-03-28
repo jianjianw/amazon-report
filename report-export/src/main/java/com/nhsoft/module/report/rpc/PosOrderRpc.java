@@ -159,4 +159,12 @@ public interface PosOrderRpc  {
      */
     public CardSummaryPageDTO findSummaryByPrintNum(CardReportQuery cardReportQuery);
 
+
+    /**
+     * 查询单据   分页查询
+     * @param cardReportQuery
+     * @return
+     */
+    public CardReportPageDTO findByCardReportQueryPage(CardReportQuery cardReportQuery);
+
 }
