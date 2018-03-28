@@ -13,6 +13,7 @@ import com.nhsoft.module.report.util.ServiceDeskUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.transform.Result;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1332,12 +1333,25 @@ public class APIBasic {
 		query.setTimeTo(timeTo);
 		query.setMoneySpace(BigDecimal.valueOf(23));
 		//query.setMoneyFrom(BigDecimal.valueOf(100));
-
-
 		List<CardConsumeAnalysis> cardConsumeAnalysis = reportRpc.findCardConsumeAnalysis(query);
-
-
 		return cardConsumeAnalysis;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value= "/test71")
+	public CardReportPageDTO test71() throws Exception{
+		CardReportQuery query = new CardReportQuery();
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+
+		query.setSystemBookCode(systemBookCode);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		//query.setPaging();
+		CardReportPageDTO result = posOrderRpc.findByCardReportQueryPage(query);
+		return result;
 	}
 
 }

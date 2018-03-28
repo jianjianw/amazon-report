@@ -348,11 +348,18 @@ public interface PosOrderService {
 
 
 	/**
-	 * 查询单据
+	 * 查询单据  分页查询
 	 * @param cardReportQuery
 	 * @return
 	 */
-	public List<PosOrder> findByCardReportQuery(CardReportQuery cardReportQuery);
+	public List<PosOrder> findByCardReportQueryPage(CardReportQuery cardReportQuery);
+
+	/**
+	 * 查询单据  分页查询   查询总条数
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery);
 
 
 }

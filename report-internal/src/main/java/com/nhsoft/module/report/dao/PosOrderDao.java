@@ -1182,18 +1182,26 @@ public interface PosOrderDao {
 
 
 	/**
-	 * 销售分析 -- 按分店汇总商品信息   分页查询    查询总条数
+	 * 销售分析 -- 按分店汇总商品信息   分页查询    查询总条数			有问题  还没做完
 	 * @param queryData
 	 * @return
 	 */
 	public Object[] findSaleAnalysisByBranchPosItemsCount(SaleAnalysisQueryData queryData);
 
 	/**
-	 * 查询单据
+	 * 查询单据  分页查询
 	 * @param cardReportQuery
 	 * @return
 	 */
-	public List<PosOrder> findByCardReportQuery(CardReportQuery cardReportQuery);
+	public List<PosOrder> findByCardReportQueryPage(CardReportQuery cardReportQuery);
+
+
+	/**
+	 * 查询单据  分页查询   查询总条数
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery);
 
 
 

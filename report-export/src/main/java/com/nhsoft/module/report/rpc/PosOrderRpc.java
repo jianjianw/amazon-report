@@ -161,10 +161,10 @@ public interface PosOrderRpc  {
 
 
     /**
-     * 查询单据
+     * 查询单据   分页查询
      * @param cardReportQuery
      * @return
      */
-    public List<PosOrderDTO> findByCardReportQuery(CardReportQuery cardReportQuery);
+    public CardReportPageDTO findByCardReportQueryPage(CardReportQuery cardReportQuery);
 
 }

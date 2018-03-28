@@ -326,9 +326,14 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
     @Override
-    public List<PosOrder> findByCardReportQuery(CardReportQuery cardReportQuery) {
-        return posOrderDao.findByCardReportQuery(cardReportQuery);
+    public List<PosOrder> findByCardReportQueryPage(CardReportQuery cardReportQuery) {
+        return posOrderDao.findByCardReportQueryPage(cardReportQuery);
     }
+
+	@Override
+	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery) {
+		return posOrderDao.findByCardReportQueryCount(cardReportQuery);
+	}
 
 
 }

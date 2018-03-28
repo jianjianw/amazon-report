@@ -6473,22 +6473,26 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 
 	@Override
-	public List<PosOrder> findByCardReportQuery(CardReportQuery cardReportQuery) {
+	public List<PosOrder> findByCardReportQueryPage(CardReportQuery cardReportQuery) {
+
 		StringBuilder sb = new StringBuilder();
-
-		//单据总数   消费总额   折扣总额   积分总额
-		/**
-		 sum(p.order_payment_money) as paymentMoney
-		 sum(p.order_discount_money) as discount
-		 sum(p.order_point) as point
-		 * */
-		sb.append("select p.branch_num as branchNum，sum(p.order_payment_money) as paymentMoney，sum(p.order_discount_money) as discount ，sum(p.order_point) as point ");
+		sb.append("select p.* ");
 		sb.append(createByCardReportQuery(cardReportQuery));
-		sb.append("group by p.branch_num ");
-
 		if(cardReportQuery.isPaging()){
 			if(StringUtils.isNotEmpty(cardReportQuery.getSortField())){
-				sb.append("order by " + cardReportQuery.getSortField() + " "+cardReportQuery.getSortType());
+				sb.append("order by ");
+				switch(cardReportQuery.getSortField()){
+					case "orderCardUserNum": sb.append("p.order_card_user_num ");break;
+					case "orderCardUser" : sb.append("p.order_card_user ");break;
+					case "orderNo" : sb.append("p.order_no "); break;
+					case "orderPaymentMoney" : sb.append("p.order_payment_money ");break;
+					case "orderTime" : sb.append("p.order_time ");break;
+					case "orderOperator" : sb.append("p.order_operator ");break;
+					case "orderDiscountMoney" : sb.append("p.order_discount_money");break;
+					case "orderPoint" : sb.append("p.order_point");break;
+					default : sb.append("p.branch_num ");break;
+				}
+				sb.append(cardReportQuery.getSortType());
 			}
 		}
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
@@ -6497,8 +6501,19 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			query.setFirstResult(cardReportQuery.getOffset());
 			query.setMaxResults(cardReportQuery.getLimit());
 		}
-
 		return query.list();
+	}
+
+	@Override
+	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) as count_, sum(p.order_payment_money) as paymentMoney, ");
+		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point ");
+		sb.append(createByCardReportQuery(cardReportQuery));
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return (Object[])query.uniqueResult();
+
 	}
 
 
