@@ -1009,7 +1009,7 @@ public interface PosOrderDao {
 	public List<Object[]> findBranchBizdayCouponSummary(String systemBookCode,
 																	  List<Integer> branchNums, Date dateFrom, Date dateTo);
 
-	public List<Object[]> findBranchBizdayCouponSummary(String systemBookCode,
+	public List<Object[]> findMerchantBizdayCouponSummary(String systemBookCode,
 														Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo);
 
 	/**

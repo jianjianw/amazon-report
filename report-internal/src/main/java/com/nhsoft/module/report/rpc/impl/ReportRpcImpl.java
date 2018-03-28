@@ -2154,8 +2154,7 @@ public class ReportRpcImpl implements ReportRpc {
 			String key = sb.append(collection.getMerchantNum()).append(collection.getShiftTableBizday()).toString();
 			map.put(key,collection);
 		}
-
-		List<Object[]> postList = posOrderService.findMerchantBizdayDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
+		List<Object[]> postList = posOrderService.findMerchantBizdayCouponSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
 		for (int i = 0,len = postList.size(); i < len; i++) {
 			Object[] object = postList.get(i);
 			Integer tempMerchantNum = (Integer) object[0];
@@ -2172,7 +2171,24 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			data.setAllDiscountMoney(money);
 		}
-		return new ArrayList<BusinessCollection>(map.values());
+		postList = posOrderService.findMerchantBizdayDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
+		for (int i = 0,len = postList.size(); i < len; i++) {
+			Object[] object = postList.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(tempMerchantNum).append(shiftTableBizday).toString();
+			BusinessCollection data = map.get(key);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				map.put(key, data);
+			}
+			data.setAllDiscountMoney(money);
+		}
+		return new ArrayList<>(map.values());
     }
 
     @Override
