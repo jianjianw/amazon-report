@@ -6030,7 +6030,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		if(profitAnalysisQueryData.isPage()){
 			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-				sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
+				sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
 			}
 		}else{
 			sb.append("order by branchNum asc ");
