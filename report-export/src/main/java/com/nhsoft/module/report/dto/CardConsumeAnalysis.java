@@ -17,6 +17,16 @@ public class CardConsumeAnalysis implements Serializable {
 	private BigDecimal moneyFrom;
 	private BigDecimal moneyTo;
 
+	public CardConsumeAnalysis() {
+	}
+
+	public CardConsumeAnalysis(Integer cardUserNum, BigDecimal consumeMoney, BigDecimal consumeRate, BigDecimal busiRate) {
+		this.cardUserNum = cardUserNum;
+		this.consumeMoney = consumeMoney;
+		this.consumeRate = consumeRate;
+		this.busiRate = busiRate;
+	}
+
 	public String getRang() {
 		return rang;
 	}

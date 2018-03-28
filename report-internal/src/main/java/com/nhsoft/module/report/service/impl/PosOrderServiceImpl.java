@@ -3,6 +3,7 @@ package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.InvoiceChangeDao;
 import com.nhsoft.module.report.dao.PosOrderDao;
+import com.nhsoft.module.report.dto.CardConsuemAnalysisQuery;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.dto.TypeAndTwoValuesDTO;
 import com.nhsoft.module.report.model.*;
@@ -317,6 +318,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 	@Override
 	public Object[] findCountByPrintNum(CardReportQuery cardReportQuery) {
 		return posOrderDao.findCountByPrintNum(cardReportQuery);
+	}
+
+	@Override
+	public BigDecimal sumPosMoneyByCardConsuemAnalysisQuery(CardConsuemAnalysisQuery cardConsuemAnalysisQuery) {
+		return posOrderDao.sumPosMoneyByCardConsuemAnalysisQuery(cardConsuemAnalysisQuery);
 	}
 
 

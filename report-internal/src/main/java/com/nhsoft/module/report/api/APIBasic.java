@@ -13,6 +13,7 @@ import com.nhsoft.module.report.util.ServiceDeskUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -1290,6 +1291,53 @@ public class APIBasic {
 		List<BranchBizSummary> list = reportRpc.findProfitAnalysisDays(query);
 		return list;
 
+	}
+
+
+
+
+
+	//
+	@RequestMapping(method = RequestMethod.GET,value = "/test69")
+	public List<SalerCommission> test69() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-23");
+		Date dateTo = sdf.parse("2018-03-24");
+
+		List<SalerCommission> result = reportRpc.findSalerCommissions(systemBookCode,dateFrom,dateTo,null,null, BigDecimal.valueOf(10));
+		return result;
+
+	}
+
+
+	//  findCardConsumeAnalysis
+	@RequestMapping(method = RequestMethod.GET,value = "/test70")
+	public List<CardConsumeAnalysis> test70() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-31");
+
+		CardConsuemAnalysisQuery query = new CardConsuemAnalysisQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+
+		SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
+		Date timeFrom = time.parse("00:00:00");
+		Date timeTo = time.parse("23:59:59");
+		query.setTimeFrom(timeFrom);
+		query.setTimeTo(timeTo);
+		query.setMoneySpace(BigDecimal.valueOf(23));
+		//query.setMoneyFrom(BigDecimal.valueOf(100));
+
+
+		List<CardConsumeAnalysis> cardConsumeAnalysis = reportRpc.findCardConsumeAnalysis(query);
+
+
+		return cardConsumeAnalysis;
 	}
 
 }
