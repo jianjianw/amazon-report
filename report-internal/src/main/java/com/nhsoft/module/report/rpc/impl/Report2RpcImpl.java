@@ -1067,9 +1067,7 @@ public class Report2RpcImpl implements Report2Rpc {
 		query.setCategoryCodeList(itemCategoryCodes);
 
 		List<ABCAnalysis> analysisList = reportService.findABCDatasBySaleV2(query);
-		if(analysisList.isEmpty()){
-			return new ArrayList<RequestAnalysisDTO>();
-		}
+
 		Set<Integer> innerItemNums = new HashSet<Integer>();
 
 		for(ABCAnalysis analysis : analysisList) {
