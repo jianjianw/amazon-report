@@ -5994,7 +5994,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		StringBuffer sb = new StringBuffer();
 		if(profitAnalysisQueryData.getIsQueryCF()){
-		    sb.append("select branchNum as branchNum_, itemNum as itemNum_, matrixNum as matrixNum_, sum(profit) as profit_,sum(amount) as amount_,sum(money) as money_, sum(cost) as cost_ from( ");
+		    sb.append("select branchNum as branchNum, itemNum as itemNum, matrixNum as matrixNum, sum(profit) as profit,sum(amount) as amount,sum(money) as money, sum(cost) as cost from( ");
         }
 
 		if (profitAnalysisQueryData.isQueryClient()
@@ -6209,7 +6209,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 
         if(profitAnalysisQueryData.getIsQueryCF()){
-            sb.append("select branchNum as branchNum_, biz as biz_,sum(profit) as profit_, sum(money) as money_, sum(cost) as cost_ from (");
+            sb.append("select branchNum as branchNum, biz as biz,sum(profit) as profit, sum(money) as money, sum(cost) as cost from (");
         }
 
 		if (profitAnalysisQueryData.isQueryClient()
@@ -6243,10 +6243,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		if(profitAnalysisQueryData.isPage()){
 			if(StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-				sb.append("order by " + profitAnalysisQueryData.getSortField() + " "+profitAnalysisQueryData.getSortType());
+				sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " "+profitAnalysisQueryData.getSortType());
 			}
 		}else{
-			sb.append("order by branchNum desc ");
+			sb.append("order by branchNum asc ");
 		}
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		if(profitAnalysisQueryData.isPage()){
