@@ -231,6 +231,9 @@ public interface PosOrderService {
 	 */
 	public List<Object[]> findBranchBizdayCouponSummary(String systemBookCode,
 														List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<Object[]> findMerchantBizdayCouponSummary(String systemBookCode,
+														Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo);
 	/**
 	 * 按分店 营业日 汇总折扣金额
 	 * @param systemBookCode
