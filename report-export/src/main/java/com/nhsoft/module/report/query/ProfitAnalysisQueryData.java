@@ -26,6 +26,12 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 	private boolean isQueryPresent = false; //是否查询赠品
 	private String saleType;//销售方式：微商城、实体店
 	private List<String> orderSources;
+	private boolean page = true;
+	private Integer offset;
+	private Integer limit;
+	private String sortField;
+	private String sortType;
+	private boolean queryPosItem = false;
 
 	private Integer max = 50000;
 
@@ -197,4 +203,52 @@ public class ProfitAnalysisQueryData extends QueryBuilder {
 		this.checkTo = checkTo;
 	}
 
+
+	public boolean isPage() {
+		return page;
+	}
+
+	public void setPage(boolean page) {
+		this.page = page;
+	}
+
+	public Integer getOffset() {
+		return offset;
+	}
+
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
+
+	public String getSortField() {
+		return sortField;
+	}
+
+	public void setSortField(String sortField) {
+		this.sortField = sortField;
+	}
+
+	public String getSortType() {
+		return sortType;
+	}
+
+	public void setSortType(String sortType) {
+		this.sortType = sortType;
+	}
+
+	public boolean isQueryPosItem() {
+		return queryPosItem;
+	}
+
+	public void setQueryPosItem(boolean queryPosItem) {
+		this.queryPosItem = queryPosItem;
+	}
 }

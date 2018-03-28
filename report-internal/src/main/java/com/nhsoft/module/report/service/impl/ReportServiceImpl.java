@@ -6519,6 +6519,7 @@ public class ReportServiceImpl implements ReportService {
 			money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			count_ = BigDecimal.valueOf(object[6] == null ? 0 : (Integer) object[6]);
+
 			if (object[7] instanceof BigDecimal) {
 				discount = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
 
@@ -11137,7 +11138,7 @@ public class ReportServiceImpl implements ReportService {
 			depositMoney = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
 			cardAnalysisSummaryDTO.setLastCardBalance(cardAnalysisSummaryDTO.getLastCardBalance().subtract(depositMoney));
 			cardAnalysisSummaryDTO.setBalanceMoney(cardAnalysisSummaryDTO.getBalanceMoney().subtract(depositMoney));
-			
+
 			revokeMoney = cardUserDao.getRevokeMoney(cardReportQuery.getSystemBookCode(), null, cardReportQuery.getDateFrom(), cardReportQuery.getDateTo());
 			cardAnalysisSummaryDTO.setBalanceMoney(cardAnalysisSummaryDTO.getBalanceMoney().add(revokeMoney));
 			cardAnalysisSummaryDTO.setLastCardBalance(cardAnalysisSummaryDTO.getLastCardBalance().add(revokeMoney));
@@ -12511,7 +12512,10 @@ public class ReportServiceImpl implements ReportService {
 
 
 		List<Object[]> objects = posOrderDao.findSaleAnalysisByBranchPosItems(systemBookCode,saleAnalysisQueryData);
-		
+		if(objects.isEmpty()){
+			return Collections.emptyList();
+
+		}
 		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
 		Integer branchNum;
 		Integer itemNum;
@@ -12669,6 +12673,74 @@ public class ReportServiceImpl implements ReportService {
         return posOrderDao.findMonthSaleAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
 
     }
+
+	@Override
+	public List<CustomerAnalysisHistory> findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
+		List<Object[]> objects = posOrderDao.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
+		int size = objects.size();
+		List<CustomerAnalysisHistory> list = new ArrayList<CustomerAnalysisHistory>(size);
+		List<Branch> branchs = branchService.findInCache(saleAnalysisQueryData.getSystemBookCode());
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			BigDecimal couponMoney = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal mgrDiscount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+
+			CustomerAnalysisHistory data = new CustomerAnalysisHistory();
+			data.setBranchNum((Integer) object[0]);
+			Branch branch = AppUtil.getBranch(branchs, data.getBranchNum());
+			if (branch != null) {
+				data.setBranchName(branch.getBranchName());
+				data.setBranchRegionNum(branch.getBranchRegionNum());
+			}
+
+			data.setShiftTableDate((String) object[1]);
+			data.setTotalMoney(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
+			data.setTotalMoney(data.getTotalMoney().add(couponMoney).subtract(mgrDiscount));
+			data.setCustomerNums(BigDecimal.valueOf((Long) object[3]));
+			data.setCustomerAvePrice(BigDecimal.ZERO);
+			if (data.getCustomerNums().compareTo(BigDecimal.ZERO) > 0) {
+				data.setCustomerAvePrice(data.getTotalMoney().divide(data.getCustomerNums(), 4,
+						BigDecimal.ROUND_HALF_UP));
+			}
+			list.add(data);
+		}
+		return list;
+	}
+
+	@Override
+	public Object[] findCustomerAnalysisHistorysCount(SaleAnalysisQueryData saleAnalysisQueryData) {
+		return posOrderDao.findCustomerAnalysisHistorysCount(saleAnalysisQueryData);
+	}
+
+	@Override
+	public List<Object[]> findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		return posOrderDao.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
+	}
+
+	@Override
+	public Object[] findProfitAnalysisByBranchAndItemCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		return posOrderDao.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData);
+	}
+
+	@Override
+	public List<Object[]> findProfitAnalysisDaysByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		return posOrderDao.findProfitAnalysisDaysByPage(profitAnalysisQueryData);
+	}
+
+	@Override
+	public Object[] findProfitAnalysisDaysCount(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		return posOrderDao.findProfitAnalysisDaysCount(profitAnalysisQueryData);
+	}
+
+	@Override
+	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
+		return posOrderDao.findSaleAnalysisByBranchPosItemsByPage(queryData);
+	}
+
+	@Override
+	public Object[] findSaleAnalysisByBranchPosItemsCount(SaleAnalysisQueryData queryData) {
+		return posOrderDao.findSaleAnalysisByBranchPosItemsCount(queryData);
+	}
 
 
 }

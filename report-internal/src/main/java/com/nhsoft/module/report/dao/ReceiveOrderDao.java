@@ -230,7 +230,11 @@ public interface ReceiveOrderDao{
 	 * @param dateTo
 	 * @return
 	 */
-	public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType);
+	public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType,String strDate);
+
+
+
+
 
 
 

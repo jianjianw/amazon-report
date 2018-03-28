@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -59,13 +60,17 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemBizTypeFlagSummary(StoreQueryCondition storeQueryCondition) {
+
+        if(storeQueryCondition.getDateEnd() == null){
+            Calendar calendar = Calendar.getInstance();
+            storeQueryCondition.setDateEnd(calendar.getTime());
+        }
         List<Object[]> objects = posItemLogService.findItemBizTypeFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
         Object[] object = null;
         for (int i = 0; i < size; i++) {
             object = objects.get(i);
-
             PosItemLogSummaryDTO dto = new PosItemLogSummaryDTO();
             dto.setItemNum((Integer) object[0]);
             dto.setBizday((String) object[1]);

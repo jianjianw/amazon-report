@@ -10,6 +10,7 @@ import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
+import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.report.utils.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -79,6 +80,8 @@ public class ReportRpcImpl implements ReportRpc {
 	private BranchItemRecoredRpc branchItemRecoredRpc;
 	@Autowired
 	private PosItemLogRpc posItemLogRpc;
+	@Autowired
+	private MarketActionOpenIdService marketActionOpenIdService;
 
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -1845,7 +1848,38 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setAllDiscountMoney(money);
 		}
 
-		return new ArrayList<>(map.values());
+
+		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
+		Object object = RedisUtil.hashGet(redisKey,AppConstants.MARKETACTION_SELF_ACTION);
+		if(object != null){
+			BigDecimal payMoney = marketActionOpenIdService.findPayMoneyByBranch(systemBookCode, dateFrom, dateTo);
+			Integer branchNum = 99;
+			BusinessCollection data = map.get(branchNum);
+			if(data == null){
+				data = new BusinessCollection();
+				data.setBranchNum(branchNum);
+				map.put(branchNum, data);
+			}
+			data.setPayMoney(payMoney);
+		}
+
+
+		List<BusinessCollection> result = new ArrayList<>(map.values());
+
+		List<BranchDTO> branchDTOS = branchRpc.findInCache(systemBookCode);//返回数据增加branchName
+		for (int i = 0,len = result.size(); i < len ; i++) {
+			BusinessCollection data = result.get(i);
+			Integer branchNum = data.getBranchNum();
+			for (int j = 0; j <branchDTOS.size() ; j++) {
+				BranchDTO branchDTO = branchDTOS.get(j);
+				if(branchNum.equals(branchDTO.getBranchNum())){
+					data.setBranchName(branchDTO.getBranchName());
+					break;
+				}
+			}
+		}
+
+		return result;
 	}
 
 	@Override
@@ -1911,6 +1945,33 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			data.setAllDiscountMoney(money);
 		}
+
+
+
+
+		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
+		Object obj = RedisUtil.hashGet(redisKey,AppConstants.MARKETACTION_SELF_ACTION);
+		if(obj != null){
+			List<Object[]> payMoneyList = marketActionOpenIdService.findPayMoneyByBranchBizday(systemBookCode,dateFrom, dateTo);
+			for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
+				Object[] object = payMoneyList.get(i);
+				int branchNum = 99;
+				String  shiftTableBizday = (String)object[0];
+				BigDecimal payMoney = (BigDecimal)object[1];
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(branchNum).append(shiftTableBizday).toString();
+				BusinessCollection data = map.get(key);
+				if(data == null){
+					data = new BusinessCollection();
+					data.setBranchNum(branchNum);
+					data.setShiftTableBizday(shiftTableBizday);
+					map.put(key, data);
+				}
+				data.setPayMoney(payMoney);
+			}
+		}
+
+
 		return new ArrayList<BusinessCollection>(map.values());
 	}
 
@@ -2737,7 +2798,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	@Deprecated
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByDepartments' + #p0.getKey()")
 	public List<SaleByDepartmentSummary> findSaleAnalysisByDepartments(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByDepartments(queryData);
@@ -2799,7 +2860,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisCommon' + #p0.getKey()")
+	@Cacheable(value = "serviceCache", key = "'AMA_findSaleAnalysisByBrands' + #p0.getKey()")
 	public List<SaleByBrandSummary> findSaleAnalysisByBrands(SaleAnalysisQueryData queryData) {
 
 		List<Object[]> objects = reportService.findSaleAnalysisByBrands(queryData);
@@ -3318,6 +3379,10 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<AlipayDetailDTO> findAlipayDetailDTOs(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String type, String paymentType, Boolean queryAll) {
+
+		if(dateFrom != null && dateTo != null && dateFrom.compareTo(dateTo) > 0){
+			return new ArrayList<AlipayDetailDTO>();
+		}
 		List<AlipayDetailDTO> list = reportService.findAlipayDetailDTOs(systemBookCode,branchNums,dateFrom,dateTo,type,paymentType,queryAll);
 		return list;
 	}
@@ -4266,7 +4331,6 @@ public class ReportRpcImpl implements ReportRpc {
 					memberValue = memberProfit.divide(memberMoney, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
 				}
 			}
-
 			BranchSaleAnalysisSummary summary = new BranchSaleAnalysisSummary();
 			summary.setBranchNum(branchNum);
 			summary.setBizDate(bizMonth);
@@ -4274,10 +4338,143 @@ public class ReportRpcImpl implements ReportRpc {
 			summary.setMemberData(memberValue);
 			list.add(summary);
 		}
-
 		return list;
 
+	}
 
+	@Override
+	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
+		int days = DateUtil.diffDay(saleAnalysisQueryData.getDtFrom(), saleAnalysisQueryData.getDtTo());
+		int branchSize = saleAnalysisQueryData.getBranchNums().size();
+		List<CustomerAnalysisHistory> result = null;
+		Object[] object = null;
+		if(days * branchSize < 1000){
+			saleAnalysisQueryData.setPage(false);
+		}else{
+			object = reportService.findCustomerAnalysisHistorysCount(saleAnalysisQueryData);
+		}
+		result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
+
+		CustomerAnalysisHistoryPageDTO pageDTO = new CustomerAnalysisHistoryPageDTO();
+		if(object != null){
+			pageDTO.setCount((Integer) object[0]);
+			pageDTO.setTotalMoneySum((BigDecimal) object[1]);
+			pageDTO.setCustomerSum(BigDecimal.valueOf((Integer) object[2]));
+			if(pageDTO.getCustomerSum().compareTo(BigDecimal.ZERO) == 0){
+				pageDTO.setCustomerAvgPriceSum(BigDecimal.ZERO);
+			}
+			pageDTO.setCustomerAvgPriceSum(pageDTO.getTotalMoneySum().divide(pageDTO.getCustomerSum(),2,BigDecimal.ROUND_HALF_UP));
+		}
+		pageDTO.setData(result);
+		return pageDTO;
+
+	}
+
+	@Override
+	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+		Object[] pageCount = null;
+		List<Integer> branchNums = profitAnalysisQueryData.getBranchNums();
+		if(branchNums == null || branchNums.size() > 10){
+			pageCount = reportService.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData);
+		}else{
+			profitAnalysisQueryData.setPage(false);
+		}
+		List<Object[]> objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);//500-1000
+
+		int size = objects.size();
+		List<ProfitByBranchAndItemSummary> list = new ArrayList<ProfitByBranchAndItemSummary>(size);
+
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();
+			profitByBranchAndItemSummary.setBranchNum((Integer) object[0]);
+			profitByBranchAndItemSummary.setItemNum((Integer) object[1]);
+			profitByBranchAndItemSummary.setMatrixNum((int)object[2]);
+			profitByBranchAndItemSummary.setProfit((BigDecimal) object[3]);
+			profitByBranchAndItemSummary.setAmount((BigDecimal) object[4]);
+			profitByBranchAndItemSummary.setMoney((BigDecimal) object[5]);
+			profitByBranchAndItemSummary.setCost((BigDecimal) object[6]);
+			list.add(profitByBranchAndItemSummary);
+		}
+
+		ProfitByBranchAndItemSummaryPageDTO result = new ProfitByBranchAndItemSummaryPageDTO();
+		if(pageCount != null ){
+			BigDecimal profitSum = (BigDecimal) pageCount[1];
+			BigDecimal moneySum = (BigDecimal) pageCount [3];
+			result.setCount((Integer) pageCount[0]);
+			result.setProfitSum(profitSum == null ? BigDecimal.ZERO : profitSum);
+			result.setAmountSum((BigDecimal) pageCount[2] );
+			result.setMoneySum(moneySum == null ? BigDecimal.ZERO : moneySum);
+			result.setCostSum((BigDecimal) pageCount [4]);
+
+			if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
+				result.setProfitRateSum(BigDecimal.ZERO);
+			}else{
+				result.setProfitRateSum(profitSum.divide(moneySum, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+			}
+		}
+		result.setData(list);
+		return result;
+	}
+
+	@Override
+	public BranchBizSummaryPageDTO findProfitAnalysisDaysByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+		if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
+				|| (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
+				.getPosItemTypeCodes().size() > 0)) {
+			profitAnalysisQueryData.setQueryPosItem(true);
+		}
+		if(profitAnalysisQueryData.getIsQueryCF() == null){
+			profitAnalysisQueryData.setIsQueryCF(true);
+		}
+
+
+		Object[] pageCount = null;
+		if(profitAnalysisQueryData.getBranchNums() == null || profitAnalysisQueryData.getBranchNums().size() > 10){
+			profitAnalysisQueryData.setPage(true);
+			pageCount = reportService.findProfitAnalysisDaysCount(profitAnalysisQueryData);
+		}else{
+			profitAnalysisQueryData.setPage(false);
+		}
+		List<Object[]> objects = reportService.findProfitAnalysisDaysByPage(profitAnalysisQueryData);
+
+		int size = objects.size();
+		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>(size);
+
+		for (int i = 0; i <size ; i++) {
+			Object[] object = objects.get(i);
+			BranchBizSummary branchBizSummary = new BranchBizSummary();
+			branchBizSummary.setBranchNum((Integer) object[0]);
+			branchBizSummary.setBiz((String) object[1]);
+			branchBizSummary.setProfit((BigDecimal) object[2]);
+			branchBizSummary.setMoney((BigDecimal) object[3]);
+			branchBizSummary.setCost((BigDecimal) object[4]);
+			list.add(branchBizSummary);
+		}
+
+		BranchBizSummaryPageDTO result = new BranchBizSummaryPageDTO();
+		if(pageCount != null ){
+			BigDecimal profitSum = (BigDecimal) pageCount[1];
+			BigDecimal moneySum = (BigDecimal) pageCount[2];
+			result.setCount((Integer) pageCount[0]);
+			result.setProfitSum(profitSum == null ? BigDecimal.ZERO :  profitSum);
+			result.setMoneySum(moneySum == null ? BigDecimal.ZERO : moneySum);
+			result.setCostSum((BigDecimal) pageCount[3]);
+			if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
+				result.setProfitRateSum(BigDecimal.ZERO);
+			}else{
+				result.setProfitRateSum(profitSum.divide(moneySum,4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+			}
+		}
+		result.setData(list);
+		return result;
+	}
+
+	@Override
+	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
+		return null;
 	}
 
 

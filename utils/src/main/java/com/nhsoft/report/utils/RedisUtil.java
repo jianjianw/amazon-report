@@ -147,6 +147,32 @@ public class RedisUtil {
 			return null;
 		}
 	}
+
+
+	public static Object hashGet(String key, Object hashKey){
+		initRedis();
+			try {
+
+				return customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType())).opsForHash().get(key, hashKey);
+
+			} catch (Exception e) {
+				logger.warn(e.getMessage(), e);
+				return null;
+			}
+
+	}
+
+	public static void hashPut(String key,Object hashKey,Object value,long expireTime){
+		initRedis();
+		try {
+			RedisTemplate redisTemplate = customRedises.get(redisNameMap.get(DynamicDataSourceContextHolder.getDataSourceType()));
+			redisTemplate.opsForHash().put(key,hashKey,value);
+			redisTemplate.expire(key,expireTime,TimeUnit.SECONDS);
+		} catch (Exception e) {
+			logger.warn(e.getMessage(), e);
+
+		}
+	}
 	
 	public static void test(){
 		String key = "test_hash";

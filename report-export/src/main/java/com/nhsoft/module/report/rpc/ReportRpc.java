@@ -1385,4 +1385,42 @@ public interface ReportRpc {
 	//月销售分析
 	public List<BranchSaleAnalysisSummary> findMonthSaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
 
+
+	//新加分页接口
+
+	/**
+	 * 客单分析 历史客单分析  分页查询
+	 * @return
+	 */
+	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData);
+
+	/**
+	 * 毛利分析 商品毛利汇总  分页查询
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+
+	/**
+	 * 毛利分析 日毛利汇总   分页查询      查询count太慢
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
+	public BranchBizSummaryPageDTO findProfitAnalysisDaysByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+
+	/**
+	 * 销售分析 -- 按分店汇总商品信息   分页查询
+	 * @param queryData
+	 * @return
+	 */
+	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
+
+
+
+
+
+
+
 }

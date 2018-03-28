@@ -318,6 +318,7 @@ public class AppConstants {
 
 
 	public static final int CACHE_LIVE_SECOND = 1200; //缓存有效时间20分钟
+	public static final int CACHE_LIVE_THREE_MINUTES = 180;	//缓存有效期3分钟
 
 
 
@@ -580,7 +581,8 @@ public class AppConstants {
 	public static final String REDIS_PRE_BRANCH_RESOURCE = "AMA_BRANCH_RESOURCE";
 	public static final String REDIS_PRE_USER_COLLECT_BRANCH = "AMA_USER_COLLECT_BRANCH";//用户收藏门店
 	public static final String REDIS_PRE_SYSTEM_BOOK = "AMA_SYSTEM_BOOK";
-	
+	public static final String REDIS_PRE_BOOK_FUNCTION = "AMA_BOOK_FUNCTION";
+	public static final String MARKETACTION_SELF_ACTION = "自助领券";
 	
 	
 	//branchResource
@@ -589,6 +591,10 @@ public class AppConstants {
 
 	//单据状态
 	public static final State POS_ORDER_REPAY = new State(1 << 3, "反结账");
+
+
+
+
 	
 	
 	

@@ -15,7 +15,6 @@ public class BranchBizSummary implements Serializable {
 	
 	private BigDecimal money;
 	private int count;
-	
 	private BigDecimal profit;
 	private BigDecimal cost;
 	

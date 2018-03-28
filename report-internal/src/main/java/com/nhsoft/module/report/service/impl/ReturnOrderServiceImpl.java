@@ -44,5 +44,10 @@ public class ReturnOrderServiceImpl implements ReturnOrderService {
 		return returnOrderDao.findDetailBySupplierNum(systemBookCode, branchNums, supplierNum, dateFrom, dateTo, selectItemNums);
 	}
 
+	@Override
+	public List<Object[]> findReturnMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String strDate) {
+		return returnOrderDao.findReturnMonth(systemBookCode,branchNum,dateFrom,dateTo,strDate);
+	}
+
 
 }

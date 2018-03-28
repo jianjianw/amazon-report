@@ -27,4 +27,16 @@ public interface ShipOrderService {
      * */
     public List<ShipDetailDTO> findDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> companies);
 
+
+    /**
+     * 按天汇总运费金额
+     * @param systemBookCode
+     * @param branchNum 发货分店号
+     * @param branchNums 收货分店列表
+     * @param dateFrom 审核时间起
+     * @param dateTo 审核时间至
+     * @return
+     */
+    public List<Object[]> findDateSummary(String systemBookCode, Integer branchNum,
+                                          List<Integer> branchNums, Date dateFrom, Date dateTo,String strDate);
 }

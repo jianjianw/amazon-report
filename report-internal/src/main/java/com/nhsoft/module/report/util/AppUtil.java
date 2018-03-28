@@ -126,7 +126,7 @@ public class AppUtil {
 
 
 	public static PosClient getPosClient(String clientFid, List<PosClient> posClients) {
-		for (int i = 0; i < posClients.size(); i++) {
+		for (int i = 0, len = posClients.size(); i < len; i++) {
 			if (posClients.get(i).getClientFid().equals(clientFid)) {
 				return posClients.get(i);
 			}
@@ -136,7 +136,7 @@ public class AppUtil {
 
 	public static StoreMatrix getStoreMatrix(String systemBookCode, Integer branchNum, Integer itemNum,
 			List<StoreMatrix> storeMatrixs) {
-		for (int i = 0; i < storeMatrixs.size(); i++) {
+		for (int i = 0, len = storeMatrixs.size(); i < len; i++) {
 			StoreMatrix storeMatrix = storeMatrixs.get(i);
 			if (storeMatrix.getId().getSystemBookCode().equals(systemBookCode)
 					&& storeMatrix.getId().getBranchNum().equals(branchNum)

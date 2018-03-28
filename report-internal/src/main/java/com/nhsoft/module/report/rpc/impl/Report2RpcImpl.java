@@ -1051,9 +1051,9 @@ public class Report2RpcImpl implements Report2Rpc {
 		posItemQuery.setSystemBookCode(systemBookCode);
 		posItemQuery.setBranchNum(branchNum);
 		posItemQuery.setCategoryCodes(itemCategoryCodes);
-		posItemQuery.setIsFindNoStock(false);
 		posItemQuery.setPaging(false);
 		posItemQuery.setItemNums(itemNums);
+        posItemQuery.setFilterItemTypes(Arrays.asList(AppConstants.C_ITEM_TYPE_KIT, AppConstants.C_ITEM_TYPE_ELEMENT));
 		List<Integer> chainItemNums = posItemService.findItemNumsByPosItemQuery(posItemQuery, 0, 0);
 		if(chainItemNums.isEmpty()){
 			return new ArrayList<RequestAnalysisDTO>();
@@ -1104,7 +1104,7 @@ public class Report2RpcImpl implements Report2Rpc {
 			List<Integer> itemNumList = new ArrayList<Integer>(innerItemNums);
 			posItems = posItemService.findByItemNums(itemNumList);
 			objects = inventoryService.findItemAmount(systemBookCode, branchNums, itemNumList, null);
-			storeItemSuppliers = storeItemSupplierService.findDefaults(systemBookCode, Arrays.asList(branchNums.get(0)), itemNumList);
+			storeItemSuppliers = storeItemSupplierService.findDefaults(systemBookCode, Arrays.asList(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM), itemNumList);
 			storeMatrices = storeMatrixService.findByBranch(systemBookCode, branchNums.get(0), itemNumList);
 		}
 		for(Object[] object : objects) {
@@ -1122,18 +1122,29 @@ public class Report2RpcImpl implements Report2Rpc {
 			RequestAnalysisDTO dto = dtos.get(i);
 			PosItem item = AppUtil.getPosItem(dto.getItemNum(), posItems);
 			if(item == null) {
-				dtos.remove(i);
-				continue;
-			}
+                dtos.remove(i);
+                continue;
+            }
+            if(item.getItemStatus() != null && item.getItemStatus() == AppConstants.ITEM_STATUS_SLEEP) {
+                dtos.remove(i);
+                continue;
+            }
 			StoreMatrix storeMatrix = AppUtil.getStoreMatrix(systemBookCode, branchNum, dto.getItemNum(), storeMatrices);
 			dto.setItemCode(item.getItemCode());
 			dto.setItemBarcode(item.getItemBarcode());
 			dto.setItemName(item.getItemName());
 			dto.setItemSpec(item.getItemSpec());
-			if(storeMatrix != null && storeMatrix.getStoreMatrixSaleCeaseFlag() != null) {
+			if(storeMatrix != null && storeMatrix.getStoreMatrixSaleCeaseFlag() != null
+					&& storeMatrix.getStoreMatrixSaleEnabled() != null && storeMatrix.getStoreMatrixSaleEnabled()) {
 				dto.setItemSaleCease(storeMatrix.getStoreMatrixSaleCeaseFlag());
 			} else {
 				dto.setItemSaleCease(item.getItemSaleCeaseFlag());
+			}
+			if(storeMatrix != null && storeMatrix.getStoreMatrixStockCeaseFlag() != null
+					&& (storeMatrix.getStoreMatrixStockEnabled() == null || storeMatrix.getStoreMatrixStockEnabled())) {
+				dto.setItemStockCease(storeMatrix.getStoreMatrixStockCeaseFlag());
+			} else {
+				dto.setItemStockCease(item.getItemStockCeaseFlag());
 			}
 			dto.setItemSalePrice(item.getItemRegularPrice());
 			dto.setItemLevel2Price(item.getItemLevel2Price());
@@ -1150,6 +1161,7 @@ public class Report2RpcImpl implements Report2Rpc {
 			dto.setItemTransferUnit(item.getItemTransferUnit());
 			dto.setItemTransferRate(item.getItemTransferRate());
 			dto.setItemType(item.getItemType());
+            dto.setItemPurchaseScope(item.getItemPurchaseScope());
 
 			if(dto.getItemType() == AppConstants.C_ITEM_TYPE_ASSEMBLE){
 				List<PosItemKit> posItemKits = posItemService.findPosItemKits(dto.getItemNum());
@@ -1170,18 +1182,18 @@ public class Report2RpcImpl implements Report2Rpc {
 
 			}
 			StoreItemSupplier storeItemSupplier = StoreItemSupplier.getDefault(storeItemSuppliers, branchNums.get(0), dto.getItemNum());
-			if(storeItemSupplier == null) {
-				continue;
+			if(storeItemSupplier != null) {
+				Supplier supplier = AppUtil.getSupplier(storeItemSupplier.getId().getSupplierNum(), suppliers);
+				if(supplier != null) {
+					dto.setSupplierNum(supplier.getSupplierNum());
+					dto.setSupplierCode(supplier.getSupplierCode());
+					dto.setSupplierName(supplier.getSupplierName());
+					dto.setSupplierMethod(supplier.getSupplierMethod());
+					dto.setSupplierKind(supplier.getSupplierKind());
+				}
+
 			}
-			Supplier supplier = AppUtil.getSupplier(storeItemSupplier.getId().getSupplierNum(), suppliers);
-			if(supplier == null) {
-				continue;
-			}
-			dto.setSupplierNum(supplier.getSupplierNum());
-			dto.setSupplierCode(supplier.getSupplierCode());
-			dto.setSupplierName(supplier.getSupplierName());
-			dto.setSupplierMethod(supplier.getSupplierMethod());
-			dto.setSupplierKind(supplier.getSupplierKind());
+
 		}
 		return dtos;
 	}
@@ -1349,13 +1361,7 @@ public class Report2RpcImpl implements Report2Rpc {
 
 		Integer itemNum;
 		BigDecimal saleQty;
-		boolean addItems = true;
-		List<Integer> queryItemNums = null;
-		if(itemNums != null && !itemNums.isEmpty()){
-			addItems = false;
-		} else {
-			queryItemNums = new ArrayList<>(20);
-		}
+		List<Integer> queryItemNums = new ArrayList<>(100);
 
 		for(Object[] object : objects){
 			itemNum = (Integer) object[0];
@@ -1366,43 +1372,64 @@ public class Report2RpcImpl implements Report2Rpc {
 				dto = new SaleInventoryDTO();
 				dto.setItemNum(itemNum);
 				map.put(itemNum, dto);
-				if(addItems){
+				if(!queryItemNums.contains(dto.getItemNum())){
+					queryItemNums.add(dto.getItemNum());
+
+				}
+			}
+			dto.setSaleQty(dto.getSaleQty().add(saleQty));
+
+		}
+		if(saleInventoryQuery.isShowZeroInventory()){
+			objects = inventoryService.findItemAmount(systemBookCode, branchNums, saleInventoryQuery.getItemNums(), storehouseNum);
+			for(Object[] object : objects){
+				itemNum = (Integer) object[0];
+
+				SaleInventoryDTO dto = map.get(itemNum);
+				if(dto == null){
+					dto = new SaleInventoryDTO();
+					dto.setItemNum(itemNum);
+					map.put(itemNum, dto);
+
 					if(!queryItemNums.contains(dto.getItemNum())){
 						queryItemNums.add(dto.getItemNum());
 
 					}
 
 				}
-
-			}
-			dto.setSaleQty(dto.getSaleQty().add(saleQty));
-
-		}
-		if(addItems){
-			itemNums = queryItemNums;
-		}
-		objects = inventoryService.findItemAmount(systemBookCode, branchNums, itemNums, storehouseNum);
-		for(Object[] object : objects){
-			itemNum = (Integer) object[0];
-
-			SaleInventoryDTO dto = map.get(itemNum);
-			if(dto != null){
 				dto.setInventoryQty((BigDecimal) object[1]);
 
 			}
+
+		} else {
+			objects = inventoryService.findItemAmount(systemBookCode, branchNums, queryItemNums, storehouseNum);
+			for(Object[] object : objects){
+				itemNum = (Integer) object[0];
+
+				SaleInventoryDTO dto = map.get(itemNum);
+				if(dto != null){
+					dto.setInventoryQty((BigDecimal) object[1]);
+
+				}
+			}
 		}
+
 
 		if(map.isEmpty()){
 			return Collections.emptyList();
 		}
 
-		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(queryItemNums);
 		BigDecimal diffDay = BigDecimal.valueOf(DateUtil.getDaysBetween(dateFrom, dateTo) + 1);
 		List<SaleInventoryDTO> list = new ArrayList<>(map.values());
 		for(int  i = list.size() - 1;i >= 0;i--){
             SaleInventoryDTO dto = list.get(i);
 
 			PosItem posItem = AppUtil.getPosItem(dto.getItemNum(), posItems);
+			if(posItem == null){
+				list.remove(i);
+				continue;
+			}
             if(posItem.getItemDelTag()){
                 list.remove(i);
                 continue;

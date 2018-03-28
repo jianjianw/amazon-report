@@ -127,7 +127,7 @@ public class ReturnOrderDaoImpl extends DaoImpl implements ReturnOrderDao {
 				.add(Projections.property("detail.returnOrderDetailUseRate"))
 
 		);
-		criteria.setMaxResults(500000);
+		criteria.setMaxResults(50000);
 		criteria.setLockMode(LockMode.NONE);
 		return criteria.list();
 	}
@@ -355,8 +355,50 @@ public class ReturnOrderDaoImpl extends DaoImpl implements ReturnOrderDao {
 		return criteria.list();
 	}
 
+    @Override
+    public List<Object[]> findReturnMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String strDate) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select %s , sum(return_order_total_money) as totalMoney from return_order with(nolock) ");
+		sb.append("where system_book_code=:systemBookCode and branch_num=:branchNum and return_order_state_code=3 ");
+		if(dateFrom != null){
+			sb.append("and return_order_audit_time >= :dateFrom ");
+		}
+		if(dateTo != null){
+			sb.append("and return_order_audit_time <= :dateTo ");
+		}
+		sb.append("group by %s ");
+		String sql = sb.toString();
+		if(AppConstants.BUSINESS_DATE_DAY.equals(strDate)){
+			sql = sql.replaceAll("%s", "convert(varchar(8), return_order_audit_time, 112)");
+		}else{
+			sql = sql.replaceAll("%s","convert(varchar(6), return_order_audit_time, 112)");
+		}
+		Query query = currentSession().createSQLQuery(sql);
+		query.setString("systemBookCode", systemBookCode);
+		query.setInteger("branchNum", branchNum);
+		if(dateFrom != null){
+			query.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		}
+		if(dateTo != null){
+			query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		}
+		return query.list();
+    }
 
-	private Criteria createQuery(String systemBookCode,
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private Criteria createQuery(String systemBookCode,
 								 List<Integer> branchNums, Date dateFrom, Date dateTo,
 								 List<Integer> itemNums, List<String> itemCategoryCodes,
 								 List<Integer> supplierNums, String operator, Integer storehouseNum){

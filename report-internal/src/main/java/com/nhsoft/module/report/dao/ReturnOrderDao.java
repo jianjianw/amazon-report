@@ -112,7 +112,15 @@ public interface ReturnOrderDao {
 	
 	public List<Object[]> findBranchItemSupplierAmountAndMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodes, List<Integer> itemNums);
 
-
+	/**
+	 * 查询退货汇总
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findReturnMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String strDate);
 
 
 }

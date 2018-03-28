@@ -60,6 +60,8 @@ public class BusinessCollection implements Serializable {
 	private BigDecimal allDiscountMoney = BigDecimal.ZERO;//总折扣
 	//营业收款报表（班次）使用
 	private String casher;//收银员
+
+	private BigDecimal payMoney; 		//线上购券
 	
 	public String getShiftTableTerminalId() {
 		return shiftTableTerminalId;
@@ -341,5 +343,13 @@ public class BusinessCollection implements Serializable {
 
 	public void setStallName(String stallName) {
 		this.stallName = stallName;
+	}
+
+	public BigDecimal getPayMoney() {
+		return payMoney;
+	}
+
+	public void setPayMoney(BigDecimal payMoney) {
+		this.payMoney = payMoney;
 	}
 }

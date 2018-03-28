@@ -453,7 +453,7 @@ public class CardUserDaoImpl extends  DaoImpl implements CardUserDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select sum(b.card_balance_money) ");
 		sb.append("from card_balance as b with(nolock) inner join card_user as c with(nolock) on c.card_user_num = b.card_user_num ");
-		sb.append("where c.system_book_code = '" + systemBookCode + "' and c.card_user_revoke_shop > 0 ");
+			sb.append("where c.system_book_code = '" + systemBookCode + "' and c.card_user_revoke_shop > 0 ");
 		if(branchNums != null && branchNums.size() > 0){
 			sb.append("and c.card_user_revoke_shop in " + AppUtil.getIntegerParmeList(branchNums));
 		}

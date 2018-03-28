@@ -746,11 +746,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	@Override
 	public CardSummaryPageDTO findSummaryByPrintNum(CardReportQuery cardReportQuery) {
 		List<Object[]> objects = posOrderService.findSummaryByPrintNum(cardReportQuery);
-		Integer count = posOrderService.findCountByPrintNum(cardReportQuery).size();
-
 		int size = objects.size();
 		List<CardSummaryDTO> list = new ArrayList<>(size);
-
 		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			CardSummaryDTO dto = new CardSummaryDTO();
@@ -765,10 +762,15 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			dto.setCouponMoney((BigDecimal) object[8]);
 			list.add(dto);
 		}
-		CardSummaryPageDTO pageDTO = new CardSummaryPageDTO();
-		pageDTO.setCount(count);
-		pageDTO.setData(list);
 
+		Object[] object = posOrderService.findCountByPrintNum(cardReportQuery);
+
+		CardSummaryPageDTO pageDTO = new CardSummaryPageDTO();
+		pageDTO.setCount((Integer) object[0]);
+		pageDTO.setPaymentMoneySum((BigDecimal) object[1]);
+		pageDTO.setDiscountMoneySum((BigDecimal) object[2]);
+		pageDTO.setPointSum((BigDecimal) object[3]);
+		pageDTO.setData(list);
 		return pageDTO;
 	}
 

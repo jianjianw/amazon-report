@@ -56,19 +56,10 @@ public class ShipOrderServiceImpl implements ShipOrderService {
         return list;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public List<Object[]> findDateSummary(String systemBookCode, Integer branchNum, List<Integer> branchNums, Date dateFrom, Date dateTo, String strDate) {
+        return shipOrderDao.findDateSummary(systemBookCode,branchNum,branchNums,dateFrom,dateTo,strDate);
+    }
 
 
 }
