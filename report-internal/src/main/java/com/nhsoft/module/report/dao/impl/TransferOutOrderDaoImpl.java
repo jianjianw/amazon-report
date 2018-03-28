@@ -93,7 +93,7 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 			criteria.add(Restrictions.in("t.outBranchNum", transferProfitQuery.getDistributionBranchNums()));
 		}
 		if (transferProfitQuery.getResponseBranchNums() != null && transferProfitQuery.getResponseBranchNums().size() > 0) {
-			criteria.add(Restrictions.sqlRestriction("branch_num in " + AppUtil.getIntegerParmeList(transferProfitQuery.getResponseBranchNums())));
+			criteria.add(Restrictions.sqlRestriction("t.branch_num in " + AppUtil.getIntegerParmeList(transferProfitQuery.getResponseBranchNums())));
 		}
 		if (transferProfitQuery.getDtFrom() != null) {
 			criteria.add(Restrictions.ge("t.outOrderAuditTime", DateUtil.getMinOfDate(transferProfitQuery.getDtFrom())));
@@ -102,7 +102,7 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 			criteria.add(Restrictions.le("t.outOrderAuditTime", DateUtil.getMaxOfDate(transferProfitQuery.getDtTo())));
 		}
 		if (transferProfitQuery.getItemNums() != null && transferProfitQuery.getItemNums().size() > 0) {
-			criteria.add(Restrictions.sqlRestriction("item_num in " + AppUtil.getIntegerParmeList(transferProfitQuery.getItemNums())));
+			criteria.add(Restrictions.sqlRestriction("detail.item_num in " + AppUtil.getIntegerParmeList(transferProfitQuery.getItemNums())));
 
 		}
 		if ((transferProfitQuery.getCategoryCodes() != null && transferProfitQuery.getCategoryCodes().size() > 0) || (StringUtils.isNotEmpty(transferProfitQuery.getItemBrand()))
