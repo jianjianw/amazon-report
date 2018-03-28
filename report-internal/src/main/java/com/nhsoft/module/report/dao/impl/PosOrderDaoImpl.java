@@ -6482,7 +6482,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			if(StringUtils.isNotEmpty(cardReportQuery.getSortField())){
 				sb.append("order by ");
 				switch(cardReportQuery.getSortField()){
-					case "orderCardUserNum": sb.append("p.order_card_user_num ");break;
+					case "branchNum" : sb.append("p.branch_num "); break;
 					case "orderCardUser" : sb.append("p.order_card_user ");break;
 					case "orderNo" : sb.append("p.order_no "); break;
 					case "orderPaymentMoney" : sb.append("p.order_payment_money ");break;

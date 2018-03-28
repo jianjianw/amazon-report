@@ -1349,7 +1349,10 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
-		//query.setPaging();
+		query.setOffset(0);
+		query.setLimit(50);
+		query.setBranchNum(1);
+
 		CardReportPageDTO result = posOrderRpc.findByCardReportQueryPage(query);
 		return result;
 	}
