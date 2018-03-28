@@ -2320,7 +2320,38 @@ public class ReportRpcImpl implements ReportRpc {
 			BusinessCollection collection = list.get(i);
 			map.put(collection.getMerchantNum()+"_"+collection.getStallNum(),collection);
 		}
-		List<Object[]> posList = posOrderService.findStallDiscountSummary(systemBookCode, branchNum, merchantNum, stallNum, dateFrom, dateTo);
+		List<Object[]> posList = posOrderService.findStallCouponSummary(systemBookCode, branchNum, merchantNum, stallNum, dateFrom, dateTo);
+		for (int i = 0,len = posList.size(); i < len; i++) {
+			Object[] object = posList.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			Integer tempStallNum = (Integer) object[1];
+			String type = (String) object[2];
+			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			String key = tempMerchantNum+"_"+tempStallNum;
+			BusinessCollection data = map.get(key);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setStallNum(tempStallNum);
+				map.put(key, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+		posList = posOrderService.findStallDiscountSummary(systemBookCode, branchNum, merchantNum, stallNum, dateFrom, dateTo);
 		for (int i = 0,len = posList.size(); i < len ; i++) {
 			Object[] object = posList.get(i);
 			Integer tempMerchantNum = (Integer) object[0];

@@ -1012,7 +1012,7 @@ public interface PosOrderDao {
 	public List<Object[]> findMerchantBizdayCouponSummary(String systemBookCode,
 														Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo);
 
-	public List<Object[]> findStallBizdayCouponSummary(String systemBookCode,
+	public List<Object[]> findStallCouponSummary(String systemBookCode,
 														  Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo);
 
 	/**

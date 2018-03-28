@@ -215,8 +215,8 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
-	public List<Object[]> findStallBizdayCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo) {
-		return posOrderDao.findStallBizdayCouponSummary(systemBookCode,branchNum, merchantNum,dateFrom,dateTo);
+	public List<Object[]> findStallCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo) {
+		return posOrderDao.findStallCouponSummary(systemBookCode,branchNum, merchantNum, stallNum, dateFrom,dateTo);
 	}
 
 	@Override
