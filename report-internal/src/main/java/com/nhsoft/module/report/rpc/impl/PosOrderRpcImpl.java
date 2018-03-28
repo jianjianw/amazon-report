@@ -775,10 +775,10 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 	}
 
 
-
-
-
-
+	@Override
+	public List<PosOrderDTO> findByCardReportQuery(CardReportQuery cardReportQuery) {
+		return CopyUtil.toList(posOrderService.findByCardReportQuery(cardReportQuery),PosOrderDTO.class);
+	}
 
 
 	private BusinessCollectionIncome getBusinessCollectionIncome(

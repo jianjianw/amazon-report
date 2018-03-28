@@ -347,5 +347,13 @@ public interface PosOrderService {
 	public BigDecimal sumPosMoneyByCardConsuemAnalysisQuery(CardConsuemAnalysisQuery cardConsuemAnalysisQuery);
 
 
+	/**
+	 * 查询单据
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public List<PosOrder> findByCardReportQuery(CardReportQuery cardReportQuery);
+
+
 }
 

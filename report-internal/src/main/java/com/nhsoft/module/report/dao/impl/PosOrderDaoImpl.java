@@ -6375,7 +6375,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return (Object[])query.uniqueResult();
 	}
 
-	public String createSaleAnalysisBranchItemQuery(SaleAnalysisQueryData queryData){
+    public String createSaleAnalysisBranchItemQuery(SaleAnalysisQueryData queryData){
 		StringBuilder sb = new StringBuilder();
 		sb.append("from pos_order_detail as detail with(nolock) ");
 		sb.append("where detail.order_detail_book_code = '" + queryData.getSystemBookCode() + "' ");
@@ -6471,6 +6471,35 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sb.toString();
 	}
 
+
+	@Override
+	public List<PosOrder> findByCardReportQuery(CardReportQuery cardReportQuery) {
+		StringBuilder sb = new StringBuilder();
+
+		//单据总数   消费总额   折扣总额   积分总额
+		/**
+		 sum(p.order_payment_money) as paymentMoney
+		 sum(p.order_discount_money) as discount
+		 sum(p.order_point) as point
+		 * */
+		sb.append("select p.branch_num as branchNum，sum(p.order_payment_money) as paymentMoney，sum(p.order_discount_money) as discount ，sum(p.order_point) as point ");
+		sb.append(createByCardReportQuery(cardReportQuery));
+		sb.append("group by p.branch_num ");
+
+		if(cardReportQuery.isPaging()){
+			if(StringUtils.isNotEmpty(cardReportQuery.getSortField())){
+				sb.append("order by " + cardReportQuery.getSortField() + " "+cardReportQuery.getSortType());
+			}
+		}
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.addEntity("p", PosOrder.class);
+		if(cardReportQuery.isPaging()){
+			query.setFirstResult(cardReportQuery.getOffset());
+			query.setMaxResults(cardReportQuery.getLimit());
+		}
+
+		return query.list();
+	}
 
 
 }

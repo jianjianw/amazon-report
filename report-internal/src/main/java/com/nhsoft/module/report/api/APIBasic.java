@@ -1326,7 +1326,7 @@ public class APIBasic {
 		query.setDateTo(dateTo);
 
 		SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
-		Date timeFrom = time.parse("00:00:00");
+		Date timeFrom = time.parse("12:00:00");
 		Date timeTo = time.parse("23:59:59");
 		query.setTimeFrom(timeFrom);
 		query.setTimeTo(timeTo);

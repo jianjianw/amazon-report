@@ -1188,6 +1188,13 @@ public interface PosOrderDao {
 	 */
 	public Object[] findSaleAnalysisByBranchPosItemsCount(SaleAnalysisQueryData queryData);
 
+	/**
+	 * 查询单据
+	 * @param cardReportQuery
+	 * @return
+	 */
+	public List<PosOrder> findByCardReportQuery(CardReportQuery cardReportQuery);
+
 
 
 }

@@ -325,6 +325,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return posOrderDao.sumPosMoneyByCardConsuemAnalysisQuery(cardConsuemAnalysisQuery);
 	}
 
+    @Override
+    public List<PosOrder> findByCardReportQuery(CardReportQuery cardReportQuery) {
+        return posOrderDao.findByCardReportQuery(cardReportQuery);
+    }
+
 
 }
 
