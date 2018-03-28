@@ -293,6 +293,18 @@ public interface PosOrderService {
 	 */
 	public List<Object[]> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums,
 															Date dateFrom, Date dateTo, String casher);
+
+	/**
+	 * 按分店 班次 汇总消费券
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findMerchantShiftTableCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum,
+															Date dateFrom, Date dateTo, String casher);
+
 	/**
 	 * 按分店 操作员 支付方式 汇总消费金额
 	 * @param systemBookCode

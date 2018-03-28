@@ -5447,8 +5447,33 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sqlQuery.list();
 	}
 
+	@Override
+	public List<Object[]> findMerchantShiftTableCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select p.merchant_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
+		sb.append("where p.system_book_code = '" + systemBookCode + "' and p.branch_num = " + branchNum + " ");
+		if (merchantNum != null) {
+			sb.append("and p.branch_num = " + merchantNum + " ");
+		}
+		if (dateFrom != null) {
+			sb.append("and p.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and p.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		if (StringUtils.isNotEmpty(casher)) {
+			sb.append("and p.order_operator in " + AppUtil.getStringParmeArray(casher.split(",")));
+		}
+		sb.append("and p.order_state_code in (5, 7) and detail.item_num is null ");
+		sb.append("and detail.order_detail_state_code = 1 ");
+		sb.append("group by p.merchant_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item order by p.branch_num asc ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+	}
+
 	public List<Object[]> findBranchOperatorPayByMoneySummary(String systemBookCode,
-																	   List<Integer> branchNums, Date dateFrom, Date dateTo){
+															  List<Integer> branchNums, Date dateFrom, Date dateTo){
 		 StringBuffer sb = new StringBuffer();
 		 sb.append("select pos_order.branch_num, order_operator, payment_pay_by, sum(payment_money) as money ");
 		 sb.append("from payment with(nolock) inner join pos_order on payment.order_no = pos_order.order_no ");

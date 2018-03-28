@@ -2221,8 +2221,41 @@ public class ReportRpcImpl implements ReportRpc {
             String key = sb.append(tempMerchantNum).append(bizday).append(bizNum).toString();
             map.put(key,collection);
         }
+		List<Object[]> payment = posOrderService.findMerchantShiftTableCouponSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo, casher);
+		for (int i = 0,len = payment.size(); i < len; i++) {
+			Object[] object = payment.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			Integer bizNum = (Integer) object[2];
+			String type = (String) object[3];
+			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal money = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(tempMerchantNum).append(shiftTableBizday).append(bizNum).toString();
+			BusinessCollection data = map.get(key);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				data.setShiftTableNum(bizNum);
+				map.put(key, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
 
-        List<Object[]> payment = posOrderService.findBranchShiftTablePaymentSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo, casher);
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+        payment = posOrderService.findBranchShiftTablePaymentSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo, casher);
         for (int i = 0,len = payment.size(); i < len; i++) {
             Object[] object = payment.get(i);
             Integer tempMerchantNum = (Integer) object[0];
