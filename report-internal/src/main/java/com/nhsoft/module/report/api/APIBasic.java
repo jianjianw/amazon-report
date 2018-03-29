@@ -10,6 +10,7 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
+import org.apache.http.impl.execchain.TunnelRefusedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -1230,7 +1231,7 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-03-08");
 		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
-		//query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums());
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
 		query.setOffset(0);
@@ -1258,7 +1259,7 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test66")
-	public BranchBizSummaryPageDTO test66() throws Exception{		//page  毛利分析 日毛利汇总   count 太慢
+	public BranchBizSummaryPageDTO test66() throws Exception{		//page  毛利分析 日毛利汇总
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-03-01");
@@ -1267,7 +1268,7 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
-		query.setIsQueryCF(false);
+		query.setIsQueryCF(true);
 		query.setOffset(0);
 		query.setLimit(50);
 
@@ -1288,6 +1289,8 @@ public class APIBasic {
 		query.setIsQueryCF(true);
 		query.setOffset(0);
 		query.setLimit(100);
+		query.setSortField("money");
+		query.setSortField("asc");
 
 		List<BranchBizSummary> list = reportRpc.findProfitAnalysisDays(query);
 		return list;

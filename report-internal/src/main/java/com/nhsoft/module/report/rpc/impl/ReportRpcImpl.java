@@ -4420,27 +4420,57 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
 		int days = DateUtil.diffDay(saleAnalysisQueryData.getDtFrom(), saleAnalysisQueryData.getDtTo());
-		int branchSize = saleAnalysisQueryData.getBranchNums().size();
-		List<CustomerAnalysisHistory> result = null;
+		int branchSize = 0;
+		if(saleAnalysisQueryData.getBranchNums() == null && saleAnalysisQueryData.getBranchNums().size() ==0 ){
+			List<BranchDTO> branchDTOS = branchRpc.findInCache(saleAnalysisQueryData.getSystemBookCode());
+			branchSize = branchDTOS.size();
+		}else{
+			branchSize = saleAnalysisQueryData.getBranchNums().size();
+		}
+
 		Object[] object = null;
 		if(days * branchSize < 1000){
 			saleAnalysisQueryData.setPage(false);
 		}else{
 			object = reportService.findCustomerAnalysisHistorysCount(saleAnalysisQueryData);
 		}
-		result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
 
+		List<CustomerAnalysisHistory> result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
 		CustomerAnalysisHistoryPageDTO pageDTO = new CustomerAnalysisHistoryPageDTO();
-		if(object != null){
-			pageDTO.setCount((Integer) object[0]);
-			pageDTO.setTotalMoneySum((BigDecimal) object[1]);
-			pageDTO.setCustomerSum(BigDecimal.valueOf((Integer) object[2]));
+		pageDTO.setData(result);
+
+		BigDecimal totalMoneySum = BigDecimal.ZERO;
+		BigDecimal customerSum = BigDecimal.ZERO;
+		if(!saleAnalysisQueryData.isPage()){//不分页  汇总查询回来的数据
+			int size = result.size();
+			pageDTO.setCount(size);
+			for (int i = 0; i < size ; i++) {
+				CustomerAnalysisHistory customerAnalysisHistory = result.get(i);
+				customerSum = customerSum.add(customerAnalysisHistory.getCustomerNums() == null ?
+						BigDecimal.ZERO : customerAnalysisHistory.getCustomerNums());
+				totalMoneySum = totalMoneySum.add(customerAnalysisHistory.getTotalMoney() == null ?
+						BigDecimal.ZERO : customerAnalysisHistory.getTotalMoney());
+			}
+			pageDTO.setCustomerSum(customerSum);
+			pageDTO.setTotalMoneySum(totalMoneySum);
 			if(pageDTO.getCustomerSum().compareTo(BigDecimal.ZERO) == 0){
 				pageDTO.setCustomerAvgPriceSum(BigDecimal.ZERO);
+			}else{
+				pageDTO.setCustomerAvgPriceSum(totalMoneySum.divide(customerSum,2,BigDecimal.ROUND_HALF_UP));
 			}
-			pageDTO.setCustomerAvgPriceSum(pageDTO.getTotalMoneySum().divide(pageDTO.getCustomerSum(),2,BigDecimal.ROUND_HALF_UP));
+			
+		}else{
+			if(object != null){
+				pageDTO.setCount((Integer) object[0]);
+				pageDTO.setTotalMoneySum(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
+				pageDTO.setCustomerSum(object[2] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer)object[2]));
+				if(pageDTO.getCustomerSum().compareTo(BigDecimal.ZERO) == 0){
+					pageDTO.setCustomerAvgPriceSum(BigDecimal.ZERO);
+				}else{
+					pageDTO.setCustomerAvgPriceSum(pageDTO.getTotalMoneySum().divide(pageDTO.getCustomerSum(),2,BigDecimal.ROUND_HALF_UP));
+				}
+			}
 		}
-		pageDTO.setData(result);
 		return pageDTO;
 
 	}
