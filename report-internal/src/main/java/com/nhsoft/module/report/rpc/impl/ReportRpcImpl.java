@@ -4562,30 +4562,52 @@ public class ReportRpcImpl implements ReportRpc {
 
 		int size = objects.size();
 		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>(size);
+		BigDecimal costSum = BigDecimal.ZERO;
+		BigDecimal profitSum = BigDecimal.ZERO;
+		BigDecimal moneySum = BigDecimal.ZERO;
 
 		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			BranchBizSummary branchBizSummary = new BranchBizSummary();
 			branchBizSummary.setBranchNum((Integer) object[0]);
 			branchBizSummary.setBiz((String) object[1]);
-			branchBizSummary.setProfit((BigDecimal) object[2]);
-			branchBizSummary.setMoney((BigDecimal) object[3]);
-			branchBizSummary.setCost((BigDecimal) object[4]);
+			branchBizSummary.setProfit(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
+			branchBizSummary.setMoney(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
+			branchBizSummary.setCost(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]);
 			list.add(branchBizSummary);
+			if(!profitAnalysisQueryData.isPage()){
+				profitSum = profitSum.add(branchBizSummary.getProfit());
+				moneySum = moneySum.add(branchBizSummary.getMoney());
+				costSum = costSum.add(branchBizSummary.getCost());
+			}
 		}
 
 		BranchBizSummaryPageDTO result = new BranchBizSummaryPageDTO();
-		if(pageCount != null ){
-			BigDecimal profitSum = (BigDecimal) pageCount[1];
-			BigDecimal moneySum = (BigDecimal) pageCount[2];
-			result.setCount((Integer) pageCount[0]);
-			result.setProfitSum(profitSum == null ? BigDecimal.ZERO :  profitSum);
-			result.setMoneySum(moneySum == null ? BigDecimal.ZERO : moneySum);
-			result.setCostSum((BigDecimal) pageCount[3]);
+
+
+		if(profitAnalysisQueryData.isPage()){
+			if(pageCount != null){
+				BigDecimal profitSummary =pageCount[1] == null ? BigDecimal.ZERO : (BigDecimal)pageCount[1];
+				BigDecimal moneySummary = pageCount[2] == null ? BigDecimal.ZERO : (BigDecimal)pageCount[2];
+				result.setCount((Integer) pageCount[0]);
+				result.setProfitSum(profitSummary);
+				result.setMoneySum(moneySummary);
+				result.setCostSum((BigDecimal) pageCount[3]);
+				if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
+					result.setProfitRateSum(BigDecimal.ZERO);
+				}else{
+					result.setProfitRateSum(profitSummary.divide(moneySummary,4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+				}
+			}
+		}else{
+			result.setCount(size);
+			result.setProfitSum(profitSum);
+			result.setMoneySum(moneySum);
+			result.setCostSum(costSum);
 			if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
 				result.setProfitRateSum(BigDecimal.ZERO);
 			}else{
-				result.setProfitRateSum(profitSum.divide(moneySum,4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+				result.setProfitRateSum(result.getProfitSum().divide(result.getMoneySum(),4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
 			}
 		}
 		result.setData(list);
