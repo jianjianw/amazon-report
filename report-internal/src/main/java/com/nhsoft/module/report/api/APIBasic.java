@@ -976,7 +976,7 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-02-28");
 
 		UnsalableQuery query = new UnsalableQuery();
-		query.setSystemBookCode("4344");
+		query.setSystemBookCode("4020");
 		query.setBranchNums(getBranchNums());
 		query.setFilterOutGTInventory(true);
 		query.setReceiveDate(date);
@@ -985,10 +985,13 @@ public class APIBasic {
 		query.setUnit(AppConstants.UNIT_BASIC);
 		query.setBranchNum(99);
 		query.setIsFilterInAndOut(true);
-
+		List<String> list = new ArrayList<>();
+		list.add("6001");
+		query.setCategoryCodeList(list);
 
 
 		List<UnsalablePosItem> unsalableItems = reportRpc.findUnsalableItems(query);
+
 		return unsalableItems;
 	}
 
