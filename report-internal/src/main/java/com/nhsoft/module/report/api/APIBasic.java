@@ -469,23 +469,15 @@ public class APIBasic {
 	}
 
 	public List<Integer> getBranchNums(){
+
+		String systemBookCode = "4020";
 		List<Integer> branchNums = new ArrayList();
-		branchNums.add(1);
-		branchNums.add(2);
-		branchNums.add(3);
-		branchNums.add(4);
-		branchNums.add(5);
-		branchNums.add(6);
-		branchNums.add(7);
-		branchNums.add(8);
-		branchNums.add(9);
-		branchNums.add(10);
-		branchNums.add(11);
-		branchNums.add(12);
-		branchNums.add(13);
-		branchNums.add(14);
-		branchNums.add(59);
-		branchNums.add(99);
+		List<BranchDTO> branchDTOS = branchRpc.findInCache(systemBookCode);
+		for (int i = 0; i < branchDTOS.size(); i++) {
+			BranchDTO branchDTO = branchDTOS.get(i);
+			Integer branchNum = branchDTO.getBranchNum();
+			branchNums.add(branchNum);
+		}
 		return branchNums;
 	}
 
@@ -1227,7 +1219,7 @@ public class APIBasic {
 	public CustomerAnalysisHistoryPageDTO test58() throws Exception{
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateFrom = sdf.parse("2018-03-01");
 		Date dateTo = sdf.parse("2018-03-08");
 		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
@@ -1253,6 +1245,9 @@ public class APIBasic {
 		query.setIsQueryCF(true);
 		query.setOffset(0);
 		query.setLimit(50);
+		ArrayList<Integer> integers = new ArrayList<>();
+		integers.add(1);
+		query.setBranchNums(integers);
 
 		ProfitByBranchAndItemSummaryPageDTO result = reportRpc.findProfitAnalysisByBranchAndItemByPage(query);
 		return result;

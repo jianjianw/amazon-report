@@ -767,10 +767,12 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		Object[] object = posOrderService.findCountByPrintNum(cardReportQuery);
 
 		CardSummaryPageDTO pageDTO = new CardSummaryPageDTO();
-		pageDTO.setCount((Integer) object[0]);
-		pageDTO.setPaymentMoneySum((BigDecimal) object[1]);
-		pageDTO.setDiscountMoneySum((BigDecimal) object[2]);
-		pageDTO.setPointSum((BigDecimal) object[3]);
+		if(object != null){
+			pageDTO.setCount((Integer) object[0]);
+			pageDTO.setPaymentMoneySum((BigDecimal) object[1]);
+			pageDTO.setDiscountMoneySum((BigDecimal) object[2]);
+			pageDTO.setPointSum((BigDecimal) object[3]);
+		}
 		pageDTO.setData(list);
 		return pageDTO;
 	}
