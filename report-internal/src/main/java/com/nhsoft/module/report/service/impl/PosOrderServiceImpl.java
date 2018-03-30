@@ -190,6 +190,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
+	public List<Object[]> findMerchantCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
+		return posOrderDao.findMerchantCouponSummary(systemBookCode,branchNum, merchantNum,dateFrom,dateTo);
+	}
+
+	@Override
 	public List<Object[]> findBranchDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return posOrderDao.findBranchDiscountSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}

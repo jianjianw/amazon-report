@@ -982,6 +982,17 @@ public interface PosOrderDao {
 																   List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
+	 * 按分店汇总消费券
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findMerchantCouponSummary(String systemBookCode,
+												  Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo);
+
+	/**
 	 * 按分店汇总折扣金额
 	 * @param systemBookCode
 	 * @param dateFrom
