@@ -790,6 +790,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			dto.setPaymentMoneySum((BigDecimal) object[1]);
 			dto.setDiscountMoneySum((BigDecimal) object[2]);
 			dto.setPointSum((BigDecimal) object[3]);
+			dto.setMgrDiscountSum((BigDecimal) object [4]);
+			dto.setCouponMoneySum((BigDecimal) object [5]);
 		}
 		return dto;
 	}

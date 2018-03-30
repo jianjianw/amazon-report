@@ -1352,7 +1352,8 @@ public class APIBasic {
 		query.setDateTo(dateTo);
 		query.setOffset(0);
 		query.setLimit(50);
-		query.setBranchNum(1);
+		query.setSortField("orderPayment");
+		query.setSortType("desc");
 
 		CardReportPageDTO result = posOrderRpc.findByCardReportQueryPage(query);
 		return result;

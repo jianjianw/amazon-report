@@ -6482,12 +6482,13 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("order by ");
 			if(cardReportQuery.getSortField() != null){
 				if("orderPayment".equals(cardReportQuery.getSortField())){
-					sb.append("(p.order_payment_money - p.order_mgr_discount_money + p.order_coupon_total_money) ").append(cardReportQuery.getSortType());
+					sb.append("(p.order_payment_money - p.order_mgr_discount_money + p.order_coupon_total_money) ");
 				}else if("orderDiscount".equals(cardReportQuery.getSortField())){
-					sb.append("(p.order_discount_money + p.order_mgr_discount_money) ").append(cardReportQuery.getSortType());
+					sb.append("(p.order_discount_money + p.order_mgr_discount_money) ");
 				}else{
-					sb.append(AppUtil.getDBColumnName(cardReportQuery.getSortField())+" "+cardReportQuery.getSortType());
+					sb.append(AppUtil.getDBColumnName(cardReportQuery.getSortField()+" "));
 				}
+				sb.append(cardReportQuery.getSortType());
 
 			}else{
 				sb.append("p.order_no ");
@@ -6506,8 +6507,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) as count_, sum(p.order_payment_money - p.order_mgr_discount_money + p.order_coupon_total_money) as paymentMoney, ");
-		sb.append("sum(p.order_discount_money + p.order_mgr_discount_money) as discount, sum(p.order_point) as point ");
+		sb.append("select count(*) as count_, sum(p.order_payment_money) as paymentMoney, ");
+		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, ");
+		sb.append("sum(p.order_mgr_discount_money) as mgrDiscount, ");
+		sb.append("sum(p.order_coupon_total_money) as conponMoney ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		return (Object[])query.uniqueResult();

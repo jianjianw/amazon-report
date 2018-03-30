@@ -13,6 +13,8 @@ public class CardReportPageDTO implements Serializable {
     private BigDecimal paymentMoneySum;
     private BigDecimal discountMoneySum;
     private BigDecimal pointSum;
+    private BigDecimal mgrDiscountSum;
+    private BigDecimal couponMoneySum;
 
 
     public Integer getCount() {
@@ -53,5 +55,21 @@ public class CardReportPageDTO implements Serializable {
 
     public void setPointSum(BigDecimal pointSum) {
         this.pointSum = pointSum;
+    }
+
+    public BigDecimal getMgrDiscountSum() {
+        return mgrDiscountSum;
+    }
+
+    public void setMgrDiscountSum(BigDecimal mgrDiscountSum) {
+        this.mgrDiscountSum = mgrDiscountSum;
+    }
+
+    public BigDecimal getCouponMoneySum() {
+        return couponMoneySum;
+    }
+
+    public void setCouponMoneySum(BigDecimal couponMoneySum) {
+        this.couponMoneySum = couponMoneySum;
     }
 }
