@@ -2331,10 +2331,9 @@ public class ReportRpcImpl implements ReportRpc {
 		for (int i = 0,len = detailList.size(); i < len; i++) {
 			Object[] object = detailList.get(i);
 			Integer tempMerchantNum = (Integer) object[0];
-			String shiftTableBizday = (String) object[1];
-			String type = (String) object[2];
-			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			String type = (String) object[1];
+			BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BusinessCollection data = map.get(tempMerchantNum);
 			if (data == null) {
 				data = new BusinessCollection();

@@ -5170,7 +5170,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select p.merchant_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order p with(nolock) on detail.order_no = p.order_no ");
-		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' and p.branch_num = " + branchNum + " ");
+		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' and detail.order_detail_branch_num = " + branchNum + " ");
 		if (merchantNum != null) {
 			sb.append("and p.merchant_num = " + merchantNum + " ");
 		}
@@ -5182,7 +5182,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is null ");
 		sb.append("and detail.order_detail_state_code = 1 ");
-		sb.append("group by p.merchant_num, detail.order_detail_item order by detail.order_detail_branch_num asc ");
+		sb.append("group by p.merchant_num, detail.order_detail_item order by p.merchant_num asc ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		return sqlQuery.list();
 	}
