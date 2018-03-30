@@ -5489,7 +5489,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		sb.append("and p.order_state_code in (5, 7) and detail.item_num is null ");
 		sb.append("and detail.order_detail_state_code = 1 ");
-		sb.append("group by p.merchant_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item order by p.branch_num asc ");
+		sb.append("group by p.merchant_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item order by p.merchant_num asc ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		return sqlQuery.list();
 	}
