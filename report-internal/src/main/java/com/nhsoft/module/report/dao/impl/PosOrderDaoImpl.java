@@ -6479,20 +6479,18 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("select p.* ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		if(cardReportQuery.isPaging()){
-			if(StringUtils.isNotEmpty(cardReportQuery.getSortField())){
-				sb.append("order by ");
-				switch(cardReportQuery.getSortField()){
-					case "branchNum" : sb.append("p.branch_num "); break;
-					case "orderCardUser" : sb.append("p.order_card_user ");break;
-					case "orderNo" : sb.append("p.order_no "); break;
-					case "orderPaymentMoney" : sb.append("p.order_payment_money ");break;
-					case "orderTime" : sb.append("p.order_time ");break;
-					case "orderOperator" : sb.append("p.order_operator ");break;
-					case "orderDiscountMoney" : sb.append("p.order_discount_money");break;
-					case "orderPoint" : sb.append("p.order_point");break;
-					default : sb.append("p.branch_num ");break;
+			sb.append("order by ");
+			if(cardReportQuery.getSortField() != null){
+				if("orderPayment".equals(cardReportQuery.getSortField())){
+					sb.append("(p.order_payment_money - p.order_mgr_discount_money + p.order_coupon_total_money) ").append(cardReportQuery.getSortType());
+				}else if("orderDiscount".equals(cardReportQuery.getSortField())){
+					sb.append("(p.order_discount_money + p.order_mgr_discount_money) ").append(cardReportQuery.getSortType());
+				}else{
+					sb.append(AppUtil.getDBColumnName(cardReportQuery.getSortField())+" "+cardReportQuery.getSortType());
 				}
-				sb.append(cardReportQuery.getSortType());
+
+			}else{
+				sb.append("p.order_no ");
 			}
 		}
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
@@ -6508,8 +6506,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) as count_, sum(p.order_payment_money) as paymentMoney, ");
-		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point ");
+		sb.append("select count(*) as count_, sum(p.order_payment_money - p.order_mgr_discount_money + p.order_coupon_total_money) as paymentMoney, ");
+		sb.append("sum(p.order_discount_money + p.order_mgr_discount_money) as discount, sum(p.order_point) as point ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		return (Object[])query.uniqueResult();
