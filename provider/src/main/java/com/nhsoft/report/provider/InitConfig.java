@@ -47,7 +47,7 @@ public class InitConfig {
 		return restTemplate;
 	}
 	
-	/*@Bean
+	@Bean
 	public RedisTemplate redisTemplate() {
 		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		jedisPoolConfig.setMinIdle(10);
@@ -68,7 +68,7 @@ public class InitConfig {
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setValueSerializer(new MyJackson2JsonRedisSerializer());
 		return redisTemplate;
-	}*/
+	}
 
 	@Bean
 	public EhCacheManagerFactoryBean cacheManager() {

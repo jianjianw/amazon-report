@@ -96,20 +96,25 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		hibernateProperties = propertyResolver.getSubProperties("");
 		
 	}
-	
-	
-	private RedisTemplate buildRedisTemplate(Map<String, Object> dsMap) {
+
+
+
+	public JedisPoolConfig jedisPoolConfig() {
 		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		jedisPoolConfig.setMinIdle(10);
 		jedisPoolConfig.setMaxIdle(200);
 		jedisPoolConfig.setMaxTotal(600);
 		jedisPoolConfig.setTestOnBorrow(true);
-		
+		return jedisPoolConfig;
+	}
+
+	private RedisTemplate buildRedisTemplate(Map<String, Object> dsMap) {
+
 		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
 		jedisConnectionFactory.setHostName(dsMap.get("redis.host").toString());
 		jedisConnectionFactory.setPort(6379);
 		jedisConnectionFactory.setPassword(dsMap.get("redis.pass").toString());
-		jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
+		jedisConnectionFactory.setPoolConfig(jedisPoolConfig());
 		jedisConnectionFactory.setTimeout(60000);
 		jedisConnectionFactory.setDatabase(0);
 		jedisConnectionFactory.afterPropertiesSet();		//Cannot get Jedis connection
@@ -124,17 +129,12 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 
 
 	private RedisTemplate buildRedisTemplate2(Map<String, Object> dsMap) {
-		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-		jedisPoolConfig.setMinIdle(10);
-		jedisPoolConfig.setMaxIdle(200);
-		jedisPoolConfig.setMaxTotal(600);
-		jedisPoolConfig.setTestOnBorrow(true);
 
 		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
 		jedisConnectionFactory.setHostName(dsMap.get("redis.host").toString());
 		jedisConnectionFactory.setPort(6379);
 		jedisConnectionFactory.setPassword(dsMap.get("redis.pass").toString());
-		jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
+		jedisConnectionFactory.setPoolConfig(jedisPoolConfig());
 		jedisConnectionFactory.setTimeout(60000);
 		jedisConnectionFactory.setDatabase(13);
 		jedisConnectionFactory.afterPropertiesSet();		//Cannot get Jedis connection
