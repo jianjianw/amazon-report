@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.rpc;
 
+import com.nhsoft.module.report.dto.BizPurchaseDTO;
 import com.nhsoft.module.report.dto.MonthPurchaseDTO;
 import com.nhsoft.module.report.dto.ReceiveOrderInfoDTO;
 
@@ -42,5 +43,11 @@ public interface ReceiveOrderRpc {
      * @return
      */
     public List<MonthPurchaseDTO> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType,String strDate);
+
+
+    /**
+     * 根据营业日查询采购 金额 数量
+     */
+    public List<BizPurchaseDTO> findPurchaseByBiz(String systemBookCode,Date dateFrom, Date dateTo,List<Integer> itemNums);
 
 }

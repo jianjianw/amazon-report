@@ -80,4 +80,11 @@ public interface WholesaleOrderService {
 	 */
 	public List<Object[]> findItemSupplierDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
 												 List<Integer> regionNums);
+
+
+	/**
+	 * 根据营业日汇总批发数量和金额
+	 * */
+	public List<Object[]> findAmountAndMoneyByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums);
+
 }

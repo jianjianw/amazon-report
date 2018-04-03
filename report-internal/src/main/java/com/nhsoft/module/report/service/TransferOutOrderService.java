@@ -162,4 +162,9 @@ public interface TransferOutOrderService {
 	 */
 	public List<Object[]> findDateSummary(String systemBookCode, Integer centerBranchNum,
 										  List<Integer> branchNums, Date dateFrom, Date dateTo,String strDate);
+
+	/**
+	 * 按营业日 汇总金额和调出数量
+	 * */
+	public List<Object[]> findMoneyAndAmountByBiz(String systemBookCode,Date dateFrom, Date dateTo,List<Integer> itemNums);
 }

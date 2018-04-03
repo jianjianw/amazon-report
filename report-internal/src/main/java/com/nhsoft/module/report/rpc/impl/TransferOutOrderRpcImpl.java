@@ -2,6 +2,7 @@ package com.nhsoft.module.report.rpc.impl;
 
 
 import com.nhsoft.module.report.dto.TransferOutMoney;
+import com.nhsoft.module.report.dto.TransferOutMoneyAndAmountDTO;
 import com.nhsoft.module.report.dto.TransferOutMoneyDateDTO;
 import com.nhsoft.module.report.dto.TransterOutDTO;
 import com.nhsoft.module.report.rpc.TransferOutOrderRpc;
@@ -103,6 +104,23 @@ public class TransferOutOrderRpcImpl implements TransferOutOrderRpc {
             dto.setBizday((String) object[0]);
             dto.setTotalMoney((BigDecimal) object[1]);
             dto.setFeeMoney((BigDecimal) object[2]);
+            list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public List<TransferOutMoneyAndAmountDTO> findMoneyAndAmountByBiz(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
+
+        List<Object[]> objects = transferOutOrderService.findMoneyAndAmountByBiz(systemBookCode, dateFrom, dateTo,itemNums);
+        int size = objects.size();
+        List<TransferOutMoneyAndAmountDTO> list = new ArrayList<>(size);
+        for (int i = 0; i < size ; i++) {
+            Object[] object = objects.get(i);
+            TransferOutMoneyAndAmountDTO dto = new TransferOutMoneyAndAmountDTO();
+            dto.setBiz((String) object[0]);
+            dto.setOutQty(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1] );
+            dto.setOutMoney(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
             list.add(dto);
         }
         return list;

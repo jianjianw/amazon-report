@@ -1403,7 +1403,7 @@ public interface ReportRpc {
 
 
 	/**
-	 * 毛利分析 日毛利汇总   分页查询      查询count太慢
+	 * 毛利分析 日毛利汇总   分页查询
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
@@ -1411,11 +1411,17 @@ public interface ReportRpc {
 
 
 	/**
-	 * 销售分析 -- 按分店汇总商品信息   分页查询
+	 * 销售分析 -- 按分店汇总商品信息   分页查询   这个接口还没做
 	 * @param queryData
 	 * @return
 	 */
 	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
+
+
+	/**
+	 * 采购计划周期表(好想来)
+	 * */
+	public List<PurchaseCycleSummay> findPurchaseCycleByBiz(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums);
 
 
 

@@ -1060,4 +1060,26 @@ public class WholesaleOrderDaoImpl extends DaoImpl implements WholesaleOrderDao 
 		return sqlQuery.list();
 	}
 
+	@Override
+	public List<Object[]> findAmountAndMoneyByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("select convert(varchar(8),w.wholesale_order_audit_time,112) as biz, sum(detail.order_detail_qty) as qty, sum(detail.order_detail_money) as money ");
+		sb.append("from wholesale_order_detail as detail with(nolock) inner join wholesale_order as w with(nolock) on detail.wholesale_order_fid = w.wholesale_order_fid ");
+		sb.append("where w.system_book_code = '"+systemBookCode+"' ");
+		sb.append("and w.wholesale_order_state_code = 3 ");
+		if(itemNums != null && itemNums.size() > 0){
+			sb.append("and detail.item_num in" + AppUtil.getIntegerParmeList(itemNums));
+		}
+		if(dateTo != null){
+			sb.append("and w.wholesale_order_audit_time >= '"+DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom))+"' ");
+		}
+		if(dateFrom != null){
+			sb.append("and w.wholesale_order_audit_time >= '"+DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateFrom))+"' ");
+		}
+		sb.append("group by convert(varchar(8),w.wholesale_order_audit_time,112) ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
+	}
+
 }

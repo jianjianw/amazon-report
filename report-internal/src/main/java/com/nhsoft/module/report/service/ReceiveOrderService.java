@@ -123,5 +123,9 @@ public interface ReceiveOrderService{
 		 */
 		public List<Object[]> findPurchaseMonth(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,String dateType,String strDate);
 
+		/**
+		 * 根据营业日查询采购 金额 数量
+		 */
+		public List<Object[]> findPurchaseByBiz(String systemBookCode,Date dateFrom, Date dateTo,List<Integer> itemNums);
 
 }

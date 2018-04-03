@@ -23,6 +23,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,9 @@ public class ReportRpcImpl implements ReportRpc {
 	private PosItemLogRpc posItemLogRpc;
 	@Autowired
 	private MarketActionOpenIdService marketActionOpenIdService;
+
+	@Autowired
+	private WholesaleOrderRpc wholesaleOrderRpc;
 
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -4617,6 +4621,69 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
 		return null;
+	}
+
+	@Override
+	public List<PurchaseCycleSummay> findPurchaseCycleByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+
+		// 入库金额   入库数量    采购员
+		List<BizPurchaseDTO> purchaseByBiz = receiveOrderRpc.findPurchaseByBiz(systemBookCode, dateFrom, dateTo, itemNums);
+		//调出单
+		List<TransferOutMoneyAndAmountDTO> transferOutSum = transferOutOrderRpc.findMoneyAndAmountByBiz(systemBookCode, dateFrom, dateTo,itemNums);
+		//批发数量
+		List<WholesaleAmountAndMoneyDTO> wholesaleSum = wholesaleOrderRpc.findAmountAndMoneyByBiz(systemBookCode, dateFrom, dateTo, itemNums);
+		//库存  当前库存
+        List<Inventory> inventories = inventoryService.findByItemAndBranch(systemBookCode, null, itemNums, null);
+        BigDecimal inventoryAmount = BigDecimal.ZERO;
+        BigDecimal inventoryMoney = BigDecimal.ZERO;
+        for (int i = 0,len = inventories.size(); i < len ; i++) {
+            Inventory inventory = inventories.get(i);
+			inventoryAmount = inventoryAmount.add(inventory.getInventoryAmount() == null ? BigDecimal.ZERO : inventory.getInventoryAmount() );
+			inventoryMoney = inventoryMoney.add(inventory.getInventoryMoney() == null ? BigDecimal.ZERO :inventory.getInventoryMoney());
+        }
+
+        List<PurchaseCycleSummay> result = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        int diffDay = DateUtil.diffDay(dateFrom, dateTo);
+        for (int i = 0; i < diffDay; i++) {
+            calendar.setTime(dateFrom);
+            calendar.add(Calendar.DAY_OF_MONTH,i);
+            PurchaseCycleSummay summary = new PurchaseCycleSummay();
+            summary.setBizDay(DateUtil.getDateShortStr(calendar.getTime()));
+            result.add(summary);
+        }
+
+        for (int i = 0,len = result.size(); i < len ; i++) {
+            PurchaseCycleSummay summary = result.get(i);
+            String bizDay = summary.getBizDay();
+			summary.setCurrentInventoryQty(inventoryAmount);
+			summary.setCurrentInventoryMoney(inventoryMoney);
+
+            for (int j = 0,size = purchaseByBiz.size(); j <size ; j++) {
+                BizPurchaseDTO purchaseDTO = purchaseByBiz.get(j);
+                if(bizDay.equals(purchaseDTO.getBizday())){
+                    summary.setActualInMoney(purchaseDTO.getTotalMoney());
+                    summary.setInQty(purchaseDTO.getQty());
+                }
+            }
+
+            for (int j = 0,size = transferOutSum.size(); j < size ; j++) {
+                TransferOutMoneyAndAmountDTO transferOut = transferOutSum.get(j);
+                if(bizDay.equals(transferOut.getBiz())){
+                    summary.setOutTotalMoney(transferOut.getOutMoney());
+                    summary.setOutQty(transferOut.getOutQty());
+                }
+            }
+
+            for (int j = 0,size = wholesaleSum.size(); j < size ; j++) {
+				WholesaleAmountAndMoneyDTO dto = wholesaleSum.get(j);
+				if(bizDay.equals(dto.getBiz())){
+					summary.setOutTotalMoney(summary.getOutTotalMoney().add(dto.getMoney()));
+				}
+            }
+        }
+
+        return result;
 	}
 
 
