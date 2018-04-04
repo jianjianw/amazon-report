@@ -4694,6 +4694,7 @@ public class ReportRpcImpl implements ReportRpc {
 			itemNums.add(posItem.getItemNum());
 		}
 
+		//查询总仓
 		List<Storehouse> storehouses = storehouseService.findByBranch(systemBookCode, branchNum);
 		int stores = storehouses.size();
 		List<Integer> storehouseNums = new ArrayList<>(stores);

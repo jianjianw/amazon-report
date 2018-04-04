@@ -5795,7 +5795,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num as branchNum, shift_table_bizday as bizday, sum(order_payment_money) as paymentMoney, count(order_no) as orderNo, ");
+		sb.append("select branch_num as branchNum, shift_table_bizday as shiftTableDate, sum(order_payment_money) as totalMoney, count(order_no) as customerNums, ");
 		sb.append("sum(order_coupon_total_money) as conponMoney, sum(order_mgr_discount_money) as mgrDiscount ");
 		sb.append(createByCustomerAnalysisQuery(saleAnalysisQueryData));
 		sb.append("group by branch_num, shift_table_bizday ");
