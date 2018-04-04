@@ -5800,18 +5800,18 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append(createByCustomerAnalysisQuery(saleAnalysisQueryData));
 		sb.append("group by branch_num, shift_table_bizday ");
 
-		if(saleAnalysisQueryData.isPage()){
-			if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSortField())){
-				sb.append("order by " + saleAnalysisQueryData.getSortField() + " " + saleAnalysisQueryData.getSortType());
-			}
+
+		if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSortField())){
+			sb.append("order by branchNum asc, " + saleAnalysisQueryData.getSortField() + " " + saleAnalysisQueryData.getSortType());
 		}else{
-			sb.append("order by branchNum asc");
+			sb.append("order by branchNum asc ");
 		}
+
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.addScalar("branchNum", StandardBasicTypes.INTEGER)
-				.addScalar("bizday", StandardBasicTypes.STRING)
-				.addScalar("paymentMoney", StandardBasicTypes.BIG_DECIMAL)
-				.addScalar("orderNo", StandardBasicTypes.LONG)
+				.addScalar("shiftTableDate", StandardBasicTypes.STRING)
+				.addScalar("totalMoney", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("customerNums", StandardBasicTypes.LONG)
 				.addScalar("conponMoney", StandardBasicTypes.BIG_DECIMAL)
 				.addScalar("mgrDiscount", StandardBasicTypes.BIG_DECIMAL);
 
@@ -6026,13 +6026,13 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("group by branchNum,itemNum,matrixNum ");
 		}
 
-		if(profitAnalysisQueryData.isPage()){
-			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-				sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
-			}
+
+		if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
+			sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
 		}else{
 			sb.append("order by branchNum asc ");
 		}
+
 
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.setFirstResult(profitAnalysisQueryData.getOffset());
@@ -6238,13 +6238,13 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("group by branchNum,biz ");
 		}
 
-		if(profitAnalysisQueryData.isPage()){
-			if(StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-				sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " "+profitAnalysisQueryData.getSortType());
-			}
+
+		if(StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
+			sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " "+profitAnalysisQueryData.getSortType());
 		}else{
 			sb.append("order by branchNum asc ");
 		}
+
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 
 		query.setFirstResult(profitAnalysisQueryData.getOffset());

@@ -1220,7 +1220,7 @@ public class APIBasic {
 	public CustomerAnalysisHistoryPageDTO test58() throws Exception{
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-03-08");
 		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
@@ -1228,7 +1228,9 @@ public class APIBasic {
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
 		query.setOffset(0);
-		query.setLimit(5);
+		query.setLimit(100);
+		query.setSortField("totalMoney");
+		query.setSortType("desc");
 		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(query);
 		return result;
 	}
