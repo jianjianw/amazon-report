@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.service;
 
+import com.nhsoft.module.report.model.Inventory;
+
 import java.util.List;
 
 /**
@@ -35,4 +37,15 @@ public interface InventoryService {
 	 * @return
 	 */
 	public List<Object[]> findCenterStore(String systemBookCode, Integer branchNum, List<Integer> itemNums);
+
+
+	/**
+	 * 读取商品库存
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param itemNums
+	 * @return
+	 */
+	public List<Inventory> findByItemAndBranch(String systemBookCode, Integer branchNum, List<Integer> itemNums, Boolean centerFlag);
+
 }

@@ -17,6 +17,7 @@ public class StorehouseDaoImpl extends DaoImpl implements StorehouseDao {
 		Criteria criteria = currentSession().createCriteria(Storehouse.class, "s")
 				.add(Restrictions.eq("s.systemBookCode", systemBookCode))
 				.add(Restrictions.eq("s.storehouseDelTag", false))
+				.add(Restrictions.eq("s.storehouseActived",true))
 				.createAlias("s.branchs", "branch");
 		if(branchNums != null && branchNums.size() > 0) {
 			criteria.add(Restrictions.in("branch.id.branchNum", branchNums));
@@ -32,7 +33,9 @@ public class StorehouseDaoImpl extends DaoImpl implements StorehouseDao {
 		String sql = "storehouse_num in (select storehouse_num from branch_storehouse where system_book_code = ? and branch_num = ?)";
 		Criteria criteria = currentSession().createCriteria(Storehouse.class, "s")
 				.add(Restrictions.eq("s.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("s.storehouseActived",true))
 				.add(Restrictions.eq("s.storehouseDelTag", false));
+
 		if(branchNum != null){
 			criteria.add(Restrictions.sqlRestriction(sql,
 					new Object[]{systemBookCode, branchNum},

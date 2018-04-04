@@ -275,4 +275,10 @@ public interface WholesaleOrderDao {
 	public List<WholesaleOrder> find(String systemBookCode, List<Integer> branchNums, String query, Date dateFrom, Date dateTo);
 
 
+	/**
+	 * 根据营业日汇总批发数量和金额
+	 * */
+	public List<Object[]> findAmountAndMoneyByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums);
+
+
 }

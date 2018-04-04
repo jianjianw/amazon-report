@@ -10,11 +10,9 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
-import org.apache.http.impl.execchain.TunnelRefusedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.transform.Result;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1246,11 +1244,11 @@ public class APIBasic {
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
 		query.setIsQueryCF(true);
-		query.setOffset(0);
-		query.setLimit(50);
-		ArrayList<Integer> integers = new ArrayList<>();
+		/*query.setOffset(0);
+		query.setLimit(50);*/
+		/*ArrayList<Integer> integers = new ArrayList<>();
 		integers.add(1);
-		query.setBranchNums(integers);
+		query.setBranchNums(integers);*/
 
 		ProfitByBranchAndItemSummaryPageDTO result = reportRpc.findProfitAnalysisByBranchAndItemByPage(query);
 		return result;
@@ -1352,11 +1350,32 @@ public class APIBasic {
 		query.setDateTo(dateTo);
 		query.setOffset(0);
 		query.setLimit(50);
-		query.setSortField("orderPayment");
+		query.setSortField("orderPoint");
 		query.setSortType("desc");
 
 		CardReportPageDTO result = posOrderRpc.findByCardReportQueryPage(query);
 		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value= "/test72")
+	public List<PurchaseCycleSummary> test72() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-30");
+		List<PurchaseCycleSummary> purchaseCycleByBiz = reportRpc.findPurchaseCycleByBiz(systemBookCode,dateFrom,dateTo,null);
+
+		return purchaseCycleByBiz;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value= "/test73")
+	public List<TransferItemDetailSummary> test73()throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-30");
+		List<TransferItemDetailSummary> transferItemTop = reportRpc.findTransferItemTop(systemBookCode,1,dateFrom,dateTo,null,"transferQty");
+		return  transferItemTop;
 	}
 
 }
