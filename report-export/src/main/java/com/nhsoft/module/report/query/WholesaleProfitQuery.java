@@ -25,12 +25,21 @@ public class WholesaleProfitQuery extends QueryBuilder {
 	private String auditor;
 	private String method;
 	private String dateType;
+	private String unitType;
 	private List<Integer> branchNums;
 	private List<String> sellers;
 	
 	private String sortField;
 	private String sortType;
-	
+
+	public String getUnitType() {
+		return unitType;
+	}
+
+	public void setUnitType(String unitType) {
+		this.unitType = unitType;
+	}
+
 	public List<Integer> getBranchNums() {
 		return branchNums;
 	}

@@ -3987,6 +3987,12 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		List<WholesaleProfitByPosItem> list = new ArrayList<WholesaleProfitByPosItem>(map.values());
+		String unitType = wholesaleProfitQuery.getUnitType();
+
+		if(StringUtils.isEmpty(unitType)){
+			unitType = AppConstants.UNIT_PIFA;
+		}
+
 		for (int i = list.size() - 1; i >= 0; i--) {
 			WholesaleProfitByPosItem data = list.get(i);
 			itemMatrixNum = data.getItemMatrixNum();
@@ -4016,7 +4022,15 @@ public class ReportServiceImpl implements ReportService {
 				}
 			}
 
-			BigDecimal rate = posItem.getItemWholesaleRate();
+			BigDecimal rate;
+			switch (unitType){
+				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
+				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
+				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
+				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
+				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
+				default: rate = posItem.getItemWholesaleRate();
+			}
 			if (rate.compareTo(BigDecimal.ZERO) != 0) {
 				data.setSaleNum(data.getSaleNum().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
 				data.setPresentQty(data.getPresentQty().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
@@ -4045,7 +4059,11 @@ public class ReportServiceImpl implements ReportService {
 	public List<WholesaleProfitByPosItemDetail> findWholesaleProfitByPosItemDetail(
 			WholesaleProfitQuery wholesaleProfitQuery) {
 		String systemBookCode = wholesaleProfitQuery.getSystemBookCode();
+		String unitType = wholesaleProfitQuery.getUnitType();
 
+		if(StringUtils.isEmpty(unitType)){
+			unitType = AppConstants.UNIT_PIFA;
+		}
 
 		List<PosClient> posClients = posClientService.findInCache(systemBookCode);
 		List<Object[]> saleObjects = wholesaleOrderDao.findDetail(wholesaleProfitQuery);
@@ -7027,7 +7045,11 @@ public class ReportServiceImpl implements ReportService {
 
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 		List<Object[]> saleObjects = wholesaleOrderDao.findMoneyGroupByItemNum(wholesaleProfitQuery);
+		String unitType = wholesaleProfitQuery.getUnitType();
 
+		if(StringUtils.isEmpty(unitType)){
+			unitType = AppConstants.UNIT_PIFA;
+		}
 		Integer itemNum = null;
 		BigDecimal qty = null;
 		BigDecimal money = null;
@@ -7038,6 +7060,7 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal presentCostMoney = null;
 		BigDecimal presentMoney = null;
 		BigDecimal presentUseQty = null;
+		BigDecimal rate;
 		for (int i = 0,len = saleObjects.size(); i < len; i++) {
 			Object[] object = saleObjects.get(i);
 			itemNum = (Integer) object[0];
@@ -7071,9 +7094,19 @@ public class ReportServiceImpl implements ReportService {
 				map.put(category + categoryCode, data);
 			}
 			data.setSaleBaseQty(data.getSaleBaseQty().add(qty));
-			if (posItem.getItemWholesaleRate().compareTo(BigDecimal.ZERO) > 0) {
-				qty = qty.divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP);
-				presentQty = presentQty.divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP);
+
+			switch (unitType){
+				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
+				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
+				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
+				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
+				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
+				default: rate = posItem.getItemWholesaleRate();
+			}
+
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				qty = qty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+				presentQty = presentQty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
 
 			}
 			data.setSaleNum(data.getSaleNum().add(qty));
@@ -7121,9 +7154,18 @@ public class ReportServiceImpl implements ReportService {
 				map.put(category + categoryCode, data);
 			}
 			data.setSaleBaseQty(data.getSaleBaseQty().subtract(qty));
-			if (posItem.getItemWholesaleRate().compareTo(BigDecimal.ZERO) > 0) {
-				qty = qty.divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP);
-				presentQty = presentQty.divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP);
+			switch (unitType){
+				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
+				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
+				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
+				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
+				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
+				default: rate = posItem.getItemWholesaleRate();
+			}
+
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				qty = qty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+				presentQty = presentQty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
 
 			}
 			data.setSaleNum(data.getSaleNum().subtract(qty));
@@ -7258,6 +7300,11 @@ public class ReportServiceImpl implements ReportService {
 		List<WholesaleProfitByPosItemDetail> list = new ArrayList<WholesaleProfitByPosItemDetail>(map.values());
 		StringBuilder sb;
 		String itemCategory;
+		String unitType = wholesaleProfitQuery.getUnitType();
+
+		if(StringUtils.isEmpty(unitType)){
+			unitType = AppConstants.UNIT_PIFA;
+		}
 		for (int i = list.size() - 1; i >= 0; i--) {
 			WholesaleProfitByPosItemDetail data = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(data.getItemNum(), posItems);
@@ -7292,7 +7339,21 @@ public class ReportServiceImpl implements ReportService {
 				data.setClientCode(posClient.getClientCode());
 				data.setClientName(posClient.getClientName());
 			}
-			BigDecimal rate = posItem.getItemWholesaleRate();
+			BigDecimal rate;
+			switch (unitType){
+				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
+				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
+				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
+				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
+				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
+				default: rate = posItem.getItemWholesaleRate();
+			}
+
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				qty = qty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+				presentQty = presentQty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+
+			}
 			if (rate.compareTo(BigDecimal.ZERO) != 0) {
 				data.setWholesaleNum(data.getWholesaleNum().divide(posItem.getItemWholesaleRate(), 4,
 						BigDecimal.ROUND_HALF_UP));
@@ -7530,7 +7591,7 @@ public class ReportServiceImpl implements ReportService {
 
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		List<Object[]> saleObjects = wholesaleOrderDao.findMoneyGroupByBranch(systemBookCode, branchNums, dateFrom,
-				dateTo, itemCategories, itemNums, clients, regionNums, storehouseNum, auditor, queryData.getDateType(), sellers);
+				dateTo, itemCategories, itemNums, clients, regionNums, storehouseNum, auditor, queryData.getDateType(), sellers, queryData.getUnitType());
 
 		Integer branchNum_ = null;
 		BigDecimal money = null;
@@ -7576,7 +7637,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		List<Object[]> returnObjects = wholesaleReturnDao.findMoneyGroupByBranch(systemBookCode, branchNums, dateFrom,
-				dateTo, itemCategories, itemNums, clients, regionNums, storehouseNum, auditor, queryData.getDateType(), sellers);
+				dateTo, itemCategories, itemNums, clients, regionNums, storehouseNum, auditor, queryData.getDateType(), sellers, queryData.getUnitType());
 		for (int i = 0,len = returnObjects.size(); i < len; i++) {
 			Object[] object = returnObjects.get(i);
 			branchNum_ = (Integer) object[0];
@@ -8615,7 +8676,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 		
 		List<Object[]> orderObjects = wholesaleOrderDao.findMoneyGroupByBranch(systemBookCode, branchNums, dateFrom,
-				dateTo, null, null, null, null, null, null, null, null);
+				dateTo, null, null, null, null, null, null, null, null, null);
 		for (int i = 0,len = orderObjects.size(); i < len; i++) {
 			Object[] orderObject = orderObjects.get(i);
 			Integer branchNum = (Integer) orderObject[0];
@@ -9671,6 +9732,12 @@ public class ReportServiceImpl implements ReportService {
 	public List<WholesaleProfitByClient> findWholesaleProfitBySupplier(WholesaleProfitQuery wholesaleProfitQuery) {
 		String systemBookCode = wholesaleProfitQuery.getSystemBookCode();
 
+		String unitType = wholesaleProfitQuery.getUnitType();
+
+		if(StringUtils.isEmpty(unitType)){
+			unitType = AppConstants.UNIT_PIFA;
+		}
+
 		Map<String, WholesaleProfitByClient> map = new HashMap<String, WholesaleProfitByClient>();
 		List<Supplier> suppliers = supplierService.findInCache(systemBookCode);
 		List<StoreItemSupplier> storeItemSuppliers = storeItemSupplierDao.findByItemNums(systemBookCode, null, null);
@@ -9688,6 +9755,7 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal presentUseQty = null;
 		BigDecimal presentCostMoney = null;
 		BigDecimal presentMoney = null;
+		BigDecimal rate;
 		for (int i = 0,len = saleObjects.size(); i < len; i++) {
 			Object[] object = saleObjects.get(i);
 			itemNum = (Integer) object[0];
@@ -9729,9 +9797,18 @@ public class ReportServiceImpl implements ReportService {
 			}
 			data.setWholesaleBaseQty(data.getWholesaleBaseQty().add(qty));
 
-			if (posItem.getItemWholesaleRate().compareTo(BigDecimal.ZERO) > 0) {
-				qty = qty.divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP);
-				presentQty = presentQty.divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP);
+			switch (unitType){
+				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
+				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
+				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
+				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
+				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
+				default: rate = posItem.getItemWholesaleRate();
+			}
+
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				qty = qty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+				presentQty = presentQty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
 
 			}
 			data.setWholesaleQty(data.getWholesaleQty().add(qty));
@@ -9785,9 +9862,18 @@ public class ReportServiceImpl implements ReportService {
 			}
 
 			data.setWholesaleBaseQty(data.getWholesaleBaseQty().add(qty));
-			if (posItem.getItemWholesaleRate().compareTo(BigDecimal.ZERO) > 0) {
-				qty = qty.divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP);
-				presentQty = presentQty.divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP);
+
+			switch (unitType){
+				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
+				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
+				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
+				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
+				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
+				default: rate = posItem.getItemWholesaleRate();
+			}
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				qty = qty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+				presentQty = presentQty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
 
 			}
 
