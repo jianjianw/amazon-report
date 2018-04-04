@@ -363,6 +363,9 @@ public interface TransferOutOrderDao{
 	 * */
 	public List<Object[]> findMoneyAndAmountByBiz(String systemBookCode,Date dateFrom, Date dateTo,List<Integer> itemNums);
 
-
+	/**
+	 * 按商品汇总 调出金额和数量
+	 */
+	public List<Object[]> findMoneyAndAmountByItemNum(String systemBookCode,Integer branchNum,List<Integer> storehouseNums,Date dateFrom, Date dateTo,List<Integer> itemNums,String sortField);
 
 }

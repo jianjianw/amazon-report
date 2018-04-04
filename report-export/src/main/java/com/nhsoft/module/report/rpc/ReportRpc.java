@@ -1421,9 +1421,12 @@ public interface ReportRpc {
 	/**
 	 * 采购计划周期表(好想来)
 	 * */
-	public List<PurchaseCycleSummay> findPurchaseCycleByBiz(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums);
+	public List<PurchaseCycleSummary> findPurchaseCycleByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
-
+	/**
+	 * 商品配送top榜（好想来）
+	 * */
+	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode,Integer branchNum,Date dateFrom,Date dateTo,List<String> itemCategoryCodes,String sortField);
 
 
 

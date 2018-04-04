@@ -3,7 +3,7 @@ package com.nhsoft.module.report.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PurchaseCycleSummay implements Serializable {
+public class PurchaseCycleSummary implements Serializable {
 
 
     private static final long serialVersionUID = -7194922117602909624L;

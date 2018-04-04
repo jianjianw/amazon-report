@@ -1047,5 +1047,34 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		return query.list();
 	}
 
+	@Override
+	public List<Object[]> findMoneyAndAmountByItemNum(String systemBookCode, Integer branchNum, List<Integer> storehouseNums, Date dateFrom, Date dateTo, List<Integer> itemNums,String sortField ) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("select detail.item_num,");
+		sb.append("sum(detail.out_order_detail_qty) as transferQty, sum(detail.out_order_detail_sale_subtotal) as transferMoney ");
+		sb.append("from out_order_detail as detail with(nolock) inner join transfer_out_order as t with(nolock) on detail.out_order_fid = t.out_order_fid ");
+		sb.append("where t.system_book_code = :systemBookCode and t.out_branch_num = :branchNum ");
+		sb.append("and t.out_order_audit_time between :dateFrom and :dateTo and t.out_order_state_code = 3 ");
+		if(storehouseNums != null && storehouseNums.size()>0){
+			sb.append("and t.storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+		}
+		if (itemNums != null && itemNums.size() > 0) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		sb.append("group by detail.item_num ");
+		if(StringUtils.isNotBlank(sortField)){
+			sb.append("order by " + sortField);
+		}
+
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		query.setInteger("branchNum", branchNum);
+		query.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		return query.list();
+
+	}
+
 
 }

@@ -1,7 +1,6 @@
 package com.nhsoft.module.report.rpc.impl;
 
 
-import com.nhsoft.module.report.api.dto.YearMoneyAddRateDTO;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.*;
@@ -13,8 +12,6 @@ import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.report.utils.ReportUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.protocol.RequestUserAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -4624,7 +4621,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<PurchaseCycleSummay> findPurchaseCycleByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+	public List<PurchaseCycleSummary> findPurchaseCycleByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
 
 		// 入库金额   入库数量    采购员
 		List<BizPurchaseDTO> purchaseByBiz = receiveOrderRpc.findPurchaseByBiz(systemBookCode, dateFrom, dateTo, itemNums);
@@ -4642,19 +4639,19 @@ public class ReportRpcImpl implements ReportRpc {
 			inventoryMoney = inventoryMoney.add(inventory.getInventoryMoney() == null ? BigDecimal.ZERO :inventory.getInventoryMoney());
         }
 
-        List<PurchaseCycleSummay> result = new ArrayList<>();
+        List<PurchaseCycleSummary> result = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
-        int diffDay = DateUtil.diffDay(dateFrom, dateTo);
-        for (int i = 0; i < diffDay; i++) {
+        int diffDay = DateUtil.diffDayV2(dateFrom, dateTo)+1;
+		for (int i = 0; i < diffDay; i++) {
             calendar.setTime(dateFrom);
             calendar.add(Calendar.DAY_OF_MONTH,i);
-            PurchaseCycleSummay summary = new PurchaseCycleSummay();
+            PurchaseCycleSummary summary = new PurchaseCycleSummary();
             summary.setBizDay(DateUtil.getDateShortStr(calendar.getTime()));
             result.add(summary);
         }
 
         for (int i = 0,len = result.size(); i < len ; i++) {
-            PurchaseCycleSummay summary = result.get(i);
+            PurchaseCycleSummary summary = result.get(i);
             String bizDay = summary.getBizDay();
 			summary.setCurrentInventoryQty(inventoryAmount);
 			summary.setCurrentInventoryMoney(inventoryMoney);
@@ -4684,6 +4681,70 @@ public class ReportRpcImpl implements ReportRpc {
         }
 
         return result;
+	}
+
+	@Override
+	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<String> itemCategoryCodes,String sortField) {
+
+		List<PosItem> posItems = posItemService.find(systemBookCode, itemCategoryCodes, null, null);
+		int size = posItems.size();
+		List<Integer> itemNums = new ArrayList<>();
+		for (int i = 0; i < size; i++) {
+			PosItem posItem = posItems.get(i);
+			itemNums.add(posItem.getItemNum());
+		}
+
+		List<Storehouse> storehouses = storehouseService.findByBranch(systemBookCode, branchNum);
+		int stores = storehouses.size();
+		List<Integer> storehouseNums = new ArrayList<>(stores);
+		for (int i = 0; i < stores; i++) {
+			Storehouse storehouse = storehouses.get(i);
+			storehouseNums.add(storehouse.getStorehouseNum());
+		}
+
+		//配送数量  配送金额  (总仓)
+		List<TransterOutDTO> transterOutDTOS = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, branchNum,storehouseNums, dateFrom, dateTo, itemNums, sortField);
+
+		//到货数量统计管理中心调出单
+		List<TransterOutDTO> receiveSummary = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, 99, storehouseNums, dateFrom, dateTo, itemNums, null);
+
+		//要货数量
+		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(systemBookCode, branchNum, null, dateFrom, dateTo, itemNums);
+		List<TransferItemDetailSummary> list = new ArrayList<>(size);
+
+		for (int i = 0; i <size ; i++) {
+			PosItem posItem = posItems.get(i);
+			Integer itemNum = posItem.getItemNum();
+			TransferItemDetailSummary summary = new TransferItemDetailSummary();
+			summary.setItemCode(posItem.getItemCode());
+			summary.setItemNum(posItem.getItemNum());
+			summary.setItemName(posItem.getItemName());
+
+			for (int j = 0, len = transterOutDTOS.size(); j < len; j++) {
+				TransterOutDTO dto = transterOutDTOS.get(j);
+				if (itemNum.equals(dto.getItemNum())) {
+					summary.setTransferMoney(dto.getMoney());
+					summary.setTransferQty(dto.getMoney());
+				}
+			}
+
+			for (int j = 0,len = receiveSummary.size(); j < len ; j++) {
+				TransterOutDTO dto = receiveSummary.get(j);
+				if(itemNum.equals(dto.getItemNum())){
+					summary.setReceiveQty(dto.getQty());
+				}
+			}
+
+			for (int j = 0,len = requestSummary.size(); j < len ; j++) {
+				RequestOrderDetailDTO dto = requestSummary.get(j);
+				if(itemNum.equals(dto.getItemNum())){
+					summary.setRequestQty(dto.getRequestOrderDetailQty());
+				}
+			}
+			list.add(summary);
+		}
+
+		return list;
 	}
 
 
