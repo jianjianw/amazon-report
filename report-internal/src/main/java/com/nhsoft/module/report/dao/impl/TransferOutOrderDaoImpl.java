@@ -1032,7 +1032,7 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		sb.append("from out_order_detail as detail inner join transfer_out_order as t on detail.out_order_fid = t.out_order_fid ");
 		sb.append("and t.system_book_code = '"+ systemBookCode+"' ");
 		if(itemNums != null && itemNums.size() > 0){
-			sb.append("detail.item_num in "+ AppUtil.getIntegerParmeList(itemNums));
+			sb.append("and detail.item_num in "+ AppUtil.getIntegerParmeList(itemNums));
 		}
 		if (dateFrom != null) {
 			sb.append("and t.out_order_audit_time >=  '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
