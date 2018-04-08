@@ -2156,8 +2156,39 @@ public class ReportRpcImpl implements ReportRpc {
 			String key = sb.append(collection.getMerchantNum()).append(collection.getShiftTableBizday()).toString();
 			map.put(key,collection);
 		}
+		List<Object[]> postList = posOrderService.findMerchantBizdayCouponSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
+		for (int i = 0,len = postList.size(); i < len; i++) {
+			Object[] object = postList.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			String type = (String) object[2];
+			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal money = AppUtil.getValue(object[4], BigDecimal.class);
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(tempMerchantNum).append(shiftTableBizday).toString();
+			BusinessCollection data = map.get(key);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				map.put(key, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
 
-		List<Object[]> postList = posOrderService.findMerchantBizdayDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+		postList = posOrderService.findMerchantBizdayDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
 		for (int i = 0,len = postList.size(); i < len; i++) {
 			Object[] object = postList.get(i);
 			Integer tempMerchantNum = (Integer) object[0];
@@ -2174,7 +2205,7 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			data.setAllDiscountMoney(money);
 		}
-		return new ArrayList<BusinessCollection>(map.values());
+		return new ArrayList<>(map.values());
     }
 
     @Override
@@ -2192,8 +2223,41 @@ public class ReportRpcImpl implements ReportRpc {
             String key = sb.append(tempMerchantNum).append(bizday).append(bizNum).toString();
             map.put(key,collection);
         }
+		List<Object[]> payment = posOrderService.findMerchantShiftTableCouponSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo, casher);
+		for (int i = 0,len = payment.size(); i < len; i++) {
+			Object[] object = payment.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			String shiftTableBizday = (String) object[1];
+			Integer bizNum = (Integer) object[2];
+			String type = (String) object[3];
+			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal money = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			StringBuilder sb = new StringBuilder();
+			String key = sb.append(tempMerchantNum).append(shiftTableBizday).append(bizNum).toString();
+			BusinessCollection data = map.get(key);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setShiftTableBizday(shiftTableBizday);
+				data.setShiftTableNum(bizNum);
+				map.put(key, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
 
-        List<Object[]> payment = posOrderService.findBranchShiftTablePaymentSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo, casher);
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+        payment = posOrderService.findBranchShiftTablePaymentSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo, casher);
         for (int i = 0,len = payment.size(); i < len; i++) {
             Object[] object = payment.get(i);
             Integer tempMerchantNum = (Integer) object[0];
@@ -2265,6 +2329,34 @@ public class ReportRpcImpl implements ReportRpc {
 			BusinessCollection collection = list.get(i);
 			map.put(collection.getMerchantNum(),collection);
 		}
+		List<Object[]> detailList = posOrderService.findMerchantCouponSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
+		for (int i = 0,len = detailList.size(); i < len; i++) {
+			Object[] object = detailList.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			String type = (String) object[1];
+			BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BusinessCollection data = map.get(tempMerchantNum);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				map.put(tempMerchantNum, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
 		List<Object[]> posList = posOrderService.findMerchantDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
 		for (int i = 0,len = posList.size(); i < len ; i++) {
 			Object[] object = posList.get(i);
@@ -2291,7 +2383,38 @@ public class ReportRpcImpl implements ReportRpc {
 			BusinessCollection collection = list.get(i);
 			map.put(collection.getMerchantNum()+"_"+collection.getStallNum(),collection);
 		}
-		List<Object[]> posList = posOrderService.findStallDiscountSummary(systemBookCode, branchNum, merchantNum, stallNum, dateFrom, dateTo);
+		List<Object[]> posList = posOrderService.findStallCouponSummary(systemBookCode, branchNum, merchantNum, stallNum, dateFrom, dateTo);
+		for (int i = 0,len = posList.size(); i < len; i++) {
+			Object[] object = posList.get(i);
+			Integer tempMerchantNum = (Integer) object[0];
+			Integer tempStallNum = (Integer) object[1];
+			String type = (String) object[2];
+			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			String key = tempMerchantNum+"_"+tempStallNum;
+			BusinessCollection data = map.get(key);
+			if (data == null) {
+				data = new BusinessCollection();
+				data.setMerchantNum(tempMerchantNum);
+				data.setStallNum(tempStallNum);
+				map.put(key, data);
+			}
+			BusinessCollectionIncome detail = new BusinessCollectionIncome();
+			detail.setName(type);
+			detail.setMoney(money);
+			detail.setQty(amount);
+			data.getTicketIncomes().add(detail);
+
+			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(money));
+		}
+		posList = posOrderService.findStallDiscountSummary(systemBookCode, branchNum, merchantNum, stallNum, dateFrom, dateTo);
 		for (int i = 0,len = posList.size(); i < len ; i++) {
 			Object[] object = posList.get(i);
 			Integer tempMerchantNum = (Integer) object[0];
