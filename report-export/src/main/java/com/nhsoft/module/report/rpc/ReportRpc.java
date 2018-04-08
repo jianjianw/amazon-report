@@ -1411,12 +1411,11 @@ public interface ReportRpc {
 
 
 	/**
-	 * 销售分析 -- 按分店汇总商品信息   分页查询   这个接口还没做
+	 * 销售分析 -- 按分店汇总商品信息   分页查询
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
-
+	public List<SaleAnalysisBranchItemPageSummary> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
 
 
 	/**

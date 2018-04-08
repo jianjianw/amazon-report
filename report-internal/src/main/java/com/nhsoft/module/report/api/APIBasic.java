@@ -1257,8 +1257,8 @@ public class APIBasic {
 		return result;
 	}
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test66")
-	public BranchBizSummaryPageDTO test66() throws Exception{		//page  毛利分析 日毛利汇总
+	@RequestMapping(method = RequestMethod.GET,value = "/test66/{sortType}")
+	public BranchBizSummaryPageDTO test66(@PathVariable(value = "sortType") String sortType) throws Exception{		//page  毛利分析 日毛利汇总
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-03-01");
@@ -1270,6 +1270,8 @@ public class APIBasic {
 		query.setIsQueryCF(true);
 		query.setOffset(0);
 		query.setLimit(50);
+		query.setSortField("profit");
+		query.setSortType(sortType);
 
 		BranchBizSummaryPageDTO result = reportRpc.findProfitAnalysisDaysByPage(query);
 		return result;

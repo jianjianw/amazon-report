@@ -4739,7 +4739,60 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
+	public List<SaleAnalysisBranchItemPageSummary> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
+
+
+
+		List<Object[]> data = reportService.findSaleAnalysisByBranchPosItemsByPage(queryData);
+
+		SaleAnalysisBranchItemPageSummary result = new SaleAnalysisBranchItemPageSummary();
+
+		Object[] count = reportService.findSaleAnalysisByBranchPosItemsCount(queryData);
+		if(count != null){
+																				result.setSaleNumSum((BigDecimal) count[0]);
+			result.setSaleMoneySum((BigDecimal) count[1]);
+																				result.setReturnNumSum((BigDecimal) count[2]);
+			result.setReturnMoneySum((BigDecimal) count[3]);
+																				result.setPresentNumSum((BigDecimal) count[4]);
+			result.setPresentMoneySum((BigDecimal) count[5]);
+																				result.setTotalNumSum((BigDecimal) count[6]);
+			result.setTotalMoneySum((BigDecimal) count[7]);
+
+							result.setCountTotalSum((BigDecimal) count[8]);//count_
+
+
+							result.setSaleAssistSum((BigDecimal) count[9]);		//assistAmount
+							result.setReturnAssistSum((BigDecimal) count[10]);	//assistAmount
+							result.setPresentAssistSum((BigDecimal) count[11]);	//assistAmount
+
+
+			result.setItemDiscount((BigDecimal) count[12]); //discount
+
+
+
+			/**
+			 *
+			 * sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as totalNum, ");
+			 sb.append("sum(case when detail.order_detail_state_code = 4 then detail.order_detail_amount end) as returnNum, ");
+			 sb.append("sum(case when detail.order_detail_state_code = 2 then detail.order_detail_amount end) as presentNum, ");
+			 sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_amount end) as saleNum, ");
+
+			 sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) as totalMoney, ");
+			 sb.append("sum(case when detail.order_detail_state_code = 4 then detail.order_detail_payment_money end) as returnMoney, ");
+			 sb.append("sum(case when detail.order_detail_state_code = 2 then detail.order_detail_payment_money end) as presentMoney, ");
+			 sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as saleMoney, ");
+
+			 sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end ) as count_, ");
+			 sb.append("sum(detail.order_detail_assist_amount) as assistAmount, ");
+			 sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_discount when detail.order_detail_state_code = 1 then detail.order_detail_discount end) as discount  ");
+
+			 *
+			 * */
+		}
+
+
+
+
 		return null;
 	}
 

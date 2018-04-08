@@ -1208,7 +1208,7 @@ public interface PosOrderDao {
 
 
 	/**
-	 * 销售分析 -- 按分店汇总商品信息   分页查询    查询总条数			有问题  还没做完
+	 * 销售分析 -- 按分店汇总商品信息   分页查询    查询总条数
 	 * @param queryData
 	 * @return
 	 */

@@ -5874,7 +5874,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 
 		if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSortField())){
-			sb.append("order by branchNum asc, " + saleAnalysisQueryData.getSortField() + " " + saleAnalysisQueryData.getSortType());
+			sb.append("order by " + saleAnalysisQueryData.getSortField() + " " + saleAnalysisQueryData.getSortType());
 		}else{
 			sb.append("order by branchNum asc ");
 		}
@@ -6100,7 +6100,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 
 		if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-			sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
+			sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
 		}else{
 			sb.append("order by branchNum asc ");
 		}
@@ -6312,7 +6312,11 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 
 		if(StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-			sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " "+profitAnalysisQueryData.getSortType());
+			if("branchNum".equals(profitAnalysisQueryData.getSortField())){
+				sb.append("order by branchNum " + profitAnalysisQueryData.getSortType());
+			}else{
+				sb.append("order by branchNum " + profitAnalysisQueryData.getSortType() + ", "+ profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
+			}
 		}else{
 			sb.append("order by branchNum asc ");
 		}
@@ -6376,34 +6380,36 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
 
-		StringBuffer sb = new StringBuffer();
-		sb.append("select detail.order_detail_branch_num as branchNum,detail.item_num as itemNum , ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) as money, ");
-		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end ) as amount_, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then then -detail.order_detail_discount else detail.order_detail_discount end) as discount  ");
+		StringBuilder sb = new StringBuilder();
+
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()){
+			sb.append("select branchNum as branchNum , itemNum as itemNum, stateCode as stateCode, sum(amount) as amount, sum(money) as money, ");
+			sb.append("sum(assistAmount) as assistAmount, count(amount_) as amount_, sum(discount) as discount form ( ");
+		}
+		sb.append("select detail.order_detail_branch_num as branchNum,detail.item_num as itemNum, detail.order_detail_state_code as stateCode, ");
+		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, count(detail.item_num) as amount_, ");
+		sb.append("sum(detail.order_detail_discount) as discount ");
 		sb.append(createSaleAnalysisBranchItemQuery(queryData));
 		sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_state_code ");
 
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
 			sb.append("union ");
-			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.item_num as itemNum, ");
-			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_amount else kitDetail.order_kit_detail_amount end) as amount, ");
-			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_payment_money else kitDetail.order_kit_detail_payment_money end) as money, ");
-			sb.append("sum(0.00) as assistAmount, ");
-			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -1 else 1 end) as amount_, ");
-			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_discount else kitDetail.order_kit_detail_discount end) as discount ");
+			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.item_num as itemNum,  kitDetail.order_kit_detail_state_code as stateCode, ");
+			sb.append("sum(kitDetail.order_kit_detail_amount) as amount, sum(kitDetail.order_kit_detail_payment_money) as money, ");
+			sb.append("sum(0.00) as assistAmount, count(kitDetail.item_num) as amount_, ");
+			sb.append("sum(kitDetail.order_kit_detail_discount) as discount ");
 			sb.append(createKitSaleAnalysisBranchItemQuery(queryData));
 			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
+			sb.append(") temp ");
+			sb.append("group by branchNum,itemNum,stateCode ");
 		}
-		if(queryData.isPage()){
-			if(StringUtils.isNotEmpty(queryData.getSortField())){
-				sb.append("order by " + queryData.getSortField() + " "+queryData.getSortType());
-			}
+		if(StringUtils.isNotEmpty(queryData.getSortField())){
+			sb.append("order by " + queryData.getSortField() + " "+queryData.getSortType());
 		}else{
 			sb.append("order by branchNum desc");
 		}
+
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		if(queryData.isPage()){
 			query.setFirstResult(queryData.getOffset());
@@ -6415,30 +6421,67 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	@Override
 	public Object[] findSaleAnalysisByBranchPosItemsCount(SaleAnalysisQueryData queryData) {
-		//上面的page这个也要变。因为如果不统计状态（code）总条数会变。
-		StringBuffer sb = new StringBuffer();
-		sb.append("select count(*) as count_, sum(amount) as amount_, sum(money) as money_, sum(assistAmount) as assistAmount_, sum(amount_) as amount__, sum(discount) as discount_ from( ");
+
+		StringBuilder sb = new StringBuilder();
+
+
+		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()){
+
+			sb.append("select count(*), sum(totalNum_) as totalNumSum, sum(returnNum_) as returnNumSum, sum(presentNum_) as presentNumSum, sum(saleNum_) as saleNumSum, ");
+			sb.append("sum(totalMoney_) as totalMoneySum, sum(returnMoney_) as returnMoneySum, sum(presentMoney_) as presentMoneySum, sum(presentMoney_) as presentMoneySum, ");
+			sb.append("sum(count__) as countSum, sum(assistAmount_) as assistAmountSum, sum(discount_) as discountSum  from ( ");
+
+			sb.append("select branchNum as branchNum ,itemNum as itemNum , sum(totalNum) as totalNum_, sum(returnNum) as returnNum_, sum(presentNum) as presentNum_, sum(saleNum) as saleNum_, ");
+			sb.append("sum(totalMoney) as totalMoney_, sum(returnMoney) as returnMoney_, sum(presentMoney) as presentMoney_, sum(presentMoney) as presentMoney_, ");
+			sb.append("sum(count_) as count__, sum(assistAmount) as assistAmount_, sum(discount) as discount_  from ( ");
+		}else{
+			sb.append("select count(*), sum(totalNum) as totalNum_, sum(returnNum) as returnNum_, sum(presentNum) as presentNum_, sum(saleNum) as saleNum_, ");
+			sb.append("sum(totalMoney) as totalMoney_, sum(returnMoney) as returnMoney_, sum(presentMoney) as presentMoney_, sum(presentMoney) as presentMoney_, ");
+			sb.append("sum(count_) as count__, sum(assistAmount) as assistAmount_, sum(discount) as discount_  from ( ");
+
+		}
+
 		sb.append("select detail.order_detail_branch_num as branchNum,detail.item_num as itemNum , ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) as money, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as totalNum, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then detail.order_detail_amount end) as returnNum, ");
+		sb.append("sum(case when detail.order_detail_state_code = 2 then detail.order_detail_amount end) as presentNum, ");
+		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_amount end) as saleNum, ");
+
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) as totalMoney, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then detail.order_detail_payment_money end) as returnMoney, ");
+		sb.append("sum(case when detail.order_detail_state_code = 2 then detail.order_detail_payment_money end) as presentMoney, ");
+		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as presentMoney, ");
+
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end ) as count_, ");
 		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end ) as amount_, ");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then then -detail.order_detail_discount else detail.order_detail_discount end) as discount  ");
-		sb.append(createSaleAnalysisBranchItemQuery(queryData));
-		sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_state_code ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_discount when detail.order_detail_state_code = 1 then detail.order_detail_discount end) as discount  ");
+		sb.append(createKitSaleAnalysisBranchItemQuery(queryData));
+		sb.append("group by detail.order_detail_branch_num, detail.item_num ");
 
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
 			sb.append("union ");
 			sb.append("select kitDetail.order_kit_detail_branch_num as branchNum, kitDetail.item_num as itemNum, ");
-			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_amount else kitDetail.order_kit_detail_amount end) as amount, ");
-			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_payment_money else kitDetail.order_kit_detail_payment_money end) as money, ");
+
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_amount else kitDetail.order_kit_detail_amount end) as totalNum, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then kitDetail.order_kit_detail_amount end) as returnNum, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 2 then kitDetail.order_kit_detail_amount end) as presentNum, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 1 then kitDetail.order_kit_detail_amount end) as saleNum, ");
+
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_payment_money else kitDetail.order_kit_detail_payment_money end) as totalMoney, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then kitDetail.order_kit_detail_payment_money end) as returnMoney, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 2 then kitDetail.order_kit_detail_payment_money end) as presentMoney, ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 1 then kitDetail.order_kit_detail_payment_money end) as saleMoney, ");
+
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -1 else 1 end ) as count_, ");
 			sb.append("sum(0.00) as assistAmount, ");
-			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -1 else 1 end) as amount_, ");
-			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_discount else kitDetail.order_kit_detail_discount end) as discount ");
+			sb.append("sum(case when kitDetail.order_kit_detail_state_code = 4 then -kitDetail.order_kit_detail_discount when kitDetail.order_kit_detail_state_code = 1 then kitDetail.order_kit_detail_discount end) as discount ");
 			sb.append(createKitSaleAnalysisBranchItemQuery(queryData));
-			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
+			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num ");
+			sb.append(") temp ");
+			sb.append("group by branchNum, itemNum ");
 		}
-		sb.append(") temp");
+		sb.append(") countSum ");
+
 
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		return (Object[])query.uniqueResult();
