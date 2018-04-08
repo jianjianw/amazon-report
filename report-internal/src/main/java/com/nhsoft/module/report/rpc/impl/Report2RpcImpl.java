@@ -1521,9 +1521,10 @@ public class Report2RpcImpl implements Report2Rpc {
 		}
 		BigDecimal diffDay = BigDecimal.valueOf(DateUtil.getDaysBetween(dateFrom, dateTo) + 1);
 		List<SaleInventoryDetailDTO> list = new ArrayList<>(map.values());
-		List<StoreMatrix> storeMatrices = storeMatrixService.findByBranch(systemBookCode, branchNums, Collections.singletonList(itemNum));
+		List<StoreMatrix> storeMatrices = null;
 		List<Branch> branches = branchService.findInCache(systemBookCode);
 		PosItem posItem = posItemService.readWithoutDetails(itemNum);
+
 		for(int  i = list.size() - 1;i >= 0;i--){
 			SaleInventoryDetailDTO dto = list.get(i);
 			Branch branch = Branch.get(branches, dto.getBranchNum());
@@ -1533,6 +1534,10 @@ public class Report2RpcImpl implements Report2Rpc {
 			dto.setSalePrice(posItem.getItemRegularPrice());
 			dto.setSalePrice2(posItem.getItemLevel2Price());
 			if(branch.getBranchMatrixPriceActived() != null && branch.getBranchMatrixPriceActived()){
+				if(storeMatrices == null){
+
+					storeMatrices = storeMatrixService.findByBranch(systemBookCode, branchNums, Collections.singletonList(itemNum));
+				}
                 StoreMatrix storeMatrix = StoreMatrix.get(dto.getBranchNum(), itemNum, storeMatrices);
                 if(storeMatrix != null && storeMatrix.getStoreMatrixPriceEnabled()){
                     if(storeMatrix.getStoreMatrixRegularPrice() != null && storeMatrix.getStoreMatrixRegularPrice().compareTo(BigDecimal.ZERO) > 0){
