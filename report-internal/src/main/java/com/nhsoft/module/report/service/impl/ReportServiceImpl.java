@@ -12709,5 +12709,77 @@ public class ReportServiceImpl implements ReportService {
 		return posOrderDao.findSaleAnalysisByBranchPosItemsCount(queryData);
 	}
 
+	@Override
+	public List<RetailDetail> findRetailDetailsByPage(RetailDetailQueryData retailDetailQueryData, boolean isFm) {
+
+		List<RetailDetail> retailDetails = posOrderDao.findRetailDetailsByPage(retailDetailQueryData, isFm);
+
+		int size = retailDetails.size();
+		if (size == 0) {
+			return retailDetails;
+		}
+		List<Branch> branchs = branchService.findInCache(retailDetailQueryData.getSystemBookCode());
+		List<Integer> itemNums = new ArrayList<Integer>(size);
+		for (int i = size - 1; i >= 0; i--) {
+			itemNums.add(retailDetails.get(i).getItemNum());
+		}
+		List<PosItem> posItems = posItemDao.findByItemNums(itemNums);
+
+		List<Integer> itemGradeNums = new ArrayList<Integer>(0);
+		for (int i = size - 1; i >= 0; i--) {
+			RetailDetail retailDetail = retailDetails.get(i);
+			PosItem posItem = AppUtil.getPosItem(retailDetail.getItemNum(), posItems);
+			if (posItem == null) {
+				retailDetails.remove(i);
+				continue;
+			}
+			retailDetail.setPosItemCode(posItem.getItemCode());
+			retailDetail.setPosItemName(posItem.getItemName());
+			retailDetail.setPosItemSpec(posItem.getItemSpec());
+			retailDetail.setItemUnit(posItem.getItemUnit());
+			retailDetail.setItemBarCode(posItem.getItemBarcode());
+			if (retailDetail.getItemMatrixNum() != null && retailDetail.getItemMatrixNum() != 0) {
+				ItemMatrix itemMatrix = AppUtil.getItemMatrix(posItem.getItemMatrixs(), retailDetail.getItemNum(),
+						retailDetail.getItemMatrixNum());
+				if (itemMatrix != null) {
+					retailDetail
+							.setPosItemName(retailDetail.getPosItemName().concat(AppUtil.getMatrixName(itemMatrix)));
+				}
+			}
+
+			Branch branch = AppUtil.getBranch(branchs, retailDetail.getBranchNum());
+			if (branch == null) {
+				retailDetails.remove(i);
+				continue;
+			}
+			retailDetail.setBranchName(branch.getBranchName());
+
+			if (retailDetail.getItemGradeNum() != null && !itemGradeNums.contains(retailDetail.getItemGradeNum())) {
+				itemGradeNums.add(retailDetail.getItemGradeNum());
+			}
+		}
+		if (itemGradeNums.size() > 0) {
+			List<PosItemGrade> posItemGrades = posItemGradeDao.findByIds(itemGradeNums);
+			for (int i = 0, len = retailDetails.size(); i < len; i++) {
+				RetailDetail retailDetail = retailDetails.get(i);
+				if (retailDetail.getItemGradeNum() == null) {
+					continue;
+				}
+				PosItemGrade posItemGrade = AppUtil.getPosItemGrade(posItemGrades, retailDetail.getItemGradeNum());
+				if (posItemGrade == null) {
+					continue;
+				}
+				retailDetail.setPosItemName(retailDetail.getPosItemName().concat("(" + posItemGrade.getItemGradeName() + ")"));
+			}
+
+		}
+		return retailDetails;
+	}
+
+	@Override
+	public Object[] findRetailDetailsCount(RetailDetailQueryData retailDetailQueryData, boolean isFm) {
+		return posOrderDao.findRetailDetailsCount(retailDetailQueryData,isFm);
+	}
+
 
 }

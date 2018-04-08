@@ -31,6 +31,15 @@ public class RetailDetailQueryData extends QueryBuilder {
 	private Integer merchantNum;
 	private Integer stallNum;
 	private Boolean isPolicy;
+
+	private boolean page;
+	private int offset;
+	private int limit;
+	private String sortField;
+	private String sortType;
+
+
+
 	
 	
 	public Date getTimeFrom() {
@@ -209,4 +218,44 @@ public class RetailDetailQueryData extends QueryBuilder {
 		exceptionConditon = null;		
 	}
 
+
+	public boolean isPage() {
+		return page;
+	}
+
+	public void setPage(boolean page) {
+		this.page = page;
+	}
+
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+
+	public String getSortField() {
+		return sortField;
+	}
+
+	public void setSortField(String sortField) {
+		this.sortField = sortField;
+	}
+
+	public String getSortType() {
+		return sortType;
+	}
+
+	public void setSortType(String sortType) {
+		this.sortType = sortType;
+	}
 }

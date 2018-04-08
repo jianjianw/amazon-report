@@ -1434,4 +1434,19 @@ public interface ReportService {
 	public Object[] findSaleAnalysisByBranchPosItemsCount(SaleAnalysisQueryData queryData);
 
 
+	/**
+	 * 零售明细查询
+	 * @param retailDetailQueryData
+	 * @return
+	 */
+	public List<RetailDetail> findRetailDetailsByPage(RetailDetailQueryData retailDetailQueryData, boolean isFm);
+
+	/**
+	 * 零售明细查询
+	 * @param retailDetailQueryData
+	 * @return
+	 */
+	public Object[] findRetailDetailsCount(RetailDetailQueryData retailDetailQueryData, boolean isFm);
+
+
 }

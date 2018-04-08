@@ -4621,6 +4621,31 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	public RetailDetailPageSummary findRetailDetailsByPage(RetailDetailQueryData retailDetailQueryData) {
+
+		List<RetailDetail> data = reportService.findRetailDetailsByPage(retailDetailQueryData, false);
+		Object[] count = reportService.findRetailDetailsCount(retailDetailQueryData, false);
+		RetailDetailPageSummary result = new RetailDetailPageSummary();
+		result.setData(data);
+		if(count != null){
+			result.setCount((Integer) count[0]);
+			result.setAmountSum((BigDecimal) count[1]);
+			result.setSaleMoneySum(count[2] == null ? BigDecimal.ZERO : (BigDecimal)count[2]);
+			result.setDiscountMoneySum((BigDecimal) count[3]);
+			result.setSaleCommissionSum((BigDecimal) count[4]);
+			result.setSaleProfitSum(count[5] == null ? BigDecimal.ZERO : (BigDecimal) count[5]);
+			result.setSaleCostSum((BigDecimal) count[6]);
+			if(result.getSaleMoneySum().compareTo(BigDecimal.ZERO) == 0){
+				result.setSaleProfitRateSum(BigDecimal.ZERO);
+			}else{
+				result.setSaleProfitRateSum(result.getSaleProfitSum().divide(result.getSaleMoneySum(),4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+			}
+
+		}
+		return result;
+	}
+
+	@Override
 	public List<PurchaseCycleSummary> findPurchaseCycleByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
 
 		// 入库金额   入库数量    采购员

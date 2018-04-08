@@ -1418,6 +1418,15 @@ public interface ReportRpc {
 	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
 
 
+
+	/**
+	 * 零售明细查询  分页查询
+	 * @param retailDetailQueryData
+	 * @return
+	 */
+	public RetailDetailPageSummary findRetailDetailsByPage(RetailDetailQueryData retailDetailQueryData);
+
+
 	/**
 	 * 采购计划周期表(好想来)
 	 * */
@@ -1427,6 +1436,7 @@ public interface ReportRpc {
 	 * 商品配送top榜（好想来）
 	 * */
 	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode,Integer branchNum,Date dateFrom,Date dateTo,List<String> itemCategoryCodes,String sortField);
+
 
 
 

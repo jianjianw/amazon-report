@@ -13,6 +13,7 @@ import com.nhsoft.module.report.util.ServiceDeskUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1378,6 +1379,30 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-04-30");
 		List<TransferItemDetailSummary> transferItemTop = reportRpc.findTransferItemTop(systemBookCode,1,dateFrom,dateTo,null,"transferQty");
 		return  transferItemTop;
+	}
+
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test74")
+	public Object test74() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-08");
+		RetailDetailQueryData query = new RetailDetailQueryData();
+		query.setSystemBookCode(systemBookCode);
+		query.setDtFromShiftTable(dateFrom);
+		query.setDtToShiftTable(dateTo);
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+		query.setBranchNums(branchNums);
+		query.setPage(true);
+		query.setOffset(0);
+		query.setLimit(10);
+		query.setSortField("itemNum");
+		query.setSortType("asc");
+		RetailDetailPageSummary retailDetailsByPage = reportRpc.findRetailDetailsByPage(query);
+		return retailDetailsByPage;
 	}
 
 }

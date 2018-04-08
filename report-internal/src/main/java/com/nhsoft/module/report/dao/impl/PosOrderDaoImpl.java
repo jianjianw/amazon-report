@@ -6514,5 +6514,308 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	}
 
+	@Override
+	public List<RetailDetail> findRetailDetailsByPage(RetailDetailQueryData queryData, boolean isFm) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select p.branch_num as branchNum, p.order_no as orderNo, p.order_operator as cashier, p.order_machine as posMachine, p.order_time as posTime, ");
+		sb.append("detail.item_num as itemNum, detail.order_detail_amount as amount, detail.order_detail_price as salePrice, detail.order_detail_payment_money as saleMoney, ");
+		sb.append("detail.order_detail_discount as discountMoney, detail.order_detail_item_matrix_num as itemMatrixNum, detail.order_detail_state_code as stateCode, ");
+		sb.append("p.order_sold_by as saler , detail.item_grade_num as itemGradeNum, p.order_state_code as code, detail.order_detail_commission as saleCommission, ");
+		sb.append("detail.order_detail_memo as memo , detail.order_detail_gross_profit as saleProfit, detail.order_detail_cost as saleCost ");
+		if (isFm) {
+			sb.append(", p.merchant_num as merchantNum, p.stall_num as stallNum ");
+		}
+		sb.append(createRetailDetailsQuery(queryData, isFm));
+		if(StringUtils.isNotEmpty(queryData.getSortField())){
+			sb.append("order by " + queryData.getSortField() + " "+queryData.getSortType());
+		}else{
+			sb.append("order by orderNo asc ");
+		}
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.setFirstResult(queryData.getOffset());
+		query.setMaxResults(queryData.getLimit());
+		List<Object[]> objects = query.list();
+		List<RetailDetail> list = new ArrayList<RetailDetail>();
+		List<Integer> normalOrderStates = AppUtil.getNormalPosOrderState();
+		Integer orderStateCode = null;
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			RetailDetail retailDetail = new RetailDetail();
+			retailDetail.setBranchNum((Integer) object[0]);
+			retailDetail.setOrderNo((String) object[1]);
+			retailDetail.setCashier((String) object[2]);
+			retailDetail.setPosMachine((String) object[3]);
+			retailDetail.setPosTime((Date) object[4]);
+			retailDetail.setItemNum((Integer) object[5]);
+			retailDetail.setAmount((BigDecimal) object[6]);
+			retailDetail.setSalePrice((BigDecimal) object[7]);
+			retailDetail.setSaleMoney((BigDecimal) object[8]);
+			retailDetail.setDiscountMoney((BigDecimal) object[9]);
+			retailDetail.setItemMatrixNum((Integer) object[10]);
+			retailDetail.setSaleCommission(object[15] == null ? BigDecimal.ZERO : (BigDecimal) object[15]);
+			retailDetail.setMemo((String) object[16]);
+			retailDetail.setSaleProfit((BigDecimal) object[17]);
+			retailDetail.setSaleCost(((BigDecimal) object[18]).multiply(retailDetail.getAmount()));
+			Integer stateCode = (Integer) object[11];
+			retailDetail.setStateCode(stateCode);
+			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_CANCEL) {
+				retailDetail.setAmount(retailDetail.getAmount().negate());
+				retailDetail.setSaleMoney(retailDetail.getSaleMoney().negate());
+				retailDetail.setDiscountMoney(retailDetail.getDiscountMoney().negate());
+				retailDetail.setSaleCommission(retailDetail.getSaleCommission().negate());
+				retailDetail.setSaleProfit(retailDetail.getSaleProfit().negate());
+				retailDetail.setSaleCost(retailDetail.getSaleCost().negate());
+
+			}
+			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_PRESENT) {
+				retailDetail.setDiscountMoney(BigDecimal.ZERO);
+				retailDetail.setSaleMoney(BigDecimal.ZERO);
+				retailDetail.setSaleCommission(BigDecimal.ZERO);
+			}
+
+
+			retailDetail.setSaler((String) object[12]);
+			retailDetail.setItemGradeNum((Integer) object[13]);
+
+			orderStateCode = (Integer) object[14];
+			if (!normalOrderStates.contains(orderStateCode)) {
+				retailDetail.setDiscountMoney(BigDecimal.ZERO);
+				retailDetail.setSaleMoney(BigDecimal.ZERO);
+			}
+			if (isFm) {
+				retailDetail.setMerchantNum((Integer) object[19]);
+				retailDetail.setStallNum((Integer) object[20]);
+			}
+			list.add(retailDetail);
+		}
+		return list;
+	}
+
+	@Override
+	public Object[] findRetailDetailsCount(RetailDetailQueryData queryData, boolean isFm) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("select count(*),SUM(CASE WHEN detail.order_detail_state_code = 4 THEN -detail.order_detail_amount ELSE detail.order_detail_amount end) as amount, ");
+		sb.append("SUM(CASE WHEN p.order_state_code != 5 AND p.order_state_code != 7 THEN 0 WHEN detail.order_detail_state_code = 2 THEN 0 WHEN detail.order_detail_state_code = 4 then -detail.order_detail_payment_money ELSE detail.order_detail_payment_money end) as saleMoney, ");
+		sb.append("SUM(CASE WHEN p.order_state_code != 5 AND p.order_state_code != 7 THEN 0 WHEN detail.order_detail_state_code = 2 THEN 0 WHEN detail.order_detail_state_code = 4 then -detail.order_detail_discount ELSE detail.order_detail_discount end) as discountMoney, ");
+		sb.append("SUM(CASE WHEN detail.order_detail_state_code = 2 THEN 0 WHEN detail.order_detail_state_code = 4 THEN -detail.order_detail_commission ELSE detail.order_detail_commission end) as saleCommission, ");
+		sb.append("SUM(CASE WHEN detail.order_detail_state_code = 4 THEN -detail.order_detail_gross_profit ELSE detail.order_detail_gross_profit end) as saleProfit, ");
+		sb.append("SUM(CASE WHEN detail.order_detail_state_code = 4 THEN -detail.order_detail_cost ELSE detail.order_detail_cost * detail.order_detail_amount end) as saleCost ");
+		sb.append(createRetailDetailsQuery(queryData, isFm));
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return (Object[])query.uniqueResult();
+	}
+
+
+	public String createRetailDetailsQuery(RetailDetailQueryData queryData, boolean isFm){
+		StringBuilder sb = new StringBuilder();
+		sb.append("from pos_order_detail as detail with(nolock, forceseek) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+		sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
+		if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
+			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
+		}
+		if (isFm) {
+			if (queryData.getMerchantNum() != null) {
+				sb.append("and p.merchant_num = " + queryData.getMerchantNum() + " ");
+			} else {
+				sb.append("and p.merchant_num is not null ");
+			}
+			if (queryData.getStallNum() != null) {
+				sb.append("and p.stall_num = " + queryData.getStallNum() + " ");
+			} else {
+				sb.append("and p.stall_num is not null ");
+			}
+			if (queryData.getPolicy() != null) {
+				if (queryData.getPolicy()) {
+					sb.append("and detail.order_detail_policy_fid != '' ");
+				} else {
+					sb.append("and detail.order_detail_policy_fid = '' ");
+				}
+			}
+		}
+		sb.append("and p.shift_table_bizday between '" + DateUtil.getDateShortStr(queryData.getDtFromShiftTable()) + "' ");
+		sb.append("and '" + DateUtil.getDateShortStr(queryData.getDtToShiftTable()) + "' ");
+
+		if (!StringUtils.equals(queryData.getExceptionConditon(), AppConstants.ANTI_SETTLEMENT)) {
+			sb.append("and p.order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
+
+		} else {
+			sb.append("and p.order_state_code = " + AppConstants.POS_ORDER_DETAIL_CREATE_REPAY);
+
+		}
+
+		sb.append("and detail.item_num is not null and detail.order_detail_state_code != 8 ");
+		if (StringUtils.isNotEmpty(queryData.getOrderNo())) {
+			sb.append("and p.order_no = '" + queryData.getOrderNo() + "' ");
+		}
+		if (StringUtils.isNotEmpty(queryData.getCashier())) {
+			sb.append("and p.order_operator = '" + queryData.getCashier() + "' ");
+		}
+		if (StringUtils.isNotEmpty(queryData.getPosMachine())) {
+			sb.append("and p.order_machine = '" + queryData.getPosMachine() + "' ");
+		}
+		if (queryData.getPosClientFid() != null && queryData.getPosClientFid().size() > 0) {
+			sb.append("and p.client_fid in " + AppUtil.getStringParmeList(queryData.getPosClientFid()));
+		}
+		if (queryData.getPosItemNums() != null && !queryData.getPosItemNums().isEmpty()) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryData.getPosItemNums()));
+		}
+		if (StringUtils.isNotEmpty(queryData.getExceptionConditon())) {
+			if (queryData.getExceptionConditon().equals(AppConstants.PRESENT_RECORD)) {
+
+				sb.append("and detail.order_detail_state_code = " + AppConstants.POS_ORDER_DETAIL_STATE_PRESENT + " ");
+			} else if (queryData.getExceptionConditon().equals(AppConstants.RETURN_RECORD)) {
+				sb.append("and detail.order_detail_state_code = " + AppConstants.POS_ORDER_DETAIL_STATE_CANCEL + " ");
+
+
+			}
+		}
+		if (StringUtils.isNotEmpty(queryData.getSaleMoneyFlag())) {
+			if (queryData.getSaleMoney() == null) {
+				queryData.setSaleMoney(BigDecimal.ZERO);
+			}
+			String caseSql = "(case when detail.order_detail_state_code = 2 then 0 "
+					+ "when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) ";
+			BigDecimal saleMoney = queryData.getSaleMoney();
+			if (queryData.getSaleMoneyFlag().equals(AppConstants.LESS_THAN)) {
+				sb.append("and " + caseSql + " < " + saleMoney + " ");
+
+			} else if (queryData.getSaleMoneyFlag().equals(AppConstants.LESS_THAN_OR_EQUAL)) {
+				sb.append("and " + caseSql + " <= " + saleMoney + " ");
+
+			} else if (queryData.getSaleMoneyFlag().equals(AppConstants.EQUAL)) {
+				sb.append("and " + caseSql + " = " + saleMoney + " ");
+
+			} else if (queryData.getSaleMoneyFlag().equals(AppConstants.MORE_THAN)) {
+				sb.append("and " + caseSql + " > " + saleMoney + " ");
+
+			} else if (queryData.getSaleMoneyFlag().equals(AppConstants.MORE_THAN_OR_EQUAL)) {
+				sb.append("and " + caseSql + " >= " + saleMoney + " ");
+
+			}
+		}
+		if (StringUtils.isNotEmpty(queryData.getRetailPriceFlag())) {
+			if (queryData.getRetailPrice() == null) {
+				queryData.setRetailPrice(BigDecimal.ZERO);
+			}
+			BigDecimal price = queryData.getRetailPrice();
+			if (queryData.getRetailPriceFlag().equals(AppConstants.LESS_THAN)) {
+				sb.append("and detail.order_detail_price < " + price + " ");
+
+			} else if (queryData.getRetailPriceFlag().equals(AppConstants.LESS_THAN_OR_EQUAL)) {
+				sb.append("and detail.order_detail_price <= " + price + " ");
+
+			} else if (queryData.getRetailPriceFlag().equals(AppConstants.EQUAL)) {
+
+				sb.append("and detail.order_detail_price = " + price + " ");
+
+			} else if (queryData.getRetailPriceFlag().equals(AppConstants.MORE_THAN)) {
+
+				sb.append("and detail.order_detail_price > " + price + " ");
+
+			} else if (queryData.getRetailPriceFlag().equals(AppConstants.MORE_THAN_OR_EQUAL)) {
+
+				sb.append("and detail.order_detail_price >= " + price + " ");
+
+			}
+		}
+		if (StringUtils.isNotEmpty(queryData.getSaler())) {
+			sb.append("and p.order_sold_by = '" + queryData.getSaler() + "' ");
+
+		}
+		if (StringUtils.isNotEmpty(queryData.getSaleType())) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if (queryData.getSaleType().equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)) {
+				sb.append("and (p.order_source is null or p.order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+
+
+			} else {
+
+				sb.append("and p.order_source = '" + queryData.getSaleType() + "' ");
+			}
+		}
+		if (queryData.getTimeFrom() != null && queryData.getTimeTo() != null) {
+			String timeFrom = DateUtil.getHHmmStr2(queryData.getTimeFrom());
+			String timeTo = DateUtil.getHHmmStr2(queryData.getTimeTo());
+
+			if (timeFrom.compareTo(timeTo) <= 0) {
+				sb.append("and p.order_time_char between '" + timeFrom + "' and '" + timeTo + "' ");
+			} else {
+				sb.append("and (p.order_time_char >= '" + timeFrom + "' or p.order_time_char <= '" + timeTo + "' ) ");
+
+			}
+
+
+		}
+		return sb.toString();
+	}
+
+	public List<RetailDetail> test(RetailDetailQueryData queryData, boolean isFm) {
+
+		StringBuffer sb = new StringBuffer();
+
+
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setMaxResults(50000);
+		List<Object[]> objects = query.list();
+		List<RetailDetail> list = new ArrayList<RetailDetail>();
+		List<Integer> normalOrderStates = AppUtil.getNormalPosOrderState();
+		Integer orderStateCode = null;
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			RetailDetail retailDetail = new RetailDetail();
+			retailDetail.setBranchNum((Integer) object[0]);
+			retailDetail.setOrderNo((String) object[1]);
+			retailDetail.setCashier((String) object[2]);
+			retailDetail.setPosMachine((String) object[3]);
+			retailDetail.setPosTime((Date) object[4]);
+			retailDetail.setItemNum((Integer) object[5]);
+			retailDetail.setAmount((BigDecimal) object[6]);
+			retailDetail.setSalePrice((BigDecimal) object[7]);
+			retailDetail.setSaleMoney((BigDecimal) object[8]);
+			retailDetail.setDiscountMoney((BigDecimal) object[9]);
+			retailDetail.setItemMatrixNum((Integer) object[10]);
+			retailDetail.setSaleCommission(object[15] == null ? BigDecimal.ZERO : (BigDecimal) object[15]);
+			retailDetail.setMemo((String) object[16]);
+			retailDetail.setSaleProfit((BigDecimal) object[17]);
+			retailDetail.setSaleCost(((BigDecimal) object[18]).multiply(retailDetail.getAmount()));
+			Integer stateCode = (Integer) object[11];
+			retailDetail.setStateCode(stateCode);
+			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_CANCEL) {
+				retailDetail.setAmount(retailDetail.getAmount().negate());
+				retailDetail.setSaleMoney(retailDetail.getSaleMoney().negate());
+				retailDetail.setDiscountMoney(retailDetail.getDiscountMoney().negate());
+				retailDetail.setSaleCommission(retailDetail.getSaleCommission().negate());
+				retailDetail.setSaleProfit(retailDetail.getSaleProfit().negate());
+				retailDetail.setSaleCost(retailDetail.getSaleCost().negate());
+
+			}
+			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_PRESENT) {
+				retailDetail.setDiscountMoney(BigDecimal.ZERO);
+				retailDetail.setSaleMoney(BigDecimal.ZERO);
+				retailDetail.setSaleCommission(BigDecimal.ZERO);
+			}
+
+
+
+
+
+			retailDetail.setSaler((String) object[12]);
+			retailDetail.setItemGradeNum((Integer) object[13]);
+
+			orderStateCode = (Integer) object[14];		//p.order_state_code as code   = 5,7
+			if (!normalOrderStates.contains(orderStateCode)) {
+				retailDetail.setDiscountMoney(BigDecimal.ZERO);
+				retailDetail.setSaleMoney(BigDecimal.ZERO);
+			}
+			if (isFm) {
+				retailDetail.setMerchantNum((Integer) object[19]);
+				retailDetail.setStallNum((Integer) object[20]);
+			}
+			list.add(retailDetail);
+		}
+		return list;
+	}
+
 
 }

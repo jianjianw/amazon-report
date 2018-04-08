@@ -1203,6 +1203,17 @@ public interface PosOrderDao {
 	 */
 	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery);
 
+	/**
+	 * 零售明细统计  分页查询
+	 */
+	public List<RetailDetail> findRetailDetailsByPage(RetailDetailQueryData queryData, boolean isFm);
+
+
+	/**
+	 * 零售明细统计  分页查询   查询总条数
+	 * */
+	public Object[] findRetailDetailsCount(RetailDetailQueryData queryData, boolean isFm);
+
 
 
 }
