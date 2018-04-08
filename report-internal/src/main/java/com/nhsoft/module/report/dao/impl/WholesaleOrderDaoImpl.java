@@ -104,6 +104,24 @@ public class WholesaleOrderDaoImpl extends DaoImpl implements WholesaleOrderDao 
 
 	@Override
 	public List<Object[]> findMoneyGroupByClient(WholesaleProfitQuery wholesaleProfitQuery) {
+		String unitType = wholesaleProfitQuery.getUnitType();
+
+		if(StringUtils.isEmpty(unitType)){
+			unitType = AppConstants.UNIT_PIFA;
+		}
+		String unit = "";
+		if(unitType.equals(AppConstants.UNIT_PIFA) || unitType.equals(AppConstants.UNIT_USE)){
+			unit = "p.itemWholesaleRate";
+		} else if(unitType.equals(AppConstants.UNIT_SOTRE)){
+			unit = "p.itemInventoryRate";
+		} else if(unitType.equals(AppConstants.UNIT_PURCHASE)){
+			unit = "p.itemPurchaseRate";
+		} else if(unitType.equals(AppConstants.UNIT_TRANFER)){
+			unit = "p.itemTransferRate";
+		} else if(unitType.equals(AppConstants.UNIT_BASIC)){
+			unit = "1";
+		}
+
 		StringBuffer sb = new StringBuffer();
 		sb.append("select w.clientFid, sum(detail.orderDetailMoney), sum(detail.orderDetailCost * detail.orderDetailQty), ");
 		sb.append("sum(detail.orderDetailQty * detail.orderDetailSalePrice), sum(detail.orderDetailQty/p.itemWholesaleRate), sum(detail.orderDetailUseQty), ");
@@ -159,7 +177,10 @@ public class WholesaleOrderDaoImpl extends DaoImpl implements WholesaleOrderDao 
 			sb.append("and w.wholesaleOrderSeller in " + AppUtil.getStringParmeList(wholesaleProfitQuery.getSellers()));
 		}
 		sb.append("group by w.clientFid ");
-		Query query = currentSession().createQuery(sb.toString());
+
+		String sql = sb.toString();
+		sql = StringUtils.replace(sql, "p.itemWholesaleRate", unit);
+		Query query = currentSession().createQuery(sql);
 		query.setString("systemBookCode", wholesaleProfitQuery.getSystemBookCode());
 		if(wholesaleProfitQuery.getBanchNum()!= null){
 			query.setInteger("branchNum", wholesaleProfitQuery.getBanchNum());
@@ -566,7 +587,26 @@ public class WholesaleOrderDaoImpl extends DaoImpl implements WholesaleOrderDao 
 
 	@Override
 	public List<Object[]> findMoneyGroupByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodes,
-												 List<Integer> itemNums, List<String> clients, List<Integer> regionNums, Integer storehouseNum, String auditor, String dateType, List<String> sellers) {
+												 List<Integer> itemNums, List<String> clients, List<Integer> regionNums, Integer storehouseNum, String auditor,
+												 String dateType, List<String> sellers, String unitType) {
+
+
+		if(StringUtils.isEmpty(unitType)){
+			unitType = AppConstants.UNIT_PIFA;
+		}
+		String unit = "";
+		if(unitType.equals(AppConstants.UNIT_PIFA) || unitType.equals(AppConstants.UNIT_USE)){
+			unit = "p.itemWholesaleRate";
+		} else if(unitType.equals(AppConstants.UNIT_SOTRE)){
+			unit = "p.itemInventoryRate";
+		} else if(unitType.equals(AppConstants.UNIT_PURCHASE)){
+			unit = "p.itemPurchaseRate";
+		} else if(unitType.equals(AppConstants.UNIT_TRANFER)){
+			unit = "p.itemTransferRate";
+		} else if(unitType.equals(AppConstants.UNIT_BASIC)){
+			unit = "1";
+		}
+
 		StringBuffer sb = new StringBuffer();
 		sb.append("select w.branchNum, sum(detail.orderDetailMoney), sum(detail.orderDetailCost * detail.orderDetailQty), ");
 		sb.append("sum(detail.orderDetailQty * detail.orderDetailSalePrice), sum(detail.orderDetailQty/p.itemWholesaleRate), sum(detail.orderDetailUseQty), ");
@@ -619,7 +659,9 @@ public class WholesaleOrderDaoImpl extends DaoImpl implements WholesaleOrderDao 
 			sb.append("and w.wholesaleOrderSeller in " + AppUtil.getStringParmeList(sellers));
 		}
 		sb.append("group by w.branchNum ");
-		Query query = currentSession().createQuery(sb.toString());
+		String sql = sb.toString();
+		sql = StringUtils.replace(sql, "p.itemWholesaleRate", unit);
+		Query query = currentSession().createQuery(sql);
 		query.setString("systemBookCode", systemBookCode);
 		if(dateFrom != null){
 			query.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
@@ -1057,6 +1099,28 @@ public class WholesaleOrderDaoImpl extends DaoImpl implements WholesaleOrderDao 
 		}
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.addEntity("w", WholesaleOrder.class);
+		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findAmountAndMoneyByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("select convert(varchar(8),w.wholesale_order_audit_time,112) as biz, sum(detail.order_detail_qty) as qty, sum(detail.order_detail_money) as money ");
+		sb.append("from wholesale_order_detail as detail with(nolock) inner join wholesale_order as w with(nolock) on detail.wholesale_order_fid = w.wholesale_order_fid ");
+		sb.append("where w.system_book_code = '"+systemBookCode+"' ");
+		sb.append("and w.wholesale_order_state_code = 3 ");
+		if(itemNums != null && itemNums.size() > 0){
+			sb.append("and detail.item_num in" + AppUtil.getIntegerParmeList(itemNums));
+		}
+		if(dateTo != null){
+			sb.append("and w.wholesale_order_audit_time >= '"+DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom))+"' ");
+		}
+		if(dateFrom != null){
+			sb.append("and w.wholesale_order_audit_time >= '"+DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateFrom))+"' ");
+		}
+		sb.append("group by convert(varchar(8),w.wholesale_order_audit_time,112) ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		return sqlQuery.list();
 	}
 

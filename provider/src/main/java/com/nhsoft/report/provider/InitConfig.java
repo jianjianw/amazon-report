@@ -69,7 +69,7 @@ public class InitConfig {
 		redisTemplate.setValueSerializer(new MyJackson2JsonRedisSerializer());
 		return redisTemplate;
 	}
-	
+
 	@Bean
 	public EhCacheManagerFactoryBean cacheManager() {
 		EhCacheManagerFactoryBean bean = new EhCacheManagerFactoryBean();

@@ -5768,10 +5768,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 
 		Query query = currentSession().createSQLQuery(sb.toString());
-		if(cardReportQuery.isPaging()) {
-			query.setFirstResult(cardReportQuery.getOffset());
-			query.setMaxResults(cardReportQuery.getLimit());
-		}
+
+		query.setFirstResult(cardReportQuery.getOffset());
+		query.setMaxResults(cardReportQuery.getLimit());
 		return query.list();
 	}
 
@@ -5868,30 +5867,29 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num as branchNum, shift_table_bizday as bizday, sum(order_payment_money) as paymentMoney, count(order_no) as orderNo, ");
+		sb.append("select branch_num as branchNum, shift_table_bizday as shiftTableDate, sum(order_payment_money) as totalMoney, count(order_no) as customerNums, ");
 		sb.append("sum(order_coupon_total_money) as conponMoney, sum(order_mgr_discount_money) as mgrDiscount ");
 		sb.append(createByCustomerAnalysisQuery(saleAnalysisQueryData));
 		sb.append("group by branch_num, shift_table_bizday ");
 
-		if(saleAnalysisQueryData.isPage()){
-			if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSortField())){
-				sb.append("order by " + saleAnalysisQueryData.getSortField() + " " + saleAnalysisQueryData.getSortType());
-			}
+
+		if (StringUtils.isNotEmpty(saleAnalysisQueryData.getSortField())){
+			sb.append("order by branchNum asc, " + saleAnalysisQueryData.getSortField() + " " + saleAnalysisQueryData.getSortType());
 		}else{
-			sb.append("order by branchNum asc");
+			sb.append("order by branchNum asc ");
 		}
+
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.addScalar("branchNum", StandardBasicTypes.INTEGER)
-				.addScalar("bizday", StandardBasicTypes.STRING)
-				.addScalar("paymentMoney", StandardBasicTypes.BIG_DECIMAL)
-				.addScalar("orderNo", StandardBasicTypes.LONG)
+				.addScalar("shiftTableDate", StandardBasicTypes.STRING)
+				.addScalar("totalMoney", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("customerNums", StandardBasicTypes.LONG)
 				.addScalar("conponMoney", StandardBasicTypes.BIG_DECIMAL)
 				.addScalar("mgrDiscount", StandardBasicTypes.BIG_DECIMAL);
 
-		if(saleAnalysisQueryData.isPage()){
-			query.setFirstResult(saleAnalysisQueryData.getOffset());
-			query.setMaxResults(saleAnalysisQueryData.getLimit());
-		}
+		query.setFirstResult(saleAnalysisQueryData.getOffset());
+		query.setMaxResults(saleAnalysisQueryData.getLimit());
+
 		return query.list();
 	}
 
@@ -6066,7 +6064,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		StringBuffer sb = new StringBuffer();
 		if(profitAnalysisQueryData.getIsQueryCF()){
-		    sb.append("select branchNum as branchNum_, itemNum as itemNum_, matrixNum as matrixNum_, sum(profit) as profit_,sum(amount) as amount_,sum(money) as money_, sum(cost) as cost_ from( ");
+		    sb.append("select branchNum as branchNum, itemNum as itemNum, matrixNum as matrixNum, sum(profit) as profit,sum(amount) as amount,sum(money) as money, sum(cost) as cost from( ");
         }
 
 		if (profitAnalysisQueryData.isQueryClient()
@@ -6100,19 +6098,18 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("group by branchNum,itemNum,matrixNum ");
 		}
 
-		if(profitAnalysisQueryData.isPage()){
-			if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-				sb.append("order by " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
-			}
+
+		if (StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
+			sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " " + profitAnalysisQueryData.getSortType());
 		}else{
 			sb.append("order by branchNum asc ");
 		}
 
+
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-		if(profitAnalysisQueryData.isPage()){
-			query.setFirstResult(profitAnalysisQueryData.getOffset());
-			query.setMaxResults(profitAnalysisQueryData.getLimit());
-		}
+		query.setFirstResult(profitAnalysisQueryData.getOffset());
+		query.setMaxResults(profitAnalysisQueryData.getLimit());
+
 
 		return query.list();
 
@@ -6281,7 +6278,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 
         if(profitAnalysisQueryData.getIsQueryCF()){
-            sb.append("select branchNum as branchNum_, biz as biz_,sum(profit) as profit_, sum(money) as money_, sum(cost) as cost_ from (");
+            sb.append("select branchNum as branchNum, biz as biz,sum(profit) as profit, sum(money) as money, sum(cost) as cost from (");
         }
 
 		if (profitAnalysisQueryData.isQueryClient()
@@ -6313,18 +6310,18 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("group by branchNum,biz ");
 		}
 
-		if(profitAnalysisQueryData.isPage()){
-			if(StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
-				sb.append("order by " + profitAnalysisQueryData.getSortField() + " "+profitAnalysisQueryData.getSortType());
-			}
+
+		if(StringUtils.isNotEmpty(profitAnalysisQueryData.getSortField())){
+			sb.append("order by branchNum asc, " + profitAnalysisQueryData.getSortField() + " "+profitAnalysisQueryData.getSortType());
 		}else{
-			sb.append("order by branchNum desc ");
+			sb.append("order by branchNum asc ");
 		}
+
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-		if(profitAnalysisQueryData.isPage()){
-			query.setFirstResult(profitAnalysisQueryData.getOffset());
-			query.setMaxResults(profitAnalysisQueryData.getLimit());
-		}
+
+		query.setFirstResult(profitAnalysisQueryData.getOffset());
+		query.setMaxResults(profitAnalysisQueryData.getLimit());
+
 		return query.list();
 	}
 
@@ -6551,20 +6548,19 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("select p.* ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		if(cardReportQuery.isPaging()){
-			if(StringUtils.isNotEmpty(cardReportQuery.getSortField())){
-				sb.append("order by ");
-				switch(cardReportQuery.getSortField()){
-					case "orderCardUserNum": sb.append("p.order_card_user_num ");break;
-					case "orderCardUser" : sb.append("p.order_card_user ");break;
-					case "orderNo" : sb.append("p.order_no "); break;
-					case "orderPaymentMoney" : sb.append("p.order_payment_money ");break;
-					case "orderTime" : sb.append("p.order_time ");break;
-					case "orderOperator" : sb.append("p.order_operator ");break;
-					case "orderDiscountMoney" : sb.append("p.order_discount_money");break;
-					case "orderPoint" : sb.append("p.order_point");break;
-					default : sb.append("p.branch_num ");break;
+			sb.append("order by ");
+			if(cardReportQuery.getSortField() != null){
+				if("orderPayment".equals(cardReportQuery.getSortField())){
+					sb.append("(p.order_payment_money - p.order_mgr_discount_money + p.order_coupon_total_money) ");
+				}else if("orderDiscount".equals(cardReportQuery.getSortField())){
+					sb.append("(p.order_discount_money + p.order_mgr_discount_money) ");
+				}else{
+					sb.append(AppUtil.getDBColumnName(cardReportQuery.getSortField()+" "));
 				}
 				sb.append(cardReportQuery.getSortType());
+
+			}else{
+				sb.append("p.order_no ");
 			}
 		}
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
@@ -6581,7 +6577,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("select count(*) as count_, sum(p.order_payment_money) as paymentMoney, ");
-		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point ");
+		sb.append("sum(p.order_discount_money) as discount, sum(p.order_point) as point, ");
+		sb.append("sum(p.order_mgr_discount_money) as mgrDiscount, ");
+		sb.append("sum(p.order_coupon_total_money) as conponMoney ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		return (Object[])query.uniqueResult();

@@ -322,6 +322,24 @@ public class WholesaleReturnDaoImpl extends DaoImpl implements WholesaleReturnDa
 
 	@Override
 	public List<Object[]> findMoneyGroupByClient(WholesaleProfitQuery wholesaleProfitQuery) {
+		String unitType = wholesaleProfitQuery.getUnitType();
+
+		if(StringUtils.isEmpty(unitType)){
+			unitType = AppConstants.UNIT_PIFA;
+		}
+		String unit = "";
+		if(unitType.equals(AppConstants.UNIT_PIFA) || unitType.equals(AppConstants.UNIT_USE)){
+			unit = "item.itemWholesaleRate";
+		} else if(unitType.equals(AppConstants.UNIT_SOTRE)){
+			unit = "item.itemInventoryRate";
+		} else if(unitType.equals(AppConstants.UNIT_PURCHASE)){
+			unit = "item.itemPurchaseRate";
+		} else if(unitType.equals(AppConstants.UNIT_TRANFER)){
+			unit = "item.itemTransferRate";
+		} else if(unitType.equals(AppConstants.UNIT_BASIC)){
+			unit = "1";
+		}
+
 		StringBuffer sb = new StringBuffer();
 		sb.append("select w.clientFid, sum(detail.returnDetailMoney), sum(detail.returnDetailCost * detail.returnDetailQty), sum(detail.returnDetailQty * item.itemRegularPrice), ");
 		sb.append("sum(detail.returnDetailQty/item.itemWholesaleRate), sum(detail.returnDetailUseQty), sum(detail.returnDetailQty), sum(detail.returnDetailPresentQty), sum(detail.returnDetailPresentQty/item.itemWholesaleRate), ");
@@ -376,7 +394,9 @@ public class WholesaleReturnDaoImpl extends DaoImpl implements WholesaleReturnDa
 			sb.append("and w.wholesaleReturnSeller in " + AppUtil.getStringParmeList(wholesaleProfitQuery.getSellers()));
 		}
 		sb.append("group by w.clientFid");
-		Query query = currentSession().createQuery(sb.toString());
+		String sql = sb.toString();
+		sql = StringUtils.replace(sql, "item.itemWholesaleRate", unit);
+		Query query = currentSession().createQuery(sql);
 		query.setString("systemBookCode", wholesaleProfitQuery.getSystemBookCode());
 
 		if(wholesaleProfitQuery.getDateFrom() != null){
@@ -816,7 +836,25 @@ public class WholesaleReturnDaoImpl extends DaoImpl implements WholesaleReturnDa
 
 	@Override
 	public List<Object[]> findMoneyGroupByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> itemCategories,
-												 List<Integer> itemNums, List<String> clients, List<Integer> regionNums, Integer storehouseNum, String auditor, String dateType, List<String> sellers) {
+												 List<Integer> itemNums, List<String> clients, List<Integer> regionNums, Integer storehouseNum, String auditor,
+												 String dateType, List<String> sellers, String unitType) {
+
+		if(StringUtils.isEmpty(unitType)){
+			unitType = AppConstants.UNIT_PIFA;
+		}
+		String unit = "";
+		if(unitType.equals(AppConstants.UNIT_PIFA) || unitType.equals(AppConstants.UNIT_USE)){
+			unit = "item.itemWholesaleRate";
+		} else if(unitType.equals(AppConstants.UNIT_SOTRE)){
+			unit = "item.itemInventoryRate";
+		} else if(unitType.equals(AppConstants.UNIT_PURCHASE)){
+			unit = "item.itemPurchaseRate";
+		} else if(unitType.equals(AppConstants.UNIT_TRANFER)){
+			unit = "item.itemTransferRate";
+		} else if(unitType.equals(AppConstants.UNIT_BASIC)){
+			unit = "1";
+		}
+
 		StringBuffer sb = new StringBuffer();
 		sb.append("select w.branchNum, sum(detail.returnDetailMoney), sum(detail.returnDetailCost * detail.returnDetailQty), sum(detail.returnDetailQty * item.itemRegularPrice), ");
 		sb.append("sum(detail.returnDetailQty/item.itemWholesaleRate), sum(detail.returnDetailUseQty),sum(detail.returnDetailQty), ");
@@ -870,7 +908,9 @@ public class WholesaleReturnDaoImpl extends DaoImpl implements WholesaleReturnDa
 			sb.append("and w.wholesaleReturnSeller in " + AppUtil.getStringParmeList(sellers));
 		}
 		sb.append("group by w.branchNum ");
-		Query query = currentSession().createQuery(sb.toString());
+		String sql = sb.toString();
+		sql = StringUtils.replace(sql, "item.itemWholesaleRate", unit);
+		Query query = currentSession().createQuery(sql);
 		query.setString("systemBookCode", systemBookCode);
 
 		if(dateFrom != null){

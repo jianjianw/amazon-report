@@ -12,6 +12,7 @@ import com.nhsoft.report.utils.DynamicDataSourceContextHolder;
 import com.nhsoft.report.provider.sharding.AlipayLogSharding;
 import com.nhsoft.report.provider.sharding.PosItemLogSharding;
 import com.nhsoft.report.provider.sharding.PosOrderSharding;
+import com.nhsoft.report.utils.MemCacheUtil;
 import com.nhsoft.report.utils.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,35 +80,70 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		propertyResolver = new RelaxedPropertyResolver(environment, "custom.redis.");
 		dsPrefixs = propertyResolver.getProperty("names");
 		Map customRedises = new HashMap<String, RedisTemplate>();
+		Map customRedises2 = new HashMap<String, RedisTemplate>();
 		for (String dsPrefix : dsPrefixs.split(",")) {// 多个数据源
 			Map<String, Object> dsMap = propertyResolver.getSubProperties(dsPrefix + ".");
 			RedisTemplate ds = buildRedisTemplate(dsMap);
 			customRedises.put(dsPrefix, ds);
+			RedisTemplate redisTemplate2 = buildRedisTemplate2(dsMap);
+			customRedises2.put(dsPrefix,redisTemplate2);
 			logger.info("完成初始化REDIS:" + dsPrefix);
 			
 		}
 		RedisUtil.setCustomRedises(customRedises);
+		MemCacheUtil.setCustomRedises(customRedises2);
 		propertyResolver = new RelaxedPropertyResolver(environment, "hibernate.");
 		hibernateProperties = propertyResolver.getSubProperties("");
 		
 	}
-	
-	
+
+
 	private RedisTemplate buildRedisTemplate(Map<String, Object> dsMap) {
+
+
 		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		jedisPoolConfig.setMinIdle(10);
 		jedisPoolConfig.setMaxIdle(200);
 		jedisPoolConfig.setMaxTotal(600);
 		jedisPoolConfig.setTestOnBorrow(true);
-		
+
 		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
 		jedisConnectionFactory.setHostName(dsMap.get("redis.host").toString());
 		jedisConnectionFactory.setPort(6379);
 		jedisConnectionFactory.setPassword(dsMap.get("redis.pass").toString());
 		jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
 		jedisConnectionFactory.setTimeout(60000);
+		jedisConnectionFactory.setDatabase(0);
 		jedisConnectionFactory.afterPropertiesSet();		//Cannot get Jedis connection
 		
+		RedisTemplate redisTemplate = new RedisTemplate();
+		redisTemplate.setConnectionFactory(jedisConnectionFactory);
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new MyJackson2JsonRedisSerializer());
+		redisTemplate.afterPropertiesSet();
+		return redisTemplate;
+	}
+
+
+	private RedisTemplate buildRedisTemplate2(Map<String, Object> dsMap) {
+
+
+
+		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+		jedisPoolConfig.setMinIdle(10);
+		jedisPoolConfig.setMaxIdle(30);
+		jedisPoolConfig.setMaxTotal(100);
+		jedisPoolConfig.setTestOnBorrow(true);
+
+		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+		jedisConnectionFactory.setHostName(dsMap.get("redis.host").toString());
+		jedisConnectionFactory.setPort(6379);
+		jedisConnectionFactory.setPassword(dsMap.get("redis.pass").toString());
+		jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
+		jedisConnectionFactory.setTimeout(60000);
+		jedisConnectionFactory.setDatabase(13);
+		jedisConnectionFactory.afterPropertiesSet();		//Cannot get Jedis connection
+
 		RedisTemplate redisTemplate = new RedisTemplate();
 		redisTemplate.setConnectionFactory(jedisConnectionFactory);
 		redisTemplate.setKeySerializer(new StringRedisSerializer());

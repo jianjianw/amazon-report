@@ -120,4 +120,15 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 		return transferOutOrderDao.findDateSummary(systemBookCode,centerBranchNum,branchNums,dateFrom,dateTo,strDate);
 	}
 
+	@Override
+	public List<Object[]> findMoneyAndAmountByBiz(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
+		return transferOutOrderDao.findMoneyAndAmountByBiz(systemBookCode,dateFrom,dateTo,itemNums);
+	}
+
+	@Override
+	public List<Object[]> findMoneyAndAmountByItemNum(String systemBookCode, Integer branchNum,List<Integer> storehouseNums,
+													  Date dateFrom, Date dateTo, List<Integer> itemNums, String sortField) {
+		return transferOutOrderDao.findMoneyAndAmountByItemNum(systemBookCode,branchNum,storehouseNums,dateFrom,dateTo,itemNums,sortField);
+	}
+
 }

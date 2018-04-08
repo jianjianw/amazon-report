@@ -93,7 +93,7 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 			criteria.add(Restrictions.in("t.outBranchNum", transferProfitQuery.getDistributionBranchNums()));
 		}
 		if (transferProfitQuery.getResponseBranchNums() != null && transferProfitQuery.getResponseBranchNums().size() > 0) {
-			criteria.add(Restrictions.sqlRestriction("branch_num in " + AppUtil.getIntegerParmeList(transferProfitQuery.getResponseBranchNums())));
+			criteria.add(Restrictions.sqlRestriction("this_.branch_num in " + AppUtil.getIntegerParmeList(transferProfitQuery.getResponseBranchNums())));
 		}
 		if (transferProfitQuery.getDtFrom() != null) {
 			criteria.add(Restrictions.ge("t.outOrderAuditTime", DateUtil.getMinOfDate(transferProfitQuery.getDtFrom())));
@@ -103,7 +103,6 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		}
 		if (transferProfitQuery.getItemNums() != null && transferProfitQuery.getItemNums().size() > 0) {
 			criteria.add(Restrictions.sqlRestriction("item_num in " + AppUtil.getIntegerParmeList(transferProfitQuery.getItemNums())));
-
 		}
 		if ((transferProfitQuery.getCategoryCodes() != null && transferProfitQuery.getCategoryCodes().size() > 0) || (StringUtils.isNotEmpty(transferProfitQuery.getItemBrand()))
 				|| (transferProfitQuery.getItemDepartments() != null && transferProfitQuery.getItemDepartments().size() > 0)) {
@@ -1024,6 +1023,57 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		sqlQuery.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
 		sqlQuery.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
 		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> findMoneyAndAmountByBiz(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select convert(varchar(8) , t.out_order_audit_time, 112), sum(detail.out_order_detail_qty) as qty,sum(detail.out_order_detail_subtotal) as subtotal ");
+		sb.append("from out_order_detail as detail inner join transfer_out_order as t on detail.out_order_fid = t.out_order_fid ");
+		sb.append("and t.system_book_code = '"+ systemBookCode+"' ");
+		if(itemNums != null && itemNums.size() > 0){
+			sb.append("and detail.item_num in "+ AppUtil.getIntegerParmeList(itemNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and t.out_order_audit_time >=  '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and t.out_order_audit_time <=  '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
+		}
+		sb.append("and t.out_order_state_code = 3 ");
+
+		sb.append("group by convert(varchar(8) , t.out_order_audit_time, 112) ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findMoneyAndAmountByItemNum(String systemBookCode, Integer branchNum, List<Integer> storehouseNums, Date dateFrom, Date dateTo, List<Integer> itemNums,String sortField ) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("select detail.item_num,");
+		sb.append("sum(detail.out_order_detail_qty) as transferQty, sum(detail.out_order_detail_sale_subtotal) as transferMoney ");
+		sb.append("from out_order_detail as detail with(nolock) inner join transfer_out_order as t with(nolock) on detail.out_order_fid = t.out_order_fid ");
+		sb.append("where t.system_book_code = :systemBookCode and t.out_branch_num = :branchNum ");
+		sb.append("and t.out_order_audit_time between :dateFrom and :dateTo and t.out_order_state_code = 3 ");
+		if(storehouseNums != null && storehouseNums.size()>0){
+			sb.append("and t.storehouse_num in " + AppUtil.getIntegerParmeList(storehouseNums));
+		}
+		if (itemNums != null && itemNums.size() > 0) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		sb.append("group by detail.item_num ");
+		if(StringUtils.isNotBlank(sortField)){
+			sb.append("order by " + sortField);
+		}
+
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		query.setInteger("branchNum", branchNum);
+		query.setParameter("dateFrom", DateUtil.getMinOfDate(dateFrom));
+		query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
+		return query.list();
+
 	}
 
 

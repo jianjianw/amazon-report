@@ -38,7 +38,7 @@
     <bean name="serviceCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
         <constructor-arg name="redisOperations" ref="redisTemplate"/>
         <!--设置过期时间300s 默认为0,不过期-->
-        <property name="defaultExpiration" value="300"/>
+        <property name="defaultExpiration" value="60"/>
     </bean>
     <cache:annotation-driven cache-manager="serviceCacheManager"  key-generator="defaultKeyGenerator"/>
 

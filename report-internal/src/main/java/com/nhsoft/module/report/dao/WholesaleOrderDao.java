@@ -151,7 +151,8 @@ public interface WholesaleOrderDao {
 
 
 	public List<Object[]> findMoneyGroupByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> itemCategories,
-                                                 List<Integer> itemNums, List<String> clients, List<Integer> regionNums, Integer storehouseNum, String auditor, String dateType, List<String> sellers);
+                                                 List<Integer> itemNums, List<String> clients, List<Integer> regionNums, Integer storehouseNum, String auditor,
+												 String dateType, List<String> sellers, String unitType);
 
 
 	/**
@@ -272,6 +273,12 @@ public interface WholesaleOrderDao {
 
 
 	public List<WholesaleOrder> find(String systemBookCode, List<Integer> branchNums, String query, Date dateFrom, Date dateTo);
+
+
+	/**
+	 * 根据营业日汇总批发数量和金额
+	 * */
+	public List<Object[]> findAmountAndMoneyByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 
 }

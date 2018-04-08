@@ -8,6 +8,7 @@ import com.nhsoft.module.report.model.ItemMatrix;
 import com.nhsoft.module.report.model.PosItem;
 import com.nhsoft.module.report.model.PosItemKit;
 import com.nhsoft.module.report.service.PosItemService;
+import com.nhsoft.report.utils.MemCacheUtil;
 import com.nhsoft.report.utils.ServiceBizException;
 import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
@@ -87,7 +88,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 		}
 
 		String memberCacheKey = AppConstants.MEMCACHED_PRE_POSITEM_UPDATE_TIME + systemBookCode;
-		Date memberCacheDate = (Date) RedisUtil.get(memberCacheKey);
+		Date memberCacheDate = (Date) MemCacheUtil.get(memberCacheKey);
 		if(memberCacheDate != null
 				&& memberCacheDate.compareTo(updateDate) != 0){
 			removeElementFromCache(AppConstants.CACHE_NAME_POS_ITEM + systemBookCode);

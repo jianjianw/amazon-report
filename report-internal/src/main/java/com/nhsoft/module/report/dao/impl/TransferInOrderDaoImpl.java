@@ -219,7 +219,7 @@ public class TransferInOrderDaoImpl extends DaoImpl implements TransferInOrderDa
 			criteria.add(Restrictions.in("t.inBranchNum", transferProfitQuery.getDistributionBranchNums()));
 		}
 		if(transferProfitQuery.getResponseBranchNums() != null && transferProfitQuery.getResponseBranchNums().size() > 0){
-			criteria.add(Restrictions.sqlRestriction("branch_num in " + AppUtil.getIntegerParmeList(transferProfitQuery.getResponseBranchNums())));
+			criteria.add(Restrictions.sqlRestriction("this_.branch_num in " + AppUtil.getIntegerParmeList(transferProfitQuery.getResponseBranchNums())));
 
 		}
 		if(transferProfitQuery.getDtFrom() != null){

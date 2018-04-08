@@ -2,6 +2,7 @@ package com.nhsoft.module.report.service.impl;
 
 
 import com.nhsoft.module.report.dao.InventoryDao;
+import com.nhsoft.module.report.model.Inventory;
 import com.nhsoft.module.report.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ public class InventoryServiceImpl implements InventoryService {
 	public List<Object[]> findCenterStore(String systemBookCode, Integer branchNum, List<Integer> itemNums) {
 		return inventoryDao.findCenterStore(systemBookCode, branchNum, itemNums);
 	}
-	
-	
+
+	@Override
+	public List<Inventory> findByItemAndBranch(String systemBookCode, Integer branchNum, List<Integer> itemNums, Boolean centerFlag) {
+		return inventoryDao.findByItemAndBranch(systemBookCode,branchNum,itemNums,centerFlag);
+	}
+
+
 }

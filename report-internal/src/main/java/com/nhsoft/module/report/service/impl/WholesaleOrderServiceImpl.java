@@ -50,5 +50,10 @@ public class WholesaleOrderServiceImpl implements WholesaleOrderService {
 		return wholesaleOrderDao.findItemSupplierDetail(systemBookCode, branchNums, dateFrom, dateTo, regionNums);
 	}
 
+	@Override
+	public List<Object[]> findAmountAndMoneyByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+		return wholesaleOrderDao.findAmountAndMoneyByBiz(systemBookCode,dateFrom,dateTo,itemNums);
+	}
+
 
 }
