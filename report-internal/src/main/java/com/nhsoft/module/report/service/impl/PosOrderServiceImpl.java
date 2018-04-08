@@ -191,6 +191,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 	}
 
 	@Override
+	public List<Object[]> findMerchantCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
+		return posOrderDao.findMerchantCouponSummary(systemBookCode,branchNum, merchantNum,dateFrom,dateTo);
+	}
+
+	@Override
 	public List<Object[]> findBranchDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return posOrderDao.findBranchDiscountSummary(systemBookCode,branchNums,dateFrom,dateTo);
 	}
@@ -212,7 +217,12 @@ public class PosOrderServiceImpl implements PosOrderService {
 
 	@Override
 	public List<Object[]> findMerchantBizdayCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
-		return posOrderDao.findMerchantBizdayDiscountSummary(systemBookCode,branchNum, merchantNum,dateFrom,dateTo);
+		return posOrderDao.findMerchantBizdayCouponSummary(systemBookCode,branchNum, merchantNum,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<Object[]> findStallCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo) {
+		return posOrderDao.findStallCouponSummary(systemBookCode,branchNum, merchantNum, stallNum, dateFrom,dateTo);
 	}
 
 	@Override
@@ -243,6 +253,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 	@Override
 	public List<Object[]> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher) {
 		return posOrderDao.findBranchShiftTableCouponSummary(systemBookCode,branchNums,dateFrom,dateTo,casher);
+	}
+
+	@Override
+	public List<Object[]> findMerchantShiftTableCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher) {
+		return posOrderDao.findMerchantShiftTableCouponSummary(systemBookCode,branchNum, merchantNum,dateFrom,dateTo,casher);
 	}
 
 	@Override
