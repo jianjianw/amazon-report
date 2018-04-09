@@ -4012,7 +4012,6 @@ public class ReportServiceImpl implements ReportService {
 			data.setPosItemTypeCode(posItem.getItemCategoryCode());
 			data.setPosItemTypeName(posItem.getItemCategory());
 			data.setSpec(posItem.getItemSpec());
-			data.setUnit(posItem.getItemWholesaleUnit());
 			data.setBaseUnit(posItem.getItemUnit());
 			if (itemMatrixNum > 0) {
 				ItemMatrix itemMatrix = AppUtil.getItemMatrix(posItem.getItemMatrixs(), data.getPosItemNum(),
@@ -4023,14 +4022,17 @@ public class ReportServiceImpl implements ReportService {
 			}
 
 			BigDecimal rate;
+			String unit;
 			switch (unitType){
-				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
-				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
-				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
-				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
-				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
-				default: rate = posItem.getItemWholesaleRate();
+				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();unit = posItem.getItemWholesaleUnit();break;
+				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();unit = posItem.getItemInventoryUnit();break;
+				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();unit = posItem.getItemPurchaseUnit();break;
+				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();unit = posItem.getItemTransferUnit();break;
+				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;unit = posItem.getItemUnit();break;
+				default: rate = posItem.getItemWholesaleRate();unit = posItem.getItemWholesaleUnit();
 			}
+			data.setUnit(unit);
+
 			if (rate.compareTo(BigDecimal.ZERO) != 0) {
 				data.setSaleNum(data.getSaleNum().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
 				data.setPresentQty(data.getPresentQty().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
@@ -7324,7 +7326,6 @@ public class ReportServiceImpl implements ReportService {
 			itemCategory = sb.append(posItem.getItemCategoryCode()).append("|").append(posItem.getItemCategory()).toString();
 			data.setPosItemCategory(itemCategory);
 			data.setSpec(posItem.getItemSpec());
-			data.setUnit(posItem.getItemWholesaleUnit());
 			data.setBaseUnit(posItem.getItemUnit());
 			if (data.getItemMatrixNum() > 0) {
 				ItemMatrix itemMatrix = AppUtil.getItemMatrix(posItem.getItemMatrixs(), data.getItemNum(),
@@ -7340,14 +7341,17 @@ public class ReportServiceImpl implements ReportService {
 				data.setClientName(posClient.getClientName());
 			}
 			BigDecimal rate;
+			String unit;
 			switch (unitType){
-				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
-				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
-				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
-				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
-				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
-				default: rate = posItem.getItemWholesaleRate();
+				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();unit = posItem.getItemWholesaleUnit();break;
+				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();unit = posItem.getItemInventoryUnit();break;
+				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();unit = posItem.getItemPurchaseUnit();break;
+				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();unit = posItem.getItemTransferUnit();break;
+				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;unit = posItem.getItemUnit();break;
+				default: rate = posItem.getItemWholesaleRate();unit = posItem.getItemWholesaleUnit();
 			}
+			data.setUnit(unit);
+
 			if (rate.compareTo(BigDecimal.ZERO) != 0) {
 				data.setWholesaleNum(data.getWholesaleNum().divide(rate, 4,
 						BigDecimal.ROUND_HALF_UP));
