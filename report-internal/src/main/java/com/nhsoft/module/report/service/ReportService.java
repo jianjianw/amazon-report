@@ -1423,7 +1423,7 @@ public interface ReportService {
 	 * @param queryData
 	 * @return
 	 */
-	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
 
 
 	/**

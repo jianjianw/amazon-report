@@ -12700,8 +12700,158 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<Object[]> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
-		return posOrderDao.findSaleAnalysisByBranchPosItemsByPage(queryData);
+	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
+
+		List<Object[]> objects = posOrderDao.findSaleAnalysisByBranchPosItemsByPage(saleAnalysisQueryData);
+
+		if(objects.isEmpty()){
+			return Collections.emptyList();
+
+		}
+		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
+		Integer branchNum;
+		Integer itemNum;
+		Integer stateCode;
+		BigDecimal amount;
+		BigDecimal money;
+		BigDecimal assistAmount;
+		BigDecimal count_;
+		BigDecimal discount;
+		StringBuilder stringBuilder;
+		for (int i = 0,len = objects.size(); i < len; i++) {
+			Object[] object = objects.get(i);
+			branchNum = (Integer) object[0];
+			itemNum = (Integer) object[1];
+			stateCode = (Integer) object[2];
+			amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			count_ = BigDecimal.valueOf(object[6] == null ? 0 : (Integer) object[6]);
+			if (object[7] instanceof BigDecimal) {
+				discount = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+
+			} else if (object[7] instanceof Double) {
+				discount = object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Double) object[7]);
+			} else {
+				discount = BigDecimal.ZERO;
+			}
+
+			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
+				continue;
+			}
+			stringBuilder  = new StringBuilder();
+			String key = stringBuilder.append(branchNum).append("|").append(itemNum).toString();
+			SaleAnalysisByPosItemDTO data = map.get(key);
+			if (data == null) {
+				data = new SaleAnalysisByPosItemDTO();
+				data.setItemNum(itemNum);
+				data.setBranchNum(branchNum);
+				map.put(key, data);
+			}
+			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
+				data.setTotalNum(data.getTotalNum().subtract(amount));
+				data.setTotalMoney(data.getTotalMoney().subtract(money));
+				data.setCountTotal(data.getCountTotal().subtract(count_));
+				data.setReturnNum(data.getReturnNum().add(amount));
+				data.setReturnMoney(data.getReturnMoney().add(money));
+				data.setReturnAssist(data.getReturnAssist().add(assistAmount));
+				data.setItemDiscount(data.getItemDiscount().subtract(discount));
+
+			}
+			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_PRESENT)) {
+				data.setPresentNum(data.getPresentNum().add(amount));
+				data.setPresentMoney(data.getPresentMoney().add(money));
+				data.setPresentAssist(data.getPresentAssist().add(assistAmount));
+				data.setCountTotal(data.getCountTotal().add(count_));
+				data.setTotalNum(data.getTotalNum().add(amount));
+			}
+			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_SALE)) {
+				data.setTotalNum(data.getTotalNum().add(amount));
+				data.setTotalMoney(data.getTotalMoney().add(money));
+				data.setCountTotal(data.getCountTotal().add(count_));
+				data.setSaleNum(data.getSaleNum().add(amount));
+				data.setSaleMoney(data.getSaleMoney().add(money));
+				data.setSaleAssist(data.getSaleAssist().add(assistAmount));
+				data.setItemDiscount(data.getItemDiscount().add(discount));
+			}
+
+		}
+
+		List<SaleAnalysisByPosItemDTO> list = new ArrayList<SaleAnalysisByPosItemDTO>(map.values());
+		if (list.isEmpty()) {
+			return list;
+		}
+
+		List<PosItem> posItems = posItemService.findShortItems(saleAnalysisQueryData.getSystemBookCode());
+		List<Branch> branches = branchService.findInCache(saleAnalysisQueryData.getSystemBookCode());
+
+		List<ItemExtendAttribute> itemExtendAttributes = null;
+		if((saleAnalysisQueryData.getQueryItemExtendAttribute() != null
+				&& saleAnalysisQueryData.getQueryItemExtendAttribute())
+
+				|| (saleAnalysisQueryData.getTwoStringValueDatas() != null && saleAnalysisQueryData.getTwoStringValueDatas().size() > 0)){
+			itemExtendAttributes = itemExtendAttributeDao.find(saleAnalysisQueryData.getSystemBookCode());
+		}
+		Branch branch;
+		List<ItemExtendAttributeDTO> itemItemExtendAttributes = null;
+		int size = list.size();
+		for (int i = size - 1; i >= 0; i--) {
+			SaleAnalysisByPosItemDTO data = list.get(i);
+
+			Integer posItemNum = data.getItemNum();
+
+			if(itemExtendAttributes != null){
+				itemItemExtendAttributes = CopyUtil.toList(ItemExtendAttribute.find(itemExtendAttributes, posItemNum),ItemExtendAttributeDTO.class);
+				if(saleAnalysisQueryData.getTwoStringValueDatas() != null && saleAnalysisQueryData.getTwoStringValueDatas().size() > 0
+						&& !ItemExtendAttributeDTO.exists(itemItemExtendAttributes, saleAnalysisQueryData.getTwoStringValueDatas())){
+					list.remove(i);
+					continue;
+				}
+
+				if(saleAnalysisQueryData.getQueryItemExtendAttribute() != null && saleAnalysisQueryData.getQueryItemExtendAttribute()){
+					data.setItemExtendAttributes(itemItemExtendAttributes);
+				}
+
+			}
+
+			PosItem posItem = AppUtil.getPosItem(posItemNum, posItems);
+			if (posItem == null) {
+				list.remove(i);
+				continue;
+			}
+			if (saleAnalysisQueryData.getBrandCodes() != null && saleAnalysisQueryData.getBrandCodes().size() > 0) {
+				if (!saleAnalysisQueryData.getBrandCodes().contains(posItem.getItemBrand())) {
+					list.remove(i);
+					continue;
+				}
+			}
+			if (saleAnalysisQueryData.getPosItemTypeCodes() != null
+					&& saleAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
+				if (!saleAnalysisQueryData.getPosItemTypeCodes().contains(posItem.getItemCategoryCode())) {
+					list.remove(i);
+					continue;
+				}
+			}
+			if (StringUtils.isNotEmpty(saleAnalysisQueryData.getItemDepartments())) {
+				if (!saleAnalysisQueryData.getItemDepartments().contains(posItem.getItemDepartment())) {
+					list.remove(i);
+					continue;
+				}
+			}
+			branch = Branch.get(branches, data.getBranchNum());
+			if(branch != null){
+				data.setBranchName(branch.getBranchName());
+			}
+
+			data.setItemName(posItem.getItemName());
+			data.setItemCode(posItem.getItemCode());
+			data.setSpec(posItem.getItemSpec());
+			data.setUnit(posItem.getItemUnit());
+			data.setCategoryName(posItem.getItemCategory());
+			data.setCategoryCode(posItem.getItemCategoryCode());
+
+		}
+		return list;
 	}
 
 	@Override

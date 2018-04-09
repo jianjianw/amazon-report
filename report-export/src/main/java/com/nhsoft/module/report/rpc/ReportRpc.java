@@ -1415,7 +1415,7 @@ public interface ReportRpc {
 	 * @param queryData
 	 * @return
 	 */
-	public List<SaleAnalysisBranchItemPageSummary> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
+	public SaleAnalysisBranchItemPageSummary findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData);
 
 
 	/**

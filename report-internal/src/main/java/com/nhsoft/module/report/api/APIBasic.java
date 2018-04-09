@@ -12,6 +12,7 @@ import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import sun.font.TrueTypeFont;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
@@ -1405,6 +1406,26 @@ public class APIBasic {
 		query.setSortType("asc");
 		RetailDetailPageSummary retailDetailsByPage = reportRpc.findRetailDetailsByPage(query);
 		return retailDetailsByPage;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test75")
+	public Object test75() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-09");
+		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		query.setSystemBookCode(systemBookCode);
+		query.setBranchNums(getBranchNums());
+		query.setOffset(0);
+		query.setLimit(20);
+		query.setSortField("money");
+		query.setSortType("asc");
+		query.setIsQueryCF(true);
+		SaleAnalysisBranchItemPageSummary result = reportRpc.findSaleAnalysisByBranchPosItemsByPage(query);
+ 		return result;
 	}
 
 }

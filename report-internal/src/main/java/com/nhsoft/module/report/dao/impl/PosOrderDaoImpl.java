@@ -6384,7 +6384,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()){
 			sb.append("select branchNum as branchNum , itemNum as itemNum, stateCode as stateCode, sum(amount) as amount, sum(money) as money, ");
-			sb.append("sum(assistAmount) as assistAmount, count(amount_) as amount_, sum(discount) as discount form ( ");
+			sb.append("sum(assistAmount) as assistAmount, count(amount_) as amount_, sum(discount) as discount from ( ");
 		}
 		sb.append("select detail.order_detail_branch_num as branchNum,detail.item_num as itemNum, detail.order_detail_state_code as stateCode, ");
 		sb.append("sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
@@ -6428,15 +6428,15 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()){
 
 			sb.append("select count(*), sum(totalNum_) as totalNumSum, sum(returnNum_) as returnNumSum, sum(presentNum_) as presentNumSum, sum(saleNum_) as saleNumSum, ");
-			sb.append("sum(totalMoney_) as totalMoneySum, sum(returnMoney_) as returnMoneySum, sum(presentMoney_) as presentMoneySum, sum(presentMoney_) as presentMoneySum, ");
+			sb.append("sum(totalMoney_) as totalMoneySum, sum(returnMoney_) as returnMoneySum, sum(presentMoney_) as presentMoneySum, sum(saleMoney_) as saleMoneySum, ");
 			sb.append("sum(count__) as countSum, sum(assistAmount_) as assistAmountSum, sum(discount_) as discountSum  from ( ");
 
 			sb.append("select branchNum as branchNum ,itemNum as itemNum , sum(totalNum) as totalNum_, sum(returnNum) as returnNum_, sum(presentNum) as presentNum_, sum(saleNum) as saleNum_, ");
-			sb.append("sum(totalMoney) as totalMoney_, sum(returnMoney) as returnMoney_, sum(presentMoney) as presentMoney_, sum(presentMoney) as presentMoney_, ");
+			sb.append("sum(totalMoney) as totalMoney_, sum(returnMoney) as returnMoney_, sum(presentMoney) as presentMoney_, sum(saleMoney) as saleMoney_, ");
 			sb.append("sum(count_) as count__, sum(assistAmount) as assistAmount_, sum(discount) as discount_  from ( ");
 		}else{
 			sb.append("select count(*), sum(totalNum) as totalNum_, sum(returnNum) as returnNum_, sum(presentNum) as presentNum_, sum(saleNum) as saleNum_, ");
-			sb.append("sum(totalMoney) as totalMoney_, sum(returnMoney) as returnMoney_, sum(presentMoney) as presentMoney_, sum(presentMoney) as presentMoney_, ");
+			sb.append("sum(totalMoney) as totalMoney_, sum(returnMoney) as returnMoney_, sum(presentMoney) as presentMoney_, sum(saleMoney) as saleMoney_, ");
 			sb.append("sum(count_) as count__, sum(assistAmount) as assistAmount_, sum(discount) as discount_  from ( ");
 
 		}
@@ -6450,12 +6450,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money else detail.order_detail_payment_money end) as totalMoney, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then detail.order_detail_payment_money end) as returnMoney, ");
 		sb.append("sum(case when detail.order_detail_state_code = 2 then detail.order_detail_payment_money end) as presentMoney, ");
-		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as presentMoney, ");
+		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as saleMoney, ");
 
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -1 else 1 end ) as count_, ");
 		sb.append("sum(detail.order_detail_assist_amount) as assistAmount, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_discount when detail.order_detail_state_code = 1 then detail.order_detail_discount end) as discount  ");
-		sb.append(createKitSaleAnalysisBranchItemQuery(queryData));
+		sb.append(createSaleAnalysisBranchItemQuery(queryData));
 		sb.append("group by detail.order_detail_branch_num, detail.item_num ");
 
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
