@@ -7348,14 +7348,8 @@ public class ReportServiceImpl implements ReportService {
 				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
 				default: rate = posItem.getItemWholesaleRate();
 			}
-
-			if (rate.compareTo(BigDecimal.ZERO) > 0) {
-				qty = qty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
-				presentQty = presentQty.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
-
-			}
 			if (rate.compareTo(BigDecimal.ZERO) != 0) {
-				data.setWholesaleNum(data.getWholesaleNum().divide(posItem.getItemWholesaleRate(), 4,
+				data.setWholesaleNum(data.getWholesaleNum().divide(rate, 4,
 						BigDecimal.ROUND_HALF_UP));
 			}
 			data.setWholesaleProfit(data.getWholesaleMoney().subtract(data.getWholesaleCost()));
