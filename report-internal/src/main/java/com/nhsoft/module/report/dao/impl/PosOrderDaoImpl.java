@@ -5588,7 +5588,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			}
 		}
 		if(queryPayment){
-			sb.append("inner join payment with(nolock) on p.order_no = payment.order_no ");
+			sb.append("inner join payment with(nolock, forceseek) on p.order_no = payment.order_no ");
 		}
 
 		sb.append("where p.system_book_code = '" + posOrderQuery.getSystemBookCode() + "' ");
