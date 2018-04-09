@@ -6322,9 +6322,11 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		if(profitAnalysisQueryData.isPage()){
+			query.setFirstResult(profitAnalysisQueryData.getOffset());
+			query.setMaxResults(profitAnalysisQueryData.getLimit());
+		}
 
-		query.setFirstResult(profitAnalysisQueryData.getOffset());
-		query.setMaxResults(profitAnalysisQueryData.getLimit());
 
 		return query.list();
 	}

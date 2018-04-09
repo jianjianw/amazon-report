@@ -4677,7 +4677,7 @@ public class ReportRpcImpl implements ReportRpc {
 			profitAnalysisQueryData.setQueryPosItem(true);
 		}
 		if(profitAnalysisQueryData.getIsQueryCF() == null){
-			profitAnalysisQueryData.setIsQueryCF(true);
+			profitAnalysisQueryData.setIsQueryCF(false);
 		}
 
 
