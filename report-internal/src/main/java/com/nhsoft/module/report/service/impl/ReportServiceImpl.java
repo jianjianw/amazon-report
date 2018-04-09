@@ -12697,81 +12697,46 @@ public class ReportServiceImpl implements ReportService {
 	public List<SaleAnalysisByPosItemDTO> findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
 
 		List<Object[]> objects = posOrderDao.findSaleAnalysisByBranchPosItemsByPage(saleAnalysisQueryData);
+		int len = objects.size();
+		List<SaleAnalysisByPosItemDTO> list = new ArrayList<SaleAnalysisByPosItemDTO>(len);
 
-		if(objects.isEmpty()){
-			return Collections.emptyList();
+		for (int i = 0; i < len ; i++) {
+			SaleAnalysisByPosItemDTO dto = new SaleAnalysisByPosItemDTO();
 
-		}
-		Map<String, SaleAnalysisByPosItemDTO> map = new HashMap<String, SaleAnalysisByPosItemDTO>();
-		Integer branchNum;
-		Integer itemNum;
-		Integer stateCode;
-		BigDecimal amount;
-		BigDecimal money;
-		BigDecimal assistAmount;
-		BigDecimal count_;
-		BigDecimal discount;
-		StringBuilder stringBuilder;
-		for (int i = 0,len = objects.size(); i < len; i++) {
 			Object[] object = objects.get(i);
-			branchNum = (Integer) object[0];
-			itemNum = (Integer) object[1];
-			stateCode = (Integer) object[2];
-			amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
-			money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
-			assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
-			count_ = BigDecimal.valueOf(object[6] == null ? 0 : (Integer) object[6]);
-			if (object[7] instanceof BigDecimal) {
-				discount = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+			dto.setBranchNum((Integer) object[0]);
+			dto.setItemNum((Integer) object[1]);
+			dto.setTotalNum((BigDecimal)object[2]);
+			dto.setReturnNum((BigDecimal)object[3]);
+			dto.setPresentNum((BigDecimal)object[4]);
+			dto.setSaleNum((BigDecimal)object[5]);
 
-			} else if (object[7] instanceof Double) {
-				discount = object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Double) object[7]);
+			dto.setTotalMoney((BigDecimal)object[6]);
+			dto.setReturnMoney((BigDecimal)object[7]);
+			dto.setPresentMoney((BigDecimal)object[8]);
+			dto.setSaleMoney((BigDecimal)object[9]);
+
+			dto.setCountTotal(BigDecimal.valueOf((Integer)object[10]));
+
+			dto.setSaleAssist((BigDecimal)object[11]);//使用同一字段排序
+			dto.setReturnAssist((BigDecimal)object[11]);
+			dto.setPresentAssist((BigDecimal)object[11]);
+
+			BigDecimal discount;
+			if (object[12] instanceof BigDecimal) {
+				discount = object[12] == null ? BigDecimal.ZERO : (BigDecimal) object[12];
+
+			} else if (object[11] instanceof Double) {
+				discount = object[12] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Double) object[12]);
 			} else {
 				discount = BigDecimal.ZERO;
 			}
 
-			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_REMOVE) {
-				continue;
-			}
-			stringBuilder  = new StringBuilder();
-			String key = stringBuilder.append(branchNum).append("|").append(itemNum).toString();
-			SaleAnalysisByPosItemDTO data = map.get(key);
-			if (data == null) {
-				data = new SaleAnalysisByPosItemDTO();
-				data.setItemNum(itemNum);
-				data.setBranchNum(branchNum);
-				map.put(key, data);
-			}
-			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_CANCEL)) {
-				data.setTotalNum(data.getTotalNum().subtract(amount));
-				data.setTotalMoney(data.getTotalMoney().subtract(money));
-				data.setCountTotal(data.getCountTotal().subtract(count_));
-				data.setReturnNum(data.getReturnNum().add(amount));
-				data.setReturnMoney(data.getReturnMoney().add(money));
-				data.setReturnAssist(data.getReturnAssist().add(assistAmount));
-				data.setItemDiscount(data.getItemDiscount().subtract(discount));
-
-			}
-			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_PRESENT)) {
-				data.setPresentNum(data.getPresentNum().add(amount));
-				data.setPresentMoney(data.getPresentMoney().add(money));
-				data.setPresentAssist(data.getPresentAssist().add(assistAmount));
-				data.setCountTotal(data.getCountTotal().add(count_));
-				data.setTotalNum(data.getTotalNum().add(amount));
-			}
-			if (stateCode.equals(AppConstants.POS_ORDER_DETAIL_STATE_SALE)) {
-				data.setTotalNum(data.getTotalNum().add(amount));
-				data.setTotalMoney(data.getTotalMoney().add(money));
-				data.setCountTotal(data.getCountTotal().add(count_));
-				data.setSaleNum(data.getSaleNum().add(amount));
-				data.setSaleMoney(data.getSaleMoney().add(money));
-				data.setSaleAssist(data.getSaleAssist().add(assistAmount));
-				data.setItemDiscount(data.getItemDiscount().add(discount));
-			}
+			dto.setItemDiscount(discount);
+			list.add(dto);
 
 		}
 
-		List<SaleAnalysisByPosItemDTO> list = new ArrayList<SaleAnalysisByPosItemDTO>(map.values());
 		if (list.isEmpty()) {
 			return list;
 		}

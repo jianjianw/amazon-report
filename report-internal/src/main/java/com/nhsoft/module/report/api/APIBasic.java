@@ -1311,7 +1311,22 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2018-01-23");
 		Date dateTo = sdf.parse("2018-03-24");
 
-		List<SalerCommission> result = reportRpc.findSalerCommissions(systemBookCode,dateFrom,dateTo,null,null, BigDecimal.valueOf(10));
+		List<SalerCommission> result = reportRpc.findSalerCommissions(systemBookCode,dateFrom,dateTo,getBranchNums(),null, BigDecimal.valueOf(20));
+
+		Integer integer0= 0;
+		Integer integer1 = 0;
+		Integer integer2 = 0;
+		for (int i = 0; i <result.size() ; i++) {
+			SalerCommission salerCommission = result.get(i);
+			List<Integer> rank = salerCommission.getRank();
+			integer0 += rank.get(0);
+			integer1 += rank.get(1);
+			integer2 += rank.get(2);
+		}
+		System.out.println(integer0);
+		System.out.println(integer1);
+		System.out.println(integer2);
+
 		return result;
 
 	}
@@ -1421,7 +1436,7 @@ public class APIBasic {
 		query.setBranchNums(getBranchNums());
 		query.setOffset(0);
 		query.setLimit(20);
-		query.setSortField("money");
+		query.setSortField("saleNum");
 		query.setSortType("asc");
 		query.setIsQueryCF(true);
 		SaleAnalysisBranchItemPageSummary result = reportRpc.findSaleAnalysisByBranchPosItemsByPage(query);
