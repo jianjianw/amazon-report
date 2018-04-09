@@ -109,9 +109,5 @@ public interface InventoryDao {
 	 * */
 	public List<Object[]> findInventoryLostCount(String systemBookCode, Integer branchNum, List<Integer> itemNums);
 
-	/**
-	 * 根据营业日汇总金额和数量
-	 * */
-	public List<Object[]> findMoneyAndAmountByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> items);
 
 }

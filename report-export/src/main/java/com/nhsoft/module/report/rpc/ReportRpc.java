@@ -1436,7 +1436,10 @@ public interface ReportRpc {
 	 * */
 	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode,Integer branchNum,Date dateFrom,Date dateTo,List<String> itemCategoryCodes,String sortField);
 
-
+	/**
+	 *商品库存动态表（好想来）
+	 * */
+	public List<ItemInventoryTrendSummary> findItemTrendInventory(ItemInventoryQueryDTO inventoryQuery);
 
 
 

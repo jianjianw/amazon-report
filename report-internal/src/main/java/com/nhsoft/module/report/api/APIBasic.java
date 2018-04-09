@@ -3,6 +3,7 @@ package com.nhsoft.module.report.api;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.AlipayLog;
 import com.nhsoft.module.report.model.Branch;
+import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 import com.nhsoft.module.report.rpc.*;
@@ -1441,6 +1442,25 @@ public class APIBasic {
 		query.setIsQueryCF(true);
 		SaleAnalysisBranchItemPageSummary result = reportRpc.findSaleAnalysisByBranchPosItemsByPage(query);
  		return result;
+	}
+
+	@Autowired
+	private BookResourceService bookResourceService;
+
+	@RequestMapping(method = RequestMethod.GET, value = "/test76")
+	public void test76() {
+		List<PosItemTypeParam> bookResource = bookResourceService.findPosItemTypeParamsInCache("4020");
+		System.out.println();
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test77")
+	public List<ItemInventoryTrendSummary> test77(){
+		String systemBookCode = "4020";
+		ItemInventoryQueryDTO query = new ItemInventoryQueryDTO();
+		query.setSystemBookCode(systemBookCode);
+		List<ItemInventoryTrendSummary> itemTrendInventory = reportRpc.findItemTrendInventory(query);
+		return itemTrendInventory;
 	}
 
 }

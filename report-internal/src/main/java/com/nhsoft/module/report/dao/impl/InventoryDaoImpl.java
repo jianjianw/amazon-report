@@ -331,17 +331,5 @@ public class InventoryDaoImpl extends DaoImpl implements InventoryDao {
 		return null;
 	}
 
-	@Override
-	public List<Object[]> findMoneyAndAmountByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> items) {
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("select ");
-
-
-
-
-		return null;
-	}
-
 
 }

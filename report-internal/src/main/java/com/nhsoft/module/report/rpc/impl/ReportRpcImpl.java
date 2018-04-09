@@ -3,12 +3,14 @@ package com.nhsoft.module.report.rpc.impl;
 
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
+import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
+import com.nhsoft.report.utils.CopyUtil;
 import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.report.utils.ReportUtil;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -85,6 +88,9 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Autowired
 	private WholesaleOrderRpc wholesaleOrderRpc;
+
+	@Autowired
+	private BookResourceService bookResourceService;
 
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -4932,6 +4938,60 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		return list;
+	}
+
+	@Override
+	public List<ItemInventoryTrendSummary> findItemTrendInventory(ItemInventoryQueryDTO inventoryQuery) {
+
+		PosItemQuery query = new PosItemQuery();
+		query.setSystemBookCode(inventoryQuery.getSystemBookCode());
+		query.setCategoryCodes(inventoryQuery.getItemCategorys());
+		query.setSaleCrease(inventoryQuery.getSaleCrease());
+		query.setStockCrease(inventoryQuery.getStockCrease());
+		query.setDromCrease(inventoryQuery.getDromCrease());
+
+
+		//根据商品类别查询商品
+		List<PosItem> posItems = posItemService.findByPosItemQuery(query,null,null,0,0);
+		int size = posItems.size();
+		List<Integer> itemNums = new ArrayList<>(size);
+		for (int i = 0; i < size; i++) {
+			PosItem posItem = posItems.get(i);
+			itemNums.add(posItem.getItemNum());
+		}
+
+		List<ItemInventoryDTO> itemInventory = inventoryRpc.findItemAmount(inventoryQuery.getSystemBookCode(), null, itemNums, null);
+		Map<String,ItemInventoryTrendSummary> map = new HashMap<>();
+
+		for (int i = 0,len = itemInventory.size(); i < len ; i++) {
+			ItemInventoryDTO itemInventoryDTO = itemInventory.get(i);
+			Integer itemNum = itemInventoryDTO.getItemNum();
+			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
+			PosItemDTO posItemDTO = CopyUtil.to(posItem, PosItemDTO.class);
+
+			ItemInventoryTrendSummary data = map.get(posItem.getItemCategoryCode());
+			if(data == null){
+				data = new ItemInventoryTrendSummary();
+				data.setCategoryCode(posItem.getItemCategoryCode());
+				data.setCategoryName(posItem.getItemCategory());
+				map.put(posItem.getItemCategoryCode(),data);
+			}
+
+			if(itemInventoryDTO.getAmount().compareTo(BigDecimal.ZERO) > 0){
+				data.setInventoryAmount(data.getInventoryAmount() + 1);
+			}else{
+				data.setUnInventoryAmount(data.getUnInventoryAmount() +1);
+			}
+
+			data.setTotalAmount(data.getInventoryAmount()+data.getUnInventoryAmount());
+
+			List<PosItemDTO> itemDTOS = data.getPosItems();
+			itemDTOS.add(posItemDTO);
+			data.setPosItems(itemDTOS);
+
+		}
+
+		return new ArrayList<>(map.values());
 	}
 
 
