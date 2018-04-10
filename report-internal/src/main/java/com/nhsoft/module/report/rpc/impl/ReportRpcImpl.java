@@ -4729,7 +4729,15 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setProfitSum(profitSum);
 			result.setMoneySum(moneySum);
 			result.setCostSum(costSum);
-			List<BranchBizSummary> subData = result.getData().subList(profitAnalysisQueryData.getOffset(),profitAnalysisQueryData.getLimit());
+			List<BranchBizSummary> data = result.getData();
+			int dataSize = data.size();
+
+			List<BranchBizSummary> subData = null;
+			if(dataSize >= profitAnalysisQueryData.getLimit()-1){
+				subData = data.subList(profitAnalysisQueryData.getOffset(),profitAnalysisQueryData.getLimit());
+			}else{
+				subData = data.subList(profitAnalysisQueryData.getOffset(), dataSize);
+			}
 			result.setData(subData);
 		}
 
