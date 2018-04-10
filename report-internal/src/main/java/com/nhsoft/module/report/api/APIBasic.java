@@ -1224,7 +1224,7 @@ public class APIBasic {
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-03-08");
+		Date dateTo = sdf.parse("2018-04-10");
 		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setBranchNums(getBranchNums());
@@ -1242,26 +1242,20 @@ public class APIBasic {
 
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-01");
-		Date dateTo = sdf.parse("2018-03-23");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-10");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
-		query.setIsQueryCF(true);
+		query.setIsQueryCF(false);
 		query.setOffset(0);
 		query.setLimit(50);
-		//getPosItemTypeCodes
-		List<String> list = new ArrayList<>();
-		list.add("01");
-		query.setPosItemTypeCodes(list);
-		/*ArrayList<Integer> integers = new ArrayList<>();
-		integers.add(1);
-		query.setBranchNums(integers);*/
-		/**
-		 * List<PosItemTypeParam> bookResource = bookResourceService.findPosItemTypeParamsInCache("4020");
-		 *
-		 * */
+		query.setBranchNums(getBranchNums());
+		/*List<String> list = new ArrayList<>();
+		list.add("210");
+		query.setPosItemTypeCodes(list);*/
+
 
 		ProfitByBranchAndItemSummaryPageDTO result = reportRpc.findProfitAnalysisByBranchAndItemByPage(query);
 		return result;
@@ -1271,8 +1265,8 @@ public class APIBasic {
 	public BranchBizSummaryPageDTO test66(@PathVariable(value = "sortField") String sortField, @PathVariable(value = "sortType") String sortType) throws Exception{		//page  毛利分析 日毛利汇总
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-01");
-		Date dateTo = sdf.parse("2018-03-31");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-04-10");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);

@@ -4560,6 +4560,8 @@ public class ReportRpcImpl implements ReportRpc {
 
 		List<CustomerAnalysisHistory> result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
 		CustomerAnalysisHistoryPageDTO pageDTO = new CustomerAnalysisHistoryPageDTO();
+		pageDTO.setData(result);
+
 		BigDecimal totalMoneySum = BigDecimal.ZERO;
 		BigDecimal customerSum = BigDecimal.ZERO;
 		if(saleAnalysisQueryData.isPage()){
@@ -4567,11 +4569,6 @@ public class ReportRpcImpl implements ReportRpc {
 				pageDTO.setCount((Integer) object[0]);
 				pageDTO.setTotalMoneySum(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
 				pageDTO.setCustomerSum(object[2] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer)object[2]));
-				if(pageDTO.getCustomerSum().compareTo(BigDecimal.ZERO) == 0){
-					pageDTO.setCustomerAvgPriceSum(BigDecimal.ZERO);
-				}else{
-					pageDTO.setCustomerAvgPriceSum(pageDTO.getTotalMoneySum().divide(pageDTO.getCustomerSum(),2,BigDecimal.ROUND_HALF_UP));
-				}
 			}
 		}else{
 			int size = result.size();	//不分页  汇总查询回来的数据
@@ -4585,13 +4582,24 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			pageDTO.setCustomerSum(customerSum);
 			pageDTO.setTotalMoneySum(totalMoneySum);
-			if(pageDTO.getCustomerSum().compareTo(BigDecimal.ZERO) == 0){
-				pageDTO.setCustomerAvgPriceSum(BigDecimal.ZERO);
-			}else{
-				pageDTO.setCustomerAvgPriceSum(totalMoneySum.divide(customerSum,2,BigDecimal.ROUND_HALF_UP));
+
+			List<CustomerAnalysisHistory> data = pageDTO.getData();
+			int dataSize = data.size();
+			List<CustomerAnalysisHistory> subData = null;
+			if (dataSize >= saleAnalysisQueryData.getLimit() - 1) {
+				subData = data.subList(saleAnalysisQueryData.getOffset(), saleAnalysisQueryData.getLimit());
+			} else {
+				subData = data.subList(saleAnalysisQueryData.getOffset(), dataSize);
 			}
+			pageDTO.setData(subData);
 		}
-		pageDTO.setData(result);
+
+		if(pageDTO.getCustomerSum().compareTo(BigDecimal.ZERO) == 0){
+			pageDTO.setCustomerAvgPriceSum(BigDecimal.ZERO);
+		}else{
+			pageDTO.setCustomerAvgPriceSum(pageDTO.getTotalMoneySum().divide(pageDTO.getCustomerSum(),2,BigDecimal.ROUND_HALF_UP));
+		}
+
 		return pageDTO;
 
 	}
@@ -4599,9 +4607,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
+
+		int days = DateUtil.diffDay(profitAnalysisQueryData.getShiftTableFrom(), profitAnalysisQueryData.getShiftTableTo());
+		int branchSize = profitAnalysisQueryData.getBranchNums().size();
+
 		Object[] pageCount = null;
-		List<Integer> branchNums = profitAnalysisQueryData.getBranchNums();
-		if(branchNums == null || branchNums.size() > 10){
+		if(days * branchSize > 1000){
 			pageCount = reportService.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData);
 		}else{
 			profitAnalysisQueryData.setPage(false);
@@ -4634,22 +4645,15 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		ProfitByBranchAndItemSummaryPageDTO result = new ProfitByBranchAndItemSummaryPageDTO();
-
+		result.setData(list);
+		
 		if(profitAnalysisQueryData.isPage()){
 			if(pageCount != null ){
-				BigDecimal profitSummary = pageCount[1] == null ? BigDecimal.ZERO : (BigDecimal) pageCount[1];
-				BigDecimal moneySummary =  pageCount [3] == null ? BigDecimal.ZERO : (BigDecimal) pageCount [3];
 				result.setCount((Integer) pageCount[0]);
-				result.setProfitSum(profitSummary);
+				result.setProfitSum(pageCount[1] == null ? BigDecimal.ZERO : (BigDecimal) pageCount[1]);
 				result.setAmountSum((BigDecimal) pageCount[2] );
-				result.setMoneySum(moneySummary);
+				result.setMoneySum(pageCount [3] == null ? BigDecimal.ZERO : (BigDecimal) pageCount [3]);
 				result.setCostSum((BigDecimal) pageCount [4]);
-
-				if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
-					result.setProfitRateSum(BigDecimal.ZERO);
-				}else{
-					result.setProfitRateSum(profitSummary.divide(moneySummary, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
-				}
 			}
 		}else{
 			result.setCount(size);
@@ -4657,14 +4661,24 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setAmountSum(amountSum);
 			result.setMoneySum(moneySum);
 			result.setCostSum(costSum);
-			if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
-				result.setProfitRateSum(BigDecimal.ZERO);
+
+			List<ProfitByBranchAndItemSummary> data = result.getData();
+			int dataSize = data.size();
+			List<ProfitByBranchAndItemSummary> subData = null;
+			if(dataSize >= profitAnalysisQueryData.getLimit() - 1){
+				subData = data.subList(profitAnalysisQueryData.getOffset(), profitAnalysisQueryData.getLimit());
 			}else{
-				result.setProfitRateSum(result.getProfitSum().divide(result.getMoneySum(),4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+				subData = data.subList(profitAnalysisQueryData.getOffset(), dataSize);
 			}
+			result.setData(subData);
 		}
 
-		result.setData(list);
+		if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
+			result.setProfitRateSum(BigDecimal.ZERO);
+		}else{
+			result.setProfitRateSum(result.getProfitSum().divide(result.getMoneySum(),4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+		}
+
 		return result;
 	}
 
@@ -4729,9 +4743,9 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setProfitSum(profitSum);
 			result.setMoneySum(moneySum);
 			result.setCostSum(costSum);
+
 			List<BranchBizSummary> data = result.getData();
 			int dataSize = data.size();
-
 			List<BranchBizSummary> subData = null;
 			if(dataSize >= profitAnalysisQueryData.getLimit()-1){
 				subData = data.subList(profitAnalysisQueryData.getOffset(),profitAnalysisQueryData.getLimit());
@@ -4772,11 +4786,11 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setPresentMoneySum((BigDecimal) count[7]);
 			result.setSaleMoneySum((BigDecimal) count[8]);
 
-			result.setCountTotalSum(BigDecimal.valueOf((Integer) count[9]));//
+			result.setCountTotalSum(BigDecimal.valueOf((Integer) count[9]));
 
-			result.setSaleAssistSum((BigDecimal) count[10]);		//assistAmount
-			result.setReturnAssistSum((BigDecimal) count[10]);	//assistAmount
-			result.setPresentAssistSum((BigDecimal) count[10]);	//assistAmount
+			result.setSaleAssistSum((BigDecimal) count[10]);
+			result.setReturnAssistSum((BigDecimal) count[10]);
+			result.setPresentAssistSum((BigDecimal) count[10]);
 
 			BigDecimal discount;
 			if (count[11] instanceof BigDecimal) {
@@ -4987,13 +5001,12 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setInventoryAmount(data.getInventoryAmount() + 1);
 			}else{
 				data.setUnInventoryAmount(data.getUnInventoryAmount() +1);
+				List<PosItemDTO> itemDTOS = data.getPosItems();
+				itemDTOS.add(posItemDTO);
+				data.setPosItems(itemDTOS);
 			}
 
 			data.setTotalAmount(data.getInventoryAmount()+data.getUnInventoryAmount());
-
-			List<PosItemDTO> itemDTOS = data.getPosItems();
-			itemDTOS.add(posItemDTO);
-			data.setPosItems(itemDTOS);
 
 		}
 

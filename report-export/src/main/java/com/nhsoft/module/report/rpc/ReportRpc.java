@@ -1386,8 +1386,6 @@ public interface ReportRpc {
 	public List<BranchSaleAnalysisSummary> findMonthSaleAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, int type);
 
 
-	//新加分页接口
-
 	/**
 	 * 客单分析 历史客单分析  分页查询
 	 * @return
