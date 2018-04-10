@@ -12894,5 +12894,85 @@ public class ReportServiceImpl implements ReportService {
 		return posOrderDao.findRetailDetailsCount(retailDetailQueryData,isFm);
 	}
 
+	@Override
+	public List<AlipayDetailDTO> findAlipayDetailDTOs(AlipayDetailQuery alipayDetailQuery) {
+		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>();
+		String paymentTypes = alipayDetailQuery.getPaymentType();
+		if (StringUtils.isEmpty(paymentTypes)) {
+			paymentTypes = AppConstants.PAY_TYPE_ALIPAY + "," + AppConstants.PAY_TYPE_WEIXINPAY + ","
+					+ AppConstants.PAY_TYPE_DPHUI;
+		}
+		String alipayLogTypes = "";
+		if (StringUtils.isEmpty(alipayDetailQuery.getPaymentType())) {
+			alipayLogTypes = AppConstants.ALIPAY_CREATE_BY_BARCODE + "," + AppConstants.ALIPAY_PRE_CREATE_BY_QR + ","
+					+ AppConstants.WEIXINPAY_CREATE_BY_BARCODE + "," + AppConstants.WEIXINPAY_CREATE_BY_QRCODE + ","
+					+ AppConstants.DP_HUI_BY_BARCODE + "," + AppConstants.DP_HUI_BY_QR + ",";
+		} else if (StringUtils.equals(alipayDetailQuery.getPaymentType(), AppConstants.PAY_TYPE_ALIPAY)) {
+			alipayLogTypes = AppConstants.ALIPAY_CREATE_BY_BARCODE + "," + AppConstants.ALIPAY_PRE_CREATE_BY_QR + ",";
+		} else if (StringUtils.equals(alipayDetailQuery.getPaymentType(), AppConstants.PAY_TYPE_WEIXINPAY)) {
+			alipayLogTypes = AppConstants.WEIXINPAY_CREATE_BY_BARCODE + "," + AppConstants.WEIXINPAY_CREATE_BY_QRCODE
+					+ ",";
+		} else if (StringUtils.equals(alipayDetailQuery.getPaymentType(), AppConstants.PAY_TYPE_DPHUI)) {
+			alipayLogTypes = AppConstants.DP_HUI_BY_BARCODE + "," + AppConstants.DP_HUI_BY_QR + ",";
+		} else {
+			alipayLogTypes = alipayDetailQuery.getPaymentType();
+		}
+
+		if (StringUtils.isEmpty(alipayDetailQuery.getType())) {
+			list.addAll(reportDao.findAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+					alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), paymentTypes));
+			list.addAll(alipayLogDao.findAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+					alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), "member", alipayLogTypes));
+			list.addAll(alipayLogDao.findAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+					alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), "DEP", alipayLogTypes));
+			if (alipayDetailQuery.getQueryAll()) {
+				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+						alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), null, alipayLogTypes));
+			}
+		} else if (alipayDetailQuery.getType().equals("POS消费")) {
+			list.addAll(reportDao.findAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+					alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), paymentTypes));
+			if (alipayDetailQuery.getQueryAll()) {
+				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+						alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), "POS", alipayLogTypes));
+
+			} else if (alipayDetailQuery.getType().equals("POS存款")) {
+				list.addAll(alipayLogDao.findAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+						alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), "DEP",
+						alipayLogTypes));
+				if (alipayDetailQuery.getQueryAll()) {
+					list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+							alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), "DEP",
+							alipayLogTypes));
+				}
+			} else if (alipayDetailQuery.getType().equals("微会员存款")) {
+				list.addAll(alipayLogDao.findAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+						alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), "member", alipayLogTypes));
+				if (alipayDetailQuery.getQueryAll()) {
+					list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(alipayDetailQuery.getSystemBookCode(), alipayDetailQuery.getBranchNums(),
+							alipayDetailQuery.getDateFrom(), alipayDetailQuery.getDateTo(), "member", alipayLogTypes));
+				}
+			}
+		}
+
+
+
+
+
+		int size = list.size();
+		if (size == 0) {
+			return list;
+		}
+		List<Branch> branchs = branchService.findInCache(alipayDetailQuery.getSystemBookCode());
+		for (int i = 0; i < size; i++) {
+			AlipayDetailDTO alipayDetailDTO = list.get(i);
+
+			Branch branch = AppUtil.getBranch(branchs, alipayDetailDTO.getBranchNum());
+			if (branch != null) {
+				alipayDetailDTO.setBranchName(branch.getBranchName());
+			}
+		}
+		return list;
+	}
 
 }

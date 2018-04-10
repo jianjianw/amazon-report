@@ -1435,18 +1435,24 @@ public interface ReportService {
 
 
 	/**
-	 * 零售明细查询
+	 * 零售明细查询   分页查询
 	 * @param retailDetailQueryData
 	 * @return
 	 */
 	public List<RetailDetail> findRetailDetailsByPage(RetailDetailQueryData retailDetailQueryData, boolean isFm);
 
 	/**
-	 * 零售明细查询
+	 * 零售明细查询		分页查询  查询总条数
 	 * @param retailDetailQueryData
 	 * @return
 	 */
 	public Object[] findRetailDetailsCount(RetailDetailQueryData retailDetailQueryData, boolean isFm);
 
+
+	/**
+	 * 查询支付宝报表明细
+	 * @return
+	 */
+	List<AlipayDetailDTO> findAlipayDetailDTOs(AlipayDetailQuery alipayDetailQuery);
 
 }

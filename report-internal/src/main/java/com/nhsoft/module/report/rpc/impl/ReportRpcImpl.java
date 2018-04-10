@@ -4681,15 +4681,17 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 
+		int days = DateUtil.diffDay(profitAnalysisQueryData.getShiftTableFrom(), profitAnalysisQueryData.getShiftTableTo());
+		int branchSize = profitAnalysisQueryData.getBranchNums().size();
 		Object[] pageCount = null;
-		if(profitAnalysisQueryData.getBranchNums() == null || profitAnalysisQueryData.getBranchNums().size() > 10){
+		if(days * branchSize > 1000){
 			profitAnalysisQueryData.setPage(true);
 			pageCount = reportService.findProfitAnalysisDaysCount(profitAnalysisQueryData);
 		}else{
 			profitAnalysisQueryData.setPage(false);
 		}
-		List<Object[]> objects = reportService.findProfitAnalysisDaysByPage(profitAnalysisQueryData);
 
+		List<Object[]> objects = reportService.findProfitAnalysisDaysByPage(profitAnalysisQueryData);
 		int size = objects.size();
 		List<BranchBizSummary> list = new ArrayList<BranchBizSummary>(size);
 		BigDecimal costSum = BigDecimal.ZERO;
@@ -4713,7 +4715,6 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		BranchBizSummaryPageDTO result = new BranchBizSummaryPageDTO();
-
 
 		if(profitAnalysisQueryData.isPage()){
 			if(pageCount != null){
@@ -4992,6 +4993,16 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		return new ArrayList<>(map.values());
+	}
+
+	@Override
+	public List<AlipayDetailDTO> findAlipayDetailDTOs(AlipayDetailQuery alipayDetailQuery) {
+		if(alipayDetailQuery.getDateFrom() != null && alipayDetailQuery.getDateTo() != null
+				&& alipayDetailQuery.getDateFrom().compareTo(alipayDetailQuery.getDateTo()) > 0){
+			return new ArrayList<AlipayDetailDTO>();
+		}
+		List<AlipayDetailDTO> list = reportService.findAlipayDetailDTOs(alipayDetailQuery);
+		return list;
 	}
 
 

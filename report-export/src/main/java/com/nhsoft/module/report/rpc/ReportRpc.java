@@ -1441,6 +1441,11 @@ public interface ReportRpc {
 	 * */
 	public List<ItemInventoryTrendSummary> findItemTrendInventory(ItemInventoryQueryDTO inventoryQuery);
 
+	/**
+	 * 查询支付宝报表明细
+	 * @return
+	 */
+	List<AlipayDetailDTO> findAlipayDetailDTOs(AlipayDetailQuery alipayDetailQuery);
 
 
 

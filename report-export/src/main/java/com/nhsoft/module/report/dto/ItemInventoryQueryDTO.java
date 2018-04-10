@@ -9,7 +9,6 @@ public class ItemInventoryQueryDTO extends QueryBuilder {
     private static final long serialVersionUID = 6121536032225662128L;
 
 
-    private String systemBookCode;
     private List<String> itemCategorys;
     private Date dateFrom;
     private Date dateTo;
@@ -17,16 +16,6 @@ public class ItemInventoryQueryDTO extends QueryBuilder {
     private Boolean stockCrease;// 停购
     private Boolean dromCrease; //休眠商品
 
-
-    @Override
-    public String getSystemBookCode() {
-        return systemBookCode;
-    }
-
-    @Override
-    public void setSystemBookCode(String systemBookCode) {
-        this.systemBookCode = systemBookCode;
-    }
 
     public List<String> getItemCategorys() {
         return itemCategorys;
