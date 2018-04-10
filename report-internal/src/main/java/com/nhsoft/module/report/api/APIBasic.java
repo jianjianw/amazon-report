@@ -1270,7 +1270,7 @@ public class APIBasic {
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
 		query.setBranchNums(getBranchNums());
-		query.setIsQueryCF(true);
+		//query.setIsQueryCF(true);
 		query.setOffset(0);
 		query.setLimit(50);
 		query.setSortField(sortField);

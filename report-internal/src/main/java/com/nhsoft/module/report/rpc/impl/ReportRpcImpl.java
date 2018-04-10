@@ -4698,7 +4698,7 @@ public class ReportRpcImpl implements ReportRpc {
 		BigDecimal profitSum = BigDecimal.ZERO;
 		BigDecimal moneySum = BigDecimal.ZERO;
 
-		for (int i = 0; i <size ; i++) {
+		for (int i = 0; i < size ; i++) {
 			Object[] object = objects.get(i);
 			BranchBizSummary branchBizSummary = new BranchBizSummary();
 			branchBizSummary.setBranchNum((Integer) object[0]);
@@ -4715,33 +4715,30 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		BranchBizSummaryPageDTO result = new BranchBizSummaryPageDTO();
+		result.setData(list);
 
 		if(profitAnalysisQueryData.isPage()){
 			if(pageCount != null){
-				BigDecimal profitSummary =pageCount[1] == null ? BigDecimal.ZERO : (BigDecimal)pageCount[1];
-				BigDecimal moneySummary = pageCount[2] == null ? BigDecimal.ZERO : (BigDecimal)pageCount[2];
 				result.setCount((Integer) pageCount[0]);
-				result.setProfitSum(profitSummary);
-				result.setMoneySum(moneySummary);
+				result.setProfitSum(pageCount[1] == null ? BigDecimal.ZERO : (BigDecimal)pageCount[1]);
+				result.setMoneySum(pageCount[2] == null ? BigDecimal.ZERO : (BigDecimal)pageCount[2]);
 				result.setCostSum((BigDecimal) pageCount[3]);
-				if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
-					result.setProfitRateSum(BigDecimal.ZERO);
-				}else{
-					result.setProfitRateSum(profitSummary.divide(moneySummary,4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
-				}
 			}
 		}else{
 			result.setCount(size);
 			result.setProfitSum(profitSum);
 			result.setMoneySum(moneySum);
 			result.setCostSum(costSum);
-			if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
-				result.setProfitRateSum(BigDecimal.ZERO);
-			}else{
-				result.setProfitRateSum(result.getProfitSum().divide(result.getMoneySum(),4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
-			}
+			List<BranchBizSummary> subData = result.getData().subList(profitAnalysisQueryData.getOffset(),profitAnalysisQueryData.getLimit());
+			result.setData(subData);
 		}
-		result.setData(list);
+
+		if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
+			result.setProfitRateSum(BigDecimal.ZERO);
+		}else{
+			result.setProfitRateSum(result.getProfitSum().divide(result.getMoneySum(),4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+		}
+
 		return result;
 	}
 

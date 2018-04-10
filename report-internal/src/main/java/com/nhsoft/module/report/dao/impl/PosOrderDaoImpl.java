@@ -5886,9 +5886,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				.addScalar("customerNums", StandardBasicTypes.LONG)
 				.addScalar("conponMoney", StandardBasicTypes.BIG_DECIMAL)
 				.addScalar("mgrDiscount", StandardBasicTypes.BIG_DECIMAL);
-
-		query.setFirstResult(saleAnalysisQueryData.getOffset());
-		query.setMaxResults(saleAnalysisQueryData.getLimit());
+		if(saleAnalysisQueryData.isPage()){
+			query.setFirstResult(saleAnalysisQueryData.getOffset());
+			query.setMaxResults(saleAnalysisQueryData.getLimit());
+		}
 
 		return query.list();
 	}
@@ -6107,8 +6108,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-		query.setFirstResult(profitAnalysisQueryData.getOffset());
-		query.setMaxResults(profitAnalysisQueryData.getLimit());
+		if(profitAnalysisQueryData.isPage()){
+			query.setFirstResult(profitAnalysisQueryData.getOffset());
+			query.setMaxResults(profitAnalysisQueryData.getLimit());
+		}
 
 
 		return query.list();
@@ -6678,8 +6681,11 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("order by orderNo asc ");
 		}
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
-		query.setFirstResult(queryData.getOffset());
-		query.setMaxResults(queryData.getLimit());
+		if(queryData.isPage()){
+			query.setFirstResult(queryData.getOffset());
+			query.setMaxResults(queryData.getLimit());
+		}
+
 		List<Object[]> objects = query.list();
 		List<RetailDetail> list = new ArrayList<RetailDetail>();
 		List<Integer> normalOrderStates = AppUtil.getNormalPosOrderState();
