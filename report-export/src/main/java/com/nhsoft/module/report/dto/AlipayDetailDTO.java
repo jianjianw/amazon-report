@@ -22,6 +22,7 @@ public class AlipayDetailDTO implements Serializable {
 	private BigDecimal alipayDiscountMoney;//支付宝优惠金额
 	private BigDecimal branchDiscountMoney;//商家优惠金额
 	private Boolean valid = true; //是否有效
+	private String failReason;//失败原因
 
 	public BigDecimal getAlipayDiscountMoney() {
 		return alipayDiscountMoney;
@@ -119,4 +120,11 @@ public class AlipayDetailDTO implements Serializable {
 		this.type = type;
 	}
 
+	public String getFailReason() {
+		return failReason;
+	}
+
+	public void setFailReason(String failReason) {
+		this.failReason = failReason;
+	}
 }

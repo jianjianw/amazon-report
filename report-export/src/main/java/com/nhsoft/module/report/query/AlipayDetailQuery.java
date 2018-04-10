@@ -13,8 +13,8 @@ public class AlipayDetailQuery extends QueryBuilder {
     private Date dateTo;
     private String type;             //前台销售 or 卡存款
     private String paymentType;     //线上支付类型
-    private Boolean queryAll;       //是否查询所有明细 包含失败的记录
-    private Boolean orderState;     //1.成功   2.失败
+    private Boolean queryAll;       //是否查询所有明细
+    private Boolean orderState = true;     //1.成功   2.失败
 
 
     public List<Integer> getBranchNums() {

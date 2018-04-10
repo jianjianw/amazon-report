@@ -186,7 +186,7 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 			alipayDetailDTO.setCustomerId((String) object[4]);
 			alipayDetailDTO.setConsumeSuccessMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
 			alipayDetailDTO.setConsumeSuccessActualMoney(object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
-			
+
 			//微会员存款没有OrderNo
 			if(alipayDetailDTO.getOrderNo().startsWith("DEP")){
 				
@@ -365,6 +365,82 @@ public class AlipayLogDaoImpl extends ShardingDaoImpl implements AlipayLogDao {
 			criteria.setLockMode(LockMode.NONE);
 			return criteria.list();
 
+	}
+
+	@Override
+	public List<AlipayDetailDTO> findSummaryPayFail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isDeposit, String alipayLogTypes) {
+		Criteria criteria = currentSession().createCriteria(AlipayLog.class, "a")
+				.add(Restrictions.eq("a.systemBookCode", systemBookCode))
+				.add(Restrictions.eq("a.alipayLogTradeState", false));
+		if(branchNums != null && branchNums.size() > 0){
+
+			criteria.add(Restrictions.in("a.branchNum", branchNums));
+		}
+
+		criteria.add(Restrictions.between("a.alipayLogStart", DateUtil.getMinOfDate(dateFrom), DateUtil.getMaxOfDate(dateTo)));
+
+		if(isDeposit){
+			criteria.add(Restrictions.like("a.alipayLogOrderNo", "DEP", MatchMode.START));
+		} else {
+			criteria.add(Restrictions.sqlRestriction("substring(alipay_log_order_no, 0, 4) != 'DEP'"));
+		}
+		if(StringUtils.isNotEmpty(alipayLogTypes)){
+			criteria.add(Restrictions.in("a.alipayLogType", alipayLogTypes.split(",")));
+
+		}
+
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.property("a.alipayLogTradeNo"))
+				.add(Projections.property("a.alipayLogOrderNo"))
+				.add(Projections.property("a.branchNum"))
+				.add(Projections.property("a.alipayLogStart"))
+				.add(Projections.property("a.alipayLogBuyerId"))
+				.add(Projections.property("a.alipayLogMoney"))
+				.add(Projections.property("a.alipayLogReceiptMoney"))
+				.add(Projections.property("a.alipayLogBuyerMoney"))
+				.add(Projections.property("a.alipayLogTradeResult"))
+		);
+
+
+		criteria.setLockMode(LockMode.NONE);
+		criteria.setMaxResults(50000);
+		List<Object[]> objects = criteria.list();
+		int size = objects.size();
+		List<AlipayDetailDTO> list = new ArrayList<AlipayDetailDTO>(size);
+		BigDecimal buyerMoney = null;
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+
+			AlipayDetailDTO alipayDetailDTO = new AlipayDetailDTO();
+			alipayDetailDTO.setOrderFid((String) object[0]);
+			alipayDetailDTO.setOrderNo((String) object[1]);
+			alipayDetailDTO.setBranchNum((Integer) object[2]);
+			alipayDetailDTO.setOrderTime((Date) object[3]);
+			alipayDetailDTO.setCustomerId((String) object[4]);
+			alipayDetailDTO.setConsumeSuccessMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
+			alipayDetailDTO.setConsumeSuccessActualMoney(object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
+
+			//微会员存款没有orderNo
+			if(alipayDetailDTO.getOrderNo().startsWith("DEP") || StringUtils.isEmpty(alipayDetailDTO.getOrderNo())){
+
+				alipayDetailDTO.setType("卡存款");
+
+			} else if(alipayDetailDTO.getOrderNo().startsWith(AppConstants.S_Prefix_WD)) {
+				alipayDetailDTO.setType("微店消费");
+
+			} else {
+				alipayDetailDTO.setType("POS消费");
+
+			}
+			buyerMoney = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+			alipayDetailDTO.setFailReason((String) object[8]);
+			alipayDetailDTO.setAlipayDiscountMoney(alipayDetailDTO.getConsumeSuccessActualMoney().subtract(buyerMoney));
+			alipayDetailDTO.setBranchDiscountMoney(alipayDetailDTO.getConsumeSuccessMoney().subtract(alipayDetailDTO.getConsumeSuccessActualMoney()));
+			alipayDetailDTO.setValid(false);
+			list.add(alipayDetailDTO);
+		}
+
+		return list;
 	}
 
 }

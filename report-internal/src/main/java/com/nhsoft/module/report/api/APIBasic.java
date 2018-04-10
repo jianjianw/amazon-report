@@ -1252,6 +1252,10 @@ public class APIBasic {
 		query.setOffset(0);
 		query.setLimit(50);
 		query.setBranchNums(getBranchNums());
+		List<String> orderSource = new ArrayList<>();
+		orderSource.add("第三方商城");
+		query.setOrderSources(orderSource);
+
 		/*List<String> list = new ArrayList<>();
 		list.add("210");
 		query.setPosItemTypeCodes(list);*/
@@ -1272,11 +1276,14 @@ public class APIBasic {
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
 		query.setBranchNums(getBranchNums());
-		//query.setIsQueryCF(true);
+		query.setIsQueryCF(true);
 		query.setOffset(0);
 		query.setLimit(50);
 		query.setSortField(sortField);
 		query.setSortType(sortType);
+		List<String> category = new ArrayList<>();
+		category.add("210");
+		query.setPosItemTypeCodes(category);
 
 		BranchBizSummaryPageDTO result = reportRpc.findProfitAnalysisDaysByPage(query);
 		return result;
@@ -1464,6 +1471,28 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		List<ItemInventoryTrendSummary> itemTrendInventory = reportRpc.findItemTrendInventory(query);
 		return itemTrendInventory;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test78")
+	public List<AlipayDetailDTO> test78() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-04-10");
+
+
+		AlipayDetailQuery query = new AlipayDetailQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setBranchNums(getBranchNums());
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		query.setQueryAll(false);
+		query.setOrderState(false);
+		List<AlipayDetailDTO> alipayDetailDTOs = reportRpc.findAlipayDetailDTOs(query);
+
+		return alipayDetailDTOs;
 	}
 
 }

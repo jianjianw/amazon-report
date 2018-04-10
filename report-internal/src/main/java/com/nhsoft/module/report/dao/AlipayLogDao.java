@@ -83,4 +83,18 @@ public interface AlipayLogDao {
 
 	public List<AlipayLog> test(String systemBookCode,LogQuery logQuery,Date dateFrom,Date dateTo);
 
+
+	/**
+	 * 查询支付失败的单据
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param isDeposit 是否存款单据
+	 * @param alipayLogTypes
+	 * @return
+	 */
+	public List<AlipayDetailDTO> findSummaryPayFail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
+												   boolean isDeposit, String alipayLogTypes);
+
 }
