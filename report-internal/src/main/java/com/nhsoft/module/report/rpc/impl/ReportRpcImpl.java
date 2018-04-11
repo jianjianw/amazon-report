@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.rpc.impl;
 
 
+import com.google.gson.Gson;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.param.PosItemTypeParam;
@@ -4022,7 +4023,11 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public CardAnalysisSummaryDTO getCardAnalysisSummaryDTO(CardUserQuery cardUserQuery) {
-		return reportService.getCardAnalysisSummaryDTO(cardUserQuery);
+		CardAnalysisSummaryDTO cardAnalysisSummaryDTO = reportService.getCardAnalysisSummaryDTO(cardUserQuery);
+		Gson gson = new Gson();
+		String json = gson.toJson(cardAnalysisSummaryDTO);
+		logger.info("会员消费指标分析 :  "+json);
+		return cardAnalysisSummaryDTO;
 	}
 
 	@Override
