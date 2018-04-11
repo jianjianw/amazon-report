@@ -5690,6 +5690,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if( posOrderQuery.getOrderSources() != null &&posOrderQuery.getOrderSources().size()>0 ){
 			sb.append("and p.order_source in " + AppUtil.getStringParmeList(posOrderQuery.getOrderSources()));
 		}
+
+		if(posOrderQuery.getOrderRefBillno() != null){
+			sb.append("and p.order_ref_billno = '"+posOrderQuery.getOrderRefBillno() +"' ");
+		}
 		return sb.toString();
 	}
 
