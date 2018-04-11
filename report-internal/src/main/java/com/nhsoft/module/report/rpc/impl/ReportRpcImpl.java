@@ -4596,9 +4596,9 @@ public class ReportRpcImpl implements ReportRpc {
 				List<CustomerAnalysisHistory> data = pageDTO.getData();
 				int dataSize = data.size();
 				List<CustomerAnalysisHistory> subData = null;
-				int count  = saleAnalysisQueryData.getOffset() + saleAnalysisQueryData.getLimit();
-				if (dataSize >= count - 1) {
-					subData = data.subList(saleAnalysisQueryData.getOffset(), saleAnalysisQueryData.getLimit());
+				int pageSum  = saleAnalysisQueryData.getOffset() + saleAnalysisQueryData.getLimit();
+				if (dataSize >= pageSum - 1) {
+					subData = data.subList(saleAnalysisQueryData.getOffset(), pageSum);
 				} else {
 					subData = data.subList(saleAnalysisQueryData.getOffset(), dataSize);
 				}
@@ -4681,9 +4681,9 @@ public class ReportRpcImpl implements ReportRpc {
 				List<ProfitByBranchAndItemSummary> data = result.getData();
 				int dataSize = data.size();
 				List<ProfitByBranchAndItemSummary> subData = null;
-				int count =  profitAnalysisQueryData.getOffset() + profitAnalysisQueryData.getLimit();
-				if(dataSize >= count - 1){
-					subData = data.subList(profitAnalysisQueryData.getOffset(), profitAnalysisQueryData.getLimit());
+				int pageSum =  profitAnalysisQueryData.getOffset() + profitAnalysisQueryData.getLimit();
+				if(dataSize >= pageSum - 1){
+					subData = data.subList(profitAnalysisQueryData.getOffset(), pageSum);
 				}else{
 					subData = data.subList(profitAnalysisQueryData.getOffset(), dataSize);
 				}
@@ -4767,9 +4767,9 @@ public class ReportRpcImpl implements ReportRpc {
 				List<BranchBizSummary> data = result.getData();
 				int dataSize = data.size();
 				List<BranchBizSummary> subData = null;
-				int count = profitAnalysisQueryData.getOffset() + profitAnalysisQueryData.getLimit();
-				if(dataSize >= count-1){
-					subData = data.subList(profitAnalysisQueryData.getOffset(),profitAnalysisQueryData.getLimit());
+				int pageSum = profitAnalysisQueryData.getOffset() + profitAnalysisQueryData.getLimit();
+				if(dataSize >= pageSum-1){
+					subData = data.subList(profitAnalysisQueryData.getOffset(),pageSum);
 				}else{
 					subData = data.subList(profitAnalysisQueryData.getOffset(), dataSize);
 				}
