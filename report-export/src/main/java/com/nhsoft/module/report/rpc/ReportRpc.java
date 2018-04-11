@@ -1393,7 +1393,7 @@ public interface ReportRpc {
 	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData);
 
 	/**
-	 * 毛利分析 商品毛利汇总  分页查询
+	 * 毛利分析 门店商品毛利汇总  分页查询
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */

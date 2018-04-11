@@ -5,6 +5,7 @@ import com.nhsoft.module.report.dto.CardConsuemAnalysisQuery;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.ShiftTable;
+import com.nhsoft.module.report.query.PolicyAllowPriftQuery;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 
@@ -385,5 +386,11 @@ public interface PosOrderService {
 	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery);
 
 
+	/**
+	 * 让利按商品汇总
+	 * @param policyAllowPriftQuery
+	 * @return
+	 */
+	public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery);
 }
 

@@ -13003,4 +13003,9 @@ public class ReportServiceImpl implements ReportService {
 		return list;
 	}
 
+	@Override
+	public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery) {
+		return null;
+	}
+
 }

@@ -9,6 +9,7 @@ public class ProfitAnalysisByItemSummary implements Serializable {
     private BigDecimal profit;
     private BigDecimal payment;
     private BigDecimal cost;
+    private BigDecimal amount;
 
     public Integer getItemNum() {
         return itemNum;
@@ -40,5 +41,13 @@ public class ProfitAnalysisByItemSummary implements Serializable {
 
     public void setCost(BigDecimal cost) {
         this.cost = cost;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 }

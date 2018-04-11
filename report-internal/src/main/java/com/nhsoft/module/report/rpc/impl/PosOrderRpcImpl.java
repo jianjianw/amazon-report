@@ -6,6 +6,7 @@ import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.SystemBook;
+import com.nhsoft.module.report.query.PolicyAllowPriftQuery;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 import com.nhsoft.module.report.rpc.BranchTransferGoalsRpc;
@@ -796,7 +797,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		return dto;
 	}
 
-
 	private BusinessCollectionIncome getBusinessCollectionIncome(
 			List<BusinessCollectionIncome> businessCollectionIncomes, String name) {
 		for (int i = 0; i < businessCollectionIncomes.size(); i++) {
@@ -808,6 +808,11 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		return null;
 	}
 
+
+	@Override
+	public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery) {
+		return posOrderService.findPromotionItemsByPage(policyAllowPriftQuery);
+	}
 
 
 }

@@ -2721,6 +2721,7 @@ public class ReportRpcImpl implements ReportRpc {
 			profitAnalysisByItemSummary.setProfit((BigDecimal) object[1]);
 			profitAnalysisByItemSummary.setPayment((BigDecimal) object[2]);
 			profitAnalysisByItemSummary.setCost((BigDecimal) object[3]);
+			profitAnalysisByItemSummary.setAmount((BigDecimal) object[4]);
 			list.add(profitAnalysisByItemSummary);
 		}
 		return list;
@@ -4549,13 +4550,16 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public CustomerAnalysisHistoryPageDTO findCustomerAnalysisHistorysByPage(SaleAnalysisQueryData saleAnalysisQueryData) {
+
+		boolean page = saleAnalysisQueryData.isPage();
+
 		int days = DateUtil.diffDay(saleAnalysisQueryData.getDtFrom(), saleAnalysisQueryData.getDtTo());
 		int branchSize = saleAnalysisQueryData.getBranchNums().size();
 		Object[] object = null;
-		if(days * branchSize < 1000){
-			saleAnalysisQueryData.setPage(false);
-		}else{
+		if(days * branchSize > 1000 && page){
 			object = reportService.findCustomerAnalysisHistorysCount(saleAnalysisQueryData);
+		}else{
+			saleAnalysisQueryData.setPage(false);
 		}
 
 		List<CustomerAnalysisHistory> result = reportService.findCustomerAnalysisHistorysByPage(saleAnalysisQueryData);
@@ -4583,15 +4587,18 @@ public class ReportRpcImpl implements ReportRpc {
 			pageDTO.setCustomerSum(customerSum);
 			pageDTO.setTotalMoneySum(totalMoneySum);
 
-			List<CustomerAnalysisHistory> data = pageDTO.getData();
-			int dataSize = data.size();
-			List<CustomerAnalysisHistory> subData = null;
-			if (dataSize >= saleAnalysisQueryData.getLimit() - 1) {
-				subData = data.subList(saleAnalysisQueryData.getOffset(), saleAnalysisQueryData.getLimit());
-			} else {
-				subData = data.subList(saleAnalysisQueryData.getOffset(), dataSize);
+			if(page){
+				List<CustomerAnalysisHistory> data = pageDTO.getData();
+				int dataSize = data.size();
+				List<CustomerAnalysisHistory> subData = null;
+				if (dataSize >= saleAnalysisQueryData.getLimit() - 1) {
+					subData = data.subList(saleAnalysisQueryData.getOffset(), saleAnalysisQueryData.getLimit());
+				} else {
+					subData = data.subList(saleAnalysisQueryData.getOffset(), dataSize);
+				}
+				pageDTO.setData(subData);
 			}
-			pageDTO.setData(subData);
+
 		}
 
 		if(pageDTO.getCustomerSum().compareTo(BigDecimal.ZERO) == 0){
@@ -4608,11 +4615,13 @@ public class ReportRpcImpl implements ReportRpc {
 	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
 
+		boolean page = profitAnalysisQueryData.isPage();
+
 		int days = DateUtil.diffDay(profitAnalysisQueryData.getShiftTableFrom(), profitAnalysisQueryData.getShiftTableTo());
 		int branchSize = profitAnalysisQueryData.getBranchNums().size();
 
 		Object[] pageCount = null;
-		if(days * branchSize > 1000){
+		if(days * branchSize > 1000 && page){
 			pageCount = reportService.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData);
 		}else{
 			profitAnalysisQueryData.setPage(false);
@@ -4646,7 +4655,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		ProfitByBranchAndItemSummaryPageDTO result = new ProfitByBranchAndItemSummaryPageDTO();
 		result.setData(list);
-		
+
 		if(profitAnalysisQueryData.isPage()){
 			if(pageCount != null ){
 				result.setCount((Integer) pageCount[0]);
@@ -4662,15 +4671,18 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setMoneySum(moneySum);
 			result.setCostSum(costSum);
 
-			List<ProfitByBranchAndItemSummary> data = result.getData();
-			int dataSize = data.size();
-			List<ProfitByBranchAndItemSummary> subData = null;
-			if(dataSize >= profitAnalysisQueryData.getLimit() - 1){
-				subData = data.subList(profitAnalysisQueryData.getOffset(), profitAnalysisQueryData.getLimit());
-			}else{
-				subData = data.subList(profitAnalysisQueryData.getOffset(), dataSize);
+			if(page){
+				List<ProfitByBranchAndItemSummary> data = result.getData();
+				int dataSize = data.size();
+				List<ProfitByBranchAndItemSummary> subData = null;
+				if(dataSize >= profitAnalysisQueryData.getLimit() - 1){
+					subData = data.subList(profitAnalysisQueryData.getOffset(), profitAnalysisQueryData.getLimit());
+				}else{
+					subData = data.subList(profitAnalysisQueryData.getOffset(), dataSize);
+				}
+				result.setData(subData);
 			}
-			result.setData(subData);
+
 		}
 
 		if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
@@ -4694,12 +4706,12 @@ public class ReportRpcImpl implements ReportRpc {
 			profitAnalysisQueryData.setIsQueryCF(false);
 		}
 
+		boolean page = profitAnalysisQueryData.isPage();
 
 		int days = DateUtil.diffDay(profitAnalysisQueryData.getShiftTableFrom(), profitAnalysisQueryData.getShiftTableTo());
 		int branchSize = profitAnalysisQueryData.getBranchNums().size();
 		Object[] pageCount = null;
-		if(days * branchSize > 1000){
-			profitAnalysisQueryData.setPage(true);
+		if(days * branchSize > 1000 && page){
 			pageCount = reportService.findProfitAnalysisDaysCount(profitAnalysisQueryData);
 		}else{
 			profitAnalysisQueryData.setPage(false);
@@ -4744,15 +4756,17 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setMoneySum(moneySum);
 			result.setCostSum(costSum);
 
-			List<BranchBizSummary> data = result.getData();
-			int dataSize = data.size();
-			List<BranchBizSummary> subData = null;
-			if(dataSize >= profitAnalysisQueryData.getLimit()-1){
-				subData = data.subList(profitAnalysisQueryData.getOffset(),profitAnalysisQueryData.getLimit());
-			}else{
-				subData = data.subList(profitAnalysisQueryData.getOffset(), dataSize);
+			if(page){
+				List<BranchBizSummary> data = result.getData();
+				int dataSize = data.size();
+				List<BranchBizSummary> subData = null;
+				if(dataSize >= profitAnalysisQueryData.getLimit()-1){
+					subData = data.subList(profitAnalysisQueryData.getOffset(),profitAnalysisQueryData.getLimit());
+				}else{
+					subData = data.subList(profitAnalysisQueryData.getOffset(), dataSize);
+				}
+				result.setData(subData);
 			}
-			result.setData(subData);
 		}
 
 		if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){

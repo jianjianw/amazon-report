@@ -1455,4 +1455,12 @@ public interface ReportService {
 	 */
 	List<AlipayDetailDTO> findAlipayDetailDTOs(AlipayDetailQuery alipayDetailQuery);
 
+
+	/**
+	 * 让利按商品汇总
+	 * @param policyAllowPriftQuery
+	 * @return
+	 */
+	public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery);
+
 }

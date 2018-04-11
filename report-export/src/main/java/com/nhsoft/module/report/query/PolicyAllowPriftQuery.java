@@ -20,6 +20,13 @@ public class PolicyAllowPriftQuery extends QueryBuilder {
 	private List<String> orderSellers; //销售员
 	private boolean isPromotion = true;
 
+	private boolean page;
+	private String sortType;
+	private String sortField;
+	private int offset;
+	private int limit;
+
+
 
 	public List<String> getOrderSellers() {
 		return orderSellers;
@@ -110,5 +117,45 @@ public class PolicyAllowPriftQuery extends QueryBuilder {
 		dtTo = null;
 		branchNums = null;
 		itemNums = null;
+	}
+
+	public boolean isPage() {
+		return page;
+	}
+
+	public void setPage(boolean page) {
+		this.page = page;
+	}
+
+	public String getSortType() {
+		return sortType;
+	}
+
+	public void setSortType(String sortType) {
+		this.sortType = sortType;
+	}
+
+	public String getSortField() {
+		return sortField;
+	}
+
+	public void setSortField(String sortField) {
+		this.sortField = sortField;
+	}
+
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
 	}
 }

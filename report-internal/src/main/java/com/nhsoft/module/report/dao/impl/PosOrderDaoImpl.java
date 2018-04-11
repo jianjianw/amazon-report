@@ -2202,8 +2202,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("select detail.item_num, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as payment, ");
-            sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-            sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+            sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost, ");
+            sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
+
+			sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
             if(queryPosItem){
                 sb.append("inner join pos_item as item with(nolock) on item.item_num = detail.item_num ");
             }
@@ -2256,8 +2258,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("select detail.item_num, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
             sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then detail.order_detail_payment_money end) as payment, ");
-            sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost ");
-            sb.append("from pos_order_detail as detail with(nolock) ");
+            sb.append("sum(case when detail.order_detail_state_code = 4 then (-detail.order_detail_amount * detail.order_detail_cost) else (detail.order_detail_amount * detail.order_detail_cost) end) as cost, ");
+			sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
+
+			sb.append("from pos_order_detail as detail with(nolock) ");
             if(queryPosItem){
                 sb.append("inner join pos_item as item with(nolock) on item.item_num = detail.item_num ");
             }
@@ -6902,71 +6906,159 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sb.toString();
 	}
 
-	public List<RetailDetail> test(RetailDetailQueryData queryData, boolean isFm) {
 
-		StringBuffer sb = new StringBuffer();
+	@Override
+	public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery) {
+		Criteria criteria = createPromotion(policyAllowPriftQuery);
+		if (policyAllowPriftQuery.isPromotion()) {
+			criteria.setProjection(Projections
+					.projectionList()
+					.add(Projections.groupProperty("detail.orderDetailBranchNum"))
+					.add(Projections.groupProperty("detail.itemNum"))
+					.add(Projections
+							.sqlProjection(
+									"sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_payment_money when order_detail_state_code = 1 then order_detail_payment_money end) as money,"
+											+ "sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_discount when order_detail_state_code = 1 then order_detail_discount when order_detail_state_code = 2 then order_detail_payment_money end) as discount, "
+											+ "sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as amount,"
+											+ "sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -(order_detail_amount * order_detail_cost) else (order_detail_amount * order_detail_cost) end) as costMoney ",
+									new String[]{"amount", "money", "discount", "costMoney"}, new Type[]{
+											StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL,
+											StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL})));
+		} else {
+			criteria.setProjection(Projections
+					.projectionList()
+					.add(Projections.groupProperty("detail.orderDetailBranchNum"))
+					.add(Projections.groupProperty("detail.itemNum"))
+					.add(Projections
+							.sqlProjection(
+									"sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_payment_money when order_detail_state_code = 1 then order_detail_payment_money end) as money,"
+											+ "sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_discount when order_detail_state_code = 1 then order_detail_discount when order_detail_state_code = 2 then order_detail_payment_money end) as discount, "
+											+ "sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as amount, "
+											+ "sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -(order_detail_amount * order_detail_cost) else (order_detail_amount * order_detail_cost) end) as costMoney ",
 
-
-		Query query = currentSession().createSQLQuery(sb.toString());
-		query.setMaxResults(50000);
-		List<Object[]> objects = query.list();
-		List<RetailDetail> list = new ArrayList<RetailDetail>();
-		List<Integer> normalOrderStates = AppUtil.getNormalPosOrderState();
-		Integer orderStateCode = null;
-		for (int i = 0; i < objects.size(); i++) {
-			Object[] object = objects.get(i);
-			RetailDetail retailDetail = new RetailDetail();
-			retailDetail.setBranchNum((Integer) object[0]);
-			retailDetail.setOrderNo((String) object[1]);
-			retailDetail.setCashier((String) object[2]);
-			retailDetail.setPosMachine((String) object[3]);
-			retailDetail.setPosTime((Date) object[4]);
-			retailDetail.setItemNum((Integer) object[5]);
-			retailDetail.setAmount((BigDecimal) object[6]);
-			retailDetail.setSalePrice((BigDecimal) object[7]);
-			retailDetail.setSaleMoney((BigDecimal) object[8]);
-			retailDetail.setDiscountMoney((BigDecimal) object[9]);
-			retailDetail.setItemMatrixNum((Integer) object[10]);
-			retailDetail.setSaleCommission(object[15] == null ? BigDecimal.ZERO : (BigDecimal) object[15]);
-			retailDetail.setMemo((String) object[16]);
-			retailDetail.setSaleProfit((BigDecimal) object[17]);
-			retailDetail.setSaleCost(((BigDecimal) object[18]).multiply(retailDetail.getAmount()));
-			Integer stateCode = (Integer) object[11];
-			retailDetail.setStateCode(stateCode);
-			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_CANCEL) {
-				retailDetail.setAmount(retailDetail.getAmount().negate());
-				retailDetail.setSaleMoney(retailDetail.getSaleMoney().negate());
-				retailDetail.setDiscountMoney(retailDetail.getDiscountMoney().negate());
-				retailDetail.setSaleCommission(retailDetail.getSaleCommission().negate());
-				retailDetail.setSaleProfit(retailDetail.getSaleProfit().negate());
-				retailDetail.setSaleCost(retailDetail.getSaleCost().negate());
-
-			}
-			if (stateCode == AppConstants.POS_ORDER_DETAIL_STATE_PRESENT) {
-				retailDetail.setDiscountMoney(BigDecimal.ZERO);
-				retailDetail.setSaleMoney(BigDecimal.ZERO);
-				retailDetail.setSaleCommission(BigDecimal.ZERO);
-			}
-
-
-
-
-
-			retailDetail.setSaler((String) object[12]);
-			retailDetail.setItemGradeNum((Integer) object[13]);
-
-			orderStateCode = (Integer) object[14];		//p.order_state_code as code   = 5,7
-			if (!normalOrderStates.contains(orderStateCode)) {
-				retailDetail.setDiscountMoney(BigDecimal.ZERO);
-				retailDetail.setSaleMoney(BigDecimal.ZERO);
-			}
-			if (isFm) {
-				retailDetail.setMerchantNum((Integer) object[19]);
-				retailDetail.setStallNum((Integer) object[20]);
-			}
-			list.add(retailDetail);
+									new String[]{"amount", "money", "discount", "costMoney"}, new Type[]{
+											StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL,
+											StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL})));
 		}
-		return list;
+
+
+		if(StringUtils.isNotBlank(policyAllowPriftQuery.getSortField())){
+			if(StringUtils.equals("desc",policyAllowPriftQuery.getSortType())){
+				criteria.addOrder(Order.desc(policyAllowPriftQuery.getSortField()));
+			}else{
+				criteria.addOrder(Order.asc(policyAllowPriftQuery.getSortField()));
+			}
+		}
+
+		if(policyAllowPriftQuery.isPage()){
+			criteria.setFirstResult(policyAllowPriftQuery.getOffset());
+			criteria.setMaxResults(policyAllowPriftQuery.getLimit());
+		}
+
+		criteria.setLockMode(LockMode.NONE);
+		List<Object[]> objects = criteria.list();
+		return objects;
+	}
+
+	@Override
+	public List<Object[]> findPromotionItemsCount(PolicyAllowPriftQuery policyAllowPriftQuery) {
+
+
+		//DetachedCriteria detachedCriteria = DetachedCriteria
+		return null;
+	}
+
+
+	private String createSqlPromotion(PolicyAllowPriftQuery policyAllowPriftQuery){
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("from pos_order_detail as detail with(nolock) where detail.order_detail_book_code = '" + policyAllowPriftQuery.getSystemBookCode() + "' ");///
+		if (policyAllowPriftQuery.getBranchNums() != null && policyAllowPriftQuery.getBranchNums().size() > 0) {
+			sb.append("and detail.order_detail_branch_num in "+ AppUtil.getIntegerParmeList(policyAllowPriftQuery.getBranchNums()));
+		}
+		if(policyAllowPriftQuery.getDtFrom() != null){
+			sb.append("and detail.order_detail_bizday >= "+DateUtil.getDateShortStr(policyAllowPriftQuery.getDtFrom())+"' ");
+		}
+		if(policyAllowPriftQuery.getDtTo() != null){
+			sb.append("and detail.order_detail_bizday <= " + DateUtil.getDateShortStr(policyAllowPriftQuery.getDtTo())+"' ");
+		}
+		if (policyAllowPriftQuery.getItemNums() != null && policyAllowPriftQuery.getItemNums().size() > 0) {
+			sb.append("and detail.item_num in "+ AppUtil.getIntegerParmeList(policyAllowPriftQuery.getItemNums()));
+		}
+		sb.append("and detail.item_num is not null ");
+		sb.append("and detail.order_detail_order_state in " + AppUtil.getIntegerParmeList(PosOrder.getNormalPosOrderState()));
+		sb.append("and detail.order_detail_amount >= " + BigDecimal.valueOf(0.0001));
+		if(policyAllowPriftQuery.getCategoryCodes() != null && policyAllowPriftQuery.getCategoryCodes().size() > 0){
+			sb.append("and exists(select 1 from pos_item as item where item.system_book_code in )");
+		}
+
+		return null;
+	}
+
+
+	private Criteria createPromotion(PolicyAllowPriftQuery policyAllowPriftQuery) {
+
+
+	/*	if (policyAllowPriftQuery.getCategoryCodes() != null && policyAllowPriftQuery.getCategoryCodes().size() > 0) {
+			DetachedCriteria subCriteria = DetachedCriteria.forClass(PosItem.class, "item")
+					.add(Restrictions.in("item.itemCategoryCode", policyAllowPriftQuery.getCategoryCodes()))
+					.add(Restrictions.eq("item.systemBookCode", policyAllowPriftQuery.getSystemBookCode()))
+					.add(Property.forName("item.itemNum").eqProperty("detail.itemNum"));
+			criteria.add(Subqueries.exists(subCriteria.setProjection(Projections.property("item.itemNum"))));
+		}
+		// AMA-5133 要求 赠品促销 的促销商品不显示只显示赠送商品
+		if (policyAllowPriftQuery.isPromotion()) {
+			criteria.add(Restrictions
+					.disjunction()
+					.add(Restrictions.eq("detail.orderDetailPolicyPromotionFlag", true))
+					.add(Restrictions.eq("detail.orderDetailPolicyPromotionQuantityFlag", true))
+					.add(Restrictions.eq("detail.orderDetailPolicyPromotionMoneyFlag", true))
+					.add(Restrictions.and(
+							Restrictions.eq("detail.orderDetailStateCode", AppConstants.POS_ORDER_DETAIL_STATE_PRESENT),
+							Restrictions.eq("detail.orderDetailPolicyPresentFlag", true)))
+					.add(Restrictions.eq("detail.orderDetailPolicyDiscountFlag", true)));
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(policyAllowPriftQuery.getProfitType())) {
+			if (policyAllowPriftQuery.getProfitType().equals(AppConstants.POLICY_DISCOUNT)) {
+				criteria.add(Restrictions.eq("detail.orderDetailPolicyDiscountFlag", true));
+			} else if (policyAllowPriftQuery.getProfitType().equals(AppConstants.POLICY_PROMOTION_QUANTITY)) {
+				criteria.add(Restrictions.eq("detail.orderDetailPolicyPromotionQuantityFlag", true));
+			} else if (policyAllowPriftQuery.getProfitType().equals(AppConstants.POLICY_PROMOTION_MONEY)) {
+				criteria.add(Restrictions.eq("detail.orderDetailPolicyPromotionMoneyFlag", true));
+			} else if (policyAllowPriftQuery.getProfitType().equals(AppConstants.POLICY_PRENSENT)) {
+				criteria.add(Restrictions.eq("detail.orderDetailPolicyPresentFlag", true));
+			} else if (policyAllowPriftQuery.getProfitType().equals(AppConstants.POLICY_PROMOTION)) {
+				criteria.add(Restrictions.eq("detail.orderDetailPolicyPromotionFlag", true));
+			}
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(policyAllowPriftQuery.getPolicyOrderFid())) {
+			criteria.add(Restrictions.like("detail.orderDetailPolicyFid", policyAllowPriftQuery.getPolicyOrderFid()));
+		}
+		if (policyAllowPriftQuery.getOrderSellers() != null && policyAllowPriftQuery.getOrderSellers().size() > 0) {
+			DetachedCriteria subCriteria = DetachedCriteria.forClass(PosOrder.class, "p")
+					.add(Restrictions.eqProperty("p.orderNo", "detail.id.orderNo"))
+					.add(Restrictions.eq("p.systemBookCode", policyAllowPriftQuery.getSystemBookCode()));
+
+			if (policyAllowPriftQuery.getBranchNums() != null && policyAllowPriftQuery.getBranchNums().size() > 0) {
+				subCriteria.add(Restrictions.in("p.branchNum", policyAllowPriftQuery.getBranchNums()));
+			}
+			if (policyAllowPriftQuery.getDtFrom() != null) {
+				subCriteria.add(Restrictions.ge("p.shiftTableBizday",
+						DateUtil.getDateShortStr(policyAllowPriftQuery.getDtFrom())));
+
+			}
+			if (policyAllowPriftQuery.getDtTo() != null) {
+				subCriteria.add(Restrictions.le("p.shiftTableBizday",
+						DateUtil.getDateShortStr(policyAllowPriftQuery.getDtTo())));
+			}
+			subCriteria.add(Restrictions.in("p.orderStateCode", PosOrder.getNormalPosOrderState()));
+			subCriteria.add(Restrictions.in("p.orderSoldBy", policyAllowPriftQuery.getOrderSellers()));
+
+			criteria.add(Subqueries.exists(subCriteria.setProjection(Projections.property("p.orderNo"))));
+		}
+		criteria.setLockMode(LockMode.NONE);
+		return criteria;*/
+	return null;
 	}
 
 

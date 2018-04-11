@@ -7,6 +7,7 @@ import com.nhsoft.module.report.dto.CardConsuemAnalysisQuery;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.dto.TypeAndTwoValuesDTO;
 import com.nhsoft.module.report.model.*;
+import com.nhsoft.module.report.query.PolicyAllowPriftQuery;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
@@ -349,6 +350,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 	public Object[] findByCardReportQueryCount(CardReportQuery cardReportQuery) {
 		return posOrderDao.findByCardReportQueryCount(cardReportQuery);
 	}
+
+    @Override
+    public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery) {
+        return posOrderDao.findPromotionItemsByPage(policyAllowPriftQuery);
+    }
 
 
 }

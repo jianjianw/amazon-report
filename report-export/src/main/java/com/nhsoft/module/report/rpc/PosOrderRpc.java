@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.rpc;
 
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.query.PolicyAllowPriftQuery;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
 
@@ -166,5 +167,13 @@ public interface PosOrderRpc  {
      * @return
      */
     public CardReportPageDTO findByCardReportQueryPage(CardReportQuery cardReportQuery);
+
+
+    /**
+     * 让利按商品汇总
+     * @param policyAllowPriftQuery
+     * @return
+     */
+    public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery);
 
 }
