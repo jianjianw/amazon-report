@@ -387,10 +387,17 @@ public interface PosOrderService {
 
 
 	/**
-	 * 让利按商品汇总
+	 * 让利按商品汇总  分页查询
 	 * @param policyAllowPriftQuery
 	 * @return
 	 */
 	public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery);
+
+	/**
+	 * 让利按商品汇总  分页查询   查询总条数
+	 * @param policyAllowPriftQuery
+	 * @return
+	 */
+	public Object[] findPromotionItemsCount(PolicyAllowPriftQuery policyAllowPriftQuery);
 }
 

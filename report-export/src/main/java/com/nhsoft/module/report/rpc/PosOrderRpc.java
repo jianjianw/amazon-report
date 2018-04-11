@@ -170,10 +170,10 @@ public interface PosOrderRpc  {
 
 
     /**
-     * 让利按商品汇总
+     * 让利按商品汇总 分页查询
      * @param policyAllowPriftQuery
      * @return
      */
-    public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery);
+    public PromotionItemPageDTO findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery);
 
 }

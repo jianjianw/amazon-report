@@ -356,6 +356,11 @@ public class PosOrderServiceImpl implements PosOrderService {
         return posOrderDao.findPromotionItemsByPage(policyAllowPriftQuery);
     }
 
+	@Override
+	public Object[] findPromotionItemsCount(PolicyAllowPriftQuery policyAllowPriftQuery) {
+		return posOrderDao.findPromotionItemsCount(policyAllowPriftQuery);
+	}
+
 
 }
 

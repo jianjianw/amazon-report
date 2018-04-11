@@ -4,27 +4,23 @@ import com.nhsoft.amazon.server.dto.OrderQueryDTO;
 import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.model.PosOrder;
 import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.query.PolicyAllowPriftQuery;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
-import com.nhsoft.module.report.rpc.BranchTransferGoalsRpc;
 import com.nhsoft.module.report.rpc.PosOrderRpc;
 import com.nhsoft.module.report.service.PosOrderService;
 import com.nhsoft.module.report.service.SystemBookService;
 import com.nhsoft.module.report.util.AppConstants;;
 import com.nhsoft.report.utils.CopyUtil;
 import com.nhsoft.report.utils.DateUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.util.*;
-
-import static java.math.BigDecimal.ROUND_HALF_UP;
 
 @Component
 public class PosOrderRpcImpl implements PosOrderRpc {
@@ -810,8 +806,35 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 
 	@Override
-	public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery) {
-		return posOrderService.findPromotionItemsByPage(policyAllowPriftQuery);
+	public PromotionItemPageDTO findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery) {
+
+		List<Object[]> objects = posOrderService.findPromotionItemsByPage(policyAllowPriftQuery);
+		int size = objects.size();
+		List<PromotionItemDTO> data = new ArrayList<>(size);
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			PromotionItemDTO dto = new PromotionItemDTO();
+			dto.setBranchNum((Integer) object[0]);
+			dto.setItemNum((Integer) object[1]);
+			dto.setMoney((BigDecimal) object[2]);
+			dto.setDiscount((BigDecimal) object[3]);
+			dto.setAmount((BigDecimal) object[4]);
+			dto.setCostMoney((BigDecimal) object[5]);
+			data.add(dto);
+		}
+		PromotionItemPageDTO result = new PromotionItemPageDTO();
+		result.setData(data);
+		//汇总
+		Object[] count = posOrderService.findPromotionItemsCount(policyAllowPriftQuery);
+		if(count != null){
+			result.setCount((Integer) count[0]);
+			result.setMoneySum((BigDecimal) count[1]);
+			result.setDiscountSum((BigDecimal) count[2]);
+			result.setAmountSum((BigDecimal) count[3]);
+			result.setCostMoneySum((BigDecimal) count[4]);
+
+		}
+		return result;
 	}
 
 

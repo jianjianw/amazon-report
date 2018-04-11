@@ -21,6 +21,16 @@ public class PurchaseCycleSummary implements Serializable {
     private BigDecimal currentInventoryQty;
 
 
+    public PurchaseCycleSummary() {
+        this.dayMoney = BigDecimal.ZERO;
+        this.actualInMoney = BigDecimal.ZERO;
+        this.outTotalMoney = BigDecimal.ZERO;
+        this.currentInventoryMoney = BigDecimal.ZERO;
+        this.inQty = BigDecimal.ZERO;
+        this.outQty = BigDecimal.ZERO;
+        this.currentInventoryQty = BigDecimal.ZERO;
+    }
+
     public String getBizDay() {
         return bizDay;
     }

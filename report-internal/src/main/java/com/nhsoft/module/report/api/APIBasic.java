@@ -11,6 +11,7 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
+import org.apache.commons.collections.functors.FalsePredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sun.font.TrueTypeFont;
@@ -1513,6 +1514,31 @@ public class APIBasic {
 
 		List<ProfitAnalysisByItemSummary> profitAnalysisByItem = reportRpc.findProfitAnalysisByItem(query);
 		return profitAnalysisByItem;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test80")
+	public PromotionItemPageDTO test80() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-11");
+
+		PolicyAllowPriftQuery query = new PolicyAllowPriftQuery();
+
+		query.setSystemBookCode(systemBookCode);
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		query.setBranchNums(getBranchNums());
+		query.setPromotion(false);
+		List<String> sellers = new ArrayList<>();
+		sellers.add("");
+		query.setOrderSellers(sellers);
+
+
+		PromotionItemPageDTO result = posOrderRpc.findPromotionItemsByPage(query);
+		return result;
 	}
 
 }

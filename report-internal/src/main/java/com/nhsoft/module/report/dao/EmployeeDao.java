@@ -2,6 +2,8 @@ package com.nhsoft.module.report.dao;
 
 
 import com.nhsoft.module.report.model.EmployeeItem;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
@@ -19,4 +21,5 @@ public interface EmployeeDao {
 	 * @return
 	 */
 	public List<EmployeeItem> findEmployeeItems(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums, List<String> employeeNames);
+
 }

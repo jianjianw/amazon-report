@@ -1255,7 +1255,7 @@ public interface PosOrderDao {
 	 * @param policyAllowPriftQuery
 	 * @return
 	 */
-	public List<Object[]> findPromotionItemsCount(PolicyAllowPriftQuery policyAllowPriftQuery);
+	public Object[] findPromotionItemsCount(PolicyAllowPriftQuery policyAllowPriftQuery);
 
 
 
