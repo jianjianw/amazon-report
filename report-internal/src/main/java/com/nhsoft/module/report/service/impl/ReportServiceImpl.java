@@ -12929,7 +12929,7 @@ public class ReportServiceImpl implements ReportService {
 
 		if (StringUtils.isEmpty(type)) {
 
-			if(alipayDetailQuery.getOrderState()){
+			if(alipayDetailQuery.getOrderState() == null || alipayDetailQuery.getOrderState()){
 				list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
 				list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "member",
 						alipayLogTypes));
@@ -12939,7 +12939,8 @@ public class ReportServiceImpl implements ReportService {
 					list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null,
 							alipayLogTypes));
 				}
-			}else{
+			}
+			if(alipayDetailQuery.getOrderState() == null || !alipayDetailQuery.getOrderState()){
 				//存款失败
 				List<AlipayDetailDTO> depositPayFail = alipayLogDao.findSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, true,
 						alipayLogTypes);
@@ -12953,27 +12954,29 @@ public class ReportServiceImpl implements ReportService {
 
 		} else if (type.equals("POS消费")) {
 
-			if(alipayDetailQuery.getOrderState()){
+			if(alipayDetailQuery.getOrderState() == null || alipayDetailQuery.getOrderState()){
 				list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
 				if(queryAll){
 					list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "POS",
 							alipayLogTypes));
 				}
-			}else{
+			}
+			if(alipayDetailQuery .getOrderState() == null || !alipayDetailQuery.getOrderState()){
 				List<AlipayDetailDTO> consumePayFail = alipayLogDao.findSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, false,
 						alipayLogTypes);
 				list.addAll(consumePayFail);
 			}
 
 		} else if (type.equals("POS存款")) {
-			if(alipayDetailQuery.getOrderState()){
+			if(alipayDetailQuery.getOrderState() == null || alipayDetailQuery.getOrderState()){
 				list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP",
 						alipayLogTypes));
 				if(queryAll){
 					list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP",
 							alipayLogTypes));
 				}
-			}else{
+			}
+			if(alipayDetailQuery .getOrderState() == null || !alipayDetailQuery.getOrderState()){
 				//存款失败
 				List<AlipayDetailDTO> depositPayFail = alipayLogDao.findSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, true,
 						alipayLogTypes);
