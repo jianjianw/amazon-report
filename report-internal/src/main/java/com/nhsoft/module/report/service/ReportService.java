@@ -804,7 +804,7 @@ public interface ReportService {
 	 * @param dateTo 营业日止
 	 * @return
 	 */
-	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<PosItem> posItems);
+	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 
 	/**
 	 * 查询分店配送金额  调入 - 调出

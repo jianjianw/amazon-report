@@ -4,6 +4,7 @@ package com.nhsoft.module.report.rpc.impl;
 import com.google.gson.Gson;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
+import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
@@ -22,8 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -86,12 +88,12 @@ public class ReportRpcImpl implements ReportRpc {
 	private PosItemLogRpc posItemLogRpc;
 	@Autowired
 	private MarketActionOpenIdService marketActionOpenIdService;
+
 	@Autowired
 	private WholesaleOrderRpc wholesaleOrderRpc;
+
 	@Autowired
 	private BookResourceService bookResourceService;
-
-
 
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -5044,6 +5046,11 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		List<AlipayDetailDTO> list = reportService.findAlipayDetailDTOs(alipayDetailQuery);
 		return list;
+	}
+
+	@Override
+	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+		return reportService.findPosItemRanks(systemBookCode, branchNum, dateFrom, dateTo);
 	}
 
 	//AMA-23167 性能优化-门店营业分析-门店商品汇总

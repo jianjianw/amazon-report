@@ -7990,9 +7990,16 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,
-			List<PosItem> posItems) {
+	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
 		List<PosItemRank> posItemRanks = posOrderDao.findPosItemRanks(systemBookCode, branchNum, dateFrom, dateTo);
+		if(posItemRanks.isEmpty()){
+			return Collections.emptyList();
+		}
+		List<Integer> itemNums = new ArrayList<>(posItemRanks.size());
+		for (int i = 0,len = posItemRanks.size(); i < len; i++) {
+			itemNums.add(posItemRanks.get(i).getItemNum());
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
 		for (int i = 0,len = posItemRanks.size(); i < len; i++) {
 			PosItemRank posItemRank = posItemRanks.get(i);
 			PosItem posItem = AppUtil.getPosItem(posItemRank.getItemNum(), posItems);
