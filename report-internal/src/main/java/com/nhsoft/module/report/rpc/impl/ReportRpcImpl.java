@@ -3415,11 +3415,12 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		for (int i = 0; i <size; i++) {
 			Object[] object = objects.get(i);
-			PosGroupHourAndBranchRegionTypeSummary posGroupHourAndBranchRegionTypeSummary = new PosGroupHourAndBranchRegionTypeSummary();
-			posGroupHourAndBranchRegionTypeSummary.setOrderTimeChar((int)object[0]);
-			posGroupHourAndBranchRegionTypeSummary.setMoney((BigDecimal) object[1]);
-			posGroupHourAndBranchRegionTypeSummary.setAmount((Integer) object[2]);
-			list.add(posGroupHourAndBranchRegionTypeSummary);
+			PosGroupHourAndBranchRegionTypeSummary summary = new PosGroupHourAndBranchRegionTypeSummary();
+			summary.setHour((int)object[0]);
+			summary.setBranchType((String) object[1]);
+			summary.setOrderMoney((BigDecimal) object[2]);
+			summary.setOrderCount((Integer) object[3]);
+			list.add(summary);
 		}
 		return list;
 	}
@@ -3436,8 +3437,8 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = objects.get(i);
 			PosGroupHourSummary posGroupHourSummary = new PosGroupHourSummary();
 			posGroupHourSummary.setOrderTime((Integer) object[0]);
-			posGroupHourSummary.setMoney((BigDecimal) object[1]);
-			posGroupHourSummary.setAmount((Integer) object[2]);
+			posGroupHourSummary.setMoney(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+			posGroupHourSummary.setAmount(object[2] == null?0:(Integer) object[2]);
 			list.add(posGroupHourSummary);
 		}
 		return list;

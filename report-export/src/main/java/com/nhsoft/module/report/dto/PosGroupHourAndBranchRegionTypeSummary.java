@@ -4,31 +4,40 @@ import java.math.BigDecimal;
 
 public class PosGroupHourAndBranchRegionTypeSummary {
 
-    private int orderTimeChar;
-    private BigDecimal money;
-    private Integer amount;
+    private int hour;
+    private String branchType;
+    private BigDecimal orderMoney;
+    private Integer orderCount;
 
-    public int getOrderTimeChar() {
-        return orderTimeChar;
+    public int getHour() {
+        return hour;
     }
 
-    public void setOrderTimeChar(int orderTimeChar) {
-        this.orderTimeChar = orderTimeChar;
+    public void setHour(int hour) {
+        this.hour = hour;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public String getBranchType() {
+        return branchType;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public void setBranchType(String branchType) {
+        this.branchType = branchType;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public BigDecimal getOrderMoney() {
+        return orderMoney;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public void setOrderMoney(BigDecimal orderMoney) {
+        this.orderMoney = orderMoney;
+    }
+
+    public Integer getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(Integer orderCount) {
+        this.orderCount = orderCount;
     }
 }
