@@ -10,7 +10,6 @@ public class BranchProfitDataDTO implements Serializable {
     private String branch;
     private String branchName;
     private String branchCode;
-
     private Integer branchNum;
     private Integer itemNum;
     private String itemCatagory;
@@ -44,6 +43,30 @@ public class BranchProfitDataDTO implements Serializable {
     private BigDecimal profitRate;
     private BigDecimal posRate;
     private BigDecimal lossMoney;
+
+
+    public BranchProfitDataDTO() {
+        this.startInventoryMoney = BigDecimal.ZERO;
+        this.endInventoryMoney = BigDecimal.ZERO;
+        this.startSaleMoney = BigDecimal.ZERO;
+        this.endSaleMoney = BigDecimal.ZERO;
+        this.posOrderMoney = BigDecimal.ZERO;
+        this.discountMoney = BigDecimal.ZERO;
+        this.costMoney = BigDecimal.ZERO;
+        this.transferInMoney = BigDecimal.ZERO;
+        this.transferInSaleMoney = BigDecimal.ZERO;
+        this.transferOutMoney = BigDecimal.ZERO;
+        this.transferOutSaleMoney = BigDecimal.ZERO;
+        this.wholesaleOrderMoney = BigDecimal.ZERO;
+        this.wholesaleOrderSaleMoney = BigDecimal.ZERO;
+        this.receiveMoney = BigDecimal.ZERO;
+        this.returnMoney = BigDecimal.ZERO;
+        this.posDifference = BigDecimal.ZERO;
+        this.profitMoney = BigDecimal.ZERO;
+        this.profitRate = BigDecimal.ZERO;
+        this.posRate = BigDecimal.ZERO;
+        this.lossMoney = BigDecimal.ZERO;
+    }
 
     public int getId() {
         return id;

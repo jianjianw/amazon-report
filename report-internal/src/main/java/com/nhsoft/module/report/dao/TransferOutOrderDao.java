@@ -368,4 +368,11 @@ public interface TransferOutOrderDao{
 	 */
 	public List<Object[]> findMoneyAndAmountByItemNum(String systemBookCode,Integer branchNum,List<Integer> storehouseNums,Date dateFrom, Date dateTo,List<Integer> itemNums,String sortField);
 
+
+	/**
+	 * 配送中心、调往分店汇总商品调出金额、毛利、数量
+	 * @param transferProfitQuery
+	 * @return
+	 */
+	public List<Object[]> findProfitGroupByBranchAndItem(TransferProfitQuery transferProfitQuery);
 }

@@ -1445,6 +1445,11 @@ public interface ReportRpc {
 	 */
 	List<AlipayDetailDTO> findAlipayDetailDTOs(AlipayDetailQuery alipayDetailQuery);
 
+	/**
+	 * 门店商品汇总
+	 * */
+	public BranchProfitDataPageDTO findBranchAndItemProfit(BranchProfitQuery query);
+
 
 
 }

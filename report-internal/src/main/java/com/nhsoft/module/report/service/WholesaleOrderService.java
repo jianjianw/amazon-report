@@ -87,4 +87,17 @@ public interface WholesaleOrderService {
 	 * */
 	public List<Object[]> findAmountAndMoneyByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
+
+	/**
+	 * 按分店、商品汇总批发数量 批发金额 批发成本
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param itemNums
+	 * @param clients
+	 * @return
+	 */
+	public List<Object[]> findMoneyGroupByBranchItem(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
+													 List<Integer> itemNums, List<String> clients, List<Integer> regionNums);
+
 }

@@ -361,6 +361,11 @@ public class PosOrderServiceImpl implements PosOrderService {
 		return posOrderDao.findPromotionItemsCount(policyAllowPriftQuery);
 	}
 
+    @Override
+    public List<Object[]> findItemSumByCategory(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodes, boolean queryKit, List<Integer> itemNums) {
+        return posOrderDao.findItemSumByCategory(systemBookCode,branchNums,dateFrom,dateTo,categoryCodes,queryKit,itemNums);
+    }
+
 
 }
 

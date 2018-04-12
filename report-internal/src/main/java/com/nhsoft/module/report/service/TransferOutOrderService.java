@@ -174,4 +174,21 @@ public interface TransferOutOrderService {
 	public List<Object[]> findMoneyAndAmountByItemNum(String systemBookCode,Integer branchNum,List<Integer> storehouseNums,
 													  Date dateFrom, Date dateTo,List<Integer> itemNums,String sortField);
 
+
+	/**
+	 * 按调入分店、调出分店、商品、多特性编码汇总 数量、成本、调出金额、销售金额
+	 * @param systemBookCode
+	 * @param outBranchNums 调出分店列表
+	 * @param branchNums 调入分店列表
+	 * @param dateFrom 审核时间起
+	 * @param dateTo 审核时间止
+	 * @param categoryCodeList 商品类别代码列表
+	 * @param itemNums 商品主键列表
+	 * @param filterPolicyItems  是否过滤特价商品
+	 * @return
+	 */
+	public List<Object[]> findProfitGroupByBranchAndItem(String systemBookCode, List<Integer> outBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo,
+														 List<String> categoryCodeList, List<Integer> itemNums, Boolean filterPolicyItems);
+
+
 }

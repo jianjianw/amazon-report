@@ -4,7 +4,6 @@ package com.nhsoft.module.report.rpc.impl;
 import com.google.gson.Gson;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
-import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
@@ -15,6 +14,7 @@ import com.nhsoft.report.utils.CopyUtil;
 import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.report.utils.ReportUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -22,11 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
+
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class ReportRpcImpl implements ReportRpc {
@@ -86,12 +86,12 @@ public class ReportRpcImpl implements ReportRpc {
 	private PosItemLogRpc posItemLogRpc;
 	@Autowired
 	private MarketActionOpenIdService marketActionOpenIdService;
-
 	@Autowired
 	private WholesaleOrderRpc wholesaleOrderRpc;
-
 	@Autowired
 	private BookResourceService bookResourceService;
+
+
 
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -5044,6 +5044,419 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		List<AlipayDetailDTO> list = reportService.findAlipayDetailDTOs(alipayDetailQuery);
 		return list;
+	}
+
+	//AMA-23167 性能优化-门店营业分析-门店商品汇总
+	@Override
+	public BranchProfitDataPageDTO findBranchAndItemProfit(BranchProfitQuery query){
+
+			String exportId = query.getExportId();
+			String systemBookCode = query.getSystemBookCode();
+			Date dateFrom = query.getDateFrom();
+			Date dateTo = query.getDateTo();
+			Integer centerBranchNum = query.getBranchNum();
+			List<Integer> branchNums = query.getBranchNums();
+			List<String> categoryCodeList = query.getCategoryCodeList();
+			List<Integer> posItemNums = query.getItemNums();
+			Boolean queryKit = query.getQueryKit();
+			Boolean isFilterDel = query.getFilterDel();
+			String sortField = query.getSortField();
+			String sortType = query.getSortType();
+			int offset = query.getOffset();
+			int limit = query.getLimit();
+
+			Map<String, BranchProfitDataDTO> map = new HashMap<String, BranchProfitDataDTO>();
+
+			List<Object[]> inventorObjects = inventoryService.findBranchItemSummary(systemBookCode, branchNums,null);
+			Date now = Calendar.getInstance().getTime();
+			Date nextDay = DateUtil.addDay(dateTo, 1);
+			List<PosItemLogSummaryDTO> endList = new ArrayList<PosItemLogSummaryDTO>();
+
+			StoreQueryCondition storeQueryCondition = new StoreQueryCondition();
+			storeQueryCondition.setSystemBookCode(systemBookCode);
+			storeQueryCondition.setBranchNums(branchNums);
+			storeQueryCondition.setQuerySaleMoney(true);
+			storeQueryCondition.setItemNums(posItemNums);
+			if (DateUtil.getDateShortStr(nextDay).compareTo(DateUtil.getDateShortStr(now)) < 0) {
+				logger.info(String.format("开始查询库存汇总 %s-%s", DateUtil.getDateShortStr(nextDay),
+						DateUtil.getDateShortStr(now)));
+				storeQueryCondition.setDateStart(nextDay);
+				storeQueryCondition.setDateEnd(now);
+
+				endList = posItemLogRpc.findBranchItemFlagSummary(storeQueryCondition);
+				logger.info(String.format("完成查询库存汇总 %s-%s", DateUtil.getDateShortStr(nextDay),
+						DateUtil.getDateShortStr(now)));
+			} else {
+				dateTo = now;
+			}
+			logger.info(String.format("开始查询库存汇总 %s-%s", DateUtil.getDateShortStr(dateFrom),
+					DateUtil.getDateShortStr(dateTo)));
+			storeQueryCondition.setDateStart(dateFrom);
+			storeQueryCondition.setDateEnd(dateTo);
+			List<PosItemLogSummaryDTO> beginList = posItemLogRpc.findBranchItemFlagSummary(storeQueryCondition);
+
+			logger.info(String.format("完成查询库存汇总 %s-%s", DateUtil.getDateShortStr(dateFrom),
+					DateUtil.getDateShortStr(dateTo)));
+
+			// 当前库存金额
+			for (int i = 0; i < inventorObjects.size(); i++) {
+				Object[] objects = inventorObjects.get(i);
+				Integer branchNum = (Integer) objects[0];
+				Integer itemNum = (Integer) objects[1];
+				BigDecimal amount = objects[2] == null ? BigDecimal.ZERO : (BigDecimal) objects[2];
+				BigDecimal money = objects[3] == null ? BigDecimal.ZERO : (BigDecimal) objects[3];
+
+				BranchProfitDataDTO data = new BranchProfitDataDTO();
+				data.setItemNum(itemNum);
+				data.setStartInventoryMoney(money);
+				data.setEndInventoryMoney(money);
+				data.setStartSaleMoney(amount);
+				data.setEndSaleMoney(amount);
+				data.setBranchNum(branchNum);
+				map.put(branchNum + "|" + itemNum, data);
+			}
+
+			// 期末库存金额
+			for (int i = 0; i < endList.size(); i++) {
+				PosItemLogSummaryDTO dto = endList.get(i);
+				Integer branchNum = dto.getBranchNum();
+				Integer itemNum = dto.getItemNum();
+				boolean flag = dto.getInoutFlag();
+				BigDecimal money = dto.getMoney();
+				BigDecimal amount = dto.getQty();
+
+				BranchProfitDataDTO data = map.get(branchNum + "|" + itemNum);
+				if (data == null) {
+					data = new BranchProfitDataDTO();
+					data.setBranchNum(branchNum);
+					data.setItemNum(itemNum);
+					map.put(branchNum + "|" + itemNum, data);
+				}
+				if (flag) {
+					data.setEndInventoryMoney(data.getEndInventoryMoney().subtract(money));
+					data.setEndSaleMoney(data.getEndSaleMoney().subtract(amount));
+					data.setStartInventoryMoney(data.getEndInventoryMoney());
+					data.setStartSaleMoney(data.getEndSaleMoney());
+				} else {
+					data.setEndInventoryMoney(data.getEndInventoryMoney().add(money));
+					data.setEndSaleMoney(data.getEndSaleMoney().add(amount));
+					data.setStartInventoryMoney(data.getEndInventoryMoney());
+					data.setStartSaleMoney(data.getEndSaleMoney());
+				}
+
+			}
+
+			// 起初库存金额
+			for (int i = 0; i < beginList.size(); i++) {
+				PosItemLogSummaryDTO dto = beginList.get(i);
+				Integer branchNum = dto.getBranchNum();
+				Integer itemNum = dto.getItemNum();
+				boolean flag = dto.getInoutFlag();
+				BigDecimal money = dto.getMoney();
+				BigDecimal amount = dto.getQty();
+
+				BranchProfitDataDTO data = map.get(branchNum + "|" + itemNum);
+				if (data == null) {
+					data = new BranchProfitDataDTO();
+					data.setBranchNum(branchNum);
+					data.setItemNum(itemNum);
+					map.put(branchNum + "|" + itemNum, data);
+				}
+				if (flag) {
+					data.setStartInventoryMoney(data.getStartInventoryMoney().subtract(money));
+					data.setStartSaleMoney(data.getStartSaleMoney().subtract(amount));
+
+				} else {
+					data.setStartInventoryMoney(data.getStartInventoryMoney().add(money));
+					data.setStartSaleMoney(data.getStartSaleMoney().add(amount));
+				}
+
+			}
+
+			// 营业额
+			logger.info(String.format("开始查询门店营业分析 商品汇总 POS营业额"));
+			List<Object[]> posOrderObjects = posOrderService.findItemSumByCategory(systemBookCode, branchNums,
+					dateFrom, dateTo, null, queryKit,null);
+			logger.info(String.format("完成查询门店营业分析 商品汇总 POS营业额"));
+			for (int i = 0; i < posOrderObjects.size(); i++) {
+				Object[] objects = posOrderObjects.get(i);
+				Integer branchNum = (Integer) objects[0];
+				Integer itemNum = (Integer) objects[1];
+				BigDecimal money = objects[2] == null ? BigDecimal.ZERO : (BigDecimal) objects[2];
+				BigDecimal discount = objects[5] == null ? BigDecimal.ZERO : (BigDecimal) objects[5];
+				BigDecimal costMoney = objects[6] == null ? BigDecimal.ZERO : (BigDecimal) objects[6];
+				BranchProfitDataDTO data = map.get(branchNum + "|" + itemNum);
+				if (data == null) {
+					data = new BranchProfitDataDTO();
+					data.setBranchNum(branchNum);
+					data.setItemNum(itemNum);
+					map.put(branchNum + "|" + itemNum, data);
+				}
+				data.setPosOrderMoney(money);
+				data.setDiscountMoney(discount);
+				data.setCostMoney(costMoney);
+			}
+
+			List<Integer> transferBranchNums = new ArrayList<Integer>();
+			transferBranchNums.add(centerBranchNum);
+			List<Object[]> inObjects = transferInOrderService.findProfitGroupByBranchAndItem(systemBookCode, transferBranchNums, branchNums, dateFrom, dateTo, null, posItemNums);
+			for (int i = 0; i < inObjects.size(); i++) {
+				Object[] objects = inObjects.get(i);
+				Integer branchNum = (Integer) objects[0];
+				Integer itemNum = (Integer) objects[2];
+				BigDecimal money = objects[6] == null ? BigDecimal.ZERO : (BigDecimal) objects[6];
+				BigDecimal saleMoney = objects[7] == null ? BigDecimal.ZERO : (BigDecimal) objects[7];
+
+				BranchProfitDataDTO data = map.get(branchNum + "|" + itemNum);
+				if (data == null) {
+					data = new BranchProfitDataDTO();
+					data.setBranchNum(branchNum);
+					data.setItemNum(itemNum);
+					map.put(branchNum + "|" + itemNum, data);
+				}
+				data.setTransferInMoney(data.getTransferInMoney().add(money));
+				data.setTransferInSaleMoney(data.getTransferInSaleMoney().add(saleMoney));
+			}
+
+			List<Object[]> outObjects = transferOutOrderService.findProfitGroupByBranchAndItem(systemBookCode, transferBranchNums, branchNums, dateFrom, dateTo, null, posItemNums,false);
+			for (int i = 0; i < outObjects.size(); i++) {
+				Object[] objects = outObjects.get(i);
+				Integer branchNum = (Integer) objects[0];
+				Integer itemNum = (Integer) objects[2];
+				BigDecimal money = objects[6] == null ? BigDecimal.ZERO : (BigDecimal) objects[6];
+				BigDecimal saleMoney = objects[7] == null ? BigDecimal.ZERO : (BigDecimal) objects[7];
+
+				BranchProfitDataDTO data = map.get(branchNum + "|" + itemNum);
+				if (data == null) {
+					data = new BranchProfitDataDTO();
+					data.setBranchNum(branchNum);
+					data.setItemNum(itemNum);
+					map.put(branchNum + "|" + itemNum, data);
+				}
+				data.setTransferOutMoney(data.getTransferOutMoney().add(money));
+				data.setTransferOutSaleMoney(data.getTransferOutSaleMoney().add(saleMoney));
+			}
+
+			List<Object[]> wholesaleObjects = wholesaleOrderService.findMoneyGroupByBranchItem(systemBookCode, branchNums, dateFrom, dateTo, posItemNums, null, null);
+			for (int i = 0; i < wholesaleObjects.size(); i++) {
+				Object[] objects = wholesaleObjects.get(i);
+				Integer branchNum = (Integer) objects[0];
+				Integer itemNum = (Integer) objects[1];
+				BigDecimal money = objects[4] == null ? BigDecimal.ZERO : (BigDecimal) objects[4];
+				BigDecimal saleMoney = objects[6] == null ? BigDecimal.ZERO : (BigDecimal) objects[6];
+
+				BranchProfitDataDTO data = map.get(branchNum + "|" + itemNum);
+				if (data == null) {
+					data = new BranchProfitDataDTO();
+					data.setBranchNum(branchNum);
+					data.setItemNum(itemNum);
+					map.put(branchNum + "|" + itemNum, data);
+				}
+				data.setWholesaleOrderMoney(data.getWholesaleOrderMoney().add(money));
+				data.setWholesaleOrderSaleMoney(data.getWholesaleOrderSaleMoney().add(saleMoney));
+			}
+
+			List<Object[]> receiveObjects = receiveOrderService.findBranchItemSummary(systemBookCode, branchNums, dateFrom, dateTo, posItemNums);
+			for (int i = 0; i < receiveObjects.size(); i++) {
+				Object[] objects = receiveObjects.get(i);
+				Integer branchNum = (Integer) objects[0];
+				Integer itemNum = (Integer) objects[1];
+				BigDecimal money = objects[3] == null ? BigDecimal.ZERO : (BigDecimal) objects[3];
+
+				BranchProfitDataDTO data = map.get(branchNum + "|" + itemNum);
+				if (data == null) {
+					data = new BranchProfitDataDTO();
+					data.setBranchNum(branchNum);
+					data.setItemNum(itemNum);
+					map.put(branchNum + "|" + itemNum, data);
+				}
+				data.setReceiveMoney(data.getReceiveMoney().add(money));
+			}
+
+			List<Object[]> returnObjects = returnOrderService.findBranchItemSummary(systemBookCode, branchNums, dateFrom, dateTo, posItemNums);
+			for (int i = 0; i < returnObjects.size(); i++) {
+				Object[] objects = returnObjects.get(i);
+				Integer branchNum = (Integer) objects[0];
+				Integer itemNum = (Integer) objects[1];
+				BigDecimal money = objects[3] == null ? BigDecimal.ZERO : (BigDecimal) objects[3];
+
+				BranchProfitDataDTO data = map.get(branchNum + "|" + itemNum);
+				if (data == null) {
+					data = new BranchProfitDataDTO();
+					data.setBranchNum(branchNum);
+					data.setItemNum(itemNum);
+					map.put(branchNum + "|" + itemNum, data);
+				}
+				data.setReturnMoney(data.getReturnMoney().add(money));
+			}
+
+			BigDecimal posOrderMoneySum = BigDecimal.ZERO;
+			BigDecimal startInventoryMoneySum = BigDecimal.ZERO;
+			BigDecimal endInventoryMoneySum = BigDecimal.ZERO;
+			BigDecimal transferOutMoneySum = BigDecimal.ZERO;
+			BigDecimal wholesaleOrderMoneySum = BigDecimal.ZERO;
+			BigDecimal wholesaleOrderSaleMoneySum = BigDecimal.ZERO;
+			BigDecimal transferInMoneySum = BigDecimal.ZERO;
+			BigDecimal profitMoneySum = BigDecimal.ZERO;
+			BigDecimal startSaleMoneySum = BigDecimal.ZERO;
+			BigDecimal endSaleMoneySum = BigDecimal.ZERO;
+			BigDecimal posDifferenceSum = BigDecimal.ZERO;
+			BigDecimal lossMoneySum = BigDecimal.ZERO;
+			BigDecimal discountMoneySum = BigDecimal.ZERO;
+			BigDecimal receiveMoneySum = BigDecimal.ZERO;
+			BigDecimal returnMoneySum = BigDecimal.ZERO;
+			BigDecimal costMoneySum = BigDecimal.ZERO;
+
+			List<BranchProfitDataDTO> list = new ArrayList<BranchProfitDataDTO>(map.values());
+			List<Branch> branchs = branchService.findInCache(systemBookCode);
+			List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+			for (int i = list.size() - 1; i >= 0; i--) {
+				BranchProfitDataDTO data = list.get(i);
+				Branch branch = AppUtil.getBranch(branchs, data.getBranchNum());
+				if (branch != null) {
+					data.setBranch(data.getBranchNum() + "|" + branch.getBranchName());
+					data.setBranchName(branch.getBranchName());
+					data.setBranchCode(branch.getBranchCode());
+				}
+				if (posItemNums != null && posItemNums.size() > 0) {
+					if (!posItemNums.contains(data.getItemNum())) {
+						list.remove(i);
+						continue;
+					}
+				}
+
+				PosItem posItem = AppUtil.getPosItem(data.getItemNum(), posItems);
+				if (posItem == null) {
+					list.remove(i);
+					continue;
+				}
+				if (isFilterDel && posItem.getItemDelTag() != null && posItem.getItemDelTag()) {
+					list.remove(i);
+					continue;
+				}
+				data.setPosItemCatagoryCode(posItem.getItemCategoryCode());
+				data.setPosItemCatagoryName(posItem.getItemCategory());
+				data.setPosItemCode(posItem.getItemCode());
+				data.setPosItemName(posItem.getItemName());
+
+				if (categoryCodeList != null && categoryCodeList.size() > 0) {
+					if (!categoryCodeList.contains(data.getPosItemCatagoryCode())) {
+						list.remove(i);
+						continue;
+					}
+				}
+				data.setPosDifference(data.getPosOrderMoney().add(data.getWholesaleOrderMoney()).subtract(data.getTransferOutMoney().subtract(data.getTransferInMoney())));
+				data.setProfitMoney(data.getPosOrderMoney().add(data.getWholesaleOrderMoney()).add(data.getTransferInMoney()).subtract(data.getTransferOutMoney())
+						.subtract(data.getStartInventoryMoney()).add(data.getEndInventoryMoney()).subtract(data.getReceiveMoney()).add(data.getReturnMoney()));
+				data.setStartSaleMoney(data.getStartSaleMoney().multiply(posItem.getItemRegularPrice()));
+				data.setEndSaleMoney(data.getEndSaleMoney().multiply(posItem.getItemRegularPrice()));
+				if ((data.getPosOrderMoney().compareTo(BigDecimal.ZERO) > 0 || data.getWholesaleOrderMoney().compareTo(BigDecimal.ZERO) > 0)
+						&& (data.getPosOrderMoney().add(data.getWholesaleOrderMoney())).compareTo(BigDecimal.ZERO) != 0) {
+					data.setProfitRate(data.getProfitMoney().divide(data.getPosOrderMoney().add(data.getWholesaleOrderMoney()), 4, BigDecimal.ROUND_HALF_UP)
+							.multiply(BigDecimal.valueOf(100).setScale(2)));
+
+					data.setPosRate((data.getTransferOutMoney().subtract(data.getTransferInMoney())).divide(data.getPosOrderMoney().add(data.getWholesaleOrderMoney()), 4, BigDecimal.ROUND_HALF_UP)
+							.multiply(BigDecimal.valueOf(100).setScale(2)));
+				}
+				//损耗=期初零售金额+调出零售金额-调入零售金额-期末零售金额-POS收入-批发销售商品预估零售额-折扣合计
+				data.setLossMoney(data.getStartSaleMoney().add(data.getTransferOutSaleMoney()).subtract(data.getTransferInSaleMoney())
+						.subtract(data.getEndSaleMoney()).subtract(data.getDiscountMoney()).subtract(data.getPosOrderMoney().add(data.getWholesaleOrderSaleMoney())));
+
+				posOrderMoneySum = posOrderMoneySum.add(data.getPosOrderMoney());
+				startInventoryMoneySum = startInventoryMoneySum.add(data.getStartInventoryMoney());
+				endInventoryMoneySum = endInventoryMoneySum.add(data.getEndInventoryMoney());
+				transferOutMoneySum = transferOutMoneySum.add(data.getTransferOutMoney());
+				wholesaleOrderMoneySum = wholesaleOrderMoneySum.add(data.getWholesaleOrderMoney());
+				wholesaleOrderSaleMoneySum = wholesaleOrderSaleMoneySum.add(data.getWholesaleOrderSaleMoney());
+				transferInMoneySum = transferInMoneySum.add(data.getTransferInMoney());
+				profitMoneySum = profitMoneySum.add(data.getProfitMoney());
+				startSaleMoneySum = startSaleMoneySum.add(data.getStartSaleMoney());
+				endSaleMoneySum = endSaleMoneySum.add(data.getEndSaleMoney());
+				posDifferenceSum = posDifferenceSum.add(data.getPosDifference());
+				lossMoneySum = lossMoneySum.add(data.getLossMoney());
+				discountMoneySum = discountMoneySum.add(data.getDiscountMoney());
+				receiveMoneySum = receiveMoneySum.add(data.getReceiveMoney());
+				returnMoneySum = returnMoneySum.add(data.getReturnMoney());
+				costMoneySum = costMoneySum.add(data.getCostMoney());
+			}
+
+			if (sortField == null) {
+				sortField = "posItemCode";
+				sortType = "ASC";
+			}
+
+			BranchProfitComparator comparator  = new BranchProfitComparator(sortField,sortType);
+			Collections.sort(list, comparator);
+
+
+
+			for (int i = 0; i < list.size(); i++) {
+				BranchProfitDataDTO data = list.get(i);
+				data.setId(i);
+				data.setBranch(data.getBranchNum() + "|" + data.getBranchName());
+				data.setItemCatagory(data.getPosItemCatagoryCode() + "|" + data.getPosItemCatagoryName());
+			}
+
+			int dataSize = list.size();
+			BranchProfitDataPageDTO resultDTO = new BranchProfitDataPageDTO();
+			resultDTO.setCount(dataSize);
+			resultDTO.setData(list);
+
+			resultDTO.setPosOrderMoneySum(posOrderMoneySum);
+			resultDTO.setStartInventoryMoneySum(startInventoryMoneySum);
+			resultDTO.setEndInventoryMoneySum(endInventoryMoneySum);
+			resultDTO.setTransferOutMoneySum(transferOutMoneySum);
+			resultDTO.setWholesaleOrderMoneySum(wholesaleOrderMoneySum);
+			resultDTO.setTransferInMoneySum(transferInMoneySum);
+			resultDTO.setProfitMoneySum(profitMoneySum);
+			resultDTO.setStartSaleMoneySum(startSaleMoneySum);
+			resultDTO.setEndSaleMoneySum(endSaleMoneySum);
+			resultDTO.setPosDifferenceSum(posDifferenceSum);
+			resultDTO.setLossMoneySum(lossMoneySum);
+			resultDTO.setDiscountMoneySum(discountMoneySum);
+			resultDTO.setReceiveMoneySum(receiveMoneySum);
+			resultDTO.setReturnMoneySum(returnMoneySum);
+			resultDTO.setCostMoneySum(costMoneySum);
+
+			if(posOrderMoneySum.compareTo(BigDecimal.ZERO) == 0){
+				resultDTO.setProfitRateSum(BigDecimal.ZERO);
+			}else{
+				resultDTO.setProfitRateSum(profitMoneySum.divide(posOrderMoneySum, 8, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+			}
+			if(posOrderMoneySum.compareTo(BigDecimal.ZERO) == 0){
+				resultDTO.setPosRateSum(BigDecimal.ZERO);
+			}else{
+				resultDTO.setPosRateSum((transferOutMoneySum.subtract(transferInMoneySum)).divide(posOrderMoneySum, 8, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+			}
+
+			if(query.isPage()){
+				int pageSum = offset + limit;
+				List<BranchProfitDataDTO> subList = null;
+				if(dataSize >= pageSum-1){
+					subList = list.subList(offset, pageSum);
+				}else{
+					subList = list.subList(offset, dataSize);
+				}
+				resultDTO.setData(subList);
+			}
+
+			return resultDTO;
+
+		/*	if (StringUtils.isNotEmpty(exportId)) {
+				String excelUrl = null;
+				Element element = getElementFromCache(exportId);
+				if (element != null) {
+					ExportCacheUtil exportCacheUtil = (ExportCacheUtil) element.getValue();
+					removeElementFromCache(exportId);
+					excelUrl = exportCacheUtil.export(list);
+				}
+				List<BranchProfitDataDTO> returnDatas = new ArrayList<BranchProfitDataDTO>();
+				BranchProfitDataDTO data = new BranchProfitDataDTO();
+				data.setCacheUrl(excelUrl);
+				returnDatas.add(data);
+				return new PagingLoadResultBean<BranchProfitDataDTO>(returnDatas, returnDatas.size(), 0);
+			}
+			return new PagingLoadResultBean<BranchProfitDataDTO>(returnList, count, offset);*/
 	}
 
 

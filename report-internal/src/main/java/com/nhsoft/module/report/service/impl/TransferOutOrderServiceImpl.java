@@ -2,6 +2,7 @@ package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.TransferOutOrderDao;
 import com.nhsoft.module.report.model.TransferOutOrder;
+import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.service.TransferOutOrderService;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
@@ -129,6 +130,22 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 	public List<Object[]> findMoneyAndAmountByItemNum(String systemBookCode, Integer branchNum,List<Integer> storehouseNums,
 													  Date dateFrom, Date dateTo, List<Integer> itemNums, String sortField) {
 		return transferOutOrderDao.findMoneyAndAmountByItemNum(systemBookCode,branchNum,storehouseNums,dateFrom,dateTo,itemNums,sortField);
+	}
+
+	@Override
+	public List<Object[]> findProfitGroupByBranchAndItem(String systemBookCode, List<Integer> outBranchNums,
+														 List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodeList,
+														 List<Integer> itemNums, Boolean filterPolicyItems) {
+		TransferProfitQuery transferProfitQuery = new TransferProfitQuery();
+		transferProfitQuery.setSystemBookCode(systemBookCode);
+		transferProfitQuery.setDistributionBranchNums(outBranchNums);
+		transferProfitQuery.setResponseBranchNums(branchNums);
+		transferProfitQuery.setDtFrom(dateFrom);
+		transferProfitQuery.setDtTo(dateTo);
+		transferProfitQuery.setCategoryCodes(categoryCodeList);
+		transferProfitQuery.setItemNums(itemNums);
+		transferProfitQuery.setFilterPolicyItems(filterPolicyItems);
+		return transferOutOrderDao.findProfitGroupByBranchAndItem(transferProfitQuery);
 	}
 
 }

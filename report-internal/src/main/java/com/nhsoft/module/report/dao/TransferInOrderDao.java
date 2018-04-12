@@ -145,4 +145,12 @@ public interface TransferInOrderDao {
 	 * @return
 	 */
 	public List<Object[]> findDueMoney(String systemBookCode, Integer inBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+	/**
+	 * 配送中心、调往分店汇总商品调入金额、毛利、数量
+	 * @param transferProfitQuery
+	 * @return
+	 */
+	public List<Object[]> findProfitGroupByBranchAndItem(TransferProfitQuery transferProfitQuery);
 }

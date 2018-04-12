@@ -788,13 +788,14 @@ public class APIBasic {
 		PosOrderQuery query = new PosOrderQuery();
 		query.setSystemBookCode("4020");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-01-31");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-11");
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		List<Integer> list = new ArrayList<>();
 		list.add(99);
 		query.setBranchNums(list);
+		query.setOrderRefBillno("asd");
 		List<PosOrderDTO> settled = posOrderRpc.findSettled("4020",query,0,5000);
 		return settled;
 	}
@@ -1503,14 +1504,18 @@ public class APIBasic {
 
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateFrom = sdf.parse("2018-04-01");
 		Date dateTo = sdf.parse("2018-04-10");
 
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
-		query.setIsQueryCF(false);
+		query.setIsQueryCF(true);
+		query.setQueryClient(true);
+		List<String> list = new ArrayList<>();
+		list.add("1111");
+		query.setClientFids(list);
 
 		List<ProfitAnalysisByItemSummary> profitAnalysisByItem = reportRpc.findProfitAnalysisByItem(query);
 		return profitAnalysisByItem;
@@ -1539,6 +1544,34 @@ public class APIBasic {
 
 		PromotionItemPageDTO result = posOrderRpc.findPromotionItemsByPage(query);
 		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test81")
+	public Object test81() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-12");
+		Date dateTo = sdf.parse("2018-04-12");
+
+		BranchProfitQuery query = new BranchProfitQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		query.setBranchNums(getBranchNums());
+		query.setBranchNum(99);
+		query.setQueryKit(false);
+		query.setFilterDel(true);
+		query.setOffset(0);
+		query.setLimit(50);
+		query.setSortField("startInventoryMoney");
+		query.setSortType("desc");
+
+
+		BranchProfitDataPageDTO branchAndItemProfit = reportRpc.findBranchAndItemProfit(query);
+
+		return branchAndItemProfit;
+
 	}
 
 }

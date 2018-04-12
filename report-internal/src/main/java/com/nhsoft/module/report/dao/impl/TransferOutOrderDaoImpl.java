@@ -1076,5 +1076,44 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 
 	}
 
+	@Override
+	public List<Object[]> findProfitGroupByBranchAndItem(TransferProfitQuery transferProfitQuery) {
+
+		Criteria criteria = createProfitCriteria(transferProfitQuery);
+
+		if (transferProfitQuery.isFilterPolicyItems()) {
+			criteria.setProjection(Projections.projectionList()
+					.add(Projections.groupProperty("t.branchNum"))
+					.add(Projections.groupProperty("t.outBranchNum"))
+					.add(Projections.groupProperty("detail.itemNum"))
+					.add(Projections.groupProperty("detail.outOrderDetailItemMatrixNum"))
+					.add(Projections.sqlProjection(
+							"sum(case when out_order_detail_policy_use_qty > 0 then (out_order_detail_qty - out_order_detail_policy_use_qty * out_order_detail_use_rate) else out_order_detail_qty end) as qty, "
+									+ "sum(case when out_order_detail_policy_use_qty > 0 then (out_order_detail_qty - out_order_detail_policy_use_qty * out_order_detail_use_rate) *out_order_detail_cost else out_order_detail_subtotal end) as subtotal, "
+									+ "sum(case when out_order_detail_policy_use_qty > 0 then (out_order_detail_use_qty - out_order_detail_policy_use_qty) * out_order_detail_use_price else out_order_detail_sale_subtotal end) as saleSubtotal, "
+									+ "sum(case when out_order_detail_policy_use_qty > 0 then (out_order_detail_qty - out_order_detail_policy_use_qty * out_order_detail_use_rate) * out_order_detail_sale_price else out_order_detail_sale_price * out_order_detail_qty end) as saleMoney, "
+									+ "sum(case when out_order_detail_policy_use_qty > 0 then (out_order_detail_use_qty - out_order_detail_policy_use_qty) else out_order_detail_use_qty end) as useQty, "
+									+ "sum(out_order_detail_present_basic_qty) as presentQty, "
+									+ "sum(out_order_detail_present_use_qty) as presentUseQty, " + "sum(out_order_detail_present_basic_qty * out_order_detail_price) as presentTransferMoney, "
+									+ "sum(out_order_detail_present_basic_qty * out_order_detail_cost) as presentCostMoney,"
+									+ "sum(out_order_detail_use_qty * out_order_detail_tare) as tare ",
+							new String[] { "qty", "subtotal", "saleSubtotal", "saleMoney", "useQty", "presentQty", "presentUseQty", "presentTransferMoney", "presentCostMoney", "tare" },
+							new Type[] { StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL,
+									StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL })));
+		} else {
+
+			criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("t.branchNum")).add(Projections.groupProperty("t.outBranchNum"))
+					.add(Projections.groupProperty("detail.itemNum")).add(Projections.groupProperty("detail.outOrderDetailItemMatrixNum")).add(Projections.sum("detail.outOrderDetailQty"))
+					.add(Projections.sum("detail.outOrderDetailSubtotal")).add(Projections.sum("detail.outOrderDetailSaleSubtotal"))
+					.add(Projections.sqlProjection("sum(out_order_detail_sale_price * out_order_detail_qty) as saleMoney", new String[] { "saleMoney" }, new Type[] { StandardBasicTypes.BIG_DECIMAL }))
+					.add(Projections.sum("detail.outOrderDetailUseQty")).add(Projections.sum("detail.outOrderDetailPresentBasicQty")).add(Projections.sum("detail.outOrderDetailPresentUseQty"))
+					.add(Projections.sqlProjection(
+							"sum(out_order_detail_present_basic_qty * out_order_detail_price) as presentTransferMoney, "
+									+ "sum(out_order_detail_present_basic_qty * out_order_detail_cost) as presentCostMoney, " + "sum(out_order_detail_use_qty * out_order_detail_tare) as tare ",
+							new String[] { "presentTransferMoney", "presentCostMoney", "tare" },
+							new Type[] { StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL })));
+		}
+		return criteria.list();
+	}
 
 }

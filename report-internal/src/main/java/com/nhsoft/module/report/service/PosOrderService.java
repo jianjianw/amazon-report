@@ -399,5 +399,21 @@ public interface PosOrderService {
 	 * @return
 	 */
 	public Object[] findPromotionItemsCount(PolicyAllowPriftQuery policyAllowPriftQuery);
+
+
+	/**
+	 * 门店 商品汇总
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param categoryCodes
+	 * @param queryKit 组合商品是否按明细查询
+	 * @param itemNums
+	 * @return
+	 */
+
+	public List<Object[]> findItemSumByCategory(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
+												List<String> categoryCodes, boolean queryKit, List<Integer> itemNums);
 }
 

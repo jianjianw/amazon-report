@@ -49,5 +49,10 @@ public class ReturnOrderServiceImpl implements ReturnOrderService {
 		return returnOrderDao.findReturnMonth(systemBookCode,branchNum,dateFrom,dateTo,strDate);
 	}
 
+    @Override
+    public List<Object[]> findBranchItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+        return returnOrderDao.findBranchItemSummary(systemBookCode,branchNums,dateFrom,dateTo,itemNums);
+    }
+
 
 }

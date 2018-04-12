@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.service;
 
 import com.nhsoft.module.report.model.TransferInOrder;
+import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -72,4 +73,18 @@ public interface TransferInOrderService {
 	 * @return
 	 */
 	public List<Object[]> findDueMoney(String systemBookCode, Integer inBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 按调出分店、调入分店、商品、多特性编码汇总基本数量、成本金额、调入金额、销售金额
+	 * @param systemBookCode
+	 * @param inBranchNums 调入分店列表
+	 * @param branchNums 调出分店列表
+	 * @param dateFrom 审核时间起
+	 * @param dateTo 审核时间止
+	 * @param categoryCodeList 商品类别代码列表
+	 * @param itemNums 商品主键列表
+	 * @return
+	 */
+	public List<Object[]> findProfitGroupByBranchAndItem(String systemBookCode, List<Integer> inBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodeList, List<Integer> itemNums);
+
 }

@@ -435,4 +435,28 @@ public class TransferInOrderDaoImpl extends DaoImpl implements TransferInOrderDa
 		}
 		return query.list();
 	}
+
+	@Override
+	public List<Object[]> findProfitGroupByBranchAndItem(TransferProfitQuery transferProfitQuery) {
+		Criteria criteria = createProfitCriteria(transferProfitQuery);
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.groupProperty("t.branchNum"))
+				.add(Projections.groupProperty("t.inBranchNum"))
+				.add(Projections.groupProperty("detail.itemNum"))
+				.add(Projections.groupProperty("detail.inOrderDetailItemMatrixNum"))
+				.add(Projections.sum("detail.inOrderDetailQty"))
+				.add(Projections.sum("detail.inOrderDetailSubtotal"))
+				.add(Projections.sum("detail.inOrderDetailSaleSubtotal"))
+				.add(Projections.sqlProjection("sum(in_order_detail_sale_price * in_order_detail_qty) as saleMoney",
+						new String[]{"saleMoney"}, new Type[]{StandardBasicTypes.BIG_DECIMAL,}))
+				.add(Projections.sum("detail.inOrderDetailUseQty"))
+				.add(Projections.sum("detail.inOrderDetailPresentQty"))
+				.add(Projections.sum("detail.inOrderDetailPresentUseQty"))
+				.add(Projections.sqlProjection("sum(in_order_detail_present_qty * in_order_detail_price) as presentTransferMoney, "
+								+ "sum(in_order_detail_present_qty * in_order_detail_cost) as presentCostMoney, sum(in_order_detail_use_qty * in_order_detail_tare) as tare ",
+						new String[]{"presentTransferMoney", "presentCostMoney", "tare"},
+						new Type[]{StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL, StandardBasicTypes.BIG_DECIMAL}))
+		);
+		return criteria.list();
+	}
 }

@@ -28,6 +28,7 @@ public class BranchProfitDataPageDTO implements Serializable {
     private BigDecimal receiveMoneySum;
     private BigDecimal returnMoneySum;
     private BigDecimal costMoneySum;
+
     private BigDecimal profitRateSum;
     private BigDecimal posRateSum;
 
