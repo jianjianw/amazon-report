@@ -1446,11 +1446,6 @@ public interface ReportRpc {
 	List<AlipayDetailDTO> findAlipayDetailDTOs(AlipayDetailQuery alipayDetailQuery);
 
 	/**
-	 * 门店商品汇总
-	 * */
-	public BranchProfitDataPageDTO findBranchAndItemProfit(BranchProfitQuery query);
-
-	/**
 	 * 查询门店商品销售排行 前100
 	 * @param systemBookCode
 	 * @param branchNum 分店号
@@ -1460,6 +1455,11 @@ public interface ReportRpc {
 	 */
 	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
 
+
+    /**
+     * 门店商品汇总
+     * */
+    public BranchProfitDataPageDTO findBranchAndItemProfit(BranchProfitQuery query);
 
 
 }
