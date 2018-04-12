@@ -2209,12 +2209,14 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if(queryPosItem){
                 sb.append("inner join pos_item as item with(nolock) on item.item_num = detail.item_num ");
             }
-            sb.append("where p.system_book_code = :systemBookCode ");
+            sb.append("where p.system_book_code = '" + profitAnalysisQueryData.getSystemBookCode() + "' ");
             if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
                 sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums())
                         + " ");
             }
-            sb.append("and p.shift_table_bizday between :bizFrom and :bizTo ");
+            sb.append("and p.shift_table_bizday >= '"+DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom())+"' ");
+            sb.append("and p.shift_table_bizday <= '"+ DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo())+"' ");
+
             sb.append("and p.order_state_code in (5, 7) and detail.item_num is not null ");
             sb.append("and detail.order_detail_state_code != 8 ");
             if(profitAnalysisQueryData.isQueryPresent()){
@@ -2265,12 +2267,13 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if(queryPosItem){
                 sb.append("inner join pos_item as item with(nolock) on item.item_num = detail.item_num ");
             }
-            sb.append("where detail.order_detail_book_code = :systemBookCode ");
+            sb.append("where detail.order_detail_book_code = '" + profitAnalysisQueryData.getSystemBookCode() +"' ");
             if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
                 sb.append("and detail.order_detail_branch_num in "
                         + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
             }
-            sb.append("and detail.order_detail_bizday between :bizFrom and :bizTo ");
+            sb.append("and detail.order_detail_bizday >= '" + DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()) + "' ");
+            sb.append("and detail.order_detail_bizday <= '" + DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()) + "' ");
             sb.append("and detail.order_detail_order_state in (5, 7) and detail.item_num is not null ");
             sb.append("and detail.order_detail_state_code != 8 ");
             if(profitAnalysisQueryData.isQueryPresent()){
@@ -2309,9 +2312,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             sb.append("group by detail.item_num ");
         }
         Query query = currentSession().createSQLQuery(sb.toString());
-        query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
-        query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
-        query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
         List<Object[]> objects = query.list();
 
         if(profitAnalysisQueryData.getIsQueryCF()){
@@ -2323,12 +2323,13 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("sum(case when detail.order_kit_detail_state_code = 4 then -detail.order_kit_detail_amount else order_kit_detail_amount end) as amount ");
 
 			sb.append("from pos_order_kit_detail as detail with(nolock) ");
-            sb.append("where detail.order_kit_detail_book_code = :systemBookCode ");
+            sb.append("where detail.order_kit_detail_book_code = '" + profitAnalysisQueryData.getSystemBookCode() + "' ");
             if (profitAnalysisQueryData.getBranchNums() != null && profitAnalysisQueryData.getBranchNums().size() > 0) {
                 sb.append("and detail.order_kit_detail_branch_num in "
                         + AppUtil.getIntegerParmeList(profitAnalysisQueryData.getBranchNums()) + " ");
             }
-            sb.append("and detail.order_kit_detail_bizday between :bizFrom and :bizTo ");
+            sb.append("and detail.order_kit_detail_bizday >= '"+ DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()) +"' ");
+            sb.append("and detail.order_kit_detail_bizday <= '"+ DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()) +"' ");
             sb.append("and detail.order_kit_detail_order_state in (5, 7) and detail.item_num is not null ");
             sb.append("and detail.order_kit_detail_state_code != 8 ");
             if(profitAnalysisQueryData.isQueryPresent()){
@@ -2357,9 +2358,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
             sb.append("group by detail.item_num ");
             query = currentSession().createSQLQuery(sb.toString());
-            query.setString("systemBookCode", profitAnalysisQueryData.getSystemBookCode());
-            query.setString("bizFrom", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableFrom()));
-            query.setString("bizTo", DateUtil.getDateShortStr(profitAnalysisQueryData.getShiftTableTo()));
             objects.addAll(query.list());
         }
         return objects;
