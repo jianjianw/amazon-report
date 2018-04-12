@@ -2791,10 +2791,10 @@ public class ReportRpcImpl implements ReportRpc {
 	public CustomerSummary sumCustomerAnalysis(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, String branchType) {
 		Object[] object = reportService.sumCustomerAnalysis(systemBookCode, dtFrom, dtTo, branchNums, branchType);
 		CustomerSummary customerSummary = new CustomerSummary();
-		customerSummary.setMoney((BigDecimal) object[0]);
-		customerSummary.setOrderNo((Long) object[1]);
-		customerSummary.setProfit((BigDecimal) object[2]);
-		customerSummary.setShiftCount((Long) object[3]);
+		customerSummary.setMoney(object[0] == null?BigDecimal.ZERO:(BigDecimal)object[0]);
+		customerSummary.setOrderNo(object[1] == null?0L:(Long)object[1]);
+		customerSummary.setProfit(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+		customerSummary.setShiftCount(object[3] == null?0L:(Long)object[3]);
 		return customerSummary;
 	}
 
@@ -3397,8 +3397,8 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = objects.get(i);
 			PosGroupBranchRegionTypeSummary posGroupBranchRegionTypeSummary = new PosGroupBranchRegionTypeSummary();
 			posGroupBranchRegionTypeSummary.setRegionType((String) object[0]);
-			posGroupBranchRegionTypeSummary.setMoney((BigDecimal) object[0]);
-			posGroupBranchRegionTypeSummary.setAmount((Integer) object[0]);
+			posGroupBranchRegionTypeSummary.setMoney(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+			posGroupBranchRegionTypeSummary.setAmount(object[2] == null?0:(Integer)object[2]);
 			list.add(posGroupBranchRegionTypeSummary);
 		}
 
@@ -3418,8 +3418,8 @@ public class ReportRpcImpl implements ReportRpc {
 			PosGroupHourAndBranchRegionTypeSummary summary = new PosGroupHourAndBranchRegionTypeSummary();
 			summary.setHour((int)object[0]);
 			summary.setBranchType((String) object[1]);
-			summary.setOrderMoney((BigDecimal) object[2]);
-			summary.setOrderCount((Integer) object[3]);
+			summary.setOrderMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+			summary.setOrderCount(object[3] == null?0:(Integer)object[3]);
 			list.add(summary);
 		}
 		return list;
@@ -5044,6 +5044,11 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		List<AlipayDetailDTO> list = reportService.findAlipayDetailDTOs(alipayDetailQuery);
 		return list;
+	}
+
+	@Override
+	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+		return reportService.findPosItemRanks(systemBookCode, branchNum, dateFrom, dateTo);
 	}
 
 

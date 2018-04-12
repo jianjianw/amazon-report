@@ -1445,6 +1445,16 @@ public interface ReportRpc {
 	 */
 	List<AlipayDetailDTO> findAlipayDetailDTOs(AlipayDetailQuery alipayDetailQuery);
 
+	/**
+	 * 查询门店商品销售排行 前100
+	 * @param systemBookCode
+	 * @param branchNum 分店号
+	 * @param dateFrom 营业日起
+	 * @param dateTo 营业日止
+	 * @return
+	 */
+	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);
+
 
 
 }
