@@ -204,29 +204,26 @@ public class APIBasic {
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value="/test7")
-	public void test7() throws Exception{
+	public List<Object[]> test7() throws Exception{
 		String systemBookCode= "4344";				//含or  放在exists关键字的上面不会报错，再高一点就报错了
-		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
-		List<Integer> branchNums = new ArrayList<Integer>();
-		for (BranchDTO b : all) {
-			Integer branchNum = b.getBranchNum();
-			branchNums.add(branchNum);
-		}
-		Calendar calendar = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-05-02");
-		Date dateTo = sdf.parse("2017-10-31");
-		List<Integer> items = new ArrayList<>();
-		items.add(434400126);
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-13");
+		/*List<Integer> items = new ArrayList<>();
+		items.add(434400126);*/
 		ItemQueryDTO itemQueryDTO = new ItemQueryDTO();
 		itemQueryDTO.setSystemBookCode(systemBookCode);
 		itemQueryDTO.setDateFrom(dateFrom);
 		itemQueryDTO.setDateTo(dateTo);
 		itemQueryDTO.setItemMethod("购销");
-		itemQueryDTO.setBranchNums(branchNums);
+		itemQueryDTO.setBranchNums(getBranchNums());
 		itemQueryDTO.setQueryKit(true);
 		List<Object[]> itemSum = posOrderService.findItemSum(itemQueryDTO);
-		System.out.println();
+		for (int i = 0; i <itemSum.size() ; i++) {
+			Object[] object = itemSum.get(i);
+			System.out.println(object[0]);
+		}
+		return itemSum;
 	}
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test8")

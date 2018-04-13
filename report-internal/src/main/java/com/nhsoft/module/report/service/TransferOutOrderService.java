@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.service;
 
 import com.nhsoft.module.report.model.TransferOutOrder;
+import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -190,5 +191,20 @@ public interface TransferOutOrderService {
 	public List<Object[]> findProfitGroupByBranchAndItem(String systemBookCode, List<Integer> outBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo,
 														 List<String> categoryCodeList, List<Integer> itemNums, Boolean filterPolicyItems);
 
+
+	/**
+	 * 按调入分店、调出分店、商品、多特性编码汇总 数量、成本、调出金额、销售金额
+	 * @param transferProfitQuery
+	 * @return
+	 */
+	public List<Object[]> findProfitGroupByBranchAndItem(TransferProfitQuery transferProfitQuery);
+
+
+	/**
+	 * 单据明细(部分字段)
+	 * @param transferProfitQuery
+	 * @return
+	 */
+	public List<Object[]> findDetails(TransferProfitQuery transferProfitQuery);
 
 }

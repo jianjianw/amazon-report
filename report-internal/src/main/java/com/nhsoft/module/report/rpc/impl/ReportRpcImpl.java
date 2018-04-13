@@ -6,6 +6,7 @@ import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
+import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.PosItemQuery;
@@ -88,12 +89,19 @@ public class ReportRpcImpl implements ReportRpc {
 	private PosItemLogRpc posItemLogRpc;
 	@Autowired
 	private MarketActionOpenIdService marketActionOpenIdService;
-
 	@Autowired
 	private WholesaleOrderRpc wholesaleOrderRpc;
-
 	@Autowired
 	private BookResourceService bookResourceService;
+	@Autowired
+	private PosItemFlagRpc posItemFlagRpc;
+	@Autowired
+	private PosItemRpc posItemRpc;
+	@Autowired
+	private ItemMatrixService itemMatrixService;
+
+
+
 
 	@Override
 	public List<SalePurchaseProfitDTO> findSalePurchaseProfitDTOsByBranch(SaleAnalysisQueryData saleAnalysisQueryData) {
@@ -5465,6 +5473,667 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			return new PagingLoadResultBean<BranchProfitDataDTO>(returnList, count, offset);*/
 	}
+
+
+	@Override
+	public TransferProfitByPosItemPageDTO findTransferProfitByPosItemBranch(TransferProfitQuery queryData){
+
+		int offset = queryData.getOffset();
+		int limit = queryData.getLimit();
+		String sortField = queryData.getSortField();
+		String sortType = queryData.getSortType();
+		queryData.setCategoryCodes(queryData.getItemTypeNums());
+		String unit = queryData.getUnitType();
+		if (unit == null) {
+			unit = AppConstants.UNIT_TRANFER;
+			queryData.setUnitType(unit);
+		}
+		List<Integer> itemNums = queryData.getItemNums();
+		List<String> categoryCodes = queryData.getCategoryCodes();
+		List<PosItemDTO> posItems = new ArrayList<PosItemDTO>();
+
+
+		if (queryData.getItemFlagNum() != null && queryData.getItemFlagNum() > 0) {
+			List<ItemFlagDetailDTO> itemDetails = posItemFlagRpc.findDetails(queryData.getSystemBookCode(), queryData.getItemFlagNum());
+			for (int i = 0; i < itemDetails.size(); i++) {
+				posItems.add(itemDetails.get(i).getPosItem());
+			}
+			if ((itemNums != null && itemNums.size() > 0)
+					|| (categoryCodes != null && categoryCodes.size() > 0)) {
+				for (int i = 0; i < posItems.size(); i++) {
+					if (itemNums != null && itemNums.size() > 0) {
+						if (!itemNums.contains(posItems.get(i).getItemNum())) {
+							posItems.remove(i);
+							i--;
+							continue;
+						}
+					}
+					if (categoryCodes != null && categoryCodes.size() > 0) {
+						if (!categoryCodes.contains(posItems.get(i).getItemCategoryCode())) {
+							posItems.remove(i);
+							i--;
+							continue;
+						}
+					}
+				}
+			}
+			if (posItems.size() == 0) {
+				return new TransferProfitByPosItemPageDTO();
+			} else {
+				itemNums = new ArrayList<Integer>();
+				for (int i = 0; i < posItems.size(); i++) {
+					itemNums.add(posItems.get(i).getItemNum());
+				}
+				queryData.setItemNums(itemNums);
+			}
+		}
+
+		List<PosItem> posItemDatas = posItemService.findShortItems(queryData.getSystemBookCode());
+		List<TransferProfitByPosItemDTO> list = new ArrayList<TransferProfitByPosItemDTO>();
+
+		List<Object[]> outObjects = transferOutOrderService.findProfitGroupByBranchAndItem(queryData);
+
+		for (int i = 0; i < outObjects.size(); i++) {
+			Object[] objects = outObjects.get(i);
+			Integer branchNum = (Integer) objects[0];
+			Integer outBranchNum = (Integer) objects[1];
+			Integer itemNum = (Integer) objects[2];
+			Integer itemMatrixNum = objects[3] == null ? 0 : (Integer) objects[3];
+			BigDecimal amount = objects[4] == null ? BigDecimal.ZERO : (BigDecimal) objects[4];
+			BigDecimal cost = objects[5] == null ? BigDecimal.ZERO : (BigDecimal) objects[5];
+			BigDecimal money = objects[6] == null ? BigDecimal.ZERO : (BigDecimal) objects[6];
+			BigDecimal saleMoney = objects[7] == null ? BigDecimal.ZERO : (BigDecimal) objects[7];
+			BigDecimal useAmount = objects[8] == null ? BigDecimal.ZERO : (BigDecimal) objects[8];
+			BigDecimal amountPr = objects[9] == null ? BigDecimal.ZERO : (BigDecimal) objects[9];
+			BigDecimal useAmountPr = objects[10] == null ? BigDecimal.ZERO : (BigDecimal) objects[10];
+			BigDecimal moneyTranPr = objects[11] == null ? BigDecimal.ZERO : (BigDecimal) objects[11];
+			BigDecimal moneyCostPr = objects[12] == null ? BigDecimal.ZERO : (BigDecimal) objects[12];
+			BigDecimal receiveTare = objects[13] == null ? BigDecimal.ZERO : (BigDecimal) objects[13];
+
+			TransferProfitByPosItemDTO data = new TransferProfitByPosItemDTO();
+			data.setTranferBranchNum(outBranchNum);
+			data.setBranchNum(branchNum);
+			data.setItemNum(itemNum);
+			data.setItemMatrixNum(itemMatrixNum);
+			data.setBasicQty(amount);
+			data.setOutAmount(useAmount);
+			data.setBasicQtyPr(amountPr);
+			data.setOutAmountPr(useAmountPr);
+			data.setOutAmountPrTranferMoney(moneyTranPr.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutAmountPrCostMoney(moneyCostPr.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutCost(cost.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutMoney(money.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setSaleMoney(saleMoney.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setReceiveTare(receiveTare);
+			list.add(data);
+		}
+
+		List<Object[]> inObjects = transferInOrderService.findProfitGroupByBranchAndItem(queryData);
+		for (int i = 0; i < inObjects.size(); i++) {
+			Object[] objects = inObjects.get(i);
+			Integer branchNum = (Integer) objects[0];
+			Integer inBranchNum = (Integer) objects[1];
+			Integer itemNum = (Integer) objects[2];
+			Integer itemMatrixNum = objects[3] == null ? 0 : (Integer) objects[3];
+			BigDecimal amount = objects[4] == null ? BigDecimal.ZERO : (BigDecimal) objects[4];
+			BigDecimal cost = objects[5] == null ? BigDecimal.ZERO : (BigDecimal) objects[5];
+			BigDecimal money = objects[6] == null ? BigDecimal.ZERO : (BigDecimal) objects[6];
+			BigDecimal saleMoney = objects[7] == null ? BigDecimal.ZERO : (BigDecimal) objects[7];
+			BigDecimal useAmount = objects[8] == null ? BigDecimal.ZERO : (BigDecimal) objects[8];
+			BigDecimal amountPr = objects[9] == null ? BigDecimal.ZERO : (BigDecimal) objects[9];
+			BigDecimal useAmountPr = objects[10] == null ? BigDecimal.ZERO : (BigDecimal) objects[10];
+			BigDecimal moneyTranPr = objects[11] == null ? BigDecimal.ZERO : (BigDecimal) objects[11];
+			BigDecimal moneyCostPr = objects[12] == null ? BigDecimal.ZERO : (BigDecimal) objects[12];
+			BigDecimal receiveTare = objects[12] == null ? BigDecimal.ZERO : (BigDecimal) objects[12];
+
+			//TransferProfitByPosItemDTO data = getTransferProfitByPosItemData(list, inBranchNum, branchNum, itemNum, itemMatrixNum);
+			TransferProfitByPosItemDTO data = null;
+			if (data == null) {
+				data = new TransferProfitByPosItemDTO();
+				data.setTranferBranchNum(inBranchNum);
+				data.setBranchNum(branchNum);
+				data.setItemNum(itemNum);
+				data.setItemMatrixNum(itemMatrixNum);
+				list.add(data);
+			}
+			data.setBasicQty(data.getBasicQty().subtract(amount));
+			data.setOutAmount(data.getOutAmount().subtract(useAmount));
+			data.setBasicQtyPr(data.getBasicQtyPr().subtract(amountPr));
+			data.setOutAmountPr(data.getOutAmountPr().subtract(useAmountPr));
+			data.setOutCost((data.getOutCost().subtract(cost)).setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutMoney((data.getOutMoney().subtract(money)).setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setSaleMoney((data.getSaleMoney().subtract(saleMoney)).setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutAmountPrTranferMoney(data.getOutAmountPrTranferMoney().subtract(moneyTranPr).setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutAmountPrCostMoney(data.getOutAmountPrCostMoney().subtract(moneyCostPr).setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setReceiveTare(data.getReceiveTare().subtract(receiveTare));
+		}
+		List<Branch> branchs = branchService.findInCache(queryData.getSystemBookCode());
+
+		BigDecimal basicQtySum = BigDecimal.ZERO;
+		BigDecimal basicQtyPrSum = BigDecimal.ZERO;
+		for (int i = 0; i < list.size(); i++) {
+			TransferProfitByPosItemDTO data = list.get(i);
+			data.setId(AppUtil.getUUID());
+			basicQtySum = basicQtySum.add(data.getBasicQty());
+			basicQtyPrSum = basicQtyPrSum.add(data.getBasicQtyPr());
+			Branch branch = AppUtil.getBranch(branchs, data.getTranferBranchNum());
+			if (branch != null) {
+				data.setTranferBranchNum(branch.getId().getBranchNum());
+				data.setTranferBranchName(branch.getBranchName());
+			}
+
+			branch = AppUtil.getBranch(branchs, data.getBranchNum());
+			if (branch != null) {
+				data.setBranchNum(branch.getId().getBranchNum());
+				data.setBranchName(branch.getBranchName());
+			}
+
+			Integer itemNum = data.getItemNum();
+			PosItem posItem = AppUtil.getPosItem(itemNum, posItemDatas);
+			if (posItem == null) {
+				continue;
+			}
+			//data.setPosItemData(PosItemConverter.createModelData(posItem, false));
+			data.setPosItemTypeCode(posItem.getItemCategoryCode());
+			data.setPosItemTypeName(posItem.getItemCategory());
+			data.setSpec(posItem.getItemSpec());
+			if (queryData.isEnableAssist()) {
+				if (StringUtils.isNotEmpty(posItem.getItemAssistUnit()) && posItem.getItemAssistRate() != null
+						&& posItem.getItemAssistRate().compareTo(BigDecimal.ZERO) > 0) {
+					data.setUnit(posItem.getItemAssistUnit());
+				} else {
+					data.setUnit(posItem.getItemTransferUnit());
+					if (unit.equals(AppConstants.UNIT_TRANFER)) {
+						data.setUnit(posItem.getItemTransferUnit());
+					} else if (unit.equals(AppConstants.UNIT_SOTRE)) {
+						data.setUnit(posItem.getItemInventoryUnit());
+					} else if (unit.equals(AppConstants.UNIT_PURCHASE)) {
+						data.setUnit(posItem.getItemPurchaseUnit());
+					} else if (unit.equals(AppConstants.UNIT_BASIC)) {
+						data.setUnit(posItem.getItemUnit());
+					} else if (unit.equals(AppConstants.UNIT_PIFA)) {
+						data.setUnit(posItem.getItemWholesaleUnit());
+					}
+				}
+			} else {
+				data.setUnit(posItem.getItemTransferUnit());
+				if (unit.equals(AppConstants.UNIT_TRANFER)) {
+					data.setUnit(posItem.getItemTransferUnit());
+				} else if (unit.equals(AppConstants.UNIT_SOTRE)) {
+					data.setUnit(posItem.getItemInventoryUnit());
+				} else if (unit.equals(AppConstants.UNIT_PURCHASE)) {
+					data.setUnit(posItem.getItemPurchaseUnit());
+				} else if (unit.equals(AppConstants.UNIT_BASIC)) {
+					data.setUnit(posItem.getItemUnit());
+				} else if (unit.equals(AppConstants.UNIT_PIFA)) {
+					data.setUnit(posItem.getItemWholesaleUnit());
+				}
+			}
+			data.setBasicUnit(posItem.getItemUnit());
+			data.setPosItemCode(posItem.getItemCode());
+			data.setPosItemName(posItem.getItemName());
+
+			BigDecimal rate = BigDecimal.ZERO;
+			if (unit.equals(AppConstants.UNIT_TRANFER)) {
+				rate = posItem.getItemTransferRate();
+			} else if (unit.equals(AppConstants.UNIT_SOTRE)) {
+				rate = posItem.getItemInventoryRate();
+			} else if (unit.equals(AppConstants.UNIT_PURCHASE)) {
+				rate = posItem.getItemPurchaseRate();
+			} else if (unit.equals(AppConstants.UNIT_BASIC)) {
+				rate = BigDecimal.ONE;
+			} else if (unit.equals(AppConstants.UNIT_PIFA)) {
+				rate = posItem.getItemWholesaleRate();
+			}
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				data.setOutAmount(data.getBasicQty().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
+				data.setOutAmountPr(data.getBasicQtyPr().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
+			}
+			if (data.getItemMatrixNum() > 0) {
+				ItemMatrix itemMatrix = AppUtil.getItemMatrix(posItem.getItemMatrixs(), itemNum, data.getItemMatrixNum());
+				if (itemMatrix != null) {
+					data.setPosItemName(data.getPosItemName().concat(AppUtil.getMatrixName(itemMatrix)));
+				}
+			}
+			data.setOutProfit((data.getOutMoney().subtract(data.getOutCost())).setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setSaleProfit((data.getSaleMoney().subtract(data.getOutMoney())).setScale(2, BigDecimal.ROUND_HALF_UP));
+
+			if (data.getOutMoney().compareTo(BigDecimal.ZERO) > 0) {
+				data.setOutProfitRate(data.getOutProfit().divide(data.getOutMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2));
+
+			} else {
+				data.setOutProfitRate(BigDecimal.ZERO);
+			}
+			if (data.getSaleMoney().compareTo(BigDecimal.ZERO) != 0) {
+				data.setSaleProfitRate(data.getSaleProfit().divide(data.getSaleMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2));
+
+			} else {
+				data.setSaleProfitRate(BigDecimal.ZERO);
+			}
+			if (data.getOutMoney() == null || data.getBasicQty() == null || data.getBasicQty().compareTo(BigDecimal.ZERO) == 0) {
+				data.setBasicPrice(BigDecimal.ZERO);
+			} else {
+				data.setBasicPrice(data.getOutMoney().divide(data.getBasicQty(), 4, BigDecimal.ROUND_HALF_UP));
+			}
+
+		}
+		if (sortField == null) {
+			sortField = "branchNum";
+			sortType = "ASC";
+		}
+
+		//AppUtil.setProperty(list);
+		/*ComparatorAutoGridGroupData comparator = new ComparatorAutoGridGroupData(
+				"tranferBranchNum", sortField, sortType);
+		Collections.sort(list, comparator);*/
+
+		// 总合计
+		BigDecimal outAmountSum = BigDecimal.ZERO;
+		BigDecimal outAmountPrSum = BigDecimal.ZERO;
+		BigDecimal outMoneySum = BigDecimal.ZERO;
+		BigDecimal saleMoneySum = BigDecimal.ZERO;
+		BigDecimal outCostSum = BigDecimal.ZERO;
+		BigDecimal outProfitSum = BigDecimal.ZERO;
+		BigDecimal saleProfitSum = BigDecimal.ZERO;
+		BigDecimal outAmountPrTranferMoneySum = BigDecimal.ZERO;
+		BigDecimal outAmountPrCostMoneySum = BigDecimal.ZERO;
+		BigDecimal receiveTareSum = BigDecimal.ZERO;
+		BigDecimal totalAmountSum = BigDecimal.ZERO;
+		BigDecimal totalMoneySum = BigDecimal.ZERO;
+		for (int i = list.size() - 1; i >= 0; i--) {
+			TransferProfitByPosItemDTO data = list.get(i);
+			data.setTotalAmount(data.getOutAmount().subtract(data.getInAmount()).add(data.getOutAmountPr()));
+			data.setTotalMoney(data.getOutMoney().subtract(data.getInMoney()).add(data.getOutAmountPrTranferMoney()));
+
+			outAmountSum = outAmountSum.add(data.getOutAmount());
+			outAmountPrSum = outAmountPrSum.add(data.getOutAmountPr());
+			outCostSum = outCostSum.add(data.getOutCost());
+			outMoneySum = outMoneySum.add(data.getOutMoney());
+			saleMoneySum = saleMoneySum.add(data.getSaleMoney());
+			outProfitSum = outProfitSum.add(data.getOutProfit());
+			saleProfitSum = saleProfitSum.add(data.getSaleProfit());
+			outAmountPrTranferMoneySum = outAmountPrTranferMoneySum.add(data.getOutAmountPrTranferMoney());
+			outAmountPrCostMoneySum = outAmountPrCostMoneySum.add(data.getOutAmountPrCostMoney());
+			receiveTareSum = receiveTareSum.add(data.getReceiveTare());
+			totalAmountSum = totalAmountSum.add(data.getTotalAmount());
+			totalMoneySum = totalMoneySum.add(data.getTotalMoney());
+
+		}
+
+		int dataSize = list.size();
+		TransferProfitByPosItemPageDTO result = new TransferProfitByPosItemPageDTO();
+		result.setData(list);
+		result.setCount(dataSize);
+
+		result.setSaleMoneySum(saleMoneySum);
+		result.setOutMoneySum(outMoneySum);
+		result.setOutCostSum(outCostSum);
+		result.setOutProfitSum(outProfitSum);
+		result.setSaleProfitSum(saleProfitSum);
+		result.setOutAmountSum(outAmountSum);
+		result.setOutAmountPrSum(outAmountPrSum);
+		result.setBasicQtySum(basicQtySum);
+		result.setBasicQtyPrSum(basicQtyPrSum);
+		result.setOutAmountPrTranferMoneySum(outAmountPrTranferMoneySum);
+		result.setOutAmountPrCostMoneySum(outAmountPrCostMoneySum);
+		result.setReceiveTareSum(receiveTareSum);
+		result.setTotalMoneySum(totalMoneySum);
+		result.setTotalAmountSum(totalAmountSum);
+
+		if (outMoneySum.compareTo(BigDecimal.ZERO) == 0) {
+			result.setOutProfitRateSum(BigDecimal.ZERO);
+		} else {
+			result.setOutProfitRateSum(outProfitSum.divide(outMoneySum, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+		}
+
+		if (saleMoneySum.compareTo(BigDecimal.ZERO) == 0) {
+			result.setSaleProfitRateSum(BigDecimal.ZERO);
+		} else {
+			result.setSaleProfitRateSum(saleProfitSum.divide(saleMoneySum, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+		}
+
+		int pageSum = offset + limit;
+		if(queryData.isPage()){
+			List<TransferProfitByPosItemDTO> subList = null;
+			if(dataSize >= pageSum-1){
+				subList = list.subList(offset,pageSum);
+			}else{
+				subList = list.subList(offset,dataSize);
+			}
+			result.setData(subList);
+
+		}
+
+		return result;
+		/*if (StringUtils.isNotEmpty(exportUuid)) {
+
+			String excelUrl = null;
+			Element element = getElementFromCache(exportUuid);
+			if (element != null) {
+				ExportCacheUtil exportCacheUtil = (ExportCacheUtil) element.getValue();
+				removeElementFromCache(exportUuid);
+				excelUrl = exportCacheUtil.exportBasicAutoGrid(list);
+			}
+			List<TransferProfitByPosItemData> returnDatas = new ArrayList<TransferProfitByPosItemData>();
+			TransferProfitByPosItemData data = new TransferProfitByPosItemData();
+			data.setCacheUrl(excelUrl);
+			returnDatas.add(data);
+			return new PagingLoadResultBean<TransferProfitByPosItemData>(returnDatas, returnDatas.size(), 0);
+		}
+
+		return new PagingLoadResultBean<TransferProfitByPosItemData>(returnList, count, offset);*/
+	}
+
+
+
+	@Override
+	public TransferProfitByPosItemDetailPageDTO findTransferProfitByPosItemDetail(TransferProfitQuery queryData) {
+
+		int offset = queryData.getOffset();
+		int limit = queryData.getLimit();
+		String sortField = queryData.getSortField();
+		String sortType = queryData.getSortType();
+		Integer itemFlagNum = queryData.getItemFlagNum();
+
+		List<Integer> itemNums = queryData.getItemNums();
+		List<String> categoryCodes = queryData.getItemTypeNums();
+		List<PosItemDTO> posItems = new ArrayList<PosItemDTO>();
+		if (itemFlagNum != null && itemFlagNum > 0) {
+			List<ItemFlagDetailDTO> itemDetails = posItemFlagRpc.findDetails(queryData.getSystemBookCode(), itemFlagNum);
+			for (int i = 0; i < itemDetails.size(); i++) {
+				posItems.add(itemDetails.get(i).getPosItem());
+			}
+			if ((itemNums != null && itemNums.size() > 0)
+					|| (categoryCodes != null && categoryCodes.size() > 0)) {
+				for (int i = 0; i < posItems.size(); i++) {
+					if (itemNums != null && itemNums.size() > 0) {
+						if (!itemNums.contains(posItems.get(i).getItemNum())) {
+							posItems.remove(i);
+							i--;
+							continue;
+						}
+					}
+					if (categoryCodes != null && categoryCodes.size() > 0) {
+						if (!categoryCodes.contains(posItems.get(i).getItemCategoryCode())) {
+							posItems.remove(i);
+							i--;
+							continue;
+						}
+					}
+				}
+			}
+			if (posItems.size() == 0) {
+				return new TransferProfitByPosItemDetailPageDTO();
+			} else {
+				itemNums = new ArrayList<Integer>();
+				for (int i = 0; i < posItems.size(); i++) {
+					itemNums.add(posItems.get(i).getItemNum());
+				}
+				queryData.setItemNums(itemNums);
+			}
+		}
+
+
+		List<Branch> branchs = branchService.findInCache(queryData.getSystemBookCode());
+		List<TransferProfitByPosItemDetailDTO> list = new ArrayList<TransferProfitByPosItemDetailDTO>();
+
+		//TransferProfitQuery query = (TransferProfitQuery) ObjectConverter.copy(queryData, new TransferProfitQuery());
+
+		//诚信志远 不统计特价商品
+		/*query.setCategoryCodes(categoryCodes);
+		List<Object[]> outObjects = transferOutOrderService.findDetails(query);*/
+
+
+		queryData.setCategoryCodes(categoryCodes);
+		List<Object[]> outObjects = transferOutOrderService.findDetails(queryData);
+
+		List<ItemMatrix> itemMatrixs = new ArrayList<ItemMatrix>();
+
+		// 总合计
+		BigDecimal baseAmountSum = BigDecimal.ZERO;
+		BigDecimal outAmountSum = BigDecimal.ZERO;
+		BigDecimal baseAmountPrSum = BigDecimal.ZERO;
+		BigDecimal outAmountPrSum = BigDecimal.ZERO;
+		BigDecimal outAmountPrTranferMoneySum = BigDecimal.ZERO;
+		BigDecimal outAmountPrCostMoneySum = BigDecimal.ZERO;
+		BigDecimal outMoneySum = BigDecimal.ZERO;
+		BigDecimal costUnitPriceSum = BigDecimal.ZERO;
+		BigDecimal profitMoneySum = BigDecimal.ZERO;
+		List<Integer> nums = new ArrayList<Integer>();
+		for (int i = 0; i < outObjects.size(); i++) {
+			Object[] objects = outObjects.get(i);
+
+			TransferProfitByPosItemDetailDTO data = new TransferProfitByPosItemDetailDTO();
+			data.setPosOrderNum((String) objects[0]);
+			data.setPosOrderType("调出单");
+			data.setSaleTime((Date) objects[1]);
+			data.setOrderSeller((String) objects[2]);
+			data.setOrderMaker((String) objects[3]);
+			data.setOrderAuditor((String) objects[4]);
+			data.setResponseBranchNum((Integer) objects[5]);
+			data.setPosItemCode((String) objects[6]);
+			data.setPosItemName((String) objects[7]);
+			data.setSpec((String) objects[8]);
+			data.setOutUnit((String) objects[9]);
+			data.setOutAmount((BigDecimal) objects[10]);
+			data.setOutUnitPrice((BigDecimal) objects[11]);
+			data.setOutMoney((BigDecimal) objects[12]);
+			data.setCostUnitPrice((BigDecimal) objects[13]);
+			data.setProfitMoney(data.getOutMoney().subtract(data.getCostUnitPrice()));
+			data.setRemark((String) objects[14]);
+			data.setDistributionBranchNum((Integer) objects[15]);
+			data.setBaseUnit((String) objects[16]);
+			Date sendDate = (Date) objects[17];
+			data.setBaseAmount(((BigDecimal) objects[18]).setScale(2, BigDecimal.ROUND_HALF_UP));
+			if (data.getBaseAmount() == null || data.getBaseAmount().compareTo(BigDecimal.ZERO) == 0 || data.getOutMoney() == null) {
+			} else {
+				data.setBasePrice(data.getOutMoney().divide(data.getBaseAmount(), 4, BigDecimal.ROUND_HALF_UP));
+			}
+			Integer itemMatrixNum = (Integer) objects[19];
+			Integer itemNum = (Integer) objects[20];
+			if (!nums.contains(itemNum)) {
+				nums.add(itemNum);
+			}
+			data.setItemNum(itemNum);
+			data.setOutUnitPr((String) objects[22]);
+			data.setBaseAmountPr(objects[23] == null ? BigDecimal.ZERO : (BigDecimal) objects[23]);
+			data.setOutAmountPr((objects[24] == null ? BigDecimal.ZERO : (BigDecimal) objects[24]).setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutAmountPrTranferMoney((objects[25] == null ? BigDecimal.ZERO : (BigDecimal) objects[25]).setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutAmountPrCostMoney((objects[26] == null ? BigDecimal.ZERO : (BigDecimal) objects[26]).setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setProductDate(objects[27] == null ? null : (Date) objects[27]);
+			if (itemMatrixNum != null && itemMatrixNum > 0) {
+
+				ItemMatrix itemMatrix = AppUtil.getItemMatrix(itemMatrixs, itemNum, itemMatrixNum);
+				if (itemMatrix == null) {
+					itemMatrix = itemMatrixService.read(itemNum, itemMatrixNum);
+					if (itemMatrix != null) {
+						data.setPosItemName(data.getPosItemName().concat(AppUtil.getMatrixName(itemMatrix)));
+						itemMatrixs.add(itemMatrix);
+					}
+				} else {
+					data.setPosItemName(data.getPosItemName().concat(AppUtil.getMatrixName(itemMatrix)));
+				}
+			}
+
+			if (sendDate == null) {
+				data.setState("未配货");
+			} else {
+				data.setState("已配货");
+			}
+			Branch branch = AppUtil.getBranch(branchs, data.getDistributionBranchNum());
+			if (branch == null) {
+				continue;
+			}
+			data.setDistributionBranchNum(branch.getId().getBranchNum());
+			data.setDistributionBranchName(branch.getBranchName());
+
+			branch = AppUtil.getBranch(branchs, data.getResponseBranchNum());
+			if (branch == null) {
+				continue;
+			}
+			data.setResponseBranchNum(branch.getId().getBranchNum());
+			data.setResponseBranchName(branch.getBranchName());
+			list.add(data);
+
+			baseAmountSum = baseAmountSum.add(data.getBaseAmount());
+			outAmountSum = outAmountSum.add(data.getOutAmount());
+			baseAmountPrSum = baseAmountPrSum.add(data.getBaseAmountPr());
+			outAmountPrSum = outAmountPrSum.add(data.getOutAmountPr());
+			outMoneySum = outMoneySum.add(data.getOutMoney());
+			costUnitPriceSum = costUnitPriceSum.add(data.getCostUnitPrice());
+			profitMoneySum = profitMoneySum.add(data.getProfitMoney());
+			outAmountPrTranferMoneySum = outAmountPrTranferMoneySum.add(data.getOutAmountPrTranferMoney());
+			outAmountPrCostMoneySum = outAmountPrCostMoneySum.add(data.getOutAmountPrCostMoney());
+		}
+
+		//List<Object[]> inObjects = transferInOrderService.findDetails(query);
+		List<Object[]> inObjects = transferInOrderService.findDetails(queryData);
+
+		for (int i = 0; i < inObjects.size(); i++) {
+			Object[] objects = inObjects.get(i);
+
+			TransferProfitByPosItemDetailDTO data = new TransferProfitByPosItemDetailDTO();
+			data.setPosOrderNum((String) objects[0]);
+			data.setPosOrderType("调入单");
+			data.setSaleTime((Date) objects[1]);
+			data.setOrderSeller((String) objects[2]);
+			data.setOrderMaker((String) objects[3]);
+			data.setOrderAuditor((String) objects[4]);
+			data.setResponseBranchNum((Integer) objects[5]);
+			data.setPosItemCode((String) objects[6]);
+			data.setPosItemName((String) objects[7]);
+			data.setSpec((String) objects[8]);
+			data.setOutUnit((String) objects[9]);
+			data.setOutAmount(((BigDecimal) objects[10]).negate());
+			data.setOutUnitPrice((BigDecimal) objects[11]);
+			data.setOutMoney(((BigDecimal) objects[12]).negate());
+			data.setCostUnitPrice(((BigDecimal) objects[13]).negate());
+			data.setProfitMoney(data.getOutMoney().subtract(data.getCostUnitPrice()));
+			data.setRemark((String) objects[14]);
+			data.setDistributionBranchNum((Integer) objects[15]);
+			data.setBaseUnit((String) objects[16]);
+			data.setBaseAmount(((BigDecimal) objects[17]).negate().setScale(2, BigDecimal.ROUND_HALF_UP));
+			Integer itemMatrixNum = (Integer) objects[18];
+			Integer itemNum = (Integer) objects[19];
+			if (!nums.contains(itemNum)) {
+				nums.add(itemNum);
+			}
+			data.setItemNum(itemNum);
+			data.setOutUnitPr((String) objects[20]);
+			data.setOutAmountPr((objects[21] == null ? BigDecimal.ZERO : (BigDecimal) objects[21]).negate());
+			data.setBaseAmountPr((objects[22] == null ? BigDecimal.ZERO : (BigDecimal) objects[22]).negate().setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutAmountPrTranferMoney((objects[23] == null ? BigDecimal.ZERO : (BigDecimal) objects[23]).negate().setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutAmountPrCostMoney((objects[24] == null ? BigDecimal.ZERO : (BigDecimal) objects[24]).negate().setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setProductDate(objects[25] == null ? null : (Date) objects[25]);
+			if (itemMatrixNum != null && itemMatrixNum > 0) {
+
+				ItemMatrix itemMatrix = AppUtil.getItemMatrix(itemMatrixs, itemNum, itemMatrixNum);
+				if (itemMatrix == null) {
+					itemMatrix = itemMatrixService.read(itemNum, itemMatrixNum);
+					if (itemMatrix != null) {
+						data.setPosItemName(data.getPosItemName().concat(AppUtil.getMatrixName(itemMatrix)));
+						itemMatrixs.add(itemMatrix);
+					}
+				} else {
+					data.setPosItemName(data.getPosItemName().concat(AppUtil.getMatrixName(itemMatrix)));
+
+				}
+			}
+			data.setState("未配货");
+
+			Branch branch = AppUtil.getBranch(branchs, data.getDistributionBranchNum());
+			if (branch == null) {
+				continue;
+			}
+			data.setDistributionBranchNum(branch.getId().getBranchNum());
+			data.setDistributionBranchName(branch.getBranchName());
+
+			branch = AppUtil.getBranch(branchs, data.getResponseBranchNum());
+			if (branch == null) {
+				continue;
+			}
+			data.setResponseBranchNum(branch.getId().getBranchNum());
+			data.setResponseBranchName(branch.getBranchName());
+			list.add(data);
+
+			baseAmountSum = baseAmountSum.add(data.getBaseAmount());
+			outAmountSum = outAmountSum.add(data.getOutAmount());
+			baseAmountPrSum = baseAmountPrSum.add(data.getBaseAmountPr());
+			outAmountPrSum = outAmountPrSum.add(data.getOutAmountPr());
+			outMoneySum = outMoneySum.add(data.getOutMoney());
+			costUnitPriceSum = costUnitPriceSum.add(data.getCostUnitPrice());
+			profitMoneySum = profitMoneySum.add(data.getProfitMoney());
+			outAmountPrTranferMoneySum = outAmountPrTranferMoneySum.add(data.getOutAmountPrTranferMoney());
+			outAmountPrCostMoneySum = outAmountPrCostMoneySum.add(data.getOutAmountPrCostMoney());
+		}
+		List<PosItem> items = posItemService.findByItemNumsInCache(queryData.getSystemBookCode(), nums);
+		for (int i = 0; i < list.size(); i++) {
+			TransferProfitByPosItemDetailDTO detailData = list.get(i);
+			detailData.setId(AppUtil.getUUID());
+			PosItem posItem = AppUtil.getPosItem(detailData.getItemNum(), items);
+			if (posItem != null) {
+				//detailData.setPosItemData(PosItemConverter.createModelData(posItem, false));
+				detailData.setItemValidPeriod(posItem.getItemValidPeriod());
+				if (detailData.getProductDate() != null && posItem.getItemValidPeriod() != null && posItem.getItemValidPeriod() >= 0) {
+					detailData.setProductPassDate(DateUtil.addDay(detailData.getProductDate(), posItem.getItemValidPeriod()));
+				}
+				detailData.setDepartment(posItem.getItemDepartment());
+			}
+		}
+		//AppUtil.setProperty(list);
+		if (sortField == null) {
+			sortField = "posOrderNum";
+			sortType = "ASC";
+		}
+		/*ComparatorAutoGridBaseData comparator = new ComparatorAutoGridBaseData(sortField, sortType);
+		Collections.sort(list, comparator);*/
+
+
+		int dataSize = list.size();
+		TransferProfitByPosItemDetailPageDTO result = new TransferProfitByPosItemDetailPageDTO();
+		result.setCount(dataSize);
+		result.setData(list);
+		result.setOutMoneySum(outMoneySum);
+		result.setCostUnitPriceSum(costUnitPriceSum);
+		result.setProfitMoneySum(profitMoneySum);
+		result.setOutAmountSum(outAmountSum);
+		result.setBaseAmountSum(baseAmountSum);
+		result.setOutAmountPrSum(outAmountPrSum);
+		result.setBaseAmountPrSum(baseAmountPrSum);
+		result.setOutAmountPrCostMoneySum(outAmountPrCostMoneySum);
+		result.setOutAmountPrTranferMoneySum(outAmountPrTranferMoneySum);
+
+		int pageSum = offset + limit;
+		if (queryData.isPage()) {
+			List<TransferProfitByPosItemDetailDTO> subList = null;
+			if (dataSize >= pageSum - 1) {
+				subList = list.subList(offset, pageSum);
+			} else {
+				subList = list.subList(offset, dataSize);
+			}
+			result.setData(subList);
+		}
+		return result;
+			/*if(StringUtils.isNotEmpty(exportUuid)) {
+
+                String excelUrl = null;
+                Element element = getElementFromCache(exportUuid);
+                if (element != null) {
+                    ExportCacheUtil exportCacheUtil = (ExportCacheUtil) element.getValue();
+                    removeElementFromCache(exportUuid);
+                    excelUrl = exportCacheUtil.exportBasicAutoGrid(list);
+                }
+                List<TransferProfitByPosItemDetailData> returnDatas = new ArrayList<TransferProfitByPosItemDetailData>();
+                TransferProfitByPosItemDetailData data = new TransferProfitByPosItemDetailData();
+                data.setCacheUrl(excelUrl);
+                returnDatas.add(data);
+                return new PagingLoadResultBean<TransferProfitByPosItemDetailData>(returnDatas, returnDatas.size(), 0);
+            }
+            return new PagingLoadResultBean<TransferProfitByPosItemDetailData>(returnList, count, offset);*/
+
+	}
+
+
 
 
 }

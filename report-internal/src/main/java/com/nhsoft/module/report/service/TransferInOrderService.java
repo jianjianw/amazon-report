@@ -87,4 +87,20 @@ public interface TransferInOrderService {
 	 */
 	public List<Object[]> findProfitGroupByBranchAndItem(String systemBookCode, List<Integer> inBranchNums, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> categoryCodeList, List<Integer> itemNums);
 
+
+	/**
+	 * 按调出分店、调入分店、商品、多特性编码汇总基本数量、成本金额、调入金额、销售金额
+	 * @param transferProfitQuery
+	 * @return
+	 */
+	public List<Object[]> findProfitGroupByBranchAndItem(TransferProfitQuery transferProfitQuery);
+
+
+	/**
+	 * 调入明细(部分字段)
+	 * @param transferProfitQuery
+	 * @return
+	 */
+	public List<Object[]> findDetails(TransferProfitQuery transferProfitQuery);
+
 }

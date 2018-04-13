@@ -153,4 +153,11 @@ public interface TransferInOrderDao {
 	 * @return
 	 */
 	public List<Object[]> findProfitGroupByBranchAndItem(TransferProfitQuery transferProfitQuery);
+
+	/**
+	 * 配送毛利 商品明细
+	 * @param transferProfitQuery
+	 * @return
+	 */
+	public List<Object[]> findDetails(TransferProfitQuery transferProfitQuery);
 }

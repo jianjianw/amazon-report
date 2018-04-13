@@ -27,6 +27,17 @@ public class TransferProfitQuery extends QueryBuilder {
 	private List<String> itemDepartments; // 商品部门
 	private String itemBrand;
 
+
+	private Integer itemFlagNum;
+	private String exportUuid;
+
+	private String sortField;
+	private String sortType;
+	private boolean page;
+	private int offset;
+	private int limit;
+
+
 	
 	public String getItemBrand() {
 		return itemBrand;
@@ -149,4 +160,60 @@ public class TransferProfitQuery extends QueryBuilder {
 	}
 
 
+	public String getSortField() {
+		return sortField;
+	}
+
+	public void setSortField(String sortField) {
+		this.sortField = sortField;
+	}
+
+	public String getSortType() {
+		return sortType;
+	}
+
+	public void setSortType(String sortType) {
+		this.sortType = sortType;
+	}
+
+	public boolean isPage() {
+		return page;
+	}
+
+	public void setPage(boolean page) {
+		this.page = page;
+	}
+
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+
+
+	public Integer getItemFlagNum() {
+		return itemFlagNum;
+	}
+
+	public void setItemFlagNum(Integer itemFlagNum) {
+		this.itemFlagNum = itemFlagNum;
+	}
+
+	public String getExportUuid() {
+		return exportUuid;
+	}
+
+	public void setExportUuid(String exportUuid) {
+		this.exportUuid = exportUuid;
+	}
 }

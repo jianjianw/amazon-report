@@ -55,6 +55,8 @@ public class PosItem implements java.io.Serializable {
 	private BigDecimal itemGrossRate;
 	private Integer itemStatus;
 	private Integer itemTransferDay;
+	private String itemAssistUnit;
+	private BigDecimal itemAssistRate;
 
 	@OneToMany
 	@Fetch(FetchMode.SUBSELECT)
@@ -404,7 +406,23 @@ public class PosItem implements java.io.Serializable {
 	public void setAppUser(AppUser appUser) {
 		this.appUser = appUser;
 	}
-	
+
+	public String getItemAssistUnit() {
+		return itemAssistUnit;
+	}
+
+	public void setItemAssistUnit(String itemAssistUnit) {
+		this.itemAssistUnit = itemAssistUnit;
+	}
+
+	public BigDecimal getItemAssistRate() {
+		return itemAssistRate;
+	}
+
+	public void setItemAssistRate(BigDecimal itemAssistRate) {
+		this.itemAssistRate = itemAssistRate;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

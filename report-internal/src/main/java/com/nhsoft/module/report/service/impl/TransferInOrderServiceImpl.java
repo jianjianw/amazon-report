@@ -66,4 +66,15 @@ public class TransferInOrderServiceImpl implements TransferInOrderService {
 		transferProfitQuery.setItemNums(itemNums);
 		return transferInOrderDao.findProfitGroupByBranchAndItem(transferProfitQuery);
 	}
+
+    @Override
+    public List<Object[]> findProfitGroupByBranchAndItem(TransferProfitQuery transferProfitQuery) {
+        return transferInOrderDao.findProfitGroupByBranchAndItem(transferProfitQuery);
+    }
+
+	@Override
+	public List<Object[]> findDetails(TransferProfitQuery transferProfitQuery) {
+		return transferInOrderDao.findDetails(transferProfitQuery);
+	}
+
 }

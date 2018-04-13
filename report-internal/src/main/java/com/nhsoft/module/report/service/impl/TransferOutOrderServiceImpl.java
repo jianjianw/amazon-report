@@ -148,4 +148,14 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 		return transferOutOrderDao.findProfitGroupByBranchAndItem(transferProfitQuery);
 	}
 
+	@Override
+	public List<Object[]> findProfitGroupByBranchAndItem(TransferProfitQuery transferProfitQuery) {
+		return transferOutOrderDao.findProfitGroupByBranchAndItem(transferProfitQuery);
+	}
+
+	@Override
+	public List<Object[]> findDetails(TransferProfitQuery transferProfitQuery) {
+		return transferOutOrderDao.findDetails(transferProfitQuery);
+	}
+
 }

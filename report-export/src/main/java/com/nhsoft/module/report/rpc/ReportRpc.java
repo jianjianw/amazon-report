@@ -3,6 +3,7 @@ package com.nhsoft.module.report.rpc;
 
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.query.*;
+import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -1435,7 +1436,7 @@ public interface ReportRpc {
 	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode,Integer branchNum,Date dateFrom,Date dateTo,List<String> itemCategoryCodes,String sortField);
 
 	/**
-	 *商品库存动态表（好想来）
+	 * 商品库存动态表（好想来）
 	 * */
 	public List<ItemInventoryTrendSummary> findItemTrendInventory(ItemInventoryQueryDTO inventoryQuery);
 
@@ -1457,9 +1458,24 @@ public interface ReportRpc {
 
 
     /**
-     * 门店商品汇总
+     * 门店营业分析-门店商品汇总
      * */
     public BranchProfitDataPageDTO findBranchAndItemProfit(BranchProfitQuery query);
+
+	/**
+	 * AMA-23175  性能优化
+	 *直调查询-门店商品汇总
+	 */
+	public TransferProfitByPosItemPageDTO findTransferProfitByPosItemBranch(TransferProfitQuery queryData);
+
+	/**
+	 * AMA-23175  性能优化
+	 * 直调查询-商品明细
+	 */
+	public TransferProfitByPosItemDetailPageDTO findTransferProfitByPosItemDetail(TransferProfitQuery queryData);
+
+
+
 
 
 }

@@ -3,6 +3,8 @@ package com.nhsoft.module.report.util;
 import com.google.gson.*;
 
 import com.nhsoft.module.report.dto.GsonIgnore;
+import com.nhsoft.module.report.dto.ItemMatrixDTO;
+import com.nhsoft.module.report.dto.PosItemDTO;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.report.utils.DateUtil;
@@ -247,7 +249,6 @@ public class AppUtil {
 		str = str + ")";
 		return str;
 	}
-
 
 	public static String getIntegerParmeList(List<Integer> list) {
 		StringBuffer sb = new StringBuffer();

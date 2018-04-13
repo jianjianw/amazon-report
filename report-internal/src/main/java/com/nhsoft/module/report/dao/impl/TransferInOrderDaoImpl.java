@@ -459,4 +459,43 @@ public class TransferInOrderDaoImpl extends DaoImpl implements TransferInOrderDa
 		);
 		return criteria.list();
 	}
+
+	@Override
+	public List<Object[]> findDetails(TransferProfitQuery transferProfitQuery) {
+
+		Criteria criteria = createProfitCriteria(transferProfitQuery);
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.property("detail.id.inOrderFid"))
+				.add(Projections.property("t.inOrderAuditTime"))
+				.add(Projections.property("t.inOrderOperator"))
+				.add(Projections.property("t.inOrderCreator"))
+				.add(Projections.property("t.inOrderAuditor"))
+				.add(Projections.property("t.branchNum"))
+				.add(Projections.property("detail.inOrderDetailItemCode"))
+				.add(Projections.property("detail.inOrderDetailItemName"))
+				.add(Projections.property("detail.inOrderDetailItemSpec"))
+				.add(Projections.property("detail.inOrderDetailUseUnit"))
+				.add(Projections.property("detail.inOrderDetailUseQty"))
+				.add(Projections.property("detail.inOrderDetailUsePrice"))
+				.add(Projections.property("detail.inOrderDetailSaleSubtotal"))
+				.add(Projections.property("detail.inOrderDetailSubtotal"))
+				.add(Projections.property("detail.inOrderDetailMemo"))
+				.add(Projections.property("t.inBranchNum"))
+				.add(Projections.property("detail.inOrderDetailItemUnit"))
+				.add(Projections.property("detail.inOrderDetailQty"))
+				.add(Projections.property("detail.inOrderDetailItemMatrixNum"))
+				.add(Projections.property("detail.itemNum"))
+				.add(Projections.property("detail.inOrderDetailPresentUnit"))
+				.add(Projections.property("detail.inOrderDetailPresentQty"))
+				.add(Projections.property("detail.inOrderDetailPresentUseQty"))
+				.add(Projections.sqlProjection("(in_order_detail_present_qty * in_order_detail_price) as presendTransferMoney,"
+								+ "(in_order_detail_present_qty * in_order_detail_cost) as presendCostMoney",
+						new String[]{"presendTransferMoney", "presendCostMoney"}, new Type[]{StandardBasicTypes.BIG_DECIMAL,StandardBasicTypes.BIG_DECIMAL}))
+				.add(Projections.property("detail.inOrderDetailProducingDate"))
+
+		);
+		criteria.setMaxResults(50000);
+		List<Object[]> objects = criteria.list();
+		return objects;
+	}
 }
