@@ -1121,16 +1121,16 @@ public class APIBasic {
 	public CardSummaryPageDTO test57() throws Exception{
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-02-01");
-		Date dateTo = sdf.parse("2018-02-28");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-13");
 
 		CardReportQuery query = new CardReportQuery();
-		query.setSystemBookCode("4173");
+		query.setSystemBookCode("4020");
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
-		query.setPaging(true);
+		query.setPaging(false);
 		query.setOffset(0);
-		query.setLimit(100);
+		query.setLimit(10);
 		query.setSortField("printedNum");
 		query.setSortType("desc");
 		CardSummaryPageDTO list = posOrderRpc.findSummaryByPrintNum(query);

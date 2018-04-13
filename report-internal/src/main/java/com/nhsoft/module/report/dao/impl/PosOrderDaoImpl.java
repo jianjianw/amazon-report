@@ -5767,18 +5767,18 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append(createByCardReportQuery(cardReportQuery));
 		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
 
-		if(cardReportQuery.isPaging()){
-			if (StringUtils.isNotEmpty(cardReportQuery.getSortField())){
-				sb.append("order by " + cardReportQuery.getSortField() + " " +cardReportQuery.getSortType());
-			}
-		}else{
+
+		if (StringUtils.isNotEmpty(cardReportQuery.getSortField())) {
+			sb.append("order by " + cardReportQuery.getSortField() + " " + cardReportQuery.getSortType());
+		} else {
 			sb.append("order by printedNum asc");
 		}
 
 		Query query = currentSession().createSQLQuery(sb.toString());
-
-		query.setFirstResult(cardReportQuery.getOffset());
-		query.setMaxResults(cardReportQuery.getLimit());
+		if(cardReportQuery.isPaging()){
+			query.setFirstResult(cardReportQuery.getOffset());
+			query.setMaxResults(cardReportQuery.getLimit());
+		}
 		return query.list();
 	}
 
