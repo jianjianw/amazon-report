@@ -40,15 +40,24 @@ public class TransferProfitByPosItemDetailDTO implements Serializable {
     private String state;
     private String distributionBranchName;
     private String responseBranchName;
-
     private String posItemData;//类型待定
-
     private Integer itemValidPeriod;
     private Date productPassDate;
     private String department;
 
-
-
+    public TransferProfitByPosItemDetailDTO() {
+        this.outAmount = BigDecimal.ZERO;
+        this.outUnitPrice = BigDecimal.ZERO;
+        this.outMoney = BigDecimal.ZERO;
+        this.costUnitPrice = BigDecimal.ZERO;
+        this.profitMoney = BigDecimal.ZERO;
+        this.baseAmount = BigDecimal.ZERO;
+        this.basePrice = BigDecimal.ZERO;
+        this.baseAmountPr = BigDecimal.ZERO;
+        this.outAmountPr = BigDecimal.ZERO;
+        this.outAmountPrTranferMoney = BigDecimal.ZERO;
+        this.outAmountPrCostMoney = BigDecimal.ZERO;
+    }
 
     public String getId() {
         return id;

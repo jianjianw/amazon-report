@@ -25,7 +25,19 @@ public class InventoryProfitDTO implements Serializable {
     private String itemCode;
     private String itemName;
     private String itemSpec;
+    private String itemMatrixName;
 
+
+    public InventoryProfitDTO() {
+        this.profitAssitQty = BigDecimal.ZERO;
+        this.profitQty = BigDecimal.ZERO;
+        this.profitMoney = BigDecimal.ZERO;
+        this.itemSaleMoney = BigDecimal.ZERO;
+        this.saleQty = BigDecimal.ZERO;
+        this.saleMoney = BigDecimal.ZERO;
+        this.saleAssitQty = BigDecimal.ZERO;
+        this.profitRate = BigDecimal.ZERO;
+    }
 
     public int getId() {
         return id;
@@ -161,5 +173,13 @@ public class InventoryProfitDTO implements Serializable {
 
     public void setItemSpec(String itemSpec) {
         this.itemSpec = itemSpec;
+    }
+
+    public String getItemMatrixName() {
+        return itemMatrixName;
+    }
+
+    public void setItemMatrixName(String itemMatrixName) {
+        this.itemMatrixName = itemMatrixName;
     }
 }

@@ -6111,7 +6111,6 @@ public class ReportRpcImpl implements ReportRpc {
 		Boolean isChechUp = queryData.getIsChechUp();
 		List<String> reasons = queryData.getReasons();
 		String unit = queryData.getUnit();
-		String exportId = queryData.getExportId();
 
 
 		if (StringUtils.isEmpty(unit)) {
@@ -6271,7 +6270,7 @@ public class ReportRpcImpl implements ReportRpc {
 					data.getItemMatrixNum());
 			if (itemMatrix != null) {
 				data.setItemName(data.getItemName().concat(AppUtil.getMatrixName(itemMatrix)));
-				//data.set("itemMatrixName", AppUtil.getMatrixName(itemMatrix));
+				data.setItemMatrixName(AppUtil.getMatrixName(itemMatrix));
 			}
 			if (unit.equals(AppConstants.UNIT_SOTRE)) {
 				data.setItemUnit(posItem.getItemInventoryUnit());

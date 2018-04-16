@@ -43,6 +43,28 @@ public class TransferProfitByPosItemDTO implements Serializable {
     private BigDecimal saleMoney;
 
 
+    public TransferProfitByPosItemDTO( ) {
+        this.outProfit = BigDecimal.ZERO;
+        this.saleProfit = BigDecimal.ZERO;
+        this.outProfitRate = BigDecimal.ZERO;
+        this.basicPrice = BigDecimal.ZERO;
+        this.saleProfitRate = BigDecimal.ZERO;
+        this.basicQty = BigDecimal.ZERO;
+        this.outAmount = BigDecimal.ZERO;
+        this.basicQtyPr = BigDecimal.ZERO;
+        this.outAmountPr = BigDecimal.ZERO;
+        this.outAmountPrTranferMoney = BigDecimal.ZERO;
+        this.outAmountPrCostMoney = BigDecimal.ZERO;
+        this.outCost = BigDecimal.ZERO;
+        this.outMoney = BigDecimal.ZERO;
+        this.receiveTare = BigDecimal.ZERO;
+        this.totalAmount = BigDecimal.ZERO;
+        this.totalMoney = BigDecimal.ZERO;
+        this.inAmount = BigDecimal.ZERO;
+        this.inMoney = BigDecimal.ZERO;
+        this.saleMoney = BigDecimal.ZERO;
+    }
+
     public String getTranferBranchName() {
         return tranferBranchName;
     }
