@@ -2342,7 +2342,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
             if ((profitAnalysisQueryData.getBrandCodes() != null && profitAnalysisQueryData.getBrandCodes().size() > 0)
                     || (profitAnalysisQueryData.getPosItemTypeCodes() != null && profitAnalysisQueryData
                     .getPosItemTypeCodes().size() > 0)) {
-                sb.append("and exists (select 1 from pos_item as item where item.system_book_code = :systemBookCode and item.item_num = detail.item_num ");
+                sb.append("and exists (select 1 from pos_item as item where item.system_book_code = '"+profitAnalysisQueryData.getSystemBookCode()+"' and item.item_num = detail.item_num ");
                 if (profitAnalysisQueryData.getPosItemTypeCodes() != null
                         && profitAnalysisQueryData.getPosItemTypeCodes().size() > 0) {
                     sb.append("and item.item_category_code in "

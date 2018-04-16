@@ -1512,6 +1512,9 @@ public class APIBasic {
 		query.setQueryClient(true);
 		List<String> list = new ArrayList<>();
 		list.add("1111");
+		List<String> codes = new ArrayList<>();
+		codes.add("2222");
+		query.setBrandCodes(codes);
 		query.setClientFids(list);
 
 		List<ProfitAnalysisByItemSummary> profitAnalysisByItem = reportRpc.findProfitAnalysisByItem(query);
@@ -1569,6 +1572,17 @@ public class APIBasic {
 
 		return branchAndItemProfit;
 
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test82")
+	public List<CustomerAnalysisTimePeriod> test82() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-12");
+
+		List<CustomerAnalysisTimePeriod> result = report2Rpc.findCustomerAnalysisTimePeriods(systemBookCode,dateFrom,dateTo,getBranchNums(),getBranchNums(),null,null,null);
+		return result;
 	}
 
 }
