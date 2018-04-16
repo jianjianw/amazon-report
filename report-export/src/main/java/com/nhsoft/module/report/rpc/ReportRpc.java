@@ -1458,6 +1458,7 @@ public interface ReportRpc {
 
 
     /**
+	 * AMA-23167 性能优化
      * 门店营业分析-门店商品汇总
      * */
     public BranchProfitDataPageDTO findBranchAndItemProfit(BranchProfitQuery query);
@@ -1473,6 +1474,18 @@ public interface ReportRpc {
 	 * 直调查询-商品明细
 	 */
 	public TransferProfitByPosItemDetailPageDTO findTransferProfitByPosItemDetail(TransferProfitQuery queryData);
+
+	/**
+	 * AMA-23179 性能优化-损益统计报表
+	 * 商品汇总
+	 * */
+	public InventoryProfitPageDTO findInventoryProfit(InventoryProfitQuery queryData);
+
+	/**
+	 * AMA-23179 性能优化-损益统计报表
+	 * 类别汇总
+	 * */
+	public InventoryProfitPageDTO findInventoryProfitSum(InventoryProfitQuery queryData);
 
 
 

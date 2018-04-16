@@ -8,7 +8,6 @@ public class TransferProfitByPosItemDTO implements Serializable {
 
 
     private String id;
-
     private String branchName;
     private String tranferBranchName;
     private String posItemData;
@@ -16,21 +15,14 @@ public class TransferProfitByPosItemDTO implements Serializable {
     private String posItemTypeName;
     private String spec;
     private String unit;
-
-
     private String basicUnit;
     private String posItemCode;
     private String posItemName;
-
-
     private BigDecimal outProfit;
     private BigDecimal saleProfit;
     private BigDecimal outProfitRate;
     private BigDecimal basicPrice;
-
-
     private BigDecimal saleProfitRate;
-
     private Integer tranferBranchNum;
     private Integer branchNum;
     private Integer itemNum;
@@ -43,10 +35,7 @@ public class TransferProfitByPosItemDTO implements Serializable {
     private BigDecimal outAmountPrCostMoney;
     private BigDecimal outCost;
     private BigDecimal outMoney;
-    private BigDecimal oaleMoney;
     private BigDecimal receiveTare;
-
-
     private BigDecimal totalAmount;
     private BigDecimal totalMoney;
     private BigDecimal inAmount;
@@ -316,14 +305,6 @@ public class TransferProfitByPosItemDTO implements Serializable {
 
     public void setOutMoney(BigDecimal outMoney) {
         this.outMoney = outMoney;
-    }
-
-    public BigDecimal getOaleMoney() {
-        return oaleMoney;
-    }
-
-    public void setOaleMoney(BigDecimal oaleMoney) {
-        this.oaleMoney = oaleMoney;
     }
 
     public BigDecimal getReceiveTare() {

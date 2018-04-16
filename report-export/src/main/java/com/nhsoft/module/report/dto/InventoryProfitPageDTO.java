@@ -7,22 +7,23 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 
-public class TransferProfitByPosItemDetailPageDTO<T> implements Serializable,Comparator<T> {
-    private static final long serialVersionUID = 2511530237290680328L;
+public class InventoryProfitPageDTO<T> implements Serializable,Comparator<T> {
+    private static final long serialVersionUID = 3127619689745595017L;
 
 
     private Integer count;
-    private List<TransferProfitByPosItemDetailDTO> data;
+    private List<InventoryProfitDTO> data;
 
-    private BigDecimal outMoneySum;
-    private BigDecimal costUnitPriceSum;
+
+
+    private BigDecimal profitQtySum;
+    private BigDecimal profitAssitQtySum;
     private BigDecimal profitMoneySum;
-    private BigDecimal outAmountSum;
-    private BigDecimal baseAmountSum;
-    private BigDecimal outAmountPrSum;
-    private BigDecimal baseAmountPrSum;
-    private BigDecimal outAmountPrCostMoneySum;
-    private BigDecimal outAmountPrTranferMoneySum;
+    private BigDecimal saleQtySum;
+    private BigDecimal saleAssitQtySum;
+    private BigDecimal saleMoneySum;
+    private BigDecimal itemSaleMoneySum;
+    private BigDecimal profitRateSum;
 
 
     public Integer getCount() {
@@ -33,28 +34,28 @@ public class TransferProfitByPosItemDetailPageDTO<T> implements Serializable,Com
         this.count = count;
     }
 
-    public List<TransferProfitByPosItemDetailDTO> getData() {
+    public List<InventoryProfitDTO> getData() {
         return data;
     }
 
-    public void setData(List<TransferProfitByPosItemDetailDTO> data) {
+    public void setData(List<InventoryProfitDTO> data) {
         this.data = data;
     }
 
-    public BigDecimal getOutMoneySum() {
-        return outMoneySum;
+    public BigDecimal getProfitQtySum() {
+        return profitQtySum;
     }
 
-    public void setOutMoneySum(BigDecimal outMoneySum) {
-        this.outMoneySum = outMoneySum;
+    public void setProfitQtySum(BigDecimal profitQtySum) {
+        this.profitQtySum = profitQtySum;
     }
 
-    public BigDecimal getCostUnitPriceSum() {
-        return costUnitPriceSum;
+    public BigDecimal getProfitAssitQtySum() {
+        return profitAssitQtySum;
     }
 
-    public void setCostUnitPriceSum(BigDecimal costUnitPriceSum) {
-        this.costUnitPriceSum = costUnitPriceSum;
+    public void setProfitAssitQtySum(BigDecimal profitAssitQtySum) {
+        this.profitAssitQtySum = profitAssitQtySum;
     }
 
     public BigDecimal getProfitMoneySum() {
@@ -65,54 +66,45 @@ public class TransferProfitByPosItemDetailPageDTO<T> implements Serializable,Com
         this.profitMoneySum = profitMoneySum;
     }
 
-    public BigDecimal getOutAmountSum() {
-        return outAmountSum;
+    public BigDecimal getSaleQtySum() {
+        return saleQtySum;
     }
 
-    public void setOutAmountSum(BigDecimal outAmountSum) {
-        this.outAmountSum = outAmountSum;
+    public void setSaleQtySum(BigDecimal saleQtySum) {
+        this.saleQtySum = saleQtySum;
     }
 
-    public BigDecimal getBaseAmountSum() {
-        return baseAmountSum;
+    public BigDecimal getSaleAssitQtySum() {
+        return saleAssitQtySum;
     }
 
-    public void setBaseAmountSum(BigDecimal baseAmountSum) {
-        this.baseAmountSum = baseAmountSum;
+    public void setSaleAssitQtySum(BigDecimal saleAssitQtySum) {
+        this.saleAssitQtySum = saleAssitQtySum;
     }
 
-    public BigDecimal getOutAmountPrSum() {
-        return outAmountPrSum;
+    public BigDecimal getSaleMoneySum() {
+        return saleMoneySum;
     }
 
-    public void setOutAmountPrSum(BigDecimal outAmountPrSum) {
-        this.outAmountPrSum = outAmountPrSum;
+    public void setSaleMoneySum(BigDecimal saleMoneySum) {
+        this.saleMoneySum = saleMoneySum;
     }
 
-    public BigDecimal getBaseAmountPrSum() {
-        return baseAmountPrSum;
+    public BigDecimal getItemSaleMoneySum() {
+        return itemSaleMoneySum;
     }
 
-    public void setBaseAmountPrSum(BigDecimal baseAmountPrSum) {
-        this.baseAmountPrSum = baseAmountPrSum;
+    public void setItemSaleMoneySum(BigDecimal itemSaleMoneySum) {
+        this.itemSaleMoneySum = itemSaleMoneySum;
     }
 
-    public BigDecimal getOutAmountPrCostMoneySum() {
-        return outAmountPrCostMoneySum;
+    public BigDecimal getProfitRateSum() {
+        return profitRateSum;
     }
 
-    public void setOutAmountPrCostMoneySum(BigDecimal outAmountPrCostMoneySum) {
-        this.outAmountPrCostMoneySum = outAmountPrCostMoneySum;
+    public void setProfitRateSum(BigDecimal profitRateSum) {
+        this.profitRateSum = profitRateSum;
     }
-
-    public BigDecimal getOutAmountPrTranferMoneySum() {
-        return outAmountPrTranferMoneySum;
-    }
-
-    public void setOutAmountPrTranferMoneySum(BigDecimal outAmountPrTranferMoneySum) {
-        this.outAmountPrTranferMoneySum = outAmountPrTranferMoneySum;
-    }
-
 
 
 
@@ -121,16 +113,17 @@ public class TransferProfitByPosItemDetailPageDTO<T> implements Serializable,Com
     private String sortField;
     private String sortType;
 
-    public TransferProfitByPosItemDetailPageDTO() {
+    public InventoryProfitPageDTO() {
     }
 
-    public TransferProfitByPosItemDetailPageDTO(String sortField, String sortType) {
+    public InventoryProfitPageDTO(String sortField, String sortType) {
         this.sortField = sortField;
         this.sortType = sortType;
     }
 
     @Override
     public int compare(T data01, T data02) {
+
         int value01 = 0;
         int value02 = 0;
         if("asc".equals(sortType) || "ASC".equals(sortType)){
@@ -141,6 +134,7 @@ public class TransferProfitByPosItemDetailPageDTO<T> implements Serializable,Com
             value01 = -1;
             value02 = 1;
         }
+
         try {
             Class clazz01 = data01.getClass();
             Method method01 = clazz01.getMethod("get" + sortField);

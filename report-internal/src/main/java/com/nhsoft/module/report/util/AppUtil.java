@@ -202,6 +202,20 @@ public class AppUtil {
 		return topCode;
 	}
 
+
+	public static String getPosItemTypeName(List<PosItemTypeParam> posItemTypeParams, String categoryCode){
+		if(posItemTypeParams== null){
+			return null;
+		}
+		for (int i = 0,len = posItemTypeParams.size(); i < len; i++) {
+			PosItemTypeParam posItemTypeParam = posItemTypeParams.get(i);
+			if(categoryCode.equals(posItemTypeParam.getPosItemTypeCode())){
+				return posItemTypeParam.getPosItemTypeName();
+			}
+		}
+		return null;
+	}
+
 	public static PosItemTypeParam getTopCategory(List<PosItemTypeParam> posItemTypeParams, String categoryCode) {
 		boolean isSubCategory = true;
 		String topCode = categoryCode;

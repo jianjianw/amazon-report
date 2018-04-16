@@ -99,7 +99,8 @@ public class ReportRpcImpl implements ReportRpc {
 	private PosItemRpc posItemRpc;
 	@Autowired
 	private ItemMatrixService itemMatrixService;
-
+	@Autowired
+	private PosItemLogService posItemLogService;
 
 
 
@@ -5065,7 +5066,6 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public BranchProfitDataPageDTO findBranchAndItemProfit(BranchProfitQuery query){
 
-			String exportId = query.getExportId();
 			String systemBookCode = query.getSystemBookCode();
 			Date dateFrom = query.getDateFrom();
 			Date dateTo = query.getDateTo();
@@ -5585,9 +5585,7 @@ public class ReportRpcImpl implements ReportRpc {
 			BigDecimal moneyTranPr = objects[11] == null ? BigDecimal.ZERO : (BigDecimal) objects[11];
 			BigDecimal moneyCostPr = objects[12] == null ? BigDecimal.ZERO : (BigDecimal) objects[12];
 			BigDecimal receiveTare = objects[12] == null ? BigDecimal.ZERO : (BigDecimal) objects[12];
-
-			//TransferProfitByPosItemDTO data = getTransferProfitByPosItemData(list, inBranchNum, branchNum, itemNum, itemMatrixNum);
-			TransferProfitByPosItemDTO data = null;
+			TransferProfitByPosItemDTO data = getTransferProfitByPosItemData(list, inBranchNum, branchNum, itemNum, itemMatrixNum);
 			if (data == null) {
 				data = new TransferProfitByPosItemDTO();
 				data.setTranferBranchNum(inBranchNum);
@@ -5722,10 +5720,8 @@ public class ReportRpcImpl implements ReportRpc {
 			sortType = "ASC";
 		}
 
-		//AppUtil.setProperty(list);
-		/*ComparatorAutoGridGroupData comparator = new ComparatorAutoGridGroupData(
-				"tranferBranchNum", sortField, sortType);
-		Collections.sort(list, comparator);*/
+		TransferProfitByPosItemPageDTO comparator = new TransferProfitByPosItemPageDTO(sortField, sortType);
+		Collections.sort(list, comparator);
 
 		// 总合计
 		BigDecimal outAmountSum = BigDecimal.ZERO;
@@ -5805,23 +5801,6 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		return result;
-		/*if (StringUtils.isNotEmpty(exportUuid)) {
-
-			String excelUrl = null;
-			Element element = getElementFromCache(exportUuid);
-			if (element != null) {
-				ExportCacheUtil exportCacheUtil = (ExportCacheUtil) element.getValue();
-				removeElementFromCache(exportUuid);
-				excelUrl = exportCacheUtil.exportBasicAutoGrid(list);
-			}
-			List<TransferProfitByPosItemData> returnDatas = new ArrayList<TransferProfitByPosItemData>();
-			TransferProfitByPosItemData data = new TransferProfitByPosItemData();
-			data.setCacheUrl(excelUrl);
-			returnDatas.add(data);
-			return new PagingLoadResultBean<TransferProfitByPosItemData>(returnDatas, returnDatas.size(), 0);
-		}
-
-		return new PagingLoadResultBean<TransferProfitByPosItemData>(returnList, count, offset);*/
 	}
 
 
@@ -5877,13 +5856,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Branch> branchs = branchService.findInCache(queryData.getSystemBookCode());
 		List<TransferProfitByPosItemDetailDTO> list = new ArrayList<TransferProfitByPosItemDetailDTO>();
 
-		//TransferProfitQuery query = (TransferProfitQuery) ObjectConverter.copy(queryData, new TransferProfitQuery());
-
 		//诚信志远 不统计特价商品
-		/*query.setCategoryCodes(categoryCodes);
-		List<Object[]> outObjects = transferOutOrderService.findDetails(query);*/
-
-
 		queryData.setCategoryCodes(categoryCodes);
 		List<Object[]> outObjects = transferOutOrderService.findDetails(queryData);
 
@@ -5986,7 +5959,6 @@ public class ReportRpcImpl implements ReportRpc {
 			outAmountPrCostMoneySum = outAmountPrCostMoneySum.add(data.getOutAmountPrCostMoney());
 		}
 
-		//List<Object[]> inObjects = transferInOrderService.findDetails(query);
 		List<Object[]> inObjects = transferInOrderService.findDetails(queryData);
 
 		for (int i = 0; i < inObjects.size(); i++) {
@@ -6080,13 +6052,14 @@ public class ReportRpcImpl implements ReportRpc {
 				detailData.setDepartment(posItem.getItemDepartment());
 			}
 		}
-		//AppUtil.setProperty(list);
 		if (sortField == null) {
 			sortField = "posOrderNum";
 			sortType = "ASC";
 		}
-		/*ComparatorAutoGridBaseData comparator = new ComparatorAutoGridBaseData(sortField, sortType);
-		Collections.sort(list, comparator);*/
+
+
+		TransferProfitByPosItemDetailPageDTO<TransferProfitByPosItemDetailDTO> comparator = new TransferProfitByPosItemDetailPageDTO<>(sortField, sortType);
+		Collections.sort(list, comparator);
 
 
 		int dataSize = list.size();
@@ -6114,24 +6087,545 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setData(subList);
 		}
 		return result;
-			/*if(StringUtils.isNotEmpty(exportUuid)) {
+	}
 
-                String excelUrl = null;
-                Element element = getElementFromCache(exportUuid);
-                if (element != null) {
-                    ExportCacheUtil exportCacheUtil = (ExportCacheUtil) element.getValue();
-                    removeElementFromCache(exportUuid);
-                    excelUrl = exportCacheUtil.exportBasicAutoGrid(list);
-                }
-                List<TransferProfitByPosItemDetailData> returnDatas = new ArrayList<TransferProfitByPosItemDetailData>();
-                TransferProfitByPosItemDetailData data = new TransferProfitByPosItemDetailData();
-                data.setCacheUrl(excelUrl);
-                returnDatas.add(data);
-                return new PagingLoadResultBean<TransferProfitByPosItemDetailData>(returnDatas, returnDatas.size(), 0);
-            }
-            return new PagingLoadResultBean<TransferProfitByPosItemDetailData>(returnList, count, offset);*/
+
+
+
+	@Override
+	public InventoryProfitPageDTO findInventoryProfit(InventoryProfitQuery queryData){
+
+		int offset = queryData.getOffset();
+		int limit = queryData.getLimit();
+		String sortField = queryData.getSortField();
+		String sortType = queryData.getSortType();
+
+		String systemBookCode = queryData.getSystemBookCode();
+		List<Integer> branchNums = queryData.getBranchNums();
+		Integer storehouseNum = queryData.getStoreNum();
+		Date dateFrom = queryData.getDateFrom();
+		Date dateTo = queryData.getDateTo();
+		List<String> categoryCodes = queryData.getCategoryCodes();
+		List<Integer> itemNums = queryData.getItemNums();
+		String checkType = queryData.getCheckType();
+		Boolean isChechUp = queryData.getIsChechUp();
+		List<String> reasons = queryData.getReasons();
+		String unit = queryData.getUnit();
+		String exportId = queryData.getExportId();
+
+
+		if (StringUtils.isEmpty(unit)) {
+			unit = AppConstants.UNIT_BASIC;
+		}
+
+		Map<String, InventoryProfitDTO> map = new HashMap<String, InventoryProfitDTO>();
+		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+
+		if (StringUtils.isEmpty(checkType)) {
+			checkType = AppConstants.POS_ITEM_LOG_ADJUSTMENTORDER + "," + AppConstants.POS_ITEM_LOG_CHECKORDER
+					+ "," + AppConstants.POS_ITEM_LOG_COST_ADJUST;
+		}
+
+		List<Object[]> objects = posItemLogService.findSumByItemFlag(systemBookCode, branchNums, dateFrom, dateTo,
+				checkType, itemNums, storehouseNum, reasons);
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer itemNum = (Integer) object[0];
+			Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+			boolean flag = (Boolean) object[2];
+			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			if (unit.equals(AppConstants.UNIT_USE)) {
+				amount = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+			}
+			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BigDecimal saleMoney = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+			String itemUnit = object[8] == null ? "" : (String) object[8];
+
+			if (isChechUp != null) {
+				if (isChechUp != null) {
+					if (isChechUp) {
+						if (!flag) {
+							continue;
+						}
+					} else {
+						if (flag) {
+							continue;
+						}
+					}
+				}
+			}
+
+			InventoryProfitDTO data = map.get(itemNum + "|" + itemMatrixNum);
+			if (data == null) {
+				data = new InventoryProfitDTO();
+				data.setItemNum(itemNum);
+				data.setItemMatrixNum(itemMatrixNum);
+				data.setItemUnit(itemUnit);
+				map.put(itemNum + "|" + itemMatrixNum, data);
+			}
+
+			if (!flag) {
+				amount = amount.negate();
+				money = money.negate();
+				saleMoney = saleMoney.negate();
+				assistAmount = assistAmount.negate();
+			}
+			data.setProfitAssitQty(data.getProfitAssitQty().add(assistAmount));
+			data.setProfitQty(data.getProfitQty().add(amount));
+			data.setProfitMoney(data.getProfitMoney().add(money));
+			data.setItemSaleMoney(data.getItemSaleMoney().add(saleMoney));
+
+		}
+
+		if (!unit.equals(AppConstants.UNIT_USE)) {
+			checkType = AppConstants.POS_ITEM_LOG_POS + "," + AppConstants.POS_ITEM_LOG_CONSUME_POINT + ","
+					+ AppConstants.POS_ITEM_LOG_ANTI_POS;
+			objects = posItemLogService.findSumByItemFlag(systemBookCode, branchNums, dateFrom, dateTo, checkType,
+					itemNums, storehouseNum, null);
+
+			BigDecimal qty = BigDecimal.ZERO;
+			for (int i = 0; i < objects.size(); i++) {
+				Object[] object = objects.get(i);
+				Integer itemNum = (Integer) object[0];
+				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+				boolean flag = (Boolean) object[2];
+				BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+				BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+				BigDecimal assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+
+				InventoryProfitDTO data = map.get(itemNum + "|" + itemMatrixNum);
+				if (data == null) {
+					data = new InventoryProfitDTO();
+					data.setItemNum(itemNum);
+					data.setItemMatrixNum(itemMatrixNum);
+					map.put(itemNum + "|" + itemMatrixNum, data);
+				}
+				if (flag) {
+					amount = amount.negate();
+					money = money.negate();
+					assistAmount = assistAmount.negate();
+				}
+				data.setSaleQty(data.getSaleQty().add(amount));
+				data.setSaleMoney(data.getSaleMoney().add(money));
+				data.setSaleAssitQty(data.getSaleAssitQty().add(assistAmount));
+				qty = qty.add(amount);
+			}
+		}
+		List<InventoryProfitDTO> list = new ArrayList<InventoryProfitDTO>(map.values());
+		BigDecimal profitQtySum = BigDecimal.ZERO;
+		BigDecimal profitAssitQtySum = BigDecimal.ZERO;
+		BigDecimal profitMoneySum = BigDecimal.ZERO;
+		BigDecimal saleQtySum = BigDecimal.ZERO;
+		BigDecimal saleAssitQtySum = BigDecimal.ZERO;
+		BigDecimal saleMoneySum = BigDecimal.ZERO;
+		BigDecimal itemSaleMoneySum = BigDecimal.ZERO;
+		for (int i = list.size() - 1; i >= 0; i--) {
+			if (queryData.getIsChechZero()) {
+				if (list.get(i).getProfitQty().doubleValue() == 0.00) {
+					list.remove(i);
+				}
+			} else {
+				if (list.get(i).getProfitQty().doubleValue() == 0.00 && list.get(i).getProfitMoney().doubleValue() == 0.00
+						&& list.get(i).getSaleQty().doubleValue() == 0.00) {
+					list.remove(i);
+				}
+			}
+		}
+		for (int i = list.size() - 1; i >= 0; i--) {
+			InventoryProfitDTO data = list.get(i);
+			Integer itemNum = data.getItemNum();
+			if (data.getProfitQty().compareTo(BigDecimal.ZERO) == 0
+					&& data.getProfitMoney().compareTo(BigDecimal.ZERO) == 0) {
+				if (data.getSaleQty().compareTo(BigDecimal.ZERO) == 0 && data.getSaleAssitQty().compareTo(BigDecimal.ZERO) == 0
+						&& data.getSaleMoney().compareTo(BigDecimal.ZERO) == 0) {
+					list.remove(i);
+					continue;
+				}
+			}
+			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
+			if (posItem == null) {
+				list.remove(i);
+				continue;
+			}
+			if (categoryCodes != null && categoryCodes.size() > 0) {
+				if (!categoryCodes.contains(posItem.getItemCategoryCode())) {
+					list.remove(i);
+					continue;
+				}
+			}
+			if (data.getSaleQty().compareTo(BigDecimal.ZERO) > 0) {
+				data.setProfitRate(data.getProfitQty().divide(data.getSaleQty(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2));
+			} else {
+				data.setProfitRate(BigDecimal.valueOf(9999.99));
+			}
+			data.setItemCategoryCode(posItem.getItemCategoryCode());
+			data.setItemCategoryName(posItem.getItemCategory());
+			data.setItemCode(posItem.getItemCode());
+			data.setItemName(posItem.getItemName());
+			data.setItemSpec(posItem.getItemSpec());
+			if (!unit.equals(AppConstants.UNIT_USE)) {
+				data.setItemUnit(posItem.getItemUnit());
+			}
+			ItemMatrix itemMatrix = AppUtil.getItemMatrix(posItem.getItemMatrixs(), itemNum,
+					data.getItemMatrixNum());
+			if (itemMatrix != null) {
+				data.setItemName(data.getItemName().concat(AppUtil.getMatrixName(itemMatrix)));
+				//data.set("itemMatrixName", AppUtil.getMatrixName(itemMatrix));
+			}
+			if (unit.equals(AppConstants.UNIT_SOTRE)) {
+				data.setItemUnit(posItem.getItemInventoryUnit());
+				data.setProfitQty(data.getProfitQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+				data.setSaleQty(data.getSaleQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+			} else if (unit.equals(AppConstants.UNIT_PURCHASE)) {
+				data.setItemUnit(posItem.getItemPurchaseUnit());
+				data.setProfitQty(data.getProfitQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+				data.setSaleQty(data.getSaleQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+			} else if (unit.equals(AppConstants.UNIT_TRANFER)) {
+				data.setItemUnit(posItem.getItemTransferUnit());
+				data.setProfitQty(data.getProfitQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+				data.setSaleQty(data.getSaleQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+			} else if (unit.equals(AppConstants.UNIT_PIFA)) {
+				data.setItemUnit(posItem.getItemWholesaleUnit());
+				data.setProfitQty(data.getProfitQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+				data.setSaleQty(data.getSaleQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+			}
+			profitQtySum = profitQtySum.add(data.getProfitQty());
+			profitAssitQtySum = profitAssitQtySum.add(data.getProfitAssitQty());
+			profitMoneySum = profitMoneySum.add(data.getProfitMoney());
+			saleQtySum = saleQtySum.add(data.getSaleQty());
+			saleAssitQtySum = saleAssitQtySum.add(data.getSaleAssitQty());
+			saleMoneySum = saleMoneySum.add(data.getSaleMoney());
+			itemSaleMoneySum = itemSaleMoneySum.add(data.getItemSaleMoney());
+		}
+		if (sortField == null) {
+			sortField = "itemCode";
+			sortType = "ASC";
+		}
+
+		InventoryProfitPageDTO<InventoryProfitDTO> comparator = new InventoryProfitPageDTO<InventoryProfitDTO>(sortField, sortType);
+		Collections.sort(list, comparator);
+
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).setId(i);
+		}
+		int dataSize = list.size();
+		InventoryProfitPageDTO result = new InventoryProfitPageDTO();
+		result.setCount(dataSize);
+		result.setData(list);
+
+
+
+		result.setProfitQtySum(profitQtySum);
+		result.setProfitAssitQtySum(profitAssitQtySum);
+		result.setProfitMoneySum(profitMoneySum);
+		result.setSaleQtySum(saleQtySum);
+		result.setSaleAssitQtySum(saleAssitQtySum);
+		result.setSaleMoneySum(saleMoneySum);
+		result.setItemSaleMoneySum(itemSaleMoneySum);
+		if (saleQtySum.compareTo(BigDecimal.ZERO) > 0) {
+			result.setProfitRateSum(profitQtySum.divide(saleQtySum, 4, BigDecimal.ROUND_HALF_UP)
+					.multiply(BigDecimal.valueOf(100)).setScale(2));
+		}
+		int pageSum = offset + limit;
+		if (queryData.isPage()) {
+			List<InventoryProfitDTO> subList = null;
+			if (dataSize >= pageSum - 1) {
+				subList = list.subList(offset, pageSum);
+			} else {
+				subList = list.subList(offset, dataSize);
+			}
+			result.setData(subList);
+		}
+
+		return result;
 
 	}
+
+
+
+	@Override
+	public InventoryProfitPageDTO findInventoryProfitSum(InventoryProfitQuery queryData){
+
+		int offset = queryData.getOffset();
+		int limit = queryData.getLimit();
+
+
+		String sortField = queryData.getSortField();
+		String sortType = queryData.getSortType();
+
+		String systemBookCode = queryData.getSystemBookCode();
+		List<Integer> branchNums = queryData.getBranchNums();
+		Integer storehouseNum = queryData.getStoreNum();
+		Date dateFrom = queryData.getDateFrom();
+		Date dateTo = queryData.getDateTo();
+		List<String> categoryCodes = queryData.getCategoryCodes();
+		List<Integer> itemNums = queryData.getItemNums();
+		String checkType = queryData.getCheckType();
+		Boolean isChechUp = queryData.getIsChechUp();
+		List<String> reasons = queryData.getReasons();
+		String unit = queryData.getUnit();
+
+
+
+		if (StringUtils.isEmpty(unit)) {
+			unit = AppConstants.UNIT_BASIC;
+		}
+
+		Map<Integer, InventoryProfitDTO> map = new HashMap<Integer, InventoryProfitDTO>();
+		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+
+		if (StringUtils.isEmpty(checkType)) {
+			checkType = AppConstants.POS_ITEM_LOG_ADJUSTMENTORDER + "," + AppConstants.POS_ITEM_LOG_CHECKORDER
+					+ "," + AppConstants.POS_ITEM_LOG_COST_ADJUST;
+		}
+
+		List<PosItemTypeParam> posItemTypeParams = null;
+		if (queryData.isUseTopCategory()) {
+			posItemTypeParams = bookResourceService.findPosItemTypeParams(systemBookCode);
+		}
+		List<Object[]> objects = posItemLogService.findSumByItemFlag(systemBookCode, branchNums, dateFrom, dateTo,
+				checkType, itemNums, storehouseNum, reasons);
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer itemNum = (Integer) object[0];
+			boolean flag = (Boolean) object[2];
+			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			if (unit.equals(AppConstants.UNIT_USE)) {
+				amount = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+			}
+			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal saleMoney = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+			BigDecimal assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			String itemUnit = object[8] == null ? "" : (String) object[8];
+
+			if (isChechUp != null) {
+				if (isChechUp != null) {
+					if (isChechUp) {
+						if (!flag) {
+							continue;
+						}
+					} else {
+						if (flag) {
+							continue;
+						}
+					}
+				}
+			}
+
+			InventoryProfitDTO data = map.get(itemNum);
+			if (data == null) {
+				data = new InventoryProfitDTO();
+				data.setItemNum(itemNum);
+				data.setItemUnit(itemUnit);
+				map.put(itemNum, data);
+			}
+			if (!flag) {
+				amount = amount.negate();
+				money = money.negate();
+				saleMoney = saleMoney.negate();
+				assistAmount = assistAmount.negate();
+			}
+			data.setProfitAssitQty(data.getProfitAssitQty().add(assistAmount));
+			data.setProfitQty(data.getProfitQty().add(amount));
+			data.setProfitMoney(data.getProfitMoney().add(money));
+			data.setItemSaleMoney(data.getItemSaleMoney().add(saleMoney));
+		}
+		if (!unit.equals(AppConstants.UNIT_USE)) {
+			checkType = AppConstants.POS_ITEM_LOG_POS + "," + AppConstants.POS_ITEM_LOG_CONSUME_POINT + ","
+					+ AppConstants.POS_ITEM_LOG_ANTI_POS;
+			objects = posItemLogService.findSumByItemFlag(systemBookCode, branchNums, dateFrom, dateTo, checkType,
+					itemNums, storehouseNum, null);
+			for (int i = 0; i < objects.size(); i++) {
+				Object[] object = objects.get(i);
+				Integer itemNum = (Integer) object[0];
+				boolean flag = (Boolean) object[2];
+				BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+				BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+				BigDecimal assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+
+				InventoryProfitDTO data = map.get(itemNum);
+				if (data == null) {
+					data = new InventoryProfitDTO();
+					data.setItemNum(itemNum);
+					map.put(itemNum, data);
+				}
+				if (flag) {
+					amount = amount.negate();
+					money = money.negate();
+					assistAmount = assistAmount.negate();
+				}
+				data.setSaleQty(data.getSaleQty().add(amount));
+				data.setSaleMoney(data.getSaleMoney().add(money));
+				data.setSaleAssitQty(data.getSaleAssitQty().add(assistAmount));
+			}
+		}
+		Map<String, InventoryProfitDTO> categoryMap = new HashMap<String, InventoryProfitDTO>();
+		List<InventoryProfitDTO> list = new ArrayList<InventoryProfitDTO>(map.values());
+		BigDecimal profitQtySum = BigDecimal.ZERO;
+		BigDecimal profitAssitQtySum = BigDecimal.ZERO;
+		BigDecimal profitMoneySum = BigDecimal.ZERO;
+		BigDecimal saleQtySum = BigDecimal.ZERO;
+		BigDecimal saleAssitQtySum = BigDecimal.ZERO;
+		BigDecimal saleMoneySum = BigDecimal.ZERO;
+		BigDecimal itemSaleMoneySum = BigDecimal.ZERO;
+		for (int i = list.size() - 1; i >= 0; i--) {
+			InventoryProfitDTO data = list.get(i);
+			Integer itemNum = data.getItemNum();
+			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
+			if (posItem == null) {
+				list.remove(i);
+				continue;
+			}
+			if (categoryCodes != null && categoryCodes.size() > 0) {
+				if (!categoryCodes.contains(posItem.getItemCategoryCode())) {
+					list.remove(i);
+					continue;
+				}
+			}
+			if (data.getProfitQty().compareTo(BigDecimal.ZERO) == 0
+					&& data.getProfitMoney().compareTo(BigDecimal.ZERO) == 0) {
+				if (data.getSaleQty().compareTo(BigDecimal.ZERO) == 0 && data.getSaleAssitQty().compareTo(BigDecimal.ZERO) == 0
+						&& data.getSaleMoney().compareTo(BigDecimal.ZERO) == 0) {
+					list.remove(i);
+					continue;
+				}
+			}
+			if (unit.equals(AppConstants.UNIT_SOTRE)) {
+				data.setItemUnit(posItem.getItemInventoryUnit());
+				data.setProfitQty(data.getProfitQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+				data.setSaleQty(data.getSaleQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+			} else if (unit.equals(AppConstants.UNIT_PURCHASE)) {
+				data.setItemUnit(posItem.getItemPurchaseUnit());
+				data.setProfitQty(data.getProfitQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+				data.setSaleQty(data.getSaleQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+			} else if (unit.equals(AppConstants.UNIT_TRANFER)) {
+				data.setItemUnit(posItem.getItemTransferUnit());
+				data.setProfitQty(data.getProfitQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+				data.setSaleQty(data.getSaleQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+			} else if (unit.equals(AppConstants.UNIT_PIFA)) {
+				data.setItemUnit(posItem.getItemWholesaleUnit());
+				data.setProfitQty(data.getProfitQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+				data.setSaleQty(data.getSaleQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+			}
+			String code = posItem.getItemCategoryCode();
+			String name = posItem.getItemCategory();
+			if (posItemTypeParams != null) {
+				code = AppUtil.getTopCategoryCode(posItemTypeParams, posItem.getItemCategoryCode());
+				name = AppUtil.getPosItemTypeName(posItemTypeParams,code);
+			}
+			InventoryProfitDTO categoryData = categoryMap.get(code + "|"
+					+ name);
+			if (categoryData == null) {
+				categoryData = new InventoryProfitDTO();
+				if (posItemTypeParams != null) {
+					categoryData.setItemCategoryCode(code);
+					categoryData.setItemCategoryName(name);
+					categoryMap.put(code + "|" + name, categoryData);
+				} else {
+					categoryData.setItemCategoryCode(posItem.getItemCategoryCode());
+					categoryData.setItemCategoryName(posItem.getItemCategory());
+					categoryMap.put(posItem.getItemCategoryCode() + "|" + posItem.getItemCategory(), categoryData);
+				}
+			}
+			categoryData.setProfitAssitQty(categoryData.getProfitAssitQty().add(data.getProfitAssitQty()));
+			categoryData.setProfitMoney(categoryData.getProfitMoney().add(data.getProfitMoney()));
+			categoryData.setProfitQty(categoryData.getProfitQty().add(data.getProfitQty()));
+			categoryData.setSaleAssitQty(categoryData.getSaleAssitQty().add(data.getSaleAssitQty()));
+			categoryData.setSaleMoney(categoryData.getSaleMoney().add(data.getSaleMoney()));
+			categoryData.setSaleQty(categoryData.getSaleQty().add(data.getSaleQty()));
+			categoryData.setItemSaleMoney(categoryData.getItemSaleMoney().add(data.getItemSaleMoney()));
+
+		}
+		list = new ArrayList<InventoryProfitDTO>(categoryMap.values());
+		for (int i = list.size() - 1; i >= 0; i--) {
+			if (queryData.getIsChechZero()) {
+				if (list.get(i).getProfitQty().doubleValue() == 0.00) {
+					list.remove(i);
+				}
+			} else {
+				if (list.get(i).getProfitQty().doubleValue() == 0.00 && list.get(i).getProfitMoney().doubleValue() == 0.00
+						&& list.get(i).getSaleQty().doubleValue() == 0.00) {
+					list.remove(i);
+				}
+			}
+		}
+		for (int i = list.size() - 1; i >= 0; i--) {
+
+			InventoryProfitDTO data = list.get(i);
+
+			if (data.getSaleQty().compareTo(BigDecimal.ZERO) > 0) {
+				data.setProfitRate(data.getProfitQty().divide(data.getSaleQty(), 4, BigDecimal.ROUND_HALF_UP)
+						.multiply(BigDecimal.valueOf(100)).setScale(2));
+			} else {
+				data.setProfitRate(BigDecimal.valueOf(9999.99));
+			}
+
+			profitQtySum = profitQtySum.add(data.getProfitQty());
+			profitAssitQtySum = profitAssitQtySum.add(data.getProfitAssitQty());
+			profitMoneySum = profitMoneySum.add(data.getProfitMoney());
+			saleQtySum = saleQtySum.add(data.getSaleQty());
+			saleAssitQtySum = saleAssitQtySum.add(data.getSaleAssitQty());
+			saleMoneySum = saleMoneySum.add(data.getSaleMoney());
+			itemSaleMoneySum = itemSaleMoneySum.add(data.getItemSaleMoney());
+		}
+		if (sortField == null) {
+			sortField = "itemCategoryCode";
+			sortType = "ASC";
+		}
+		InventoryProfitPageDTO<InventoryProfitDTO> comparator = new InventoryProfitPageDTO<InventoryProfitDTO>(sortField, sortType);
+		Collections.sort(list, comparator);
+
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).setId(i);
+		}
+		int dataSize = list.size();
+		InventoryProfitPageDTO result = new InventoryProfitPageDTO();
+		result.setCount(dataSize);
+		result.setData(list);
+
+		result.setProfitQtySum(profitQtySum);
+		result.setProfitAssitQtySum(profitAssitQtySum);
+		result.setProfitMoneySum(profitMoneySum);
+		result.setSaleQtySum(saleQtySum);
+		result.setSaleAssitQtySum(saleAssitQtySum);
+		result.setSaleMoneySum(saleMoneySum);
+		result.setItemSaleMoneySum(itemSaleMoneySum);
+		if (saleQtySum.compareTo(BigDecimal.ZERO) > 0) {
+			result.setProfitRateSum(profitQtySum.divide(saleQtySum, 4, BigDecimal.ROUND_HALF_UP)
+					.multiply(BigDecimal.valueOf(100)).setScale(2));
+		}
+
+		int pageSum = offset + limit;
+		if(queryData.isPage()){
+			List<InventoryProfitDTO> subList = null;
+			if(dataSize >= pageSum - 1){
+				subList = list.subList(offset,pageSum);
+			}else{
+				subList = list.subList(offset,dataSize);
+			}
+			result.setData(subList);
+		}
+
+
+		return result;
+
+	}
+
+	private TransferProfitByPosItemDTO getTransferProfitByPosItemData(List<TransferProfitByPosItemDTO> list ,Integer inBranchNum,Integer branchNum, Integer itemNum, Integer itemMatrixNum){
+		if(list == null ){
+			return null;
+		}
+		for (int i = 0,len = list.size(); i < len; i++) {
+			TransferProfitByPosItemDTO data = list.get(i);
+			if(inBranchNum.equals(data.getTranferBranchNum()) && branchNum.equals(data.getBranchNum())
+					&& itemNum.equals(data.getItemNum()) && itemMatrixNum.equals(data.getItemMatrixNum())){
+				return data;
+			}
+		}
+		return null;
+	}
+
 
 
 
