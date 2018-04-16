@@ -4936,7 +4936,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findCustomerAnalysisTimePeriodsByItems(String systemBookCode, Date dateFrom, Date dateTo,
 																 List<Integer> branchNums, List<Integer> itemNums, String saleType, String timeFrom, String timeTo) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select branch_num, sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
+		sb.append("select p.branch_num, sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
 		sb.append("count(distinct detail.order_no) as amount ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = :systemBookCode and p.shift_table_bizday between '"
@@ -4964,7 +4964,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("and detail.order_source = '" + saleType + "' ");
 			}
 		}
-		sb.append("group by branch_num");
+		sb.append("group by p.branch_num");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
