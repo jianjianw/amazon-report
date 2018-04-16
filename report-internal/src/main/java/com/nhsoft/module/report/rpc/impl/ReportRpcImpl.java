@@ -5400,7 +5400,7 @@ public class ReportRpcImpl implements ReportRpc {
 				sortType = "ASC";
 			}
 
-			BranchProfitComparator comparator  = new BranchProfitComparator(sortField,sortType);
+			BranchProfitComparator<BranchProfitDataDTO> comparator  = new BranchProfitComparator<>(sortField,sortType,"branchNum");
 			Collections.sort(list, comparator);
 
 
@@ -5720,7 +5720,7 @@ public class ReportRpcImpl implements ReportRpc {
 			sortType = "ASC";
 		}
 
-		TransferProfitByPosItemPageDTO comparator = new TransferProfitByPosItemPageDTO(sortField, sortType);
+		BranchProfitComparator<TransferProfitByPosItemDTO> comparator  = new BranchProfitComparator<>(sortField,sortType,"tranferBranchNum");
 		Collections.sort(list, comparator);
 
 		// 总合计
@@ -6057,8 +6057,7 @@ public class ReportRpcImpl implements ReportRpc {
 			sortType = "ASC";
 		}
 
-
-		TransferProfitByPosItemDetailPageDTO<TransferProfitByPosItemDetailDTO> comparator = new TransferProfitByPosItemDetailPageDTO<>(sortField, sortType);
+		BranchProfitComparator<TransferProfitByPosItemDetailDTO> comparator  = new BranchProfitComparator<>(sortField,sortType);
 		Collections.sort(list, comparator);
 
 
@@ -6301,8 +6300,7 @@ public class ReportRpcImpl implements ReportRpc {
 			sortField = "itemCode";
 			sortType = "ASC";
 		}
-
-		InventoryProfitPageDTO<InventoryProfitDTO> comparator = new InventoryProfitPageDTO<InventoryProfitDTO>(sortField, sortType);
+		BranchProfitComparator<InventoryProfitDTO> comparator  = new BranchProfitComparator<>(sortField,sortType);
 		Collections.sort(list, comparator);
 
 		for (int i = 0; i < list.size(); i++) {
@@ -6572,7 +6570,7 @@ public class ReportRpcImpl implements ReportRpc {
 			sortField = "itemCategoryCode";
 			sortType = "ASC";
 		}
-		InventoryProfitPageDTO<InventoryProfitDTO> comparator = new InventoryProfitPageDTO<InventoryProfitDTO>(sortField, sortType);
+		BranchProfitComparator<InventoryProfitDTO> comparator  = new BranchProfitComparator<>(sortField,sortType);
 		Collections.sort(list, comparator);
 
 		for (int i = 0; i < list.size(); i++) {

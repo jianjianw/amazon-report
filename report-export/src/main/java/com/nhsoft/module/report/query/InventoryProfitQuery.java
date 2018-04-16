@@ -25,7 +25,7 @@ public class InventoryProfitQuery extends QueryBuilder {
 
     private String sortField;
     private String sortType;
-    private boolean page;
+    private boolean page = true;
     private int offset;
     private int limit;
 

@@ -1,7 +1,10 @@
 package com.nhsoft.module.report.dto;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 
 public class BranchProfitDataPageDTO implements Serializable {
@@ -183,4 +186,10 @@ public class BranchProfitDataPageDTO implements Serializable {
     public void setPosRateSum(BigDecimal posRateSum) {
         this.posRateSum = posRateSum;
     }
+
+
+    //默认按配送门店升序排序
+    //int i = data01.getTranferBranchNum().compareTo(data02.getTranferBranchNum());
+
+
 }

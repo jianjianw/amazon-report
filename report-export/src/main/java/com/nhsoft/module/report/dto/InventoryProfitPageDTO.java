@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 
-public class InventoryProfitPageDTO<T> implements Serializable,Comparator<T> {
+public class InventoryProfitPageDTO implements Serializable {
     private static final long serialVersionUID = 3127619689745595017L;
 
 
@@ -106,84 +106,4 @@ public class InventoryProfitPageDTO<T> implements Serializable,Comparator<T> {
         this.profitRateSum = profitRateSum;
     }
 
-
-
-
-    //排序
-    private String sortField;
-    private String sortType;
-
-    public InventoryProfitPageDTO() {
-    }
-
-    public InventoryProfitPageDTO(String sortField, String sortType) {
-        this.sortField = sortField;
-        this.sortType = sortType;
-    }
-
-    @Override
-    public int compare(T data01, T data02) {
-
-        int value01 = 0;
-        int value02 = 0;
-        if("asc".equals(sortType) || "ASC".equals(sortType)){
-            value01 = 1;
-            value02 = -1;
-        }
-        if("desc".equals(sortType) || "DESC".equals(sortType)){
-            value01 = -1;
-            value02 = 1;
-        }
-
-        try {
-            Class clazz01 = data01.getClass();
-            Method method01 = clazz01.getMethod("get" + sortField);
-
-            Class clazz02 = data02.getClass();
-            Method method02 = clazz02.getMethod("get" + sortField);
-
-
-            Type type=method02.getGenericReturnType();
-            String end = type.toString();
-            String substring = end.substring(type.toString().lastIndexOf(".") + 1, end.length());
-            if("Integer".equals(substring)){
-                Integer invoke01 = (Integer)method01.invoke(data01);
-                Integer invoke02 = (Integer)method02.invoke(data02);
-
-                if (invoke01.compareTo(invoke02) > 0) {
-                    return value01;
-                } else if (invoke01.compareTo(invoke02) < 0) {
-                    return value02;
-                } else {
-                    return 0;
-                }
-            }
-            if("String".equals(substring)){
-                String invoke01 = (String)method01.invoke(data01);
-                String invoke02 = (String)method02.invoke(data02);
-                if (invoke01.compareTo(invoke02) > 0) {
-                    return value01;
-                } else if (invoke01.compareTo(invoke02) < 0) {
-                    return value02;
-                } else {
-                    return 0;
-                }
-            }
-            if("BigDecimal".equals(substring)){
-                BigDecimal invoke01 = (BigDecimal)method01.invoke(data01);
-                BigDecimal invoke02 = (BigDecimal)method02.invoke(data02);
-                if (invoke01.compareTo(invoke02) > 0) {
-                    return value01;
-                } else if (invoke01.compareTo(invoke02) < 0) {
-                    return value02;
-                } else {
-                    return 0;
-                }
-            }
-
-        } catch (Exception e) {
-
-        }
-        return 0;
-    }
 }
