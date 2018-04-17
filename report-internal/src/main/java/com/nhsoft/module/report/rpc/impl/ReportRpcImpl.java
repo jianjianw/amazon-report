@@ -6273,20 +6273,28 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			if (unit.equals(AppConstants.UNIT_SOTRE)) {
 				data.setItemUnit(posItem.getItemInventoryUnit());
-				data.setProfitQty(data.getProfitQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
-				data.setSaleQty(data.getSaleQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+				if(posItem.getItemInventoryRate().compareTo(BigDecimal.ZERO) != 0){
+					data.setProfitQty(data.getProfitQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+					data.setSaleQty(data.getSaleQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+				}
 			} else if (unit.equals(AppConstants.UNIT_PURCHASE)) {
 				data.setItemUnit(posItem.getItemPurchaseUnit());
-				data.setProfitQty(data.getProfitQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
-				data.setSaleQty(data.getSaleQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+				if(posItem.getItemPurchaseRate().compareTo(BigDecimal.ZERO) != 0){
+					data.setProfitQty(data.getProfitQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+					data.setSaleQty(data.getSaleQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+				}
 			} else if (unit.equals(AppConstants.UNIT_TRANFER)) {
 				data.setItemUnit(posItem.getItemTransferUnit());
-				data.setProfitQty(data.getProfitQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
-				data.setSaleQty(data.getSaleQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+				if(posItem.getItemTransferRate().compareTo(BigDecimal.ZERO) != 0){
+					data.setProfitQty(data.getProfitQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+					data.setSaleQty(data.getSaleQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+				}
 			} else if (unit.equals(AppConstants.UNIT_PIFA)) {
 				data.setItemUnit(posItem.getItemWholesaleUnit());
-				data.setProfitQty(data.getProfitQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
-				data.setSaleQty(data.getSaleQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+				if(posItem.getItemWholesaleRate().compareTo(BigDecimal.ZERO) != 0){
+					data.setProfitQty(data.getProfitQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+					data.setSaleQty(data.getSaleQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+				}
 			}
 			profitQtySum = profitQtySum.add(data.getProfitQty());
 			profitAssitQtySum = profitAssitQtySum.add(data.getProfitAssitQty());
@@ -6490,20 +6498,28 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			if (unit.equals(AppConstants.UNIT_SOTRE)) {
 				data.setItemUnit(posItem.getItemInventoryUnit());
-				data.setProfitQty(data.getProfitQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
-				data.setSaleQty(data.getSaleQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+				if(posItem.getItemInventoryRate().compareTo(BigDecimal.ZERO) != 0){
+					data.setProfitQty(data.getProfitQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+					data.setSaleQty(data.getSaleQty().divide(posItem.getItemInventoryRate(), 4, BigDecimal.ROUND_HALF_UP));
+				}
 			} else if (unit.equals(AppConstants.UNIT_PURCHASE)) {
 				data.setItemUnit(posItem.getItemPurchaseUnit());
-				data.setProfitQty(data.getProfitQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
-				data.setSaleQty(data.getSaleQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+				if(posItem.getItemPurchaseRate().compareTo(BigDecimal.ZERO) != 0){
+					data.setProfitQty(data.getProfitQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+					data.setSaleQty(data.getSaleQty().divide(posItem.getItemPurchaseRate(), 4, BigDecimal.ROUND_HALF_UP));
+				}
 			} else if (unit.equals(AppConstants.UNIT_TRANFER)) {
 				data.setItemUnit(posItem.getItemTransferUnit());
-				data.setProfitQty(data.getProfitQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
-				data.setSaleQty(data.getSaleQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+				if(posItem.getItemTransferRate().compareTo(BigDecimal.ZERO) != 0){
+					data.setProfitQty(data.getProfitQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+					data.setSaleQty(data.getSaleQty().divide(posItem.getItemTransferRate(), 4, BigDecimal.ROUND_HALF_UP));
+				}
 			} else if (unit.equals(AppConstants.UNIT_PIFA)) {
 				data.setItemUnit(posItem.getItemWholesaleUnit());
-				data.setProfitQty(data.getProfitQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
-				data.setSaleQty(data.getSaleQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+				if(posItem.getItemWholesaleRate().compareTo(BigDecimal.ZERO) != 0){
+					data.setProfitQty(data.getProfitQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+					data.setSaleQty(data.getSaleQty().divide(posItem.getItemWholesaleRate(), 4, BigDecimal.ROUND_HALF_UP));
+				}
 			}
 			String code = posItem.getItemCategoryCode();
 			String name = posItem.getItemCategory();
