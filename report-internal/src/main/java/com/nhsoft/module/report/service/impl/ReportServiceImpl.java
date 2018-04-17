@@ -12591,9 +12591,9 @@ public class ReportServiceImpl implements ReportService {
 				if(saleAnalysisQueryData.getQueryItemExtendAttribute() != null && saleAnalysisQueryData.getQueryItemExtendAttribute()){
 					data.setItemExtendAttributes(itemItemExtendAttributes);
 				}
-				
+
 			}
-			
+
 			PosItem posItem = AppUtil.getPosItem(posItemNum, posItems);
 			if (posItem == null) {
 				list.remove(i);

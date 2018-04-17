@@ -14,6 +14,12 @@ public class SaleByBranchSummary implements Serializable {
     private Integer itemNum;
 
 
+    public SaleByBranchSummary() {
+        this.amount = BigDecimal.ZERO;
+        this.money = BigDecimal.ZERO;
+        this.assistAmount = BigDecimal.ZERO;
+    }
+
     public Integer getBranchNum() {
         return branchNum;
     }

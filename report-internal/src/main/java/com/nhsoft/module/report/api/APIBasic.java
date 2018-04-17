@@ -329,45 +329,18 @@ public class APIBasic {
 		return abcDatasBySale1;
 	}
 
-	//类别汇总
 	@RequestMapping(method=RequestMethod.GET,value="/test12")
 	public List<SaleByBranchSummary> test12() throws Exception{	//多表 有问题  关联不没有使用sharding的表positem   不报错
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-10-01");
-		Date dateTo = sdf.parse("2017-10-31");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
 
 		SaleAnalysisQueryData queryData = new SaleAnalysisQueryData();
 		queryData.setDtFrom(dateFrom);
 		queryData.setDtTo(dateTo);
-		List<Integer> branchNums = new ArrayList();
-		branchNums.add(1);
-		branchNums.add(2);
-		branchNums.add(3);
-		branchNums.add(4);
-		branchNums.add(5);
-		branchNums.add(6);
-		branchNums.add(7);
-		branchNums.add(8);
-		branchNums.add(9);
-		branchNums.add(11);
-		branchNums.add(12);
-		branchNums.add(99);
-		queryData.setBranchNums(branchNums);
-		queryData.setSystemBookCode("4344");
-		queryData.setQueryItemExtendAttribute(true);
-		queryData.setBrandCodes(null);
-		queryData.setPosItemTypeCodes(null);
-		queryData.setPosItemNums(null);
-		queryData.setIsQueryChild(false);
-		queryData.setIsQueryCF(true);
-		queryData.setIsQueryGrade(false);
-		queryData.setItemDepartments(null);
-		queryData.setItemFlagNum(null);
-		queryData.setSaleType("实体店");//水星微商城   实体店
-		queryData.setIsQueryCardUser(false);
-		queryData.setOrderSources(null);
-		queryData.setTwoStringValueDatas(null);
-		queryData.setAppUserNum(null);
+		queryData.setBranchNums(getBranchNums());
+		queryData.setSystemBookCode("4020");
+		//queryData.setSaleType("实体店");//水星微商城   实体店
 		List<SaleByBranchSummary> saleAnalysisByBranchs = reportRpc.findSaleAnalysisByBranchs(queryData);
 
 		return saleAnalysisByBranchs;
@@ -1512,12 +1485,12 @@ public class APIBasic {
 		query.setShiftTableTo(dateTo);
 		query.setIsQueryCF(true);
 		query.setQueryClient(true);
-		/*List<String> list = new ArrayList<>();
+		List<String> list = new ArrayList<>();
 		list.add("1111");
 		List<String> codes = new ArrayList<>();
 		codes.add("2222");
 		query.setBrandCodes(codes);
-		query.setClientFids(list);*/
+		query.setClientFids(list);
 
 		List<ProfitAnalysisByItemSummary> profitAnalysisByItem = reportRpc.findProfitAnalysisByItem(query);
 		return profitAnalysisByItem;
