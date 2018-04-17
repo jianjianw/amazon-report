@@ -1452,7 +1452,12 @@ public class Report2RpcImpl implements Report2Rpc {
 			dto.setItemCostMode(posItem.getItemCostMode());
 			dto.setSalePrice(posItem.getItemRegularPrice());
 			dto.setSalePrice2(posItem.getItemLevel2Price());
-            dto.setSaleAveQty(dto.getSaleQty().divide(diffDay, 4, BigDecimal.ROUND_HALF_UP));
+			if(diffDay.compareTo(BigDecimal.ZERO) == 0){
+				dto.setSaleAveQty(BigDecimal.ZERO);
+			}else{
+
+				dto.setSaleAveQty(dto.getSaleQty().divide(diffDay, 4, BigDecimal.ROUND_HALF_UP));
+			}
 
 		}
 		return list;
@@ -1548,7 +1553,11 @@ public class Report2RpcImpl implements Report2Rpc {
                     }
                 }
             }
-			dto.setSaleAveQty(dto.getSaleQty().divide(diffDay, 4, BigDecimal.ROUND_HALF_UP));
+            if(diffDay.compareTo(BigDecimal.ZERO) == 0){
+				dto.setSaleAveQty(BigDecimal.ZERO);
+			}else{
+				dto.setSaleAveQty(dto.getSaleQty().divide(diffDay, 4, BigDecimal.ROUND_HALF_UP));
+			}
 
 		}
 		return list;

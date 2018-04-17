@@ -1512,12 +1512,12 @@ public class APIBasic {
 		query.setShiftTableTo(dateTo);
 		query.setIsQueryCF(true);
 		query.setQueryClient(true);
-		List<String> list = new ArrayList<>();
+		/*List<String> list = new ArrayList<>();
 		list.add("1111");
 		List<String> codes = new ArrayList<>();
 		codes.add("2222");
 		query.setBrandCodes(codes);
-		query.setClientFids(list);
+		query.setClientFids(list);*/
 
 		List<ProfitAnalysisByItemSummary> profitAnalysisByItem = reportRpc.findProfitAnalysisByItem(query);
 		return profitAnalysisByItem;

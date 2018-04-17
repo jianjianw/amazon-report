@@ -421,9 +421,9 @@ public class ReportServiceImpl implements ReportService {
 								.subtract(list.get(i).getMgrDiscount());
 						value2 = list.get(i).getProfit();
 						if(value1.compareTo(BigDecimal.ZERO) > 0){
-							objects[2] = BigDecimal.ZERO;
-						} else {
 							objects[2] = value2.divide(value1, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));
+						} else {
+							objects[2] = BigDecimal.ZERO;
 						}
 						
 					}
