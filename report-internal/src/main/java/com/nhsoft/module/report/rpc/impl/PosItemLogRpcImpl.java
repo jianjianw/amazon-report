@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by yangqin on 2017/11/2.
@@ -30,6 +27,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findBranchItemFlagSummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findBranchItemFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
@@ -65,6 +65,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
             Calendar calendar = Calendar.getInstance();
             storeQueryCondition.setDateEnd(calendar.getTime());
         }
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemBizTypeFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
@@ -87,6 +90,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemMatrixFlagSummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findSumByItemFlag(storeQueryCondition.getSystemBookCode(), storeQueryCondition.getBranchNums(),
                 storeQueryCondition.getDateStart(), storeQueryCondition.getDateEnd(), storeQueryCondition.getPosItemLogSummary(), storeQueryCondition.getItemNums(),
                 storeQueryCondition.getStorehouseNum(), storeQueryCondition.getMemos());
@@ -114,6 +120,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemFlagSummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
@@ -134,6 +143,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findBranchFlagSummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findBranchFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
@@ -160,6 +172,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemBizFlagSummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemBizFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<PosItemLogSummaryDTO>(size);
@@ -179,7 +194,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
     //以下都是从amazonCenter中移过来的
     @Override
     public List<PosItemLogSummaryDTO> findItemOutAmountSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
-
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemOutAmountSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -196,7 +213,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemOutDateSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
-
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemOutDateSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -212,11 +231,17 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<Integer> findNoticeItemSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String posItemLogType) {
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         return posItemLogService.findNoticeItemSummary(systemBookCode, branchNum, dateFrom, dateTo, posItemLogType);
     }
 
     @Override
     public List<PosItemLogSummaryDTO> findItemInOutQtyAndMoneySummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemInOutQtyAndMoneySummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -236,6 +261,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> sumByStoreQueryCondition(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.sumByStoreQueryCondition(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -260,6 +288,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemSummaryInOutQtyAndMoney(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemSummaryInOutQtyAndMoney(storeQueryCondition);
         int size = objects.size();
 
@@ -282,6 +313,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findBranchSummaryInOutQtyAndMoney(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findBranchSummaryInOutQtyAndMoney(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -303,6 +337,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findBranchInOutSummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findBranchInOutSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -322,6 +359,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemAmountBySummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String summaries) {
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
 
         List<Object[]> objects = posItemLogService.findItemAmountBySummary(systemBookCode, branchNum, dateFrom, dateTo, summaries);
         int size = objects.size();
@@ -339,6 +379,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findBranchAndItemFlagSummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findBranchAndItemFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -368,6 +411,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findMoneyBranchFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findMoneyBranchFlagSummary(systemBookCode, branchNums, dateFrom, dateTo);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -385,7 +431,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findMoneyBranchItemFlagSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findMoneyBranchItemFlagSummary(systemBookCode, branchNums, dateFrom, dateTo);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -404,6 +452,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findMinPriceAndDateSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findMinPriceAndDateSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -421,6 +472,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
     @Override
     public List<PosItemLogSummaryDTO> findMaxPriceAndDateSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
 
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findMaxPriceAndDateSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -437,7 +491,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemDetailSummary(StoreQueryCondition storeQueryCondition) {
-
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemDetailSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -459,21 +515,33 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogDTO> findByDate(String systemBookCode, Date dateFrom, Date dateTo) {
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         return CopyUtil.toList(posItemLogService.findByDate(systemBookCode, dateFrom, dateTo), PosItemLogDTO.class);
     }
 
     @Override
     public List<PosItemLogDTO> findUnUploadSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, int offset, int limit) {
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         return CopyUtil.toList(posItemLogService.findUnUploadSummary(systemBookCode,branchNum,dateFrom,dateTo,offset,limit),PosItemLogDTO.class);
     }
 
     @Override
     public List<PosItemLogDTO> findRepeatAuditOrderSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         return CopyUtil.toList(posItemLogService.findRepeatAuditOrderSummary(systemBookCode,branchNum,dateFrom,dateTo),PosItemLogDTO.class);
     }
 
     @Override
     public List<PosItemLogSummaryDTO> findSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findSummary(systemBookCode, branchNum, dateFrom, dateTo);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -495,6 +563,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public int countUnUpload(String systemBookCode, Date dateFrom, Date dateTo) {
+        if(dateFrom.after(dateTo)){
+            return 0;
+        }
         return posItemLogService.countUnUpload(systemBookCode, dateFrom, dateTo);
 
     }
@@ -502,7 +573,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
     @Override
     public List<PosItemLogSummaryDTO> findBranchItemFlagMemoSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
                                                                     Date dateTo, String summaries, List<Integer> itemNums, Integer storehouseNum) {
-
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findBranchItemFlagMemoSummary(systemBookCode, branchNums, dateFrom, dateTo, summaries, itemNums, storehouseNum);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -526,6 +599,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemInOutSummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemInOutSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -555,7 +631,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findDateItemFlagSummary(StoreQueryCondition storeQueryCondition) {
-
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findDateItemFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -578,6 +656,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<Integer> findItemNumSummary(String systemBookCode, Integer branchNum, Integer storehouseNum, Date dateFrom, Date dateTo) {
+        if(dateFrom.after(dateTo)){
+            return Collections.emptyList();
+        }
         return posItemLogService.findItemNumSummary(systemBookCode, branchNum, storehouseNum, dateFrom, dateTo);
     }
 
@@ -588,6 +669,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findBranchItemMatrixFlagSummary(StoreQueryCondition storeQueryCondition) {
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findBranchItemMatrixFlagSummary(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);
@@ -617,7 +701,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
 
     @Override
     public List<PosItemLogSummaryDTO> findItemInOutQtyAndMoney(StoreQueryCondition storeQueryCondition) {
-
+        if(storeQueryCondition.getDateStart().after(storeQueryCondition.getDateEnd())){
+            return Collections.emptyList();
+        }
         List<Object[]> objects = posItemLogService.findItemInOutQtyAndMoney(storeQueryCondition);
         int size = objects.size();
         List<PosItemLogSummaryDTO> list = new ArrayList<>(size);

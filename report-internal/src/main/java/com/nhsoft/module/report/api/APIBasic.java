@@ -1243,16 +1243,16 @@ public class APIBasic {
 
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateFrom = sdf.parse("2018-04-01");
 		Date dateTo = sdf.parse("2018-04-10");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
 		query.setIsQueryCF(false);
-		query.setPage(false);
+		query.setPage(true);
 		query.setOffset(0);
-		query.setLimit(50);
+		query.setLimit(46);
 		query.setBranchNums(getBranchNums());
 		/*List<String> orderSource = new ArrayList<>();
 		orderSource.add("第三方商城");
@@ -1280,8 +1280,8 @@ public class APIBasic {
 		query.setBranchNums(getBranchNums());
 		query.setIsQueryCF(false);
 		//query.setPage(false);
-		query.setOffset(0);
-		query.setLimit(50);
+		query.setOffset(20);
+		query.setLimit(25);
 		query.setSortField(sortField);
 		query.setSortType(sortType);
 	/*	List<String> category = new ArrayList<>();
