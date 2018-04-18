@@ -5062,7 +5062,6 @@ public class ReportRpcImpl implements ReportRpc {
 		return reportService.findPosItemRanks(systemBookCode, branchNum, dateFrom, dateTo);
 	}
 
-	//AMA-23167 性能优化-门店营业分析-门店商品汇总
 	@Override
 	public BranchProfitDataPageDTO findBranchAndItemProfit(BranchProfitQuery query){
 
@@ -5447,7 +5446,7 @@ public class ReportRpcImpl implements ReportRpc {
 			if(query.isPage()){
 				int pageSum = offset + limit;
 				List<BranchProfitDataDTO> subList = null;
-				if(dataSize >= pageSum-1){
+				if(dataSize >= pageSum){
 					subList = list.subList(offset, pageSum);
 				}else{
 					subList = list.subList(offset, dataSize);
@@ -5775,7 +5774,7 @@ public class ReportRpcImpl implements ReportRpc {
 		int pageSum = offset + limit;
 		if(queryData.isPage()){
 			List<TransferProfitByPosItemDTO> subList = null;
-			if(dataSize >= pageSum-1){
+			if(dataSize >= pageSum){
 				subList = list.subList(offset,pageSum);
 			}else{
 				subList = list.subList(offset,dataSize);
@@ -6062,7 +6061,7 @@ public class ReportRpcImpl implements ReportRpc {
 		int pageSum = offset + limit;
 		if (queryData.isPage()) {
 			List<TransferProfitByPosItemDetailDTO> subList = null;
-			if (dataSize >= pageSum - 1) {
+			if (dataSize >= pageSum ) {
 				subList = list.subList(offset, pageSum);
 			} else {
 				subList = list.subList(offset, dataSize);
@@ -6319,7 +6318,7 @@ public class ReportRpcImpl implements ReportRpc {
 		int pageSum = offset + limit;
 		if (queryData.isPage()) {
 			List<InventoryProfitDTO> subList = null;
-			if (dataSize >= pageSum - 1) {
+			if (dataSize >= pageSum) {
 				subList = list.subList(offset, pageSum);
 			} else {
 				subList = list.subList(offset, dataSize);
@@ -6596,7 +6595,7 @@ public class ReportRpcImpl implements ReportRpc {
 		int pageSum = offset + limit;
 		if(queryData.isPage()){
 			List<InventoryProfitDTO> subList = null;
-			if(dataSize >= pageSum - 1){
+			if(dataSize >= pageSum){
 				subList = list.subList(offset,pageSum);
 			}else{
 				subList = list.subList(offset,dataSize);
