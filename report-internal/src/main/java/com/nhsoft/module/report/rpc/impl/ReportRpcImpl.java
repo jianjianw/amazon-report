@@ -5456,22 +5456,6 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 
 			return resultDTO;
-
-		/*	if (StringUtils.isNotEmpty(exportId)) {
-				String excelUrl = null;
-				Element element = getElementFromCache(exportId);
-				if (element != null) {
-					ExportCacheUtil exportCacheUtil = (ExportCacheUtil) element.getValue();
-					removeElementFromCache(exportId);
-					excelUrl = exportCacheUtil.export(list);
-				}
-				List<BranchProfitDataDTO> returnDatas = new ArrayList<BranchProfitDataDTO>();
-				BranchProfitDataDTO data = new BranchProfitDataDTO();
-				data.setCacheUrl(excelUrl);
-				returnDatas.add(data);
-				return new PagingLoadResultBean<BranchProfitDataDTO>(returnDatas, returnDatas.size(), 0);
-			}
-			return new PagingLoadResultBean<BranchProfitDataDTO>(returnList, count, offset);*/
 	}
 
 
