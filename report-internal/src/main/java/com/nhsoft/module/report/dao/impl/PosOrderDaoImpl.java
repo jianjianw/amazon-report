@@ -6922,7 +6922,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as saleAmount, ");
 		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -(order_detail_amount * order_detail_cost) else (order_detail_amount * order_detail_cost) end) as saleCost ");
 		sb.append(createPromotion(policyAllowPriftQuery));
-		sb.append("group by detail.order_detail_branch_num,detail.item_num ");
+		sb.append("group by detail.order_detail_branch_num,detail.item_num,item.item_category_code, ");
+		sb.append("item.item_category_code,item.item_code,item.item_name,item.item_barcode,item.item_spec,item.item_unit,item.item_regular_price ");
 		if(StringUtils.isNotBlank(policyAllowPriftQuery.getSortField())){
 			sb.append("order by " + policyAllowPriftQuery.getSortField()+" "+policyAllowPriftQuery.getSortType());
 		}
@@ -6957,7 +6958,6 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_item as item on item.item_num = detail.item_num ");
-
 		sb.append("where detail.order_detail_book_code = '" + policyAllowPriftQuery.getSystemBookCode() + "' ");
 		if (policyAllowPriftQuery.getBranchNums() != null && policyAllowPriftQuery.getBranchNums().size() > 0) {
 			sb.append("and detail.order_detail_branch_num in "+ AppUtil.getIntegerParmeList(policyAllowPriftQuery.getBranchNums()));

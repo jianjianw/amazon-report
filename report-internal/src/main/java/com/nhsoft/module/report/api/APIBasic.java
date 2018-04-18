@@ -1510,7 +1510,9 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
-		query.setBranchNums(getBranchNums());
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+		query.setBranchNums(branchNums);
 		query.setPromotion(false);
 		query.setPage(true);
 		query.setOffset(0);

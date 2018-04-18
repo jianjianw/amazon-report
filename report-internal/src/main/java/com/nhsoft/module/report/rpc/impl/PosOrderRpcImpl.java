@@ -812,20 +812,31 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		int size = objects.size();
 		List<PromotionItemDTO> data = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
+		    /**
+             * sb.append("select detail.order_detail_branch_num as branchNum, detail.item_num as itemNum, ");
+             sb.append("item.item_category_code as itemCategoryCode, item.item_code as itemCode, item.item_name as itemName, item.item_barcode as itemBarcode, ");
+             sb.append("item.item_spec as itemSpec, item.item_unit as itemUnit, item.item_regular_price as itemRegularPrice, ");
+             sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_payment_money when order_detail_state_code = 1 then order_detail_payment_money end) as saleMoney, ");
+             sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_discount when order_detail_state_code = 1 then order_detail_discount when order_detail_state_code = 2 then order_detail_payment_money end) as allowProfitMoney, ");
+             sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as saleAmount, ");
+             sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -(order_detail_amount * order_detail_cost) else (order_detail_amount * order_detail_cost) end) as saleCost ");
+
+             * */
 			Object[] object = objects.get(i);
 			PromotionItemDTO dto = new PromotionItemDTO();
 			dto.setBranchNum((Integer) object[0]);
 			dto.setItemNum((Integer) object[1]);
 			dto.setItemCategoryCode((String) object[2]);
-			dto.setItemName((String) object[3]);
-			dto.setItemBarcode((String) object[4]);
-			dto.setItemSpec((String) object[5]);
-			dto.setItemUnit((String) object[6]);
-			dto.setItemRegularPrice((BigDecimal) object[7]);
-			dto.setSaleMoney(object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8]);
-			dto.setAllowProfitMoney((BigDecimal) object[9]);
-			dto.setSaleAmount(object[10] == null ? BigDecimal.ZERO : (BigDecimal) object[10]);
-			dto.setSaleCost((BigDecimal) object[11]);
+			dto.setItemCode((String) object[3]);
+			dto.setItemName((String) object[4]);
+			dto.setItemBarcode((String) object[5]);
+			dto.setItemSpec((String) object[6]);
+			dto.setItemUnit((String) object[7]);
+			dto.setItemRegularPrice((BigDecimal) object[8]);
+			dto.setSaleMoney(object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9]);
+			dto.setAllowProfitMoney((BigDecimal) object[10]);
+			dto.setSaleAmount(object[11] == null ? BigDecimal.ZERO : (BigDecimal) object[11]);
+			dto.setSaleCost((BigDecimal) object[12]);
 			if(dto.getSaleAmount().compareTo(BigDecimal.ZERO) == 0){
 				dto.setItemAveragePrice(BigDecimal.ZERO);
 			}else{
