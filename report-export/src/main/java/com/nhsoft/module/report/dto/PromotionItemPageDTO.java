@@ -11,10 +11,10 @@ public class PromotionItemPageDTO implements Serializable {
     private Integer count;
     private List<PromotionItemDTO> data;
     //汇总
-    private BigDecimal moneySum;       //销售金额
-    private BigDecimal discountSum;    //让利金额
-    private BigDecimal amountSum;      //销售数量
-    private BigDecimal costMoneySum;   //销售成本
+    private BigDecimal saleAmountSum; // 销售数量
+    private BigDecimal saleMoneySum; // 销售金额
+    private BigDecimal saleCostSum; // 销售成本
+    private BigDecimal allowProfitMoneySum; // 让利金额
 
 
     public Integer getCount() {
@@ -33,35 +33,37 @@ public class PromotionItemPageDTO implements Serializable {
         this.data = data;
     }
 
-    public BigDecimal getMoneySum() {
-        return moneySum;
+    public BigDecimal getSaleAmountSum() {
+        return saleAmountSum;
     }
 
-    public void setMoneySum(BigDecimal moneySum) {
-        this.moneySum = moneySum;
+    public void setSaleAmountSum(BigDecimal saleAmountSum) {
+        this.saleAmountSum = saleAmountSum;
     }
 
-    public BigDecimal getDiscountSum() {
-        return discountSum;
+    public BigDecimal getSaleMoneySum() {
+        return saleMoneySum;
     }
 
-    public void setDiscountSum(BigDecimal discountSum) {
-        this.discountSum = discountSum;
+    public void setSaleMoneySum(BigDecimal saleMoneySum) {
+        this.saleMoneySum = saleMoneySum;
     }
 
-    public BigDecimal getAmountSum() {
-        return amountSum;
+    public BigDecimal getSaleCostSum() {
+        return saleCostSum;
     }
 
-    public void setAmountSum(BigDecimal amountSum) {
-        this.amountSum = amountSum;
+    public void setSaleCostSum(BigDecimal saleCostSum) {
+        this.saleCostSum = saleCostSum;
     }
 
-    public BigDecimal getCostMoneySum() {
-        return costMoneySum;
+    public BigDecimal getAllowProfitMoneySum() {
+        return allowProfitMoneySum;
     }
 
-    public void setCostMoneySum(BigDecimal costMoneySum) {
-        this.costMoneySum = costMoneySum;
+    public void setAllowProfitMoneySum(BigDecimal allowProfitMoneySum) {
+        this.allowProfitMoneySum = allowProfitMoneySum;
     }
 }
+
+

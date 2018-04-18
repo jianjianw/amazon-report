@@ -1503,7 +1503,7 @@ public class APIBasic {
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-11");
+		Date dateTo = sdf.parse("2018-04-18");
 
 		PolicyAllowPriftQuery query = new PolicyAllowPriftQuery();
 
@@ -1512,9 +1512,15 @@ public class APIBasic {
 		query.setDtTo(dateTo);
 		query.setBranchNums(getBranchNums());
 		query.setPromotion(false);
-		List<String> sellers = new ArrayList<>();
+		query.setPage(true);
+		query.setOffset(0);
+		query.setLimit(50);
+		query.setSortField("itemCode");
+		query.setSortType("desc");
+		/*List<String> sellers = new ArrayList<>();
 		sellers.add("");
-		query.setOrderSellers(sellers);
+		query.setOrderSellers(sellers);*/
+		//itemCode
 
 
 		PromotionItemPageDTO result = posOrderRpc.findPromotionItemsByPage(query);
@@ -1535,7 +1541,7 @@ public class APIBasic {
 		query.setDateTo(dateTo);
 		query.setBranchNums(getBranchNums());
 		query.setBranchNum(99);
-		query.setQueryKit(false);
+		query.setQueryKit(null);
 		query.setFilterDel(true);
 		query.setOffset(0);
 		query.setLimit(50);

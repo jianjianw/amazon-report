@@ -6915,14 +6915,16 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select detail.order_detail_branch_num as branchNum, detail.item_num as itemNum, ");
-		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_payment_money when order_detail_state_code = 1 then order_detail_payment_money end) as money, ");
-		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_discount when order_detail_state_code = 1 then order_detail_discount when order_detail_state_code = 2 then order_detail_payment_money end) as discount, ");
-		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as amount, ");
-		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -(order_detail_amount * order_detail_cost) else (order_detail_amount * order_detail_cost) end) as costMoney ");
+		sb.append("item.item_category_code as itemCategoryCode, item.item_code as itemCode, item.item_name as itemName, item.item_barcode as itemBarcode, ");
+		sb.append("item.item_spec as itemSpec, item.item_unit as itemUnit, item.item_regular_price as itemRegularPrice, ");
+		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_payment_money when order_detail_state_code = 1 then order_detail_payment_money end) as saleMoney, ");
+		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_discount when order_detail_state_code = 1 then order_detail_discount when order_detail_state_code = 2 then order_detail_payment_money end) as allowProfitMoney, ");
+		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as saleAmount, ");
+		sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -(order_detail_amount * order_detail_cost) else (order_detail_amount * order_detail_cost) end) as saleCost ");
 		sb.append(createPromotion(policyAllowPriftQuery));
 		sb.append("group by detail.order_detail_branch_num,detail.item_num ");
 		if(StringUtils.isNotBlank(policyAllowPriftQuery.getSortField())){
-			sb.append("order by " + policyAllowPriftQuery.getSortField() + " " +policyAllowPriftQuery.getSortType());
+			sb.append("order by " + policyAllowPriftQuery.getSortField()+" "+policyAllowPriftQuery.getSortType());
 		}
 
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
@@ -6954,7 +6956,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	private String createPromotion(PolicyAllowPriftQuery policyAllowPriftQuery){
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("from pos_order_detail as detail with(nolock) where detail.order_detail_book_code = '" + policyAllowPriftQuery.getSystemBookCode() + "' ");///
+		sb.append("from pos_order_detail as detail with(nolock) inner join pos_item as item on item.item_num = detail.item_num ");
+
+		sb.append("where detail.order_detail_book_code = '" + policyAllowPriftQuery.getSystemBookCode() + "' ");
 		if (policyAllowPriftQuery.getBranchNums() != null && policyAllowPriftQuery.getBranchNums().size() > 0) {
 			sb.append("and detail.order_detail_branch_num in "+ AppUtil.getIntegerParmeList(policyAllowPriftQuery.getBranchNums()));
 		}
@@ -7005,11 +7009,11 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if (policyAllowPriftQuery.getOrderSellers() != null && policyAllowPriftQuery.getOrderSellers().size() > 0) {
 
 
-			sb.append("and exists(select 1 pos_order as p where  p.system_book_code = '"+ policyAllowPriftQuery.getSystemBookCode()+"' ");
+			sb.append("and exists(select 1 from pos_order as p where  p.system_book_code = '"+ policyAllowPriftQuery.getSystemBookCode()+"' ");
 			sb.append("and p.order_no = detail.order_no ");
 
 			if (policyAllowPriftQuery.getBranchNums() != null && policyAllowPriftQuery.getBranchNums().size() > 0) {
-				sb.append("and p.branch_num in "+ policyAllowPriftQuery.getBranchNums());
+				sb.append("and p.branch_num in "+ AppUtil.getIntegerParmeList(policyAllowPriftQuery.getBranchNums()));
 			}
 			if (policyAllowPriftQuery.getDtFrom() != null) {
 				sb.append("and p.shift_table_bizday >= "+DateUtil.getDateShortStr(policyAllowPriftQuery.getDtFrom())+" ");

@@ -816,10 +816,21 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			PromotionItemDTO dto = new PromotionItemDTO();
 			dto.setBranchNum((Integer) object[0]);
 			dto.setItemNum((Integer) object[1]);
-			dto.setMoney((BigDecimal) object[2]);
-			dto.setDiscount((BigDecimal) object[3]);
-			dto.setAmount((BigDecimal) object[4]);
-			dto.setCostMoney((BigDecimal) object[5]);
+			dto.setItemCategoryCode((String) object[2]);
+			dto.setItemName((String) object[3]);
+			dto.setItemBarcode((String) object[4]);
+			dto.setItemSpec((String) object[5]);
+			dto.setItemUnit((String) object[6]);
+			dto.setItemRegularPrice((BigDecimal) object[7]);
+			dto.setSaleMoney(object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8]);
+			dto.setAllowProfitMoney((BigDecimal) object[9]);
+			dto.setSaleAmount(object[10] == null ? BigDecimal.ZERO : (BigDecimal) object[10]);
+			dto.setSaleCost((BigDecimal) object[11]);
+			if(dto.getSaleAmount().compareTo(BigDecimal.ZERO) == 0){
+				dto.setItemAveragePrice(BigDecimal.ZERO);
+			}else{
+				dto.setItemAveragePrice(dto.getSaleMoney().divide(dto.getSaleAmount(),4,BigDecimal.ROUND_HALF_UP));
+			}
 			data.add(dto);
 		}
 		PromotionItemPageDTO result = new PromotionItemPageDTO();
@@ -828,12 +839,12 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		Object[] count = posOrderService.findPromotionItemsCount(policyAllowPriftQuery);
 		if(count != null){
 			result.setCount((Integer) count[0]);
-			result.setMoneySum((BigDecimal) count[1]);
-			result.setDiscountSum((BigDecimal) count[2]);
-			result.setAmountSum((BigDecimal) count[3]);
-			result.setCostMoneySum((BigDecimal) count[4]);
-
+			result.setSaleMoneySum((BigDecimal) count[1]);
+			result.setAllowProfitMoneySum((BigDecimal) count[2]);
+			result.setSaleAmountSum((BigDecimal) count[3]);
+			result.setSaleCostSum((BigDecimal) count[4]);
 		}
+
 		return result;
 	}
 
