@@ -812,16 +812,6 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		int size = objects.size();
 		List<PromotionItemDTO> data = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-		    /**
-             * sb.append("select detail.order_detail_branch_num as branchNum, detail.item_num as itemNum, ");
-             sb.append("item.item_category_code as itemCategoryCode, item.item_code as itemCode, item.item_name as itemName, item.item_barcode as itemBarcode, ");
-             sb.append("item.item_spec as itemSpec, item.item_unit as itemUnit, item.item_regular_price as itemRegularPrice, ");
-             sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_payment_money when order_detail_state_code = 1 then order_detail_payment_money end) as saleMoney, ");
-             sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_discount when order_detail_state_code = 1 then order_detail_discount when order_detail_state_code = 2 then order_detail_payment_money end) as allowProfitMoney, ");
-             sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as saleAmount, ");
-             sb.append("sum(case when order_detail_state_code = 8 then 0 when order_detail_state_code = 4 then -(order_detail_amount * order_detail_cost) else (order_detail_amount * order_detail_cost) end) as saleCost ");
-
-             * */
 			Object[] object = objects.get(i);
 			PromotionItemDTO dto = new PromotionItemDTO();
 			dto.setBranchNum((Integer) object[0]);
