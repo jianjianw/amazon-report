@@ -1520,10 +1520,14 @@ public class APIBasic {
 		query.setLimit(50);
 		query.setSortField("itemCode");
 		query.setSortType("desc");
+		/*List<String> list = new ArrayList<>();
+		list.add("aa");
+		query.setCategoryCodes(list);*/
 		/*List<String> sellers = new ArrayList<>();
 		sellers.add("");
 		query.setOrderSellers(sellers);*/
-		//itemCode
+		query.setProfitType("超额折扣");
+
 
 
 		PromotionItemPageDTO result = posOrderRpc.findPromotionItemsByPage(query);

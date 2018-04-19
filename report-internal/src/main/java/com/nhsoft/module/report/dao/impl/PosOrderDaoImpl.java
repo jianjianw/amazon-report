@@ -6980,9 +6980,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("and detail.order_detail_order_state in " + AppUtil.getIntegerParmeList(PosOrder.getNormalPosOrderState()));
 		sb.append("and detail.order_detail_amount >= " + BigDecimal.valueOf(0.0001)+" ");
 		if(policyAllowPriftQuery.getCategoryCodes() != null && policyAllowPriftQuery.getCategoryCodes().size() > 0){
-			sb.append("and exists(select 1 from pos_item as item where item.system_book_code = '" + policyAllowPriftQuery.getSystemBookCode() + "' ");
-			 				sb.append("and item.item_category_code in " + AppUtil.getStringParmeList(policyAllowPriftQuery.getCategoryCodes()) + " ");
-							sb.append("and item.itemNum = detail.itemNum) ");
+			sb.append("and item.item_category_code in " + AppUtil.getStringParmeList(policyAllowPriftQuery.getCategoryCodes()) + " ");
 		}
 		// AMA-5133 要求 赠品促销 的促销商品不显示只显示赠送商品
 		if(policyAllowPriftQuery.isPromotion()){
