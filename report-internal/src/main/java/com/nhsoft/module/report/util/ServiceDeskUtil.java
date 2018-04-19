@@ -65,8 +65,8 @@ public class ServiceDeskUtil {
 			return systemBookProxy;
 		}
 		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("centerId", systemBookCode);
+		Map<String, Object> hashMap = new HashMap<String, Object>();
+		hashMap.put("centerId", systemBookCode);
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -74,7 +74,7 @@ public class ServiceDeskUtil {
 		try {
 			
 			ResponseEntity<String> responseEntity = restTemplate.exchange(url
-					+ "api/systemBookProxy/get/{centerId}", HttpMethod.GET, requestEntity, String.class, map);
+					+ "api/systemBookProxy/get/{centerId}", HttpMethod.GET, requestEntity, String.class, hashMap);
 			if (responseEntity.getBody() == null) {
 				return null;
 			}
