@@ -301,7 +301,7 @@ public class APIBasic {
 	@RequestMapping(method = RequestMethod.GET,value="/test11")
 	public List<ABCAnalysis> test11() throws Exception{	//子查询    ok带  exists  也ok
 
-		String systemBookCode= "4344";
+		String systemBookCode= "4020";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
 		for (BranchDTO b : all) {
@@ -311,17 +311,17 @@ public class APIBasic {
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2015-05-05");
-		Date dateTo = sdf.parse("2017-10-31");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-19");
 
 		ABCListQuery abc = new ABCListQuery();
 		abc.setSystemBookCode(systemBookCode);
 		abc.setDateFrom(dateFrom);
 		abc.setDateTo(dateTo);
 		abc.setBranchNums(branchNums);
-		List<String> list = new ArrayList<>();
+		/*List<String> list = new ArrayList<>();
 		list.add("10");
-		abc.setCategoryCodeList(list);
+		abc.setCategoryCodeList(list);*/
 		List<String> list1 = new ArrayList<>();
 		list1.add(AppConstants.CHECKBOX_SALE);
 		abc.setTypes(list1);

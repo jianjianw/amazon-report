@@ -1427,12 +1427,11 @@ public class ReportServiceImpl implements ReportService {
 		Collections.sort(list, comparator);
 		BigDecimal aRate = null;
 		List<Integer> itemNums = new ArrayList<Integer>();
-		for (int i = 0,len = list.size(); i < len; i++) {
+		for(int i = list.size()-1; i>=0;i--){
 			ABCAnalysis data = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(data.getItemNum(), posItems);
 			if (posItem == null) {
 				list.remove(i);
-				i = i - 1;
 				continue;
 			}
 			String state = "";
