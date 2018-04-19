@@ -1062,13 +1062,14 @@ public class APIBasic {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-03-08");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-08");
 
 		String systemBookCode = "4020";
 		ItemQueryDTO query = new ItemQueryDTO();
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
+		query.setItemMethod("联营");
 		List<ItemSummary> result = posOrderRpc.findItemSum(systemBookCode,query);
 		return result;
 	}
@@ -1503,7 +1504,7 @@ public class APIBasic {
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-18");
+		Date dateTo = sdf.parse("2018-04-19");
 
 		PolicyAllowPriftQuery query = new PolicyAllowPriftQuery();
 

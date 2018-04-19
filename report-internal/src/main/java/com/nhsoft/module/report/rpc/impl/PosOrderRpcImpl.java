@@ -832,6 +832,7 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			}else{
 				dto.setItemAveragePrice(dto.getSaleMoney().divide(dto.getSaleAmount(),4,BigDecimal.ROUND_HALF_UP));
 			}
+			dto.setItemCategoryName((String) object[13]);
 			data.add(dto);
 		}
 		PromotionItemPageDTO result = new PromotionItemPageDTO();

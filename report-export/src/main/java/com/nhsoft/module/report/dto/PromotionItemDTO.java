@@ -22,6 +22,7 @@ public class PromotionItemDTO implements Serializable {
     private BigDecimal allowProfitMoney; // 让利金额
     private BigDecimal saleAmount; // 销售数量
     private BigDecimal saleCost; // 销售成本
+    private String itemCategoryName; // 商品类别名称
 
     public Integer getBranchNum() {
         return branchNum;
@@ -134,5 +135,13 @@ public class PromotionItemDTO implements Serializable {
 
     public void setAllowProfitMoney(BigDecimal allowProfitMoney) {
         this.allowProfitMoney = allowProfitMoney;
+    }
+
+    public String getItemCategoryName() {
+        return itemCategoryName;
+    }
+
+    public void setItemCategoryName(String itemCategoryName) {
+        this.itemCategoryName = itemCategoryName;
     }
 }
