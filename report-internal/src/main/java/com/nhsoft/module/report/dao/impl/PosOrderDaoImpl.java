@@ -5172,7 +5172,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findMerchantCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select p.merchant_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("select p.merchant_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(p.order_coupon_total_money) as couponTotal ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order p with(nolock) on detail.order_no = p.order_no ");
 		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' and detail.order_detail_branch_num = " + branchNum + " ");
 		if (merchantNum != null) {
@@ -5195,7 +5196,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findBranchDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select branch_num, sum(order_discount_money + order_round + order_mgr_discount_money) as money ");
+		sb.append("select branch_num, sum(order_discount_money + order_round + order_mgr_discount_money) as money, ");
+		sb.append("sum(order_coupon_total_money) as couponTotal ");
 		sb.append("from pos_order with(nolock) ");
 		sb.append("where system_book_code = '" + systemBookCode + "' ");
 		if (branchNums != null && branchNums.size() > 0) {
@@ -5288,7 +5290,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findMerchantBizdayCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select merchant_num, detail.order_detail_bizday, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("select merchant_num, detail.order_detail_bizday, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(p.order_coupon_total_money) as couponTotal ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
 		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' and p.branch_num = " + branchNum + " ");
 		if (merchantNum != null) {
@@ -5310,7 +5313,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findStallCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Integer stallNum, Date dateFrom, Date dateTo) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select merchant_num, stall_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("select merchant_num, stall_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(p.order_coupon_total_money) as couponTotal ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
 		sb.append("where detail.order_detail_book_code = '" + systemBookCode + "' and p.branch_num = " + branchNum + " ");
 		if (merchantNum != null) {
@@ -5336,7 +5340,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findBranchBizdayDiscountSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select branch_num, shift_table_bizday, sum(order_discount_money + order_round + order_mgr_discount_money) as money ");
+		sb.append("select branch_num, shift_table_bizday, sum(order_discount_money + order_round + order_mgr_discount_money) as money, ");
+		sb.append("sum(order_coupon_total_money) as couponTotal ");
 		sb.append("from pos_order with(nolock) ");
 		sb.append("where system_book_code = '" + systemBookCode + "' ");
 		if (branchNums != null && branchNums.size() > 0) {
@@ -5381,7 +5386,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 											Date dateFrom, Date dateTo){
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select p.branch_num, p.shift_table_bizday, p.order_machine, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("select p.branch_num, p.shift_table_bizday, p.order_machine, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(p.order_coupon_total_money) as couponTotal ");
 		sb.append("from pos_order p join pos_order_detail detail on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = '" + systemBookCode + "' ");
 		if (branchNums != null && branchNums.size() > 0) {
@@ -5451,7 +5457,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String casher){
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select p.branch_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("select p.branch_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(p.order_coupon_total_money) as couponTotal ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
 		sb.append("where p.system_book_code = '" + systemBookCode + "' ");
 		if (branchNums != null && branchNums.size() > 0) {
@@ -5476,7 +5483,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public List<Object[]> findMerchantShiftTableCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum, Date dateFrom, Date dateTo, String casher) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("select p.merchant_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money ");
+		sb.append("select p.merchant_num, p.shift_table_bizday, p.shift_table_num, detail.order_detail_item, sum(detail.order_detail_amount) as amount, sum(detail.order_detail_payment_money) as money, ");
+		sb.append("sum(p.order_coupon_total_money) as couponTotal ");
 		sb.append("from pos_order_detail as detail with(nolock) inner join pos_order as p with(nolock) on detail.order_no = p.order_no ");
 		sb.append("where p.system_book_code = '" + systemBookCode + "' and p.branch_num = " + branchNum + " ");
 		if (merchantNum != null) {

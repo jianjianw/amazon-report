@@ -1845,14 +1845,6 @@ public class ReportRpcImpl implements ReportRpc {
 			detail.setQty(amount);
 			data.getTicketIncomes().add(detail);
 
-			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-			if (detail == null) {
-				detail = new BusinessCollectionIncome();
-				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-				detail.setMoney(BigDecimal.ZERO);
-				data.getPosIncomes().add(detail);
-			}
-			detail.setMoney(detail.getMoney().add(money));
 		}
 
 		List<Object[]> posList = posOrderService.findBranchDiscountSummary(systemBookCode, branchNums, dateFrom, dateTo);
@@ -1860,6 +1852,7 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = posList.get(i);
 			Integer branchNum = (Integer) object[0];
 			BigDecimal money = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
+			BigDecimal couponMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
 			BusinessCollection data = map.get(branchNum);
 			if (data == null) {
 				data = new BusinessCollection();
@@ -1867,6 +1860,15 @@ public class ReportRpcImpl implements ReportRpc {
 				map.put(branchNum, data);
 			}
 			data.setAllDiscountMoney(money);
+
+			BusinessCollectionIncome detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(couponMoney));
 		}
 
 
@@ -1939,14 +1941,6 @@ public class ReportRpcImpl implements ReportRpc {
 			detail.setQty(amount);
 			data.getTicketIncomes().add(detail);
 
-			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-			if (detail == null) {
-				detail = new BusinessCollectionIncome();
-				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
-				detail.setMoney(BigDecimal.ZERO);
-				data.getPosIncomes().add(detail);
-			}
-			detail.setMoney(detail.getMoney().add(money));
 		}
 
 		List<Object[]> postList = posOrderService.findBranchBizdayDiscountSummary(systemBookCode, branchNums, dateFrom, dateTo);
@@ -1955,6 +1949,8 @@ public class ReportRpcImpl implements ReportRpc {
 			Integer branchNum = (Integer) object[0];
 			String shiftTableBizday = (String) object[1];
 			BigDecimal money = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal couponTotal = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+
 			StringBuilder sb = new StringBuilder();
 			String key = sb.append(branchNum).append(shiftTableBizday).toString();
 			BusinessCollection data = map.get(key);
@@ -1965,6 +1961,15 @@ public class ReportRpcImpl implements ReportRpc {
 				map.put(key, data);
 			}
 			data.setAllDiscountMoney(money);
+
+			BusinessCollectionIncome detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+			if (detail == null) {
+				detail = new BusinessCollectionIncome();
+				detail.setName(AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
+				detail.setMoney(BigDecimal.ZERO);
+				data.getPosIncomes().add(detail);
+			}
+			detail.setMoney(detail.getMoney().add(couponTotal));
 		}
 
 
@@ -2022,6 +2027,7 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[3];
 			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			BigDecimal money = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BigDecimal couponTotal = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
 			StringBuilder sb = new StringBuilder();
 			String key = sb.append(branchNum).append(shiftTableBizday).append(machineName).toString();
 			BusinessCollection data = map.get(branchNum + shiftTableBizday + machineName);
@@ -2037,6 +2043,7 @@ public class ReportRpcImpl implements ReportRpc {
 			detail.setMoney(money);
 			detail.setQty(amount);
 			data.getTicketIncomes().add(detail);
+
 			detail = getBusinessCollectionIncome(data.getPosIncomes(), AppConstants.POS_ORDER_DETAIL_TYPE_COUPON);
 			if (detail == null) {
 				detail = new BusinessCollectionIncome();
@@ -2044,7 +2051,7 @@ public class ReportRpcImpl implements ReportRpc {
 				detail.setMoney(BigDecimal.ZERO);
 				data.getPosIncomes().add(detail);
 			}
-			detail.setMoney(detail.getMoney().add(money));
+			detail.setMoney(detail.getMoney().add(couponTotal));
 		}
 		return new ArrayList<BusinessCollection>(map.values());
 	}
@@ -2108,6 +2115,7 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[3];
 			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			BigDecimal money = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BigDecimal couponTotal = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
 			StringBuilder sb = new StringBuilder();
 			String key = sb.append(branchNum).append(bizDay).append(bizNum).toString();
 			BusinessCollection data = map.get(key);
@@ -2131,7 +2139,7 @@ public class ReportRpcImpl implements ReportRpc {
 				detail.setMoney(BigDecimal.ZERO);
 				data.getPosIncomes().add(detail);
 			}
-			detail.setMoney(detail.getMoney().add(money));
+			detail.setMoney(detail.getMoney().add(couponTotal));
 		}
 
 
@@ -2183,6 +2191,7 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[2];
 			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BigDecimal money = AppUtil.getValue(object[4], BigDecimal.class);
+			BigDecimal couponTotal = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			StringBuilder sb = new StringBuilder();
 			String key = sb.append(tempMerchantNum).append(shiftTableBizday).toString();
 			BusinessCollection data = map.get(key);
@@ -2205,7 +2214,8 @@ public class ReportRpcImpl implements ReportRpc {
 				detail.setMoney(BigDecimal.ZERO);
 				data.getPosIncomes().add(detail);
 			}
-			detail.setMoney(detail.getMoney().add(money));
+			detail.setMoney(detail.getMoney().add(couponTotal));
+
 		}
 		postList = posOrderService.findMerchantBizdayDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
 		for (int i = 0,len = postList.size(); i < len; i++) {
@@ -2251,6 +2261,7 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[3];
 			BigDecimal amount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			BigDecimal money = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
+			BigDecimal couponTotal = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
 			StringBuilder sb = new StringBuilder();
 			String key = sb.append(tempMerchantNum).append(shiftTableBizday).append(bizNum).toString();
 			BusinessCollection data = map.get(key);
@@ -2274,7 +2285,7 @@ public class ReportRpcImpl implements ReportRpc {
 				detail.setMoney(BigDecimal.ZERO);
 				data.getPosIncomes().add(detail);
 			}
-			detail.setMoney(detail.getMoney().add(money));
+			detail.setMoney(detail.getMoney().add(couponTotal));
 		}
         payment = posOrderService.findBranchShiftTablePaymentSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo, casher);
         for (int i = 0,len = payment.size(); i < len; i++) {
@@ -2355,6 +2366,7 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[1];
 			BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
 			BigDecimal money = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal couponTotal = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
 			BusinessCollection data = map.get(tempMerchantNum);
 			if (data == null) {
 				data = new BusinessCollection();
@@ -2374,7 +2386,7 @@ public class ReportRpcImpl implements ReportRpc {
 				detail.setMoney(BigDecimal.ZERO);
 				data.getPosIncomes().add(detail);
 			}
-			detail.setMoney(detail.getMoney().add(money));
+			detail.setMoney(detail.getMoney().add(couponTotal));
 		}
 		List<Object[]> posList = posOrderService.findMerchantDiscountSummary(systemBookCode, branchNum, merchantNum, dateFrom, dateTo);
 		for (int i = 0,len = posList.size(); i < len ; i++) {
@@ -2410,6 +2422,7 @@ public class ReportRpcImpl implements ReportRpc {
 			String type = (String) object[2];
 			BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
 			BigDecimal money = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+			BigDecimal couponTotal = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			String key = tempMerchantNum+"_"+tempStallNum;
 			BusinessCollection data = map.get(key);
 			if (data == null) {
@@ -2431,7 +2444,7 @@ public class ReportRpcImpl implements ReportRpc {
 				detail.setMoney(BigDecimal.ZERO);
 				data.getPosIncomes().add(detail);
 			}
-			detail.setMoney(detail.getMoney().add(money));
+			detail.setMoney(detail.getMoney().add(couponTotal));
 		}
 		posList = posOrderService.findStallDiscountSummary(systemBookCode, branchNum, merchantNum, stallNum, dateFrom, dateTo);
 		for (int i = 0,len = posList.size(); i < len ; i++) {
