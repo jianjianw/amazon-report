@@ -1668,4 +1668,90 @@ public class APIBasic {
 		return result;
 	}
 
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test90")
+	public List<BusinessCollection> test90() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-12");
+
+		List<BusinessCollection> businessCollectionByMerchantDay = reportRpc.findBusinessCollectionByMerchantDay(systemBookCode,null,null,dateFrom,dateTo);
+		return businessCollectionByMerchantDay;
+	}
+
+
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test91")
+	public List<BusinessCollection> test91() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-12");
+
+		List<BusinessCollection> businessCollectionByTerminal = reportRpc.findBusinessCollectionByTerminal(systemBookCode, getBranchNums(), dateFrom, dateTo);
+		return businessCollectionByTerminal;
+	}
+
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test92")
+	public List<BusinessCollection> test92() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-12");
+
+
+		List<BusinessCollection> businessCollectionByShiftTable = reportRpc.findBusinessCollectionByShiftTable(systemBookCode, getBranchNums(), dateFrom, dateTo, null);
+		return businessCollectionByShiftTable;
+	}
+
+
+
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test93")
+	public List<BusinessCollection> test93() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-12");
+
+
+		List<BusinessCollection> businessCollectionByShiftTable = reportRpc.findBusinessCollectionByShiftTable(systemBookCode, getBranchNums(), dateFrom, dateTo, null);
+		return businessCollectionByShiftTable;
+	}
+
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test94")
+	public List<BusinessCollection> test94() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-12");
+
+
+		List<BusinessCollection> businessCollectionByShiftTable = reportRpc.findBusinessCollectionByMerchant(systemBookCode, 99, null,dateFrom, dateTo);
+		return businessCollectionByShiftTable;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test95")
+	public List<BusinessCollection> test95() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-12");
+
+
+		List<BusinessCollection> businessCollectionByShiftTable = reportRpc.findBusinessCollectionByStall(systemBookCode, 99,null,null, dateFrom, dateTo);
+		return businessCollectionByShiftTable;
+	}
+
 }

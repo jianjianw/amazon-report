@@ -1852,7 +1852,7 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = posList.get(i);
 			Integer branchNum = (Integer) object[0];
 			BigDecimal money = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
-			BigDecimal couponMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+			BigDecimal couponMoney = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
 			BusinessCollection data = map.get(branchNum);
 			if (data == null) {
 				data = new BusinessCollection();
