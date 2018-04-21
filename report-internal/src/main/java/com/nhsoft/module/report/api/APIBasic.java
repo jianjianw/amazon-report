@@ -267,7 +267,7 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value="/test10")
 	public List<SupplierLianYing> test10() throws Exception{		//ok
-		String systemBookCode= "4344";
+		String systemBookCode= "4020";
 		List<BranchDTO> all = branchRpc.findInCache(systemBookCode);
 		List<Integer> branchNums = new ArrayList<Integer>();
 		for (BranchDTO b : all) {
@@ -277,21 +277,21 @@ public class APIBasic {
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2015-05-01");
-		Date dateTo = sdf.parse("2017-10-31");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-21");
 
-		List<Integer> items = new ArrayList<>();
+		/*List<Integer> items = new ArrayList<>();
 		items.add(434400126);
 		items.add(434400126);
 		items.add(110010009);
 		items.add(110010007);
-
+*/
 		SupplierSaleQuery supplierSaleQuery = new SupplierSaleQuery();
 		supplierSaleQuery.setSystemBookCode(systemBookCode);
 		supplierSaleQuery.setBranchNums(branchNums);
 		supplierSaleQuery.setDateFrom(dateFrom);
 		supplierSaleQuery.setDateTo(dateTo);
-		supplierSaleQuery.setItemNums(items);
+		//supplierSaleQuery.setItemNums(items);
 
 
 		List<SupplierLianYing> supplierLianYing = reportService.findSupplierLianYing(supplierSaleQuery);
@@ -1010,32 +1010,14 @@ public class APIBasic {
 	public CardAnalysisSummaryDTO test53() throws Exception{
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
 		Date dateFrom = sdf.parse("2018-02-01");
 		Date dateTo = sdf.parse("2018-02-28");
-
 		String systemBookCode = "4020";
-
-
 		CardUserQuery query = new CardUserQuery();
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		query.setSystemBookCode(systemBookCode);
-		List<Integer> branchNums = new ArrayList<>();
-		/*List<BranchDTO> branchDTOS = branchRpc.findInCache(systemBookCode);
-
-
-		for (int i = 0; i < branchDTOS.size(); i++) {
-			BranchDTO branchDTO = branchDTOS.get(i);
-			Integer branchNum = branchDTO.getBranchNum();
-			branchNums.add(branchNum);
-		}*/
-		branchNums.add(1);
-		branchNums.add(2);
-		branchNums.add(3);
-		branchNums.add(4);
-		branchNums.add(5);
-		query.setBranchNums(branchNums);
+		query.setBranchNums(getBranchNums());
 		CardAnalysisSummaryDTO cardAnalysisSummaryDTO = reportRpc.getCardAnalysisSummaryDTO(query);
 
 		return cardAnalysisSummaryDTO;
@@ -1298,8 +1280,46 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-23");
 		Date dateTo = sdf.parse("2018-03-24");
+		List<Integer> brnachNums = new ArrayList<>();
+		brnachNums.add(99);
 
-		List<SalerCommission> result = reportRpc.findSalerCommissions(systemBookCode,dateFrom,dateTo,getBranchNums(),null, BigDecimal.valueOf(20));
+		List<String> saleNames = new ArrayList<>();
+		saleNames.add("");
+
+		List<SalerCommission> result = reportRpc.findSalerCommissions(systemBookCode,dateFrom,dateTo,brnachNums,saleNames, BigDecimal.valueOf(20));
+
+		Integer integer0= 0;
+		Integer integer1 = 0;
+		Integer integer2 = 0;
+		for (int i = 0; i <result.size() ; i++) {
+			SalerCommission salerCommission = result.get(i);
+			List<Integer> rank = salerCommission.getRank();
+			integer0 += rank.get(0);
+			integer1 += rank.get(1);
+			integer2 += rank.get(2);
+		}
+		System.out.println(integer0);
+		System.out.println(integer1);
+		System.out.println(integer2);
+
+		return result;
+
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test699")
+	public List<SalerCommission> test699() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-23");
+		Date dateTo = sdf.parse("2018-03-24");
+		List<Integer> brnachNums = new ArrayList<>();
+		brnachNums.add(99);
+
+		List<String> saleNames = new ArrayList<>();
+		saleNames.add("");
+
+		List<SalerCommission> result = reportRpc.findSalerCommissions(systemBookCode,dateFrom,dateTo,brnachNums,saleNames, BigDecimal.valueOf(20.0));
 
 		Integer integer0= 0;
 		Integer integer1 = 0;
