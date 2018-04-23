@@ -2764,13 +2764,6 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<SalerCommission> findSalerCommissions(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, List<String> salerNames, BigDecimal interval) {
-		logger.info("{systemBookCode : "+systemBookCode+ ", dateFrom : " + dateFrom + ", dateTo : " + dateTo + ", interval : "+interval+"}");
-		if(branchNums != null ){
-			logger.info("branchNums : " + branchNums.toString());
-		}
-		if(salerNames != null){
-			logger.info("salerNames : " + salerNames.toString());
-		}
 		return reportService.findSalerCommissions(systemBookCode,dateFrom,dateTo,branchNums,salerNames,interval);
 	}
 
