@@ -1646,7 +1646,7 @@ public class APIBasic {
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(10);
-		query.setSortField("itemSaleMoney");
+		query.setSortField("itemSpec");
 		query.setSortType("desc");
 		InventoryProfitPageDTO result = reportRpc.findInventoryProfit(query);
 
