@@ -1780,4 +1780,48 @@ public class APIBasic {
 		return businessCollectionByShiftTable;
 	}
 
+	//findABCDatasBySale
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test96")
+	public List<ABCAnalysis> test96() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-18");
+		Date dateTo = sdf.parse("2018-04-23");
+
+		ABCListQuery query = new ABCListQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		List<String> list = new ArrayList<>();
+		list.add("本店调出");
+		list.add("本店批发");
+		query.setTypes(list);
+
+		List<ABCAnalysis> abcDatasBySale = reportRpc.findABCDatasBySale(query);
+		return abcDatasBySale;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test97")
+	public List<ABCAnalysis> test97() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-18");
+		Date dateTo = sdf.parse("2018-04-23");
+
+		ABCListQuery query = new ABCListQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		List<String> list = new ArrayList<>();
+		list.add("本店调出");
+		list.add("本店批发");
+		query.setTypes(list);
+
+		List<ABCAnalysis> abcDatasBySale = reportRpc.findABCDatasByProfit(query);
+		return abcDatasBySale;
+	}
+
 }
