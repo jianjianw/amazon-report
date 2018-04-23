@@ -559,7 +559,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select detail.item_num, detail.order_detail_item_matrix_num, ");
 		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money when detail.order_detail_state_code = 1 then order_detail_payment_money end) as money,");
-		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else detail.order_detail_amount end) as amount ");
 		sb.append("from %s as detail with(nolock) ");
 		sb.append("where detail.order_detail_book_code = :systemBookCode and detail.order_detail_bizday between :dateFrom and :dateTo ");
 		sb.append("and detail.order_detail_order_state in (5, 7) and detail.order_detail_branch_num in "
@@ -7007,7 +7008,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			} else if (policyAllowPriftQuery.getProfitType().equals(AppConstants.POLICY_PRENSENT)) {
 				sb.append("and detail.order_detail_policy_present_flag = 1 ");
 			} else if (policyAllowPriftQuery.getProfitType().equals(AppConstants.POLICY_PROMOTION)) {
-				sb.append("and etail.order_detail_policy_promotion_flag = 1 ");
+				sb.append("and detail.order_detail_policy_promotion_flag = 1 ");
 			}
 		}
 

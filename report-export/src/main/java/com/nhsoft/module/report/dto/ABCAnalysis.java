@@ -104,6 +104,7 @@ public class ABCAnalysis implements Serializable {
 
 	public ABCAnalysis(){
 		setAnalysisContent(BigDecimal.ZERO);
+		setSaleQty(BigDecimal.ZERO);
 		
 	}
 	

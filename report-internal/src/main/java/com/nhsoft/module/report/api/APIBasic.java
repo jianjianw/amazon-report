@@ -1523,8 +1523,8 @@ public class APIBasic {
 
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-19");
+		Date dateFrom = sdf.parse("2018-04-18");
+		Date dateTo = sdf.parse("2018-04-23");
 
 		PolicyAllowPriftQuery query = new PolicyAllowPriftQuery();
 
@@ -1546,7 +1546,13 @@ public class APIBasic {
 		/*List<String> sellers = new ArrayList<>();
 		sellers.add("");
 		query.setOrderSellers(sellers);*/
-		query.setProfitType("超额折扣");
+		//query.setProfitType("超额折扣");//0
+		//query.setProfitType("超量特价");//0
+		//query.setProfitType("超额奖励");//0
+		//query.setProfitType("赠送促销");//0
+		//query.setProfitType("促销特价");//3
+
+		//促销特价
 
 
 
