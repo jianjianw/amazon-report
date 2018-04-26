@@ -63,7 +63,7 @@ public class ReportApi {
 
     //alipaylogs
     @RequestMapping(method = RequestMethod.GET, value = "/test")
-    public  void test() {
+    public List<PosItemLogSummaryDTO> test() {
         StoreQueryCondition storeQueryCondition  = new StoreQueryCondition();
         storeQueryCondition.setSystemBookCode("4020");
         storeQueryCondition.setBranchNums(Arrays.asList(99));
@@ -71,9 +71,9 @@ public class ReportApi {
         storeQueryCondition.setDateEnd(DateUtil.getDateStr("20180123"));
 
         storeQueryCondition.setQuerySaleMoney(true);
-        posItemLogRpc.findBranchItemFlagSummary(storeQueryCondition);
+        List<PosItemLogSummaryDTO> result = posItemLogRpc.findBranchItemFlagSummary(storeQueryCondition);
 
-
+        return result;
 
     }
 

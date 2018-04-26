@@ -4814,6 +4814,97 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public SaleAnalysisBranchItemPageSummary findSaleAnalysisByBranchPosItemsByPage(SaleAnalysisQueryData queryData) {
 
+		if(queryData.getSortField() != null){
+			boolean flag = false;
+			switch (queryData.getSortField()){
+				case "categoryName":
+					flag = true;
+					break;
+				case "categoryCode":
+					flag = true;
+					break;
+				case "itemName":
+					flag = true;
+					break;
+				case "itemCode":
+					flag = true;
+					break;
+				case "spec":
+					flag = true;
+					break;
+				case "unit":
+					flag = true;
+					break;
+			}
+			if (flag) {
+				List<SaleAnalysisByPosItemDTO> data = reportService.findSaleAnalysisByBranchPosItems(queryData.getSystemBookCode(), queryData);
+				BranchProfitComparator<SaleAnalysisByPosItemDTO> comparator = new BranchProfitComparator<>(queryData.getSortField(), queryData.getSortType());
+				Collections.sort(data, comparator);
+
+				SaleAnalysisBranchItemPageSummary result = new SaleAnalysisBranchItemPageSummary();
+				int dataSize = data.size();
+				result.setData(data);
+				result.setCount(dataSize);
+
+				BigDecimal totalNumSum = BigDecimal.ZERO;
+				BigDecimal returnNumSum = BigDecimal.ZERO;
+				BigDecimal presentNumSum = BigDecimal.ZERO;
+				BigDecimal saleNumSum = BigDecimal.ZERO;
+				BigDecimal totalMoneySum = BigDecimal.ZERO;
+				BigDecimal returnMoneySum = BigDecimal.ZERO;
+				BigDecimal presentMoneySum = BigDecimal.ZERO;
+				BigDecimal saleMoneySum = BigDecimal.ZERO;
+				BigDecimal countTotalSum = BigDecimal.ZERO;
+				BigDecimal saleAssistSum = BigDecimal.ZERO;
+				BigDecimal returnAssistSum = BigDecimal.ZERO;
+				BigDecimal presentAssistSum = BigDecimal.ZERO;
+				BigDecimal itemDiscount = BigDecimal.ZERO;
+
+				for (int i = 0;i < dataSize ; i++) {
+					SaleAnalysisByPosItemDTO dto = data.get(i);
+					totalNumSum = totalNumSum.add(dto.getTotalNum());
+					returnNumSum = returnNumSum.add(dto.getReturnNum());
+					presentNumSum = presentNumSum.add(dto.getPresentNum());
+					saleNumSum = saleNumSum.add(dto.getSaleNum());
+					totalMoneySum = totalMoneySum.add(dto.getTotalMoney());
+					returnMoneySum = returnMoneySum.add(dto.getReturnMoney());
+					presentMoneySum = presentMoneySum.add(dto.getPresentMoney());
+					saleMoneySum = saleMoneySum.add(dto.getSaleMoney());
+					countTotalSum = countTotalSum.add(dto.getCountTotal());
+					saleAssistSum = saleAssistSum.add(dto.getSaleAssist());
+					returnAssistSum = returnAssistSum.add(dto.getReturnAssist());
+					presentAssistSum = presentAssistSum.add(dto.getPresentAssist());
+					itemDiscount = itemDiscount.add(dto.getItemDiscount());
+				}
+
+				result.setTotalNumSum(totalNumSum);
+				result.setReturnNumSum(returnNumSum);
+				result.setPresentNumSum(presentNumSum);
+				result.setSaleNumSum(saleNumSum);
+				result.setTotalMoneySum(totalMoneySum);
+				result.setReturnMoneySum(returnMoneySum);
+				result.setPresentMoneySum(presentMoneySum);
+				result.setSaleMoneySum(saleMoneySum);
+				result.setCountTotalSum(countTotalSum);
+				result.setSaleAssistSum(saleAssistSum);
+				result.setReturnAssistSum(returnAssistSum);
+				result.setPresentAssistSum(presentAssistSum);
+				result.setItemDiscount(itemDiscount);
+
+				if (queryData.isPage()) {
+					List<SaleAnalysisByPosItemDTO> subData = null;
+					int pageSum = queryData.getOffset() + queryData.getLimit();
+					if (dataSize >= pageSum) {
+						subData = data.subList(queryData.getOffset(), pageSum);
+					} else {
+						subData = data.subList(queryData.getOffset(), dataSize);
+					}
+					result.setData(subData);
+				}
+				return result;
+			}
+		}
+
 
 		List<SaleAnalysisByPosItemDTO> data = reportService.findSaleAnalysisByBranchPosItemsByPage(queryData);
 		SaleAnalysisBranchItemPageSummary result = new SaleAnalysisBranchItemPageSummary();

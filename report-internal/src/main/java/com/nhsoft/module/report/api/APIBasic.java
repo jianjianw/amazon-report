@@ -62,6 +62,9 @@ public class APIBasic {
 	private TransferOutOrderRpc transferOutOrderRpc;
 	@Autowired
 	private ShipOrderRpc shipOrderRpc;
+
+	@Autowired
+	private BookResourceRpc bookResourceRpc;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
@@ -1194,8 +1197,8 @@ public class APIBasic {
 		CustomerAnalysisHistoryPageDTO result = reportRpc.findCustomerAnalysisHistorysByPage(query);
 		return result;
 	}
-	@RequestMapping(method = RequestMethod.GET,value = "/test59")				//byPage	毛利分析 商品毛利汇总   ok
-	public ProfitByBranchAndItemSummaryPageDTO test59() throws Exception {
+	@RequestMapping(method = RequestMethod.GET,value = "/test59/{sortField}/{sortType}")				//byPage	毛利分析 商品毛利汇总   ok
+	public ProfitByBranchAndItemSummaryPageDTO test59(@PathVariable String sortField,@PathVariable String sortType) throws Exception {
 
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -1217,6 +1220,8 @@ public class APIBasic {
 		/*List<String> list = new ArrayList<>();
 		list.add("210");
 		query.setPosItemTypeCodes(list);*/
+		query.setSortField(sortField);
+		query.setSortType(sortType);
 
 
 		ProfitByBranchAndItemSummaryPageDTO result = reportRpc.findProfitAnalysisByBranchAndItemByPage(query);
@@ -1234,10 +1239,10 @@ public class APIBasic {
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
 		query.setBranchNums(getBranchNums());
-		query.setIsQueryCF(false);
+		query.setIsQueryCF(true);
 		//query.setPage(false);
-		query.setOffset(20);
-		query.setLimit(25);
+		query.setOffset(0);
+		query.setLimit(100);
 		query.setSortField(sortField);
 		query.setSortType(sortType);
 	/*	List<String> category = new ArrayList<>();
@@ -1252,8 +1257,8 @@ public class APIBasic {
 	public List<BranchBizSummary> test68() throws Exception{   //test原接口
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-17");
-		Date dateTo = sdf.parse("2018-01-18");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-04-10");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
@@ -1261,10 +1266,20 @@ public class APIBasic {
 		query.setIsQueryCF(true);
 		query.setOffset(0);
 		query.setLimit(100);
-		query.setSortField("money");
-		query.setSortField("asc");
 
 		List<BranchBizSummary> list = reportRpc.findProfitAnalysisDays(query);
+		BigDecimal money = BigDecimal.ZERO;
+		BigDecimal cost = BigDecimal.ZERO;
+		BigDecimal profit = BigDecimal.ZERO;
+		for (int i = 0; i <list.size() ; i++) {
+			BranchBizSummary branchBizSummary = list.get(i);
+			money = money.add(branchBizSummary.getMoney());
+			cost = cost.add(branchBizSummary.getCost());
+			profit = profit.add(branchBizSummary.getProfit());
+		}
+		System.out.println("money : "+money);
+		System.out.println("cost : "+cost);
+		System.out.println("profit : "+profit);
 		return list;
 
 	}
@@ -1444,7 +1459,7 @@ public class APIBasic {
 		query.setBranchNums(getBranchNums());
 		query.setOffset(0);
 		query.setLimit(20);
-		query.setSortField("saleNum");
+		query.setSortField("categoryCode");
 		query.setSortType("asc");
 		query.setIsQueryCF(true);
 		SaleAnalysisBranchItemPageSummary result = reportRpc.findSaleAnalysisByBranchPosItemsByPage(query);
@@ -1494,24 +1509,36 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test79")
 	public List<ProfitAnalysisByItemSummary> test79() throws Exception{
+		List<BranchDTO> all = branchRpc.findInCache("4344");
 
-		String systemBookCode = "4020";
+
+		String systemBookCode = "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-10");
+		Date dateFrom = sdf.parse("2018-03-07");
+		Date dateTo = sdf.parse("2018-03-07");
 
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
-		query.setIsQueryCF(true);
-		query.setQueryClient(true);
+		List<Integer> itemNums = new ArrayList<>();
+		itemNums.add(434400819);
+		query.setPosItemNums(itemNums);
+		query.setIsQueryCF(false);
+		/*query.setQueryClient(true);
 		List<String> list = new ArrayList<>();
 		list.add("1111");
 		List<String> codes = new ArrayList<>();
 		codes.add("2222");
 		query.setBrandCodes(codes);
-		query.setClientFids(list);
+		query.setClientFids(list);*/
+		List<String> itemType = new ArrayList<>();
+		List<PosItemTypeParam> posItemTypeParamsInCache = bookResourceService.findPosItemTypeParamsInCache("4344");
+		for (int i = 0; i <posItemTypeParamsInCache.size() ; i++) {
+			PosItemTypeParam posItemTypeParam = posItemTypeParamsInCache.get(i);
+			itemType.add(posItemTypeParam.getPosItemTypeCode());
+		}
+		query.setPosItemTypeCodes(itemType);
 
 		List<ProfitAnalysisByItemSummary> profitAnalysisByItem = reportRpc.findProfitAnalysisByItem(query);
 		return profitAnalysisByItem;
@@ -1632,20 +1659,21 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test85")
 	public InventoryProfitPageDTO test85() throws Exception{
-		String systemBookCode = "4020";			//损益统计报表     商品汇总
+		String systemBookCode = "4173";			//损益统计报表     商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-01");
-		Date dateTo = sdf.parse("2018-03-31");
+		Date dateFrom = sdf.parse("2017-03-01");
+		Date dateTo = sdf.parse("2017-03-31");
 
 		InventoryProfitQuery query = new InventoryProfitQuery();
 		query.setSystemBookCode(systemBookCode);
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
+		query.setBranchNums(getBranchNums());
 		query.setUnit("基本单位");
 		query.setIsChechZero(true);
 		query.setPage(true);
 		query.setOffset(0);
-		query.setLimit(10);
+		query.setLimit(10000);
 		query.setSortField("itemSpec");
 		query.setSortType("desc");
 		InventoryProfitPageDTO result = reportRpc.findInventoryProfit(query);
@@ -1656,20 +1684,21 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test86")
 	public InventoryProfitPageDTO test86() throws Exception{
-		String systemBookCode = "4020";			//损益统计报表    类别汇总
+		String systemBookCode = "4173";			//损益统计报表    类别汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-01");
-		Date dateTo = sdf.parse("2018-03-31");
+		Date dateFrom = sdf.parse("2017-03-01");
+		Date dateTo = sdf.parse("2017-03-31");
 
 		InventoryProfitQuery query = new InventoryProfitQuery();
 		query.setSystemBookCode(systemBookCode);
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
+		query.setBranchNums(getBranchNums());
 		query.setUnit("基本单位");
 		query.setIsChechZero(true);
 		query.setPage(true);
 		query.setOffset(0);
-		query.setLimit(10);
+		query.setLimit(10000);
 		query.setSortField("profitQty");
 		query.setSortType("desc");
 		InventoryProfitPageDTO result = reportRpc.findInventoryProfitSum(query);
@@ -1822,6 +1851,19 @@ public class APIBasic {
 
 		List<ABCAnalysis> abcDatasBySale = reportRpc.findABCDatasByProfit(query);
 		return abcDatasBySale;
+	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test98/{sys}")
+	public List test98() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-04-18");
+		Date dateTo = sdf.parse("2018-04-23");
+		ShipGoodsQuery query = new ShipGoodsQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setBranchNum(99);
+		List<ToShip> toShip = reportRpc.findToShip(query);
+		return toShip;
 	}
 
 }

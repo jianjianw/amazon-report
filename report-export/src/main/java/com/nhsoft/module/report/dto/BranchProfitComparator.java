@@ -79,8 +79,13 @@ public class BranchProfitComparator<T> implements Comparator<T> {
                 if(compare == 0){
                     Integer invoke01 = (Integer)method01.invoke(data01);
                     Integer invoke02 = (Integer)method02.invoke(data02);
-
-                    if (invoke01.compareTo(invoke02) > 0) {
+                    if(invoke01 == null && invoke02 == null){
+                        return 0;
+                    }else if(invoke01 == null){
+                        return value02;    //假如升序，v01为null   01 < 02 返回 -1     字段为空的判断
+                    } else if(invoke02 == null){
+                        return value01;
+                    }else if (invoke01.compareTo(invoke02) > 0) {
                         return value01;
                     } else if (invoke01.compareTo(invoke02) < 0) {
                         return value02;
@@ -119,7 +124,14 @@ public class BranchProfitComparator<T> implements Comparator<T> {
                 if(compare == 0){
                     BigDecimal invoke01 = (BigDecimal)method01.invoke(data01);
                     BigDecimal invoke02 = (BigDecimal)method02.invoke(data02);
-                    if (invoke01.compareTo(invoke02) > 0) {
+
+                    if(invoke01 == null && invoke02 == null){
+                        return 0;
+                    }else if(invoke01 == null){
+                        return value02;    //假如升序，v01为null   01 < 02 返回 -1     字段为空的判断
+                    } else if(invoke02 == null){
+                        return value01;
+                    }else if (invoke01.compareTo(invoke02) > 0) {
                         return value01;
                     } else if (invoke01.compareTo(invoke02) < 0) {
                         return value02;
