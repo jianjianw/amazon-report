@@ -5507,8 +5507,7 @@ public class ReportRpcImpl implements ReportRpc {
 			Collections.sort(list, comparator);
 
 
-
-			for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < list.size(); i++) {
 				BranchProfitDataDTO data = list.get(i);
 				data.setId(i);
 				data.setBranch(data.getBranchNum() + "|" + data.getBranchName());
@@ -6268,6 +6267,7 @@ public class ReportRpcImpl implements ReportRpc {
 					+ AppConstants.POS_ITEM_LOG_ANTI_POS;
 			objects = posItemLogService.findSumByItemFlag(systemBookCode, branchNums, dateFrom, dateTo, checkType,
 					itemNums, storehouseNum, null);
+
 
 			BigDecimal qty = BigDecimal.ZERO;
 			for (int i = 0; i < objects.size(); i++) {

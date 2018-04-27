@@ -1607,7 +1607,10 @@ public class APIBasic {
 		query.setLimit(50);
 		query.setSortField("startInventoryMoney");
 		query.setSortType("asc");
-
+		query.setQueryKit(true);
+		/*List<String> categorys = new ArrayList<>();
+		categorys.add("11");
+		query.setCategoryCodeList(categorys);*/
 
 		BranchProfitDataPageDTO branchAndItemProfit = reportRpc.findBranchAndItemProfit(query);
 
