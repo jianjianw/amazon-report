@@ -5051,6 +5051,13 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public RetailDetailPageSummary findRetailDetailsByPage(RetailDetailQueryData retailDetailQueryData) {
 
+
+
+
+		/*if(){
+			List<RetailDetail> retailDetails = reportService.findRetailDetails(retailDetailQueryData,false);
+	}*/
+
 		List<RetailDetail> data = reportService.findRetailDetailsByPage(retailDetailQueryData, false);
 		Object[] count = reportService.findRetailDetailsCount(retailDetailQueryData, false);
 		RetailDetailPageSummary result = new RetailDetailPageSummary();

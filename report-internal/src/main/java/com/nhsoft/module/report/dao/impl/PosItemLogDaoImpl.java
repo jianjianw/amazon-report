@@ -497,7 +497,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append("inner join pos_item as p on l.item_num = p.item_num ");
 
 		}
-		sb.append("where l.system_book_code = :systemBookCode ");
+		sb.append("where l.system_book_code = '"+storeQueryCondition.getSystemBookCode()+"' ");
 		if((storeQueryCondition.getFilterDeleteItem() != null && storeQueryCondition.getFilterDeleteItem())){
 			sb.append("and p.item_del_tag = 0 ");
 		}
@@ -514,7 +514,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append("and l.item_num in (:itemNums) ");
 		}
 		if(storeQueryCondition.getItemCategoryCodes() != null && !storeQueryCondition.getItemCategoryCodes().isEmpty()){
-			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = :systemBookCode and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
+			sb.append("and l.item_num in (select item_num from pos_item with(nolock) where system_book_code = '"+storeQueryCondition.getSystemBookCode()+"' and item_category_code in " + AppUtil.getStringParmeList(storeQueryCondition.getItemCategoryCodes()) + ") ");
 		}
 		if(storeQueryCondition.getStorehouseNum() != null){
 			sb.append("and (l.in_storehouse_num = :storehouseNum or l.out_storehouse_num = :storehouseNum) ");
@@ -526,13 +526,12 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append("and l.pos_item_log_memo = :adjustReason ");
 		}
 		if(storeQueryCondition.getCenterStorehouse() != null){
-			sb.append("and (exists (select 1 from storehouse where l.in_storehouse_num = storehouse.storehouse_num and system_book_code = :systemBookCode and storehouse_del_tag = 0 and storehouse_center_tag = 1 )"
-					+ "or exists (select 1 from storehouse where l.out_storehouse_num = storehouse.storehouse_num and system_book_code = :systemBookCode and storehouse_del_tag = 0 and storehouse_center_tag = 1 ) )");
+			sb.append("and (exists (select 1 from storehouse where l.in_storehouse_num = storehouse.storehouse_num and system_book_code = '"+storeQueryCondition.getSystemBookCode()+"' and storehouse_del_tag = 0 and storehouse_center_tag = 1 ) "
+					+ "or exists (select 1 from storehouse where l.out_storehouse_num = storehouse.storehouse_num and system_book_code = '"+storeQueryCondition.getSystemBookCode()+"' and storehouse_del_tag = 0 and storehouse_center_tag = 1 ) )");
 		}
 
 		sb.append("group by l.branch_num, l.pos_item_log_inout_flag ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		sqlQuery.setString("systemBookCode", storeQueryCondition.getSystemBookCode());
 
 		if(storeQueryCondition.getItemNums() != null && storeQueryCondition.getItemNums().size() > 0){
 			sqlQuery.setParameterList("itemNums", storeQueryCondition.getItemNums());

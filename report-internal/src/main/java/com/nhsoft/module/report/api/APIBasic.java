@@ -586,21 +586,17 @@ public class APIBasic {
 		List<CustomerAnalysisHistory> list = reportRpc.findCustomerAnalysisHistorys(systemBookCode,dateFrom,dateTo,branchNums,saleType);
 		return list;
 	}
-	//sumCustomerAnalysis
-	@RequestMapping(method = RequestMethod.GET,value = "/test28")
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test28")///////8
 	public CustomerSummary test28() throws Exception{
-		String systemBookCode = "4344";
-		List<Integer> branchNums = new ArrayList();
-		branchNums.add(1);
-		branchNums.add(2);
-		branchNums.add(3);
+		String systemBookCode = "4020";
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2015-05-01");
-		Date dateTo = sdf.parse("2017-10-30");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
 
-		String branchType = "微商城";//微商城
-		CustomerSummary customerSummary = reportRpc.sumCustomerAnalysis(systemBookCode, dateFrom, dateTo, branchNums, branchType);
+		String branchType = "直营";//微商城
+		CustomerSummary customerSummary = reportRpc.sumCustomerAnalysis(systemBookCode, dateFrom, dateTo, getBranchNums(), null);
 		return customerSummary;
 	}
 
@@ -757,20 +753,17 @@ public class APIBasic {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET,value = "test39")
+	@RequestMapping(method = RequestMethod.GET,value = "test39")///////6
 	public List<PosOrderDTO> test39() throws Exception{
 
 		PosOrderQuery query = new PosOrderQuery();
 		query.setSystemBookCode("4020");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-04-11");
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
-		List<Integer> list = new ArrayList<>();
-		list.add(99);
-		query.setBranchNums(list);
-		query.setOrderRefBillno("asd");
+		query.setBranchNums(getBranchNums());
 		List<PosOrderDTO> settled = posOrderRpc.findSettled("4020",query,0,5000);
 		return settled;
 	}
@@ -902,7 +895,7 @@ public class APIBasic {
 		return summaryByPrintNum;
 	}
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test47")
+	@RequestMapping(method = RequestMethod.GET,value = "/test47")///////
 	public List<BranchSaleAnalysisSummary> test47() throws Exception{
 		String systemBookCode = "4020";
 		List<Integer> branchNums = getBranchNums();
@@ -1042,19 +1035,19 @@ public class APIBasic {
 		return list;
 	}
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test55")
+	@RequestMapping(method = RequestMethod.GET,value = "/test55")///////7
 	public List<ItemSummary> test55() throws Exception{
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-08");
+		Date dateFrom = sdf.parse("2017-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
 
 		String systemBookCode = "4020";
 		ItemQueryDTO query = new ItemQueryDTO();
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
-		query.setItemMethod("联营");
+		//query.setItemMethod("联营");耗时184秒 dao
 		List<ItemSummary> result = posOrderRpc.findItemSum(systemBookCode,query);
 		return result;
 	}
@@ -1424,22 +1417,22 @@ public class APIBasic {
 
 
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test74")
+	@RequestMapping(method = RequestMethod.GET,value = "/test74")///////10
 	public Object test74() throws Exception{
-		String systemBookCode = "4020";
+		String systemBookCode = "4173";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-08");
+		Date dateFrom = sdf.parse("2018-02-01");
+		Date dateTo = sdf.parse("2018-04-30");
 		RetailDetailQueryData query = new RetailDetailQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setDtFromShiftTable(dateFrom);
 		query.setDtToShiftTable(dateTo);
-		List<Integer> branchNums = new ArrayList<>();
-		branchNums.add(99);
-		query.setBranchNums(branchNums);
+		/*List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);*/
+		query.setBranchNums(getBranchNums());
 		query.setPage(true);
 		query.setOffset(0);
-		query.setLimit(10);
+		query.setLimit(50);
 		query.setSortField("itemNum");
 		query.setSortType("asc");
 		RetailDetailPageSummary retailDetailsByPage = reportRpc.findRetailDetailsByPage(query);
@@ -1590,9 +1583,9 @@ public class APIBasic {
 	@RequestMapping(method = RequestMethod.GET,value = "/test81")
 	public Object test81() throws Exception{
 
-		String systemBookCode = "4020";			//门店营业分析-门店商品汇总
+		String systemBookCode = "4173";			//门店营业分析-门店商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-12");
+		Date dateFrom = sdf.parse("2018-03-12");
 		Date dateTo = sdf.parse("2018-04-12");
 
 		BranchProfitQuery query = new BranchProfitQuery();
@@ -1715,12 +1708,12 @@ public class APIBasic {
 
 
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test82")
+	@RequestMapping(method = RequestMethod.GET,value = "/test82")///////9
 	public List<CustomerAnalysisTimePeriod> test82() throws Exception{
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-12");
+		Date dateFrom = sdf.parse("2017-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
 
 		List<CustomerAnalysisTimePeriod> result = report2Rpc.findCustomerAnalysisTimePeriods(systemBookCode,dateFrom,dateTo,getBranchNums(),getBranchNums(),null,null,null);
 		return result;
@@ -1869,4 +1862,54 @@ public class APIBasic {
 		return toShip;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "/test99")///////2
+	public List<BranchSaleAnalysisSummary> test99() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
+		List<BranchSaleAnalysisSummary> result = reportRpc.findMonthSaleAnalysis(systemBookCode,getBranchNums(),dateFrom,dateTo,2);
+		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test100")///////3
+	public List<SupplierComplexReportDetailDTO> test100() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
+		SupplierSaleQuery query =new SupplierSaleQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		List<SupplierComplexReportDetailDTO> result = reportRpc.findSupplierSaleDetailDatas(query);
+		return result;
+	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test101")///////4
+	public List<TransferGoal> test101() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2017-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
+		List<TransferGoal> result = reportRpc.findTransferSaleGoalByDate(systemBookCode,99,getBranchNums(),dateFrom,dateTo,AppConstants.BUSINESS_DATE_SOME_DATE);
+		return result;
+	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test102")///////5
+	public List<PosItemLogSummaryDTO> test102() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
+		StoreQueryCondition query = new StoreQueryCondition();
+		query.setSystemBookCode(systemBookCode);
+		query.setDateStart(dateFrom);
+		query.setDateEnd(dateTo);
+		List<String> list = new ArrayList<>();
+		list.add("11");
+		query.setItemCategoryCodes(list);
+
+		List<PosItemLogSummaryDTO> result = posItemLogRpc.findBranchFlagSummary(query);
+
+		return result;
+	}
 }
