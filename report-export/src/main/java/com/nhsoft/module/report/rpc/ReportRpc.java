@@ -1410,7 +1410,7 @@ public interface ReportRpc {
 
 
 	/**
-	 * 销售分析 -- 按分店汇总商品信息   分页查询
+	 * 销售分析 -- 按分店商品汇总信息   分页查询
 	 * @param queryData
 	 * @return
 	 */

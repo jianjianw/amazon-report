@@ -55,15 +55,19 @@ public class BranchProfitComparator<T> implements Comparator<T> {
 
         try {
             Class clazz01 = data01.getClass();
-            Method method01 = clazz01.getMethod("get" + sortField);
+            StringBuilder sb = new StringBuilder();
+            String methodName = sb.append("get").append(sortField).toString();
+            Method method01 = clazz01.getMethod(methodName);
 
             Class clazz02 = data02.getClass();
-            Method method02 = clazz02.getMethod("get" + sortField);
+            Method method02 = clazz02.getMethod(methodName);
             int compare = 0;
 
             if(StringUtils.isNotBlank(defaultField)){
-                Method defDethod01 = clazz01.getMethod("get" + defaultField);
-                Method defDethod02 = clazz02.getMethod("get" + defaultField);
+                sb = new StringBuilder();
+                String defaultMethodName = sb.append("get").append(defaultField).toString();
+                Method defDethod01 = clazz01.getMethod(defaultMethodName);
+                Method defDethod02 = clazz02.getMethod(defaultMethodName);
                 //默认按配送门店(或配送门店)升序排序  门店都是Integer
                 Integer defInvoke01 = (Integer)defDethod01.invoke(data01);
                 Integer defInvoke02 = (Integer)defDethod02.invoke(data02);

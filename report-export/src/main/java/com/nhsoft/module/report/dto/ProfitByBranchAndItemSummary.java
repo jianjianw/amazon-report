@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class ProfitByBranchAndItemSummary implements Serializable {
+    private static final long serialVersionUID = 4657198449487636549L;
 
     private Integer branchNum;
     private Integer itemNum;
@@ -68,4 +69,6 @@ public class ProfitByBranchAndItemSummary implements Serializable {
     public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
+
+
 }

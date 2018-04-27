@@ -8,7 +8,7 @@ public class ProfitByBranchAndItemSummaryPageDTO implements Serializable {
 
     private static final long serialVersionUID = -904230236625330808L;
     private Integer count;
-    private List<ProfitByBranchAndItemSummary> data;
+    private List<ProfitByBranchAndItemDTO> data;
     private BigDecimal profitSum;
     private BigDecimal profitRateSum;
     private BigDecimal costSum;
@@ -23,11 +23,11 @@ public class ProfitByBranchAndItemSummaryPageDTO implements Serializable {
         this.count = count;
     }
 
-    public List<ProfitByBranchAndItemSummary> getData() {
+    public List<ProfitByBranchAndItemDTO> getData() {
         return data;
     }
 
-    public void setData(List<ProfitByBranchAndItemSummary> data) {
+    public void setData(List<ProfitByBranchAndItemDTO> data) {
         this.data = data;
     }
 
