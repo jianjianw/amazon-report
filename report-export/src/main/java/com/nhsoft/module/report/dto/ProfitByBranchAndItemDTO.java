@@ -19,6 +19,7 @@ public class ProfitByBranchAndItemDTO implements Serializable {
     private BigDecimal saleCost;//销售成本
     private BigDecimal saleNums;//销售数量
     private BigDecimal saleMoney;//销售金额
+    private Integer itemType;//商品属性
 
     public Integer getBranchNum() {
         return branchNum;
@@ -122,5 +123,13 @@ public class ProfitByBranchAndItemDTO implements Serializable {
 
     public void setSaleMoney(BigDecimal saleMoney) {
         this.saleMoney = saleMoney;
+    }
+
+    public Integer getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(Integer itemType) {
+        this.itemType = itemType;
     }
 }

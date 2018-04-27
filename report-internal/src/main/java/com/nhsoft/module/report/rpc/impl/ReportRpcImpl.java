@@ -4692,6 +4692,7 @@ public class ReportRpcImpl implements ReportRpc {
 						dto.setItemName(posItem.getItemName());
 						dto.setSpec(posItem.getItemSpec());
 						dto.setUnit(posItem.getItemUnit());
+						dto.setItemType(posItem.getItemType());
 						dto.setBranchNum(summary.getBranchNum());
 						dto.setItemNum(summary.getItemNum());
 						dto.setMatrixNum(summary.getMatrixNum());
@@ -4777,6 +4778,7 @@ public class ReportRpcImpl implements ReportRpc {
 				profitByBranchAndItemSummary.setItemName(posItem.getItemName());
 				profitByBranchAndItemSummary.setSpec(posItem.getItemSpec());
 				profitByBranchAndItemSummary.setUnit(posItem.getItemUnit());
+				profitByBranchAndItemSummary.setItemType(posItem.getItemType());
 				list.add(profitByBranchAndItemSummary);
 				if(!profitAnalysisQueryData.isPage()){
 					profitSum = profitSum.add(profitByBranchAndItemSummary.getProfit());
