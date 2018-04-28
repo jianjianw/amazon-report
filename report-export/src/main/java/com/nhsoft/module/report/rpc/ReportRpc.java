@@ -3,6 +3,7 @@ package com.nhsoft.module.report.rpc;
 
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.query.*;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 
 import java.math.BigDecimal;
@@ -1486,6 +1487,14 @@ public interface ReportRpc {
 	 * 类别汇总
 	 * */
 	public InventoryProfitPageDTO findInventoryProfitSum(InventoryProfitQuery queryData);
+
+	/**
+	 * AMA-24018  性能优化-会员卡操作记录
+	 *
+	public AllOperatePageDTO findCardUserOperate(CardReportQuery cardReportQuery);*/
+
+
+
 
 
 

@@ -1598,7 +1598,7 @@ public class APIBasic {
 		query.setOffset(0);
 		query.setLimit(50);
 		query.setSortField("startInventoryMoney");
-		query.setSortType("asc");
+		query.setSortType("DESC");
 		query.setQueryKit(true);
 		/*List<String> categorys = new ArrayList<>();
 		categorys.add("11");
@@ -1612,9 +1612,9 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test83")
 	public TransferProfitByPosItemPageDTO test83() throws Exception{
-		String systemBookCode = "4020";			//直调查询-门店商品汇总
+		String systemBookCode = "4173";			//直调查询-门店商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-09");
+		Date dateFrom = sdf.parse("2018-03-01");
 		Date dateTo = sdf.parse("2018-04-10");
 		TransferProfitQuery query = new TransferProfitQuery();
 		query.setSystemBookCode(systemBookCode);
@@ -1625,25 +1625,25 @@ public class APIBasic {
 		query.setOffset(0);
 		query.setLimit(10);
 		query.setSortField("saleProfit");
-		query.setSortType("asc");
+		query.setSortType("ASC");
 		TransferProfitByPosItemPageDTO result = reportRpc.findTransferProfitByPosItemBranch(query);
 		return result;
 	}
 
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test84")
-	public TransferProfitByPosItemDetailPageDTO test84() throws Exception{
+	@RequestMapping(method = RequestMethod.GET,value = "/test84/{sortType}")
+	public TransferProfitByPosItemDetailPageDTO test84(@PathVariable(value = "sortType") String sortType) throws Exception{
 		String systemBookCode = "4020";			//直调查询-商品明细
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-09");
-		Date dateTo = sdf.parse("2018-04-10");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
 		TransferProfitQuery query = new TransferProfitQuery();
 		query.setSystemBookCode(systemBookCode);
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
 		query.setResponseBranchNums(getBranchNums());
 		query.setSortField("costUnitPrice");
-		query.setSortType("desc");
+		query.setSortType(sortType);
 		query.setOffset(0);
 		query.setLimit(10);
 		TransferProfitByPosItemDetailPageDTO result = reportRpc.findTransferProfitByPosItemDetail(query);
@@ -1652,12 +1652,12 @@ public class APIBasic {
 	}
 
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test85")
-	public InventoryProfitPageDTO test85() throws Exception{
+	@RequestMapping(method = RequestMethod.GET,value = "/test85/{sortType}")
+	public InventoryProfitPageDTO test85(@PathVariable(value = "sortType") String sortType) throws Exception{
 		String systemBookCode = "4173";			//损益统计报表     商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-03-01");
-		Date dateTo = sdf.parse("2017-03-31");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
 
 		InventoryProfitQuery query = new InventoryProfitQuery();
 		query.setSystemBookCode(systemBookCode);
@@ -1669,20 +1669,20 @@ public class APIBasic {
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(10000);
-		query.setSortField("itemSpec");
-		query.setSortType("desc");
+		query.setSortField("itemCode");
+		query.setSortType(sortType);
 		InventoryProfitPageDTO result = reportRpc.findInventoryProfit(query);
 
 		return result;
 	}
 
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test86")
-	public InventoryProfitPageDTO test86() throws Exception{
+	@RequestMapping(method = RequestMethod.GET,value = "/test86/{sortType}")
+	public InventoryProfitPageDTO test86(@PathVariable(value = "sortType") String sortType) throws Exception{
 		String systemBookCode = "4173";			//损益统计报表    类别汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2017-03-01");
-		Date dateTo = sdf.parse("2017-03-31");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
 
 		InventoryProfitQuery query = new InventoryProfitQuery();
 		query.setSystemBookCode(systemBookCode);
@@ -1695,7 +1695,7 @@ public class APIBasic {
 		query.setOffset(0);
 		query.setLimit(10000);
 		query.setSortField("profitQty");
-		query.setSortType("desc");
+		query.setSortType(sortType);
 		InventoryProfitPageDTO result = reportRpc.findInventoryProfitSum(query);
 
 		return result;

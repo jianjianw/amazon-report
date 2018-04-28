@@ -19,7 +19,6 @@ public class ComparatorBaseModelData<T> implements Comparator<T> {
 	private String sortField;
 	private String sortType;
 	private Method method = null;
-	private HanYu hanyu = new HanYu();
 
 	public String getSortField() {
 		return sortField;
@@ -125,8 +124,8 @@ public class ComparatorBaseModelData<T> implements Comparator<T> {
 					return 0;
 				}
 			} else if (val1 instanceof String) {
-				String str1 = hanyu.getStringPinYin((String) val1);
-				String str2 = hanyu.getStringPinYin((String) val2);
+				String str1 = AppUtil.cn2py((String) val1);
+				String str2 = AppUtil.cn2py((String) val2);
 				if ((str1).compareTo(str2) > 0) {
 					return 1;
 				} else if ((str1).compareTo(str2) < 0) {
@@ -196,8 +195,8 @@ public class ComparatorBaseModelData<T> implements Comparator<T> {
 					return 0;
 				}
 			} else if (val1 instanceof String) {
-				String str1 = hanyu.getStringPinYin((String) val1);
-				String str2 = hanyu.getStringPinYin((String) val2);
+				String str1 = AppUtil.cn2py((String) val1);
+				String str2 = AppUtil.cn2py((String) val2);
 				if ((str1).compareTo(str2) > 0) {
 					return -1;
 				} else if ((str1).compareTo(str2) < 0) {

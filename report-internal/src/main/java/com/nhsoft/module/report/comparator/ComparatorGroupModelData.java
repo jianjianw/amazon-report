@@ -18,7 +18,6 @@ public class ComparatorGroupModelData<T> implements Comparator<T> {
 	private String sortType;
 	private Method method = null;
 	private Method groupMethod = null;
-	private HanYu hanyu = new HanYu();
 	private boolean sortPinyin = true;
 
 	public boolean isSortPinyin() {
@@ -111,8 +110,8 @@ public class ComparatorGroupModelData<T> implements Comparator<T> {
 				String gstr1 = null;
 				String gstr2 = null;
 				if(sortPinyin){
-					gstr1 = hanyu.getStringPinYin((String) grp1);
-					gstr2 = hanyu.getStringPinYin((String) grp2);
+					gstr1 = AppUtil.cn2py((String) grp1);
+					gstr2 = AppUtil.cn2py((String) grp2);
 				}else{
 					gstr1 = (String) grp1;
 					gstr2 = (String) grp2;
@@ -192,8 +191,8 @@ public class ComparatorGroupModelData<T> implements Comparator<T> {
 							return 0;
 						}
 					} else if (val1 instanceof String) {
-						String str1 = hanyu.getStringPinYin((String) val1);
-						String str2 = hanyu.getStringPinYin((String) val2);
+						String str1 = AppUtil.cn2py((String) val1);
+						String str2 = AppUtil.cn2py((String) val2);
 						if ((str1).compareTo(str2) > 0) {
 							return 1;
 						} else if ((str1).compareTo(str2) < 0) {
@@ -215,8 +214,8 @@ public class ComparatorGroupModelData<T> implements Comparator<T> {
 				String gstr1 = null;
 				String gstr2 = null;
 				if(sortPinyin){
-					gstr1 = hanyu.getStringPinYin((String) grp1);
-					gstr2 = hanyu.getStringPinYin((String) grp2);
+					gstr1 = AppUtil.cn2py((String) grp1);
+					gstr2 = AppUtil.cn2py((String) grp2);
 				}else{
 					gstr1 = (String) grp1;
 					gstr2 = (String) grp2;
@@ -278,8 +277,8 @@ public class ComparatorGroupModelData<T> implements Comparator<T> {
 							return 0;
 						}
 					} else if (val1 instanceof String) {
-						String str1 = hanyu.getStringPinYin((String) val1);
-						String str2 = hanyu.getStringPinYin((String) val2);
+						String str1 = AppUtil.cn2py((String) val1);
+						String str2 = AppUtil.cn2py((String) val2);
 						if ((str1).compareTo(str2) > 0) {
 							return 1;
 						} else if ((str1).compareTo(str2) < 0) {
@@ -364,8 +363,8 @@ public class ComparatorGroupModelData<T> implements Comparator<T> {
 							return 0;
 						}
 					} else if (val1 instanceof String) {
-						String str1 = hanyu.getStringPinYin((String) val1);
-						String str2 = hanyu.getStringPinYin((String) val2);
+						String str1 = AppUtil.cn2py((String) val1);
+						String str2 = AppUtil.cn2py((String) val2);
 						if ((str1).compareTo(str2) > 0) {
 							return -1;
 						} else if ((str1).compareTo(str2) < 0) {
@@ -387,8 +386,8 @@ public class ComparatorGroupModelData<T> implements Comparator<T> {
 				String gstr1 = null;
 				String gstr2 = null;
 				if(sortPinyin){
-					gstr1 = hanyu.getStringPinYin((String) grp1);
-					gstr2 = hanyu.getStringPinYin((String) grp2);
+					gstr1 = AppUtil.cn2py((String) grp1);
+					gstr2 = AppUtil.cn2py((String) grp2);
 				}else{
 					gstr1 = (String) grp1;
 					gstr2 = (String) grp2;
@@ -450,8 +449,8 @@ public class ComparatorGroupModelData<T> implements Comparator<T> {
 							return 0;
 						}
 					} else if (val1 instanceof String) {
-						String str1 = hanyu.getStringPinYin((String) val1);
-						String str2 = hanyu.getStringPinYin((String) val2);
+						String str1 = AppUtil.cn2py((String) val1);
+						String str2 = AppUtil.cn2py((String) val2);
 						if ((str1).compareTo(str2) > 0) {
 							return -1;
 						} else if ((str1).compareTo(str2) < 0) {

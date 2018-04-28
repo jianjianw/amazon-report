@@ -1,5 +1,6 @@
 package com.nhsoft.module.report.util;
 
+import com.github.stuxuhai.jpinyin.PinyinHelper;
 import com.google.gson.*;
 
 import com.nhsoft.module.report.dto.GsonIgnore;
@@ -1449,6 +1450,14 @@ public class AppUtil {
 				.append(fieldname.substring(1)).toString();
 
 		return fieldname;
+	}
+
+	public static String cn2py(String sourceStr) {
+		try {
+			return PinyinHelper.getShortPinyin(sourceStr).toUpperCase();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

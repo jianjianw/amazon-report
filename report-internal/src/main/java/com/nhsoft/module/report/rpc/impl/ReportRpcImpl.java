@@ -6,8 +6,10 @@ import com.nhsoft.module.report.comparator.ComparatorBaseModelData;
 import com.nhsoft.module.report.comparator.ComparatorGroupModelData;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
+import com.nhsoft.module.report.param.CardUserType;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
@@ -6901,6 +6903,238 @@ public class ReportRpcImpl implements ReportRpc {
 		return null;
 	}
 
+
+	/*@Override
+	public AllOperatePageDTO findCardUserOperate(CardReportQuery cardReportQuery){
+
+
+			int offset = cardReportQuery.getOffset();
+			int limit = cardReportQuery.getLimit();
+			String sortField = cardReportQuery.getSortField();
+			String sortType = cardReportQuery.getSortType();
+
+			cardReportQuery.setPaging(false);
+			List<AllOperateSummary> list = new ArrayList<AllOperateSummary>();
+
+
+			if (cardReportQuery.getBranchNums() == null || cardReportQuery.getBranchNums().size() == 0) {
+				List<BranchDTO> branchs = branchRpc.findInCache(cardReportQuery.getSystemBookCode());
+				List<Integer> branchNums = new ArrayList<Integer>();
+				for(int i = 0;i < branchs.size();i++){
+					BranchDTO branch = branchs.get(i);
+					branchNums.add(branch.getBranchNum());
+				}
+				cardReportQuery.setBranchNums(branchNums);
+			}
+
+			List<CardUserDTO> cardUsers = cardUserService.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
+			List<BranchDTO> branchs = branchRpc.findInCache(cardReportQuery.getSystemBookCode());
+			List<CardUserType> cardUserTypes = bookResourceRpc.findCardUserTypesInCache(cardReportQuery.getSystemBookCode());
+			for(int i = 0;i < cardUsers.size();i++){
+				CardUserDTO cardUser = cardUsers.get(i);
+				AllOperateSummary data = new AllOperateSummary();
+				data.setReportType("发卡");
+				data.setReportDate(cardUser.getCardUserDate());
+				data.setReportOperator(cardUser.getCardUserOperator());
+				data.setReportCustName(cardUser.getCardUserCustName());
+				data.setReportPrintedNum(cardUser.getCardUserPrintedNum());
+				data.setReportMemo("表面卡号："+cardUser.getCardUserPrintedNum());
+				CardUserType cardUserType = AppUtil.readCardType(cardUser.getCardUserCardType(), cardUserTypes);
+				if(cardUserType != null){
+					data.setCardUserTypeName(cardUserType.getTypeName());
+					data.setReportMemo(data.getReportMemo() + " 会员卡类型;"+cardUserType.getTypeName());
+				}else {
+					data.setCardUserTypeName("");
+				}
+				BranchDTO branch = AppUtil.getBranch(branchs, cardUser.getCardUserEnrollShop());
+				if(branch != null){
+					data.setReportOperateBranch(branch.getBranchName());
+				}
+				list.add(data);
+			}
+
+			List<CardLossDTO> cardLosses = cardLossService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			for(int i = 0;i < cardLosses.size();i++){
+				CardLossDTO cardLoss = cardLosses.get(i);
+				AllOperateData data = new AllOperateData();
+				data.setReportType(cardLoss.getCardLossOperateName());
+				data.setReportDate(cardLoss.getCardLossOperateTime());
+				data.setReportOperator(cardLoss.getCardLossOperator());
+				data.setReportCustName(cardLoss.getCardLossCustName());
+				data.setReportPrintedNum(cardLoss.getCardLossPrintedNum());
+				CardUserType cardUserType = AppUtil.readCardType(cardLoss.getCardLossCardType(), cardUserTypes);
+				if(cardUserType != null){
+					data.setCardUserTypeName(cardUserType.getTypeName());
+				}else {
+					data.setCardUserTypeName("");
+				}
+				data.setReportOperateBranch(cardLoss.getCardLossBranchName());
+				data.setReportMemo("挂失：表面卡号 = "+cardLoss.getCardLossPrintedNum());
+				list.add(data);
+			}
+
+			List<ReplaceCardDTO> replaceCards = replaceCardService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			for(int i = 0;i < replaceCards.size();i++){
+				ReplaceCardDTO replaceCard = replaceCards.get(i);
+				AllOperateData data = new AllOperateData();
+				data.setReportType("换卡");
+				data.setReportDate(replaceCard.getReplaceCardOperateTime());
+				data.setReportOperator(replaceCard.getReplaceCardOperator());
+				data.setReportCustName(replaceCard.getRepalceCardCustName());
+				data.setReportPrintedNum(replaceCard.getReplaceCardOldPrintedNum());
+				CardUserType cardUserType = AppUtil.readCardType(replaceCard.getReplaceCardCardType(), cardUserTypes);
+				if(cardUserType != null){
+					data.setCardUserTypeName(cardUserType.getTypeName());
+				}else {
+					data.setCardUserTypeName("");
+				}
+				data.setReportOperateBranch(replaceCard.getReplaceCardBranchName());
+				data.setReportMemo("原卡号 = "+replaceCard.getReplaceCardOldPrintedNum()+
+						";新卡号"+replaceCard.getReplaceCardNewPrintedNum());
+				list.add(data);
+			}
+
+			List<RelatCardDTO> relatCards = relatCardService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			for(int i = 0;i < relatCards.size();i++){
+				RelatCardDTO relatCard = relatCards.get(i);
+				AllOperateData data = new AllOperateData();
+				data.setReportType("续卡");
+				data.setReportDate(relatCard.getRelatCardOperateTime());
+				data.setReportOperator(relatCard.getRelatCardOperator());
+				data.setReportCustName(relatCard.getRelatCardCustName());
+				data.setReportPrintedNum(relatCard.getRelatCardPrintedNum());
+				CardUserType cardUserType = AppUtil.readCardType(relatCard.getRelatCardCardType(), cardUserTypes);
+				if(cardUserType != null){
+					data.setCardUserTypeName(cardUserType.getTypeName());
+				}else {
+					data.setCardUserTypeName("");
+				}
+				data.setReportOperateBranch(relatCard.getRelatCardBranchName());
+				data.setReportMemo("原有效期= "+DateUtil.getDateStr(relatCard.getRelatCardOldDeadline())+
+						";新有效期"+DateUtil.getDateStr(relatCard.getRelatCardNewDeadline()));
+				list.add(data);
+			}
+
+			List<CardConsumeDTO> cardConsumes = cardConsumeService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			for(int i = 0;i < cardConsumes.size();i++){
+				CardConsumeDTO cardConsume = cardConsumes.get(i);
+				AllOperateData data = new AllOperateData();
+				data.setReportType("消费");
+				data.setReportDate(cardConsume.getConsumeDate());
+				data.setReportOperator(cardConsume.getConsumeOperator());
+				data.setReportCustName(cardConsume.getConsumeCustName());
+				data.setReportPrintedNum(cardConsume.getConsumePrintedNum());
+				CardUserType cardUserType = AppUtil.readCardType(cardConsume.getConsumeCardType(), cardUserTypes);
+				if(cardUserType != null){
+					data.setCardUserTypeName(cardUserType.getTypeName());
+				}else {
+					data.setCardUserTypeName("");
+				}
+				data.setReportOperateBranch(cardConsume.getConsumeBranchName());
+				data.setReportMemo("消费前余额= "+cardConsume.getConsumeBalance().setScale(2, RoundingMode.HALF_UP)+
+						";消费金额"+cardConsume.getConsumeMoney().setScale(2, RoundingMode.HALF_UP));
+				list.add(data);
+			}
+
+			List<CardDepositDTO> cardDeposits = cardDepositService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			for(int i = 0;i < cardDeposits.size();i++){
+				CardDepositDTO cardDeposit = cardDeposits.get(i);
+				AllOperateData data = new AllOperateData();
+				data.setReportType("存款");
+				data.setReportDate(cardDeposit.getDepositDate());
+				data.setReportOperator(cardDeposit.getDepositOperator());
+				data.setReportCustName(cardDeposit.getDepositCustName());
+				data.setReportPrintedNum(cardDeposit.getDepositPrintedNum());
+				CardUserType cardUserType = AppUtil.readCardType(cardDeposit.getDepositCardType(), cardUserTypes);
+				if(cardUserType != null){
+					data.setCardUserTypeName(cardUserType.getTypeName());
+				}else {
+					data.setCardUserTypeName("");
+				}
+				data.setReportOperateBranch(cardDeposit.getDepositBranchName());
+				data.setReportMemo("存款前余额= "+cardDeposit.getDepositBalance().setScale(2, RoundingMode.HALF_UP)+
+						";实存金额"+cardDeposit.getDepositCash().setScale(2, RoundingMode.HALF_UP)+"存款金额："+cardDeposit.getDepositMoney().setScale(2, RoundingMode.HALF_UP)+
+						"付款方式="+cardDeposit.getDepositPaymentTypeName());
+				list.add(data);
+			}
+
+			List<ConsumePointDTO> consumePoints = consumePointService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			for(int i = 0;i < consumePoints.size();i++){
+				ConsumePointDTO consumePoint = consumePoints.get(i);
+				AllOperateData data = new AllOperateData();
+				data.setReportType("积分兑换");
+				data.setReportDate(consumePoint.getConsumePointDate());
+				data.setReportOperator(consumePoint.getConsumePointOperator());
+				data.setReportCustName(consumePoint.getConsumePointCustName());
+				data.setReportPrintedNum(consumePoint.getConsumePointPrintedNum());
+				CardUserType cardUserType = AppUtil.readCardType(consumePoint.getConsumePointCardType(), cardUserTypes);
+				if(cardUserType != null){
+					data.setCardUserTypeName(cardUserType.getTypeName());
+				}else {
+					data.setCardUserTypeName("");
+				}
+				data.setReportOperateBranch(consumePoint.getConsumePointBranchName());
+				data.setReportMemo(consumePoint.getConsumePointMemo());
+				list.add(data);
+			}
+
+			CardUserRegisterRpc cardUserRegisterService = (CardUserRegisterRpc) AppUtil.createCenterObject(CardUserRegisterRpc.class);
+			List<CardUserLogDTO> cardUserLogs = cardUserRegisterService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			for(int i = 0;i < cardUserLogs.size();i++){
+				CardUserLogDTO consumePoint = cardUserLogs.get(i);
+				AllOperateData data = new AllOperateData();
+				data.setReportType(consumePoint.getCardUserLogType());
+				data.setReportDate(consumePoint.getCardUserLogTime());
+				data.setReportOperator(consumePoint.getCardUserLogOperator());
+				data.setReportCustName(consumePoint.getCardUserCustName());
+				data.setReportPrintedNum(consumePoint.getCardUserPrintedNum());
+				CardUserType cardUserType = AppUtil.readCardType(consumePoint.getCardUserCardType(), cardUserTypes);
+				if(cardUserType != null){
+					data.setCardUserTypeName(cardUserType.getTypeName());
+				}else {
+					data.setCardUserTypeName("");
+				}
+				data.setReportOperateBranch(consumePoint.getCardUserLogBranchName());
+				data.setReportMemo(consumePoint.getCardUserLogMemo());
+				list.add(data);
+			}
+
+			CardUserLogRpc cardUserLogService = (CardUserLogRpc) AppUtil.createCenterObject(CardUserLogRpc.class);
+			cardUserLogs = cardUserLogService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			for(int i = 0;i < cardUserLogs.size();i++){
+				CardUserLogDTO consumePoint = cardUserLogs.get(i);
+				AllOperateData data = new AllOperateData();
+				data.setReportType(consumePoint.getCardUserLogType());
+				data.setReportDate(consumePoint.getCardUserLogTime());
+				data.setReportOperator(consumePoint.getCardUserLogOperator());
+				data.setReportCustName(consumePoint.getCardUserCustName());
+				data.setReportPrintedNum(consumePoint.getCardUserPrintedNum());
+				CardUserType cardUserType = AppUtil.readCardType(consumePoint.getCardUserCardType(), cardUserTypes);
+				if(cardUserType != null){
+					data.setCardUserTypeName(cardUserType.getTypeName());
+				}else {
+					data.setCardUserTypeName("");
+				}
+				data.setReportOperateBranch(consumePoint.getCardUserLogBranchName());
+				data.setReportMemo(consumePoint.getCardUserLogMemo());
+				list.add(data);
+			}
+			ComparatorBaseModelData<AllOperateData> comparator = new ComparatorBaseModelData<AllOperateData>(sortField, sortType, AllOperateData.class);
+			Collections.sort(list, comparator);
+
+			int count = list.size();
+			List<AllOperateData> returnList = new ArrayList<AllOperateData>();
+			for(int i = offset;i < offset + limit;i++){
+				if(i >= count){
+					break;
+				}
+				AllOperateData data = list.get(i);
+				data.setId(i);
+				returnList.add(data);
+			}
+			return new PagingLoadResultBean<AllOperateData>(returnList, count, offset);
+		}
+	}*/
 
 
 
