@@ -24,12 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class ReportRpcImpl implements ReportRpc {
@@ -5054,11 +5051,74 @@ public class ReportRpcImpl implements ReportRpc {
 	public RetailDetailPageSummary findRetailDetailsByPage(RetailDetailQueryData retailDetailQueryData) {
 
 
+		if(retailDetailQueryData.getSortField() != null){
+			boolean flag = false;
+			switch (retailDetailQueryData.getSortField()){
+				case "posItemCode":
+					flag = true;
+					break;
+				case "posItemName":
+					flag = true;
+					break;
+				case "posItemSpec":
+					flag = true;
+					break;
+				case "itemBarCode":
+					flag = true;
+					break;
+				case "itemUnit":
+					flag = true;
+					break;
+			}
+			if(flag){
+				List<RetailDetail> data = reportService.findRetailDetails(retailDetailQueryData,false);
+				BranchProfitComparator<RetailDetail> comparator = new BranchProfitComparator<>(retailDetailQueryData.getSortField(), retailDetailQueryData.getSortType());
+				Collections.sort(data,comparator);
 
+				RetailDetailPageSummary result = new RetailDetailPageSummary();
+				int dataSize = data.size();
+				result.setCount(dataSize);
+				result.setData(data);
+				BigDecimal amountSum = BigDecimal.ZERO;
+				BigDecimal saleMoneySum = BigDecimal.ZERO;
+				BigDecimal saleCostSum = BigDecimal.ZERO;
+				BigDecimal saleProfitSum = BigDecimal.ZERO;
+				BigDecimal discountMoneySum = BigDecimal.ZERO;
+				BigDecimal saleCommissionSum = BigDecimal.ZERO;
+				for (int i = 0; i < dataSize ; i++) {
+					RetailDetail retailDetail = data.get(i);
+					amountSum = amountSum.add(retailDetail.getAmount() == null ? BigDecimal.ZERO : retailDetail.getAmount());
+					saleMoneySum = saleMoneySum.add(retailDetail.getSaleMoney() == null ? BigDecimal.ZERO : retailDetail.getSaleMoney());
+					saleCostSum = saleCostSum.add(retailDetail.getSaleCost() == null ? BigDecimal.ZERO : retailDetail.getSaleCost());
+					saleProfitSum = saleProfitSum.add(retailDetail.getSaleProfit() == null ? BigDecimal.ZERO : retailDetail.getSaleProfit());
+					discountMoneySum = discountMoneySum.add(retailDetail.getDiscountMoney() == null ? BigDecimal.ZERO : retailDetail.getDiscountMoney());
+					saleCommissionSum =saleCommissionSum.add(retailDetail.getSaleCommission() == null ? BigDecimal.ZERO : retailDetail.getSaleCommission());
+				}
+				result.setAmountSum(amountSum);
+				result.setSaleMoneySum(saleMoneySum);
+				result.setSaleCostSum(saleCostSum);
+				result.setSaleProfitSum(saleProfitSum);
+				result.setDiscountMoneySum(discountMoneySum);
+				result.setSaleCommissionSum(saleCommissionSum);
+				if(result.getSaleMoneySum().compareTo(BigDecimal.ZERO) == 0){
+					result.setSaleProfitRateSum(BigDecimal.ZERO);
+				}else{
+					result.setSaleProfitRateSum(result.getSaleProfitSum().divide(result.getSaleMoneySum(),4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+				}
 
-		/*if(){
-			List<RetailDetail> retailDetails = reportService.findRetailDetails(retailDetailQueryData,false);
-	}*/
+				if(retailDetailQueryData.isPage()){
+					List<RetailDetail> subData = null;
+					int pageSum = retailDetailQueryData.getLimit() + retailDetailQueryData.getOffset();
+					if (dataSize >= pageSum) {
+						subData = data.subList(retailDetailQueryData.getOffset(), pageSum);
+					} else {
+						subData = data.subList(retailDetailQueryData.getOffset(), dataSize);
+					}
+					result.setData(subData);
+				}
+				return result;
+			}
+		}
 
 		List<RetailDetail> data = reportService.findRetailDetailsByPage(retailDetailQueryData, false);
 		Object[] count = reportService.findRetailDetailsCount(retailDetailQueryData, false);

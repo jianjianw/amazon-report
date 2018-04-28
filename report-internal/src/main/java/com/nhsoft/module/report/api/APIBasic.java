@@ -1419,7 +1419,7 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test74")///////10
 	public Object test74() throws Exception{
-		String systemBookCode = "4173";
+		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-02-01");
 		Date dateTo = sdf.parse("2018-04-30");
@@ -1433,8 +1433,8 @@ public class APIBasic {
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(50);
-		query.setSortField("itemNum");
-		query.setSortType("asc");
+		query.setSortField("posItemCode");
+		query.setSortType("desc");
 		RetailDetailPageSummary retailDetailsByPage = reportRpc.findRetailDetailsByPage(query);
 		return retailDetailsByPage;
 	}
