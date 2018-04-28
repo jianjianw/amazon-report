@@ -1432,4 +1432,23 @@ public class AppUtil {
 		return s.substring(0, 8) + s.substring(9, 13) + s.substring(14, 18) + s.substring(19, 23) + s.substring(24);
 	}
 
+
+	public static String toGetter(String fieldname) {
+
+		if (fieldname == null || fieldname.length() == 0) {
+			return null;
+		}
+		if (fieldname.length() > 2) {
+			String second = fieldname.substring(1, 2);
+			if (second.equals(second.toUpperCase())) {
+				return new StringBuffer("get").append(fieldname).toString();
+			}
+		}
+
+		fieldname = new StringBuffer("get").append(fieldname.substring(0, 1).toUpperCase())
+				.append(fieldname.substring(1)).toString();
+
+		return fieldname;
+	}
+
 }

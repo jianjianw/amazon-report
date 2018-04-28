@@ -2,6 +2,8 @@ package com.nhsoft.module.report.rpc.impl;
 
 
 import com.google.gson.Gson;
+import com.nhsoft.module.report.comparator.ComparatorBaseModelData;
+import com.nhsoft.module.report.comparator.ComparatorGroupModelData;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.param.PosItemTypeParam;
@@ -4705,7 +4707,7 @@ public class ReportRpcImpl implements ReportRpc {
 					}
 				}
 
-				BranchProfitComparator<ProfitByBranchAndItemDTO> comparator = new BranchProfitComparator<>(profitAnalysisQueryData.getSortField(), profitAnalysisQueryData.getSortType());
+				ComparatorBaseModelData<ProfitByBranchAndItemDTO> comparator = new ComparatorBaseModelData<>(profitAnalysisQueryData.getSortField(), profitAnalysisQueryData.getSortType(),ProfitByBranchAndItemDTO.class);
 				Collections.sort(data, comparator);
 
 				ProfitByBranchAndItemSummaryPageDTO result = new ProfitByBranchAndItemSummaryPageDTO();
@@ -4940,7 +4942,7 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			if (flag) {
 				List<SaleAnalysisByPosItemDTO> data = reportService.findSaleAnalysisByBranchPosItems(queryData.getSystemBookCode(), queryData);
-				BranchProfitComparator<SaleAnalysisByPosItemDTO> comparator = new BranchProfitComparator<>(queryData.getSortField(), queryData.getSortType());
+				ComparatorBaseModelData<SaleAnalysisByPosItemDTO> comparator = new ComparatorBaseModelData(queryData.getSortField(), queryData.getSortType(),SaleAnalysisByPosItemDTO.class);
 				Collections.sort(data, comparator);
 
 				SaleAnalysisBranchItemPageSummary result = new SaleAnalysisBranchItemPageSummary();
@@ -5072,7 +5074,7 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 			if(flag){
 				List<RetailDetail> data = reportService.findRetailDetails(retailDetailQueryData,false);
-				BranchProfitComparator<RetailDetail> comparator = new BranchProfitComparator<>(retailDetailQueryData.getSortField(), retailDetailQueryData.getSortType());
+				ComparatorBaseModelData<RetailDetail> comparator = new ComparatorBaseModelData(retailDetailQueryData.getSortField(), retailDetailQueryData.getSortType(),RetailDetail.class);
 				Collections.sort(data,comparator);
 
 				RetailDetailPageSummary result = new RetailDetailPageSummary();
@@ -5675,8 +5677,8 @@ public class ReportRpcImpl implements ReportRpc {
 				sortType = "ASC";
 			}
 
-			BranchProfitComparator<BranchProfitDataDTO> comparator  = new BranchProfitComparator<>(sortField,sortType,"branchNum");
-			Collections.sort(list, comparator);
+		ComparatorGroupModelData<BranchProfitDataDTO> comparator = new ComparatorGroupModelData("branchNum", sortField, sortType,BranchProfitDataDTO.class);
+		Collections.sort(list, comparator);
 
 
 		for (int i = 0; i < list.size(); i++) {
@@ -5978,7 +5980,7 @@ public class ReportRpcImpl implements ReportRpc {
 			sortType = "ASC";
 		}
 
-		BranchProfitComparator<TransferProfitByPosItemDTO> comparator  = new BranchProfitComparator<>(sortField,sortType,"tranferBranchNum");
+		ComparatorGroupModelData<TransferProfitByPosItemDTO> comparator = new ComparatorGroupModelData("tranferBranchNum", sortField, sortType,TransferProfitByPosItemDTO.class);
 		Collections.sort(list, comparator);
 
 		// 总合计
@@ -6315,7 +6317,7 @@ public class ReportRpcImpl implements ReportRpc {
 			sortType = "ASC";
 		}
 
-		BranchProfitComparator<TransferProfitByPosItemDetailDTO> comparator  = new BranchProfitComparator<>(sortField,sortType);
+		ComparatorBaseModelData<TransferProfitByPosItemDetailDTO> comparator = new ComparatorBaseModelData<>(sortField, sortType, TransferProfitByPosItemDetailDTO.class);
 		Collections.sort(list, comparator);
 
 
@@ -6567,7 +6569,8 @@ public class ReportRpcImpl implements ReportRpc {
 			sortField = "itemCode";
 			sortType = "ASC";
 		}
-		BranchProfitComparator<InventoryProfitDTO> comparator  = new BranchProfitComparator<>(sortField,sortType);
+
+		ComparatorBaseModelData<InventoryProfitDTO> comparator = new ComparatorBaseModelData<InventoryProfitDTO>(sortField, sortType, InventoryProfitDTO.class);
 		Collections.sort(list, comparator);
 
 		for (int i = 0; i < list.size(); i++) {
@@ -6845,7 +6848,7 @@ public class ReportRpcImpl implements ReportRpc {
 			sortField = "itemCategoryCode";
 			sortType = "ASC";
 		}
-		BranchProfitComparator<InventoryProfitDTO> comparator  = new BranchProfitComparator<>(sortField,sortType);
+		ComparatorBaseModelData<InventoryProfitDTO> comparator = new ComparatorBaseModelData<>(sortField, sortType, InventoryProfitDTO.class);
 		Collections.sort(list, comparator);
 
 		for (int i = 0; i < list.size(); i++) {

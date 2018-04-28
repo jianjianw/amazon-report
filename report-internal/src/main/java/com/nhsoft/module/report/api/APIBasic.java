@@ -1585,8 +1585,8 @@ public class APIBasic {
 
 		String systemBookCode = "4173";			//门店营业分析-门店商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-12");
-		Date dateTo = sdf.parse("2018-04-12");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
 
 		BranchProfitQuery query = new BranchProfitQuery();
 		query.setSystemBookCode(systemBookCode);
@@ -1594,7 +1594,6 @@ public class APIBasic {
 		query.setDateTo(dateTo);
 		query.setBranchNums(getBranchNums());
 		query.setBranchNum(99);
-		query.setQueryKit(null);
 		query.setFilterDel(true);
 		query.setOffset(0);
 		query.setLimit(50);
