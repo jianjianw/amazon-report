@@ -3583,7 +3583,7 @@ public class ReportRpcImpl implements ReportRpc {
 			branchItemSummary.setAmount((BigDecimal) object[4]);
 			list.add(branchItemSummary);
 		}
-		return null;
+		return list;
 	}
 
 	@Override
