@@ -4644,7 +4644,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+	public ProfitByBranchAndItemSummaryPageDTOV2 findProfitAnalysisByBranchAndItemByPageV2(ProfitAnalysisQueryData profitAnalysisQueryData) {
 
 
 		if(profitAnalysisQueryData.getSortField() != null){
@@ -4712,7 +4712,7 @@ public class ReportRpcImpl implements ReportRpc {
 				ComparatorBaseModelData<ProfitByBranchAndItemDTO> comparator = new ComparatorBaseModelData<>(profitAnalysisQueryData.getSortField(), profitAnalysisQueryData.getSortType(),ProfitByBranchAndItemDTO.class);
 				Collections.sort(data, comparator);
 
-				ProfitByBranchAndItemSummaryPageDTO result = new ProfitByBranchAndItemSummaryPageDTO();
+				ProfitByBranchAndItemSummaryPageDTOV2 result = new ProfitByBranchAndItemSummaryPageDTOV2();
 				int dataSize = data.size();
 				result.setCount(dataSize);
 				result.setData(data);
@@ -4791,7 +4791,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		}
 
-		ProfitByBranchAndItemSummaryPageDTO result = new ProfitByBranchAndItemSummaryPageDTO();
+		ProfitByBranchAndItemSummaryPageDTOV2 result = new ProfitByBranchAndItemSummaryPageDTOV2();
 		result.setData(list);
 
 		if(profitAnalysisQueryData.isPage()){
@@ -4823,6 +4823,88 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 
 		}
+		if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
+			result.setProfitRateSum(BigDecimal.ZERO);
+		}else{
+			result.setProfitRateSum(result.getProfitSum().divide(result.getMoneySum(),4,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+		}
+
+		return result;
+	}
+
+	@Override
+	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+		boolean page = profitAnalysisQueryData.isPage();
+
+		int days = DateUtil.diffDay(profitAnalysisQueryData.getShiftTableFrom(), profitAnalysisQueryData.getShiftTableTo());
+		int branchSize = profitAnalysisQueryData.getBranchNums().size();
+
+		Object[] pageCount = null;
+		if(days * branchSize > 1000 && page){
+			pageCount = reportService.findProfitAnalysisByBranchAndItemCount(profitAnalysisQueryData);
+		}else{
+			profitAnalysisQueryData.setPage(false);
+		}
+		List<Object[]> objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);//500-1000
+
+		int size = objects.size();
+		List<ProfitByBranchAndItemSummary> list = new ArrayList<ProfitByBranchAndItemSummary>(size);
+		BigDecimal profitSum = BigDecimal.ZERO;
+		BigDecimal costSum = BigDecimal.ZERO;
+		BigDecimal moneySum = BigDecimal.ZERO;
+		BigDecimal amountSum = BigDecimal.ZERO;
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();
+			profitByBranchAndItemSummary.setBranchNum((Integer) object[0]);
+			profitByBranchAndItemSummary.setItemNum((Integer) object[1]);
+			profitByBranchAndItemSummary.setMatrixNum((int)object[2]);
+			profitByBranchAndItemSummary.setProfit(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
+			profitByBranchAndItemSummary.setAmount(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]);
+			profitByBranchAndItemSummary.setMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
+			profitByBranchAndItemSummary.setCost(object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
+			list.add(profitByBranchAndItemSummary);
+			if(!profitAnalysisQueryData.isPage()){
+				profitSum = profitSum.add(profitByBranchAndItemSummary.getProfit());
+				amountSum = amountSum.add(profitByBranchAndItemSummary.getAmount());
+				moneySum = moneySum.add(profitByBranchAndItemSummary.getMoney());
+				costSum = costSum.add(profitByBranchAndItemSummary.getCost());
+			}
+		}
+
+		ProfitByBranchAndItemSummaryPageDTO result = new ProfitByBranchAndItemSummaryPageDTO();
+		result.setData(list);
+
+		if(profitAnalysisQueryData.isPage()){
+			if(pageCount != null ){
+				result.setCount((Integer) pageCount[0]);
+				result.setProfitSum(pageCount[1] == null ? BigDecimal.ZERO : (BigDecimal) pageCount[1]);
+				result.setAmountSum((BigDecimal) pageCount[2] );
+				result.setMoneySum(pageCount [3] == null ? BigDecimal.ZERO : (BigDecimal) pageCount [3]);
+				result.setCostSum((BigDecimal) pageCount [4]);
+			}
+		}else{
+			result.setCount(size);
+			result.setProfitSum(profitSum);
+			result.setAmountSum(amountSum);
+			result.setMoneySum(moneySum);
+			result.setCostSum(costSum);
+
+			if(page){
+				List<ProfitByBranchAndItemSummary> data = result.getData();
+				int dataSize = data.size();
+				List<ProfitByBranchAndItemSummary> subData = null;
+				int pageSum =  profitAnalysisQueryData.getOffset() + profitAnalysisQueryData.getLimit();
+				if(dataSize >= pageSum){
+					subData = data.subList(profitAnalysisQueryData.getOffset(), pageSum);
+				}else{
+					subData = data.subList(profitAnalysisQueryData.getOffset(), dataSize);
+				}
+				result.setData(subData);
+			}
+
+		}
+
 		if(result.getMoneySum().compareTo(BigDecimal.ZERO) == 0){
 			result.setProfitRateSum(BigDecimal.ZERO);
 		}else{

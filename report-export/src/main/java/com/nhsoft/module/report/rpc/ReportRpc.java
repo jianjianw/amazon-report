@@ -1399,7 +1399,15 @@ public interface ReportRpc {
 	 * @param profitAnalysisQueryData
 	 * @return
 	 */
+	public ProfitByBranchAndItemSummaryPageDTOV2 findProfitAnalysisByBranchAndItemByPageV2(ProfitAnalysisQueryData profitAnalysisQueryData);
+
+	/**
+	 * 毛利分析 门店商品毛利汇总  分页查询
+	 * @param profitAnalysisQueryData
+	 * @return
+	 */
 	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData);
+
 
 
 	/**
