@@ -7004,12 +7004,12 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public AllOperatePageDTO findCardUserOperate(CardReportQuery cardReportQuery){
 
-
+			boolean page  = cardReportQuery.isPaging();
 			int offset = cardReportQuery.getOffset();
 			int limit = cardReportQuery.getLimit();
 			String sortField = cardReportQuery.getSortField();
 			String sortType = cardReportQuery.getSortType();
-
+		    cardReportQuery.setSortField(null);
 			cardReportQuery.setPaging(false);
 			List<AllOperateSummary> list = new ArrayList<AllOperateSummary>();
 
@@ -7226,7 +7226,7 @@ public class ReportRpcImpl implements ReportRpc {
 			result.setData(list);
 
 			int pageSum = offset + limit;
-			if(cardReportQuery.isPaging()){
+			if(page){
 				List<AllOperateSummary> subList = null;
 				if(dataSize >= pageSum){
 					subList = list.subList(offset,pageSum);
