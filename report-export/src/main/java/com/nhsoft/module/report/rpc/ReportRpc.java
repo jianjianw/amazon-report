@@ -1498,8 +1498,8 @@ public interface ReportRpc {
 
 	/**
 	 * AMA-24018  性能优化-会员卡操作记录
-	 *
-	public AllOperatePageDTO findCardUserOperate(CardReportQuery cardReportQuery);*/
+	 * */
+	public AllOperatePageDTO findCardUserOperate(CardReportQuery cardReportQuery);
 
 
 

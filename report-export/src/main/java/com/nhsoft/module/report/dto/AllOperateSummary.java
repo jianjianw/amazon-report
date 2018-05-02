@@ -7,7 +7,6 @@ public class AllOperateSummary implements Serializable {
     private static final long serialVersionUID = 4986311650932667784L;
 
 
-    private int id;
     private String reportType;
     private Date reportDate;
     private String reportOperator;
@@ -16,15 +15,6 @@ public class AllOperateSummary implements Serializable {
     private String reportMemo;
     private String cardUserTypeName;
     private String reportOperateBranch;
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getReportType() {
         return reportType;

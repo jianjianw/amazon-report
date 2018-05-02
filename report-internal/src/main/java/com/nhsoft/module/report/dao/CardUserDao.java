@@ -2,6 +2,7 @@ package com.nhsoft.module.report.dao;
 
 import com.nhsoft.module.report.model.CardUser;
 import com.nhsoft.module.report.query.CardUserQuery;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -165,6 +166,11 @@ public interface CardUserDao {
 	 * @param dateTo 时间止
 	 * */
 	public List<Object[]> findCardUserCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+	public List<CardUser> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit);
+
+
 
 
 	

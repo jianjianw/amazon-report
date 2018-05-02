@@ -3,6 +3,8 @@ package com.nhsoft.module.report.rpc;
 import com.nhsoft.module.report.dto.BranchBizdayCardCountSummary;
 import com.nhsoft.module.report.dto.BranchBizdayCardReturnSummary;
 import com.nhsoft.module.report.dto.CardUserCount;
+import com.nhsoft.module.report.dto.CardUserDTO;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 
 import java.util.Date;
 import java.util.List;
@@ -41,4 +43,8 @@ public interface CardUserRpc  {
      */
     public List<BranchBizdayCardReturnSummary> findRevokeCardCountByBranchBizday(String systemBookCode, List<Integer> branchNums,
                                                                                  Date dateFrom, Date dateTo, Integer cardUserCardType);
+
+
+    public List<CardUserDTO> findByCardReportQuery(String systemBookCode, CardReportQuery cardReportQuery, int offset, int limit);
+
 }

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -339,4 +340,26 @@ public class CardConsumeDaoImpl extends  DaoImpl implements CardConsumeDao {
 		Query query = currentSession().createSQLQuery(sql);
 		return query.list();
 	}
+
+    @Override
+    public List<CardConsume> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit) {
+		String sql = "select * " + createByCardReportQuery(cardReportQuery);
+		if (cardReportQuery.isPaging()) {
+			if (cardReportQuery.getSortField() != null) {
+				sql = sql + " order by " + AppUtil.getDBColumnName(cardReportQuery.getSortField()) + " " + cardReportQuery.getSortType();
+			} else {
+				sql = sql + " order by consume_date asc ";
+
+			}
+		}
+		SQLQuery query = currentSession().createSQLQuery(sql);
+		if (cardReportQuery.isPaging()) {
+			query.setFirstResult(offset);
+			query.setMaxResults(limit);
+		} else {
+			query.setMaxResults(50000);
+		}
+		query.addEntity(CardConsume.class);
+		return query.list();
+    }
 }

@@ -1,5 +1,8 @@
 package com.nhsoft.module.report.service;
 
+import com.nhsoft.module.report.model.CardConsume;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+
 import java.util.Date;
 import java.util.List;
 
@@ -39,4 +42,8 @@ public interface CardConsumeService {
 	 */
 	public List<Object[]> findBranchBizdaySum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 											  Date dateTo, Integer cardUserCardType);
+
+
+	public List<CardConsume> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit);
+
 }

@@ -1,5 +1,8 @@
 package com.nhsoft.module.report.service;
 
+import com.nhsoft.module.report.model.CardUser;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+
 import java.util.Date;
 import java.util.List;
 
@@ -76,4 +79,7 @@ public interface CardUserService {
 	 */
 	public List<Object[]> findRevokeCardCountByBranchBizday(String systemBookCode, List<Integer> branchNums,
 															Date dateFrom, Date dateTo, Integer cardUserCardType);
+
+
+	public List<CardUser> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit);
 }

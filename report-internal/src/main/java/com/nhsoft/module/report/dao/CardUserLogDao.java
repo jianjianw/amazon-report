@@ -1,5 +1,8 @@
 package com.nhsoft.module.report.dao;
 
+import com.nhsoft.module.report.model.CardUserLog;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+
 import java.util.Date;
 import java.util.List;
 
@@ -39,4 +42,8 @@ public interface CardUserLogDao {
 	 */
 	public List<Object[]> findBizdayCount(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String cardUserLogType, Integer cardUserCardType);
 
+
+	public List<CardUserLog> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit);
+
+	public int countByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit);
 }

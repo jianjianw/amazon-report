@@ -29,6 +29,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -102,6 +103,20 @@ public class ReportRpcImpl implements ReportRpc {
 	private ItemMatrixService itemMatrixService;
 	@Autowired
 	private PosItemLogService posItemLogService;
+
+	@Autowired
+	private CardLossRpc cardLossRpc;
+	@Autowired
+	private ReplaceCardRpc replaceCardRpc;
+	@Autowired
+	private RelatCardRpc relatCardRpc;
+	@Autowired
+	private ConsumePointRpc  consumePointRpc;
+	@Autowired
+	private CardUserRegisterRpc cardUserRegisterRpc;
+	@Autowired
+	private CardUserLogRpc cardUserLogRpc;
+
 
 
 
@@ -6986,7 +7001,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 
-	/*@Override
+	@Override
 	public AllOperatePageDTO findCardUserOperate(CardReportQuery cardReportQuery){
 
 
@@ -7009,9 +7024,10 @@ public class ReportRpcImpl implements ReportRpc {
 				cardReportQuery.setBranchNums(branchNums);
 			}
 
-			List<CardUserDTO> cardUsers = cardUserService.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
-			List<BranchDTO> branchs = branchRpc.findInCache(cardReportQuery.getSystemBookCode());
-			List<CardUserType> cardUserTypes = bookResourceRpc.findCardUserTypesInCache(cardReportQuery.getSystemBookCode());
+			List<CardUserDTO> cardUsers = cardUserRpc.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
+
+			List<Branch> branchs = branchService.findInCache(cardReportQuery.getSystemBookCode());
+			List<CardUserType> cardUserTypes = bookResourceService.findCardUserTypesInCache(cardReportQuery.getSystemBookCode());
 			for(int i = 0;i < cardUsers.size();i++){
 				CardUserDTO cardUser = cardUsers.get(i);
 				AllOperateSummary data = new AllOperateSummary();
@@ -7028,17 +7044,17 @@ public class ReportRpcImpl implements ReportRpc {
 				}else {
 					data.setCardUserTypeName("");
 				}
-				BranchDTO branch = AppUtil.getBranch(branchs, cardUser.getCardUserEnrollShop());
+				Branch branch = AppUtil.getBranch(branchs, cardUser.getCardUserEnrollShop());
 				if(branch != null){
 					data.setReportOperateBranch(branch.getBranchName());
 				}
 				list.add(data);
 			}
 
-			List<CardLossDTO> cardLosses = cardLossService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			List<CardLossDTO> cardLosses = cardLossRpc.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
 			for(int i = 0;i < cardLosses.size();i++){
 				CardLossDTO cardLoss = cardLosses.get(i);
-				AllOperateData data = new AllOperateData();
+				AllOperateSummary data = new AllOperateSummary();
 				data.setReportType(cardLoss.getCardLossOperateName());
 				data.setReportDate(cardLoss.getCardLossOperateTime());
 				data.setReportOperator(cardLoss.getCardLossOperator());
@@ -7055,10 +7071,10 @@ public class ReportRpcImpl implements ReportRpc {
 				list.add(data);
 			}
 
-			List<ReplaceCardDTO> replaceCards = replaceCardService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			List<ReplaceCardDTO> replaceCards = replaceCardRpc.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
 			for(int i = 0;i < replaceCards.size();i++){
 				ReplaceCardDTO replaceCard = replaceCards.get(i);
-				AllOperateData data = new AllOperateData();
+				AllOperateSummary data = new AllOperateSummary();
 				data.setReportType("换卡");
 				data.setReportDate(replaceCard.getReplaceCardOperateTime());
 				data.setReportOperator(replaceCard.getReplaceCardOperator());
@@ -7076,10 +7092,10 @@ public class ReportRpcImpl implements ReportRpc {
 				list.add(data);
 			}
 
-			List<RelatCardDTO> relatCards = relatCardService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			List<RelatCardDTO> relatCards = relatCardRpc.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
 			for(int i = 0;i < relatCards.size();i++){
 				RelatCardDTO relatCard = relatCards.get(i);
-				AllOperateData data = new AllOperateData();
+				AllOperateSummary data = new AllOperateSummary();
 				data.setReportType("续卡");
 				data.setReportDate(relatCard.getRelatCardOperateTime());
 				data.setReportOperator(relatCard.getRelatCardOperator());
@@ -7097,10 +7113,10 @@ public class ReportRpcImpl implements ReportRpc {
 				list.add(data);
 			}
 
-			List<CardConsumeDTO> cardConsumes = cardConsumeService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			List<CardConsumeDTO> cardConsumes = cardConsumeRpc.findByCardReportQuery(cardReportQuery, offset, limit);
 			for(int i = 0;i < cardConsumes.size();i++){
 				CardConsumeDTO cardConsume = cardConsumes.get(i);
-				AllOperateData data = new AllOperateData();
+				AllOperateSummary data = new AllOperateSummary();
 				data.setReportType("消费");
 				data.setReportDate(cardConsume.getConsumeDate());
 				data.setReportOperator(cardConsume.getConsumeOperator());
@@ -7118,10 +7134,10 @@ public class ReportRpcImpl implements ReportRpc {
 				list.add(data);
 			}
 
-			List<CardDepositDTO> cardDeposits = cardDepositService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			List<CardDepositDTO> cardDeposits = cardDepositRpc.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
 			for(int i = 0;i < cardDeposits.size();i++){
 				CardDepositDTO cardDeposit = cardDeposits.get(i);
-				AllOperateData data = new AllOperateData();
+				AllOperateSummary data = new AllOperateSummary();
 				data.setReportType("存款");
 				data.setReportDate(cardDeposit.getDepositDate());
 				data.setReportOperator(cardDeposit.getDepositOperator());
@@ -7140,10 +7156,10 @@ public class ReportRpcImpl implements ReportRpc {
 				list.add(data);
 			}
 
-			List<ConsumePointDTO> consumePoints = consumePointService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			List<ConsumePointDTO> consumePoints = consumePointRpc.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
 			for(int i = 0;i < consumePoints.size();i++){
 				ConsumePointDTO consumePoint = consumePoints.get(i);
-				AllOperateData data = new AllOperateData();
+				AllOperateSummary data = new AllOperateSummary();
 				data.setReportType("积分兑换");
 				data.setReportDate(consumePoint.getConsumePointDate());
 				data.setReportOperator(consumePoint.getConsumePointOperator());
@@ -7160,11 +7176,10 @@ public class ReportRpcImpl implements ReportRpc {
 				list.add(data);
 			}
 
-			CardUserRegisterRpc cardUserRegisterService = (CardUserRegisterRpc) AppUtil.createCenterObject(CardUserRegisterRpc.class);
-			List<CardUserLogDTO> cardUserLogs = cardUserRegisterService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+			List<CardUserLogDTO> cardUserLogs = cardUserRegisterRpc.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
 			for(int i = 0;i < cardUserLogs.size();i++){
 				CardUserLogDTO consumePoint = cardUserLogs.get(i);
-				AllOperateData data = new AllOperateData();
+				AllOperateSummary data = new AllOperateSummary();
 				data.setReportType(consumePoint.getCardUserLogType());
 				data.setReportDate(consumePoint.getCardUserLogTime());
 				data.setReportOperator(consumePoint.getCardUserLogOperator());
@@ -7181,11 +7196,11 @@ public class ReportRpcImpl implements ReportRpc {
 				list.add(data);
 			}
 
-			CardUserLogRpc cardUserLogService = (CardUserLogRpc) AppUtil.createCenterObject(CardUserLogRpc.class);
-			cardUserLogs = cardUserLogService.findByCardReportQuery(queryData.getSystemBookCode(), queryData, offset, limit);
+
+			cardUserLogs = cardUserLogRpc.findByCardReportQuery(cardReportQuery.getSystemBookCode(), cardReportQuery, offset, limit);
 			for(int i = 0;i < cardUserLogs.size();i++){
 				CardUserLogDTO consumePoint = cardUserLogs.get(i);
-				AllOperateData data = new AllOperateData();
+				AllOperateSummary data = new AllOperateSummary();
 				data.setReportType(consumePoint.getCardUserLogType());
 				data.setReportDate(consumePoint.getCardUserLogTime());
 				data.setReportOperator(consumePoint.getCardUserLogOperator());
@@ -7201,22 +7216,28 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setReportMemo(consumePoint.getCardUserLogMemo());
 				list.add(data);
 			}
-			ComparatorBaseModelData<AllOperateData> comparator = new ComparatorBaseModelData<AllOperateData>(sortField, sortType, AllOperateData.class);
+			ComparatorBaseModelData<AllOperateSummary> comparator = new ComparatorBaseModelData<>(sortField, sortType, AllOperateSummary.class);
 			Collections.sort(list, comparator);
 
-			int count = list.size();
-			List<AllOperateData> returnList = new ArrayList<AllOperateData>();
-			for(int i = offset;i < offset + limit;i++){
-				if(i >= count){
-					break;
+
+			int dataSize = list.size();
+		    AllOperatePageDTO result = new AllOperatePageDTO();
+		    result.setCount(dataSize);
+			result.setData(list);
+
+			int pageSum = offset + limit;
+			if(cardReportQuery.isPaging()){
+				List<AllOperateSummary> subList = null;
+				if(dataSize >= pageSum){
+					subList = list.subList(offset,pageSum);
+				}else{
+					subList = list.subList(offset,dataSize);
 				}
-				AllOperateData data = list.get(i);
-				data.setId(i);
-				returnList.add(data);
+				result.setData(subList);
 			}
-			return new PagingLoadResultBean<AllOperateData>(returnList, count, offset);
+			return result;
 		}
-	}*/
+
 
 
 

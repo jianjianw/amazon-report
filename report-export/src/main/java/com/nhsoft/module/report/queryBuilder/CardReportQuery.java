@@ -33,6 +33,7 @@ public class CardReportQuery extends QueryBuilder {
 	private Integer cardUserCardType;
 	private Integer category; //交易类型
 	private String seller;//销售员
+	private List<Integer> itemNums;
 	
 	private String sortField;
 	private String sortType;
@@ -41,7 +42,15 @@ public class CardReportQuery extends QueryBuilder {
 	private boolean isQueryPayment = false;
 	private int offset;
 	private int limit;
-	
+
+	public List<Integer> getItemNums() {
+		return itemNums;
+	}
+
+	public void setItemNums(List<Integer> itemNums) {
+		this.itemNums = itemNums;
+	}
+
 	private List<String> clientPointOperateType = new ArrayList<String>();
 		
 	public String getSeller() {

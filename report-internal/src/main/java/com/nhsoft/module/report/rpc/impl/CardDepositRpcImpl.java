@@ -2,8 +2,11 @@ package com.nhsoft.module.report.rpc.impl;
 
 
 import com.nhsoft.module.report.dto.BranchDepositReport;
+import com.nhsoft.module.report.dto.CardDepositDTO;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.rpc.CardDepositRpc;
 import com.nhsoft.module.report.service.CardDepositService;
+import com.nhsoft.report.utils.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +36,11 @@ public class CardDepositRpcImpl implements CardDepositRpc{
             list.add(branchDepositReport);
         }
         return list;
+    }
+
+    @Override
+    public List<CardDepositDTO> findByCardReportQuery(String systemBookCode, CardReportQuery cardReportQuery, int offset, int limit) {
+        return CopyUtil.toList(cardDepositService.findByCardReportQuery(cardReportQuery, offset, limit), CardDepositDTO.class);
     }
 
 

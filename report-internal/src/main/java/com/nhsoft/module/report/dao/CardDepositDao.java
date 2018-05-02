@@ -2,6 +2,7 @@ package com.nhsoft.module.report.dao;
 
 
 
+import com.nhsoft.module.report.model.CardDeposit;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 
 import java.math.BigDecimal;
@@ -144,6 +145,10 @@ public interface CardDepositDao {
 	 */
 	public List<Object[]> findCashGroupByBranch(String systemBookCode,
 												List<Integer> branchNums, Date dateFrom, Date dateTo, String type);
+
+
+
+	public List<CardDeposit> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit);
 
 
 

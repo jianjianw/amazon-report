@@ -1,6 +1,8 @@
 package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.CardConsumeDao;
+import com.nhsoft.module.report.model.CardConsume;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.service.CardConsumeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,5 +33,10 @@ public class CardConsumeServiceImpl implements CardConsumeService {
 	@Override
 	public List<Object[]> findBranchBizdaySum(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer cardUserCardType) {
 		return cardConsumeDao.findBranchBizdaySum(systemBookCode,branchNums,dateFrom,dateTo,cardUserCardType);
+	}
+
+	@Override
+	public List<CardConsume> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit) {
+		return cardConsumeDao.findByCardReportQuery(cardReportQuery,offset,limit);
 	}
 }

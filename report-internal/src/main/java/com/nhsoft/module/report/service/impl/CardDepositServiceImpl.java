@@ -1,6 +1,8 @@
 package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.CardDepositDao;
+import com.nhsoft.module.report.model.CardDeposit;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.service.CardDepositService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,11 @@ public class CardDepositServiceImpl implements CardDepositService {
 	@Override
 	public List<Object[]> findSumByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return cardDepositDao.findSumByBizday(systemBookCode, branchNums, dateFrom, dateTo);
+	}
+
+	@Override
+	public List<CardDeposit> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit) {
+		return cardDepositDao.findByCardReportQuery(cardReportQuery, offset, limit);
 	}
 
 }

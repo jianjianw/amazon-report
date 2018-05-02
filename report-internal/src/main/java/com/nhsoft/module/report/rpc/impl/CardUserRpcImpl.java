@@ -4,8 +4,11 @@ package com.nhsoft.module.report.rpc.impl;
 import com.nhsoft.module.report.dto.BranchBizdayCardCountSummary;
 import com.nhsoft.module.report.dto.BranchBizdayCardReturnSummary;
 import com.nhsoft.module.report.dto.CardUserCount;
+import com.nhsoft.module.report.dto.CardUserDTO;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.rpc.CardUserRpc;
 import com.nhsoft.module.report.service.CardUserService;
+import com.nhsoft.report.utils.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -75,6 +78,11 @@ public class CardUserRpcImpl implements CardUserRpc {
             list.add(summary);
         }
         return list;
+    }
+
+    @Override
+    public List<CardUserDTO> findByCardReportQuery(String systemBookCode, CardReportQuery cardReportQuery, int offset, int limit) {
+        return CopyUtil.toList(cardUserService.findByCardReportQuery(cardReportQuery, offset, limit), CardUserDTO.class);
     }
 
 }
