@@ -7,6 +7,7 @@ import com.nhsoft.module.report.dto.GsonIgnore;
 import com.nhsoft.module.report.dto.ItemMatrixDTO;
 import com.nhsoft.module.report.dto.PosItemDTO;
 import com.nhsoft.module.report.model.*;
+import com.nhsoft.module.report.param.CardUserType;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -1458,6 +1459,16 @@ public class AppUtil {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+
+	public static CardUserType readCardType(Integer relatCardCardType, List<CardUserType> cardUserTypes) {
+		for (int i = 0; i < cardUserTypes.size(); i++) {
+			if (cardUserTypes.get(i).getTypeCode().equals(relatCardCardType.toString())) {
+				return cardUserTypes.get(i);
+			}
+		}
+		return null;
 	}
 
 }

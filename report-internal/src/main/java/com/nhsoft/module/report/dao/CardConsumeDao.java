@@ -2,6 +2,7 @@ package com.nhsoft.module.report.dao;
 
 
 
+import com.nhsoft.module.report.model.CardConsume;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 
 import java.util.Date;
@@ -124,4 +125,8 @@ public interface CardConsumeDao {
 	 */
 	public List<Object[]> findDateSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 										  Date dateTo, String dateType);
+
+
+	public List<CardConsume> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit);
+
 }

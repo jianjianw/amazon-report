@@ -10,10 +10,7 @@ import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -399,6 +396,29 @@ public class CardDepositDaoImpl extends  DaoImpl implements CardDepositDao {
 			criteria.add(Restrictions.in("d.depositPaymentTypeName", type.split(",")));
 		}
 		return criteria;
+	}
+
+
+	@Override
+	public List<CardDeposit> findByCardReportQuery(
+			CardReportQuery cardReportQuery, int offset, int limit) {
+		Criteria criteria = createByCardReportQuery(cardReportQuery);
+		if(cardReportQuery.isPaging()){
+			criteria.setFirstResult(offset);
+			criteria.setMaxResults(limit);
+			if(cardReportQuery.getSortField() != null){
+				if(cardReportQuery.getSortType().equals("ASC")){
+					criteria.addOrder(Order.asc(cardReportQuery.getSortField()));
+				} else {
+					criteria.addOrder(Order.desc(cardReportQuery.getSortField()));
+				}
+			} else {
+				criteria.addOrder(Order.asc("c.depositDate"));
+			}
+		} else {
+			criteria.setMaxResults(50000);
+		}
+		return criteria.list();
 	}
 
 

@@ -2,6 +2,8 @@ package com.nhsoft.module.report.rpc;
 
 import com.nhsoft.module.report.dto.BranchBizdayConsumeSummary;
 import com.nhsoft.module.report.dto.BranchConsumeReport;
+import com.nhsoft.module.report.dto.CardConsumeDTO;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 
 import java.util.Date;
 import java.util.List;
@@ -29,5 +31,9 @@ public interface CardConsumeRpc {
      */
     public List<BranchBizdayConsumeSummary> findBranchBizdaySum(String systemBookCode, List<Integer> branchNums, Date dateFrom,
                                                                 Date dateTo, Integer cardUserCardType);
+
+
+    public List<CardConsumeDTO> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit);
+
 
 }

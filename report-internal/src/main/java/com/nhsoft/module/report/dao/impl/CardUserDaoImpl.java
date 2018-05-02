@@ -4,6 +4,7 @@ package com.nhsoft.module.report.dao.impl;
 import com.nhsoft.module.report.dao.CardUserDao;
 import com.nhsoft.module.report.model.CardUser;
 import com.nhsoft.module.report.query.CardUserQuery;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
@@ -514,5 +516,59 @@ public class CardUserDaoImpl extends  DaoImpl implements CardUserDao {
 		sqlQuery.setString("systemBookCode", systemBookCode);
 		return sqlQuery.list();
 
+	}
+
+
+	@Override
+	public List<CardUser> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit) {
+		Criteria criteria = createByCardReportQuery(cardReportQuery);
+		if (cardReportQuery.isPaging()) {
+			criteria.setFirstResult(offset);
+			criteria.setMaxResults(limit);
+			if (cardReportQuery.getSortField() != null) {
+				if (cardReportQuery.getSortType().equals("ASC")) {
+					criteria.addOrder(Order.asc(cardReportQuery.getSortField()));
+				} else {
+					criteria.addOrder(Order.desc(cardReportQuery.getSortField()));
+				}
+			} else {
+				criteria.addOrder(Order.asc("c.cardUserDate"));
+			}
+		}
+		return criteria.list();
+	}
+
+	private Criteria createByCardReportQuery(CardReportQuery cardReportQuery) {
+		Criteria criteria = currentSession().createCriteria(CardUser.class, "c").add(
+				Restrictions.eq("c.systemBookCode", cardReportQuery.getSystemBookCode()));
+		if (cardReportQuery.getOperateBranch() != null) {
+			criteria.add(Restrictions.eq("c.cardUserEnrollShop", cardReportQuery.getOperateBranch()));
+		}
+		if(cardReportQuery.getOperateBranchNums() != null && cardReportQuery.getOperateBranchNums().size() > 0) {
+			criteria.add(Restrictions.in("c.cardUserEnrollShop", cardReportQuery.getOperateBranchNums()));
+		}
+		if (cardReportQuery.getBranchNum() != null) {
+			criteria.add(Restrictions.eq("c.cardUserEnrollShop", cardReportQuery.getBranchNum()));
+		}
+		if (cardReportQuery.getBranchNums() != null && cardReportQuery.getBranchNums().size() > 0) {
+			criteria.add(Restrictions.in("c.cardUserEnrollShop", cardReportQuery.getBranchNums()));
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(cardReportQuery.getCardPrintNum())) {
+			criteria.add(Restrictions.eq("c.cardUserPrintedNum", cardReportQuery.getCardPrintNum()));
+		}
+		if (cardReportQuery.getDateFrom() != null) {
+			criteria.add(Restrictions.ge("c.cardUserDate", DateUtil.getMinOfDate(cardReportQuery.getDateFrom())));
+		}
+		if (cardReportQuery.getDateTo() != null) {
+			criteria.add(Restrictions.le("c.cardUserDate", DateUtil.getMaxOfDate(cardReportQuery.getDateTo())));
+		}
+		if (org.apache.commons.lang.StringUtils.isNotEmpty(cardReportQuery.getOperator())) {
+			criteria.add(Restrictions.eq("c.cardUserOperator", cardReportQuery.getOperator()));
+		}
+		if(cardReportQuery.getCardUserCardType() != null){
+			criteria.add(Restrictions.eq("c.cardUserCardType", cardReportQuery.getCardUserCardType()));
+		}
+
+		return criteria;
 	}
 }

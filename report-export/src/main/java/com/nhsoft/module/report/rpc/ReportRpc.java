@@ -1497,9 +1497,9 @@ public interface ReportRpc {
 	public InventoryProfitPageDTO findInventoryProfitSum(InventoryProfitQuery queryData);
 
 	/**
-	 * AMA-24018  性能优化-会员卡操作记录
-	 *
-	public AllOperatePageDTO findCardUserOperate(CardReportQuery cardReportQuery);*/
+	 * AMA-24018 性能优化-会员卡操作记录
+	 * */
+	public AllOperatePageDTO findCardUserOperate(CardReportQuery cardReportQuery);
 
 
 

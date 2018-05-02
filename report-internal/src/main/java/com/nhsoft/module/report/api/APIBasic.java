@@ -12,6 +12,7 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
+import com.sun.org.apache.xpath.internal.functions.FuncTrue;
 import org.apache.commons.collections.functors.FalsePredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -1195,13 +1196,13 @@ public class APIBasic {
 
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-10");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
-		query.setIsQueryCF(false);
+		query.setIsQueryCF(true);
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(46);
@@ -1210,9 +1211,9 @@ public class APIBasic {
 		orderSource.add("第三方商城");
 		query.setOrderSources(orderSource);*/
 
-		/*List<String> list = new ArrayList<>();
+		List<String> list = new ArrayList<>();
 		list.add("210");
-		query.setPosItemTypeCodes(list);*/
+		query.setPosItemTypeCodes(list);
 		query.setSortField(sortField);
 		query.setSortType(sortType);
 
@@ -1585,8 +1586,8 @@ public class APIBasic {
 
 		String systemBookCode = "4173";			//门店营业分析-门店商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-01");
-		Date dateTo = sdf.parse("2018-03-31");
+		Date dateFrom = sdf.parse("2018-04-28");
+		Date dateTo = sdf.parse("2018-04-28");
 
 		BranchProfitQuery query = new BranchProfitQuery();
 		query.setSystemBookCode(systemBookCode);
@@ -1597,7 +1598,7 @@ public class APIBasic {
 		query.setFilterDel(true);
 		query.setOffset(0);
 		query.setLimit(50);
-		query.setSortField("startInventoryMoney");
+		query.setSortField("itemNum");
 		query.setSortType("DESC");
 		query.setQueryKit(true);
 		/*List<String> categorys = new ArrayList<>();

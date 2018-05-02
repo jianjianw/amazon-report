@@ -1,5 +1,8 @@
 package com.nhsoft.module.report.service;
 
+import com.nhsoft.module.report.model.CardDeposit;
+import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +30,11 @@ public interface CardDepositService {
 	 * @return
 	 */
 	public List<Object[]> findSumByBizday(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
+	public List<CardDeposit> findByCardReportQuery(CardReportQuery cardReportQuery, int offset, int limit);
+
+
 
 
 
