@@ -55,6 +55,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 	private String DPC_URL;
 	@Value("${sharding.pos_order.book_codes}")
 	private String posOrderShardingBooks;
+	private String defaultSourceName = null;
 
 	public static class MultipleDataSource extends AbstractRoutingDataSource {
 		
@@ -73,6 +74,9 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 			Map<String, Object> dsMap = propertyResolver.getSubProperties(dsPrefix + ".");
 			DruidDataSource ds = buildDruidDataSource(dsMap);
 			customDataSources.put(dsPrefix, ds);
+			if(defaultSourceName == null){
+				defaultSourceName = dsPrefix;
+			}
 			logger.info("完成初始化数据源:" + dsPrefix);
 
 		}
@@ -158,7 +162,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 		logger.info("开始初始化sessionFactory");
 		MultipleDataSource multipleDataSource = new MultipleDataSource();
 		multipleDataSource.setTargetDataSources(customDataSources);
-		multipleDataSource.setDefaultTargetDataSource(customDataSources.get("cs"));
+		multipleDataSource.setDefaultTargetDataSource(customDataSources.get(defaultSourceName));
 		multipleDataSource.afterPropertiesSet();
 
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
@@ -212,7 +216,7 @@ public class MultipleDataSourceConfig implements EnvironmentAware {
 	@Bean(name = "shardingDataSource")
 	public DataSource shardingDataSource() {
 		
-		DataSourceRule dataSourceRule = new DataSourceRule(customDataSources, "cs");
+		DataSourceRule dataSourceRule = new DataSourceRule(customDataSources, defaultSourceName);
 		
 		TableRule alipayLogTableRule = AlipayLogSharding.createTableRule(dataSourceRule);
 		TableRule posItemLogTableRule = PosItemLogSharding.createTableRule(dataSourceRule);
