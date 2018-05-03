@@ -1773,7 +1773,7 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-04-12");
 
 
-		List<BusinessCollection> businessCollectionByShiftTable = reportRpc.findBusinessCollectionByShiftTable(systemBookCode, getBranchNums(), dateFrom, dateTo, null);
+		List<BusinessCollection> businessCollectionByShiftTable = reportRpc.findBusinessCollectionByShiftTable(systemBookCode, 99,99, dateFrom, dateTo, null);
 		return businessCollectionByShiftTable;
 	}
 
