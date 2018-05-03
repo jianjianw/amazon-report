@@ -271,6 +271,18 @@ public interface PosOrderService {
 	 */
 	public List<Object[]> findCouponSummary(String systemBookCode, List<Integer> branchNums,
 											Date dateFrom, Date dateTo);
+
+
+	/**
+	 * 按分店 营业日 终端 汇总消费券
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findCouponDiscountSummary(String systemBookCode, List<Integer> branchNums,
+											Date dateFrom, Date dateTo);
 	/**
 	 * 按分店 班次 支付方式 汇总消费金额
 	 * @param systemBookCode
@@ -304,6 +316,18 @@ public interface PosOrderService {
 	public List<Object[]> findBranchShiftTableCouponSummary(String systemBookCode, List<Integer> branchNums,
 															Date dateFrom, Date dateTo, String casher);
 
+
+	/**
+	 * 按分店 班次 汇总消费券
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findBranchShiftTableDiscountSummary(String systemBookCode, List<Integer> branchNums,
+															Date dateFrom, Date dateTo, String casher);
+
 	/**
 	 * 按分店 班次 汇总消费券
 	 * @param systemBookCode
@@ -314,6 +338,17 @@ public interface PosOrderService {
 	 */
 	public List<Object[]> findMerchantShiftTableCouponSummary(String systemBookCode, Integer branchNum, Integer merchantNum,
 															Date dateFrom, Date dateTo, String casher);
+
+
+	/**
+	 * 按分店 班次 汇总消费券
+	 * @param systemBookCode
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findMerchantShiftTableDiscountSummary(String systemBookCode, Integer branchNum, Integer merchantNum,
+															  Date dateFrom, Date dateTo, String casher);
 
 	/**
 	 * 按分店 操作员 支付方式 汇总消费金额

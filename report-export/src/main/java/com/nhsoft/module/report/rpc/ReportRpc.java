@@ -1502,6 +1502,14 @@ public interface ReportRpc {
 	public AllOperatePageDTO findCardUserOperate(CardReportQuery cardReportQuery);
 
 
+	/*
+	 * 查询补货分析
+	 * @param inventoryAnalysisQuery
+	 * @param chainDeliveryParam
+	 * @return
+	 * */
+	public List<InventoryAnalysisDTO> findInventoryAnalysiss(InventoryAnalysisQuery inventoryAnalysisQuery, ChainDeliveryParam chainDeliveryParam);
+
 
 
 

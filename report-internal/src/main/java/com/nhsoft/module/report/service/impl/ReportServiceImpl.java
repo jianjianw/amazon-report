@@ -11,6 +11,8 @@ import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.param.CardUserType;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
+import com.nhsoft.module.report.queryBuilder.PosItemQuery;
+import com.nhsoft.module.report.rpc.PosItemRpc;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
@@ -157,6 +159,9 @@ public class ReportServiceImpl implements ReportService {
 
 	@Autowired
 	private BranchItemRecoredService branchItemRecoredService;
+
+	@Autowired
+	private PosItemRpc posItemRpc;
 
 	
 	@Override
@@ -13039,5 +13044,10 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return list;
 	}
+
+    @Override
+    public List<InventoryAnalysisDTO> findInventoryAnalysiss(InventoryAnalysisQuery inventoryAnalysisQuery, ChainDeliveryParam chainDeliveryParam) {
+		return null;
+    }
 
 }

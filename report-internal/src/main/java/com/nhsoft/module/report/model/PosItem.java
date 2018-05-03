@@ -57,6 +57,8 @@ public class PosItem implements java.io.Serializable {
 	private Integer itemTransferDay;
 	private String itemAssistUnit;
 	private BigDecimal itemAssistRate;
+	private Boolean itemManufactureFlag;
+	private BigDecimal itemMinQuantity;
 
 	@OneToMany
 	@Fetch(FetchMode.SUBSELECT)
@@ -66,6 +68,10 @@ public class PosItem implements java.io.Serializable {
 	@Fetch(FetchMode.SUBSELECT)
 	@JoinColumn(name = "itemNum", updatable=false, insertable=false)
 	private List<ItemMatrix> itemMatrixs = new ArrayList<ItemMatrix>(); //lazy = false
+	@OneToMany
+	@Fetch(FetchMode.SUBSELECT)
+	@JoinColumn(name = "itemNum", updatable=false, insertable=false)
+	private List<PosItemKit> posItemKits = new ArrayList<PosItemKit>();
 
 	@Transient
 	private AppUser appUser;
@@ -421,6 +427,30 @@ public class PosItem implements java.io.Serializable {
 
 	public void setItemAssistRate(BigDecimal itemAssistRate) {
 		this.itemAssistRate = itemAssistRate;
+	}
+
+	public List<PosItemKit> getPosItemKits() {
+		return posItemKits;
+	}
+
+	public void setPosItemKits(List<PosItemKit> posItemKits) {
+		this.posItemKits = posItemKits;
+	}
+
+	public Boolean getItemManufactureFlag() {
+		return itemManufactureFlag;
+	}
+
+	public void setItemManufactureFlag(Boolean itemManufactureFlag) {
+		this.itemManufactureFlag = itemManufactureFlag;
+	}
+
+	public BigDecimal getItemMinQuantity() {
+		return itemMinQuantity;
+	}
+
+	public void setItemMinQuantity(BigDecimal itemMinQuantity) {
+		this.itemMinQuantity = itemMinQuantity;
 	}
 
 	@Override

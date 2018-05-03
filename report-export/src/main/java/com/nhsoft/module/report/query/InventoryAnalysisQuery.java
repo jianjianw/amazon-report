@@ -21,6 +21,7 @@ public class InventoryAnalysisQuery extends QueryBuilder {
 	private List<String> categoryCodes;
 	private List<Integer> storeItemNums;
 	private Integer supplierNum;
+	private List<Integer> supplierNums;
 	private Boolean isShowAll;
 	private int indexUnit;
 	private boolean findCount = false; //只统计数量 展示用属性不查询
@@ -46,8 +47,16 @@ public class InventoryAnalysisQuery extends QueryBuilder {
 	private Integer storehouseNum;
 	private List<Integer> itemNums;
 	private Boolean defaultSupplier;//主供应商
-	
-	
+
+
+	public List<Integer> getSupplierNums() {
+		return supplierNums;
+	}
+
+	public void setSupplierNums(List<Integer> supplierNums) {
+		this.supplierNums = supplierNums;
+	}
+
 	public List<Integer> getItemNums() {
 		return itemNums;
 	}

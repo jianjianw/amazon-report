@@ -20,4 +20,9 @@ public class PosItemRpcImpl implements PosItemRpc {
     public List<PosItemDTO> findShortItems(String systemBookCode) {
         return CopyUtil.toList(posItemService.findShortItems(systemBookCode),PosItemDTO.class);
     }
+
+    @Override
+    public List<PosItemDTO> findByItemNums(List<Integer> itemNums) {
+        return CopyUtil.toList(posItemService.findByItemNums(itemNums),PosItemDTO.class);
+    }
 }
