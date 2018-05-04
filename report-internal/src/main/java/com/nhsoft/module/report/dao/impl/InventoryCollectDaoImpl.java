@@ -58,50 +58,50 @@ public class InventoryCollectDaoImpl extends DaoImpl implements InventoryCollect
 	public List<Object[]> findSummaryByItemMatrixFlag(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 													  Date dateTo, String summary, List<Integer> itemNums, Integer storehouseNum) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select i.itemNum, i.collectDetailItemMatrixNum, i.collectDetailInoutFlag, sum(i.collectDetailAmount), sum(i.collectDetailMoney), sum(i.collectDetailAssistAmount)  ");
-		sb.append("from InventoryCollectDetail as i ");
-		sb.append("where i.systemBookCode = :systemBookCode ");
+		sb.append("select item_num as itemNum, collect_detail_item_matrix_num as matrixNum, collect_detail_inout_flag as flag, sum(collect_detail_amount) as amount, sum(collect_detail_money) as money, sum(collect_detail_assist_amount) as assistAmount  ");
+		sb.append("from inventory_collect_detail ");
+		sb.append("where system_book_code = :systemBookCode ");
 		if(branchNums != null && branchNums.size() > 0){
-			sb.append("and i.branchNum in (:branchNums) ");
+			sb.append("and branch_num in (:branchNums) ");
 
 		}
 		if(dateFrom != null){
-			sb.append("and i.collectDetailDate >= :dateFrom ");
+			sb.append("and collect_detail_date >= :dateFrom ");
 		}
 		if(dateTo != null){
-			sb.append("and i.collectDetailDate <= :dateTo ");
+			sb.append("and collect_detail_date <= :dateTo ");
 		}
 		if(storehouseNum != null){
-			sb.append("and i.storehouseNum = :storehouseNum ");
+			sb.append("and storehouse_num = :storehouseNum ");
 		}
 		if(StringUtils.isNotEmpty(summary)){
-			sb.append("and i.collectDetailSummary in (:summarys) ");
+			sb.append("and collect_detail_summary in (:summarys) ");
 		}
 		if(itemNums != null && itemNums.size() > 0){
-			sb.append("and i.itemNum in (:itemNums) ");
+			sb.append("and item_num in (:itemNums) ");
 		}
-		sb.append("group by i.itemNum, i.collectDetailItemMatrixNum, i.collectDetailInoutFlag ");
-		Query query = currentSession().createQuery(sb.toString());
-		query.setString("systemBookCode", systemBookCode);
+		sb.append("group by item_num, collect_detail_item_matrix_num, collect_detail_inout_flag ");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
 		if(branchNums != null && branchNums.size() > 0){
-			query.setParameterList("branchNums", branchNums);
+			sqlQuery.setParameterList("branchNums", branchNums);
 		}
 		if(dateFrom != null){
-			query.setString("dateFrom", DateUtil.getDateTimeString(DateUtil.getMinOfDate(dateFrom)));
+			sqlQuery.setString("dateFrom", DateUtil.getDateTimeString(DateUtil.getMinOfDate(dateFrom)));
 		}
 		if(dateTo != null){
-			query.setString("dateTo", DateUtil.getDateTimeString(DateUtil.getMaxOfDate(dateTo)));
+			sqlQuery.setString("dateTo", DateUtil.getDateTimeString(DateUtil.getMaxOfDate(dateTo)));
 		}
 		if(storehouseNum != null){
-			query.setInteger("storehouseNum", storehouseNum);
+			sqlQuery.setInteger("storehouseNum", storehouseNum);
 		}
 		if(StringUtils.isNotEmpty(summary)){
-			query.setParameterList("summarys", summary.split(","));
+			sqlQuery.setParameterList("summarys", summary.split(","));
 		}
 		if(itemNums != null && itemNums.size() > 0){
-			query.setParameterList("itemNums", itemNums);
+			sqlQuery.setParameterList("itemNums", itemNums);
 		}
-		return query.list();
+		return sqlQuery.list();
 	}
 
 

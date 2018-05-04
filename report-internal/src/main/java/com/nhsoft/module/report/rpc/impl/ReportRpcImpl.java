@@ -4149,14 +4149,17 @@ public class ReportRpcImpl implements ReportRpc {
 			BranchCustomerSummary branchCustomerSummary = new BranchCustomerSummary();
 			branchCustomerSummary.setBranchNum((Integer) object[0]);
 			branchCustomerSummary.setPaymentMoney((BigDecimal) object[1]);
-			branchCustomerSummary.setOrderNoCount((Integer) object[2]);
+			Long orderCount = object[2] == null ? 0L : (Long) object[2];
+			branchCustomerSummary.setOrderNoCount(orderCount.intValue());
 			branchCustomerSummary.setConponMoney((BigDecimal) object[3]);
 			branchCustomerSummary.setMgrDiscount((BigDecimal) object[4]);
 			branchCustomerSummary.setGrossProfit((BigDecimal) object[5]);
-			branchCustomerSummary.setItemCount((Integer)object[6]);
+			BigDecimal itemCount = object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6];
+			branchCustomerSummary.setItemCount(itemCount.intValue());
 			branchCustomerSummary.setUserAmount((Integer) object[7]);
 			branchCustomerSummary.setUserMoney((BigDecimal) object[8]);
-			branchCustomerSummary.setValidOrderNo((Integer) object[9]);
+			BigDecimal number = object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9];
+			branchCustomerSummary.setValidOrderNo(number.intValue());
 			list.add(branchCustomerSummary);
 		}
 		return list;
