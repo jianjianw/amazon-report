@@ -6555,6 +6555,7 @@ public class ReportRpcImpl implements ReportRpc {
 			BigDecimal assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			BigDecimal saleMoney = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
 			String itemUnit = object[8] == null ? "" : (String) object[8];
+            BigDecimal adjustMoney = object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9];
 
 			if (isChechUp != null) {
 				if (isChechUp != null) {
@@ -6584,11 +6585,13 @@ public class ReportRpcImpl implements ReportRpc {
 				money = money.negate();
 				saleMoney = saleMoney.negate();
 				assistAmount = assistAmount.negate();
+                adjustMoney = adjustMoney.negate();
 			}
 			data.setProfitAssitQty(data.getProfitAssitQty().add(assistAmount));
 			data.setProfitQty(data.getProfitQty().add(amount));
 			data.setProfitMoney(data.getProfitMoney().add(money));
 			data.setItemSaleMoney(data.getItemSaleMoney().add(saleMoney));
+            data.setAdjustMoney(data.getAdjustMoney().add(adjustMoney));
 
 		}
 
@@ -6635,6 +6638,7 @@ public class ReportRpcImpl implements ReportRpc {
 		BigDecimal saleAssitQtySum = BigDecimal.ZERO;
 		BigDecimal saleMoneySum = BigDecimal.ZERO;
 		BigDecimal itemSaleMoneySum = BigDecimal.ZERO;
+		BigDecimal adjustMoneySum = BigDecimal.ZERO;
 		for (int i = list.size() - 1; i >= 0; i--) {
 			if (queryData.getIsChechZero()) {
 				if (list.get(i).getProfitQty().doubleValue() == 0.00) {
@@ -6720,6 +6724,7 @@ public class ReportRpcImpl implements ReportRpc {
 			saleAssitQtySum = saleAssitQtySum.add(data.getSaleAssitQty());
 			saleMoneySum = saleMoneySum.add(data.getSaleMoney());
 			itemSaleMoneySum = itemSaleMoneySum.add(data.getItemSaleMoney());
+            adjustMoneySum = adjustMoneySum.add(data.getAdjustMoney());
 		}
 		if (sortField == null) {
 			sortField = "itemCode";
@@ -6738,7 +6743,7 @@ public class ReportRpcImpl implements ReportRpc {
 		result.setData(list);
 
 
-
+        result.setAdjustMoneySum(adjustMoneySum);
 		result.setProfitQtySum(profitQtySum);
 		result.setProfitAssitQtySum(profitAssitQtySum);
 		result.setProfitMoneySum(profitMoneySum);
@@ -6821,6 +6826,7 @@ public class ReportRpcImpl implements ReportRpc {
 			BigDecimal saleMoney = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
 			BigDecimal assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			String itemUnit = object[8] == null ? "" : (String) object[8];
+            BigDecimal adjustMoney = object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9];
 
 			if (isChechUp != null) {
 				if (isChechUp != null) {
@@ -6848,11 +6854,13 @@ public class ReportRpcImpl implements ReportRpc {
 				money = money.negate();
 				saleMoney = saleMoney.negate();
 				assistAmount = assistAmount.negate();
+                adjustMoney = adjustMoney.negate();
 			}
 			data.setProfitAssitQty(data.getProfitAssitQty().add(assistAmount));
 			data.setProfitQty(data.getProfitQty().add(amount));
 			data.setProfitMoney(data.getProfitMoney().add(money));
 			data.setItemSaleMoney(data.getItemSaleMoney().add(saleMoney));
+            data.setAdjustMoney(data.getAdjustMoney().add(adjustMoney));
 		}
 		if (!unit.equals(AppConstants.UNIT_USE)) {
 			checkType = AppConstants.POS_ITEM_LOG_POS + "," + AppConstants.POS_ITEM_LOG_CONSUME_POINT + ","
@@ -6892,6 +6900,7 @@ public class ReportRpcImpl implements ReportRpc {
 		BigDecimal saleAssitQtySum = BigDecimal.ZERO;
 		BigDecimal saleMoneySum = BigDecimal.ZERO;
 		BigDecimal itemSaleMoneySum = BigDecimal.ZERO;
+        BigDecimal adjustMoneySum = BigDecimal.ZERO;
 		for (int i = list.size() - 1; i >= 0; i--) {
 			InventoryProfitDTO data = list.get(i);
 			Integer itemNum = data.getItemNum();
@@ -6966,6 +6975,7 @@ public class ReportRpcImpl implements ReportRpc {
 			categoryData.setSaleMoney(categoryData.getSaleMoney().add(data.getSaleMoney()));
 			categoryData.setSaleQty(categoryData.getSaleQty().add(data.getSaleQty()));
 			categoryData.setItemSaleMoney(categoryData.getItemSaleMoney().add(data.getItemSaleMoney()));
+            categoryData.setAdjustMoney(categoryData.getAdjustMoney().add(data.getAdjustMoney()));
 
 		}
 		list = new ArrayList<InventoryProfitDTO>(categoryMap.values());
@@ -6999,6 +7009,7 @@ public class ReportRpcImpl implements ReportRpc {
 			saleAssitQtySum = saleAssitQtySum.add(data.getSaleAssitQty());
 			saleMoneySum = saleMoneySum.add(data.getSaleMoney());
 			itemSaleMoneySum = itemSaleMoneySum.add(data.getItemSaleMoney());
+			adjustMoneySum = adjustMoneySum.add(data.getAdjustMoney());
 		}
 		if (sortField == null) {
 			sortField = "itemCategoryCode";
@@ -7015,6 +7026,7 @@ public class ReportRpcImpl implements ReportRpc {
 		result.setCount(dataSize);
 		result.setData(list);
 
+        result.setAdjustMoneySum(adjustMoneySum);
 		result.setProfitQtySum(profitQtySum);
 		result.setProfitAssitQtySum(profitAssitQtySum);
 		result.setProfitMoneySum(profitMoneySum);

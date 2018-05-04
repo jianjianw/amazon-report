@@ -154,7 +154,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("select l.item_num, l.pos_item_log_item_matrix_num, l.pos_item_log_inout_flag,  ");
 		sb.append("sum(l.pos_item_log_item_amount) as amount, sum(l.POS_ITEM_LOG_MONEY) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount,  ");
 		sb.append("sum(l.pos_item_log_use_qty) as useAmount, sum(l.pos_item_log_operate_price * l.pos_item_log_item_amount) as saleMoney, ");
-		sb.append("min(l.pos_item_log_use_unit) as useUnit ");
+		sb.append("min(l.pos_item_log_use_unit) as useUnit, sum(l.pos_item_log_adjust_money) as adjustMoney ");
 		sb.append("from pos_item_log as l with(nolock) ");
 
 		sb.append("where l.system_book_code = '" + systemBookCode + "' ");

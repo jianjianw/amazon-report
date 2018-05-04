@@ -18,6 +18,7 @@ public class InventoryProfitDTO implements Serializable {
     private BigDecimal saleQty;
     private BigDecimal saleMoney;
     private BigDecimal saleAssitQty;
+    private BigDecimal adjustMoney;
 
     private BigDecimal profitRate;
     private String itemCategoryCode;
@@ -37,6 +38,15 @@ public class InventoryProfitDTO implements Serializable {
         this.saleMoney = BigDecimal.ZERO;
         this.saleAssitQty = BigDecimal.ZERO;
         this.profitRate = BigDecimal.ZERO;
+        this.adjustMoney = BigDecimal.ZERO;
+    }
+
+    public BigDecimal getAdjustMoney() {
+        return adjustMoney;
+    }
+
+    public void setAdjustMoney(BigDecimal adjustMoney) {
+        this.adjustMoney = adjustMoney;
     }
 
     public int getId() {
