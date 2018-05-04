@@ -21,4 +21,9 @@ public class StoreItemSupplierServiceImpl implements StoreItemSupplierService {
 		return storeItemSupplierDao.findDefaults(systemBookCode, branchNums, itemNums);
 	}
 
+	@Override
+	public List<StoreItemSupplier> find(String systemBookCode, Integer branchNum, List<Integer> supplierNums, boolean orderFlag, List<Integer> itemNums) {
+		return storeItemSupplierDao.find(systemBookCode,branchNum,supplierNums,orderFlag,itemNums);
+	}
+
 }

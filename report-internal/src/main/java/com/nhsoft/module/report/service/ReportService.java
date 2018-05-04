@@ -1455,13 +1455,5 @@ public interface ReportService {
 	 */
 	List<AlipayDetailDTO> findAlipayDetailDTOs(AlipayDetailQuery alipayDetailQuery);
 
-	/**
-	 * 查询补货分析
-	 * @param inventoryAnalysisQuery
-	 * @param chainDeliveryParam
-	 * @return
-	 */
-	public List<InventoryAnalysisDTO> findInventoryAnalysiss(InventoryAnalysisQuery inventoryAnalysisQuery, ChainDeliveryParam chainDeliveryParam);
-
 
 }

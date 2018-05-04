@@ -34,5 +34,10 @@ public class InventoryServiceImpl implements InventoryService {
 		return inventoryDao.findByItemAndBranch(systemBookCode,branchNum,itemNums,centerFlag);
 	}
 
+	@Override
+	public List<Inventory> findByStorehouseNum(Integer storehouseNum, List<Integer> itemNums) {
+		return inventoryDao.findByStorehouseNum(storehouseNum,itemNums);
+	}
+
 
 }

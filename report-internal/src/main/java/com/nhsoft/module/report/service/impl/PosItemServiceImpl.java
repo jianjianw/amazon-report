@@ -328,5 +328,42 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 		return posItem;
 	}
 
+	@Override
+	public List<PosItemKit> findPosItemKitsWithDetails(List<Integer> itemNums) {
+		List<PosItemKit> posItemKits = posItemDao.findPosItemKitsWithPosItem(itemNums);
+		if (posItemKits.size() > 0) {
+			itemNums.clear();
+			PosItem posItem;
+			for (int i = 0; i < posItemKits.size(); i++) {
+				posItem = posItemKits.get(i).getPosItem();
+				if (posItem == null) {
+					continue;
+				}
+				if (!itemNums.contains(posItem.getItemNum())) {
+					itemNums.add(posItem.getItemNum());
+				}
+				posItem.setPosItemKits(new ArrayList<PosItemKit>());
+			}
+			if (itemNums.size() > 0) {
+				List<ItemBar> itemBars = posItemDao.findItemBars(itemNums);
+				List<ItemMatrix> itemMatrixs = posItemDao.findItemMatrixs(itemNums);
+				for (int i = 0; i < posItemKits.size(); i++) {
+					posItem = posItemKits.get(i).getPosItem();
+					if (posItem == null) {
+						continue;
+					}
+					posItem.setItemBars(ItemBar.find(itemBars, posItem.getItemNum()));
+					if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_MATRIX) {
+						posItem.setItemMatrixs(ItemMatrix.find(itemMatrixs, posItem.getItemNum()));
+
+					} else {
+						posItem.setItemMatrixs(new ArrayList<ItemMatrix>());
+					}
+				}
+			}
+		}
+		return posItemKits;
+	}
+
 
 }

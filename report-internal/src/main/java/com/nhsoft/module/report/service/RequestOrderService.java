@@ -63,9 +63,14 @@ public interface RequestOrderService {
 	 */
 	public List<Object[]> findItemSummary(String systemBookCode, Integer centerBranchNum, Integer branchNum,
 										  Date dateFrom, Date dateTo, List<Integer> itemNums);
-	
-	
-	
+
+
+	/**
+	 * 向中心要货未调出的商品数量 按商品和多特性汇总
+	 * @param itemNums
+	 * @return
+	 */
+	public List<Object[]> findCenterRequestMatrixAmount(String systemBookCode, Integer outBranchNum, List<Integer> itemNums);
 	
 	
 

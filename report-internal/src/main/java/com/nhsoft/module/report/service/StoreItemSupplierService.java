@@ -20,4 +20,7 @@ public interface StoreItemSupplierService {
 	 */
 	public List<StoreItemSupplier> findDefaults(String systemBookCode, List<Integer> branchNums, List<Integer> itemNums);
 
+	public List<StoreItemSupplier> find(String systemBookCode, Integer branchNum,
+										List<Integer> supplierNums, boolean orderFlag, List<Integer> itemNums);
+
 }

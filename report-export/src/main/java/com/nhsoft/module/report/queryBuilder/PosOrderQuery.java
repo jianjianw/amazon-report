@@ -2,6 +2,7 @@ package com.nhsoft.module.report.queryBuilder;
 
 import com.nhsoft.module.report.query.QueryBuilder;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +30,13 @@ public class PosOrderQuery extends QueryBuilder{
 	private boolean page = true;
 	private Integer max = 50000;
 	private List<String> orderSources;
+
+	private String delCountType;
+	private String delMoneyType;
+	private String oprateTimeType;
+	private BigDecimal delCount;
+	private BigDecimal delMoney;
+	private BigDecimal oprateTime;
 
 
 	public int getMax() {
@@ -174,4 +182,52 @@ public class PosOrderQuery extends QueryBuilder{
     public void setStallNum(Integer stallNum) {
         this.stallNum = stallNum;
     }
+
+	public String getDelCountType() {
+		return delCountType;
+	}
+
+	public void setDelCountType(String delCountType) {
+		this.delCountType = delCountType;
+	}
+
+	public String getDelMoneyType() {
+		return delMoneyType;
+	}
+
+	public void setDelMoneyType(String delMoneyType) {
+		this.delMoneyType = delMoneyType;
+	}
+
+	public String getOprateTimeType() {
+		return oprateTimeType;
+	}
+
+	public void setOprateTimeType(String oprateTimeType) {
+		this.oprateTimeType = oprateTimeType;
+	}
+
+	public BigDecimal getDelCount() {
+		return delCount;
+	}
+
+	public void setDelCount(BigDecimal delCount) {
+		this.delCount = delCount;
+	}
+
+	public BigDecimal getDelMoney() {
+		return delMoney;
+	}
+
+	public void setDelMoney(BigDecimal delMoney) {
+		this.delMoney = delMoney;
+	}
+
+	public BigDecimal getOprateTime() {
+		return oprateTime;
+	}
+
+	public void setOprateTime(BigDecimal oprateTime) {
+		this.oprateTime = oprateTime;
+	}
 }

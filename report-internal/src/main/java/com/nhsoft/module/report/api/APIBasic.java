@@ -765,6 +765,16 @@ public class APIBasic {
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		query.setBranchNums(getBranchNums());
+		query.setPaymentType("quan");
+		BigDecimal count = BigDecimal.valueOf(60);
+		query.setDelCountType(">");
+		query.setDelCount(count);
+		/*
+		query.setDelMoneyType(">");
+		query.setDelMoney(count);*/
+
+		query.setOprateTimeType(">");
+		query.setOprateTime(count);
 		List<PosOrderDTO> settled = posOrderRpc.findSettled("4020",query,0,5000);
 		return settled;
 	}
@@ -1912,4 +1922,40 @@ public class APIBasic {
 
 		return result;
 	}
+
+
+	//findCustomerAnalysisBranch
+	@RequestMapping(method = RequestMethod.GET,value = "/test103")
+	public List test103() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
+		String saleType = "";
+		List<BranchCustomerSummary> result = reportRpc.findCustomerAnalysisBranch(systemBookCode,dateFrom,dateTo,getBranchNums(),saleType);
+		return result;
+	}
+
+	//findItemSaleQty
+	@RequestMapping(method = RequestMethod.GET,value = "/test104")
+	public List test104() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
+		List<ItemSaleQtySummary> result = reportRpc.findItemSaleQty(systemBookCode,99,dateFrom,dateTo,true,true,true);
+		return result;
+	}
+
+	//findPurchaseAndTransferDTOs
+	@RequestMapping(method = RequestMethod.GET,value = "/test105")
+	public List test105() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-04-27");
+		List<PurchaseAndTransferDTO> result = reportRpc.findPurchaseAndTransferDTOs(systemBookCode, 99, dateFrom, dateTo, null, null, null, AppConstants.UNIT_USE);
+		return result;
+	}
+
 }

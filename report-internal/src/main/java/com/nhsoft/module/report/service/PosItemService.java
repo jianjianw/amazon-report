@@ -131,5 +131,11 @@ public interface PosItemService {
 	 */
 	public PosItem readWithoutDetails(Integer itemNum);
 
+	/**
+	 * 查询带明细的组合商品
+	 * @param itemNums
+	 * @return
+	 */
+	public List<PosItemKit> findPosItemKitsWithDetails(List<Integer> itemNums);
 
 }

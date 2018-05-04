@@ -85,6 +85,13 @@ public interface RequestOrderDao {
 	 */
 	public List<Object[]> findFidShipOrderDeliver(List<String> requestOrderFids);
 
+	/**
+	 * 向中心要货未调出的商品数量 按商品和多特性汇总
+	 * @param itemNums
+	 * @return
+	 */
+	public List<Object[]> findCenterRequestMatrixAmount(String systemBookCode, Integer outBranchNum, List<Integer> itemNums);
+
 	
 
 }
