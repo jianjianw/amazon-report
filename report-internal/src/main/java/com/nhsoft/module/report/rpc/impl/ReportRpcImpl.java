@@ -6556,7 +6556,9 @@ public class ReportRpcImpl implements ReportRpc {
 			BigDecimal saleMoney = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
 			String itemUnit = object[8] == null ? "" : (String) object[8];
             BigDecimal adjustMoney = object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9];
-
+            if(flag){
+                money = money.subtract(adjustMoney);
+            }
 			if (isChechUp != null) {
 				if (isChechUp != null) {
 					if (isChechUp) {
@@ -6794,8 +6796,6 @@ public class ReportRpcImpl implements ReportRpc {
 		List<String> reasons = queryData.getReasons();
 		String unit = queryData.getUnit();
 
-
-
 		if (StringUtils.isEmpty(unit)) {
 			unit = AppConstants.UNIT_BASIC;
 		}
@@ -6827,6 +6827,9 @@ public class ReportRpcImpl implements ReportRpc {
 			BigDecimal assistAmount = object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5];
 			String itemUnit = object[8] == null ? "" : (String) object[8];
             BigDecimal adjustMoney = object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9];
+            if(flag){
+                money = money.subtract(adjustMoney);
+            }
 
 			if (isChechUp != null) {
 				if (isChechUp != null) {
