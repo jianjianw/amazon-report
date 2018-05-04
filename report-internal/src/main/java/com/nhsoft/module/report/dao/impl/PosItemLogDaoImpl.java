@@ -239,7 +239,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("select l.branch_num, l.item_num, l.pos_item_log_inout_flag,  ");
 		sb.append("sum(l.pos_item_log_item_amount) as amount, sum(l.POS_ITEM_LOG_MONEY) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount,  ");
 		sb.append("sum(l.pos_item_log_use_qty) as useAmount, ");
-		sb.append("min(l.pos_item_log_use_unit) as useUnit ");
+		sb.append("min(l.pos_item_log_use_unit) as useUnit, sum(l.pos_item_log_adjust_money) as adjustMoney ");
 		if(storeQueryCondition.getQuerySaleMoney() != null && storeQueryCondition.getQuerySaleMoney()){
 			sb.append(", sum(l.pos_item_log_item_amount * p.item_regular_price) as saleMoney ");
 		}
@@ -275,7 +275,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("select branch_num, pos_item_log_date_index, item_num, pos_item_log_item_matrix_num, pos_item_log_inout_flag, ");
 		sb.append("sum(pos_item_log_item_amount) as amount, sum(pos_item_log_money) as money, sum(pos_item_log_item_assist_amount) as assistAmount, ");
 		sb.append("sum(pos_item_log_use_qty) as useQty, sum(pos_item_log_operate_price * pos_item_log_item_amount) as saleMoney, ");
-		sb.append("min(pos_item_log_use_unit) ");
+		sb.append("min(pos_item_log_use_unit), sum(pos_item_log_adjust_money) as adjustMoney ");
 
 		sb.append("from pos_item_log with(nolock) ");
 
@@ -1422,7 +1422,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("select l.branch_num, l.item_num, l.pos_item_log_inout_flag, l.pos_item_log_memo,  ");
 		sb.append("sum(l.pos_item_log_item_amount) as amount, sum(l.POS_ITEM_LOG_MONEY) as money, sum(l.pos_item_log_item_assist_amount) as assistAmount,  ");
 		sb.append("sum(l.pos_item_log_use_qty) as useAmount, sum(l.pos_item_log_operate_price * l.pos_item_log_item_amount) as saleMoney, ");
-		sb.append("min(l.pos_item_log_use_unit) as useUnit ");
+		sb.append("min(l.pos_item_log_use_unit) as useUnit, sum(l.pos_item_log_adjust_money) as adjustMoney ");
 		boolean queryHistory = AppUtil.checkYearTable(queryYear);
 		if(queryHistory){
 			sb.append("from pos_item_log_" + queryYear + " as l with(nolock) ");
@@ -1675,7 +1675,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("select branch_num, item_num, pos_item_log_item_matrix_num, pos_item_log_inout_flag, ");
 		sb.append("sum(pos_item_log_item_amount) as amount, sum(pos_item_log_money) as money, sum(pos_item_log_item_assist_amount) as assistAmount, ");
 		sb.append("sum(pos_item_log_use_qty) as useQty, sum(pos_item_log_operate_price * pos_item_log_item_amount) as saleMoney, ");
-		sb.append("min(pos_item_log_use_unit) ");
+		sb.append("min(pos_item_log_use_unit), sum(pos_item_log_adjust_money) as adjustMoney ");
 		String queryYear = DateUtil.getYearString(storeQueryCondition.getDateStart());
 		boolean queryHistory = AppUtil.checkYearTable(queryYear);
 		if(queryHistory){

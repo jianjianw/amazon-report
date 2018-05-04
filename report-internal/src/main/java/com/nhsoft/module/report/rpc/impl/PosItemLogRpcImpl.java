@@ -47,9 +47,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
             dto.setAssistQty(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
             dto.setUseQty(object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
             dto.setUseUnit(object[7] == null ? "" : (String) object[7]);
-
+            dto.setAdjustMoney(object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8]);
             if(querySaleMoney) {
-                dto.setSaleMoney(object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8]);
+                dto.setSaleMoney(object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9]);
 
             }
             list.add(dto);
@@ -592,6 +592,7 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
             dto.setUseQty((BigDecimal) object[7]);
             dto.setSaleMoney((BigDecimal) object[8]);
             dto.setUseUnit((String) object[9]);
+            dto.setAdjustMoney(object[10] == null?BigDecimal.ZERO:(BigDecimal)object[10]);
             list.add(dto);
         }
         return list;
@@ -688,6 +689,7 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
             dto.setUseQty((BigDecimal) object[7]);
             dto.setSaleMoney((BigDecimal) object[8]);
             dto.setUseUnit((String) object[9]);
+            dto.setAdjustMoney(object[10] == null?BigDecimal.ZERO:(BigDecimal)object[10]);
             list.add(dto);
 
         }
