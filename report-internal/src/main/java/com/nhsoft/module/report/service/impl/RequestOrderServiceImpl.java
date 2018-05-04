@@ -44,4 +44,9 @@ public class RequestOrderServiceImpl implements RequestOrderService {
 	public List<Object[]> findItemSummary(String systemBookCode, Integer centerBranchNum, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums) {
 		return requestOrderDao.findItemSummary(systemBookCode,centerBranchNum,branchNum,dateFrom,dateTo,itemNums);
 	}
+
+	@Override
+	public List<Object[]> findCenterRequestMatrixAmount(String systemBookCode, Integer outBranchNum, List<Integer> itemNums) {
+		return requestOrderDao.findCenterRequestMatrixAmount(systemBookCode,outBranchNum,itemNums);
+	}
 }

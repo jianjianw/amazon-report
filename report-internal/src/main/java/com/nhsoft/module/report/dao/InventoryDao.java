@@ -110,4 +110,5 @@ public interface InventoryDao {
 	public List<Object[]> findInventoryLostCount(String systemBookCode, Integer branchNum, List<Integer> itemNums);
 
 
+	public List<Inventory> findByStorehouseNum(Integer storehouseNum, List<Integer> itemNums);
 }

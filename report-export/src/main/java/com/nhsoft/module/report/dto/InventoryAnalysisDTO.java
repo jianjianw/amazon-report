@@ -8,6 +8,7 @@ import java.util.List;
 public class InventoryAnalysisDTO extends BaseModelDTO {
 
 	private static final long serialVersionUID = -3709988588532059861L;
+	private PosItemDTO posItem;
 	private BigDecimal inventoryQty;// 当前库存（配送仓库库存）
 	private BigDecimal basicInventoryQty;// 基础库存
 	private BigDecimal lastWeekUseQty;// 7天用量
@@ -44,6 +45,14 @@ public class InventoryAnalysisDTO extends BaseModelDTO {
 		setAvgSaleQty(BigDecimal.ZERO);
 		setBuyQty(BigDecimal.ZERO);
 		setRequestLostQty(BigDecimal.ZERO);
+	}
+
+	public PosItemDTO getPosItem() {
+		return posItem;
+	}
+
+	public void setPosItem(PosItemDTO posItem) {
+		this.posItem = posItem;
 	}
 
 	public BigDecimal getItemMinQuantity() {

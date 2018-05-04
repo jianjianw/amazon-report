@@ -5663,7 +5663,11 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(queryPayment){
 			sb.append("inner join payment with(nolock, forceseek) on p.order_no = payment.order_no ");
 		}
-
+		boolean delCountQuery = StringUtils.isNotEmpty(posOrderQuery.getDelCountType()) && posOrderQuery.getDelCount() != null;
+		boolean delMoneyQuery = StringUtils.isNotEmpty(posOrderQuery.getDelMoneyType()) && posOrderQuery.getDelMoney() != null;
+		if(delCountQuery || delMoneyQuery){
+			sb.append("inner join pos_order_matrix as m on m.order_no = p.order_no ");
+		}
 		sb.append("where p.system_book_code = '" + posOrderQuery.getSystemBookCode() + "' ");
 		if (posOrderQuery.getBranchNums() != null && posOrderQuery.getBranchNums().size() > 0) {
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(posOrderQuery.getBranchNums()));
@@ -5762,6 +5766,16 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		if(posOrderQuery.getOrderRefBillno() != null){
 			sb.append("and p.order_ref_billno = '"+posOrderQuery.getOrderRefBillno() +"' ");
+		}
+
+		if(delCountQuery){
+			sb.append("and m.order_cancel_item_count " + posOrderQuery.getDelCountType() + " " + posOrderQuery.getDelCount() + " ");
+		}
+		if(delMoneyQuery){
+			sb.append("and m.order_cancel_item_money " + posOrderQuery.getDelMoneyType() + " " + posOrderQuery.getDelMoney() + " ");
+		}
+		if(StringUtils.isNotEmpty(posOrderQuery.getOprateTimeType()) && posOrderQuery.getOprateTime() != null){
+			sb.append("and DATEDIFF(mi,p.order_date,p.order_time) " + posOrderQuery.getOprateTimeType() + " " + posOrderQuery.getOprateTime()+" ");
 		}
 		return sb.toString();
 	}

@@ -48,4 +48,6 @@ public interface InventoryService {
 	 */
 	public List<Inventory> findByItemAndBranch(String systemBookCode, Integer branchNum, List<Integer> itemNums, Boolean centerFlag);
 
+	public List<Inventory> findByStorehouseNum(Integer storehouseNum, List<Integer> itemNums);
+
 }

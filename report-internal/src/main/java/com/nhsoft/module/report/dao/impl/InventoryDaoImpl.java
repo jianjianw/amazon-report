@@ -331,5 +331,19 @@ public class InventoryDaoImpl extends DaoImpl implements InventoryDao {
 		return null;
 	}
 
+	@Override
+	public List<Inventory> findByStorehouseNum(Integer storehouseNum, List<Integer> itemNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("from Inventory where id.storehouseNum = :storehouseNum ");
+		if (itemNums != null && itemNums.size() > 0) {
+			sb.append("and itemNum in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		Query query = currentSession().createQuery(sb.toString());
+		query.setInteger("storehouseNum", storehouseNum);
+		query.setLockOptions(LockOptions.READ);
+		List<Inventory> inventories = query.list();
+		return inventories;
+	}
+
 
 }

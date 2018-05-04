@@ -765,6 +765,16 @@ public class APIBasic {
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		query.setBranchNums(getBranchNums());
+		query.setPaymentType("quan");
+		BigDecimal count = BigDecimal.valueOf(60);
+		query.setDelCountType(">");
+		query.setDelCount(count);
+		/*
+		query.setDelMoneyType(">");
+		query.setDelMoney(count);*/
+
+		query.setOprateTimeType(">");
+		query.setOprateTime(count);
 		List<PosOrderDTO> settled = posOrderRpc.findSettled("4020",query,0,5000);
 		return settled;
 	}

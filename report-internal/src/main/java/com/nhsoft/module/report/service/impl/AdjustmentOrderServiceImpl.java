@@ -36,4 +36,8 @@ public class AdjustmentOrderServiceImpl implements AdjustmentOrderService {
 		return adjustmentOrderDao.findAdjustmentCauseMoneyByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
+	@Override
+	public List<Object[]> findItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> reasons, Boolean inOut, Boolean isAudit, List<Integer> itemNums) {
+		return adjustmentOrderDao.findItemSummary(systemBookCode,branchNums,dateFrom,dateTo,reasons,inOut,isAudit,itemNums);
+	}
 }
