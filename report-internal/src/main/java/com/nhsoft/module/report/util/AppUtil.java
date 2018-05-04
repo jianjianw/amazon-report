@@ -410,6 +410,89 @@ public class AppUtil {
 		return obj;
 	}
 
+	public static Object[] getInventoryAmount(List<Inventory> inventories, PosItem posItem, Integer itemMatrixNum,
+											  String lotNumber, Branch branch) {
+		BigDecimal amount = BigDecimal.ZERO;
+		BigDecimal money = BigDecimal.ZERO;
+		BigDecimal assistAmount = BigDecimal.ZERO;
+		BigDecimal cost = BigDecimal.ZERO;
+		boolean found = false;
+		for (int i = 0; i < inventories.size(); i++) {
+			Inventory inventory = inventories.get(i);
+			if (inventory.getItemNum().equals(posItem.getItemNum())) {
+				found = true;
+				if (posItem.getItemCostMode(branch).equals(AppConstants.C_ITEM_COST_MODE_MANUAL)) {
+					List<InventoryLnDetail> inventoryLnDetails = inventory.getInventoryLnDetails();
+					for (int j = 0; j < inventoryLnDetails.size(); j++) {
+						InventoryLnDetail inventoryLnDetail = inventoryLnDetails.get(j);
+						if (org.apache.commons.lang.StringUtils.isNotEmpty(lotNumber)) {
+							if (!lotNumber.equals(inventoryLnDetail.getInventoryLnDetailLotNumber())) {
+								continue;
+							}
+						}
+						if (itemMatrixNum != null && itemMatrixNum != 0) {
+							if (inventoryLnDetail.getItemMatrixNum() != null
+									&& !itemMatrixNum.equals(inventoryLnDetail.getItemMatrixNum())) {
+								continue;
+							}
+						}
+						amount = amount.add(inventoryLnDetail.getInventoryLnDetailAmount());
+						money = money.add(inventoryLnDetail.getInventoryLnDetailAmount().multiply(
+								inventoryLnDetail.getInventoryLnDetailCostPrice()));
+						assistAmount = assistAmount.add(inventoryLnDetail.getInventoryLnDetailAssistAmount());
+						cost = inventoryLnDetail.getInventoryLnDetailCostPrice();
+					}
+				} else if (posItem.getItemCostMode(branch).equals(AppConstants.C_ITEM_COST_MODE_FIFO)) {
+					List<InventoryBatchDetail> inventoryBatchDetails = inventory.getInventoryBatchDetails();
+					for (int j = 0; j < inventoryBatchDetails.size(); j++) {
+						InventoryBatchDetail inventoryBatchDetail = inventoryBatchDetails.get(j);
+						if (itemMatrixNum != null && itemMatrixNum != 0) {
+							if (inventoryBatchDetail.getItemMatrixNum() != null
+									&& !itemMatrixNum.equals(inventoryBatchDetail.getItemMatrixNum())) {
+								continue;
+							}
+						}
+						amount = amount.add(inventoryBatchDetail.getInventoryBatchDetailAmount());
+						money = money.add(inventoryBatchDetail.getInventoryBatchDetailAmount().multiply(
+								inventoryBatchDetail.getInventoryBatchDetailCostPrice()));
+						assistAmount = assistAmount.add(inventoryBatchDetail.getInventoryBatchDetailAssistAmount());
+					}
+				} else if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_MATRIX) {
+					List<InventoryMatrix> inventoryMatrixs = inventory.getInventoryMatrixs();
+					for (int j = 0; j < inventoryMatrixs.size(); j++) {
+						InventoryMatrix inventoryMatrix = inventoryMatrixs.get(j);
+						if (itemMatrixNum != null && itemMatrixNum != 0) {
+							if (inventoryMatrix.getId().getItemMatrixNum() != null
+									&& !itemMatrixNum.equals(inventoryMatrix.getId().getItemMatrixNum())) {
+								continue;
+							}
+						}
+						amount = amount.add(inventoryMatrix.getInventoryMatrixAmount());
+						assistAmount = assistAmount.add(inventoryMatrix.getInventoryMatrixAssistAmount());
+					}
+				} else {
+					amount = amount.add(inventory.getInventoryAmount());
+					money = money.add(inventory.getInventoryMoney());
+					assistAmount = assistAmount.add(inventory.getInventoryAssistAmount());
+				}
+			}
+		}
+		if (!posItem.getItemCostMode(branch).equals(AppConstants.C_ITEM_COST_MODE_MANUAL)
+				|| org.apache.commons.lang.StringUtils.isNotEmpty(lotNumber)) {
+			if (amount.compareTo(BigDecimal.ZERO) > 0) {
+				cost = money.divide(amount, 4, BigDecimal.ROUND_HALF_UP);
+			}
+		}
+		Object[] obj = new Object[5];
+		obj[0] = amount;
+		obj[1] = assistAmount;
+		obj[2] = money;
+		obj[3] = cost;
+		obj[4] = found;
+		return obj;
+	}
+
+
 	public static int getStringWidth(String str) {
 		int width = 0;
 		for (int i = 0; i < str.length(); i++) {
