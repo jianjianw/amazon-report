@@ -13047,7 +13047,630 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<InventoryAnalysisDTO> findInventoryAnalysiss(InventoryAnalysisQuery inventoryAnalysisQuery, ChainDeliveryParam chainDeliveryParam) {
-		return null;
+
+/*
+		String systemBookCode = inventoryAnalysisQuery.getSystemBookCode();
+		Integer branchNum = inventoryAnalysisQuery.getBranchNum();
+		Date now = DateUtil.getMinOfDate(Calendar.getInstance().getTime());
+		Date yesterday = DateUtil.addDay(now, -1);
+		if (inventoryAnalysisQuery.getSuggestionType() == null) {
+			inventoryAnalysisQuery.setSuggestionType(1);
+		}
+		List<Integer> branchNums = new ArrayList<Integer>();
+		branchNums.add(branchNum);
+		Branch branch = branchService.readInCache(systemBookCode, branchNum);
+		List<InventoryAnalysisDTO> list = new ArrayList<InventoryAnalysisDTO>();
+		List<Inventory> inventories = null;
+		List<Integer> itemNums = inventoryAnalysisQuery.getItemNums();
+
+		if(inventoryAnalysisQuery.getSupplierNum() != null){
+			inventoryAnalysisQuery.setSupplierNums(new ArrayList<>());
+			inventoryAnalysisQuery.getSupplierNums().add(inventoryAnalysisQuery.getSupplierNum());
+		}
+
+
+		//手工添加补货的商品忽略规则
+		boolean ignoreRule = false;
+		if(itemNums != null && itemNums.size() > 0){
+			ignoreRule = true;
+		}
+
+		if (inventoryAnalysisQuery.getStorehouseNum() == null) {
+			inventories = inventoryDao.findByItemAndBranch(systemBookCode, inventoryAnalysisQuery.getBranchNum(), itemNums,
+					true);
+		} else {
+			inventories = inventoryDao.findByStorehouseNum(inventoryAnalysisQuery.getStorehouseNum(), itemNums);
+		}
+		Comparator<StoreItemSupplier> supplierComparator = new Comparator<StoreItemSupplier>() {
+
+			@Override
+			public int compare(StoreItemSupplier arg0, StoreItemSupplier arg1) {
+				if (arg0.getStoreItemSupplierPri() > arg1.getStoreItemSupplierPri()) {
+					return -1;
+				} else if (arg0.getStoreItemSupplierPri() < arg1.getStoreItemSupplierPri()) {
+					return 1;
+				} else {
+					if (arg0.getStoreItemSupplierLastestTime() == null
+							&& arg1.getStoreItemSupplierLastestTime() == null) {
+						return 0;
+					} else if (arg0.getStoreItemSupplierLastestTime() != null
+							&& arg1.getStoreItemSupplierLastestTime() == null) {
+						return -1;
+					} else if (arg0.getStoreItemSupplierLastestTime() == null
+							&& arg1.getStoreItemSupplierLastestTime() != null) {
+						return 1;
+					} else {
+						return -arg0.getStoreItemSupplierLastestTime()
+								.compareTo(arg1.getStoreItemSupplierLastestTime());
+					}
+				}
+			}
+		};
+
+		List<PosItem> posItems = new ArrayList<PosItem>();
+		if (inventoryAnalysisQuery.isQueryAssemble()) {
+			if(itemNums != null && itemNums.size() > 0){
+				List<PosItem> tempPosItems = posItemService.findByItemNums(itemNums);
+				List<Integer> manufactureItemNums = new ArrayList<Integer>();
+				for (int i = 0; i < tempPosItems.size(); i++) {
+					PosItem posItem = tempPosItems.get(i);
+					posItem.setPosItemKits(new ArrayList<PosItemKit>());
+
+					if(posItem.getItemManufactureFlag() != null && posItem.getItemManufactureFlag()){
+						manufactureItemNums.add(posItem.getItemNum());
+					}
+				}
+				if(manufactureItemNums.size() > 0 ){
+					List<PosItemKit> posItemKits = posItemService.findPosItemKitsWithDetails(manufactureItemNums);
+					for (int i = 0; i < tempPosItems.size(); i++) {
+						PosItem posItem = tempPosItems.get(i);
+						posItem.setPosItemKits(PosItemKit.find(posItemKits, posItem.getItemNum()));
+
+					}
+				}
+				posItems.addAll(tempPosItems);
+
+			} else {
+				posItems.addAll(posItemService.findShortItems(systemBookCode));
+
+			}
+			if(!ignoreRule){
+
+				for (int i = posItems.size() - 1; i >= 0; i--) {
+					PosItem posItem = posItems.get(i);
+					if (posItem.getItemType() != AppConstants.C_ITEM_TYPE_ASSEMBLE
+							&& (posItem.getItemManufactureFlag() == null || !posItem.getItemManufactureFlag())) {
+						posItems.remove(i);
+						continue;
+					}
+					if (posItem.getItemDelTag() != null && posItem.getItemDelTag()) {
+						posItems.remove(i);
+						continue;
+					}
+					if (posItem.getItemEliminativeFlag() != null && posItem.getItemEliminativeFlag()) {
+						posItems.remove(i);
+						continue;
+					}
+					if (posItem.getItemStatus() != null && posItem.getItemStatus().equals(AppConstants.ITEM_STATUS_SLEEP)) {
+						posItems.remove(i);
+						continue;
+					}
+					if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_NON_STOCK) {
+						posItems.remove(i);
+						continue;
+					}
+					if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_CUSTOMER_KIT) {
+						posItems.remove(i);
+						continue;
+					}
+
+					if (org.apache.commons.lang.StringUtils.equals(posItem.getItemMethod(), AppConstants.BUSINESS_TYPE_SHOP)) {
+						posItems.remove(i);
+						continue;
+					}
+					if (inventoryAnalysisQuery.getCategoryCodes() != null
+							&& inventoryAnalysisQuery.getCategoryCodes().size() > 0) {
+						if (!inventoryAnalysisQuery.getCategoryCodes().contains(posItem.getItemCategoryCode())) {
+							posItems.remove(i);
+							continue;
+						}
+					}
+					if (inventoryAnalysisQuery.getStoreItemNums() != null
+							&& inventoryAnalysisQuery.getStoreItemNums().size() > 0) {
+						if (!inventoryAnalysisQuery.getStoreItemNums().contains(posItem.getItemNum())) {
+							posItems.remove(i);
+							continue;
+						}
+					}
+					if (org.apache.commons.lang.StringUtils.isNotEmpty(inventoryAnalysisQuery.getPosItemDepartmentCode())) {
+						if (!inventoryAnalysisQuery.getPosItemDepartmentCode().equals(posItem.getItemDepartment())) {
+							posItems.remove(i);
+							continue;
+						}
+					}
+				}
+			}
+		} else {
+			PosItemQuery posItemQuery = new PosItemQuery();
+			posItemQuery.setSystemBookCode(inventoryAnalysisQuery.getSystemBookCode());
+			posItemQuery.setBranchNum(inventoryAnalysisQuery.getBranchNum());
+			posItemQuery.setCategoryCodes(inventoryAnalysisQuery.getCategoryCodes());
+			posItemQuery.setItemDepartment(inventoryAnalysisQuery.getPosItemDepartmentCode());
+			if(inventoryAnalysisQuery.getStoreItemNums() != null && itemNums == null){
+				posItemQuery.setItemNums(inventoryAnalysisQuery.getStoreItemNums());
+				itemNums = inventoryAnalysisQuery.getStoreItemNums();
+
+			} else if(inventoryAnalysisQuery.getStoreItemNums() == null && itemNums != null){
+				posItemQuery.setItemNums(itemNums);
+
+			} else if(inventoryAnalysisQuery.getStoreItemNums() != null && itemNums != null){
+
+				itemNums.retainAll(inventoryAnalysisQuery.getStoreItemNums());
+				posItemQuery.setItemNums(itemNums);
+			}
+
+			posItemQuery.setPaging(false);
+			posItemQuery.setOrderType(AppConstants.POS_ITEM_LOG_PURCHASE_ORDER);
+			posItemQuery.setFilterType(AppConstants.ITEM_TYPE_PURCHASE);
+			posItemQuery.setIsFindNoStock(false);
+			posItemQuery.setRdc(branch.isRdc());
+			posItems = posItemService.findByPosItemQuery(posItemQuery, null, null, 0, 0);
+		}
+
+		List<Integer> matrixItemNums = new ArrayList<Integer>();
+		for (int i = 0; i < posItems.size(); i++) {
+			PosItem posItem = posItems.get(i);
+
+			List<ItemMatrix> itemMatrixs = posItem.getItemMatrixs();
+			InventoryAnalysisDTO dto = new InventoryAnalysisDTO();
+			dto.setPosItem(posItem);
+			dto.setItemNum(posItem.getItemNum());
+			dto.setItemMatrixNum(0);
+			dto.getPosItem().getItemMatrixs().clear();
+			dto.setItemMinQuantity(posItem.getItemMinQuantity());
+			if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_MATRIX) {
+
+				for (int j = 0; j < itemMatrixs.size(); j++) {
+					ItemMatrix itemMatrix = itemMatrixs.get(j);
+					InventoryAnalysisDTO matrixDTO = new InventoryAnalysisDTO();
+					Object[] objects = AppUtil.getInventoryAmount(inventories, posItem, itemMatrix.getId()
+							.getItemMatrixNum(), null, branch);
+					if (!(Boolean) objects[4] &&  !ignoreRule) {
+						continue;
+					}
+					matrixDTO.setInventoryQty((BigDecimal) objects[0]);
+					matrixDTO.setPosItem(posItem);
+					matrixDTO.setItemNum(posItem.getItemNum());
+					matrixDTO.setItemMatrixNum(itemMatrix.getId().getItemMatrixNum());
+					matrixDTO.setItemMatrix(itemMatrix);
+					matrixItemNums.add(posItem.getItemNum());
+					list.add(matrixDTO);
+
+				}
+
+			} else {
+				Object[] objects = AppUtil.getInventoryAmount(inventories, posItem, null, null, branch);
+				if (!(Boolean) objects[4] && !inventoryAnalysisQuery.isQueryAssemble() && !ignoreRule) {
+					continue;
+				}
+				dto.setInventoryQty((BigDecimal) objects[0]);
+				list.add(dto);
+			}
+		}
+
+		// 在订量
+		if (!inventoryAnalysisQuery.isQueryAssemble()) {
+			List<Object[]> purchaseObjects = purchaseOrderDao.findUnReceivedItemAmount(systemBookCode, branchNum, itemNums);
+			for (int i = 0; i < purchaseObjects.size(); i++) {
+				Object[] object = purchaseObjects.get(i);
+				Integer itemNum = (Integer) object[0];
+				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+				BigDecimal amount = (BigDecimal) object[2];
+
+				InventoryAnalysisDTO data = InventoryAnalysisDTO.get(list, itemNum, itemMatrixNum);
+				if (data != null) {
+					data.setOnLoadQty(amount);
+				}
+			}
+
+		}
+		Date dateFrom = DateUtil.addDay(yesterday, -(inventoryAnalysisQuery.getLastDays() - 1));
+		List<Object[]> objects = findItemSaleQty(systemBookCode, branchNum, dateFrom, yesterday,
+				inventoryAnalysisQuery.isFindSale(), inventoryAnalysisQuery.isFindOut(),
+				inventoryAnalysisQuery.isFindWhole());
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer itemNum = (Integer) object[0];
+			Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+			BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+
+			InventoryAnalysisDTO data = InventoryAnalysisDTO.get(list, itemNum, itemMatrixNum);
+			if (data != null) {
+
+				data.set("saleQty", amount);
+			}
+		}
+		if (!inventoryAnalysisQuery.isFindCount()) {
+
+			if (inventoryAnalysisQuery.isFindAdjustOut()) {
+
+				objects = adjustmentOrderDao.findItemSummary(systemBookCode, branchNums, dateFrom, yesterday, null,
+						false, true, itemNums);
+				for (int i = 0; i < objects.size(); i++) {
+					Object[] object = objects.get(i);
+					Integer itemNum = (Integer) object[0];
+					Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+					BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+
+					InventoryAnalysisDTO data = InventoryAnalysisDTO.get(list, itemNum, itemMatrixNum);
+					if (data != null) {
+
+						BigDecimal value = (BigDecimal) data.get("saleQty");
+						if (value == null) {
+							value = BigDecimal.ZERO;
+						}
+						value = value.add(amount);
+						data.set("saleQty", value);
+					}
+				}
+
+			}
+
+		}
+		if (inventoryAnalysisQuery.isAddRequest()) {
+
+			List<Object[]> requestObjects = requestOrderDao.findCenterRequestMatrixAmount(systemBookCode,
+					inventoryAnalysisQuery.getBranchNum(), itemNums);
+			for (int i = 0; i < requestObjects.size(); i++) {
+				Object[] object = requestObjects.get(i);
+				Integer itemNum = (Integer) object[0];
+				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+				BigDecimal amount = object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2];
+				BigDecimal outAmount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+				BigDecimal purchaseAmount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+
+				InventoryAnalysisDTO data = InventoryAnalysisDTO.get(list, itemNum, itemMatrixNum);
+				if (data != null) {
+					data.setRequestLostQty(amount.subtract(outAmount).subtract(purchaseAmount)
+							.subtract(data.getInventoryQty()));
+					if (data.getRequestLostQty().compareTo(BigDecimal.ZERO) < 0) {
+						data.setRequestLostQty(BigDecimal.ZERO);
+					}
+				}
+			}
+
+		}
+
+		if (!inventoryAnalysisQuery.isFindCount()) {
+
+			List<Object[]> receiveObjects = receiveOrderDao.findItemMatrixMaxProducingDates(systemBookCode, branchNum,
+					itemNums);
+			for (int i = 0; i < receiveObjects.size(); i++) {
+				Object[] object = receiveObjects.get(i);
+				Integer itemNum = (Integer) object[0];
+				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+				Date maxProductDate = (Date) object[2];
+				InventoryAnalysisDTO data = InventoryAnalysisDTO.get(list, itemNum, itemMatrixNum);
+				if (data != null) {
+					if (data.getLastProductDate() == null) {
+						data.setLastProductDate(maxProductDate);
+					} else if (data.getLastProductDate().compareTo(maxProductDate) < 0) {
+						data.setLastProductDate(maxProductDate);
+					}
+				}
+			}
+		}
+
+		List<Integer> brnachNums  = new ArrayList<>();
+		brnachNums.add(branchNum);
+		List<StoreMatrix> storeMatrixs = storeMatrixDao.findByBranch(systemBookCode,brnachNums, itemNums);
+
+		List<StoreMatrixDetail> storeMatrixDetails = new ArrayList<StoreMatrixDetail>();
+		if (matrixItemNums.size() > 0) {
+			storeMatrixDetails = storeMatrixDao.findDetails(systemBookCode, branchNum, matrixItemNums);
+		}
+		List<StoreItemSupplier> storeItemSuppliers = new ArrayList<StoreItemSupplier>();
+		List<Supplier> suppliers = new ArrayList<Supplier>();
+		if (!inventoryAnalysisQuery.isQueryAssemble()) {
+			storeItemSuppliers = storeItemSupplierDao.find(systemBookCode, branchNum, null, false, null);
+			suppliers = supplierService.findInCache(systemBookCode);
+		}
+
+		// 查询今日制单的加工入库数量
+		if (inventoryAnalysisQuery.isQueryAssemble()) {
+
+			List<String> reasons = new ArrayList<String>();
+			reasons.add("加工入库单");
+			List<Object[]> todayAdjustmentObjects = adjustmentOrderDao.findItemSummary(systemBookCode, branchNums, now,
+					now, reasons, null, false, itemNums);
+			for (int i = 0; i < todayAdjustmentObjects.size(); i++) {
+				Object[] object = todayAdjustmentObjects.get(i);
+				Integer itemNum = (Integer) object[0];
+				Integer itemMatrixNum = object[1] == null ? 0 : (Integer) object[1];
+				BigDecimal amount = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+
+				InventoryAnalysisDTO data = InventoryAnalysisDTO.get(list, itemNum, itemMatrixNum);
+				if (data != null) {
+					data.setOnLoadQty(amount);
+				}
+			}
+		}
+		for (int i = list.size() - 1; i >= 0; i--) {
+			InventoryAnalysisDTO data = list.get(i);
+			Integer itemNum = data.getItemNum();
+			BigDecimal amount = (BigDecimal) data.get("saleQty");
+			if (amount == null) {
+				amount = BigDecimal.ZERO;
+			}
+			data.setAvgSaleQty(amount.divide(BigDecimal.valueOf(inventoryAnalysisQuery.getLastDays()), 8,
+					BigDecimal.ROUND_HALF_UP));
+
+			if (data.getAvgSaleQty().compareTo(BigDecimal.ZERO) != 0) {
+				data.setCanUseDate(data.getInventoryQty().divide(data.getAvgSaleQty(), 0, BigDecimal.ROUND_DOWN)
+						.intValue());
+			}
+
+			BigDecimal storeMatrixUpperStock = BigDecimal.ZERO;
+			BigDecimal storeMatrixReorderQty = BigDecimal.ZERO;
+			StoreMatrix storeMatrix = AppUtil
+					.getStoreMatrix(systemBookCode, branchNum, data.getItemNum(), storeMatrixs);
+			if (storeMatrix != null) {
+				if (storeMatrix.getStoreMatrixOrderEnabled()) {
+
+					if (storeMatrix.getStoreMatrixReorderPoint().compareTo(BigDecimal.ZERO) > 0) {
+						data.setInventoryBasicQty(storeMatrix.getStoreMatrixReorderPoint());
+
+					}
+					if (storeMatrix.getStoreMatrixBaseStock().compareTo(BigDecimal.ZERO) > 0) {
+						data.setBasicInventoryQty(storeMatrix.getStoreMatrixBaseStock());
+
+					}
+
+					if (storeMatrix.getStoreMatrixReorderQty().compareTo(BigDecimal.ZERO) > 0) {
+						storeMatrixReorderQty = storeMatrix.getStoreMatrixReorderQty();
+
+					}
+
+				}
+				storeMatrixUpperStock = storeMatrix.getStoreMatrixUpperStock();
+				if (storeMatrix.getStoreMatrixStockCeaseFlag() != null && storeMatrix.getStoreMatrixStockCeaseFlag() && !ignoreRule) {
+					list.remove(i);
+					continue;
+				}
+			} else {
+				if (data.getPosItem().getItemStockCeaseFlag() != null && data.getPosItem().getItemStockCeaseFlag() && !ignoreRule) {
+					list.remove(i);
+					continue;
+				}
+			}
+			if (data.getItemMatrixNum() != 0) {
+				StoreMatrixDetail storeMatrixDetail = AppUtil.getStoreMatrixDetail(systemBookCode, branchNum, itemNum,
+						data.getItemMatrixNum(), storeMatrixDetails);
+				if (storeMatrixDetail != null) {
+
+					if (storeMatrixDetail.getStoreMatrixDetailReorderPoint().compareTo(BigDecimal.ZERO) > 0) {
+						data.setInventoryBasicQty(storeMatrixDetail.getStoreMatrixDetailReorderPoint());
+
+					}
+					if (storeMatrixDetail.getStoreMatrixDetailBaseStock().compareTo(BigDecimal.ZERO) > 0) {
+						data.setBasicInventoryQty(storeMatrixDetail.getStoreMatrixDetailBaseStock());
+
+					}
+
+					if (storeMatrixDetail.getStoreMatrixDetailReorderQty().compareTo(BigDecimal.ZERO) > 0) {
+						storeMatrixReorderQty = storeMatrixDetail.getStoreMatrixDetailReorderQty();
+
+					}
+					storeMatrixUpperStock = storeMatrixDetail.getStoreMatrixDetailUpperStock();
+				}
+			}
+			if(!ignoreRule){
+
+				if (inventoryAnalysisQuery.isRule1()) {
+					if (data.getInventoryQty().compareTo(data.getInventoryBasicQty()) > 0) {
+						list.remove(i);
+						continue;
+					}
+				}
+				if (inventoryAnalysisQuery.isRule2()) {
+					if ((data.getInventoryQty().add(data.getOnLoadQty())).compareTo(data.getInventoryBasicQty()) > 0) {
+						list.remove(i);
+						continue;
+					}
+				}
+				if (inventoryAnalysisQuery.isRule3()) {
+					if (data.getInventoryQty().compareTo(data.getBasicInventoryQty()) > 0) {
+						list.remove(i);
+						continue;
+					}
+				}
+				if (inventoryAnalysisQuery.isRule4()) {
+					if ((data.getInventoryQty().add(data.getOnLoadQty())).compareTo(data.getBasicInventoryQty()) > 0) {
+						list.remove(i);
+						continue;
+					}
+				}
+				if (inventoryAnalysisQuery.isRule5()) {
+					if (data.getInventoryBasicQty().compareTo(BigDecimal.ZERO) == 0) {
+						if ((data.getInventoryQty().add(data.getOnLoadQty())).compareTo(data.getBasicInventoryQty()) > 0) {
+							list.remove(i);
+							continue;
+						}
+					} else {
+						if ((data.getInventoryQty().add(data.getOnLoadQty())).compareTo(data.getInventoryBasicQty()) > 0) {
+							list.remove(i);
+							continue;
+						}
+					}
+				}
+				if (inventoryAnalysisQuery.isRule6()) {
+					if (data.getInventoryQty().compareTo(storeMatrixUpperStock) >= 0) {
+						list.remove(i);
+						continue;
+					}
+				}
+			}
+			List<StoreItemSupplier> itemStoreItemSuppliers = AppUtil.findStoreItemSuppliers(storeItemSuppliers,
+					systemBookCode, branchNum, itemNum);
+			Collections.sort(itemStoreItemSuppliers, supplierComparator);
+			for (int j = 0; j < itemStoreItemSuppliers.size(); j++) {
+				StoreItemSupplier itemStoreItemSupplier = itemStoreItemSuppliers.get(j);
+				if(inventoryAnalysisQuery.getDefaultSupplier()!= null && inventoryAnalysisQuery.getDefaultSupplier()){
+					if(!ignoreRule && (itemStoreItemSupplier.getStoreItemSupplierDefault() == null || !itemStoreItemSupplier.getStoreItemSupplierDefault())){
+						continue;
+					}
+				}
+				if (inventoryAnalysisQuery.getSupplierNums() != null && !inventoryAnalysisQuery.getSupplierNums().isEmpty()) {
+					if (!ignoreRule && !inventoryAnalysisQuery.getSupplierNums().contains(itemStoreItemSupplier.getId().getSupplierNum())) {
+						continue;
+					}
+				}
+				Supplier supplier = AppUtil.getSupplier(itemStoreItemSupplier.getId().getSupplierNum(), suppliers);
+				if (supplier != null && supplier.getSupplierActived() != null && supplier.getSupplierActived()) {
+					if (itemStoreItemSupplier.getStoreItemSupplierCost().compareTo(BigDecimal.ZERO) > 0) {
+						supplier.setItemPrice(itemStoreItemSupplier.getStoreItemSupplierCost());
+					} else {
+						supplier.setItemPrice(data.getPosItem().getItemCostPrice());
+					}
+					if (itemStoreItemSupplier.getStoreItemSupplierLastestPrice() != null
+							&& itemStoreItemSupplier.getStoreItemSupplierLastestPrice().compareTo(BigDecimal.ZERO) > 0) {
+						supplier.setLastPrice(itemStoreItemSupplier.getStoreItemSupplierLastestPrice());
+					} else {
+						supplier.setLastPrice(data.getPosItem().getItemCostPrice());
+					}
+					if (supplier.getSupplierPurchaseDate() == null) {
+						supplier.setSupplierPurchaseDate(purchaseOrderDao.getLastDate(supplier.getSystemBookCode(),
+								supplier.getBranchNum(), itemStoreItemSupplier.getId().getSupplierNum()));
+
+					}
+					SupplierDTO itemSupplier = new SupplierDTO();
+					BeanUtils.copyProperties(supplier, itemSupplier);
+					itemSupplier.setStoreItemReturnType(itemStoreItemSupplier.getStoreItemReturnType());
+					data.getSuppliers().add(itemSupplier);
+				}
+			}
+			if (inventoryAnalysisQuery.getSupplierNums() != null && !inventoryAnalysisQuery.getSupplierNums().isEmpty()) {
+				if (!ignoreRule && data.getSuppliers().isEmpty()) {
+					list.remove(i);
+					continue;
+				}
+
+			}
+			if (inventoryAnalysisQuery.getSuggestionType() == 1) {
+				if (data.getSuppliers().size() > 0) {
+					SupplierDTO supplier = data.getSuppliers().get(0);
+					if (supplier.getSupplierPurchasePeriod() != null) {
+						if (org.apache.commons.lang.StringUtils.isEmpty(supplier.getSupplierPurchasePeriodUnit())) {
+							supplier.setSupplierPurchasePeriodUnit(AppConstants.PERIOD_UNIT_DAY);
+						}
+						if (supplier.getSupplierPurchasePeriodUnit().equals(AppConstants.PERIOD_UNIT_DAY)) {
+
+							data.setSuggestionQty(data.getAvgSaleQty().multiply(
+									BigDecimal.valueOf(supplier.getSupplierPurchasePeriod())));
+						} else if (supplier.getSupplierPurchasePeriodUnit().equals(AppConstants.PERIOD_UNIT_WEEk)) {
+
+							data.setSuggestionQty(data.getAvgSaleQty().multiply(
+									BigDecimal.valueOf(supplier.getSupplierPurchasePeriod() * 7)));
+						} else if (supplier.getSupplierPurchasePeriodUnit().equals(AppConstants.PERIOD_UNIT_MONTH)) {
+							int day = 30;
+							if (supplier.getSupplierPurchaseDate() != null) {
+								Date nextPurchaseDate = DateUtil.getMinOfDate(supplier.getSupplierPurchaseDate());
+								while (nextPurchaseDate.before(now)) {
+									nextPurchaseDate = DateUtil.addMonth(nextPurchaseDate, 1);
+								}
+								day = DateUtil.diffDay(DateUtil.addMonth(nextPurchaseDate, -1), nextPurchaseDate);
+							}
+							data.setSuggestionQty(data.getAvgSaleQty().multiply(
+									BigDecimal.valueOf(supplier.getSupplierPurchasePeriod() * day)));
+						}
+					}
+				}
+
+			} else if (inventoryAnalysisQuery.getSuggestionType() == 3) {
+				data.setSuggestionQty(storeMatrixReorderQty);
+
+			} else if (inventoryAnalysisQuery.getSuggestionType() == 2) {
+				data.setSuggestionQty(storeMatrixUpperStock.subtract(data.getInventoryQty()));
+
+			} else if (inventoryAnalysisQuery.getSuggestionType() == 4) {
+				if (data.get("saleQty") == null) {
+					data.set("saleQty", BigDecimal.ZERO);
+				}
+				data.setSuggestionQty(((BigDecimal) data.get("saleQty")).subtract(data.getInventoryQty()));
+
+			}
+			if (inventoryAnalysisQuery.isSubBuying()) {
+				data.setSuggestionQty(data.getSuggestionQty().subtract(data.getOnLoadQty()));
+			}
+			data.setSuggestionQty(data.getSuggestionQty().add(data.getRequestLostQty()));
+			if (inventoryAnalysisQuery.isQueryAssemble()) {
+				data.setSuggestionQty(data.getSuggestionQty().subtract(data.getOnLoadQty()));
+				if (data.getItemMinQuantity() != null && data.getItemMinQuantity().compareTo(BigDecimal.ZERO) > 0) {
+
+					data.setSuggestionQty(data.getSuggestionQty()
+							.divide(data.getItemMinQuantity(), 0, BigDecimal.ROUND_UP)
+							.multiply(data.getItemMinQuantity()));
+
+				}
+			}
+			if (data.getSuggestionQty().compareTo(BigDecimal.ZERO) < 0) {
+				data.setSuggestionQty(BigDecimal.ZERO);
+			}
+			BigDecimal rate = BigDecimal.ONE;
+			String unit = data.getPosItem().getItemUnit();
+			if (inventoryAnalysisQuery.getUnitType() != null) {
+
+				if (inventoryAnalysisQuery.getUnitType().equals(AppConstants.UNIT_SOTRE)) {
+					rate = data.getPosItem().getItemInventoryRate();
+					unit = data.getPosItem().getItemInventoryUnit();
+				} else if (inventoryAnalysisQuery.getUnitType().equals(AppConstants.UNIT_TRANFER)) {
+					rate = data.getPosItem().getItemTransferRate();
+					unit = data.getPosItem().getItemTransferUnit();
+				} else if (inventoryAnalysisQuery.getUnitType().equals(AppConstants.UNIT_PURCHASE)) {
+					rate = data.getPosItem().getItemPurchaseRate();
+					unit = data.getPosItem().getItemPurchaseUnit();
+				} else if (inventoryAnalysisQuery.getUnitType().equals(AppConstants.UNIT_PIFA)) {
+					rate = data.getPosItem().getItemWholesaleRate();
+					unit = data.getPosItem().getItemWholesaleUnit();
+				}
+			}
+			if (data.getInventoryQty().abs().compareTo(BigDecimal.valueOf(0.001)) < 0
+					&& data.getInventoryBasicQty().abs().compareTo(BigDecimal.valueOf(0.001)) < 0
+					&& data.getAvgSaleQty().abs().compareTo(BigDecimal.valueOf(0.001)) < 0
+					&& data.getBasicInventoryQty().abs().compareTo(BigDecimal.valueOf(0.001)) < 0
+					&& !inventoryAnalysisQuery.isQueryAssemble()
+					&& !ignoreRule) {
+				list.remove(i);
+				continue;
+			}
+
+			if (rate.compareTo(BigDecimal.ZERO) > 0) {
+				data.setInventoryQty(data.getInventoryQty().divide(rate, 2, BigDecimal.ROUND_HALF_UP));
+				data.setBasicInventoryQty(data.getBasicInventoryQty().divide(rate, 2, BigDecimal.ROUND_HALF_UP));
+				data.setInventoryBasicQty(data.getInventoryBasicQty().divide(rate, 2, BigDecimal.ROUND_HALF_UP));
+				data.setOnLoadQty(data.getOnLoadQty().divide(rate, 2, BigDecimal.ROUND_HALF_UP));
+				data.setSuggestionQty(data.getSuggestionQty().divide(rate, 2, BigDecimal.ROUND_HALF_UP));
+				data.setAvgSaleQty(data.getAvgSaleQty().divide(rate, 2, BigDecimal.ROUND_HALF_UP));
+				data.setRequestLostQty(data.getRequestLostQty().divide(rate, 2, BigDecimal.ROUND_HALF_UP));
+				if (data.get("saleQty") == null) {
+					data.set("saleQty", BigDecimal.ZERO);
+				}
+				data.set("saleQty", ((BigDecimal) data.get("saleQty")).divide(rate, 2, BigDecimal.ROUND_HALF_UP));
+			}
+			data.setItemRate(rate);
+			data.setItemUnit(unit);
+			data.setSuggestionQty(data.getSuggestionQty().setScale(0, BigDecimal.ROUND_UP));
+			data.setBuyQty(data.getSuggestionQty());
+			data.set("storeItemCode", data.getPosItem().getItemCode());
+			data.set("itemCategoryCode", "");
+			if (data.getPosItem().getItemCategoryCode() != null) {
+				data.set("itemCategoryCode", data.getPosItem().getItemCategoryCode());
+
+			}
+
+		}
+		return list;*/
+	return null;
     }
 
 }

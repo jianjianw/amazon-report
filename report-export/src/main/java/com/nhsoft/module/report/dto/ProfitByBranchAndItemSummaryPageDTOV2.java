@@ -1,11 +1,12 @@
 package com.nhsoft.module.report.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ProfitByBranchAndItemSummaryPageDTOV2 {
+public class ProfitByBranchAndItemSummaryPageDTOV2 implements Serializable {
 
-    private static final long serialVersionUID = -904230236625330808L;
+    private static final long serialVersionUID = 6467172586041938503L;
     private Integer count;
     private List<ProfitByBranchAndItemDTO> data;
     private BigDecimal profitSum;
