@@ -1465,7 +1465,8 @@ public class APIBasic {
 		query.setLimit(20);
 		query.setSortField("categoryCode");
 		query.setSortType("asc");
-		query.setIsQueryCF(true);
+		//query.setIsQueryCF(true);
+		//query.setIsQueryGrade(true);
 		SaleAnalysisBranchItemPageSummary result = reportRpc.findSaleAnalysisByBranchPosItemsByPage(query);
  		return result;
 	}
@@ -1944,21 +1945,6 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-04-27");
 		List<ItemSaleQtySummary> result = reportRpc.findItemSaleQty(systemBookCode,99,dateFrom,dateTo,true,true,true);
-		return result;
-	}
-
-	//findPurchaseAndTransferDTOs
-	@RequestMapping(method = RequestMethod.GET,value = "/test105")
-	public List test105() throws Exception{
-		String systemBookCode = "4020";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-04-27");
-		StoreQueryCondition query = new StoreQueryCondition();
-		query.setSystemBookCode(systemBookCode);
-		query.setDateStart(dateFrom);
-		query.setDateEnd(dateTo);
-		List<Object[]> result = posItemLogRpc.findItemLotSummary(systemBookCode, 99, dateFrom, dateTo, getBranchNums(), null);
 		return result;
 	}
 
