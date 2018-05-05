@@ -323,9 +323,11 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("sum(case when pos_item_log_inout_flag = 1 then pos_item_log_money else -pos_item_log_money end) as money, ");
 		sb.append("sum(case when pos_item_log_inout_flag = 1 then pos_item_log_use_qty else -pos_item_log_use_qty end) as useQty ");
 		sb.append("from pos_item_log with(nolock) ");
-		sb.append("where system_book_code = :systemBookCode and branch_num = :branchNum and pos_item_log_lot_number is not null and pos_item_log_lot_number != '' ");
-		sb.append("and pos_item_log_date_index between :dateFrom and :dateTo  ");
-
+		sb.append("where system_book_code = '" + systemBookCode + "' ");
+		sb.append("and branch_num = " + branchNum + " ");
+		sb.append("and pos_item_log_date_index between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		sb.append("and pos_item_log_lot_number is not null ");
+		sb.append("and pos_item_log_lot_number != '' ");
 		if(itemNums != null && itemNums.size() > 0){
 			sb.append("and item_num in " + AppUtil.getIntegerParmeList(itemNums));
 		}
@@ -334,10 +336,6 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		}
 		sb.append("group by item_num, pos_item_log_lot_number ");
 		Query query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", systemBookCode);
-		query.setInteger("branchNum", branchNum);
-		query.setString("dateFrom", DateUtil.getDateShortStr(dateFrom));
-		query.setString("dateTo", DateUtil.getDateShortStr(dateTo));
 		return query.list();
 	}
 

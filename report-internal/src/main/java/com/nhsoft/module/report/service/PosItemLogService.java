@@ -375,4 +375,18 @@ public interface PosItemLogService {
 	public List<Object[]> findItemInOutQtyAndMoney(StoreQueryCondition storeQueryCondition);
 
 
+	/**
+	 * 按商品 批次号汇总 数量 金额 毛利 常用数量
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param itemNums
+	 * @param summaries
+	 * @return
+	 */
+	public List<Object[]> findItemLotSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo,
+											 List<Integer> itemNums, List<String> summaries);
+
+
 }

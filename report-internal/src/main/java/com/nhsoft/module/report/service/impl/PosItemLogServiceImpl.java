@@ -712,4 +712,9 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 		}
 		return allObjects;
 	}
+
+	@Override
+	public List<Object[]> findItemLotSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums, List<String> summaries) {
+		return posItemLogDao.findItemLotSummary(systemBookCode,branchNum,dateFrom,dateTo,itemNums,summaries);
+	}
 }
