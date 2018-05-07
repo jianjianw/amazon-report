@@ -758,20 +758,19 @@ public class APIBasic {
 	public List<PosOrderDTO> test39() throws Exception{
 
 		PosOrderQuery query = new PosOrderQuery();
-		query.setSystemBookCode("4020");
+		query.setSystemBookCode("4444");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-04-11");
+		Date dateFrom = sdf.parse("2018-05-07");
+		Date dateTo = sdf.parse("2018-05-07");
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		query.setBranchNums(getBranchNums());
 		query.setPaymentType("quan");
-		BigDecimal count = BigDecimal.valueOf(60);
+		BigDecimal count = BigDecimal.valueOf(1);
 		query.setDelCountType(">");
 		query.setDelCount(count);
-		/*
 		query.setDelMoneyType(">");
-		query.setDelMoney(count);*/
+		query.setDelMoney(count);
 
 		query.setOprateTimeType(">");
 		query.setOprateTime(count);
