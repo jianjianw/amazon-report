@@ -1452,10 +1452,10 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test75")
 	public Object test75() throws Exception{
-		String systemBookCode = "4020";
+		String systemBookCode = "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-09");
+		Date dateFrom = sdf.parse("2018-05-04");
+		Date dateTo = sdf.parse("2018-05-04");
 		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
