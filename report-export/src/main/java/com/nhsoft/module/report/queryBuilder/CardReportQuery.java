@@ -43,6 +43,15 @@ public class CardReportQuery extends QueryBuilder {
 	private int offset;
 	private int limit;
 
+	private Integer max = 50000;
+
+	public Integer getMax() {
+		return max == null?50000:max;
+	}
+	public void setMax(Integer max) {
+		this.max = max;
+	}
+
 	public List<Integer> getItemNums() {
 		return itemNums;
 	}

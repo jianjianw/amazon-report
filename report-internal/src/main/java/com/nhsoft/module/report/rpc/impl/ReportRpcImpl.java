@@ -4928,7 +4928,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}else{
 			profitAnalysisQueryData.setPage(false);
 		}
-		List<Object[]> objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);//500-1000
+		List<Object[]> objects = reportService.findProfitAnalysisByBranchAndItemByPage(profitAnalysisQueryData);
 
 		int size = objects.size();
 		List<ProfitByBranchAndItemSummary> list = new ArrayList<ProfitByBranchAndItemSummary>(size);

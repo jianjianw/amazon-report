@@ -38,6 +38,15 @@ public class RetailDetailQueryData extends QueryBuilder {
 	private String sortField;
 	private String sortType;
 
+	private Integer max = 50000;
+
+	public Integer getMax() {
+		return max == null?50000:max;
+	}
+	public void setMax(Integer max) {
+		this.max = max;
+	}
+
 
 
 	

@@ -5083,6 +5083,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		sb.append("group by detail.order_detail_branch_num, detail.item_num, detail.order_detail_state_code ");
 		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setMaxResults(queryData.getMax());
 		List<Object[]> objects = query.list();
 		if (queryData.getIsQueryCF() != null && queryData.getIsQueryCF()) {
 			sb = new StringBuffer();
@@ -5130,6 +5131,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			}
 			sb.append("group by kitDetail.order_kit_detail_branch_num, kitDetail.item_num, kitDetail.order_kit_detail_state_code ");
 			query = currentSession().createSQLQuery(sb.toString());
+			query.setMaxResults(queryData.getMax());
 			List<Object[]> subObjects = query.list();
 			objects.addAll(subObjects);
 		}
@@ -5860,6 +5862,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(cardReportQuery.isPaging()){
 			query.setFirstResult(cardReportQuery.getOffset());
 			query.setMaxResults(cardReportQuery.getLimit());
+		}else{
+			query.setMaxResults(cardReportQuery.getMax());
 		}
 		return query.list();
 	}
@@ -5979,6 +5983,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(saleAnalysisQueryData.isPage()){
 			query.setFirstResult(saleAnalysisQueryData.getOffset());
 			query.setMaxResults(saleAnalysisQueryData.getLimit());
+		}else{
+			query.setMaxResults(saleAnalysisQueryData.getMax());
 		}
 
 		return query.list();
@@ -6201,6 +6207,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(profitAnalysisQueryData.isPage()){
 			query.setFirstResult(profitAnalysisQueryData.getOffset());
 			query.setMaxResults(profitAnalysisQueryData.getLimit());
+		}else{
+			query.setMaxResults(profitAnalysisQueryData.getMax());
 		}
 
 
@@ -6418,6 +6426,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(profitAnalysisQueryData.isPage()){
 			query.setFirstResult(profitAnalysisQueryData.getOffset());
 			query.setMaxResults(profitAnalysisQueryData.getLimit());
+		}else{
+			query.setMaxResults(profitAnalysisQueryData.getMax());
 		}
 
 
@@ -6538,6 +6548,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(queryData.isPage()){
 			query.setFirstResult(queryData.getOffset());
 			query.setMaxResults(queryData.getLimit());
+		}else{
+			query.setMaxResults(queryData.getMax());
 		}
 		return query.list();
 	}
@@ -6735,6 +6747,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(cardReportQuery.isPaging()){
 			query.setFirstResult(cardReportQuery.getOffset());
 			query.setMaxResults(cardReportQuery.getLimit());
+		}else{
+			query.setMaxResults(cardReportQuery.getMax());
 		}
 		return query.list();
 	}
@@ -6774,6 +6788,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(queryData.isPage()){
 			query.setFirstResult(queryData.getOffset());
 			query.setMaxResults(queryData.getLimit());
+		}else{
+			query.setMaxResults(queryData.getMax());
 		}
 
 		List<Object[]> objects = query.list();
@@ -7017,6 +7033,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if(policyAllowPriftQuery.isPage()){
 			sqlQuery.setFirstResult(policyAllowPriftQuery.getOffset());
 			sqlQuery.setMaxResults(policyAllowPriftQuery.getLimit());
+		}else{
+			sqlQuery.setMaxResults(policyAllowPriftQuery.getMax());
 		}
 		return sqlQuery.list();
 	}
