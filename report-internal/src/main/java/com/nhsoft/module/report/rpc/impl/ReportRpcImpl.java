@@ -4755,6 +4755,15 @@ public class ReportRpcImpl implements ReportRpc {
 				case "unit":
 					flag = true;
 					break;
+				/*case "saleCost":
+					profitAnalysisQueryData.setSortField("cost");
+					break;
+				case "saleNums":
+					profitAnalysisQueryData.setSortField("amount");
+					break;
+				case "saleMoney":
+					profitAnalysisQueryData.setSortField("money");
+					break;*/
 			}
 			if(flag){
 				List<PosItem> posItems = posItemService.findShortItems(profitAnalysisQueryData.getSystemBookCode());
@@ -4821,7 +4830,6 @@ public class ReportRpcImpl implements ReportRpc {
 				return result;
 			}
 		}
-
 
 		boolean page = profitAnalysisQueryData.isPage();
 		int days = DateUtil.diffDay(profitAnalysisQueryData.getShiftTableFrom(), profitAnalysisQueryData.getShiftTableTo());
@@ -4917,6 +4925,22 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public ProfitByBranchAndItemSummaryPageDTO findProfitAnalysisByBranchAndItemByPage(ProfitAnalysisQueryData profitAnalysisQueryData) {
+
+		if(profitAnalysisQueryData.getSortField() != null){
+
+			switch (profitAnalysisQueryData.getSortField()){
+				case "cost":
+					profitAnalysisQueryData.setSortField("saleCost");
+					break;
+				case "amount":
+					profitAnalysisQueryData.setSortField("saleNums");
+					break;
+				case "money":
+					profitAnalysisQueryData.setSortField("saleMoney");
+					break;
+			}
+		}
+
 		boolean page = profitAnalysisQueryData.isPage();
 
 		int days = DateUtil.diffDay(profitAnalysisQueryData.getShiftTableFrom(), profitAnalysisQueryData.getShiftTableTo());

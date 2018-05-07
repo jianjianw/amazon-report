@@ -12961,7 +12961,7 @@ public class ReportServiceImpl implements ReportService {
 		String type = alipayDetailQuery.getType();
 		Boolean queryAll = alipayDetailQuery.getQueryAll();
 		String systemBookCode = alipayDetailQuery.getSystemBookCode();
-		List<Integer> branchNums = new ArrayList<>();
+		List<Integer> branchNums = alipayDetailQuery.getBranchNums();
 		Date dateFrom  = alipayDetailQuery.getDateFrom();
 		Date dateTo = alipayDetailQuery.getDateTo();
 

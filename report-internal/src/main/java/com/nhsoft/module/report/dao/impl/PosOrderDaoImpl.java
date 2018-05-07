@@ -6161,7 +6161,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		StringBuffer sb = new StringBuffer();
 		if(profitAnalysisQueryData.getIsQueryCF()){
-		    sb.append("select branchNum as branchNum, itemNum as itemNum, matrixNum as matrixNum, sum(profit) as profit,sum(amount) as saleNums,sum(money) as saleMoney, sum(cost) as saleCost from( ");
+		    sb.append("select branchNum as branchNum, itemNum as itemNum, matrixNum as matrixNum, sum(profit) as profit,sum(saleNums) as saleNums,sum(saleMoney) as saleMoney, sum(saleCost) as saleCost from( ");
         }
 
 		if (profitAnalysisQueryData.isQueryClient()

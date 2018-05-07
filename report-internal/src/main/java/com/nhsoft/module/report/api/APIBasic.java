@@ -1451,10 +1451,10 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test75")
 	public Object test75() throws Exception{
-		String systemBookCode = "4344";
+		String systemBookCode = "4173";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-05-04");
-		Date dateTo = sdf.parse("2018-05-04");
+		Date dateTo = sdf.parse("2018-04-04");
 		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
@@ -1466,6 +1466,7 @@ public class APIBasic {
 		query.setSortType("asc");
 		//query.setIsQueryCF(true);
 		//query.setIsQueryGrade(true);
+		query.setPage(false);
 		SaleAnalysisBranchItemPageSummary result = reportRpc.findSaleAnalysisByBranchPosItemsByPage(query);
  		return result;
 	}
@@ -1501,7 +1502,9 @@ public class APIBasic {
 
 		AlipayDetailQuery query = new AlipayDetailQuery();
 		query.setSystemBookCode(systemBookCode);
-		query.setBranchNums(getBranchNums());
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(1);
+		query.setBranchNums(branchNums);
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		query.setQueryAll(false);
@@ -1956,6 +1959,43 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-04-27");
 		List<PurchaseAndTransferDetailDTO> result = reportRpc.findPurchaseAndTransferDetailDTOs(systemBookCode, 99, dateFrom, dateTo, null, null, null, AppConstants.UNIT_USE);
+		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test107/{sortField}/{sortType}")				//byPage	毛利分析 商品毛利汇总   ok
+	public ProfitByBranchAndItemSummaryPageDTOV2 test107(@PathVariable String sortField,@PathVariable String sortType) throws Exception {
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
+		query.setSystemBookCode(systemBookCode);
+		query.setShiftTableFrom(dateFrom);
+		query.setShiftTableTo(dateTo);
+		query.setIsQueryCF(true);
+		query.setPage(true);
+		query.setOffset(0);
+		query.setLimit(46);
+		query.setBranchNums(getBranchNums());
+		//444401187  水果组合
+
+		//444401191 精品制单组合
+		//444401190
+
+
+		/*List<String> orderSource = new ArrayList<>();
+		orderSource.add("第三方商城");
+		query.setOrderSources(orderSource);*/
+
+		List<String> list = new ArrayList<>();
+		list.add("210");
+		query.setPosItemTypeCodes(list);
+		query.setSortField(sortField);
+		query.setSortType(sortType);
+
+
+		ProfitByBranchAndItemSummaryPageDTOV2 result = reportRpc.findProfitAnalysisByBranchAndItemByPageV2(query);
 		return result;
 	}
 
