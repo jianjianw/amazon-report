@@ -6873,7 +6873,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	public String createRetailDetailsQuery(RetailDetailQueryData queryData, boolean isFm){
 		StringBuilder sb = new StringBuilder();
-		sb.append("from pos_order_detail as detail with(nolock, forceseek) inner join pos_order as p with(nolock) on p.order_no = detail.order_no ");
+		sb.append("from pos_order_detail as detail with(nolock, forceseek) inner join pos_order as p with(nolock, forceseek) on p.order_no = detail.order_no ");
 		sb.append("where p.system_book_code = '" + queryData.getSystemBookCode() + "' ");
 		if (queryData.getBranchNums() != null && queryData.getBranchNums().size() > 0) {
 			sb.append("and p.branch_num in " + AppUtil.getIntegerParmeList(queryData.getBranchNums()));
