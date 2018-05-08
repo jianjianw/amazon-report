@@ -769,8 +769,8 @@ public class APIBasic {
 		BigDecimal count = BigDecimal.valueOf(1);
 		query.setDelCountType(">");
 		query.setDelCount(count);
-		query.setDelMoneyType(">");
-		query.setDelMoney(count);
+		/*query.setDelMoneyType(">");
+		query.setDelMoney(count);*/
 
 		query.setOprateTimeType(">");
 		query.setOprateTime(count);

@@ -5767,13 +5767,19 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 		boolean delCountQuery = StringUtils.isNotEmpty(posOrderQuery.getDelCountType()) && posOrderQuery.getDelCount() != null;
 		boolean delMoneyQuery = StringUtils.isNotEmpty(posOrderQuery.getDelMoneyType()) && posOrderQuery.getDelMoney() != null;
-		if(delCountQuery){
+		if(delCountQuery && delMoneyQuery){
 			sb.append("and exists (select 1 from pos_order_matrix as m where m.order_no = p.order_no ");
-			sb.append("and m.order_cancel_item_count " + posOrderQuery.getDelCountType() + " " + posOrderQuery.getDelCount() + " ) ");
-		}
-		if(delMoneyQuery){
-			sb.append("and exists (select 1 from pos_order_matrix as m where m.order_no = p.order_no ");
-			sb.append("and m.order_cancel_item_money " + posOrderQuery.getDelMoneyType() + " " + posOrderQuery.getDelMoney() + " ) ");
+			sb.append("and m.order_cancel_item_count " + posOrderQuery.getDelCountType() + " " + posOrderQuery.getDelCount()+" ");
+			sb.append("and m.order_cancel_item_money " + posOrderQuery.getDelMoneyType() + " " + posOrderQuery.getDelMoney()+" ) ");
+		}else{
+			if(delCountQuery){
+				sb.append("and exists (select 1 from pos_order_matrix as m where m.order_no = p.order_no ");
+				sb.append("and m.order_cancel_item_count " + posOrderQuery.getDelCountType() + " " + posOrderQuery.getDelCount() + " ) ");
+			}
+			if(delMoneyQuery){
+				sb.append("and exists (select 1 from pos_order_matrix as m where m.order_no = p.order_no ");
+				sb.append("and m.order_cancel_item_money " + posOrderQuery.getDelMoneyType() + " " + posOrderQuery.getDelMoney() + " ) ");
+			}
 		}
 		if(StringUtils.isNotEmpty(posOrderQuery.getOprateTimeType()) && posOrderQuery.getOprateTime() != null){
 			sb.append("and DATEDIFF(mi,p.order_date,p.order_time) " + posOrderQuery.getOprateTimeType() + " " + posOrderQuery.getOprateTime()+" ");
