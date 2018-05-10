@@ -3832,7 +3832,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				.add(Projections.groupProperty("detail.itemNum"))
 				.add(Projections
 						.sqlProjection(
-								"sum(case when order_detail_state_code = 1 then order_detail_payment_money when order_detail_state_code = 4 then -order_detail_payment_money end) as money,"
+                                  "sum(case when order_detail_state_code = 1 then order_detail_payment_money when order_detail_state_code = 4 then -order_detail_payment_money end) as money,"
 										+ "sum(case when order_detail_state_code = 4 then -order_detail_discount when order_detail_state_code = 1 then order_detail_discount end) as discount, "
 										+ "sum(case when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as amount",
 								new String[] { "amount", "money", "discount" }, new Type[] {

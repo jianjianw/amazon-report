@@ -5,10 +5,27 @@ import java.math.BigDecimal;
 
 public class ItemRebatesSummary implements Serializable {
 
+    private Integer branchNum;
+    private Integer itemNum;
     private BigDecimal money;
     private BigDecimal discount;
     private BigDecimal amount;
 
+    public Integer getBranchNum() {
+        return branchNum;
+    }
+
+    public void setBranchNum(Integer branchNum) {
+        this.branchNum = branchNum;
+    }
+
+    public Integer getItemNum() {
+        return itemNum;
+    }
+
+    public void setItemNum(Integer itemNum) {
+        this.itemNum = itemNum;
+    }
 
     public BigDecimal getMoney() {
         return money;

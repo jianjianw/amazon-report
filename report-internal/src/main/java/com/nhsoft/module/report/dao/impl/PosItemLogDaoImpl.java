@@ -133,7 +133,10 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(branchNum != null){
 			criteria.add(Restrictions.eq("p.branchNum", branchNum));
 		}
-		criteria.add(Restrictions.between("p.posItemLogDateIndex", DateUtil.getDateShortStr(dateFrom), DateUtil.getDateShortStr(dateTo)));
+
+		if(dateFrom != null && dateTo != null){
+			criteria.add(Restrictions.between("p.posItemLogDateIndex", DateUtil.getDateShortStr(dateFrom), DateUtil.getDateShortStr(dateTo)));
+		}
 
 		if(itemNums != null && itemNums.size() > 0){
 			criteria.add(Restrictions.in("p.itemNum", itemNums));
@@ -275,17 +278,16 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		sb.append("select branch_num, pos_item_log_date_index, item_num, pos_item_log_item_matrix_num, pos_item_log_inout_flag, ");
 		sb.append("sum(pos_item_log_item_amount) as amount, sum(pos_item_log_money) as money, sum(pos_item_log_item_assist_amount) as assistAmount, ");
 		sb.append("sum(pos_item_log_use_qty) as useQty, sum(pos_item_log_operate_price * pos_item_log_item_amount) as saleMoney, ");
-		sb.append("min(pos_item_log_use_unit), sum(pos_item_log_adjust_money) as adjustMoney ");
+		sb.append("min(pos_item_log_use_unit) as min, sum(pos_item_log_adjust_money) as adjustMoney ");
 
 		sb.append("from pos_item_log with(nolock) ");
 
 		sb.append("where system_book_code = '" + systemBookCode + "' ");
+		sb.append("and pos_item_log_date_index between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		if(branchNums != null && branchNums.size() > 0){
 
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
-		sb.append("and l.pos_item_log_date_index between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
-
 		if(StringUtils.isNotEmpty(summaries)){
 			sb.append("and pos_item_log_summary in (:summarys) ");
 		}
@@ -343,7 +345,7 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 	public List<Object[]> findItemLatestPriceDate(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums, String posItemLogSummary) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select item_num, pos_item_log_item_price, pos_item_log_date ");
-		sb.append("from pos_item_log with(nolock), ");
+		sb.append("from pos_item_log as l with(nolock), ");
 		sb.append("(select item_num as itemNum, max(pos_item_log_date) as maxDate from pos_item_log with(nolock) where system_book_code = '" + systemBookCode + "' and branch_num = " + branchNum + " ");
 		if(itemNums != null && itemNums.size() > 0){
 			sb.append("and item_num in " + AppUtil.getIntegerParmeList(itemNums));
@@ -352,23 +354,16 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 			sb.append("and pos_item_log_summary in (:summaries) ");
 		}
 		sb.append("group by item_num) as sub ");
-		sb.append("where sub.itemNum = item_num and pos_item_log_date = sub.maxDate ");
-		sb.append("and branch_num = " + branchNum + " and system_book_code = '" + systemBookCode + "' ");
-		sb.append("and pos_item_log_date_index between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
-
+		sb.append("where l.item_num = sub.itemNum and l.pos_item_log_date = sub.maxDate ");
+		sb.append("and l.branch_num = " + branchNum + " and l.system_book_code = '" + systemBookCode + "' ");
+		sb.append("and l.pos_item_log_date_index between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		if(StringUtils.isNotEmpty(posItemLogSummary)){
-			sb.append("and pos_item_log_summary in (:summaries) ");
+			sb.append("and l.pos_item_log_summary in (:summaries) ");
 		}
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		if(StringUtils.isNotEmpty(posItemLogSummary)){
 			sqlQuery.setParameterList("summaries", posItemLogSummary.split(","));
 
-		}
-		if(dateFrom != null){
-			sqlQuery.setString("dateFrom", DateUtil.getDateShortStr(dateFrom));
-		}
-		if(dateTo != null){
-			sqlQuery.setString("dateTo", DateUtil.getDateShortStr(dateTo));
 		}
 		return sqlQuery.list();
 	}

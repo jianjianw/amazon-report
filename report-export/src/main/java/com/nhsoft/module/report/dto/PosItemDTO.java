@@ -1128,4 +1128,21 @@ public class PosItemDTO implements java.io.Serializable {
 		return null;
 	}
 
+
+	public String getItemCostMode(BranchDTO branch){
+		if(itemCostMode.trim().equals("中心手工指定")){
+
+			if(branch == null
+					|| branch.getBranchNum().equals(99)
+					|| branch.getBranchRdc()){
+				return "手工指定";
+			} else {
+				return "加权平均法";
+			}
+
+		} else {
+			return itemCostMode;
+		}
+	}
+
 }

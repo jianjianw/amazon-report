@@ -3121,9 +3121,9 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append("sum(case when detail.out_order_detail_std_price is null then out_order_detail_sale_subtotal else (detail.out_order_detail_std_price * detail.out_order_detail_qty) end) as stdMoney ");
 		sb.append("from out_order_detail as detail with(nolock, forceseek) inner join transfer_out_order as t with(nolock, forceseek) on detail.out_order_fid = t.out_order_fid ");
 		sb.append("where t.system_book_code = '" + policyPosItemQuery.getSystemBookCode() + "' ");
-		sb.append("and out_branch_num = " + policyPosItemQuery.getBranchNum() + " ");
+		sb.append("and detail.out_branch_num = " + policyPosItemQuery.getBranchNum() + " ");
 		if(policyPosItemQuery.getBranchNums() != null && policyPosItemQuery.getBranchNums().size() > 0){
-			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(policyPosItemQuery.getBranchNums()));
+			sb.append("and detail.branch_num in " + AppUtil.getIntegerParmeList(policyPosItemQuery.getBranchNums()));
 		}
 		sb.append("and t.out_order_audit_time between :dateFrom and :dateTo ");
 		sb.append("and t.out_order_state_code = 3 ");

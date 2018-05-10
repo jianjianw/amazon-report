@@ -31,12 +31,26 @@ public class InventoryServiceImpl implements InventoryService {
 
 	@Override
 	public List<Inventory> findByItemAndBranch(String systemBookCode, Integer branchNum, List<Integer> itemNums, Boolean centerFlag) {
-		return inventoryDao.findByItemAndBranch(systemBookCode,branchNum,itemNums,centerFlag);
+		List<Inventory> inventoryList = inventoryDao.findByItemAndBranch(systemBookCode, branchNum, itemNums, centerFlag);
+		for (int i = 0; i <inventoryList.size() ; i++) {
+			Inventory inventory = inventoryList.get(i);
+			inventory.getInventoryMatrixs().size();
+			inventory.getInventoryBatchDetails().size();
+			inventory.getInventoryLnDetails().size();
+		}
+		return inventoryList;
 	}
 
 	@Override
 	public List<Inventory> findByStorehouseNum(Integer storehouseNum, List<Integer> itemNums) {
-		return inventoryDao.findByStorehouseNum(storehouseNum,itemNums);
+		List<Inventory> inventoryList = inventoryDao.findByStorehouseNum(storehouseNum, itemNums);
+		for (int i = 0; i <inventoryList.size() ; i++) {
+			Inventory inventory = inventoryList.get(i);
+			inventory.getInventoryMatrixs().size();
+			inventory.getInventoryBatchDetails().size();
+			inventory.getInventoryLnDetails().size();
+		}
+		return inventoryList;
 	}
 
 
