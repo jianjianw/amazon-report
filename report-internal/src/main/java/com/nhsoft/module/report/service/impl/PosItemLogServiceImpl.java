@@ -40,7 +40,7 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	public List<Object[]> findSumByItemFlag(String systemBookCode,
 											List<Integer> branchNums, Date dateFrom, Date dateTo, String summaries, List<Integer> itemNums,
 											Integer storehouseNum, List<String> memos) {
-		return posItemLogDao.findSumByItemFlag(systemBookCode, branchNums, dateFrom, dateTo, summaries, itemNums, storehouseNum, memos);
+        return posItemLogDao.findSumByItemFlag(systemBookCode, branchNums, dateFrom, dateTo, summaries, itemNums, storehouseNum, memos);
 	}
 	
 	@Override

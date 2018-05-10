@@ -12,14 +12,9 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
-import com.sun.org.apache.xpath.internal.functions.FuncTrue;
-import org.apache.commons.collections.functors.FalsePredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sun.font.TrueTypeFont;
 
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1668,18 +1663,27 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test85/{sortType}")
 	public InventoryProfitPageDTO test85(@PathVariable(value = "sortType") String sortType) throws Exception{
-		String systemBookCode = "4173";			//损益统计报表     商品汇总
+		String systemBookCode = "4020";			//损益统计报表     商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-01");
-		Date dateTo = sdf.parse("2018-03-31");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-30");
 
 		InventoryProfitQuery query = new InventoryProfitQuery();
 		query.setSystemBookCode(systemBookCode);
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
-		query.setBranchNums(getBranchNums());
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+		query.setBranchNums(branchNums);
 		query.setUnit("基本单位");
 		query.setIsChechZero(true);
+		List<String> reasons = new ArrayList<>();
+		reasons.add("原料领用单");
+		query.setReasons(reasons);
+		query.setCheckType("调整单");
+
+
+
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(10000);

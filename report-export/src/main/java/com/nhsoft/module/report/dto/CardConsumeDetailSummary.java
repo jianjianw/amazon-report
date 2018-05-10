@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 public class CardConsumeDetailSummary implements Serializable {
 
     private Integer cardUserNum;
-    private Integer cardUserPrintedNum;
+    private String cardUserPrintedNum;
     private String cardUserCustdName;
     private BigDecimal paymentMoney;
 
@@ -18,11 +18,11 @@ public class CardConsumeDetailSummary implements Serializable {
         this.cardUserNum = cardUserNum;
     }
 
-    public Integer getCardUserPrintedNum() {
+    public String getCardUserPrintedNum() {
         return cardUserPrintedNum;
     }
 
-    public void setCardUserPrintedNum(Integer cardUserPrintedNum) {
+    public void setCardUserPrintedNum(String cardUserPrintedNum) {
         this.cardUserPrintedNum = cardUserPrintedNum;
     }
 

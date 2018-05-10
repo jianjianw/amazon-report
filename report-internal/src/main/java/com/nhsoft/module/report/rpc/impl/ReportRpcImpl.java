@@ -3449,7 +3449,7 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = objects.get(i);
 			CardConsumeDetailSummary cardConsumeDetailSummary = new CardConsumeDetailSummary();
 			cardConsumeDetailSummary.setCardUserNum((Integer) object[0]);
-			cardConsumeDetailSummary.setCardUserPrintedNum((Integer) object[1]);
+			cardConsumeDetailSummary.setCardUserPrintedNum((String) object[1]);
 			cardConsumeDetailSummary.setCardUserCustdName((String) object[2]);
 			cardConsumeDetailSummary.setPaymentMoney((BigDecimal) object[3]);
 			list.add(cardConsumeDetailSummary);
