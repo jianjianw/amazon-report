@@ -44,6 +44,18 @@ public interface BranchItemRecoredDao {
 											List<Integer> itemNums, List<String> branchItemRecoredTypes);
 
 
+	/**
+	 * 按商品汇总最后进价
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param itemNums
+	 * @param branchItemRecoredTypes
+	 * @return
+	 */
+	public List<Object[]> findItemPrice(String systemBookCode, Integer branchNum,
+										List<Integer> itemNums, List<String> branchItemRecoredTypes);
+
+
 
 
 }

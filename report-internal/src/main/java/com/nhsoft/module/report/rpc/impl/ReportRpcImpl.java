@@ -3151,9 +3151,11 @@ public class ReportRpcImpl implements ReportRpc {
 		for (int i = 0; i <size ; i++) {
 			Object[] object = objects.get(i);
 			ItemRebatesSummary itemRebatesSummary = new ItemRebatesSummary();
-			itemRebatesSummary.setMoney((BigDecimal) object[0]);
-			itemRebatesSummary.setDiscount((BigDecimal) object[1]);
-			itemRebatesSummary.setAmount((BigDecimal)object[2]);
+			itemRebatesSummary.setBranchNum((Integer) object[0]);
+			itemRebatesSummary.setItemNum((Integer) object[1]);
+			itemRebatesSummary.setMoney((BigDecimal) object[2]);
+			itemRebatesSummary.setDiscount((BigDecimal) object[3]);
+			itemRebatesSummary.setAmount((BigDecimal)object[4]);
 			list.add(itemRebatesSummary);
 		}
 		return list;
@@ -3449,7 +3451,7 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = objects.get(i);
 			CardConsumeDetailSummary cardConsumeDetailSummary = new CardConsumeDetailSummary();
 			cardConsumeDetailSummary.setCardUserNum((Integer) object[0]);
-			cardConsumeDetailSummary.setCardUserPrintedNum((Integer) object[1]);
+			cardConsumeDetailSummary.setCardUserPrintedNum((String) object[1]);
 			cardConsumeDetailSummary.setCardUserCustdName((String) object[2]);
 			cardConsumeDetailSummary.setPaymentMoney((BigDecimal) object[3]);
 			list.add(cardConsumeDetailSummary);
@@ -7347,7 +7349,7 @@ public class ReportRpcImpl implements ReportRpc {
 
     @Override
     public List<InventoryAnalysisDTO> findInventoryAnalysiss(InventoryAnalysisQuery inventoryAnalysisQuery, ChainDeliveryParam chainDeliveryParam) {
-		String systemBookCode = inventoryAnalysisQuery.getSystemBookCode();
+		/*String systemBookCode = inventoryAnalysisQuery.getSystemBookCode();
 		Integer branchNum = inventoryAnalysisQuery.getBranchNum();
 		Date now = DateUtil.getMinOfDate(Calendar.getInstance().getTime());
 		Date yesterday = DateUtil.addDay(now, -1);
@@ -7514,17 +7516,17 @@ public class ReportRpcImpl implements ReportRpc {
 			posItemQuery.setRdc(branch.isRdc());
 			posItems = posItemService.findByPosItemQuery(posItemQuery, null, null, 0, 0);
 		}
-
+		List<PosItemDTO> posItemDTOS = CopyUtil.toList(posItems, PosItemDTO.class);
 		List<Integer> matrixItemNums = new ArrayList<Integer>();
-		for (int i = 0; i < posItems.size(); i++) {
+		for (int i = 0; i < posItemDTOS.size(); i++) {
+			PosItemDTO posItem = posItemDTOS.get(i);
 			PosItem posItem = posItems.get(i);
-
 			List<ItemMatrixDTO> itemMatrixs = CopyUtil.toList(posItem.getItemMatrixs(), ItemMatrixDTO.class);
+			PosItemDTO posItemDTO = CopyUtil.to(posItem, PosItemDTO.class);
 			InventoryAnalysisDTO dto = new InventoryAnalysisDTO();
-			//dto.setPosItem(posItem);
+			dto.setPosItem(posItem);
 			dto.setItemNum(posItem.getItemNum());
 			dto.setItemMatrixNum(0);
-			dto.getPosItem().getItemMatrixs().clear();
 			dto.setItemMinQuantity(posItem.getItemMinQuantity());
 			if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_MATRIX) {
 
@@ -7536,7 +7538,6 @@ public class ReportRpcImpl implements ReportRpc {
 						continue;
 					}
 					matrixDTO.setInventoryQty((BigDecimal) objects[0]);
-					//matrixDTO.setPosItem(posItem);
 					matrixDTO.setItemNum(posItem.getItemNum());
 					matrixDTO.setItemMatrixNum(itemMatrix.getItemMatrixNum());
 					matrixDTO.setItemMatrix(itemMatrix);
@@ -7733,10 +7734,13 @@ public class ReportRpcImpl implements ReportRpc {
 					continue;
 				}
 			} else {
-				if (data.getPosItem().getItemStockCeaseFlag() != null && data.getPosItem().getItemStockCeaseFlag() && !ignoreRule) {
-					list.remove(i);
-					continue;
+				if(data.getPosItem() != null){
+					if (data.getPosItem().getItemStockCeaseFlag() != null && data.getPosItem().getItemStockCeaseFlag() && !ignoreRule) {
+						list.remove(i);
+						continue;
+					}
 				}
+
 			}
 			if (data.getItemMatrixNum() != 0) {
 				StoreMatrixDetail storeMatrixDetail = AppUtil.getStoreMatrixDetail(systemBookCode, branchNum, itemNum,
@@ -7964,7 +7968,9 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 
 		}
-		return list;
+		return list;*/
+
+		return null;
 	}
 
 

@@ -223,7 +223,7 @@ public class ReceiveOrderDaoImpl extends DaoImpl implements ReceiveOrderDao {
 		sb.append("select detail.item_num, detail.receive_order_detail_item_matrix_num, max(detail.receive_order_detail_producing_date) ");
 		sb.append("from receive_order_detail as detail with(nolock) inner join receive_order as r with(nolock) ");
 		sb.append("on r.receive_order_fid = detail.receive_order_fid where r.system_book_code = :systemBookCode ");
-		sb.append("and branch_num = :branchNum and receive_order_state_code = 3 ");
+		sb.append("and r.branch_num = :branchNum and r.receive_order_state_code = 3 ");
 		if (itemNums != null && itemNums.size() > 0) {
 			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
 		}

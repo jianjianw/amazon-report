@@ -157,12 +157,6 @@ public class ReportServiceImpl implements ReportService {
 	@Autowired
 	private PosItemDao posItemDao;
 
-	@Autowired
-	private BranchItemRecoredService branchItemRecoredService;
-
-	@Autowired
-	private PosItemRpc posItemRpc;
-
 	
 	@Override
 	public Object excuteSql(String systemBookCode, String sql) {
@@ -4865,9 +4859,10 @@ public class ReportServiceImpl implements ReportService {
 			data.setRate(posItem.getItemInventoryRate());
 			map.put(data.getItemNum(), data);
 		}
-		// 查询最近进货价
-		List<Object[]> objects = posItemLogDao.findItemLatestPriceDate(systemBookCode, branchNum, dateFrom, dateTo,
-				null, AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+		//查询最近进货价
+		List<String> order = new ArrayList<>();
+		order.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+		List<Object[]> objects = branchItemRecoredDao.findItemPrice(systemBookCode, branchNum, null, order);
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[0];

@@ -12,14 +12,11 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
-import com.sun.org.apache.xpath.internal.functions.FuncTrue;
-import org.apache.commons.collections.functors.FalsePredicate;
+import com.sun.deploy.security.TrustRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sun.font.TrueTypeFont;
 
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1668,18 +1665,27 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test85/{sortType}")
 	public InventoryProfitPageDTO test85(@PathVariable(value = "sortType") String sortType) throws Exception{
-		String systemBookCode = "4173";			//损益统计报表     商品汇总
+		String systemBookCode = "4020";			//损益统计报表     商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-01");
-		Date dateTo = sdf.parse("2018-03-31");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-30");
 
 		InventoryProfitQuery query = new InventoryProfitQuery();
 		query.setSystemBookCode(systemBookCode);
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
-		query.setBranchNums(getBranchNums());
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+		query.setBranchNums(branchNums);
 		query.setUnit("基本单位");
 		query.setIsChechZero(true);
+		List<String> reasons = new ArrayList<>();
+		reasons.add("原料领用单");
+		query.setReasons(reasons);
+		query.setCheckType("调整单");
+
+
+
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(10000);
@@ -1998,5 +2004,130 @@ public class APIBasic {
 		ProfitByBranchAndItemSummaryPageDTOV2 result = reportRpc.findProfitAnalysisByBranchAndItemByPageV2(query);
 		return result;
 	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test108")
+	public List test108(){
+		InventoryAnalysisQuery query = new InventoryAnalysisQuery();
+		query.setSystemBookCode("4344");
+		query.setBranchNum(99);
+		query.setIsShowAll(true);
+		query.setIndexUnit(0);
+		query.setFindCount(false);
+		query.setRule1(false);
+		query.setRule2(false);
+		query.setRule3(false);
+		query.setRule4(false);
+		query.setRule5(false);
+		query.setRule6(true);
+		query.setSuggestionType(3);
+		query.setLastDays(28);
+		query.setStorehouseNum(434400017);
+		List<InventoryAnalysisDTO> result = reportRpc.findInventoryAnalysiss(query,null);
+		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test109")
+	public List test109() throws Exception{
+
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		PolicyPosItemQuery query = new PolicyPosItemQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		List<TransferPolicyDTO> result = report2Rpc.findTransferPolicyDTOs(query);
+		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test110")
+	public List test110() throws Exception{
+
+		InventoryExceptQuery query = new InventoryExceptQuery();
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		query.setSystemBookCode(systemBookCode);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		query.setBranchNum(99);
+
+		List<SingularPrice> result = reportRpc.findSingularPrice(query);
+		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test111")
+	public List test111() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		PolicyAllowPriftQuery query = new PolicyAllowPriftQuery();
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		query.setSystemBookCode(systemBookCode);
+		List<ItemRebatesSummary> result = reportRpc.findItemRebates(query);
+		BigDecimal amount = BigDecimal.ZERO;
+		BigDecimal money = BigDecimal.ZERO;
+		for (int i = 0; i < result.size(); i++) {
+			ItemRebatesSummary itemRebatesSummary = result.get(i);
+			amount = amount.add(itemRebatesSummary.getAmount());
+			money = money.add(itemRebatesSummary.getMoney());
+
+
+		}
+		System.out.println("--------------------------");
+		System.out.println("amount: "+ amount);
+		System.out.println("money: "+money);
+		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test112")
+	public List test112() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		PolicyAllowPriftQuery query = new PolicyAllowPriftQuery();
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		query.setSystemBookCode(systemBookCode);
+		List<RebatesDetailSummary> result = reportRpc.findRebatesDetail(query);
+		BigDecimal amount = BigDecimal.ZERO;
+		BigDecimal money = BigDecimal.ZERO;
+		for (int i = 0; i < result.size(); i++) {
+			RebatesDetailSummary rebatesDetailSummary = result.get(i);
+			 amount = amount.add(rebatesDetailSummary.getOrderDetailAmount());
+			 money =money.add(rebatesDetailSummary.getOrderDetailPaymentMoney());
+		}
+		System.out.println("--------------------------");
+		System.out.println("amount: "+ amount);
+		System.out.println("money: "+money);
+		return result;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test113")
+	public RebatesSumSummary test113() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		PolicyAllowPriftQuery query = new PolicyAllowPriftQuery();
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		query.setSystemBookCode(systemBookCode);
+		RebatesSumSummary result = reportRpc.findRebatesSum(query);
+		BigDecimal amount = result.getAmount();
+		BigDecimal money = result.getMoney();
+		System.out.println("--------------------------");
+		System.out.println("amount: "+ amount);
+		System.out.println("money: "+money);
+		return result;
+	}
+
+
 
 }

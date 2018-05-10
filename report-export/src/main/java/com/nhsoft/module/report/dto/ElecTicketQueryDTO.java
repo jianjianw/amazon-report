@@ -1,16 +1,16 @@
 package com.nhsoft.module.report.dto;
 
-import java.io.Serializable;
+import com.nhsoft.module.report.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
 
-public class ElecTicketQueryDTO implements Serializable {
+public class ElecTicketQueryDTO extends QueryBuilder {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 382141592277915631L;
-	private String systemBookCode;
 	private List<Integer> branchNums;
 	private Date dtFrom; // 开始时间
 	private Date dtTo; // 结束时间
@@ -18,14 +18,6 @@ public class ElecTicketQueryDTO implements Serializable {
 	private String couponType; // 消费券类型
 	private String ticketNo; // 消费券号
 	private String orderNo;// 结账单号
-
-	public String getSystemBookCode() {
-		return systemBookCode;
-	}
-
-	public void setSystemBookCode(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
 
 	public List<Integer> getBranchNums() {
 		return branchNums;
