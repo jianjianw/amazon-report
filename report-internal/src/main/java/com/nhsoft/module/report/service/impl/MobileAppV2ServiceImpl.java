@@ -1771,4 +1771,110 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		return dtos;
 	}
 
+	@Override
+	public List<CardReportDTO> findCardReportByBranchBq(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+														Date dateTo, String sortField, Integer branchNum) {
+		List<CardReportDTO> cardReportDTOs = new ArrayList<CardReportDTO>();
+		List<Object[]> cardSendObjects = cardUserDao.findCardCount(systemBookCode, branchNums, dateFrom, dateTo,
+				null);
+		List<Object[]> cardRevokeObjects = cardUserDao.findRevokeCardCount(systemBookCode, branchNums, dateFrom,
+				dateTo, null);
+
+		List<Branch> branchs = branchService.findInCache(systemBookCode);
+		for (int i = 0; i < cardSendObjects.size(); i++) {
+			Object[] sendObject = cardSendObjects.get(i);
+			CardReportDTO cardReportDTO = new CardReportDTO();
+			cardReportDTO.setBranchNum((Integer) sendObject[0]);
+			cardReportDTO.setBranchName(AppUtil.getBranch(branchs, (Integer) sendObject[0]).getBranchName());
+			cardReportDTOs.add(cardReportDTO);
+			cardReportDTO.setSendCardCount((Integer) sendObject[1]);
+		}
+		for (int i = 0; i < cardRevokeObjects.size(); i++) {
+			Object[] revokeObject = cardRevokeObjects.get(i);
+			CardReportDTO cardReportDTO = CardReportDTO.readByBranch((Integer) revokeObject[0], cardReportDTOs);
+			if (cardReportDTO == null) {
+				cardReportDTO = new CardReportDTO();
+				cardReportDTO.setBranchNum((Integer) revokeObject[0]);
+				cardReportDTO.setBranchName(AppUtil.getBranch(branchs, (Integer) revokeObject[0]).getBranchName());
+				cardReportDTOs.add(cardReportDTO);
+			}
+			cardReportDTO.setReturnCardCount(((Long) revokeObject[1]).intValue());
+			cardReportDTO.setReturnCardMoney(revokeObject[2] == null?BigDecimal.ZERO:(BigDecimal)revokeObject[2]);
+		}
+
+		List<Object[]> objects = cardUserLogDao.findBranchCount(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.CARD_USER_LOG_TYPE_CHANGE_STORGE,
+				null);
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			CardReportDTO cardReportDTO = CardReportDTO.readByBranch((Integer) object[0], cardReportDTOs);
+			if (cardReportDTO == null) {
+				cardReportDTO = new CardReportDTO();
+				cardReportDTO.setBranchNum((Integer) object[0]);
+				cardReportDTO.setBranchName(AppUtil.getBranch(branchs, (Integer) object[0]).getBranchName());
+				cardReportDTOs.add(cardReportDTO);
+			}
+			cardReportDTO.setChangeEleCardCount(object[1] == null?0:(Integer)object[1]);
+		}
+
+		objects = mobileAppDao.findUnMemberCountByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			CardReportDTO cardReportDTO = CardReportDTO.readByBranch((Integer) object[0], cardReportDTOs);
+			if (cardReportDTO == null) {
+				cardReportDTO = new CardReportDTO();
+				cardReportDTO.setBranchNum((Integer) object[0]);
+				cardReportDTO.setBranchName(AppUtil.getBranch(branchs, (Integer) object[0]).getBranchName());
+				cardReportDTOs.add(cardReportDTO);
+			}
+			cardReportDTO.setUnMemberOrderCount(object[1] == null?0:(Integer)object[1]);
+		}
+		if(sortField.equals("sendCardCount")){
+			Collections.sort(cardReportDTOs, (o1, o2) -> {
+				if(o1.getSendCardCount() > o2.getSendCardCount()){
+					return -1;
+				} else if(o1.getSendCardCount() < o2.getSendCardCount()){
+					return 1;
+				} else {
+					return 0;
+				}
+			});
+		} else if(sortField.equals("changeEleCardCount")){
+			Collections.sort(cardReportDTOs, (o1, o2) -> {
+				if(o1.getChangeEleCardCount() > o2.getChangeEleCardCount()){
+					return -1;
+				} else if(o1.getChangeEleCardCount() < o2.getChangeEleCardCount()){
+					return 1;
+				} else {
+					return 0;
+				}
+			});
+		}
+		List<CardReportDTO> returnList = new ArrayList<>();
+		BigDecimal hundred  = BigDecimal.valueOf(100);
+		for(int i = 0, len = cardReportDTOs.size();i < len; i++){
+			CardReportDTO dto = cardReportDTOs.get(i);
+			int value = dto.getSendCardCount() - dto.getReturnCardCount();
+			if(value <= 0){
+				dto.setSendCardRate(BigDecimal.ZERO);
+
+			} else {
+
+				dto.setSendCardRate(BigDecimal.valueOf(value).divide(BigDecimal.valueOf(value + dto.getUnMemberOrderCount())).setScale(4, BigDecimal.ROUND_HALF_UP).multiply(hundred));
+
+			}
+			dto.setRank(i + 1);
+			if(dto.getBranchNum().equals(branchNum)){
+				returnList.add(0, dto);
+
+			} else {
+				if(returnList.size() < 10){
+					returnList.add(dto);
+
+				}
+			}
+
+		}
+		return cardReportDTOs;
+	}
+
 }

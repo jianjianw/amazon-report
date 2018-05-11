@@ -419,4 +419,18 @@ public interface MobileAppV2Rpc {
 	 */
 	public List<CardReportDTO> findCardReportByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 													  Date dateTo);
+
+
+	/**
+	 * 门店会员卡统计top10 (Bq 用)
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param sortField
+	 * @param branchNum
+	 * @return
+	 */
+	public List<CardReportDTO> findCardReportByBranchBq(String systemBookCode, List<Integer> branchNums, Date dateFrom,
+														Date dateTo, String sortField, Integer branchNum);
 }

@@ -60,5 +60,10 @@ public class BranchRpcImpl implements BranchRpc {
         return CopyUtil.to(branchService.readWithNolock(systemBookCode,branchNum),BranchDTO.class);
     }
 
+    @Override
+    public BranchDTO readInCache(String systemBookCode, Integer branchNum) {
+        return CopyUtil.to(branchService.readInCache(systemBookCode,branchNum),BranchDTO.class);
+    }
+
 
 }
