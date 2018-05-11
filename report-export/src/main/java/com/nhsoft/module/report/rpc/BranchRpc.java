@@ -48,6 +48,14 @@ public interface BranchRpc {
      * */
     public BranchDTO readWithNolock(String systemBookCode, Integer branchNum);
 
+    /**
+     * 从缓存中读取分店
+     * @param systemBookCode
+     * @param branchNum
+     * @return
+     */
+    public BranchDTO readInCache(String systemBookCode, Integer branchNum);
+
 
 
 }

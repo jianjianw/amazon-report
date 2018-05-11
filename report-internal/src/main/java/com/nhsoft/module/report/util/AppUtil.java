@@ -3,6 +3,7 @@ package com.nhsoft.module.report.util;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 import com.google.gson.*;
 
+import com.nhsoft.module.report.dto.BranchDTO;
 import com.nhsoft.module.report.dto.GsonIgnore;
 import com.nhsoft.module.report.dto.ItemMatrixDTO;
 import com.nhsoft.module.report.dto.PosItemDTO;
@@ -410,8 +411,8 @@ public class AppUtil {
 		return obj;
 	}
 
-	public static Object[] getInventoryAmount(List<Inventory> inventories, PosItem posItem, Integer itemMatrixNum,
-											  String lotNumber, Branch branch) {
+	public static Object[] getInventoryAmount(List<Inventory> inventories, PosItemDTO posItem, Integer itemMatrixNum,
+											  String lotNumber, BranchDTO branch) {
 		BigDecimal amount = BigDecimal.ZERO;
 		BigDecimal money = BigDecimal.ZERO;
 		BigDecimal assistAmount = BigDecimal.ZERO;
