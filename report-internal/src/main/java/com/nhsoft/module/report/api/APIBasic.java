@@ -12,10 +12,8 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
-import com.sun.deploy.security.TrustRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sun.font.TrueTypeFont;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
