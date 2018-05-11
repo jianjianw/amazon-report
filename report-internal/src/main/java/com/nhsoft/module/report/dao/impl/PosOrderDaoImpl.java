@@ -3864,7 +3864,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	@Override
 	public Object[] findRebatesSum(PolicyAllowPriftQuery policyAllowPriftQuery) {
 		Criteria criteria = createPolicyAllowPriftQuery(policyAllowPriftQuery);
-		criteria.add(Restrictions.ne("detail.orderDetailStateCode", AppConstants.POS_ORDER_DETAIL_STATE_REMOVE));
+		criteria.add(Restrictions.ne("detail.orderDetailStateCode", AppConstants.POS_ORDER_DETAIL_STATE_REMOVE))
+				.add(Restrictions.gt("detail.orderDetailDiscount", BigDecimal.ZERO));
 		criteria.setProjection(Projections
 				.projectionList()
 				.add(Projections

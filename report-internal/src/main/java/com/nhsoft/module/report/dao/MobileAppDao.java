@@ -242,6 +242,17 @@ public interface MobileAppDao {
 	public List<MobileSalesRank> findDeptRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 
+	/**
+	 * 按门店汇总非会员客单量
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findUnMemberCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+
 
 
 }

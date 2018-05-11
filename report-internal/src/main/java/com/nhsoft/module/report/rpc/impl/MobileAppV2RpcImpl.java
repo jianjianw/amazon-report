@@ -1360,5 +1360,10 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 		return mobileAppV2Service.findCardReportByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
+	@Override
+	public List<CardReportDTO> findCardReportByBranchBq(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String sortField, Integer branchNum) {
+		return mobileAppV2Service.findCardReportByBranchBq(systemBookCode,branchNums,dateFrom,dateTo,sortField,branchNum);
+	}
+
 
 }
