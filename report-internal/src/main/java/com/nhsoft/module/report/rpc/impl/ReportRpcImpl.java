@@ -4234,7 +4234,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums,String unitType,
-															List<String> itemDepartments, List<String> itemCategoryCodes) {
+															List<String> itemDepartments, List<String> itemCategoryCodes,Boolean saleCrease,Boolean stockCrease) {
 
 		//控制时间范围
 		Calendar calendar = Calendar.getInstance();
@@ -4264,6 +4264,12 @@ public class ReportRpcImpl implements ReportRpc {
 		query.setItemNums(itemNums);
 		query.setItemDepartments(itemDepartments);
 		query.setFilterType(AppConstants.ITEM_TYPE_PURCHASE);
+		if(saleCrease != null && saleCrease){//过滤(不显示)停售
+			query.setSaleCrease(false);
+		}
+		if(stockCrease != null && stockCrease){//过滤停购
+			query.setSaleCrease(false);
+		}
 		List<PosItem> posItems = posItemService.findByPosItemQuery(query, null, null, 0, 0);
 
 

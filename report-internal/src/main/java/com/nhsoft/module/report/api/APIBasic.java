@@ -745,8 +745,10 @@ public class APIBasic {
 		Integer branchNum = 99;
 		List<Integer> itemNums = new ArrayList<>();
 		List<String>  categorys = new ArrayList<>();
+		Boolean saleCrease = null;// 停售
+		Boolean stockCrease = null ;// 停购
 		//categorys.add("91");
-		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_PURCHASE,null,categorys);
+		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_PURCHASE,null,categorys,saleCrease,stockCrease);
 		return inventoryLostAnalysis;
 
 	}
