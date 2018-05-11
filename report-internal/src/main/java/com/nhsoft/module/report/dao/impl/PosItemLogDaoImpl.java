@@ -181,7 +181,8 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 
 		sb.append("group by l.item_num, l.pos_item_log_item_matrix_num, l.pos_item_log_inout_flag ");
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
-		return sqlQuery.list();
+		List list = sqlQuery.list();
+		return list;
 	}
 
 	@Override

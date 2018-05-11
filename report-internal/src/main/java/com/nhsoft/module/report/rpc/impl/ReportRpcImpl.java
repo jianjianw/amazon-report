@@ -4234,7 +4234,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<InventoryLostDTO> findInventoryLostAnalysis(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums,String unitType,
-															List<String> itemDepartments, List<String> itemCategoryCodes) {
+															List<String> itemDepartments, List<String> itemCategoryCodes,Boolean saleCrease,Boolean stockCrease) {
 
 		//控制时间范围
 		Calendar calendar = Calendar.getInstance();
@@ -4264,6 +4264,12 @@ public class ReportRpcImpl implements ReportRpc {
 		query.setItemNums(itemNums);
 		query.setItemDepartments(itemDepartments);
 		query.setFilterType(AppConstants.ITEM_TYPE_PURCHASE);
+		if(saleCrease != null && saleCrease){//过滤(不显示)停售
+			query.setSaleCrease(false);
+		}
+		if(stockCrease != null && stockCrease){//过滤停购
+			query.setStockCrease(false);
+		}
 		List<PosItem> posItems = posItemService.findByPosItemQuery(query, null, null, 0, 0);
 
 
@@ -6018,6 +6024,8 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setOutMoney(money.setScale(2, BigDecimal.ROUND_HALF_UP));
 			data.setSaleMoney(saleMoney.setScale(2, BigDecimal.ROUND_HALF_UP));
 			data.setReceiveTare(receiveTare);
+			data.setOutsAmount(amount);
+			data.setOutsMoney(money.setScale(2, BigDecimal.ROUND_HALF_UP));
 			list.add(data);
 		}
 
@@ -6057,6 +6065,8 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setOutAmountPrTranferMoney(data.getOutAmountPrTranferMoney().subtract(moneyTranPr).setScale(2, BigDecimal.ROUND_HALF_UP));
 			data.setOutAmountPrCostMoney(data.getOutAmountPrCostMoney().subtract(moneyCostPr).setScale(2, BigDecimal.ROUND_HALF_UP));
 			data.setReceiveTare(data.getReceiveTare().subtract(receiveTare));
+			data.setInMoney(money.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setInAmount(amount.setScale(2, BigDecimal.ROUND_HALF_UP));
 		}
 		List<Branch> branchs = branchService.findInCache(queryData.getSystemBookCode());
 
@@ -6139,6 +6149,8 @@ public class ReportRpcImpl implements ReportRpc {
 			if (rate.compareTo(BigDecimal.ZERO) > 0) {
 				data.setOutAmount(data.getBasicQty().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
 				data.setOutAmountPr(data.getBasicQtyPr().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
+				data.setOutsAmount(data.getOutsAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
+				data.setInAmount(data.getInAmount().divide(rate, 4, BigDecimal.ROUND_HALF_UP));
 			}
 			if (data.getItemMatrixNum() > 0) {
 				ItemMatrix itemMatrix = AppUtil.getItemMatrix(posItem.getItemMatrixs(), itemNum, data.getItemMatrixNum());
@@ -6189,6 +6201,10 @@ public class ReportRpcImpl implements ReportRpc {
 		BigDecimal receiveTareSum = BigDecimal.ZERO;
 		BigDecimal totalAmountSum = BigDecimal.ZERO;
 		BigDecimal totalMoneySum = BigDecimal.ZERO;
+		BigDecimal inAmountSum = BigDecimal.ZERO;
+		BigDecimal inMoneySum = BigDecimal.ZERO;
+		BigDecimal outsAmountSum = BigDecimal.ZERO;
+		BigDecimal outsMoneySum = BigDecimal.ZERO;
 		for (int i = list.size() - 1; i >= 0; i--) {
 			TransferProfitByPosItemDTO data = list.get(i);
 			data.setTotalAmount(data.getOutAmount().subtract(data.getInAmount()).add(data.getOutAmountPr()));
@@ -6206,6 +6222,10 @@ public class ReportRpcImpl implements ReportRpc {
 			receiveTareSum = receiveTareSum.add(data.getReceiveTare());
 			totalAmountSum = totalAmountSum.add(data.getTotalAmount());
 			totalMoneySum = totalMoneySum.add(data.getTotalMoney());
+			inAmountSum = inAmountSum.add(data.getInAmount());
+			inMoneySum = inMoneySum.add(data.getInMoney());
+			outsAmountSum = outsAmountSum.add(data.getOutsAmount());
+			outsMoneySum = outsMoneySum.add(data.getOutsMoney());
 
 		}
 
@@ -6228,6 +6248,10 @@ public class ReportRpcImpl implements ReportRpc {
 		result.setReceiveTareSum(receiveTareSum);
 		result.setTotalMoneySum(totalMoneySum);
 		result.setTotalAmountSum(totalAmountSum);
+		result.setInAmountSum(inAmountSum);
+		result.setInMoneySum(inMoneySum);
+		result.setOutsAmountSum(outsAmountSum);
+		result.setOutsMoneySum(outsMoneySum);
 
 		if (outMoneySum.compareTo(BigDecimal.ZERO) == 0) {
 			result.setOutProfitRateSum(BigDecimal.ZERO);

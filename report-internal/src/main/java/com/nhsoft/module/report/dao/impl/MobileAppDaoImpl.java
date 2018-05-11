@@ -12,6 +12,7 @@ import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
 
@@ -979,6 +980,22 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 		}
 		return list;
 
+	}
+
+	@Override
+	public List<Object[]> findUnMemberCountByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select branch_num as branchNum, ");
+		sb.append("count(order_no) as orderNo ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' ");
+		sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
+		sb.append("and ORDER_CARD_USER_NUM = 0 ");
+		sb.append("group by branch_num ");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
 	}
 
 

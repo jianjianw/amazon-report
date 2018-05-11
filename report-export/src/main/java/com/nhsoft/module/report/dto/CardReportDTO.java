@@ -25,6 +25,10 @@ public class CardReportDTO implements Serializable {
 	private int changeEleCardCount;//转电子卡数
 	private Integer cardUserType;
 
+	private Integer unMemberOrderCount;//非会员客单量
+	private BigDecimal sendCardRate; //开卡率 开卡率=（新增卡-退卡数）/（新增卡-退卡数+非会员客单量）*100%
+	private int rank;
+
 	public CardReportDTO() {
 		setSendCardCount(0);
 		setReturnCardCount(0);
@@ -35,6 +39,7 @@ public class CardReportDTO implements Serializable {
 		setOriDepositMoney(BigDecimal.ZERO);
 		setReturnCardMoney(BigDecimal.ZERO);
 		setOnlineConsumeMoney(BigDecimal.ZERO);
+		setUnMemberOrderCount(0);
 	}
 
 	public BigDecimal getOnlineConsumeMoney() {
@@ -147,6 +152,30 @@ public class CardReportDTO implements Serializable {
 
 	public void setConsumeMoney(BigDecimal consumeMoney) {
 		this.consumeMoney = consumeMoney;
+	}
+
+	public Integer getUnMemberOrderCount() {
+		return unMemberOrderCount;
+	}
+
+	public void setUnMemberOrderCount(Integer unMemberOrderCount) {
+		this.unMemberOrderCount = unMemberOrderCount;
+	}
+
+	public BigDecimal getSendCardRate() {
+		return sendCardRate;
+	}
+
+	public void setSendCardRate(BigDecimal sendCardRate) {
+		this.sendCardRate = sendCardRate;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 
 	public static CardReportDTO readByBranch(Integer branchNum, List<CardReportDTO> list) {

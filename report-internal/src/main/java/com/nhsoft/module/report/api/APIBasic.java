@@ -745,8 +745,10 @@ public class APIBasic {
 		Integer branchNum = 99;
 		List<Integer> itemNums = new ArrayList<>();
 		List<String>  categorys = new ArrayList<>();
+		Boolean saleCrease = null;// 停售
+		Boolean stockCrease = null ;// 停购
 		//categorys.add("91");
-		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_PURCHASE,null,categorys);
+		List<InventoryLostDTO> inventoryLostAnalysis = reportRpc.findInventoryLostAnalysis(systemBookCode,branchNum,dateFrom,dateTo,itemNums,AppConstants.UNIT_PURCHASE,null,categorys,saleCrease,stockCrease);
 		return inventoryLostAnalysis;
 
 	}
@@ -2068,19 +2070,25 @@ public class APIBasic {
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
 		query.setSystemBookCode(systemBookCode);
+		query.setBranchNum(99);
+		query.setBranchNums(getBranchNums());
+		query.setProfitType("全部");
+		query.setPromotion(true);
 		List<ItemRebatesSummary> result = reportRpc.findItemRebates(query);
 		BigDecimal amount = BigDecimal.ZERO;
 		BigDecimal money = BigDecimal.ZERO;
+		BigDecimal discount = BigDecimal.ZERO;
+
 		for (int i = 0; i < result.size(); i++) {
 			ItemRebatesSummary itemRebatesSummary = result.get(i);
 			amount = amount.add(itemRebatesSummary.getAmount());
 			money = money.add(itemRebatesSummary.getMoney());
-
-
+			discount = discount.add(itemRebatesSummary.getMoney());
 		}
 		System.out.println("--------------------------");
 		System.out.println("amount: "+ amount);
 		System.out.println("money: "+money);
+		System.out.println("discount: "+discount);
 		return result;
 	}
 
@@ -2094,17 +2102,24 @@ public class APIBasic {
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
 		query.setSystemBookCode(systemBookCode);
+		query.setBranchNum(99);
+		query.setBranchNums(getBranchNums());
+		query.setProfitType("全部");
+		query.setPromotion(true);
 		List<RebatesDetailSummary> result = reportRpc.findRebatesDetail(query);
 		BigDecimal amount = BigDecimal.ZERO;
 		BigDecimal money = BigDecimal.ZERO;
+		BigDecimal discount = BigDecimal.ZERO;
 		for (int i = 0; i < result.size(); i++) {
 			RebatesDetailSummary rebatesDetailSummary = result.get(i);
 			 amount = amount.add(rebatesDetailSummary.getOrderDetailAmount());
 			 money =money.add(rebatesDetailSummary.getOrderDetailPaymentMoney());
+			discount = discount.add(rebatesDetailSummary.getOrderDetailDiscount());
 		}
 		System.out.println("--------------------------");
 		System.out.println("amount: "+ amount);
 		System.out.println("money: "+money);
+		System.out.println("discount: "+discount);
 		return result;
 	}
 
@@ -2119,12 +2134,18 @@ public class APIBasic {
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
 		query.setSystemBookCode(systemBookCode);
+		query.setBranchNum(99);
+		query.setBranchNums(getBranchNums());
+		query.setProfitType("全部");
+		query.setPromotion(true);
 		RebatesSumSummary result = reportRpc.findRebatesSum(query);
 		BigDecimal amount = result.getAmount();
 		BigDecimal money = result.getMoney();
+		BigDecimal discount = result.getDiscount();
 		System.out.println("--------------------------");
 		System.out.println("amount: "+ amount);
 		System.out.println("money: "+money);
+		System.out.println("discount: "+discount);
 		return result;
 	}
 

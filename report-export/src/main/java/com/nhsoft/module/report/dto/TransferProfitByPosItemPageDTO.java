@@ -27,6 +27,10 @@ public class TransferProfitByPosItemPageDTO implements Serializable {
     private BigDecimal totalAmountSum;
     private BigDecimal outProfitRateSum;
     private BigDecimal saleProfitRateSum;
+    private BigDecimal inAmountSum;
+    private BigDecimal inMoneySum;
+    private BigDecimal outsAmountSum;
+    private BigDecimal outsMoneySum;
 
 
     public BigDecimal getSaleMoneySum() {
@@ -173,7 +177,37 @@ public class TransferProfitByPosItemPageDTO implements Serializable {
         this.data = data;
     }
 
+    public BigDecimal getInAmountSum() {
+        return inAmountSum;
+    }
 
+    public void setInAmountSum(BigDecimal inAmountSum) {
+        this.inAmountSum = inAmountSum;
+    }
+
+    public BigDecimal getInMoneySum() {
+        return inMoneySum;
+    }
+
+    public void setInMoneySum(BigDecimal inMoneySum) {
+        this.inMoneySum = inMoneySum;
+    }
+
+    public BigDecimal getOutsAmountSum() {
+        return outsAmountSum;
+    }
+
+    public void setOutsAmountSum(BigDecimal outsAmountSum) {
+        this.outsAmountSum = outsAmountSum;
+    }
+
+    public BigDecimal getOutsMoneySum() {
+        return outsMoneySum;
+    }
+
+    public void setOutsMoneySum(BigDecimal outsMoneySum) {
+        this.outsMoneySum = outsMoneySum;
+    }
 
     //默认按配送门店升序排序
     //int i = data01.getTranferBranchNum().compareTo(data02.getTranferBranchNum());
