@@ -3657,8 +3657,8 @@ public class ReportServiceImpl implements ReportService {
 		if(query.getReceiveDate() != null){
 			List<String> list = new ArrayList<>();
 			list.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+			list.add(AppConstants.POS_ITEM_LOG_IN_ORDER);
 			objects = branchItemRecoredDao.findItemReceiveDate(systemBookCode, transferBranchNums, null, null, list);
-
 			for (int i = 0,len = objects.size(); i < len ; i++) {
 				Object[] object = objects.get(i);
 				Integer itemNum = (Integer)object[0];

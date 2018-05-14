@@ -1663,8 +1663,8 @@ public class APIBasic {
 	}
 
 
-	@RequestMapping(method = RequestMethod.GET,value = "/test85/{sortType}")
-	public InventoryProfitPageDTO test85(@PathVariable(value = "sortType") String sortType) throws Exception{
+	@RequestMapping(method = RequestMethod.GET,value = "/test85")
+	public InventoryProfitPageDTO test85() throws Exception{
 		String systemBookCode = "4020";			//损益统计报表     商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-04-01");
@@ -1685,12 +1685,11 @@ public class APIBasic {
 		query.setCheckType("调整单");
 
 
-
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(10000);
 		query.setSortField("itemCode");
-		query.setSortType(sortType);
+		query.setSortType("asc");
 		InventoryProfitPageDTO result = reportRpc.findInventoryProfit(query);
 
 		return result;
