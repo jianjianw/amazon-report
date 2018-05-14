@@ -183,8 +183,20 @@ public class PurchaseAndTransferDTO implements Serializable {
 	
 	public static PurchaseAndTransferDTO get(List<PurchaseAndTransferDTO> purchaseAndTransferDTOs, String purchaser, 
 			Integer itemNum){
+		if(purchaser == null ){
+			return null;
+		}
+		if(itemNum == null ){
+			return null;
+		}
 		for(int i = 0;i < purchaseAndTransferDTOs.size();i++){
 			PurchaseAndTransferDTO dto = purchaseAndTransferDTOs.get(i);
+			if(dto.getPurchaser() == null){
+				continue;
+			}
+			if(dto.getItemNum() == null){
+				continue;
+			}
 			if(dto.getPurchaser().equals(purchaser) && dto.getItemNum().equals(itemNum)){
 				return dto;
 			}

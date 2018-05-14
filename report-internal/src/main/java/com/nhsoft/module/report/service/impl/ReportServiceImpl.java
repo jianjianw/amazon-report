@@ -11367,7 +11367,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<PurchaseAndTransferDetailDTO> findPurchaseAndTransferDetailDTOs(String systemBookCode,
 			Integer branchNum, Date dateFrom, Date dateTo, List<String> employees, List<Integer> itemNums,
-			String categoryCodes, String unitType) {
+            String categoryCodes, String unitType) {
 		List<Object[]> objects = transferOutOrderDao.findItemLotSummary(systemBookCode, branchNum, dateFrom, dateTo, itemNums);
 		Object[] object = null;
 		Integer itemNum = null;
