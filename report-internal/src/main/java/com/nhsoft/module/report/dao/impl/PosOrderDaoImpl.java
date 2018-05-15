@@ -215,7 +215,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public List<Object[]> findBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, sum(order_total_money) as total, sum(order_gross_profit) as profit, ");
-		sb.append("sum(order_round) as round, sum(order_mgr_discount_money) as mgr, sum(order_coupon_total_money - order_coupon_payment_money) as couponDiscount ");
+		sb.append("sum(order_round) as round, sum(order_mgr_discount_money) as mgr, sum(order_coupon_total_money) as coupon ");
 		sb.append("from pos_order with(nolock) where system_book_code = '" + systemBookCode + "' ");
 		if (branchNums != null && branchNums.size() > 0) {
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
