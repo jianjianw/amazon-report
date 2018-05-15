@@ -1721,11 +1721,6 @@ public class APIBasic {
 	}
 
 
-
-
-
-
-
 	@RequestMapping(method = RequestMethod.GET,value = "/test82")///////9
 	public List<CustomerAnalysisTimePeriod> test82() throws Exception{
 		String systemBookCode = "4020";
@@ -2143,6 +2138,16 @@ public class APIBasic {
 		System.out.println("amount: "+ amount);
 		System.out.println("money: "+money);
 		System.out.println("discount: "+discount);
+		return result;
+	}
+	@RequestMapping(method = RequestMethod.GET,value = "/test114")
+	public List<OtherInfoDTO> test114() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		Integer branchNum = 99;
+		List<OtherInfoDTO> result = report2Rpc.findOtherInfoDetails(systemBookCode,branchNum,dateFrom,dateTo,"删除");
 		return result;
 	}
 

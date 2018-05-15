@@ -4763,15 +4763,6 @@ public class ReportRpcImpl implements ReportRpc {
 				case "unit":
 					flag = true;
 					break;
-				/*case "saleCost":
-					profitAnalysisQueryData.setSortField("cost");
-					break;
-				case "saleNums":
-					profitAnalysisQueryData.setSortField("amount");
-					break;
-				case "saleMoney":
-					profitAnalysisQueryData.setSortField("money");
-					break;*/
 			}
 			if(flag){
 				List<PosItem> posItems = posItemService.findShortItems(profitAnalysisQueryData.getSystemBookCode());
