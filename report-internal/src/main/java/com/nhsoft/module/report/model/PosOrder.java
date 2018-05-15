@@ -112,10 +112,30 @@ public class PosOrder implements java.io.Serializable {
 	private String orderMemberCode; //天猫会员编号
 	@Transient
 	private String reSendFid;
+	@Transient
+	private Integer orderCancelItemCount;
+	@Transient
+	private BigDecimal orderCancelItemMoney;
 	
 	public PosOrder() {
 	}
-	
+
+	public Integer getOrderCancelItemCount() {
+		return orderCancelItemCount;
+	}
+
+	public void setOrderCancelItemCount(Integer orderCancelItemCount) {
+		this.orderCancelItemCount = orderCancelItemCount;
+	}
+
+	public BigDecimal getOrderCancelItemMoney() {
+		return orderCancelItemMoney;
+	}
+
+	public void setOrderCancelItemMoney(BigDecimal orderCancelItemMoney) {
+		this.orderCancelItemMoney = orderCancelItemMoney;
+	}
+
 	public BigDecimal getOrderOnlineDiscount() {
 		return orderOnlineDiscount;
 	}

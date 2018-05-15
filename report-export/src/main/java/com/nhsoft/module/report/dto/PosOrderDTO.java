@@ -10,6 +10,7 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,10 +87,28 @@ public class PosOrderDTO implements java.io.Serializable {
 	private List<TypeAndTwoValuesDTO> typeAndTwoValuesDTOs = new ArrayList<TypeAndTwoValuesDTO>();
 	private String orderMemberCode; //天猫会员编号
 	private String reSendFid;
+	private Integer orderCancelItemCount;
+	private BigDecimal orderCancelItemMoney;
 	
 	public PosOrderDTO() {
 	}
-	
+
+	public Integer getOrderCancelItemCount() {
+		return orderCancelItemCount;
+	}
+
+	public void setOrderCancelItemCount(Integer orderCancelItemCount) {
+		this.orderCancelItemCount = orderCancelItemCount;
+	}
+
+	public BigDecimal getOrderCancelItemMoney() {
+		return orderCancelItemMoney;
+	}
+
+	public void setOrderCancelItemMoney(BigDecimal orderCancelItemMoney) {
+		this.orderCancelItemMoney = orderCancelItemMoney;
+	}
+
 	public BigDecimal getOrderOnlineDiscount() {
 		return orderOnlineDiscount;
 	}

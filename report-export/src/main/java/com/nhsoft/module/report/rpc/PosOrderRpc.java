@@ -176,4 +176,5 @@ public interface PosOrderRpc  {
      */
     public PromotionItemPageDTO findPromotionItemsByPage(PolicyAllowPriftQuery policyAllowPriftQuery);
 
+
 }

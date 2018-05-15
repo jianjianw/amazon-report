@@ -4,6 +4,7 @@ package com.nhsoft.module.report.service;
 import com.nhsoft.module.report.dto.CardConsuemAnalysisQuery;
 import com.nhsoft.module.report.dto.ItemQueryDTO;
 import com.nhsoft.module.report.model.PosOrder;
+import com.nhsoft.module.report.model.PosOrderMatrix;
 import com.nhsoft.module.report.model.ShiftTable;
 import com.nhsoft.module.report.query.PolicyAllowPriftQuery;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
@@ -450,5 +451,9 @@ public interface PosOrderService {
 
 	public List<Object[]> findItemSumByCategory(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
 												List<String> categoryCodes, boolean queryKit, List<Integer> itemNums);
+
+    public List<PosOrderMatrix> findMatrixs(List<String> orderNos);
+
+	public List<PosOrderMatrix> findMatrixs(PosOrderQuery posOrderQuery);
 }
 
