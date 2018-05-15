@@ -217,7 +217,7 @@ public class APIBasic {
 		itemQueryDTO.setDateFrom(dateFrom);
 		itemQueryDTO.setDateTo(dateTo);
 		itemQueryDTO.setItemMethod("购销");
-		itemQueryDTO.setBranchNums(getBranchNums());
+		itemQueryDTO.setBranchNums(getBranchNums(systemBookCode));
 		itemQueryDTO.setQueryKit(true);
 		List<Object[]> itemSum = posOrderService.findItemSum(itemQueryDTO);
 		for (int i = 0; i <itemSum.size() ; i++) {
@@ -335,9 +335,10 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-03-31");
 
 		SaleAnalysisQueryData queryData = new SaleAnalysisQueryData();
+		String systemBookCode = "4020";
 		queryData.setDtFrom(dateFrom);
 		queryData.setDtTo(dateTo);
-		queryData.setBranchNums(getBranchNums());
+		queryData.setBranchNums(getBranchNums(systemBookCode));
 		queryData.setSystemBookCode("4020");
 		//queryData.setSaleType("实体店");//水星微商城   实体店
 		List<SaleByBranchSummary> saleAnalysisByBranchs = reportRpc.findSaleAnalysisByBranchs(queryData);
@@ -441,9 +442,7 @@ public class APIBasic {
 
 	}
 
-	public List<Integer> getBranchNums(){
-
-		String systemBookCode = "4020";
+	public List<Integer> getBranchNums(String systemBookCode){
 		List<Integer> branchNums = new ArrayList();
 		List<BranchDTO> branchDTOS = branchRpc.findInCache(systemBookCode);
 		for (int i = 0; i < branchDTOS.size(); i++) {
@@ -534,7 +533,7 @@ public class APIBasic {
 	@RequestMapping(method = RequestMethod.GET,value = "/test25")
 	public List test25() throws Exception{
 		String systemBookCode = "4173";
-		//List<Integer> branchNums = getBranchNums();
+		//List<Integer> branchNums = getBranchNums(systemBookCode);
 		List<Integer> branchNums = new ArrayList<>();
 		branchNums.add(139);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -592,7 +591,7 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-04-27");
 
 		String branchType = "直营";//微商城
-		CustomerSummary customerSummary = reportRpc.sumCustomerAnalysis(systemBookCode, dateFrom, dateTo, getBranchNums(), null);
+		CustomerSummary customerSummary = reportRpc.sumCustomerAnalysis(systemBookCode, dateFrom, dateTo, getBranchNums(systemBookCode), null);
 		return customerSummary;
 	}
 
@@ -651,7 +650,7 @@ public class APIBasic {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dateFrom = sdf.parse("2015-05-01");
         Date dateTo = sdf.parse("2017-10-31");
-        List<Integer> branchNums = getBranchNums();
+        List<Integer> branchNums = getBranchNums(systemBookCode);
 
 
         List<BusinessCollection> couponSummary = posOrderRpc.findCouponSummary(systemBookCode, branchNums, dateFrom, dateTo);
@@ -665,7 +664,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2017-05-01");
 		Date dateTo = sdf.parse("2017-10-31");
-		List<Integer> branchNums = getBranchNums();
+		List<Integer> branchNums = getBranchNums(systemBookCode);
 		RetailDetailQueryData query = new RetailDetailQueryData();
 		query.setDtFromShiftTable(dateFrom);
 		query.setDtToShiftTable(dateTo);
@@ -698,7 +697,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-01-20");
-		List<Integer> branchNums = getBranchNums();
+		List<Integer> branchNums = getBranchNums(systemBookCode);
 		List<Integer> list = new ArrayList<>();
 		list.add(8);
 		List<PayFailDTO> dtos = alipayLogRpc.findBranchSummaryPayFail(systemBookCode, branchNums, dateFrom, dateTo, false, null);
@@ -754,6 +753,7 @@ public class APIBasic {
 	@RequestMapping(method = RequestMethod.GET,value = "test39")///////6
 	public List<PosOrderDTO> test39() throws Exception{
 
+		String systemBookCode = "4444";
 		PosOrderQuery query = new PosOrderQuery();
 		query.setSystemBookCode("4444");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -761,7 +761,7 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-05-07");
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setPaymentType("quan");
 		BigDecimal count = BigDecimal.valueOf(1);
 		query.setDelCountType(">");
@@ -780,7 +780,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		//findOrderDetailCompareDatasByBranchItem
 		String systemBookCode = "4020";
-		List<Integer> branchNums = getBranchNums();
+		List<Integer> branchNums = getBranchNums(systemBookCode);
 		Date lastDateFrom = sdf.parse("2017-10-01");
 		Date lastDateTo = sdf.parse("2017-12-31");
 		Date thisDateFrom = sdf.parse("2018-01-15");
@@ -800,7 +800,9 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-29");
 		Date dateTo = sdf.parse("2018-01-31");
-		List<Integer> branchNums = getBranchNums();
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+		//List<Integer> branchNums = getBranchNums(systemBookCode);
 		List<Integer> list = new ArrayList<>();
 		list.add(434404819);
 		list.add(434404818);
@@ -879,7 +881,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-02-01");
 		Date dateTo = sdf.parse("2018-02-23");
-		List<Integer> branchNums = getBranchNums();
+		List<Integer> branchNums = getBranchNums(systemBookCode);
 		List<MonthPurchaseDTO> list = receiveOrderRpc.findPurchaseMonth(systemBookCode, 1, dateFrom, dateTo, AppConstants.STATE_AUDIT_TIME);
 
 		return list;
@@ -905,7 +907,7 @@ public class APIBasic {
 	@RequestMapping(method = RequestMethod.GET,value = "/test47")///////
 	public List<BranchSaleAnalysisSummary> test47() throws Exception{
 		String systemBookCode = "4020";
-		List<Integer> branchNums = getBranchNums();
+		List<Integer> branchNums = getBranchNums(systemBookCode);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2017-07-01");
 		Date dateTo = sdf.parse("2018-02-23");
@@ -918,7 +920,7 @@ public class APIBasic {
 	@RequestMapping(method = RequestMethod.GET,value = "/test48")
 	public List<BranchSaleAnalysisSummary> test48() throws Exception{
 		String systemBookCode = "4020";
-		List<Integer> branchNums = getBranchNums();
+		List<Integer> branchNums = getBranchNums(systemBookCode);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-02-23");
@@ -933,7 +935,7 @@ public class APIBasic {
 	@RequestMapping(method = RequestMethod.GET,value = "/test49")
 	public List<BranchItemRecoredDTO> test49() throws Exception{
 		String systemBookCode = "4020";
-		List<Integer> branchNums = getBranchNums();
+		List<Integer> branchNums = getBranchNums(systemBookCode);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-02-23");
@@ -952,10 +954,10 @@ public class APIBasic {
 
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-02-28");
-
+		String systemBookCode =  "4020";
 		UnsalableQuery query = new UnsalableQuery();
 		query.setSystemBookCode("4020");
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setFilterOutGTInventory(true);
 		query.setReceiveDate(date);
 		query.setDateFrom(dateFrom);
@@ -985,7 +987,7 @@ public class APIBasic {
 		String systemBookCode = "4020";
 		List<BranchDTO> inCache = branchRpc.findInCache(systemBookCode);
 
-		List<BusinessCollection> result = reportRpc.findBusinessCollectionByBranch(systemBookCode,getBranchNums(),dateFrom,dateTo);
+		List<BusinessCollection> result = reportRpc.findBusinessCollectionByBranch(systemBookCode,getBranchNums(systemBookCode),dateFrom,dateTo);
 
 		return result;
 
@@ -1003,7 +1005,7 @@ public class APIBasic {
 		String systemBookCode = "4020";
 
 
-		List<BusinessCollection> result = reportRpc.findBusinessCollectionByBranchDay(systemBookCode,getBranchNums(),dateFrom,dateTo);
+		List<BusinessCollection> result = reportRpc.findBusinessCollectionByBranchDay(systemBookCode,getBranchNums(systemBookCode),dateFrom,dateTo);
 
 		return result;
 
@@ -1020,7 +1022,7 @@ public class APIBasic {
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
 		query.setSystemBookCode(systemBookCode);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		CardAnalysisSummaryDTO cardAnalysisSummaryDTO = reportRpc.getCardAnalysisSummaryDTO(query);
 
 		return cardAnalysisSummaryDTO;
@@ -1131,7 +1133,7 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-03-31");
 
-		List<TransferOutMoneyDateDTO> list = transferOutOrderRpc.findDateSummary(systemBookCode, 99, getBranchNums(), dateFrom, dateTo, AppConstants.BUSINESS_DATE_MONTH);
+		List<TransferOutMoneyDateDTO> list = transferOutOrderRpc.findDateSummary(systemBookCode, 99, getBranchNums(systemBookCode), dateFrom, dateTo, AppConstants.BUSINESS_DATE_MONTH);
 		return list;
 	}
 
@@ -1144,7 +1146,7 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-03-31");
 
-		List<ShipOrderMoneyDateDTO> list = shipOrderRpc.findDateSummary(systemBookCode, 99, getBranchNums(), dateFrom, dateTo, AppConstants.BUSINESS_DATE_MONTH);
+		List<ShipOrderMoneyDateDTO> list = shipOrderRpc.findDateSummary(systemBookCode, 99, getBranchNums(systemBookCode), dateFrom, dateTo, AppConstants.BUSINESS_DATE_MONTH);
 		return list;
 	}
 
@@ -1160,7 +1162,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-12-31");
-		List<SalerCommissionDetail> list = report2Rpc.findItemSalerCommissionDetails(systemBookCode,dateFrom,dateTo,getBranchNums(),null);
+		List<SalerCommissionDetail> list = report2Rpc.findItemSalerCommissionDetails(systemBookCode,dateFrom,dateTo,getBranchNums(systemBookCode),null);
 
 		return list;
 	}
@@ -1173,7 +1175,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-12-31");
-		List<AlipayDetailDTO> result = reportRpc.findAlipayDetailDTOs(systemBookCode,getBranchNums(),dateFrom,dateTo,null,null,false);
+		List<AlipayDetailDTO> result = reportRpc.findAlipayDetailDTOs(systemBookCode,getBranchNums(systemBookCode),dateFrom,dateTo,null,null,false);
 		return result;
 	}
 
@@ -1187,7 +1189,7 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-04-10");
 		SaleAnalysisQueryData query = new SaleAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
 		query.setOffset(0);
@@ -1212,7 +1214,7 @@ public class APIBasic {
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(46);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		/*List<String> orderSource = new ArrayList<>();
 		orderSource.add("第三方商城");
 		query.setOrderSources(orderSource);*/
@@ -1238,7 +1240,7 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setIsQueryCF(true);
 		//query.setPage(false);
 		query.setOffset(0);
@@ -1436,7 +1438,7 @@ public class APIBasic {
 		query.setDtToShiftTable(dateTo);
 		/*List<Integer> branchNums = new ArrayList<>();
 		branchNums.add(99);*/
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(50);
@@ -1456,7 +1458,7 @@ public class APIBasic {
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
 		query.setSystemBookCode(systemBookCode);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setOffset(0);
 		query.setLimit(20);
 		query.setSortField("categoryCode");
@@ -1603,7 +1605,7 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setBranchNum(99);
 		query.setFilterDel(true);
 		query.setOffset(0);
@@ -1631,7 +1633,7 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
-		query.setResponseBranchNums(getBranchNums());
+		query.setResponseBranchNums(getBranchNums(systemBookCode));
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(10);
@@ -1652,7 +1654,7 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		query.setDtFrom(dateFrom);
 		query.setDtTo(dateTo);
-		query.setResponseBranchNums(getBranchNums());
+		query.setResponseBranchNums(getBranchNums(systemBookCode));
 		query.setSortField("costUnitPrice");
 		query.setSortType(sortType);
 		query.setOffset(0);
@@ -1712,7 +1714,7 @@ public class APIBasic {
 		query.setSystemBookCode(systemBookCode);
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setUnit("基本单位");
 		query.setIsChechZero(true);
 		query.setPage(true);
@@ -1733,7 +1735,7 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2017-01-01");
 		Date dateTo = sdf.parse("2018-04-27");
 
-		List<CustomerAnalysisTimePeriod> result = report2Rpc.findCustomerAnalysisTimePeriods(systemBookCode,dateFrom,dateTo,getBranchNums(),getBranchNums(),null,null,null);
+		List<CustomerAnalysisTimePeriod> result = report2Rpc.findCustomerAnalysisTimePeriods(systemBookCode,dateFrom,dateTo,getBranchNums(systemBookCode),getBranchNums(systemBookCode),null,null,null);
 		return result;
 	}
 
@@ -1759,7 +1761,7 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2018-04-01");
 		Date dateTo = sdf.parse("2018-04-12");
 
-		List<BusinessCollection> businessCollectionByTerminal = reportRpc.findBusinessCollectionByTerminal(systemBookCode, getBranchNums(), dateFrom, dateTo);
+		List<BusinessCollection> businessCollectionByTerminal = reportRpc.findBusinessCollectionByTerminal(systemBookCode, getBranchNums(systemBookCode), dateFrom, dateTo);
 		return businessCollectionByTerminal;
 	}
 
@@ -1774,7 +1776,7 @@ public class APIBasic {
 		Date dateTo = sdf.parse("2018-04-12");
 
 
-		List<BusinessCollection> businessCollectionByShiftTable = reportRpc.findBusinessCollectionByShiftTable(systemBookCode, getBranchNums(), dateFrom, dateTo, null);
+		List<BusinessCollection> businessCollectionByShiftTable = reportRpc.findBusinessCollectionByShiftTable(systemBookCode, getBranchNums(systemBookCode), dateFrom, dateTo, null);
 		return businessCollectionByShiftTable;
 	}
 
@@ -1886,7 +1888,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2017-01-01");
 		Date dateTo = sdf.parse("2018-04-27");
-		List<BranchSaleAnalysisSummary> result = reportRpc.findMonthSaleAnalysis(systemBookCode,getBranchNums(),dateFrom,dateTo,2);
+		List<BranchSaleAnalysisSummary> result = reportRpc.findMonthSaleAnalysis(systemBookCode,getBranchNums(systemBookCode),dateFrom,dateTo,2);
 		return result;
 	}
 
@@ -1909,7 +1911,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2017-01-01");
 		Date dateTo = sdf.parse("2018-04-27");
-		List<TransferGoal> result = reportRpc.findTransferSaleGoalByDate(systemBookCode,99,getBranchNums(),dateFrom,dateTo,AppConstants.BUSINESS_DATE_SOME_DATE);
+		List<TransferGoal> result = reportRpc.findTransferSaleGoalByDate(systemBookCode,99,getBranchNums(systemBookCode),dateFrom,dateTo,AppConstants.BUSINESS_DATE_SOME_DATE);
 		return result;
 	}
 	@RequestMapping(method = RequestMethod.GET,value = "/test102")///////5
@@ -1940,7 +1942,7 @@ public class APIBasic {
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-04-27");
 		String saleType = "";
-		List<BranchCustomerSummary> result = reportRpc.findCustomerAnalysisBranch(systemBookCode,dateFrom,dateTo,getBranchNums(),saleType);
+		List<BranchCustomerSummary> result = reportRpc.findCustomerAnalysisBranch(systemBookCode,dateFrom,dateTo,getBranchNums(systemBookCode),saleType);
 		return result;
 	}
 
@@ -1982,7 +1984,7 @@ public class APIBasic {
 		query.setPage(true);
 		query.setOffset(0);
 		query.setLimit(50);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		//444401187  水果组合
 
 		//444401191 精品制单组合
@@ -2068,7 +2070,7 @@ public class APIBasic {
 		query.setDtTo(dateTo);
 		query.setSystemBookCode(systemBookCode);
 		query.setBranchNum(99);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setProfitType("全部");
 		query.setPromotion(true);
 		List<ItemRebatesSummary> result = reportRpc.findItemRebates(query);
@@ -2100,7 +2102,7 @@ public class APIBasic {
 		query.setDtTo(dateTo);
 		query.setSystemBookCode(systemBookCode);
 		query.setBranchNum(99);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setProfitType("全部");
 		query.setPromotion(true);
 		List<RebatesDetailSummary> result = reportRpc.findRebatesDetail(query);
@@ -2132,7 +2134,7 @@ public class APIBasic {
 		query.setDtTo(dateTo);
 		query.setSystemBookCode(systemBookCode);
 		query.setBranchNum(99);
-		query.setBranchNums(getBranchNums());
+		query.setBranchNums(getBranchNums(systemBookCode));
 		query.setProfitType("全部");
 		query.setPromotion(true);
 		RebatesSumSummary result = reportRpc.findRebatesSum(query);
