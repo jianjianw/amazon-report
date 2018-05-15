@@ -1974,8 +1974,8 @@ public class APIBasic {
 
 		String systemBookCode = "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2016-10-01");
-		Date dateTo = sdf.parse("2016-10-31");
+		Date dateFrom = sdf.parse("2018-05-01");
+		Date dateTo = sdf.parse("2018-05-31");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);

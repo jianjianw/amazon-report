@@ -2801,7 +2801,7 @@ public class ReportRpcImpl implements ReportRpc {
 			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();
 			profitByBranchAndItemSummary.setBranchNum((Integer) object[0]);
 			profitByBranchAndItemSummary.setItemNum((Integer) object[1]);
-			profitByBranchAndItemSummary.setMatrixNum((int)object[2]);
+			profitByBranchAndItemSummary.setMatrixNum(object[2] == null ? 0 : (int) object[2]);
 			profitByBranchAndItemSummary.setProfit(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
 			profitByBranchAndItemSummary.setAmount(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]);
 			profitByBranchAndItemSummary.setMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
@@ -4857,7 +4857,7 @@ public class ReportRpcImpl implements ReportRpc {
 				ProfitByBranchAndItemDTO profitByBranchAndItemSummary = new ProfitByBranchAndItemDTO();
 				profitByBranchAndItemSummary.setBranchNum((Integer) object[0]);
 				profitByBranchAndItemSummary.setItemNum(itemNum);
-				profitByBranchAndItemSummary.setMatrixNum((int)object[2]);
+				profitByBranchAndItemSummary.setMatrixNum(object[2] == null ? 0 : (int) object[2]);
 				profitByBranchAndItemSummary.setProfit(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
 				profitByBranchAndItemSummary.setSaleNums(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]);
 				profitByBranchAndItemSummary.setSaleMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
@@ -4964,7 +4964,7 @@ public class ReportRpcImpl implements ReportRpc {
 			ProfitByBranchAndItemSummary profitByBranchAndItemSummary = new ProfitByBranchAndItemSummary();
 			profitByBranchAndItemSummary.setBranchNum((Integer) object[0]);
 			profitByBranchAndItemSummary.setItemNum((Integer) object[1]);
-			profitByBranchAndItemSummary.setMatrixNum((int)object[2]);
+			profitByBranchAndItemSummary.setMatrixNum((object[2] == null ? 0 :(int)object[2]));
 			profitByBranchAndItemSummary.setProfit(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
 			profitByBranchAndItemSummary.setAmount(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]);
 			profitByBranchAndItemSummary.setMoney(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
