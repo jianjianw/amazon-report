@@ -5600,21 +5600,24 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if (posOrderQuery.isPage()) {
 
 			if (posOrderQuery.getSortField() != null) {
+
+				String sortField;
 				if(posOrderQuery.getSortField().equals("orderReceiveMoney")){
-					if (posOrderQuery.getSortType().equals("ASC")) {
-						sql = sql + "order by (order_payment_money + order_coupon_total_money - order_mgr_discount_money) asc ";
-					} else {
-						sql = sql + "order by (order_payment_money + order_coupon_total_money - order_mgr_discount_money) desc ";
-					}
+
+					sortField = " (order_payment_money + order_coupon_total_money - order_mgr_discount_money) ";
+
+				} else if(posOrderQuery.getSortField().equals("orderCancelItemCount")
+						|| posOrderQuery.getSortField().equals("orderCancelItemMoney")){
+
+					sortField = "pos_order_matrix." + AppUtil.getDBColumnName(posOrderQuery.getSortField());
 
 				} else {
-					if (posOrderQuery.getSortType().equals("ASC")) {
-						sql = sql + "order by p." + AppUtil.getDBColumnName(posOrderQuery.getSortField()) + " asc ";
-					} else {
-						sql = sql + "order by p." + AppUtil.getDBColumnName(posOrderQuery.getSortField()) + " desc ";
-					}
+
+					sortField = "p." + AppUtil.getDBColumnName(posOrderQuery.getSortField());
 
 				}
+				sql = sql + "order by " + sortField + " " + posOrderQuery.getSortType();
+
 
 			} else {
 				sql = sql + "order by p.order_no ";
@@ -5638,33 +5641,20 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	private String createByPosOrderQuery(PosOrderQuery posOrderQuery){
 		StringBuilder sb = new StringBuilder();
-		String ip = AppUtil.getServerIp();
-		if(ip != null){
-			if(ip.equals("121.41.22.86")){
-				sb.append("from pos_order as p with(nolock,index=INDEX_20170411_INCLUDE_NO_PAYMENT_MGR_COUPON_DISCOUNT_ROUND_PROFIT_PDIS_CLIENT) ");
+		sb.append("from pos_order as p with(nolock, forceseek) ");
 
-			} else if(ip.equals("42.121.65.234")){
-				sb.append("from pos_order as p with(nolock,index=INDEX_POS_ORDER_BOOK_BRANCH_BIZ_STATE_CARD_INCLUDE_NO_PAYMENT_MGR_COUPON_DISCOUNT_ROUND_PROFIT) ");
-
-			} else if(ip.equals("116.62.107.203")){
-				sb.append("from pos_order as p with(nolock,index=IX_20170615_INCLUDE_PAYMENT_MGR_COUPON_DISCOUNT_ROUND_PROFIT) ");
-
-			} else {
-				sb.append("from pos_order as p with(nolock, forceseek) ");
-
-			}
-		} else {
-			sb.append("from pos_order as p with(nolock, forceseek) ");
-
-		}
 		boolean queryPayment = false;
-		if (org.apache.commons.lang.StringUtils.isNotEmpty(posOrderQuery.getPaymentType())) {
+		if (StringUtils.isNotEmpty(posOrderQuery.getPaymentType())) {
 			if (!posOrderQuery.getPaymentType().equals(AppConstants.PAYMENT_COUPON)) {
 				queryPayment = true;
 			}
 		}
 		if(queryPayment){
 			sb.append("inner join payment with(nolock, forceseek) on p.order_no = payment.order_no ");
+		}
+		if(posOrderQuery.getQueryMatrix() != null && posOrderQuery.getQueryMatrix()){
+			sb.append("inner join pos_order_matrix with(nolock) on p.order_no = pos_order_matrix.order_no ");
+
 		}
 		sb.append("where p.system_book_code = '" + posOrderQuery.getSystemBookCode() + "' ");
 		if (posOrderQuery.getBranchNums() != null && posOrderQuery.getBranchNums().size() > 0) {
@@ -5763,23 +5753,32 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 
 		if(posOrderQuery.getOrderRefBillno() != null){
-			sb.append("and p.order_ref_billno = '"+posOrderQuery.getOrderRefBillno() +"' ");
+			sb.append("and p.order_ref_billno = '"+posOrderQuery.getOrderRefBillno() + "' ");
 		}
 
 		boolean delCountQuery = StringUtils.isNotEmpty(posOrderQuery.getDelCountType()) && posOrderQuery.getDelCount() != null;
 		boolean delMoneyQuery = StringUtils.isNotEmpty(posOrderQuery.getDelMoneyType()) && posOrderQuery.getDelMoney() != null;
-		if(delCountQuery && delMoneyQuery){
-			sb.append("and exists (select 1 from pos_order_matrix as m where m.order_no = p.order_no ");
-			sb.append("and m.order_cancel_item_count " + posOrderQuery.getDelCountType() + " " + posOrderQuery.getDelCount()+" ");
-			sb.append("and m.order_cancel_item_money " + posOrderQuery.getDelMoneyType() + " " + posOrderQuery.getDelMoney()+" ) ");
-		}else{
+		if(posOrderQuery.getQueryMatrix() != null && posOrderQuery.getQueryMatrix()){
 			if(delCountQuery){
-				sb.append("and exists (select 1 from pos_order_matrix as m where m.order_no = p.order_no ");
-				sb.append("and m.order_cancel_item_count " + posOrderQuery.getDelCountType() + " " + posOrderQuery.getDelCount() + " ) ");
+				sb.append("and pos_order_matrix.order_cancel_item_count " + posOrderQuery.getDelCountType() + " " + posOrderQuery.getDelCount() + " ");
 			}
 			if(delMoneyQuery){
+				sb.append("and pos_order_matrix.order_cancel_item_money " + posOrderQuery.getDelMoneyType() + " " + posOrderQuery.getDelMoney() + " ");
+			}
+		} else {
+			if(delCountQuery && delMoneyQuery){
 				sb.append("and exists (select 1 from pos_order_matrix as m where m.order_no = p.order_no ");
-				sb.append("and m.order_cancel_item_money " + posOrderQuery.getDelMoneyType() + " " + posOrderQuery.getDelMoney() + " ) ");
+				sb.append("and m.order_cancel_item_count " + posOrderQuery.getDelCountType() + " " + posOrderQuery.getDelCount()+" ");
+				sb.append("and m.order_cancel_item_money " + posOrderQuery.getDelMoneyType() + " " + posOrderQuery.getDelMoney()+" ) ");
+			}else{
+				if(delCountQuery){
+					sb.append("and exists (select 1 from pos_order_matrix as m where m.order_no = p.order_no ");
+					sb.append("and m.order_cancel_item_count " + posOrderQuery.getDelCountType() + " " + posOrderQuery.getDelCount() + " ) ");
+				}
+				if(delMoneyQuery){
+					sb.append("and exists (select 1 from pos_order_matrix as m where m.order_no = p.order_no ");
+					sb.append("and m.order_cancel_item_money " + posOrderQuery.getDelMoneyType() + " " + posOrderQuery.getDelMoney() + " ) ");
+				}
 			}
 		}
 		if(StringUtils.isNotEmpty(posOrderQuery.getOprateTimeType()) && posOrderQuery.getOprateTime() != null){

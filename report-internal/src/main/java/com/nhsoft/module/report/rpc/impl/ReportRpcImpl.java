@@ -6521,7 +6521,6 @@ public class ReportRpcImpl implements ReportRpc {
 			detailData.setId(AppUtil.getUUID());
 			PosItem posItem = AppUtil.getPosItem(detailData.getItemNum(), items);
 			if (posItem != null) {
-				//detailData.setPosItemData(PosItemConverter.createModelData(posItem, false));
 				detailData.setItemValidPeriod(posItem.getItemValidPeriod());
 				if (detailData.getProductDate() != null && posItem.getItemValidPeriod() != null && posItem.getItemValidPeriod() >= 0) {
 					detailData.setProductPassDate(DateUtil.addDay(detailData.getProductDate(), posItem.getItemValidPeriod()));

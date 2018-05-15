@@ -37,7 +37,15 @@ public class PosOrderQuery extends QueryBuilder{
 	private BigDecimal delCount;
 	private BigDecimal delMoney;
 	private BigDecimal oprateTime;
+	private Boolean queryMatrix;
 
+	public Boolean getQueryMatrix() {
+		return queryMatrix;
+	}
+
+	public void setQueryMatrix(Boolean queryMatrix) {
+		this.queryMatrix = queryMatrix;
+	}
 
 	public int getMax() {
 		return max == null?50000:max;
