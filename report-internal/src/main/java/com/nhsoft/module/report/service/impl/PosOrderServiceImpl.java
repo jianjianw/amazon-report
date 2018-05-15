@@ -381,6 +381,16 @@ public class PosOrderServiceImpl implements PosOrderService {
         return posOrderDao.findItemSumByCategory(systemBookCode,branchNums,dateFrom,dateTo,categoryCodes,queryKit,itemNums);
     }
 
+	@Override
+	public List<PosOrderMatrix> findMatrixs(List<String> orderNos) {
+		return posOrderDao.findMatrixs(orderNos);
+	}
+
+	@Override
+	public List<PosOrderMatrix> findMatrixs(PosOrderQuery posOrderQuery) {
+		return posOrderDao.findMatrixs(posOrderQuery);
+	}
+
 
 }
 

@@ -2,10 +2,7 @@ package com.nhsoft.module.report.dao;
 
 
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.model.Payment;
-import com.nhsoft.module.report.model.PosOrder;
-import com.nhsoft.module.report.model.PosOrderDetail;
-import com.nhsoft.module.report.model.ShiftTable;
+import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.query.PolicyAllowPriftQuery;
 import com.nhsoft.module.report.query.ProfitAnalysisQueryData;
 import com.nhsoft.module.report.query.RetailDetailQueryData;
@@ -1289,6 +1286,10 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public Object[] findPromotionItemsCount(PolicyAllowPriftQuery policyAllowPriftQuery);
+
+	public List<PosOrderMatrix> findMatrixs(List<String> orderNos);
+
+	public List<PosOrderMatrix> findMatrixs(PosOrderQuery posOrderQuery);
 
 
 

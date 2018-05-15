@@ -4,6 +4,8 @@ import com.nhsoft.amazon.server.dto.OrderQueryDTO;
 import com.nhsoft.amazon.server.dto.OrderReportDTO;
 import com.nhsoft.amazon.server.remote.service.PosOrderRemoteService;
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.model.PosOrder;
+import com.nhsoft.module.report.model.PosOrderMatrix;
 import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.query.PolicyAllowPriftQuery;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
@@ -733,7 +735,41 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 
 	@Override
 	public List<PosOrderDTO> findSettled(String systemBookCode, PosOrderQuery posOrderQuery, int offset, int limit) {
-		return CopyUtil.toList(posOrderService.findSettled(posOrderQuery, offset, limit), PosOrderDTO.class);
+		List<PosOrderDTO> posOrders = CopyUtil.toList(posOrderService.findSettled(posOrderQuery, offset, limit), PosOrderDTO.class);
+		if(posOrders.isEmpty()){
+			return posOrders;
+		}
+		if(posOrderQuery.getQueryMatrix() != null && posOrderQuery.getQueryMatrix()){
+
+			List<PosOrderMatrix> posOrderMatrices;
+			if (!posOrderQuery.isPage()) {
+				posOrderMatrices = posOrderService.findMatrixs(posOrderQuery);
+			} else {
+				List<String> orderNos = new ArrayList<String>();
+				for (int i = 0; i < posOrders.size(); i++) {
+					PosOrderDTO posOrder = posOrders.get(i);
+					orderNos.add(posOrder.getOrderNo());
+				}
+				posOrderMatrices = posOrderService.findMatrixs(orderNos);
+
+			}
+
+			for (int i = 0; i < posOrders.size(); i++) {
+				PosOrderDTO posOrder = posOrders.get(i);
+
+				for (int j = 0; j < posOrderMatrices.size(); j++) {
+					PosOrderMatrix posOrderMatrix = posOrderMatrices.get(j);
+					if (posOrder.getOrderNo().equals(posOrderMatrix.getOrderNo())) {
+
+						posOrder.setOrderCancelItemCount(posOrderMatrix.getOrderCancelItemCount());
+						posOrder.setOrderCancelItemMoney(posOrderMatrix.getOrderCancelItemMoney());
+						posOrderMatrices.remove(j);
+						break;
+					}
+				}
+			}
+		}
+		return posOrders;
 	}
 
 	@Override

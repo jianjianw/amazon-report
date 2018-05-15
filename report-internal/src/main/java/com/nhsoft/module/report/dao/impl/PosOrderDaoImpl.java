@@ -7060,6 +7060,24 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return result;
 	}
 
+	@Override
+	public List<PosOrderMatrix> findMatrixs(List<String> orderNos) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select * from pos_order_matrix with(nolock) where order_no in " + AppUtil.getStringParmeList(orderNos));
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.addEntity(PosOrderMatrix.class);
+		return query.list();
+	}
+
+	@Override
+	public List<PosOrderMatrix> findMatrixs(PosOrderQuery posOrderQuery) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select pos_order_matrix.* ").append(createByPosOrderQuery(posOrderQuery));
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.addEntity(PosOrderMatrix.class);
+		return query.list();
+	}
+
 
 	private String createPromotion(PolicyAllowPriftQuery policyAllowPriftQuery){
 
