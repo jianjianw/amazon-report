@@ -35,6 +35,7 @@ public class UnsalablePosItem implements Serializable {
 	private BigDecimal currentPifaMoney; // 最近销售额
 	private BigDecimal currentPifaProfit; // 最近销售毛利
 	private Date lastestInDate; // 最近进货日期
+	private Date lastProductionDate;//最近生产日期
 
 	private BigDecimal itemInventoryRate;
 	private BigDecimal itemTransferRate;
@@ -256,4 +257,11 @@ public class UnsalablePosItem implements Serializable {
 		this.eliminativeFlag = eliminativeFlag;
 	}
 
+	public Date getLastProductionDate() {
+		return lastProductionDate;
+	}
+
+	public void setLastProductionDate(Date lastProductionDate) {
+		this.lastProductionDate = lastProductionDate;
+	}
 }

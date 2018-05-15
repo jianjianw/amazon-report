@@ -27,7 +27,7 @@ import java.util.List;
  * Created by yangqin on 2017/9/20.
  */
 @Repository
-public class PosItemLogDaoImpl extends DaoImpl implements PosItemLogDao {
+public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao {
 	@Override
 	public List<Integer> findItemNum(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, Boolean inOut) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
@@ -175,8 +175,11 @@ public class PosItemLogDaoImpl extends DaoImpl implements PosItemLogDao {
 		if(StringUtils.isNotEmpty(summaries)){
 			sb.append("and l.pos_item_log_summary in " + AppUtil.getStringParmeArray(summaries.split(",")));
 		}
-		if(memos != null && memos.size() > 0){
+		/*if(memos != null && memos.size() > 0){
 			sb.append("and ((l.pos_item_log_summary = '调整单' and l.pos_item_log_memo in " + AppUtil.getStringParmeList(memos) + ") or l.pos_item_log_summary != '调整单') ");
+		}*/
+		if(memos != null && memos.size() > 0){
+			sb.append("and l.pos_item_log_memo in " + AppUtil.getStringParmeList(memos) + " ");
 		}
 
 		sb.append("group by l.item_num, l.pos_item_log_item_matrix_num, l.pos_item_log_inout_flag ");
