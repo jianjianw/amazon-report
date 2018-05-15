@@ -1667,6 +1667,9 @@ public class APIBasic {
 	public InventoryProfitPageDTO test85() throws Exception{
 		String systemBookCode = "4020";			//损益统计报表     商品汇总
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		/*Date dateFrom = sdf.parse("2018-05-01");
+		Date dateTo = sdf.parse("2018-05-31");*/
+
 		Date dateFrom = sdf.parse("2018-04-01");
 		Date dateTo = sdf.parse("2018-04-30");
 
@@ -1681,8 +1684,10 @@ public class APIBasic {
 		query.setIsChechZero(true);
 		List<String> reasons = new ArrayList<>();
 		reasons.add("原料领用单");
+		//reasons.add("盘点单");
 		query.setReasons(reasons);
 		query.setCheckType("调整单");
+		//query.setCheckType("盘盈");
 
 
 		query.setPage(true);
@@ -1965,10 +1970,10 @@ public class APIBasic {
 	@RequestMapping(method = RequestMethod.GET,value = "/test107/{sortField}/{sortType}")				//byPage	毛利分析 商品毛利汇总   ok
 	public ProfitByBranchAndItemSummaryPageDTOV2 test107(@PathVariable String sortField,@PathVariable String sortType) throws Exception {
 
-		String systemBookCode = "4020";
+		String systemBookCode = "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-03-01");
-		Date dateTo = sdf.parse("2018-03-31");
+		Date dateFrom = sdf.parse("2016-10-01");
+		Date dateTo = sdf.parse("2016-10-31");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
@@ -1976,7 +1981,7 @@ public class APIBasic {
 		query.setIsQueryCF(true);
 		query.setPage(true);
 		query.setOffset(0);
-		query.setLimit(46);
+		query.setLimit(50);
 		query.setBranchNums(getBranchNums());
 		//444401187  水果组合
 
@@ -1988,9 +1993,9 @@ public class APIBasic {
 		orderSource.add("第三方商城");
 		query.setOrderSources(orderSource);*/
 
-		List<String> list = new ArrayList<>();
+		/*List<String> list = new ArrayList<>();
 		list.add("210");
-		query.setPosItemTypeCodes(list);
+		query.setPosItemTypeCodes(list);*/
 		query.setSortField(sortField);
 		query.setSortType(sortType);
 

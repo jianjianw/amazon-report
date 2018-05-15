@@ -3807,10 +3807,10 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<WholesaleProfitByClient> findWholesaleProfitByClient(WholesaleProfitQuery queryData) {
 		String systemBookCode = queryData.getSystemBookCode();
-
+		List<String> clientFids = queryData.getClientFids();
 		Map<String, WholesaleProfitByClient> map = new HashMap<String, WholesaleProfitByClient>();
 
-		List<PosClient> posClients = posClientService.findInCache(systemBookCode);
+		List<PosClient> posClients = posClientService.findInCache(systemBookCode,clientFids);
 		List<Object[]> saleObjects = wholesaleOrderDao.findMoneyGroupByClient(queryData);
 
 		String clientFid = null;
@@ -4093,7 +4093,7 @@ public class ReportServiceImpl implements ReportService {
 			unitType = AppConstants.UNIT_PIFA;
 		}
 
-		List<PosClient> posClients = posClientService.findInCache(systemBookCode);
+		List<PosClient> posClients = posClientService.findInCache(systemBookCode,wholesaleProfitQuery.getClientFids());
 		List<Object[]> saleObjects = wholesaleOrderDao.findDetail(wholesaleProfitQuery);
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 		BigDecimal presentQty = null;
@@ -4384,7 +4384,7 @@ public class ReportServiceImpl implements ReportService {
 
 			List<WholesaleOrder> wholesaleOrders = wholesaleOrderDao.findToPicking(systemBookCode, branchNum,
 					clientFids, storehouseNum, null);
-			List<PosClient> posClients = posClientService.findInCache(systemBookCode);
+			List<PosClient> posClients = posClientService.findInCache(systemBookCode,clientFids);
 			for (int i = 0,len = wholesaleOrders.size(); i < len; i++) {
 				WholesaleOrder wholesaleOrder = wholesaleOrders.get(i);
 				ToPicking data = new ToPicking();
@@ -4456,7 +4456,7 @@ public class ReportServiceImpl implements ReportService {
 		if (clientFids.size() >0 || (branchNums.size() == 0 && clientFids.size() == 0)) {
 			List<WholesaleOrder> wholesaleOrders = wholesaleOrderDao.findToShip(systemBookCode, branchNum, clientFids,
                     storehouseNum, null);
-			List<PosClient> posClients = posClientService.findInCache(systemBookCode);
+			List<PosClient> posClients = posClientService.findInCache(systemBookCode,clientFids);
 			StringBuilder stringBuilder;
 			String shipClient;
 			for (int i = 0,len = wholesaleOrders.size(); i < len; i++) {
@@ -4987,7 +4987,7 @@ public class ReportServiceImpl implements ReportService {
 		String unit = unsalableQuery.getUnit();
 
 		Map<Integer, UnsalablePosItem> map = new HashMap<Integer, UnsalablePosItem>();
-		List<Object[]> inventoryObjects = inventoryDao.findInventory(systemBookCode, branchNum, null, null);
+		List<Object[]> inventoryObjects = inventoryDao.findInventory(systemBookCode, branchNum, unsalableQuery.getStorehouseNum(), null);
 		for (int i = 0,len = inventoryObjects.size(); i < len; i++) {
 			UnsalablePosItem data = new UnsalablePosItem();
 			Object[] object = inventoryObjects.get(i);
@@ -5086,8 +5086,23 @@ public class ReportServiceImpl implements ReportService {
 				map.put(itemNum, data);
 			}
 			data.setLastestInDate(inDate);
-
 		}
+
+
+		//最近生产日期
+		List<String> TypeList = new ArrayList<>();
+		TypeList.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
+		TypeList.add(AppConstants.POS_ITEM_LOG_IN_ORDER);
+		List<Object[]> productionDateobjects = branchItemRecoredDao.findItemReceiveDate(systemBookCode, transferBranchNums, null, null, TypeList);
+		for (int i = 0,len = productionDateobjects.size(); i < len ; i++) {
+			Object[] object = productionDateobjects.get(i);
+			Integer itemNum = (Integer)object[0];
+			UnsalablePosItem data = map.get(itemNum);
+			if(data != null){
+				data.setLastProductionDate((Date)object[1]);
+			}
+		}
+
 
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 		List<UnsalablePosItem> list = new ArrayList<UnsalablePosItem>(map.values());
@@ -7236,7 +7251,7 @@ public class ReportServiceImpl implements ReportService {
 
 		Map<String, WholesaleProfitByPosItemDetail> map = new HashMap<String, WholesaleProfitByPosItemDetail>();
 
-		List<PosClient> posClients = posClientService.findInCache(systemBookCode);
+		List<PosClient> posClients = posClientService.findInCache(systemBookCode,wholesaleProfitQuery.getClientFids());
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 		List<Object[]> saleObjects = wholesaleOrderDao.findMoneyGroupByClientItemNum(wholesaleProfitQuery);
 
@@ -10159,7 +10174,7 @@ public class ReportServiceImpl implements ReportService {
 				totalDueMoney.put(clientFid, dueMoney);
 			}
 		}
-		List<PosClient> posClients = posClientService.findInCache(systemBookCode);
+		List<PosClient> posClients = posClientService.findInCache(systemBookCode,null);
 		int totalDueCount = 0;
 		for (int i = 0,len = posClients.size(); i <len; i++) {
 			if (posClients.get(i).getClientCreditLimit().compareTo(BigDecimal.ZERO) == 0) {
@@ -11980,7 +11995,7 @@ public class ReportServiceImpl implements ReportService {
 					} else if(detailDTO.getBillType().equals(AppConstants.POS_ITEM_LOG_WHOLESALE_ORDER_ORDER) 
 							|| detailDTO.getBillType().equals(AppConstants.POS_ITEM_LOG_WHOLESALE_RETURN_ORDER)){
 						if(posClients == null){
-							posClients = posClientService.findInCache(systemBookCode);
+							posClients = posClientService.findInCache(systemBookCode,null);
 						}
 						PosClient posClient = AppUtil.getPosClient(detailDTO.getBillMemo(), posClients);
 						if(posClient != null){

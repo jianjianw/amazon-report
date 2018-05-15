@@ -5654,7 +5654,7 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 
 			}
-
+			dateTo = query.getDateTo();
 			// 营业额
 			logger.info(String.format("开始查询门店营业分析 商品汇总 POS营业额"));
 			List<Object[]> posOrderObjects = posOrderService.findItemSumByCategory(systemBookCode, branchNums,

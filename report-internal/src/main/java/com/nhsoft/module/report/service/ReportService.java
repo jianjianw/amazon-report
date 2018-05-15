@@ -362,7 +362,7 @@ public interface ReportService {
 	 * @param unsalableQuery
 	 * @return
 	 */
-	public List<UnsalablePosItem> findInventoryOverStock(UnsalableQuery unsalableQuery);
+	public List<UnsalablePosItem> 	findInventoryOverStock(UnsalableQuery unsalableQuery);
 
 	/**
 	 * 零售明细查询
