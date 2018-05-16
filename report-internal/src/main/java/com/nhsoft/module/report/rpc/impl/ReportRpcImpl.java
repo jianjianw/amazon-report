@@ -5474,12 +5474,15 @@ public class ReportRpcImpl implements ReportRpc {
 
 
 		//根据商品类别查询商品
-		List<PosItem> posItems = posItemService.findByPosItemQuery(query,null,null,0,0);
-		int size = posItems.size();
+		List<PosItemDTO> posItemDTOS = posItemRpc.findByPosItemQuery(query,null,null,0,0);
+		int size = posItemDTOS.size();
+		if(size == 0){
+			return Collections.emptyList();
+		}
 		List<Integer> itemNums = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-			PosItem posItem = posItems.get(i);
-			itemNums.add(posItem.getItemNum());
+			PosItemDTO posItemDTO = posItemDTOS.get(i);
+			itemNums.add(posItemDTO.getItemNum());
 		}
 
 		List<ItemInventoryDTO> itemInventory = inventoryRpc.findItemAmount(inventoryQuery.getSystemBookCode(), null, itemNums, null);
@@ -5488,21 +5491,24 @@ public class ReportRpcImpl implements ReportRpc {
 		for (int i = 0,len = itemInventory.size(); i < len ; i++) {
 			ItemInventoryDTO itemInventoryDTO = itemInventory.get(i);
 			Integer itemNum = itemInventoryDTO.getItemNum();
-			PosItem posItem = AppUtil.getPosItem(itemNum, posItems);
-			PosItemDTO posItemDTO = CopyUtil.to(posItem, PosItemDTO.class);
-
-			ItemInventoryTrendSummary data = map.get(posItem.getItemCategoryCode());
+			PosItemDTO posItemDTO = AppUtil.getPosItemDTO(itemNum, posItemDTOS);
+			if(posItemDTO == null ){
+				continue;
+			}
+			ItemInventoryTrendSummary data = map.get(posItemDTO.getItemCategoryCode());
 			if(data == null){
 				data = new ItemInventoryTrendSummary();
-				data.setCategoryCode(posItem.getItemCategoryCode());
-				data.setCategoryName(posItem.getItemCategory());
-				map.put(posItem.getItemCategoryCode(),data);
+				data.setCategoryCode(posItemDTO.getItemCategoryCode());
+				data.setCategoryName(posItemDTO.getItemCategory());
+				map.put(posItemDTO.getItemCategoryCode(),data);
 			}
 
 			if(itemInventoryDTO.getAmount().compareTo(BigDecimal.ZERO) > 0){
-				data.setInventoryAmount(data.getInventoryAmount() + 1);
+				//data.setInventoryAmount(data.getInventoryAmount() + 1);
+				data.setInventoryAmount(data.getInventoryAmount());
 			}else{
-				data.setUnInventoryAmount(data.getUnInventoryAmount() +1);
+				//data.setUnInventoryAmount(data.getUnInventoryAmount() +1);
+				data.setUnInventoryAmount(data.getUnInventoryAmount());
 				List<PosItemDTO> itemDTOS = data.getPosItems();
 				itemDTOS.add(posItemDTO);
 				data.setPosItems(itemDTOS);
@@ -7425,7 +7431,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<PosItemDTO> posItems = new ArrayList<PosItemDTO>();
 		if (inventoryAnalysisQuery.isQueryAssemble()) {
 			if(itemNums != null && itemNums.size() > 0){
-				List<PosItemDTO> tempPosItems = posItemRpc.findByItemNums(itemNums);
+				List<PosItemDTO> tempPosItems = posItemRpc.findByItemNums(systemBookCode,itemNums);
 				List<Integer> manufactureItemNums = new ArrayList<Integer>();
 				for (int i = 0; i < tempPosItems.size(); i++) {
 					PosItemDTO posItem = tempPosItems.get(i);
@@ -7436,7 +7442,7 @@ public class ReportRpcImpl implements ReportRpc {
 					}
 				}
 				if(manufactureItemNums.size() > 0 ){
-					List<PosItemKitDTO> posItemKits = posItemRpc.findPosItemKitsWithDetails(manufactureItemNums);
+					List<PosItemKitDTO> posItemKits = posItemRpc.findPosItemKitsWithDetails(systemBookCode,manufactureItemNums);
 					for (int i = 0; i < tempPosItems.size(); i++) {
 						PosItemDTO posItem = tempPosItems.get(i);
 						posItem.setPosItemKits(PosItemKitDTO.find(posItemKits, posItem.getItemNum()));
