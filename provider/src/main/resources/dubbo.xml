@@ -10,11 +10,11 @@
     <!-- 提供方应用信息，用于计算依赖关系 -->
     <dubbo:application name="amazon-report"  />
 
-    <!--<dubbo:registry address="zookeeper://csk.nhsoft.cn:2181" register="false"/>-->
-    <dubbo:registry address="zookeeper://csk.nhsoft.cn:2181" register="false"/>
+    <dubbo:registry address="zookeeper://csk.nhsoft.cn:2181"/>
 
     <!-- 用dubbo协议在20880端口暴露服务 -->
-    <dubbo:protocol name="dubbo" port="20880"  payload = "10485760"/>
+    <dubbo:protocol name="dubbo" port="20880" host="118.31.165.21" payload = "10485760"/>
+
     <dubbo:provider loadbalance="roundrobin" timeout="600000"/>
 
     <!-- 声明需要暴露的服务接口 -->

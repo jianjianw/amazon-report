@@ -12,6 +12,7 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
+import org.apache.http.impl.execchain.TunnelRefusedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -1232,24 +1233,24 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test66/{sortField}/{sortType}")
 	public BranchBizSummaryPageDTO test66(@PathVariable(value = "sortField") String sortField, @PathVariable(value = "sortType") String sortType) throws Exception{		//page  毛利分析 日毛利汇总
-		String systemBookCode = "4020";
+		String systemBookCode = "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-04-10");
+		Date dateFrom = sdf.parse("2018-05-08");
+		Date dateTo = sdf.parse("2018-05-08");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
-		query.setBranchNums(getBranchNums(systemBookCode));
-		query.setIsQueryCF(true);
-		//query.setPage(false);
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+		query.setBranchNums(branchNums);
+		query.setIsQueryCF(false);
+		query.setPage(false);
 		query.setOffset(0);
 		query.setLimit(100);
 		query.setSortField(sortField);
 		query.setSortType(sortType);
-	/*	List<String> category = new ArrayList<>();
-		category.add("210");
-		query.setPosItemTypeCodes(category);*/
+
 
 		BranchBizSummaryPageDTO result = reportRpc.findProfitAnalysisDaysByPage(query);
 		return result;
@@ -1485,6 +1486,9 @@ public class APIBasic {
 		String systemBookCode = "4020";
 		ItemInventoryQueryDTO query = new ItemInventoryQueryDTO();
 		query.setSystemBookCode(systemBookCode);
+		//query.setStockCrease(true);
+		//query.setDromCrease(true);
+		query.setSaleCrease(true);
 		List<ItemInventoryTrendSummary> itemTrendInventory = reportRpc.findItemTrendInventory(query);
 		return itemTrendInventory;
 	}
@@ -1974,8 +1978,8 @@ public class APIBasic {
 
 		String systemBookCode = "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2016-10-01");
-		Date dateTo = sdf.parse("2016-10-31");
+		Date dateFrom = sdf.parse("2018-05-01");
+		Date dateTo = sdf.parse("2018-05-31");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);

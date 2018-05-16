@@ -24,12 +24,12 @@ public class PosItemRpcImpl implements PosItemRpc {
     }
 
     @Override
-    public List<PosItemDTO> findByItemNums(List<Integer> itemNums) {
+    public List<PosItemDTO> findByItemNums(String systemBookCode,List<Integer> itemNums) {
         return CopyUtil.toList(posItemService.findByItemNums(itemNums),PosItemDTO.class);
     }
 
     @Override
-    public List<PosItemKitDTO> findPosItemKitsWithDetails(List<Integer> itemNums) {
+    public List<PosItemKitDTO> findPosItemKitsWithDetails(String systemBookCode,List<Integer> itemNums) {
         return CopyUtil.toList(posItemService.findByItemNumsWithoutDetails(itemNums),PosItemKitDTO.class);
     }
 

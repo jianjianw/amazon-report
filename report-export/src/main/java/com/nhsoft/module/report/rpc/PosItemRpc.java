@@ -23,14 +23,14 @@ public interface PosItemRpc {
      * @param itemNums 商品主键列表
      * @return
      */
-    public List<PosItemDTO> findByItemNums(List<Integer> itemNums);
+    public List<PosItemDTO> findByItemNums(String systemBookCode,List<Integer> itemNums);
 
     /**
      * 查询带明细的组合商品
      * @param itemNums
      * @return
      */
-    public List<PosItemKitDTO> findPosItemKitsWithDetails(List<Integer> itemNums);
+    public List<PosItemKitDTO> findPosItemKitsWithDetails(String systemBookCode,List<Integer> itemNums);
 
     /**
      * 按条件查询

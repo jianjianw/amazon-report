@@ -12,10 +12,6 @@ public class InventoryAnalysisQuery extends QueryBuilder {
 	public InventoryAnalysisQuery() {
 	}
 
-	public InventoryAnalysisQuery(String systemBookCode) {
-		this.systemBookCode = systemBookCode;
-	}
-
 	private Integer branchNum;
 	private Integer centerBranchNum;
 	private List<String> categoryCodes;

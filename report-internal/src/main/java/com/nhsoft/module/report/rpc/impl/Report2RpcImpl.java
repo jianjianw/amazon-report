@@ -1102,7 +1102,7 @@ public class Report2RpcImpl implements Report2Rpc {
 			List<Integer> itemNumList = new ArrayList<Integer>(innerItemNums);
 			posItems = posItemService.findByItemNums(itemNumList);
 			objects = inventoryService.findItemAmount(systemBookCode, branchNums, itemNumList, null);
-			storeItemSuppliers = storeItemSupplierService.findDefaults(systemBookCode, Arrays.asList(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM), itemNumList);
+			storeItemSuppliers = storeItemSupplierService.findDefaults(systemBookCode, Arrays.asList(branchNums.get(0)), itemNumList);
 			storeMatrices = storeMatrixService.findByBranch(systemBookCode, branchNums.get(0), itemNumList);
 		}
 		for(Object[] object : objects) {
