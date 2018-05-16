@@ -109,6 +109,18 @@ public class AppUtil {
 		return null;
 	}
 
+	public static PosItemDTO getPosItemDTO(Integer itemNum, List<PosItemDTO> posItemDTOS) {
+		if (posItemDTOS == null) {
+			return null;
+		}
+		for (int i = 0, len = posItemDTOS.size(); i < len; i++) {
+			if (posItemDTOS.get(i).getItemNum().equals(itemNum)) {
+				return posItemDTOS.get(i);
+			}
+		}
+		return null;
+	}
+
 	public static Supplier getSupplier(Integer supplierNum, List<Supplier> suppliers) {
 		for (int i = 0, len = suppliers.size(); i < len; i++) {
 			if (suppliers.get(i).getSupplierNum().equals(supplierNum)) {

@@ -12,6 +12,7 @@ import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.ServiceDeskUtil;
+import org.apache.http.impl.execchain.TunnelRefusedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -1485,6 +1486,9 @@ public class APIBasic {
 		String systemBookCode = "4020";
 		ItemInventoryQueryDTO query = new ItemInventoryQueryDTO();
 		query.setSystemBookCode(systemBookCode);
+		//query.setStockCrease(true);
+		//query.setDromCrease(true);
+		query.setSaleCrease(true);
 		List<ItemInventoryTrendSummary> itemTrendInventory = reportRpc.findItemTrendInventory(query);
 		return itemTrendInventory;
 	}
