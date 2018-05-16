@@ -7385,9 +7385,10 @@ public class ReportRpcImpl implements ReportRpc {
 
 
 		//手工添加补货的商品忽略规则
-		boolean ignoreRule = false;
-		if(itemNums != null && itemNums.size() > 0){
-			ignoreRule = true;
+		List<Integer> ignoreRuleItemNums = null;
+		if(itemNums != null && !itemNums.isEmpty()){
+			ignoreRuleItemNums = new ArrayList<>(itemNums.size());
+			ignoreRuleItemNums.addAll(itemNums);
 		}
 
 		if (inventoryAnalysisQuery.getStorehouseNum() == null) {
@@ -7449,7 +7450,7 @@ public class ReportRpcImpl implements ReportRpc {
 				posItems.addAll(posItemRpc.findShortItems(systemBookCode));
 
 			}
-			if(!ignoreRule){
+			if(ignoreRuleItemNums == null){
 
 				for (int i = posItems.size() - 1; i >= 0; i--) {
 					PosItemDTO posItem = posItems.get(i);
@@ -7520,7 +7521,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 			} else if(inventoryAnalysisQuery.getStoreItemNums() != null && itemNums != null){
 
-				itemNums.retainAll(inventoryAnalysisQuery.getStoreItemNums());
+				itemNums.addAll(inventoryAnalysisQuery.getStoreItemNums());
 				posItemQuery.setItemNums(itemNums);
 			}
 
@@ -7543,6 +7544,12 @@ public class ReportRpcImpl implements ReportRpc {
 			dto.setItemMatrixNum(0);
 			dto.getPosItem().getItemMatrixs().clear();
 			dto.setItemMinQuantity(posItem.getItemMinQuantity());
+
+
+			boolean ignoreRule = false;
+			if(ignoreRuleItemNums != null && ignoreRuleItemNums.contains(posItem.getItemNum())){
+				ignoreRule = true;
+			}
 			if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_MATRIX) {
 
 				for (int j = 0; j < itemMatrixs.size(); j++) {
@@ -7710,6 +7717,12 @@ public class ReportRpcImpl implements ReportRpc {
 		for (int i = list.size() - 1; i >= 0; i--) {
 			InventoryAnalysisDTO data = list.get(i);
 			Integer itemNum = data.getItemNum();
+
+			boolean ignoreRule = false;
+			if(ignoreRuleItemNums != null && ignoreRuleItemNums.contains(itemNum)){
+				ignoreRule = true;
+			}
+
 			BigDecimal amount = (BigDecimal) data.get("saleQty");
 			if (amount == null) {
 				amount = BigDecimal.ZERO;
