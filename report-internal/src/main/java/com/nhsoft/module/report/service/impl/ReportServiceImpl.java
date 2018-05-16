@@ -8580,9 +8580,6 @@ public class ReportServiceImpl implements ReportService {
 				null, null);
 		List<WholesaleAnalysisDTO> wholesaleAnalysisDTOs = new ArrayList<WholesaleAnalysisDTO>();
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
-		if (wholesaleRateFrom == null) {
-			wholesaleRateFrom = 3;
-		}
 		BigDecimal rate = null;
 		BigDecimal useQty = null;
 		String unit = null;
@@ -8600,7 +8597,7 @@ public class ReportServiceImpl implements ReportService {
 			if (firstOrderDate == null) {
 				continue;
 			}
-			if (orderCount < wholesaleRateFrom) {
+			if (wholesaleRateFrom != null && orderCount < wholesaleRateFrom) {
 				continue;
 			}
 			Integer unWholesaleDays = DateUtil.diffDay(lastOrderDate, Calendar.getInstance().getTime());
