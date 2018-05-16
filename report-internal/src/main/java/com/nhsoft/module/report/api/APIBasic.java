@@ -1232,24 +1232,24 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test66/{sortField}/{sortType}")
 	public BranchBizSummaryPageDTO test66(@PathVariable(value = "sortField") String sortField, @PathVariable(value = "sortType") String sortType) throws Exception{		//page  毛利分析 日毛利汇总
-		String systemBookCode = "4020";
+		String systemBookCode = "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-01-01");
-		Date dateTo = sdf.parse("2018-04-10");
+		Date dateFrom = sdf.parse("2018-05-08");
+		Date dateTo = sdf.parse("2018-05-08");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
 		query.setShiftTableTo(dateTo);
-		query.setBranchNums(getBranchNums(systemBookCode));
-		query.setIsQueryCF(true);
-		//query.setPage(false);
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+		query.setBranchNums(branchNums);
+		query.setIsQueryCF(false);
+		query.setPage(false);
 		query.setOffset(0);
 		query.setLimit(100);
 		query.setSortField(sortField);
 		query.setSortType(sortType);
-	/*	List<String> category = new ArrayList<>();
-		category.add("210");
-		query.setPosItemTypeCodes(category);*/
+
 
 		BranchBizSummaryPageDTO result = reportRpc.findProfitAnalysisDaysByPage(query);
 		return result;
