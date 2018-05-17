@@ -12,12 +12,9 @@ import java.util.List;
 @Repository
 public class PosClientDaoImpl extends DaoImpl implements PosClientDao {
 	@Override
-	public List<PosClient> findAll(String systemBookCode, Integer branchNum,List<String> clientFids) {
+	public List<PosClient> findAll(String systemBookCode, Integer branchNum) {
 		Criteria criteria = currentSession().createCriteria(PosClient.class, "p").add(
 				Restrictions.eq("p.systemBookCode", systemBookCode));
-		if(clientFids != null){
-			criteria.add(Restrictions.in("p.clientFid",clientFids));
-		}
 		if (branchNum != null) {
 			criteria.add(Restrictions.disjunction()
 					.add(Restrictions.eq("p.branchNum", branchNum))

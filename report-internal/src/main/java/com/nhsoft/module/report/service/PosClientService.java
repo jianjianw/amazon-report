@@ -18,5 +18,5 @@ public interface PosClientService {
 	 * @param systemBookCode
 	 * @return
 	 */
-	public List<PosClient> findInCache(String systemBookCode,List<String> clientFids);
+	public List<PosClient> findInCache(String systemBookCode);
 }
