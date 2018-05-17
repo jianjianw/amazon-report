@@ -78,6 +78,7 @@ public class PosItemQuery extends QueryBuilder {
 	private Integer centerBranchNum; //中心门店
 	private Boolean filterDepartmentRequesTime;//过滤不在要货时间范围内的商品
 	private String eqItemBarCode;// 条码  全匹配
+	private List<Integer> showItemTypes; //显示指定商品类型
 	
 	public List<String> getItemDepartments() {
 		return itemDepartments;
@@ -620,7 +621,11 @@ public class PosItemQuery extends QueryBuilder {
 		return eqItemBarCode;
 	}
 
-	public void setEqItemBarCode(String eqItemBarCode) {
-		this.eqItemBarCode = eqItemBarCode;
+	public List<Integer> getShowItemTypes() {
+		return showItemTypes;
+	}
+
+	public void setShowItemTypes(List<Integer> showItemTypes) {
+		this.showItemTypes = showItemTypes;
 	}
 }
