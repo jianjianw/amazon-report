@@ -18,12 +18,12 @@ public class PosClientServiceImpl extends BaseManager implements PosClientServic
 	@Autowired
 	private PosClientDao posClientDao;
 	@Override
-	public List<PosClient> findInCache(String systemBookCode,List<String> clientFids ) {
+	public List<PosClient> findInCache(String systemBookCode) {
 
 
 		Element element = getElementFromCache(AppConstants.CACHE_NAME_POS_CLIENT + systemBookCode);
 		if(element == null){
-			List<PosClient> posClients = posClientDao.findAll(systemBookCode, null,clientFids);
+			List<PosClient> posClients = posClientDao.findAll(systemBookCode, null);
 			element = new Element(AppConstants.CACHE_NAME_POS_CLIENT + systemBookCode, posClients);
 			element.setTimeToLive(AppConstants.CACHE_LIVE_SECOND);
 			putElementToCache(element);

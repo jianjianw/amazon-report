@@ -5337,6 +5337,8 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<PurchaseCycleSummary> findPurchaseCycleByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
 
+
+		//出入库数量和当前库存总数取配送单位的数量
 		//基本数量  除以   商品档案的转换率    就是配送单位的数量
 
 		// 入库金额   入库数量    采购员
