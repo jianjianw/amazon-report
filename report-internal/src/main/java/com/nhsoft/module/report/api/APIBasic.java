@@ -1244,7 +1244,7 @@ public class APIBasic {
 		List<Integer> branchNums = new ArrayList<>();
 		branchNums.add(99);
 		query.setBranchNums(branchNums);
-		query.setIsQueryCF(false);
+		query.setIsQueryCF(true);
 		query.setPage(false);
 		query.setOffset(0);
 		query.setLimit(100);
@@ -1483,13 +1483,20 @@ public class APIBasic {
 
 	@RequestMapping(method = RequestMethod.GET,value = "/test77")
 	public List<ItemInventoryTrendSummary> test77(){
+
 		String systemBookCode = "4020";
 		ItemInventoryQueryDTO query = new ItemInventoryQueryDTO();
 		query.setSystemBookCode(systemBookCode);
-		//query.setStockCrease(true);
-		//query.setDromCrease(true);
-		query.setSaleCrease(true);
+		Integer inventoryAmount = 0;
+		Integer unInventoryAmount = 0;
 		List<ItemInventoryTrendSummary> itemTrendInventory = reportRpc.findItemTrendInventory(query);
+		for (int i = 0; i < itemTrendInventory.size(); i++) {
+			ItemInventoryTrendSummary itemInventoryTrendSummary = itemTrendInventory.get(i);
+			inventoryAmount = inventoryAmount + itemInventoryTrendSummary.getInventoryAmount();
+			unInventoryAmount =  unInventoryAmount + itemInventoryTrendSummary.getUnInventoryAmount();
+		}
+		System.out.println(inventoryAmount);
+		System.out.println(unInventoryAmount);
 		return itemTrendInventory;
 	}
 
@@ -1978,8 +1985,8 @@ public class APIBasic {
 
 		String systemBookCode = "4344";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-05-01");
-		Date dateTo = sdf.parse("2018-05-31");
+		Date dateFrom = sdf.parse("2018-05-08");
+		Date dateTo = sdf.parse("2018-05-08");
 		ProfitAnalysisQueryData query = new ProfitAnalysisQueryData();
 		query.setSystemBookCode(systemBookCode);
 		query.setShiftTableFrom(dateFrom);
@@ -1989,19 +1996,6 @@ public class APIBasic {
 		query.setOffset(0);
 		query.setLimit(50);
 		query.setBranchNums(getBranchNums(systemBookCode));
-		//444401187  水果组合
-
-		//444401191 精品制单组合
-		//444401190
-
-
-		/*List<String> orderSource = new ArrayList<>();
-		orderSource.add("第三方商城");
-		query.setOrderSources(orderSource);*/
-
-		/*List<String> list = new ArrayList<>();
-		list.add("210");
-		query.setPosItemTypeCodes(list);*/
 		query.setSortField(sortField);
 		query.setSortType(sortType);
 

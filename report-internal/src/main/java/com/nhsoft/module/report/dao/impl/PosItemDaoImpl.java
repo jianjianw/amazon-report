@@ -481,6 +481,8 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 					sb.append(")");
 				}
 
+			}else if(posItemQuery.getFilterType().equals(AppConstants.C_ITEM_TYPE_NON_STOCK_NAME)){
+				sb.append("and p.item_type != " + AppConstants.C_ITEM_TYPE_NON_STOCK);
 			}
 		}
 		if (posItemQuery.getIsFindNoStock() != null) {
@@ -713,6 +715,10 @@ public class PosItemDaoImpl extends DaoImpl implements PosItemDao {
 		if (org.apache.commons.lang.StringUtils.isNotEmpty(orString)) {
 			sb.append("and (" + orString + ") ");
 		}
+		if(posItemQuery.getShowItemTypes()!= null && posItemQuery.getShowItemTypes().size() > 0){
+			sb.append("and p.item_type in " +AppUtil.getIntegerParmeList(posItemQuery.getShowItemTypes()));
+		}
+
 		return sb.toString();
 	}
 

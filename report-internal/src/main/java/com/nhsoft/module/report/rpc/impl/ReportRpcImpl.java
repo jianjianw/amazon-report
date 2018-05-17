@@ -5337,6 +5337,8 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<PurchaseCycleSummary> findPurchaseCycleByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
 
+		//基本数量  除以   商品档案的转换率    就是配送单位的数量
+
 		// 入库金额   入库数量    采购员
 		List<BizPurchaseDTO> purchaseByBiz = receiveOrderRpc.findPurchaseByBiz(systemBookCode, dateFrom, dateTo, itemNums);
 		//调出单
@@ -5466,12 +5468,17 @@ public class ReportRpcImpl implements ReportRpc {
 	public List<ItemInventoryTrendSummary> findItemTrendInventory(ItemInventoryQueryDTO inventoryQuery) {
 
 		PosItemQuery query = new PosItemQuery();
+
+		List<Integer> itemTypes = new ArrayList<>();
+		itemTypes.add(AppConstants.C_ITEM_TYPE_STANDARD);
+		itemTypes.add(AppConstants.C_ITEM_TYPE_ELEMENT);
+		query.setShowItemTypes(itemTypes);
 		query.setSystemBookCode(inventoryQuery.getSystemBookCode());
 		query.setCategoryCodes(inventoryQuery.getItemCategorys());
 		query.setSaleCrease(inventoryQuery.getSaleCrease());
 		query.setStockCrease(inventoryQuery.getStockCrease());
 		query.setDromCrease(inventoryQuery.getDromCrease());
-
+		query.setFilterType(AppConstants.C_ITEM_TYPE_NON_STOCK_NAME);
 
 		//根据商品类别查询商品
 		List<PosItemDTO> posItemDTOS = posItemRpc.findByPosItemQuery(query,null,null,0,0);
@@ -5484,7 +5491,7 @@ public class ReportRpcImpl implements ReportRpc {
 			PosItemDTO posItemDTO = posItemDTOS.get(i);
 			itemNums.add(posItemDTO.getItemNum());
 		}
-
+		int count = 0;
 		List<ItemInventoryDTO> itemInventory = inventoryRpc.findItemAmount(inventoryQuery.getSystemBookCode(), null, itemNums, null);
 		Map<String,ItemInventoryTrendSummary> map = new HashMap<>();
 
@@ -5504,14 +5511,13 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 
 			if(itemInventoryDTO.getAmount().compareTo(BigDecimal.ZERO) > 0){
-				//data.setInventoryAmount(data.getInventoryAmount() + 1);
-				data.setInventoryAmount(data.getInventoryAmount());
+				data.setInventoryAmount(data.getInventoryAmount() + 1);
 			}else{
-				//data.setUnInventoryAmount(data.getUnInventoryAmount() +1);
-				data.setUnInventoryAmount(data.getUnInventoryAmount());
+				data.setUnInventoryAmount(data.getUnInventoryAmount() +1);
 				List<PosItemDTO> itemDTOS = data.getPosItems();
 				itemDTOS.add(posItemDTO);
 				data.setPosItems(itemDTOS);
+				System.out.println(++count);
 			}
 
 			data.setTotalAmount(data.getInventoryAmount()+data.getUnInventoryAmount());
