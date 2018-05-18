@@ -718,4 +718,9 @@ public class PosItemLogServiceImpl implements PosItemLogService {
 	public List<Object[]> findItemLotSummary(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<Integer> itemNums, List<String> summaries) {
 		return posItemLogDao.findItemLotSummary(systemBookCode,branchNum,dateFrom,dateTo,itemNums,summaries);
 	}
+
+	@Override
+	public List<Object[]> test(StoreQueryCondition queryCondition) {
+		return posItemLogDao.test(queryCondition);
+	}
 }

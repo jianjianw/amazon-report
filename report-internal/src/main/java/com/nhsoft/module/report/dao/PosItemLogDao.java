@@ -432,4 +432,9 @@ public interface PosItemLogDao {
 	 */
 	public List<Object[]> findItemInOutQtyAndMoney(StoreQueryCondition storeQueryCondition);
 
+	/**
+	 * sharding-jdbc  test
+	 * */
+	public List<Object[]> test(StoreQueryCondition queryCondition);
+
 }

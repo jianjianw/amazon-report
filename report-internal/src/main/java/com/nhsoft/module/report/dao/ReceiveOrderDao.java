@@ -238,6 +238,11 @@ public interface ReceiveOrderDao{
 	 * */
 	public List<Object[]> findPurchaseByBiz(String systemBookCode,Date dateFrom, Date dateTo,List<Integer> itemNums);
 
+	/**
+	 * 根据商品营业日汇总 采购金额和数量
+	 * */
+	public List<Object[]> findPurchaseByItemBiz(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums);
+
 
 
 
