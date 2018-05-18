@@ -5777,6 +5777,12 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				}
 			}
 		}
+		if(posOrderQuery.getQueryHangOrder() != null){
+
+			sb.append("and exists ");
+			sb.append("(select 1 from retail_pos_log with(nolock) where system_book_code = '" + posOrderQuery.getSystemBookCode() + "' and retail_pos_log.branch_num = p.branch_num  ");
+			sb.append("and retail_pos_log.retail_pos_log_order_no = p.order_no and retail_pos_log_type = '挂单' and retail_pos_log_time > p.order_date) ");
+		}
 		if(StringUtils.isNotEmpty(posOrderQuery.getOprateTimeType()) && posOrderQuery.getOprateTime() != null){
 			sb.append("and DATEDIFF(mi,p.order_date,p.order_time) " + posOrderQuery.getOprateTimeType() + " " + posOrderQuery.getOprateTime()+" ");
 		}
