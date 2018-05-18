@@ -721,4 +721,9 @@ public class PosItemLogRpcImpl implements PosItemLogRpc {
         }
         return list;
     }
+
+    @Override
+    public List<Object[]> test(StoreQueryCondition queryCondition) {
+        return posItemLogService.test(queryCondition);
+    }
 }

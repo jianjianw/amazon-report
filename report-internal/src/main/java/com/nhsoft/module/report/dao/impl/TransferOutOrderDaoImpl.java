@@ -1028,8 +1028,8 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 	@Override
 	public List<Object[]> findMoneyAndAmountByBiz(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select convert(varchar(8) , t.out_order_audit_time, 112), sum(detail.out_order_detail_qty) as qty,sum(detail.out_order_detail_subtotal) as subtotal ");
-		sb.append("from out_order_detail as detail inner join transfer_out_order as t on detail.out_order_fid = t.out_order_fid ");
+		sb.append("select convert(varchar(8) , t.out_order_audit_time, 112), sum(detail.out_order_detail_qty/p.item_transfer_rate) as transferQty ,sum(detail.out_order_detail_subtotal) as subtotal ");
+		sb.append("from out_order_detail as detail inner join transfer_out_order as t on detail.out_order_fid = t.out_order_fid inner join pos_item as p on p.item_num = detail.item_num ");
 		sb.append("and t.system_book_code = '"+ systemBookCode+"' ");
 		if(itemNums != null && itemNums.size() > 0){
 			sb.append("and detail.item_num in "+ AppUtil.getIntegerParmeList(itemNums));

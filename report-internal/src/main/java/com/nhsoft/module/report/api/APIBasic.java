@@ -1016,9 +1016,9 @@ public class APIBasic {
 	public CardAnalysisSummaryDTO test53() throws Exception{
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-02-01");
-		Date dateTo = sdf.parse("2018-02-28");
-		String systemBookCode = "4020";
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-30");
+		String systemBookCode = "4344";
 		CardUserQuery query = new CardUserQuery();
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
@@ -2154,6 +2154,23 @@ public class APIBasic {
 		Integer branchNum = 99;
 		List<OtherInfoDTO> result = report2Rpc.findOtherInfoDetails(systemBookCode,branchNum,dateFrom,dateTo,"删除");
 		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test115")
+	public List test115() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		StoreQueryCondition query = new StoreQueryCondition();
+		query.setSystemBookCode(systemBookCode);
+		query.setDateStart(dateFrom);
+		query.setDateEnd(dateTo);
+		List<Integer> list = new ArrayList<>();
+		list.add(99);
+		query.setBranchNums(list);
+		List test = posItemLogRpc.test(query);
+		return test;
 	}
 
 

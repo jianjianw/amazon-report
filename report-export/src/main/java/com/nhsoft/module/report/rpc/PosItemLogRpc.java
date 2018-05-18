@@ -336,4 +336,9 @@ public interface PosItemLogRpc {
 	 * @return
 	 */
 	public List<PosItemLogSummaryDTO> findItemInOutQtyAndMoney(StoreQueryCondition storeQueryCondition);
+
+	/**
+	 * sharding-jdbc  test
+	 * */
+	public List<Object[]> test(StoreQueryCondition queryCondition);
 }

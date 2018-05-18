@@ -389,4 +389,8 @@ public interface PosItemLogService {
 											 List<Integer> itemNums, List<String> summaries);
 
 
+	/**
+	 * sharding-jdbc  test
+	 * */
+	public List<Object[]> test(StoreQueryCondition queryCondition);
 }

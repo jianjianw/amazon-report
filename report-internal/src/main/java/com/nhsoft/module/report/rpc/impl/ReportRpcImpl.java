@@ -21,6 +21,7 @@ import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.report.utils.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.secure.spi.IntegrationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -5345,15 +5346,33 @@ public class ReportRpcImpl implements ReportRpc {
 		List<BizPurchaseDTO> purchaseByBiz = receiveOrderRpc.findPurchaseByBiz(systemBookCode, dateFrom, dateTo, itemNums);
 		//调出单
 		List<TransferOutMoneyAndAmountDTO> transferOutSum = transferOutOrderRpc.findMoneyAndAmountByBiz(systemBookCode, dateFrom, dateTo,itemNums);
+
 		//批发数量
 		List<WholesaleAmountAndMoneyDTO> wholesaleSum = wholesaleOrderRpc.findAmountAndMoneyByBiz(systemBookCode, dateFrom, dateTo, itemNums);
 		//库存  当前库存
         List<Inventory> inventories = inventoryService.findByItemAndBranch(systemBookCode, null, itemNums, null);
-        BigDecimal inventoryAmount = BigDecimal.ZERO;
+		PosItemQuery query = new PosItemQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setItemNums(itemNums);
+		query.setPaging(false);
+		List<PosItemDTO> posItemDTOS = posItemRpc.findByPosItemQuery(query,null,null,0,0);
+
+
+
+
+		BigDecimal inventoryAmount = BigDecimal.ZERO;
         BigDecimal inventoryMoney = BigDecimal.ZERO;
         for (int i = 0,len = inventories.size(); i < len ; i++) {
             Inventory inventory = inventories.get(i);
-			inventoryAmount = inventoryAmount.add(inventory.getInventoryAmount() == null ? BigDecimal.ZERO : inventory.getInventoryAmount() );
+			for (int j = 0,size = posItemDTOS.size(); j < size; j++) {
+				PosItemDTO posItemDTO = posItemDTOS.get(j);
+				if(inventory.getItemNum().equals(posItemDTO.getItemNum())){
+					BigDecimal basicAmount = inventory.getInventoryAmount() == null ? BigDecimal.ZERO : inventory.getInventoryAmount();
+					BigDecimal transferQty = basicAmount.divide(posItemDTO.getItemTransferRate(),4,BigDecimal.ROUND_HALF_UP);
+					inventoryAmount = inventoryAmount.add(transferQty);
+				}
+
+			}
 			inventoryMoney = inventoryMoney.add(inventory.getInventoryMoney() == null ? BigDecimal.ZERO :inventory.getInventoryMoney());
         }
 
@@ -5443,7 +5462,7 @@ public class ReportRpcImpl implements ReportRpc {
 				TransterOutDTO dto = transterOutDTOS.get(j);
 				if (itemNum.equals(dto.getItemNum())) {
 					summary.setTransferMoney(dto.getMoney());
-					summary.setTransferQty(dto.getMoney());
+					summary.setTransferQty(dto.getQty());
 				}
 			}
 
@@ -6031,6 +6050,7 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setReceiveTare(receiveTare);
 			data.setOutsAmount(amount);
 			data.setOutsMoney(money.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutUseAmount(useAmount);
 			list.add(data);
 		}
 
@@ -6071,7 +6091,8 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setOutAmountPrCostMoney(data.getOutAmountPrCostMoney().subtract(moneyCostPr).setScale(2, BigDecimal.ROUND_HALF_UP));
 			data.setReceiveTare(data.getReceiveTare().subtract(receiveTare));
 			data.setInMoney(money.setScale(2, BigDecimal.ROUND_HALF_UP));
-			data.setInAmount(amount.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setInAmount(amount);
+			data.setInUseAmount(useAmount);
 		}
 		List<Branch> branchs = branchService.findInCache(queryData.getSystemBookCode());
 
@@ -6107,6 +6128,8 @@ public class ReportRpcImpl implements ReportRpc {
 				if (StringUtils.isNotEmpty(posItem.getItemAssistUnit()) && posItem.getItemAssistRate() != null
 						&& posItem.getItemAssistRate().compareTo(BigDecimal.ZERO) > 0) {
 					data.setUnit(posItem.getItemAssistUnit());
+					data.setInAmount(data.getInUseAmount());
+					data.setOutAmount(data.getOutUseAmount());
 				} else {
 					data.setUnit(posItem.getItemTransferUnit());
 					if (unit.equals(AppConstants.UNIT_TRANFER)) {
