@@ -2597,7 +2597,6 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 		sb.append(") as a ");
 		sb.append(") as temp ");
 		sb.append("group by temp.range ");
-
 		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
 		return  sqlQuery.list();
 	}
