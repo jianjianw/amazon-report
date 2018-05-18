@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.service;
 
 import com.nhsoft.module.report.model.TransferOutOrder;
+import com.nhsoft.module.report.query.TransferQueryDTO;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 
 import java.math.BigDecimal;
@@ -174,6 +175,12 @@ public interface TransferOutOrderService {
 	 */
 	public List<Object[]> findMoneyAndAmountByItemNum(String systemBookCode,Integer branchNum,List<Integer> storehouseNums,
 													  Date dateFrom, Date dateTo,List<Integer> itemNums,String sortField);
+
+
+	/**
+	 * 按商品汇总 调出数量和金额  new
+	 * */
+	public List<Object[]> findMoneyAndAmountByItemNum(TransferQueryDTO queryDTO);
 
 
 	/**

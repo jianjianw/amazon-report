@@ -5,6 +5,7 @@ import com.nhsoft.module.report.model.OutOrderDetail;
 import com.nhsoft.module.report.model.PosItem;
 import com.nhsoft.module.report.model.TransferInOrder;
 import com.nhsoft.module.report.model.TransferOutOrder;
+import com.nhsoft.module.report.query.TransferQueryDTO;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
@@ -1074,6 +1075,40 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
 		return query.list();
 
+	}
+
+	@Override
+	public List<Object[]> findMoneyAndAmountByItemNum(TransferQueryDTO queryDTO) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select detail.item_num,");
+		sb.append("sum(detail.out_order_detail_qty) as transferQty, sum(detail.out_order_detail_sale_subtotal) as transferMoney ");
+		sb.append("from out_order_detail as detail with(nolock) inner join transfer_out_order as t with(nolock) on detail.out_order_fid = t.out_order_fid ");
+		sb.append("where t.system_book_code = :systemBookCode " );
+		if(queryDTO.getCenterBranchNum() != null){
+			sb.append("and t.out_branch_num = " + queryDTO.getCenterBranchNum() + " ");
+		}
+		if(queryDTO.getBranchNums() != null){
+			sb.append("and t.branch_num in "+ AppUtil.getIntegerParmeList(queryDTO.getBranchNums()));
+		}
+		if(queryDTO.getDateFrom() != null){
+			sb.append("and t.out_order_audit_time >= " + DateUtil.getMinOfDate(queryDTO.getDateFrom()) + "' ");
+		}
+		if(queryDTO.getDateTo() != null){
+			sb.append("and t.out_order_audit_time <= " + DateUtil.getMaxOfDate(queryDTO.getDateTo()) + "' ");
+		}
+		sb.append("and t.out_order_state_code = 3 ");
+		if(queryDTO.getStorehouseNums() != null && queryDTO.getStorehouseNums().size()>0){
+			sb.append("and t.storehouse_num in " + AppUtil.getIntegerParmeList(queryDTO.getStorehouseNums() ));
+		}
+		if (queryDTO.getItemNums() != null && queryDTO.getItemNums().size() > 0) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryDTO.getItemNums()));
+		}
+		sb.append("group by detail.item_num ");
+		if(StringUtils.isNotBlank(queryDTO.getSortField())){
+			sb.append("order by " + queryDTO.getSortField());
+		}
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
 	}
 
 	@Override

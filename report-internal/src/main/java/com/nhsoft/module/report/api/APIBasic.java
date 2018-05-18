@@ -1419,9 +1419,25 @@ public class APIBasic {
 	public List<TransferItemDetailSummary> test73()throws Exception{
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-30");
-		List<TransferItemDetailSummary> transferItemTop = reportRpc.findTransferItemTop(systemBookCode,1,dateFrom,dateTo,null,"transferQty");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		List<TransferItemDetailSummary> transferItemTop = reportRpc.findTransferItemTop(systemBookCode,99,dateFrom,dateTo,null,"transferQty");
+
+		BigDecimal transferQty = BigDecimal.ZERO;
+		BigDecimal transferMoney = BigDecimal.ZERO;
+		BigDecimal receiveQty = BigDecimal.ZERO;
+		BigDecimal requestQty = BigDecimal.ZERO;
+		for (int i = 0; i <transferItemTop.size() ; i++) {
+			TransferItemDetailSummary transferItemDetailSummary = transferItemTop.get(i);
+			transferQty = transferQty.add(transferItemDetailSummary.getTransferQty() == null ? BigDecimal.ZERO : transferItemDetailSummary.getTransferQty());
+			transferMoney = transferMoney.add(transferItemDetailSummary.getTransferMoney() == null ? BigDecimal.ZERO : transferItemDetailSummary.getTransferMoney());
+			receiveQty = receiveQty.add(transferItemDetailSummary.getReceiveQty() == null ? BigDecimal.ZERO : transferItemDetailSummary.getReceiveQty());
+			requestQty = requestQty.add(transferItemDetailSummary.getRequestQty() == null ? BigDecimal.ZERO : transferItemDetailSummary.getRequestQty());
+		}
+		System.out.println("配送数量： "+transferQty);
+		System.out.println("配送金额： "+transferMoney);
+		System.out.println("到货数量： "+receiveQty);
+		System.out.println("要货数量： "+requestQty);
 		return  transferItemTop;
 	}
 
