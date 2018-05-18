@@ -38,6 +38,15 @@ public class PosOrderQuery extends QueryBuilder{
 	private BigDecimal delMoney;
 	private BigDecimal oprateTime;
 	private Boolean queryMatrix;
+	private Boolean queryHangOrder;//是否查询挂单
+
+	public Boolean getQueryHangOrder() {
+		return queryHangOrder;
+	}
+
+	public void setQueryHangOrder(Boolean queryHangOrder) {
+		this.queryHangOrder = queryHangOrder;
+	}
 
 	public Boolean getQueryMatrix() {
 		return queryMatrix;
