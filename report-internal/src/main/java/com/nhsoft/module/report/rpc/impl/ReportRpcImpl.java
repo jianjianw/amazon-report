@@ -5437,14 +5437,21 @@ public class ReportRpcImpl implements ReportRpc {
 		List<Integer> storehouseNums = new ArrayList<>(stores);
 		for (int i = 0; i < stores; i++) {
 			Storehouse storehouse = storehouses.get(i);
-			storehouseNums.add(storehouse.getStorehouseNum());
+			if(storehouse.getStorehouseCenterTag()){
+				storehouseNums.add(storehouse.getStorehouseNum());//总仓
+			}
 		}
 
 		//配送数量  配送金额  (总仓)
 		List<TransterOutDTO> transterOutDTOS = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, branchNum,storehouseNums, dateFrom, dateTo, itemNums, sortField);
-
+		BigDecimal sunMoney = BigDecimal.ZERO;
+		for (int i = 0; i < transterOutDTOS.size(); i++) {
+			TransterOutDTO dto = transterOutDTOS.get(i);
+			sunMoney = sunMoney.add(dto.getMoney());
+		}
+		System.out.println(sunMoney);
 		//到货数量统计管理中心调出单
-		List<TransterOutDTO> receiveSummary = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, 99, storehouseNums, dateFrom, dateTo, itemNums, null);
+		List<TransterOutDTO> receiveSummary = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, 99, null, dateFrom, dateTo, itemNums, null);
 
 		//要货数量
 		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(systemBookCode, branchNum, null, dateFrom, dateTo, itemNums);

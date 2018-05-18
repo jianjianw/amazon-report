@@ -2,6 +2,7 @@ package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.TransferOutOrderDao;
 import com.nhsoft.module.report.model.TransferOutOrder;
+import com.nhsoft.module.report.query.TransferQueryDTO;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.service.TransferOutOrderService;
 import com.nhsoft.module.report.util.AppConstants;
@@ -130,6 +131,11 @@ public class TransferOutOrderServiceImpl extends BaseManager implements Transfer
 	public List<Object[]> findMoneyAndAmountByItemNum(String systemBookCode, Integer branchNum,List<Integer> storehouseNums,
 													  Date dateFrom, Date dateTo, List<Integer> itemNums, String sortField) {
 		return transferOutOrderDao.findMoneyAndAmountByItemNum(systemBookCode,branchNum,storehouseNums,dateFrom,dateTo,itemNums,sortField);
+	}
+
+	@Override
+	public List<Object[]> findMoneyAndAmountByItemNum(TransferQueryDTO queryDTO) {
+		return transferOutOrderDao.findMoneyAndAmountByItemNum(queryDTO);
 	}
 
 	@Override

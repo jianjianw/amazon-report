@@ -3,6 +3,7 @@ package com.nhsoft.module.report.service.impl;
 import com.nhsoft.module.report.dao.RequestOrderDao;
 import com.nhsoft.module.report.dto.RequestOrderDTO;
 import com.nhsoft.module.report.model.RequestOrderDetail;
+import com.nhsoft.module.report.queryBuilder.RequestOrderQuery;
 import com.nhsoft.module.report.service.RequestOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +49,10 @@ public class RequestOrderServiceImpl implements RequestOrderService {
 	@Override
 	public List<Object[]> findCenterRequestMatrixAmount(String systemBookCode, Integer outBranchNum, List<Integer> itemNums) {
 		return requestOrderDao.findCenterRequestMatrixAmount(systemBookCode,outBranchNum,itemNums);
+	}
+
+	@Override
+	public List<Object[]> findItemSummary(RequestOrderQuery query) {
+		return requestOrderDao.findItemSummary(query);
 	}
 }
