@@ -1444,7 +1444,7 @@ public interface ReportRpc {
 	/**
 	 * 商品配送top榜（好想来）
 	 * */
-	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode,Integer branchNum,Date dateFrom,Date dateTo,List<String> itemCategoryCodes,String sortField);
+	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode, Integer centerBranchNum ,List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> itemCategoryCodes,String sortField);
 
 	/**
 	 * 商品库存动态表（好想来）

@@ -5127,7 +5127,7 @@ public class ReportServiceImpl implements ReportService {
 			Integer itemNum = (Integer)object[0];
 			UnsalablePosItem data = map.get(itemNum);
 			if(data != null){
-				data.setLastProductionDate((Date)object[1]);
+				data.setLastProductionDate((String)object[1]);
 			}
 		}
 

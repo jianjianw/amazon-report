@@ -3452,6 +3452,7 @@ public class ReportRpcImpl implements ReportRpc {
 				cardConsumeAnalysis.setMoneyTo(moneyTo);
 			}
 		}
+
 		if(cardConsuemAnalysisQuery.getMoneyFrom() != null){
 			for (int i = list.size()-1; i >= 0 ; i--) {
 				CardConsumeAnalysis cardConsumeAnalysis = list.get(i);
@@ -3464,6 +3465,15 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 		}
 
+		if(cardConsuemAnalysisQuery.getMoneyTo() != null){
+			for (int i = list.size()-1; i >= 0 ; i--) {
+				CardConsumeAnalysis cardConsumeAnalysis = list.get(i);
+				//去除消费金额小于moneyTo的数据
+				if(cardConsumeAnalysis.getMoneyFrom().compareTo(cardConsuemAnalysisQuery.getMoneyTo()) >= 0){
+					list.remove(i);
+				}
+			}
+		}
 		Comparator<CardConsumeAnalysis> comparing = Comparator.comparing(CardConsumeAnalysis::getMoneyFrom);
 		list.sort(comparing);
 		return list;
@@ -5451,7 +5461,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<String> itemCategoryCodes,String sortField) {
+	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode, Integer centerBranchNum ,List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> itemCategoryCodes,String sortField) {
 
 		List<PosItem> posItems = posItemService.find(systemBookCode, itemCategoryCodes, null, null);
 		int size = posItems.size();
@@ -5462,7 +5472,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		//查询总仓
-		List<Storehouse> storehouses = storehouseService.findByBranch(systemBookCode, branchNum);
+		List<Storehouse> storehouses = storehouseService.findByBranch(systemBookCode, centerBranchNum);
 		int stores = storehouses.size();
 		List<Integer> storehouseNums = new ArrayList<>(stores);
 		for (int i = 0; i < stores; i++) {
@@ -5473,7 +5483,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		//配送数量  配送金额  (总仓)
-		List<TransterOutDTO> transterOutDTOS = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, branchNum,storehouseNums, dateFrom, dateTo, itemNums, sortField);
+		List<TransterOutDTO> transterOutDTOS = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, centerBranchNum,storehouseNums, dateFrom, dateTo, itemNums, sortField);
 		BigDecimal sunMoney = BigDecimal.ZERO;
 		for (int i = 0; i < transterOutDTOS.size(); i++) {
 			TransterOutDTO dto = transterOutDTOS.get(i);
@@ -5484,7 +5494,7 @@ public class ReportRpcImpl implements ReportRpc {
 		List<TransterOutDTO> receiveSummary = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, 99, null, dateFrom, dateTo, itemNums, null);
 
 		//要货数量
-		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(systemBookCode, branchNum, null, dateFrom, dateTo, itemNums);
+		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(systemBookCode, centerBranchNum, null, dateFrom, dateTo, itemNums);
 		List<TransferItemDetailSummary> list = new ArrayList<>(size);
 
 		for (int i = 0; i <size ; i++) {

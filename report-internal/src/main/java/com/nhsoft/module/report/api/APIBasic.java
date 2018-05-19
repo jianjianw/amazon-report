@@ -1422,7 +1422,7 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-01-01");
 		Date dateTo = sdf.parse("2018-03-31");
-		List<TransferItemDetailSummary> transferItemTop = reportRpc.findTransferItemTop(systemBookCode,99,dateFrom,dateTo,null,"transferQty");
+		List<TransferItemDetailSummary> transferItemTop = reportRpc.findTransferItemTop(systemBookCode,99,null,dateFrom,dateTo,null,"transferQty");
 
 		BigDecimal transferQty = BigDecimal.ZERO;
 		BigDecimal transferMoney = BigDecimal.ZERO;
