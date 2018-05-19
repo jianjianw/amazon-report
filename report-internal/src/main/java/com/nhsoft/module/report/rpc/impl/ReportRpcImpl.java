@@ -3418,7 +3418,7 @@ public class ReportRpcImpl implements ReportRpc {
 			} else if (intRange.compareTo(BigDecimal.valueOf(1000)) < 0){
 				strRange = sb.append(range).append("-").append(intRange.add(moneySpace)).toString();
 			}else {
-				strRange = "1000以上";
+				strRange = "1000-以上";
 			}
 
 
@@ -3437,6 +3437,35 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 		}
 		list.addAll(map.values());
+		for (int i = 0,len = list.size(); i < len ; i++) {
+
+			CardConsumeAnalysis cardConsumeAnalysis = list.get(i);
+			String rang = cardConsumeAnalysis.getRang();
+			String[] split = rang.split("-");
+			BigDecimal moneyFrom = new BigDecimal(split[0]);
+			if(BigDecimal.valueOf(1000).compareTo(moneyFrom) == 0){
+				cardConsumeAnalysis.setMoneyFrom(moneyFrom);
+
+			}else{
+				BigDecimal moneyTo = new BigDecimal(split[1]);
+				cardConsumeAnalysis.setMoneyFrom(moneyFrom);
+				cardConsumeAnalysis.setMoneyTo(moneyTo);
+			}
+		}
+		if(cardConsuemAnalysisQuery.getMoneyFrom() != null){
+			for (int i = list.size()-1; i >= 0 ; i--) {
+				CardConsumeAnalysis cardConsumeAnalysis = list.get(i);
+				//去除小于消费金额起的数据
+				if(cardConsumeAnalysis.getMoneyTo() != null){//1000-以上 moneyTo 为null
+					if(cardConsuemAnalysisQuery.getMoneyFrom().compareTo(cardConsumeAnalysis.getMoneyTo()) >= 0){
+						list.remove(i);
+					}
+				}
+			}
+		}
+
+		Comparator<CardConsumeAnalysis> comparing = Comparator.comparing(CardConsumeAnalysis::getMoneyFrom);
+		list.sort(comparing);
 		return list;
 	}
 

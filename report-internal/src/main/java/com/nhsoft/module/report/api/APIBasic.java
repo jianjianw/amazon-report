@@ -1378,6 +1378,7 @@ public class APIBasic {
 		query.setTimeFrom(timeFrom);
 		query.setTimeTo(timeTo);
 		query.setMoneySpace(BigDecimal.valueOf(100));
+		query.setMoneyFrom(BigDecimal.valueOf(200));
 		//query.setMoneyFrom(BigDecimal.valueOf(100));
 		List<CardConsumeAnalysis> cardConsumeAnalysis = reportRpc.findCardConsumeAnalysis(query);
 		return cardConsumeAnalysis;
