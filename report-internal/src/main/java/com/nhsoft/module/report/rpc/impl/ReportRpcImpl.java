@@ -3535,8 +3535,8 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = objects.get(i);
 			PosGroupBranchRegionTypeSummary posGroupBranchRegionTypeSummary = new PosGroupBranchRegionTypeSummary();
 			posGroupBranchRegionTypeSummary.setRegionType((String) object[0]);
-			posGroupBranchRegionTypeSummary.setMoney((BigDecimal) object[0]);
-			posGroupBranchRegionTypeSummary.setAmount((Integer) object[0]);
+			posGroupBranchRegionTypeSummary.setMoney((BigDecimal) object[1]);
+			posGroupBranchRegionTypeSummary.setAmount((Integer) object[2]);
 			list.add(posGroupBranchRegionTypeSummary);
 		}
 
