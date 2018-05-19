@@ -6166,7 +6166,7 @@ public class ReportRpcImpl implements ReportRpc {
 						&& posItem.getItemAssistRate().compareTo(BigDecimal.ZERO) > 0) {
 					data.setUnit(posItem.getItemAssistUnit());
 					data.setInAmount(data.getInUseAmount());
-					data.setOutAmount(data.getOutUseAmount());
+					data.setOutsAmount(data.getOutUseAmount());
 				} else {
 					data.setUnit(posItem.getItemTransferUnit());
 					if (unit.equals(AppConstants.UNIT_TRANFER)) {
