@@ -57,7 +57,7 @@ public interface BookResourceService {
 	 * @param systemBookCode
 	 * @return
 	 */
-	public ChainDeliveryParam readChainDeliveryParamInCache(String systemBookCode);
+	public ChainDeliveryParam readChainDeliveryParam(String systemBookCode);
 
 
 }
