@@ -5121,7 +5121,7 @@ public class ReportServiceImpl implements ReportService {
 		List<String> TypeList = new ArrayList<>();
 		TypeList.add(AppConstants.POS_ITEM_LOG_RECEIVE_ORDER);
 		TypeList.add(AppConstants.POS_ITEM_LOG_IN_ORDER);
-		List<Object[]> productionDateobjects = branchItemRecoredDao.findItemReceiveDate(systemBookCode, transferBranchNums, null, null, TypeList);
+		List<Object[]> productionDateobjects = branchItemRecoredDao.findItemMaxProductDate(systemBookCode,branchNum, null, null, TypeList);
 		for (int i = 0,len = productionDateobjects.size(); i < len ; i++) {
 			Object[] object = productionDateobjects.get(i);
 			Integer itemNum = (Integer)object[0];
