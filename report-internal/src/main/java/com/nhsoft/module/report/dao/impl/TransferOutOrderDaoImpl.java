@@ -1083,7 +1083,7 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		sb.append("select detail.item_num,");
 		sb.append("sum(detail.out_order_detail_qty) as transferQty, sum(detail.out_order_detail_sale_subtotal) as transferMoney ");
 		sb.append("from out_order_detail as detail with(nolock) inner join transfer_out_order as t with(nolock) on detail.out_order_fid = t.out_order_fid ");
-		sb.append("where t.system_book_code = :systemBookCode " );
+		sb.append("where t.system_book_code = '"+queryDTO.getSystemBookCode()+"' " );
 		if(queryDTO.getCenterBranchNum() != null){
 			sb.append("and t.out_branch_num = " + queryDTO.getCenterBranchNum() + " ");
 		}
@@ -1091,10 +1091,10 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 			sb.append("and t.branch_num in "+ AppUtil.getIntegerParmeList(queryDTO.getBranchNums()));
 		}
 		if(queryDTO.getDateFrom() != null){
-			sb.append("and t.out_order_audit_time >= " + DateUtil.getMinOfDate(queryDTO.getDateFrom()) + "' ");
+			sb.append("and t.out_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(queryDTO.getDateFrom())) + "' ");
 		}
 		if(queryDTO.getDateTo() != null){
-			sb.append("and t.out_order_audit_time <= " + DateUtil.getMaxOfDate(queryDTO.getDateTo()) + "' ");
+			sb.append("and t.out_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(queryDTO.getDateTo())) + "' ");
 		}
 		sb.append("and t.out_order_state_code = 3 ");
 		if(queryDTO.getStorehouseNums() != null && queryDTO.getStorehouseNums().size()>0){

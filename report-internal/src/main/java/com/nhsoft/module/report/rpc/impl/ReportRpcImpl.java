@@ -11,6 +11,7 @@ import com.nhsoft.module.report.param.CardUserType;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.RequestOrderQuery;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
@@ -5408,8 +5409,12 @@ public class ReportRpcImpl implements ReportRpc {
 				PosItemDTO posItemDTO = posItemDTOS.get(j);
 				if(inventory.getItemNum().equals(posItemDTO.getItemNum())){
 					BigDecimal basicAmount = inventory.getInventoryAmount() == null ? BigDecimal.ZERO : inventory.getInventoryAmount();
-					BigDecimal transferQty = basicAmount.divide(posItemDTO.getItemTransferRate(),4,BigDecimal.ROUND_HALF_UP);
-					inventoryAmount = inventoryAmount.add(transferQty);
+					BigDecimal itemTransferRate = posItemDTO.getItemTransferRate();
+					if(itemTransferRate != null && itemTransferRate.compareTo(BigDecimal.ZERO) != 0 ){
+						BigDecimal transferQty = basicAmount.divide(itemTransferRate,4,BigDecimal.ROUND_HALF_UP);
+						inventoryAmount = inventoryAmount.add(transferQty);
+						break;
+					}
 				}
 
 			}
@@ -5483,18 +5488,23 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		//配送数量  配送金额  (总仓)
-		List<TransterOutDTO> transterOutDTOS = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, centerBranchNum,storehouseNums, dateFrom, dateTo, itemNums, sortField);
-		BigDecimal sunMoney = BigDecimal.ZERO;
-		for (int i = 0; i < transterOutDTOS.size(); i++) {
-			TransterOutDTO dto = transterOutDTOS.get(i);
-			sunMoney = sunMoney.add(dto.getMoney());
-		}
-		System.out.println(sunMoney);
-		//到货数量统计管理中心调出单
-		List<TransterOutDTO> receiveSummary = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, 99, null, dateFrom, dateTo, itemNums, null);
+		TransferQueryDTO transferQuery = new TransferQueryDTO();
+		transferQuery.setSystemBookCode(systemBookCode);
+		transferQuery.setCenterBranchNum(centerBranchNum);
+		transferQuery.setStorehouseNums(storehouseNums);
+		transferQuery.setDateFrom(dateFrom);
+		transferQuery.setDateTo(dateTo);
+		transferQuery.setItemNums(itemNums);
+		transferQuery.setSortField(sortField);
+		List<TransterOutDTO> transterOutDTOS = transferOutOrderRpc.findMoneyAndAmountByItemNum(transferQuery);
 
+		//到货数量统计管理中心调出单
+		transferQuery.setStorehouseNums(null);
+		List<TransterOutDTO> receiveSummary = transferOutOrderRpc.findMoneyAndAmountByItemNum(transferQuery);
 		//要货数量
-		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(systemBookCode, centerBranchNum, null, dateFrom, dateTo, itemNums);
+		RequestOrderQuery requestOrderQuery = new RequestOrderQuery();
+		BeanUtils.copyProperties(transferQuery,requestOrderQuery);
+		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(requestOrderQuery);
 		List<TransferItemDetailSummary> list = new ArrayList<>(size);
 
 		for (int i = 0; i <size ; i++) {
@@ -5519,7 +5529,6 @@ public class ReportRpcImpl implements ReportRpc {
 					summary.setReceiveQty(dto.getQty());
 				}
 			}
-
 			for (int j = 0,len = requestSummary.size(); j < len ; j++) {
 				RequestOrderDetailDTO dto = requestSummary.get(j);
 				if(itemNum.equals(dto.getItemNum())){
