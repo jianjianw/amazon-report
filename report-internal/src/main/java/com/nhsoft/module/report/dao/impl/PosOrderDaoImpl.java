@@ -5777,7 +5777,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				}
 			}
 		}
-		if(posOrderQuery.getQueryHangOrder() != null){
+		if(posOrderQuery.getQueryHangOrder() != null && posOrderQuery.getQueryHangOrder()){
 
 			sb.append("and exists ");
 			sb.append("(select 1 from retail_pos_log with(nolock) where system_book_code = '" + posOrderQuery.getSystemBookCode() + "' and retail_pos_log.branch_num = p.branch_num  ");
