@@ -125,8 +125,6 @@ public class ReportServiceImpl implements ReportService {
 	@Autowired
 	private SystemBookDao systemBookDao;
 	@Autowired
-	private InventoryCollectDao inventoryCollectDao;
-	@Autowired
 	private AlipayLogDao alipayLogDao;
 	@Autowired
 	private PosItemGradeDao posItemGradeDao;
@@ -4769,19 +4767,6 @@ public class ReportServiceImpl implements ReportService {
 			data.setItemUnit(posItem.getItemUnit());
 			map.put(data.getItemNum(), data);
 		}
-		dateFrom = DateUtil.getDateStr("20170101");
-		dateTo = Calendar.getInstance().getTime();
-		List<Object[]> objects = inventoryCollectDao.findItemLatestDate(systemBookCode, branchNums, dateFrom, dateTo,
-				null, inventoryExceptQuery.getPosItemLogSummary());
-		for (int i = 0,len = objects.size(); i < len; i++) {
-			Object[] object = objects.get(i);
-			Integer itemNum = (Integer) object[0];
-			Date logDate = (Date) object[1];
-			ExceptInventory data = map.get(itemNum);
-			if (data != null) {
-				data.setInventoryDate(logDate);
-			}
-		}
 		List<ExceptInventory> list = new ArrayList<ExceptInventory>(map.values());
 		// 过滤时间小于天数
 		for (int i = list.size() - 1; i >= 0; i--) {
@@ -4803,7 +4788,7 @@ public class ReportServiceImpl implements ReportService {
 
 			}
 		}
-		objects = inventoryDao.findItemAmountByStorehouse(systemBookCode, branchNum, null,inventoryExceptQuery.getStorehouseNums());
+		List<Object[]> objects = inventoryDao.findItemAmountByStorehouse(systemBookCode, branchNum, null,inventoryExceptQuery.getStorehouseNums());
 		for (int i = list.size() - 1; i >= 0; i--) {
 			ExceptInventory data = list.get(i);
 			Integer itemNum = data.getItemNum();
@@ -8127,8 +8112,13 @@ public class ReportServiceImpl implements ReportService {
 		BigDecimal compareAmount = BigDecimal.ZERO;
 
 		List<Object[]> inventoryObjects = inventoryDao.findCenterStore(systemBookCode, branchNum, null);
-		List<Object[]> inOutObjects = inventoryCollectDao.findSummaryByItemFlag(systemBookCode, branchNum,
-				DateUtil.addDay(dateTo, 1), null, true);
+		StoreQueryCondition condition = new StoreQueryCondition();
+		condition.setSystemBookCode(systemBookCode);
+		condition.setBranchNum(branchNum);
+		condition.setDateStart(DateUtil.addDay(dateTo, 1));
+		condition.setDateEnd(Calendar.getInstance().getTime());
+		condition.setCenterStorehouse(true);
+		List<Object[]> inOutObjects = posItemLogDao.findItemFlagSummary(condition);
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 
 		List<Integer> transferBranchNums = new ArrayList<Integer>();
@@ -8272,30 +8262,15 @@ public class ReportServiceImpl implements ReportService {
 		List<Integer> branchNums = new ArrayList<Integer>();
 		branchNums.add(branchNum);
 
-		Date now = DateUtil.getMinOfDate(Calendar.getInstance().getTime());
-		List<Object[]> posObjects = new ArrayList<Object[]>();
 		if (includePos) {
 			String type = AppConstants.POS_ITEM_LOG_POS + "," + AppConstants.POS_ITEM_LOG_ANTI_POS;
 			StoreQueryCondition storeQueryCondition = new StoreQueryCondition();
 			storeQueryCondition.setBranchNum(branchNum);
 			storeQueryCondition.setSystemBookCode(systemBookCode);
 			storeQueryCondition.setPosItemLogSummary(type);
-			storeQueryCondition.setDateStart(now);
-			storeQueryCondition.setDateEnd(now);
-			Date yesterday = DateUtil.addDay(now, -1);
-			if (dateTo.compareTo(now) < 0) {
-				posObjects.addAll(inventoryCollectDao.findSummaryByItemMatrixFlag(systemBookCode, branchNums, dateFrom,
-						dateTo, type, null, null));
-			} else if (dateTo.compareTo(now) >= 0 && dateFrom.compareTo(now) >= 0) {
-
-				posObjects.addAll(posItemLogDao.findItemMatrixInOutQtyAndMoney(storeQueryCondition));
-
-			} else if (dateTo.compareTo(now) >= 0 && dateFrom.compareTo(now) < 0) {
-
-				posObjects.addAll(inventoryCollectDao.findSummaryByItemMatrixFlag(systemBookCode, branchNums, dateFrom,
-						yesterday, type, null, null));
-				posObjects.addAll(posItemLogDao.findItemMatrixInOutQtyAndMoney(storeQueryCondition));
-			}
+			storeQueryCondition.setDateStart(dateFrom);
+			storeQueryCondition.setDateEnd(dateTo);
+			List<Object[]> posObjects = posItemLogDao.findItemMatrixInOutQtyAndMoney(storeQueryCondition);
 
 			for (int i = 0,len = posObjects.size(); i < len; i++) {
 				Object[] posObject = posObjects.get(i);

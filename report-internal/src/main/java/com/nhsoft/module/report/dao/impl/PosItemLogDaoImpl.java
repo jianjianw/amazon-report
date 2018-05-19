@@ -176,9 +176,9 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(StringUtils.isNotEmpty(summaries)){
 			sb.append("and l.pos_item_log_summary in " + AppUtil.getStringParmeArray(summaries.split(",")));
 		}
-		/*if(memos != null && memos.size() > 0){
-			sb.append("and ((l.pos_item_log_summary = '调整单' and l.pos_item_log_memo in " + AppUtil.getStringParmeList(memos) + ") or l.pos_item_log_summary != '调整单') ");
-		}*/
+//		if(memos != null && memos.size() > 0){
+//			sb.append("and ((l.pos_item_log_summary = '调整单' and l.pos_item_log_memo in " + AppUtil.getStringParmeList(memos) + ") or l.pos_item_log_summary != '调整单') ");
+//		}
 		if(memos != null && memos.size() > 0){
 			sb.append("and l.pos_item_log_memo in " + AppUtil.getStringParmeList(memos) + " ");
 		}
