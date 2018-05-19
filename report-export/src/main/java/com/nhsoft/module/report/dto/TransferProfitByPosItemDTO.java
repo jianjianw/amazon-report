@@ -70,6 +70,8 @@ public class TransferProfitByPosItemDTO implements Serializable {
         this.saleMoney = BigDecimal.ZERO;
         this.outsAmount = BigDecimal.ZERO;
         this.outsMoney = BigDecimal.ZERO;
+        this.inUseAmount = BigDecimal.ZERO;
+        this.outUseAmount = BigDecimal.ZERO;
     }
 
     public String getTranferBranchName() {
