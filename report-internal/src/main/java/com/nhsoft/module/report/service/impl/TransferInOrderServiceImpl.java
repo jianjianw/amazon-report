@@ -35,22 +35,22 @@ public class TransferInOrderServiceImpl implements TransferInOrderService {
 	
 	@Override
 	public List<Object[]> findMoneyByBranchNums(String systemBookCode, Integer inBranchNum, Date dateFrom, Date dateTo, List<Integer> branchNums) {
-		return null;
+		return transferInOrderDao.findMoneyByBranchNums(systemBookCode, inBranchNum, dateFrom, dateTo, branchNums);
 	}
 	
 	@Override
 	public BigDecimal readBranchUnPaidMoney(String systemBookCode, Integer branchNum, Integer inBranchNum) {
-		return null;
+		return transferInOrderDao.readBranchUnPaidMoney(systemBookCode, branchNum, inBranchNum);
 	}
 	
 	@Override
 	public List<TransferInOrder> findBySettleBranch(String systemBookCode, Integer branchNum, Integer inBranchNum, Date dateFrom, Date dateTo) {
-		return null;
+		return transferInOrderDao.findBySettleBranch(systemBookCode, branchNum, inBranchNum, dateFrom, dateTo);
 	}
 	
 	@Override
 	public List<Object[]> findDueMoney(String systemBookCode, Integer inBranchNum, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return null;
+		return transferInOrderDao.findDueMoney(systemBookCode, inBranchNum, branchNums, dateFrom, dateTo);
 	}
 
 	@Override

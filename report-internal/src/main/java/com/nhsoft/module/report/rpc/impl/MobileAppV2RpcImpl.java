@@ -1129,7 +1129,7 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 		if(itemNums.size() == 0){
 			return list;
 		}
-		ChainDeliveryParam param = bookResourceService.readChainDeliveryParamInCache(systemBookCode);
+		ChainDeliveryParam param = bookResourceService.readChainDeliveryParam(systemBookCode);
 		if(!param.getEnableInventoryLnDetailRate()){
 			for(int i = 0;i < list.size();i++){
 				RequestOrderDetailDTO detailDTO = list.get(i);
