@@ -1377,7 +1377,7 @@ public class APIBasic {
 		Date timeTo = time.parse("23:59:59");
 		query.setTimeFrom(timeFrom);
 		query.setTimeTo(timeTo);
-		query.setMoneySpace(BigDecimal.valueOf(23));
+		query.setMoneySpace(BigDecimal.valueOf(100));
 		//query.setMoneyFrom(BigDecimal.valueOf(100));
 		List<CardConsumeAnalysis> cardConsumeAnalysis = reportRpc.findCardConsumeAnalysis(query);
 		return cardConsumeAnalysis;
@@ -1724,6 +1724,7 @@ public class APIBasic {
 		query.setLimit(10000);
 		query.setSortField("itemCode");
 		query.setSortType("asc");
+		query.setStoreNum(402011281);
 		InventoryProfitPageDTO result = reportRpc.findInventoryProfit(query);
 
 		return result;

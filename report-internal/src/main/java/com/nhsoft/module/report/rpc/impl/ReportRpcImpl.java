@@ -2,6 +2,7 @@ package com.nhsoft.module.report.rpc.impl;
 
 
 import com.google.gson.Gson;
+import com.nhsoft.module.report.api.dto.BranchFinishRateTopDTO;
 import com.nhsoft.module.report.comparator.ComparatorBaseModelData;
 import com.nhsoft.module.report.comparator.ComparatorGroupModelData;
 import com.nhsoft.module.report.dto.*;
