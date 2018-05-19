@@ -97,4 +97,25 @@ public class BranchItemRecoredDaoImpl extends DaoImpl implements BranchItemRecor
 		query.setParameterList("branchItemRecoredTypes", branchItemRecoredTypes);
 		return query.list();
 	}
+
+	@Override
+	public List<Object[]> findItemMaxProductDate(String systemBookCode, Integer branchNum, Integer storehouseNum,
+												 List<Integer> itemNums, List<String> branchItemRecoredTypes) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select item_num, max(branch_item_recored_producting_date) from branch_item_recored with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' and branch_num = " + branchNum + " ");
+		if(storehouseNum != null){
+			sb.append("and storehouse_num = " + storehouseNum + " ");
+
+		}
+		if(itemNums != null && itemNums.size() > 0){
+			sb.append("and item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		if(branchItemRecoredTypes != null && branchItemRecoredTypes.size() > 0){
+			sb.append("and branch_item_recored_type in " + AppUtil.getStringParmeList(branchItemRecoredTypes));
+		}
+		sb.append("group by item_num");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
 }
