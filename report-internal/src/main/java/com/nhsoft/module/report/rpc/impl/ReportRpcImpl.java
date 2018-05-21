@@ -3610,7 +3610,6 @@ public class ReportRpcImpl implements ReportRpc {
 			groupByItemSummary.setAmount((BigDecimal) object[3]);
 			groupByItemSummary.setPaymentMoney((BigDecimal) object[4]);
 			groupByItemSummary.setCost((BigDecimal) object[5]);
-			groupByItemSummary.setAssistAmount((BigDecimal) object[6]);
 			list.add(groupByItemSummary);
 		}
 		return list;
