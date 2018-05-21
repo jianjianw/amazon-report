@@ -62,6 +62,8 @@ public class APIBasic {
 
 	@Autowired
 	private BookResourceRpc bookResourceRpc;
+	@Autowired
+	private MobileAppV2Rpc mobileAppV2Rpc;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
@@ -2191,6 +2193,19 @@ public class APIBasic {
 		return test;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "/test116")
+	public AccountPayDTO test116() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+
+		//findAccountPays
+		AccountPayDTO result = mobileAppV2Rpc.findAccountPays(systemBookCode,99,dateFrom,dateTo);
+		return result;
+
+
+	}
 
 
 }
