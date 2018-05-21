@@ -729,7 +729,16 @@ public class ReportRpcImpl implements ReportRpc {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		List<Integer> branchNums = supplierSaleQuery.getBranchNums();
 
-		List<Supplier> suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+		List<Supplier> suppliers;
+		if(branchNums == null || branchNums.contains(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+			suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+
+		} else {
+			List<Integer> supplierBranchNums = new ArrayList<>(branchNums);
+			supplierBranchNums.add(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM);
+			suppliers = supplierService.find(systemBookCode, supplierBranchNums, null, null, true, null);
+
+		}
 		List<Storehouse> storehouses = storehouseService.findByBranchs(systemBookCode, branchNums);
 		List<Integer> storehouseNums = new ArrayList<Integer>();
 		for (Storehouse storehouse : storehouses) {
@@ -930,7 +939,16 @@ public class ReportRpcImpl implements ReportRpc {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		List<Integer> branchNums = supplierSaleQuery.getBranchNums();
 
-		List<Supplier> suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+		List<Supplier> suppliers;
+		if(branchNums == null || branchNums.contains(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+			suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+
+		} else {
+			List<Integer> supplierBranchNums = new ArrayList<>(branchNums);
+			supplierBranchNums.add(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM);
+			suppliers = supplierService.find(systemBookCode, supplierBranchNums, null, null, true, null);
+
+		}
 		List<PosItem> posItems = posItemService.find(systemBookCode, supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums(), null);
 		List<Storehouse> storehouses = storehouseService.findByBranchs(systemBookCode, branchNums);
@@ -1200,7 +1218,16 @@ public class ReportRpcImpl implements ReportRpc {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		List<Integer> branchNums = supplierSaleQuery.getBranchNums();
 
-		List<Supplier> suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+		List<Supplier> suppliers;
+		if(branchNums == null || branchNums.contains(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+			suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+
+		} else {
+			List<Integer> supplierBranchNums = new ArrayList<>(branchNums);
+			supplierBranchNums.add(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM);
+			suppliers = supplierService.find(systemBookCode, supplierBranchNums, null, null, true, null);
+
+		}
 		List<PosItem> posItems = posItemService.find(systemBookCode, supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums(), null);
 		List<Branch> branches = branchService.findInCache(systemBookCode);
