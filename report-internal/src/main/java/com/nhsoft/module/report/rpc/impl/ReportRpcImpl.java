@@ -5390,7 +5390,7 @@ public class ReportRpcImpl implements ReportRpc {
 		//批发数量
 		List<WholesaleAmountAndMoneyDTO> wholesaleSum = wholesaleOrderRpc.findAmountAndMoneyByBiz(systemBookCode, dateFrom, dateTo, itemNums);
 		//库存  当前库存
-        List<Inventory> inventories = inventoryService.findByItemAndBranch(systemBookCode, 99, itemNums, true);
+        List<Inventory> inventories = inventoryService.findByItemAndBranch(systemBookCode, 99, itemNums, null);
 		PosItemQuery query = new PosItemQuery();
 		query.setSystemBookCode(systemBookCode);
 		query.setItemNums(itemNums);
