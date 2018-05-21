@@ -1,8 +1,9 @@
 package com.nhsoft.module.report.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PosGroupHourAndBranchRegionTypeSummary {
+public class PosGroupHourAndBranchRegionTypeSummary implements Serializable{
 
     private int hour;
     private String branchType;
@@ -16,6 +17,7 @@ public class PosGroupHourAndBranchRegionTypeSummary {
     public void setHour(int hour) {
         this.hour = hour;
     }
+
 
     public String getBranchType() {
         return branchType;
