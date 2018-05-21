@@ -5522,6 +5522,7 @@ public class ReportRpcImpl implements ReportRpc {
 		transferQuery.setDateTo(dateTo);
 		transferQuery.setItemNums(itemNums);
 		transferQuery.setSortField(sortField);
+		transferQuery.setBranchNums(branchNums);
 		List<TransterOutDTO> transterOutDTOS = transferOutOrderRpc.findMoneyAndAmountByItemNum(transferQuery);
 
 		//到货数量统计管理中心调出单
