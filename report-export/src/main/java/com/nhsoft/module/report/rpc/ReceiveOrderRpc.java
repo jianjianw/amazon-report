@@ -48,7 +48,7 @@ public interface ReceiveOrderRpc {
     /**
      * 根据营业日查询采购 金额 数量
      */
-    public List<BizPurchaseDTO> findPurchaseByBiz(String systemBookCode,Date dateFrom, Date dateTo,List<Integer> itemNums);
+    public List<BizPurchaseDTO> findPurchaseByBiz(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums);
 
     /**
      * 根据商品营业日汇总 采购金额和数量

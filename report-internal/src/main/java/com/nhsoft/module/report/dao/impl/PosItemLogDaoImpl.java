@@ -169,8 +169,9 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(itemNums != null && itemNums.size() > 0){
 			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(itemNums));
 		}
+		//TODO
 		if(storehouseNum != null){
-			sb.append("and (l.in_storehouse_num = " + storehouseNum + " or l.out_storehouse_num = " + storehouseNum + ") ");
+			sb.append("and l.out_storehouse_num = " + storehouseNum + " ");
 		}
 
 		if(StringUtils.isNotEmpty(summaries)){
