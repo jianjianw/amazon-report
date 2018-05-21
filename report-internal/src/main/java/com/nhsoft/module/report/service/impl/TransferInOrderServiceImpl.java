@@ -40,7 +40,7 @@ public class TransferInOrderServiceImpl implements TransferInOrderService {
 	
 	@Override
 	public BigDecimal readBranchUnPaidMoney(String systemBookCode, Integer branchNum, Integer inBranchNum) {
-		return null;
+		return transferInOrderDao.readBranchUnPaidMoney(systemBookCode, branchNum, inBranchNum);
 	}
 	
 	@Override
