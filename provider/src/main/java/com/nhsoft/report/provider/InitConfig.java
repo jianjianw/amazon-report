@@ -28,15 +28,6 @@ public class InitConfig {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InitConfig.class);
 	
-	
-	private String serviceDeskUrl;
-	
-	@Value("${redis.host}")
-	private String REDIS_HOST_NAME;
-	
-	@Value("${redis.pass}")
-	private  String REDIS_PASS;
-	
 	@Bean
 	public RestTemplate restTemplate() {
 		
@@ -45,29 +36,6 @@ public class InitConfig {
 		factory.setReadTimeout(10000);
 		RestTemplate restTemplate = new RestTemplate(factory);
 		return restTemplate;
-	}
-	
-	@Bean
-	public RedisTemplate redisTemplate() {
-		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-		jedisPoolConfig.setMinIdle(10);
-		jedisPoolConfig.setMaxIdle(200);
-		jedisPoolConfig.setMaxTotal(600);
-		jedisPoolConfig.setTestOnBorrow(true);
-		
-		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
-		jedisConnectionFactory.setHostName(REDIS_HOST_NAME);
-		jedisConnectionFactory.setPort(6379);
-		jedisConnectionFactory.setPassword(REDIS_PASS);
-		jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
-		jedisConnectionFactory.setTimeout(60000);
-		jedisConnectionFactory.afterPropertiesSet();		//Cannot get Jedis connection
-		
-		RedisTemplate redisTemplate = new RedisTemplate();
-		redisTemplate.setConnectionFactory(jedisConnectionFactory);
-		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setValueSerializer(new MyJackson2JsonRedisSerializer());
-		return redisTemplate;
 	}
 
 	@Bean
