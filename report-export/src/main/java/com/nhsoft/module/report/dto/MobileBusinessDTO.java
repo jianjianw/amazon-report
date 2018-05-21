@@ -22,6 +22,8 @@ public class MobileBusinessDTO implements Serializable {
 	private BigDecimal receiptAvgMoney; // 客单价
 	private BigDecimal receiptCardAvgMoney; // 会员客单价
 	private BigDecimal receiptUnCardAvgMoney; // 非会员客单价
+	private BigDecimal profitMoney; // 毛利
+	private Integer branchCount; //分店数
 
 	private Integer receiptUnCardCount; // 非会员客单量
 
@@ -165,4 +167,19 @@ public class MobileBusinessDTO implements Serializable {
 		this.receiptCardCount = receiptCardCount;
 	}
 
+	public BigDecimal getProfitMoney() {
+		return profitMoney;
+	}
+
+	public void setProfitMoney(BigDecimal profitMoney) {
+		this.profitMoney = profitMoney;
+	}
+
+	public Integer getBranchCount() {
+		return branchCount;
+	}
+
+	public void setBranchCount(Integer branchCount) {
+		this.branchCount = branchCount;
+	}
 }
