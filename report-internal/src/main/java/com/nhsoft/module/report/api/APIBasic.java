@@ -1019,8 +1019,8 @@ public class APIBasic {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-30");
-		String systemBookCode = "4344";
+		Date dateTo = sdf.parse("2018-04-01");
+		String systemBookCode = "4020";
 		CardUserQuery query = new CardUserQuery();
 		query.setDateFrom(dateFrom);
 		query.setDateTo(dateTo);
@@ -2199,12 +2199,36 @@ public class APIBasic {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFrom = sdf.parse("2018-03-01");
 		Date dateTo = sdf.parse("2018-03-31");
-
 		//findAccountPays
 		AccountPayDTO result = mobileAppV2Rpc.findAccountPays(systemBookCode,99,dateFrom,dateTo);
 		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test117")
+	public List<NameAndValueDTO> test117() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-05-01");
+		Date dateTo = sdf.parse("2018-05-31");
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+		//findAccountPays
+		List<NameAndValueDTO> branchCardDeposit = mobileAppV2Rpc.findBranchCardDeposit(systemBookCode, branchNums, dateFrom, dateTo);
+		return branchCardDeposit;
+	}
 
 
+	@RequestMapping(method = RequestMethod.GET,value = "/test118")
+	public List<CardReportDTO> test118() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-05-01");
+		Date dateTo = sdf.parse("2018-05-31");
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+
+		List<CardReportDTO> cardReportByBranch = mobileAppV2Rpc.findCardReportByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+		return cardReportByBranch;
 	}
 
 

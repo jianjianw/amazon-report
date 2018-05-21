@@ -11150,14 +11150,14 @@ public class ReportServiceImpl implements ReportService {
 
 		//AMA-11807
 		revokeMoney = cardUserDao.getRevokeMoney(cardUserQuery.getSystemBookCode(), null, null, null);
-		cardAnalysisSummaryDTO.setTotalPaymentMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
-		cardAnalysisSummaryDTO.setCardBalance(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]);
-		cardAnalysisSummaryDTO.setCardBalance(cardAnalysisSummaryDTO.getCardBalance().subtract(revokeMoney));
+		cardAnalysisSummaryDTO.setTotalPaymentMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);//总额
+		cardAnalysisSummaryDTO.setCardBalance(object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4]);	   //当前余额
+		cardAnalysisSummaryDTO.setCardBalance(cardAnalysisSummaryDTO.getCardBalance().subtract(revokeMoney));//当前余额 = 当前余额 - 回收金额
 		cardAnalysisSummaryDTO.setPaymentMoney(BigDecimal.ZERO);
 		cardAnalysisSummaryDTO.setDepositMoney(BigDecimal.ZERO);
 		cardAnalysisSummaryDTO.setConsumeMoney(BigDecimal.ZERO);
-		cardAnalysisSummaryDTO.setLastCardBalance(cardAnalysisSummaryDTO.getCardBalance());
-		cardAnalysisSummaryDTO.setBalanceMoney(cardAnalysisSummaryDTO.getCardBalance());
+		cardAnalysisSummaryDTO.setLastCardBalance(cardAnalysisSummaryDTO.getCardBalance());//  上期余额
+		cardAnalysisSummaryDTO.setBalanceMoney(cardAnalysisSummaryDTO.getCardBalance());//    期末余额
 
 		CardReportQuery cardReportQuery = new CardReportQuery();
 		cardReportQuery.setSystemBookCode(cardUserQuery.getSystemBookCode());
@@ -11165,7 +11165,7 @@ public class ReportServiceImpl implements ReportService {
 
 		BigDecimal consumeMoney = null;
 		BigDecimal depositMoney = null;
-		if (dateTo.compareTo(now) < 0) {
+		if (dateTo.compareTo(now) < 0) {//这一段是为了计算上期余额
 			cardReportQuery.setDateFrom(DateUtil.addDay(dateTo, 1));
 			cardReportQuery.setDateTo(now);
 			object = cardConsumeDao.sumByCardReportQuery(cardReportQuery);

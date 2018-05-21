@@ -590,7 +590,7 @@ public class ReceiveOrderDaoImpl extends DaoImpl implements ReceiveOrderDao {
 		sb.append("select convert(varchar(8), r.receive_order_audit_time, 112) as biz, sum(detail.receive_order_detail_qty/p.item_transfer_rate) as transferQty, sum(detail.receive_order_detail_subtotal) as money ");
 		sb.append("from receive_order_detail as detail with(nolock) inner join receive_order as r with(nolock) ");
 		sb.append("on r.receive_order_fid = detail.receive_order_fid inner join pos_item as p on p.item_num = detail.item_num ");
-		sb.append("where r.system_book_code = '" + systemBookCode + "' ");
+		sb.append("where r.system_book_code = '" + systemBookCode + "' and r.branch_num = 99 ");
 		if(itemNums != null && itemNums.size() > 0){
 			sb.append("and detail.item_num in " +AppUtil.getIntegerParmeList(itemNums));
 		}
