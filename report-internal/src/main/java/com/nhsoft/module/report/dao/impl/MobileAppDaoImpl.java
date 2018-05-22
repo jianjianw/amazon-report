@@ -906,7 +906,9 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 		sb.append("select sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as paymentMoney, count(order_no) as orderNums, ");
 		sb.append("sum(case when order_card_user_num > 0 then (order_payment_money - order_mgr_discount_money + order_coupon_total_money) end) as cardMoney, ");
 		sb.append("count(case when order_card_user_num > 0 then order_no end) as cardAmount, ");
-		sb.append("sum(order_discount_money + order_round + order_mgr_discount_money) as discount ");
+		sb.append("sum(order_discount_money + order_round + order_mgr_discount_money) as discount, ");
+		sb.append("sum(order_gross_profit) as profit,");
+		sb.append("count(distinct branch_num) as branchCount ");
 		sb.append("from pos_order with(nolock) ");
 		sb.append("where system_book_code = '" + systemBookCode + "' and branch_num in "
 				+ AppUtil.getIntegerParmeList(branchNums) + " ");
@@ -922,6 +924,8 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 		dto.setBusinessCardMoney(objects[2] == null ? BigDecimal.ZERO : (BigDecimal) objects[2]);
 		dto.setReceiptCardCount(objects[3] == null ? 0 : (Integer) objects[3]);
 		dto.setDiscountMoney(objects[4] == null ? BigDecimal.ZERO : (BigDecimal) objects[4]);
+		dto.setProfitMoney(objects[5] == null ? BigDecimal.ZERO : (BigDecimal) objects[5]);
+		dto.setBranchCount(objects[6] == null ? 0: (Integer) objects[6]);
 		return dto;
 	}
 

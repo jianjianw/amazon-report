@@ -2,6 +2,7 @@ package com.nhsoft.module.report.rpc.impl;
 
 
 import com.nhsoft.module.report.dto.*;
+import com.nhsoft.module.report.query.TransferQueryDTO;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.rpc.PosItemFlagRpc;
 import com.nhsoft.module.report.rpc.TransferOutOrderRpc;
@@ -128,6 +129,22 @@ public class TransferOutOrderRpcImpl implements TransferOutOrderRpc {
     @Override
     public List<TransterOutDTO> findMoneyAndAmountByItemNum(String systemBookCode, Integer branchNum,List<Integer> storehouseNums, Date dateFrom, Date dateTo, List<Integer> itemNums, String sortField) {
         List<Object[]> objects = transferOutOrderService.findMoneyAndAmountByItemNum(systemBookCode, branchNum,storehouseNums, dateFrom, dateTo, itemNums, sortField);
+        int size = objects.size();
+        List<TransterOutDTO> list = new ArrayList<>(size);
+        for (int i = 0; i < size ; i++) {
+            Object[] object = objects.get(i);
+            TransterOutDTO dto = new TransterOutDTO();
+            dto.setItemNum((Integer) object[0]);
+            dto.setQty((BigDecimal) object[1]);
+            dto.setMoney((BigDecimal) object[2]);
+            list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public List<TransterOutDTO> findMoneyAndAmountByItemNum(TransferQueryDTO queryDTO) {
+        List<Object[]> objects = transferOutOrderService.findMoneyAndAmountByItemNum(queryDTO);
         int size = objects.size();
         List<TransterOutDTO> list = new ArrayList<>(size);
         for (int i = 0; i < size ; i++) {

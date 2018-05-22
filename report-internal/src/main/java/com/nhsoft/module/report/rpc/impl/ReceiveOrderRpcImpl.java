@@ -95,4 +95,10 @@ public class ReceiveOrderRpcImpl implements ReceiveOrderRpc {
         }
         return list;
     }
+
+    @Override
+    public List<Object[]> findPurchaseByItemBiz(String systemBookCode,Date dateFrom, Date dateTo, List<Integer> itemNums) {
+        List<Object[]> obeject = receiveOrderService.findPurchaseByItemBiz(systemBookCode, dateFrom, dateTo, itemNums);
+        return obeject;
+    }
 }

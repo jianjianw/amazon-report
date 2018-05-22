@@ -43,6 +43,8 @@ public class TransferProfitByPosItemDTO implements Serializable {
     private BigDecimal saleMoney;
     private BigDecimal outsAmount;
 	private BigDecimal outsMoney;
+	private BigDecimal inUseAmount;
+	private BigDecimal outUseAmount;
 
 
 
@@ -68,6 +70,8 @@ public class TransferProfitByPosItemDTO implements Serializable {
         this.saleMoney = BigDecimal.ZERO;
         this.outsAmount = BigDecimal.ZERO;
         this.outsMoney = BigDecimal.ZERO;
+        this.inUseAmount = BigDecimal.ZERO;
+        this.outUseAmount = BigDecimal.ZERO;
     }
 
     public String getTranferBranchName() {
@@ -356,5 +360,21 @@ public class TransferProfitByPosItemDTO implements Serializable {
 
     public void setOutsMoney(BigDecimal outsMoney) {
         this.outsMoney = outsMoney;
+    }
+
+    public BigDecimal getInUseAmount() {
+        return inUseAmount;
+    }
+
+    public void setInUseAmount(BigDecimal inUseAmount) {
+        this.inUseAmount = inUseAmount;
+    }
+
+    public BigDecimal getOutUseAmount() {
+        return outUseAmount;
+    }
+
+    public void setOutUseAmount(BigDecimal outUseAmount) {
+        this.outUseAmount = outUseAmount;
     }
 }

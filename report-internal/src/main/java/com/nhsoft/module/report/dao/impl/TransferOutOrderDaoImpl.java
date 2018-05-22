@@ -5,6 +5,7 @@ import com.nhsoft.module.report.model.OutOrderDetail;
 import com.nhsoft.module.report.model.PosItem;
 import com.nhsoft.module.report.model.TransferInOrder;
 import com.nhsoft.module.report.model.TransferOutOrder;
+import com.nhsoft.module.report.query.TransferQueryDTO;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
@@ -1028,9 +1029,9 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 	@Override
 	public List<Object[]> findMoneyAndAmountByBiz(String systemBookCode, Date dateFrom, Date dateTo,List<Integer> itemNums) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select convert(varchar(8) , t.out_order_audit_time, 112), sum(detail.out_order_detail_qty) as qty,sum(detail.out_order_detail_subtotal) as subtotal ");
-		sb.append("from out_order_detail as detail inner join transfer_out_order as t on detail.out_order_fid = t.out_order_fid ");
-		sb.append("and t.system_book_code = '"+ systemBookCode+"' ");
+		sb.append("select convert(varchar(8) , t.out_order_audit_time, 112), sum(detail.out_order_detail_qty/p.item_transfer_rate) as transferQty ,sum(detail.out_order_detail_sale_subtotal) as subtotal ");
+		sb.append("from out_order_detail as detail inner join transfer_out_order as t on detail.out_order_fid = t.out_order_fid inner join pos_item as p on p.item_num = detail.item_num ");
+		sb.append("and t.system_book_code = '"+ systemBookCode+"' and t.out_branch_num = 99 ");
 		if(itemNums != null && itemNums.size() > 0){
 			sb.append("and detail.item_num in "+ AppUtil.getIntegerParmeList(itemNums));
 		}
@@ -1074,6 +1075,40 @@ public class TransferOutOrderDaoImpl extends DaoImpl implements TransferOutOrder
 		query.setParameter("dateTo", DateUtil.getMaxOfDate(dateTo));
 		return query.list();
 
+	}
+
+	@Override
+	public List<Object[]> findMoneyAndAmountByItemNum(TransferQueryDTO queryDTO) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select detail.item_num,");
+		sb.append("sum(detail.out_order_detail_qty) as transferQty, sum(detail.out_order_detail_sale_subtotal) as transferMoney ");
+		sb.append("from out_order_detail as detail with(nolock) inner join transfer_out_order as t with(nolock) on detail.out_order_fid = t.out_order_fid ");
+		sb.append("where t.system_book_code = '"+queryDTO.getSystemBookCode()+"' " );
+		if(queryDTO.getCenterBranchNum() != null){
+			sb.append("and t.out_branch_num = " + queryDTO.getCenterBranchNum() + " ");
+		}
+		if(queryDTO.getBranchNums() != null){
+			sb.append("and t.branch_num in "+ AppUtil.getIntegerParmeList(queryDTO.getBranchNums()));
+		}
+		if(queryDTO.getDateFrom() != null){
+			sb.append("and t.out_order_audit_time >= '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(queryDTO.getDateFrom())) + "' ");
+		}
+		if(queryDTO.getDateTo() != null){
+			sb.append("and t.out_order_audit_time <= '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(queryDTO.getDateTo())) + "' ");
+		}
+		sb.append("and t.out_order_state_code = 3 ");
+		if(queryDTO.getStorehouseNums() != null && queryDTO.getStorehouseNums().size()>0){
+			sb.append("and t.storehouse_num in " + AppUtil.getIntegerParmeList(queryDTO.getStorehouseNums() ));
+		}
+		if (queryDTO.getItemNums() != null && queryDTO.getItemNums().size() > 0) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(queryDTO.getItemNums()));
+		}
+		sb.append("group by detail.item_num ");
+		if(StringUtils.isNotBlank(queryDTO.getSortField())){
+			sb.append("order by " + queryDTO.getSortField());
+		}
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
 	}
 
 	@Override

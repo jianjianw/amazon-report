@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.dto;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -170,8 +172,11 @@ public class BranchCategoryTransSaleAnalyseDTO implements Serializable {
 			Integer branchNum, String categoryCode){
 		for(int i = 0;i < branchTransSaleAnalyseDTOs.size();i++){
 			BranchCategoryTransSaleAnalyseDTO branchTransSaleAnalyseDTO = branchTransSaleAnalyseDTOs.get(i);
-			if(branchTransSaleAnalyseDTO.getBranchNum().equals(branchNum) 
-					&& branchTransSaleAnalyseDTO.getCategoryCode().equals(categoryCode)){
+			if(branchTransSaleAnalyseDTO.getBranchNum() == null || branchNum == null){
+				continue;
+			}
+			if(branchTransSaleAnalyseDTO.getBranchNum().equals(branchNum)
+					&& StringUtils.equals(branchTransSaleAnalyseDTO.getCategoryCode(),categoryCode)){
 				return branchTransSaleAnalyseDTO;
 			}
 		}

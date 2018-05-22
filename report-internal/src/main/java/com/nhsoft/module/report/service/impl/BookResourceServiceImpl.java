@@ -84,26 +84,14 @@ public class BookResourceServiceImpl extends BaseManager implements BookResource
 		List<CardUserType> params = CardUserType.readFromXml(bookResource.getBookResourceParam());
 		return params;
 	}
-	
-	private ChainDeliveryParam readChainDeliveryParam(String systemBookCode) {
+
+	@Override
+	public ChainDeliveryParam readChainDeliveryParam(String systemBookCode) {
 		BookResource bookResource = bookResourceDao.read(systemBookCode, AppConstants.CHAIN_DELIVERY_PARAM);
 		if(bookResource == null){
 			return new ChainDeliveryParam();
 		}
 		ChainDeliveryParam param = ChainDeliveryParam.fromXml(bookResource.getBookResourceParam());
 		return param;
-	}
-	
-	@Override
-	public ChainDeliveryParam readChainDeliveryParamInCache(String systemBookCode) {
-		String key = AppConstants.REDIS_PRE_BOOK_RESOURCE + AppConstants.CHAIN_DELIVERY_PARAM + systemBookCode;
-		Object object = RedisUtil.get(key);
-		if(object == null){
-			ChainDeliveryParam param = readChainDeliveryParam(systemBookCode);
-			RedisUtil.put(key, param, AppConstants.CACHE_LIVE_SECOND);
-			return param;
-		} else {
-			return (ChainDeliveryParam) object;
-		}
 	}
 }

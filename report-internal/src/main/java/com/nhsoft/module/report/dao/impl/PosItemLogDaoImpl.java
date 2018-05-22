@@ -169,15 +169,17 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		if(itemNums != null && itemNums.size() > 0){
 			sb.append("and l.item_num in " + AppUtil.getIntegerParmeList(itemNums));
 		}
+		//TODO
 		if(storehouseNum != null){
-			sb.append("and (l.in_storehouse_num = " + storehouseNum + " or l.out_storehouse_num = " + storehouseNum + ") ");
+			sb.append("and l.out_storehouse_num = " + storehouseNum + " ");
 		}
+
 		if(StringUtils.isNotEmpty(summaries)){
 			sb.append("and l.pos_item_log_summary in " + AppUtil.getStringParmeArray(summaries.split(",")));
 		}
-		/*if(memos != null && memos.size() > 0){
-			sb.append("and ((l.pos_item_log_summary = '调整单' and l.pos_item_log_memo in " + AppUtil.getStringParmeList(memos) + ") or l.pos_item_log_summary != '调整单') ");
-		}*/
+//		if(memos != null && memos.size() > 0){
+//			sb.append("and ((l.pos_item_log_summary = '调整单' and l.pos_item_log_memo in " + AppUtil.getStringParmeList(memos) + ") or l.pos_item_log_summary != '调整单') ");
+//		}
 		if(memos != null && memos.size() > 0){
 			sb.append("and l.pos_item_log_memo in " + AppUtil.getStringParmeList(memos) + " ");
 		}
@@ -1791,6 +1793,21 @@ public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao 
 		}
 
 		return sqlQuery.list();
+	}
+
+	@Override
+	public List<Object[]> test(StoreQueryCondition queryCondition) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select l.branch_num, l.item_num from pos_item_log as l where l.system_book_code = '"+queryCondition.getSystemBookCode()+"' ");
+		sb.append("and l.pos_item_log_date_index between '" + DateUtil.getDateShortStr(queryCondition.getDateStart()) + "' and '" + DateUtil.getDateShortStr(queryCondition.getDateEnd()) + "' ");
+		if(queryCondition.getBranchNums() != null && queryCondition.getBranchNums().size() > 0){
+			sb.append("and l.branch_num in " + AppUtil.getIntegerParmeList(queryCondition.getBranchNums()));
+		}
+		sb.append("and ( (l.pos_item_log_money > 0 and l.pos_item_log_item_price > 100) or l.pos_item_log_item_amount > 100)");
+		//sb.append("and pos_item_log_money > 0 and branch_num is not null");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		List list = sqlQuery.list();
+		return list;
 	}
 
 

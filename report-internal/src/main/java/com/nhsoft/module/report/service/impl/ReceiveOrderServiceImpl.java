@@ -80,5 +80,10 @@ public class ReceiveOrderServiceImpl extends BaseManager implements ReceiveOrder
 		return receiveOrderDao.findItemMatrixMaxProducingDates(systemBookCode,branchNum,itemNums);
 	}
 
+	@Override
+	public List<Object[]> findPurchaseByItemBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums) {
+		return receiveOrderDao.findPurchaseByItemBiz(systemBookCode,dateFrom,dateTo,itemNums);
+	}
+
 
 }

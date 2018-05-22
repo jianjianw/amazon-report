@@ -1437,17 +1437,17 @@ public interface ReportRpc {
 
 
 	/**
-	 * 采购计划周期表(好想来)
+	 * 采购计划周期表(好想来)(查的是所有分店)
 	 * */
 	public List<PurchaseCycleSummary> findPurchaseCycleByBiz(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> itemNums);
 
 	/**
-	 * 商品配送top榜（好想来）
+	 * 商品配送top榜（好想来）ok
 	 * */
-	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode,Integer branchNum,Date dateFrom,Date dateTo,List<String> itemCategoryCodes,String sortField);
+	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode, Integer centerBranchNum ,List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> itemCategoryCodes,String sortField);
 
 	/**
-	 * 商品库存动态表（好想来）
+	 * 商品库存动态表（好想来）ok
 	 * */
 	public List<ItemInventoryTrendSummary> findItemTrendInventory(ItemInventoryQueryDTO inventoryQuery);
 

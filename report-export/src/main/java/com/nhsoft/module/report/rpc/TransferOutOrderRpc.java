@@ -5,6 +5,7 @@ import com.nhsoft.module.report.dto.TransferOutMoney;
 import com.nhsoft.module.report.dto.TransferOutMoneyAndAmountDTO;
 import com.nhsoft.module.report.dto.TransferOutMoneyDateDTO;
 import com.nhsoft.module.report.dto.TransterOutDTO;
+import com.nhsoft.module.report.query.TransferQueryDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -75,4 +76,9 @@ public interface TransferOutOrderRpc {
      */
     public List<TransterOutDTO> findMoneyAndAmountByItemNum(String systemBookCode,Integer branchNum,List<Integer> storehouseNums,Date dateFrom, Date dateTo,List<Integer> itemNums,String sortField);
 
+
+    /**
+     * 按商品汇总 调出数量和金额  new
+     * */
+    public List<TransterOutDTO> findMoneyAndAmountByItemNum(TransferQueryDTO queryDTO);
 }

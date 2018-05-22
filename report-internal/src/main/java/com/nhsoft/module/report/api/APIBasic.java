@@ -62,6 +62,8 @@ public class APIBasic {
 
 	@Autowired
 	private BookResourceRpc bookResourceRpc;
+	@Autowired
+	private MobileAppV2Rpc mobileAppV2Rpc;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
@@ -1016,8 +1018,8 @@ public class APIBasic {
 	public CardAnalysisSummaryDTO test53() throws Exception{
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-02-01");
-		Date dateTo = sdf.parse("2018-02-28");
+		Date dateFrom = sdf.parse("2018-04-01");
+		Date dateTo = sdf.parse("2018-04-01");
 		String systemBookCode = "4020";
 		CardUserQuery query = new CardUserQuery();
 		query.setDateFrom(dateFrom);
@@ -1377,7 +1379,8 @@ public class APIBasic {
 		Date timeTo = time.parse("23:59:59");
 		query.setTimeFrom(timeFrom);
 		query.setTimeTo(timeTo);
-		query.setMoneySpace(BigDecimal.valueOf(23));
+		query.setMoneySpace(BigDecimal.valueOf(100));
+		query.setMoneyFrom(BigDecimal.valueOf(200));
 		//query.setMoneyFrom(BigDecimal.valueOf(100));
 		List<CardConsumeAnalysis> cardConsumeAnalysis = reportRpc.findCardConsumeAnalysis(query);
 		return cardConsumeAnalysis;
@@ -1419,9 +1422,25 @@ public class APIBasic {
 	public List<TransferItemDetailSummary> test73()throws Exception{
 		String systemBookCode = "4020";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateFrom = sdf.parse("2018-04-01");
-		Date dateTo = sdf.parse("2018-04-30");
-		List<TransferItemDetailSummary> transferItemTop = reportRpc.findTransferItemTop(systemBookCode,1,dateFrom,dateTo,null,"transferQty");
+		Date dateFrom = sdf.parse("2018-01-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		List<TransferItemDetailSummary> transferItemTop = reportRpc.findTransferItemTop(systemBookCode,99,null,dateFrom,dateTo,null,"transferQty");
+
+		BigDecimal transferQty = BigDecimal.ZERO;
+		BigDecimal transferMoney = BigDecimal.ZERO;
+		BigDecimal receiveQty = BigDecimal.ZERO;
+		BigDecimal requestQty = BigDecimal.ZERO;
+		for (int i = 0; i <transferItemTop.size() ; i++) {
+			TransferItemDetailSummary transferItemDetailSummary = transferItemTop.get(i);
+			transferQty = transferQty.add(transferItemDetailSummary.getTransferQty() == null ? BigDecimal.ZERO : transferItemDetailSummary.getTransferQty());
+			transferMoney = transferMoney.add(transferItemDetailSummary.getTransferMoney() == null ? BigDecimal.ZERO : transferItemDetailSummary.getTransferMoney());
+			receiveQty = receiveQty.add(transferItemDetailSummary.getReceiveQty() == null ? BigDecimal.ZERO : transferItemDetailSummary.getReceiveQty());
+			requestQty = requestQty.add(transferItemDetailSummary.getRequestQty() == null ? BigDecimal.ZERO : transferItemDetailSummary.getRequestQty());
+		}
+		System.out.println("配送数量： "+transferQty);
+		System.out.println("配送金额： "+transferMoney);
+		System.out.println("到货数量： "+receiveQty);
+		System.out.println("要货数量： "+requestQty);
 		return  transferItemTop;
 	}
 
@@ -1708,6 +1727,7 @@ public class APIBasic {
 		query.setLimit(10000);
 		query.setSortField("itemCode");
 		query.setSortType("asc");
+		query.setStoreNum(402011281);
 		InventoryProfitPageDTO result = reportRpc.findInventoryProfit(query);
 
 		return result;
@@ -2156,6 +2176,60 @@ public class APIBasic {
 		return result;
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value = "/test115")
+	public List test115() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		StoreQueryCondition query = new StoreQueryCondition();
+		query.setSystemBookCode(systemBookCode);
+		query.setDateStart(dateFrom);
+		query.setDateEnd(dateTo);
+		List<Integer> list = new ArrayList<>();
+		list.add(99);
+		query.setBranchNums(list);
+		List test = posItemLogRpc.test(query);
+		return test;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test116")
+	public AccountPayDTO test116() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-03-01");
+		Date dateTo = sdf.parse("2018-03-31");
+		//findAccountPays
+		AccountPayDTO result = mobileAppV2Rpc.findAccountPays(systemBookCode,99,dateFrom,dateTo);
+		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test117")
+	public List<NameAndValueDTO> test117() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-05-01");
+		Date dateTo = sdf.parse("2018-05-31");
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+		//findAccountPays
+		List<NameAndValueDTO> branchCardDeposit = mobileAppV2Rpc.findBranchCardDeposit(systemBookCode, branchNums, dateFrom, dateTo);
+		return branchCardDeposit;
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test118")
+	public List<CardReportDTO> test118() throws Exception{
+		String systemBookCode = "4020";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFrom = sdf.parse("2018-05-01");
+		Date dateTo = sdf.parse("2018-05-31");
+		List<Integer> branchNums = new ArrayList<>();
+		branchNums.add(99);
+
+		List<CardReportDTO> cardReportByBranch = mobileAppV2Rpc.findCardReportByBranch(systemBookCode,branchNums,dateFrom,dateTo);
+		return cardReportByBranch;
+	}
 
 
 }

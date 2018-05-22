@@ -2,6 +2,7 @@ package com.nhsoft.module.report.rpc.impl;
 
 
 import com.google.gson.Gson;
+import com.nhsoft.module.report.api.dto.BranchFinishRateTopDTO;
 import com.nhsoft.module.report.comparator.ComparatorBaseModelData;
 import com.nhsoft.module.report.comparator.ComparatorGroupModelData;
 import com.nhsoft.module.report.dto.*;
@@ -10,6 +11,7 @@ import com.nhsoft.module.report.param.CardUserType;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.RequestOrderQuery;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
@@ -21,6 +23,7 @@ import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.report.utils.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.secure.spi.IntegrationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -726,7 +729,16 @@ public class ReportRpcImpl implements ReportRpc {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		List<Integer> branchNums = supplierSaleQuery.getBranchNums();
 
-		List<Supplier> suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+		List<Supplier> suppliers;
+		if(branchNums == null || branchNums.contains(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+			suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+
+		} else {
+			List<Integer> supplierBranchNums = new ArrayList<>(branchNums);
+			supplierBranchNums.add(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM);
+			suppliers = supplierService.find(systemBookCode, supplierBranchNums, null, null, true, null);
+
+		}
 		List<Storehouse> storehouses = storehouseService.findByBranchs(systemBookCode, branchNums);
 		List<Integer> storehouseNums = new ArrayList<Integer>();
 		for (Storehouse storehouse : storehouses) {
@@ -927,7 +939,16 @@ public class ReportRpcImpl implements ReportRpc {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		List<Integer> branchNums = supplierSaleQuery.getBranchNums();
 
-		List<Supplier> suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+		List<Supplier> suppliers;
+		if(branchNums == null || branchNums.contains(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+			suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+
+		} else {
+			List<Integer> supplierBranchNums = new ArrayList<>(branchNums);
+			supplierBranchNums.add(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM);
+			suppliers = supplierService.find(systemBookCode, supplierBranchNums, null, null, true, null);
+
+		}
 		List<PosItem> posItems = posItemService.find(systemBookCode, supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums(), null);
 		List<Storehouse> storehouses = storehouseService.findByBranchs(systemBookCode, branchNums);
@@ -1197,7 +1218,16 @@ public class ReportRpcImpl implements ReportRpc {
 		String systemBookCode = supplierSaleQuery.getSystemBookCode();
 		List<Integer> branchNums = supplierSaleQuery.getBranchNums();
 
-		List<Supplier> suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+		List<Supplier> suppliers;
+		if(branchNums == null || branchNums.contains(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM)){
+			suppliers = supplierService.find(systemBookCode, branchNums, null, null, true, null);
+
+		} else {
+			List<Integer> supplierBranchNums = new ArrayList<>(branchNums);
+			supplierBranchNums.add(AppConstants.REQUEST_ORDER_OUT_BRANCH_NUM);
+			suppliers = supplierService.find(systemBookCode, supplierBranchNums, null, null, true, null);
+
+		}
 		List<PosItem> posItems = posItemService.find(systemBookCode, supplierSaleQuery.getCategoryCodes(),
 				supplierSaleQuery.getItemNums(), null);
 		List<Branch> branches = branchService.findInCache(systemBookCode);
@@ -3416,7 +3446,7 @@ public class ReportRpcImpl implements ReportRpc {
 			} else if (intRange.compareTo(BigDecimal.valueOf(1000)) < 0){
 				strRange = sb.append(range).append("-").append(intRange.add(moneySpace)).toString();
 			}else {
-				strRange = "1000以上";
+				strRange = "1000-以上";
 			}
 
 
@@ -3435,6 +3465,45 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 		}
 		list.addAll(map.values());
+		for (int i = 0,len = list.size(); i < len ; i++) {
+
+			CardConsumeAnalysis cardConsumeAnalysis = list.get(i);
+			String rang = cardConsumeAnalysis.getRang();
+			String[] split = rang.split("-");
+			BigDecimal moneyFrom = new BigDecimal(split[0]);
+			if(BigDecimal.valueOf(1000).compareTo(moneyFrom) == 0){
+				cardConsumeAnalysis.setMoneyFrom(moneyFrom);
+
+			}else{
+				BigDecimal moneyTo = new BigDecimal(split[1]);
+				cardConsumeAnalysis.setMoneyFrom(moneyFrom);
+				cardConsumeAnalysis.setMoneyTo(moneyTo);
+			}
+		}
+
+		if(cardConsuemAnalysisQuery.getMoneyFrom() != null){
+			for (int i = list.size()-1; i >= 0 ; i--) {
+				CardConsumeAnalysis cardConsumeAnalysis = list.get(i);
+				//去除小于消费金额起的数据
+				if(cardConsumeAnalysis.getMoneyTo() != null){//1000-以上 moneyTo 为null
+					if(cardConsuemAnalysisQuery.getMoneyFrom().compareTo(cardConsumeAnalysis.getMoneyTo()) >= 0){
+						list.remove(i);
+					}
+				}
+			}
+		}
+
+		if(cardConsuemAnalysisQuery.getMoneyTo() != null){
+			for (int i = list.size()-1; i >= 0 ; i--) {
+				CardConsumeAnalysis cardConsumeAnalysis = list.get(i);
+				//去除消费金额小于moneyTo的数据
+				if(cardConsumeAnalysis.getMoneyFrom().compareTo(cardConsuemAnalysisQuery.getMoneyTo()) >= 0){
+					list.remove(i);
+				}
+			}
+		}
+		Comparator<CardConsumeAnalysis> comparing = Comparator.comparing(CardConsumeAnalysis::getMoneyFrom);
+		list.sort(comparing);
 		return list;
 	}
 
@@ -3504,8 +3573,8 @@ public class ReportRpcImpl implements ReportRpc {
 			Object[] object = objects.get(i);
 			PosGroupBranchRegionTypeSummary posGroupBranchRegionTypeSummary = new PosGroupBranchRegionTypeSummary();
 			posGroupBranchRegionTypeSummary.setRegionType((String) object[0]);
-			posGroupBranchRegionTypeSummary.setMoney((BigDecimal) object[0]);
-			posGroupBranchRegionTypeSummary.setAmount((Integer) object[0]);
+			posGroupBranchRegionTypeSummary.setMoney((BigDecimal) object[1]);
+			posGroupBranchRegionTypeSummary.setAmount((Integer) object[2]);
 			list.add(posGroupBranchRegionTypeSummary);
 		}
 
@@ -3568,7 +3637,6 @@ public class ReportRpcImpl implements ReportRpc {
 			groupByItemSummary.setAmount((BigDecimal) object[3]);
 			groupByItemSummary.setPaymentMoney((BigDecimal) object[4]);
 			groupByItemSummary.setCost((BigDecimal) object[5]);
-			groupByItemSummary.setAssistAmount((BigDecimal) object[6]);
 			list.add(groupByItemSummary);
 		}
 		return list;
@@ -4130,7 +4198,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public CardAnalysisSummaryDTO getCardAnalysisSummaryDTO(CardUserQuery cardUserQuery) {
+	public CardAnalysisSummaryDTO  getCardAnalysisSummaryDTO(CardUserQuery cardUserQuery) {
 		CardAnalysisSummaryDTO cardAnalysisSummaryDTO = reportService.getCardAnalysisSummaryDTO(cardUserQuery);
 		Gson gson = new Gson();
 		String json = gson.toJson(cardAnalysisSummaryDTO);
@@ -5345,15 +5413,37 @@ public class ReportRpcImpl implements ReportRpc {
 		List<BizPurchaseDTO> purchaseByBiz = receiveOrderRpc.findPurchaseByBiz(systemBookCode, dateFrom, dateTo, itemNums);
 		//调出单
 		List<TransferOutMoneyAndAmountDTO> transferOutSum = transferOutOrderRpc.findMoneyAndAmountByBiz(systemBookCode, dateFrom, dateTo,itemNums);
+
 		//批发数量
 		List<WholesaleAmountAndMoneyDTO> wholesaleSum = wholesaleOrderRpc.findAmountAndMoneyByBiz(systemBookCode, dateFrom, dateTo, itemNums);
 		//库存  当前库存
-        List<Inventory> inventories = inventoryService.findByItemAndBranch(systemBookCode, null, itemNums, null);
-        BigDecimal inventoryAmount = BigDecimal.ZERO;
+        List<Inventory> inventories = inventoryService.findByItemAndBranch(systemBookCode, 99, itemNums, null);
+		PosItemQuery query = new PosItemQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setItemNums(itemNums);
+		query.setPaging(false);
+		List<PosItemDTO> posItemDTOS = posItemRpc.findByPosItemQuery(query,null,null,0,0);
+
+
+
+
+		BigDecimal inventoryAmount = BigDecimal.ZERO;
         BigDecimal inventoryMoney = BigDecimal.ZERO;
         for (int i = 0,len = inventories.size(); i < len ; i++) {
             Inventory inventory = inventories.get(i);
-			inventoryAmount = inventoryAmount.add(inventory.getInventoryAmount() == null ? BigDecimal.ZERO : inventory.getInventoryAmount() );
+			for (int j = 0,size = posItemDTOS.size(); j < size; j++) {
+				PosItemDTO posItemDTO = posItemDTOS.get(j);
+				if(inventory.getItemNum().equals(posItemDTO.getItemNum())){
+					BigDecimal basicAmount = inventory.getInventoryAmount() == null ? BigDecimal.ZERO : inventory.getInventoryAmount();
+					BigDecimal itemTransferRate = posItemDTO.getItemTransferRate();
+					if(itemTransferRate != null && itemTransferRate.compareTo(BigDecimal.ZERO) != 0 ){
+						BigDecimal transferQty = basicAmount.divide(itemTransferRate,4,BigDecimal.ROUND_HALF_UP);
+						inventoryAmount = inventoryAmount.add(transferQty);
+						break;
+					}
+				}
+
+			}
 			inventoryMoney = inventoryMoney.add(inventory.getInventoryMoney() == null ? BigDecimal.ZERO :inventory.getInventoryMoney());
         }
 
@@ -5402,7 +5492,7 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, List<String> itemCategoryCodes,String sortField) {
+	public List<TransferItemDetailSummary> findTransferItemTop(String systemBookCode, Integer centerBranchNum ,List<Integer> branchNums, Date dateFrom, Date dateTo, List<String> itemCategoryCodes,String sortField) {
 
 		List<PosItem> posItems = posItemService.find(systemBookCode, itemCategoryCodes, null, null);
 		int size = posItems.size();
@@ -5413,22 +5503,35 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		//查询总仓
-		List<Storehouse> storehouses = storehouseService.findByBranch(systemBookCode, branchNum);
+		List<Storehouse> storehouses = storehouseService.findByBranch(systemBookCode, centerBranchNum);
 		int stores = storehouses.size();
 		List<Integer> storehouseNums = new ArrayList<>(stores);
 		for (int i = 0; i < stores; i++) {
 			Storehouse storehouse = storehouses.get(i);
-			storehouseNums.add(storehouse.getStorehouseNum());
+			if(storehouse.getStorehouseCenterTag()){
+				storehouseNums.add(storehouse.getStorehouseNum());//总仓
+			}
 		}
 
 		//配送数量  配送金额  (总仓)
-		List<TransterOutDTO> transterOutDTOS = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, branchNum,storehouseNums, dateFrom, dateTo, itemNums, sortField);
+		TransferQueryDTO transferQuery = new TransferQueryDTO();
+		transferQuery.setSystemBookCode(systemBookCode);
+		transferQuery.setCenterBranchNum(centerBranchNum);
+		transferQuery.setStorehouseNums(storehouseNums);
+		transferQuery.setDateFrom(dateFrom);
+		transferQuery.setDateTo(dateTo);
+		transferQuery.setItemNums(itemNums);
+		transferQuery.setSortField(sortField);
+		transferQuery.setBranchNums(branchNums);
+		List<TransterOutDTO> transterOutDTOS = transferOutOrderRpc.findMoneyAndAmountByItemNum(transferQuery);
 
 		//到货数量统计管理中心调出单
-		List<TransterOutDTO> receiveSummary = transferOutOrderRpc.findMoneyAndAmountByItemNum(systemBookCode, 99, storehouseNums, dateFrom, dateTo, itemNums, null);
-
+		transferQuery.setStorehouseNums(null);
+		List<TransterOutDTO> receiveSummary = transferOutOrderRpc.findMoneyAndAmountByItemNum(transferQuery);
 		//要货数量
-		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(systemBookCode, branchNum, null, dateFrom, dateTo, itemNums);
+		RequestOrderQuery requestOrderQuery = new RequestOrderQuery();
+		BeanUtils.copyProperties(transferQuery,requestOrderQuery);
+		List<RequestOrderDetailDTO> requestSummary = requestOrderRpc.findItemSummary(requestOrderQuery);
 		List<TransferItemDetailSummary> list = new ArrayList<>(size);
 
 		for (int i = 0; i <size ; i++) {
@@ -5443,7 +5546,7 @@ public class ReportRpcImpl implements ReportRpc {
 				TransterOutDTO dto = transterOutDTOS.get(j);
 				if (itemNum.equals(dto.getItemNum())) {
 					summary.setTransferMoney(dto.getMoney());
-					summary.setTransferQty(dto.getMoney());
+					summary.setTransferQty(dto.getQty());
 				}
 			}
 
@@ -5453,7 +5556,6 @@ public class ReportRpcImpl implements ReportRpc {
 					summary.setReceiveQty(dto.getQty());
 				}
 			}
-
 			for (int j = 0,len = requestSummary.size(); j < len ; j++) {
 				RequestOrderDetailDTO dto = requestSummary.get(j);
 				if(itemNum.equals(dto.getItemNum())){
@@ -6031,6 +6133,7 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setReceiveTare(receiveTare);
 			data.setOutsAmount(amount);
 			data.setOutsMoney(money.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setOutUseAmount(useAmount);
 			list.add(data);
 		}
 
@@ -6071,7 +6174,8 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setOutAmountPrCostMoney(data.getOutAmountPrCostMoney().subtract(moneyCostPr).setScale(2, BigDecimal.ROUND_HALF_UP));
 			data.setReceiveTare(data.getReceiveTare().subtract(receiveTare));
 			data.setInMoney(money.setScale(2, BigDecimal.ROUND_HALF_UP));
-			data.setInAmount(amount.setScale(2, BigDecimal.ROUND_HALF_UP));
+			data.setInAmount(amount);
+			data.setInUseAmount(useAmount);
 		}
 		List<Branch> branchs = branchService.findInCache(queryData.getSystemBookCode());
 
@@ -6107,6 +6211,8 @@ public class ReportRpcImpl implements ReportRpc {
 				if (StringUtils.isNotEmpty(posItem.getItemAssistUnit()) && posItem.getItemAssistRate() != null
 						&& posItem.getItemAssistRate().compareTo(BigDecimal.ZERO) > 0) {
 					data.setUnit(posItem.getItemAssistUnit());
+					data.setInAmount(data.getInUseAmount());
+					data.setOutsAmount(data.getOutUseAmount());
 				} else {
 					data.setUnit(posItem.getItemTransferUnit());
 					if (unit.equals(AppConstants.UNIT_TRANFER)) {

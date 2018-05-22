@@ -3,6 +3,7 @@ package com.nhsoft.module.report.dao;
 
 import com.nhsoft.module.report.dto.RequestOrderDTO;
 import com.nhsoft.module.report.model.RequestOrderDetail;
+import com.nhsoft.module.report.queryBuilder.RequestOrderQuery;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -91,6 +92,17 @@ public interface RequestOrderDao {
 	 * @return
 	 */
 	public List<Object[]> findCenterRequestMatrixAmount(String systemBookCode, Integer outBranchNum, List<Integer> itemNums);
+
+
+
+	/**
+	 * 按商品汇总数据 NEW
+	 * @return
+	 */
+	public List<Object[]> findItemSummary(RequestOrderQuery query);
+
+
+
 
 	
 

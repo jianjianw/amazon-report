@@ -128,14 +128,20 @@ public interface ReceiveOrderService{
 		 */
 		public List<Object[]> findPurchaseByBiz(String systemBookCode,Date dateFrom, Date dateTo,List<Integer> itemNums);
 
-	/**
-	 * 按商品、多特性汇总最后生产日期
-	 *
-	 * @param systemBookCode
-	 * @param branchNum      收货分店
-	 * @param itemNums
-	 * @return
-	 */
-	public List<Object[]> findItemMatrixMaxProducingDates(String systemBookCode, Integer branchNum, List<Integer> itemNums);
+		/**
+		 * 按商品、多特性汇总最后生产日期
+		 *
+		 * @param systemBookCode
+		 * @param branchNum      收货分店
+		 * @param itemNums
+		 * @return
+		 */
+		public List<Object[]> findItemMatrixMaxProducingDates(String systemBookCode, Integer branchNum, List<Integer> itemNums);
+
+
+		/**
+		 * 根据商品营业日汇总 采购金额和数量
+		 * */
+		public List<Object[]> findPurchaseByItemBiz(String systemBookCode,Date dateFrom,Date dateTo,List<Integer> itemNums);
 
 }

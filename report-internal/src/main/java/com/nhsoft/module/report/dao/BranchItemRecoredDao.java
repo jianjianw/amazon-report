@@ -56,6 +56,19 @@ public interface BranchItemRecoredDao {
 										List<Integer> itemNums, List<String> branchItemRecoredTypes);
 
 
+    /**
+     * 按商品汇总最后生产日期
+     * @param systemBookCode
+     * @param branchNum
+     * @param storehouseNum
+     * @param itemNums
+     * @param branchItemRecoredTypes
+     * @return
+     */
+    public List<Object[]> findItemMaxProductDate(String systemBookCode, Integer branchNum, Integer storehouseNum,
+                                                 List<Integer> itemNums, List<String> branchItemRecoredTypes);
+
+
 
 
 }

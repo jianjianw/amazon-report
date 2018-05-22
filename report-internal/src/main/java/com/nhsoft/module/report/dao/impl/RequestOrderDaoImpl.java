@@ -5,12 +5,14 @@ import com.nhsoft.module.report.dao.RequestOrderDao;
 import com.nhsoft.module.report.dto.RequestOrderDTO;
 import com.nhsoft.module.report.model.RequestOrder;
 import com.nhsoft.module.report.model.RequestOrderDetail;
+import com.nhsoft.module.report.queryBuilder.RequestOrderQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -88,8 +90,14 @@ public class RequestOrderDaoImpl extends DaoImpl implements RequestOrderDao {
 		sb.append("sum(detail.request_order_detail_out_qty) as outAmount, ");
 		sb.append("sum(case when request_order_detail_out_use_qty is not null then request_order_detail_out_use_qty when request_order_detail_out_qty is null then 0.00 else (detail.request_order_detail_out_qty/detail.request_order_detail_use_rate) end) as outUseAmount ");
 		sb.append("from request_order_detail as detail with(nolock) inner join request_order as r with(nolock) on r.request_order_fid = detail.request_order_fid ");
-		sb.append("where r.out_system_book_code = '" + systemBookCode + "' and r.out_branch_num = " + centerBranchNum + " ");
-		sb.append("and r.branch_num = " +branchNum+" ");
+		sb.append("where r.out_system_book_code = '" + systemBookCode + "' ");
+		if(centerBranchNum != null){
+			sb.append( "and r.out_branch_num = " + centerBranchNum + " ");
+		}
+		if(branchNum != null){
+			sb.append("and r.branch_num = " +branchNum+" ");
+		}
+
 		sb.append("and r.request_order_audit_time between '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(dateFrom)) + "' ");
 		sb.append("and '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(dateTo)) + "' ");
 		sb.append("and r.request_order_state_code = " + AppConstants.STATE_INIT_AUDIT_CODE + " ");
@@ -230,6 +238,32 @@ public class RequestOrderDaoImpl extends DaoImpl implements RequestOrderDao {
 		sb.append("group by detail.item_num, detail.request_order_detail_item_matrix_num ");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		return query.list();
+	}
+
+	@Override
+	public List<Object[]> findItemSummary(RequestOrderQuery query) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select detail.item_num, sum(detail.request_order_detail_qty) as amount,  sum(detail.request_order_detail_use_qty) as useAmount, ");
+		sb.append("sum(detail.request_order_detail_out_qty) as outAmount, ");
+		sb.append("sum(case when request_order_detail_out_use_qty is not null then request_order_detail_out_use_qty when request_order_detail_out_qty is null then 0.00 else (detail.request_order_detail_out_qty/detail.request_order_detail_use_rate) end) as outUseAmount ");
+		sb.append("from request_order_detail as detail with(nolock) inner join request_order as r with(nolock) on r.request_order_fid = detail.request_order_fid ");
+		sb.append("where r.out_system_book_code = '" + query.getSystemBookCode() + "' ");
+		if(query.getCenterBranchNum() != null){
+			sb.append( "and r.out_branch_num = " + query.getCenterBranchNum() + " ");
+		}
+		if(query.getBranchNums() != null && query.getBranchNums().size() > 0){
+			sb.append("and r.branch_num in " + AppUtil.getIntegerParmeList(query.getBranchNums()));
+		}
+
+		sb.append("and r.request_order_audit_time between '" + DateUtil.getLongDateTimeStr(DateUtil.getMinOfDate(query.getDateFrom())) + "' ");
+		sb.append("and '" + DateUtil.getLongDateTimeStr(DateUtil.getMaxOfDate(query.getDateTo())) + "' ");
+		sb.append("and r.request_order_state_code = " + AppConstants.STATE_INIT_AUDIT_CODE + " ");
+		if (query.getItemNums() != null && query.getItemNums() .size() > 0) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(query.getItemNums() ));
+		}
+		sb.append("group by detail.item_num");
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		return sqlQuery.list();
 	}
 
 }
