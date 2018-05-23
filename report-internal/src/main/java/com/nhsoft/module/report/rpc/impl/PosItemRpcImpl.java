@@ -30,7 +30,7 @@ public class PosItemRpcImpl implements PosItemRpc {
 
     @Override
     public List<PosItemKitDTO> findPosItemKitsWithDetails(String systemBookCode,List<Integer> itemNums) {
-        return CopyUtil.toList(posItemService.findByItemNumsWithoutDetails(itemNums),PosItemKitDTO.class);
+        return CopyUtil.toList(posItemService.findPosItemKitsWithDetails(itemNums),PosItemKitDTO.class);
     }
 
     @Override
