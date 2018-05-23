@@ -7594,6 +7594,7 @@ public class ReportRpcImpl implements ReportRpc {
 				posItems.addAll(tempPosItems);
 
 			} else {
+
 				posItems.addAll(posItemRpc.findShortItems(systemBookCode));
 
 			}

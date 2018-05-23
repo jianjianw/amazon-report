@@ -13,25 +13,34 @@ import java.util.stream.Stream;
 
 public class CopyUtil {
 
+    private static ThreadLocal<List<Object>> levelStack = ThreadLocal.withInitial(ArrayList::new);
+
     public static <K, V> K to(V v, Class<K> kClass) {
         if(v == null) {
             return null;
         }
+        if(levelStack.get().contains(v)) {
+            return null;
+        }
         try {
-            Field[] fields = v.getClass().getDeclaredFields();
+            levelStack.get().add(v);
+            Field[] fields = Hibernate.getClass(v).getDeclaredFields();
             K k = kClass.newInstance();
             Optional<Field> srcIdField = Arrays.stream(fields).filter(f -> f.getType().getName().endsWith("Id")).findFirst();
             Optional<Field> aimIdField = Arrays.stream(kClass.getDeclaredFields()).filter(f -> f.getType().getName().endsWith("Id")).findFirst();
             if(srcIdField.isPresent()) {
                 srcIdField.get().setAccessible(true);
-                if(aimIdField.isPresent()) {
-                    aimIdField.get().setAccessible(true);
-                    Class aimIdClass = aimIdField.get().getType();
-                    Object aimId = aimIdClass.newInstance();
-                    BeanUtils.copyProperties(srcIdField.get().get(v), aimId);
-                    aimIdField.get().set(k, aimId);
-                } else {
-                    BeanUtils.copyProperties(srcIdField.get().get(v), k);
+                Object srcIdObject = srcIdField.get().get(v);
+                if(srcIdObject != null) {
+                    if (aimIdField.isPresent()) {
+                        aimIdField.get().setAccessible(true);
+                        Class aimIdClass = aimIdField.get().getType();
+                        Object aimId = aimIdClass.newInstance();
+                        BeanUtils.copyProperties(srcIdObject, aimId);
+                        aimIdField.get().set(k, aimId);
+                    } else {
+                        BeanUtils.copyProperties(srcIdObject, k);
+                    }
                 }
             } else {
                 if(aimIdField.isPresent()) {
@@ -79,6 +88,8 @@ public class CopyUtil {
             return k;
         } catch (Exception e) {
             return null;
+        } finally {
+            levelStack.get().remove(levelStack.get().size()-1);
         }
     }
 
