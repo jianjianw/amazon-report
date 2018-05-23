@@ -38,7 +38,17 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<NameAndValueDTO> findOtherInfos(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
-	
+
+	/**
+	 * 查询异动信息
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<NameAndValueDTO> findOtherInfos(String systemBookCode, Integer branchNum, List<Integer> stallNums, Date dateFrom, Date dateTo);
+
 	/**
 	 * 查询折扣分类明细
 	 * @param systemBookCode
@@ -322,6 +332,19 @@ public interface MobileAppV2Service {
 	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode,
                                                    Integer branchNum,
                                                    Date dateFrom, Date dateTo, String infoType);
+
+	/**
+	 * 异动明细
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param infoType
+	 * @return
+	 */
+	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode,
+												   Integer branchNum, Integer stallNum,
+												   Date dateFrom, Date dateTo, String infoType);
 	
 	public List<ShipOrderDTO> findShipOrders(String systemBookCode,
                                              Integer centerBranchNum,

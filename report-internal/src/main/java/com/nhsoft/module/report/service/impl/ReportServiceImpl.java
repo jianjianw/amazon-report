@@ -35,6 +35,8 @@ public class ReportServiceImpl implements ReportService {
 	@Autowired
 	public ReportDao reportDao;
 	@Autowired
+	private StallDao stallDao;
+	@Autowired
 	public BookResourceService bookResourceService;
 	@Autowired
 	private SupplierDao supplierDao;
@@ -8879,6 +8881,49 @@ public class ReportServiceImpl implements ReportService {
 				data.setBranchName(branch.getBranchName());
 			}
 
+			data.setTotalMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
+			data.setTotalMoney(data.getTotalMoney().add(couponMoney).subtract(mgrDiscount));
+			data.setCustomerNums(BigDecimal.valueOf((Long) object[2]));
+			data.setCustomerItemRelatRate(object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
+			data.setCustomerItemCount(data.getCustomerItemRelatRate());
+			data.setCustomerAvePrice(BigDecimal.ZERO);
+			if (data.getCustomerNums().compareTo(BigDecimal.ZERO) > 0) {
+				data.setCustomerAvePrice(data.getTotalMoney().divide(data.getCustomerNums(), 4,
+						BigDecimal.ROUND_HALF_UP));
+			}
+
+			data.setCusotmerVipNums(object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer) object[7]));
+			data.setCustomerVipMoney(object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8]);
+			data.setCustomerValidNums(object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9]);
+			if (data.getCustomerValidNums().compareTo(BigDecimal.ZERO) > 0) {
+
+				data.setCustomerItemRelatRate(data.getCustomerItemRelatRate().divide(data.getCustomerValidNums(), 4,
+						BigDecimal.ROUND_HALF_UP));
+			}
+
+			list.add(data);
+		}
+		return list;
+	}
+
+	@Override
+	public List<CustomerAnalysisDay> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType) {
+		List<Object[]> objects = posOrderDao.findCustomerAnalysisStalls(systemBookCode, dateFrom, dateTo, branchNum, stallNums,
+				saleType);
+		List<Stall> stalls = stallDao.find(objects.stream().map(o -> (Integer)o[1]).collect(Collectors.toList()));
+		int size = objects.size();
+		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>(size);
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			BigDecimal couponMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal mgrDiscount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+
+			CustomerAnalysisDay data = new CustomerAnalysisDay();
+			data.setStallNum((Integer) object[0]);
+			stalls.stream().filter(s -> s.getStallNum().equals(data.getStallNum())).findAny().ifPresent(s -> {
+				data.setStallCode(s.getStallCode());
+				data.setStallName(s.getStallName());
+			});
 			data.setTotalMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
 			data.setTotalMoney(data.getTotalMoney().add(couponMoney).subtract(mgrDiscount));
 			data.setCustomerNums(BigDecimal.valueOf((Long) object[2]));

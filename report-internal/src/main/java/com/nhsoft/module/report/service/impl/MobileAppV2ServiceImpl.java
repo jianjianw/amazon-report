@@ -141,6 +141,49 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	}
 
 	@Override
+	public List<NameAndValueDTO> findOtherInfos(String systemBookCode, Integer branchNum, List<Integer> stallNums, Date dateFrom, Date dateTo) {
+		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
+
+		List<Object[]> objects = retailPosLogDao.findTypeCountAndMoney(systemBookCode, branchNum, stallNums, dateFrom, dateTo, null);
+		String typeName;
+		int count;
+		BigDecimal money;
+		NameAndValueDTO nameAndValueDTO;
+		for(int i = 0;i < objects.size();i++){
+			Object[] object = objects.get(i);
+
+			typeName = (String)object[0];
+			count = object[1] == null?0:(Integer)object[1];
+			money = object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2];
+
+			nameAndValueDTO = new NameAndValueDTO();
+			nameAndValueDTO.setName(typeName);
+			nameAndValueDTO.setIntValue(count);
+			nameAndValueDTO.setValue(money);
+			list.add(nameAndValueDTO);
+		}
+
+		Object[] object = posOrderDao.findRepayCountAndMoney(systemBookCode, branchNum, stallNums, dateFrom, dateTo);
+		nameAndValueDTO = new NameAndValueDTO();
+		nameAndValueDTO.setName("反结账");
+		nameAndValueDTO.setIntValue(object[0] == null?0:(Integer)object[0]);
+		nameAndValueDTO.setValue(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+		list.add(nameAndValueDTO);
+		object = posOrderDao.sumBusiDiscountAnalysisAmountAndMoney(systemBookCode, dateFrom, dateTo, branchNum, stallNums);
+		nameAndValueDTO = new NameAndValueDTO();
+		nameAndValueDTO.setName("客户折扣");
+		nameAndValueDTO.setIntValue(object[0] == null?0:(Integer)object[0]);
+		nameAndValueDTO.setValue(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+		list.add(nameAndValueDTO);
+		nameAndValueDTO = new NameAndValueDTO();
+		nameAndValueDTO.setName("经理折扣");
+		nameAndValueDTO.setIntValue(object[2] == null?0:(Integer)object[2]);
+		nameAndValueDTO.setValue(object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3]);
+		list.add(nameAndValueDTO);
+		return list;
+	}
+
+	@Override
 	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 													 Date dateTo, List<Integer> stallNums) {
 		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
@@ -1645,6 +1688,134 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 				}
 				list = summaryList;
 				
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode, Integer branchNum, Integer stallNum, Date dateFrom, Date dateTo, String infoType) {
+		List<OtherInfoDTO> list = new ArrayList<OtherInfoDTO>();
+		if(infoType.equals("反结账")){
+			List<Object[]> objects = posOrderDao.findRepayDetail(systemBookCode, branchNum, stallNum, dateFrom, dateTo);
+			Object[] object = null;
+			for(int i = 0;i < objects.size();i++){
+				object = objects.get(i);
+
+				OtherInfoDTO dto = new OtherInfoDTO();
+				dto.setName((String) object[0]);
+				dto.setMoney(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+				dto.setOperator((String) object[2]);
+				dto.setBizday((String) object[3]);
+				dto.setDate((Date) object[4]);
+				list.add(dto);
+			}
+		}
+		else if(infoType.equals("客户折扣")) {
+			List<Object[]> objects = posOrderDao.findClientDiscountAnalysisAmountAndMoney(systemBookCode, dateFrom, dateTo, branchNum, stallNum);
+			Object[] object = null;
+			for(int i = 0;i < objects.size();i++){
+				object = objects.get(i);
+
+				OtherInfoDTO dto = new OtherInfoDTO();
+				dto.setName((String) object[0]);
+				dto.setPaymentMoney(AppUtil.getValue(object[1], BigDecimal.class));
+				dto.setMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+				dto.setOperator((String) object[3]);
+				dto.setBizday((String) object[4]);
+				dto.setDate((Date) object[5]);
+				list.add(dto);
+			}
+		}
+		else if(infoType.equals("经理折扣")) {
+			List<Integer> branchNums = new ArrayList<Integer>();
+			branchNums.add(branchNum);
+
+			List<Object[]> objects = posOrderDao.findMgrDiscountAnalysisAmountAndMoney(systemBookCode, dateFrom, dateTo, branchNums);
+			Object[] object = null;
+			for(int i = 0;i < objects.size();i++){
+				object = objects.get(i);
+
+				OtherInfoDTO dto = new OtherInfoDTO();
+				dto.setName((String) object[0]);
+				dto.setPaymentMoney(AppUtil.getValue(object[1], BigDecimal.class));
+				dto.setMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+				dto.setOperator((String) object[3]);
+				dto.setBizday((String) object[4]);
+				dto.setDate((Date) object[5]);
+				list.add(dto);
+			}
+		}
+		else {
+			LogQuery logQuery = new LogQuery();
+			logQuery.setSystemBookCode(systemBookCode);
+			logQuery.setDateFrom(dateFrom);
+			logQuery.setDateTo(dateTo);
+			logQuery.setOperateType(infoType);
+			logQuery.setPaging(false);
+			logQuery.setSortField("retail_pos_log_time");
+			logQuery.setSortType("DESC");
+			List<RetailPosLog> retailPosLogs = retailPosLogDao.findByQuery(systemBookCode, branchNum, stallNum, logQuery, 0, 0);
+			for(int i = 0;i < retailPosLogs.size();i++){
+				RetailPosLog retailPosLog = retailPosLogs.get(i);
+
+				OtherInfoDTO dto = new OtherInfoDTO();
+				dto.setName(retailPosLog.getRetailPosLogItemName());
+				dto.setBizday(retailPosLog.getRetailPosLogBizday());
+				dto.setMoney(retailPosLog.getRetailPosLogMoney());
+				if(dto.getMoney() == null){
+					dto.setMoney(BigDecimal.ZERO);
+				}
+				dto.setOperator(retailPosLog.getRetailPosLogOperator());
+				dto.setDate(retailPosLog.getRetailPosLogTime());
+				dto.setOrderNo(retailPosLog.getRetailPosLogOrderNo() == null?"":retailPosLog.getRetailPosLogOrderNo());
+				list.add(dto);
+			}
+
+			if(infoType.equals(AppConstants.RETAIL_POS_LOG_ALL_CANCLE)){
+				Collections.sort(list, new Comparator<OtherInfoDTO>() {
+
+					@Override
+					public int compare(OtherInfoDTO o1, OtherInfoDTO o2) {
+						if(o1.getBizday().equals(o2.getBizday())){
+							return -o1.getMoney().compareTo(o2.getMoney());
+
+						} else {
+							return o1.getBizday().compareTo(o2.getBizday());
+						}
+					}
+				});
+			}
+			if(infoType.equals(AppConstants.RETAIL_POS_LOG_DEL)){
+				List<OtherInfoDTO> summaryList = new ArrayList<OtherInfoDTO>();
+				OtherInfoDTO dto;
+				for(int i = 0;i < list.size();i++){
+					dto = list.get(i);
+					if(StringUtils.isEmpty(dto.getOrderNo())){
+						summaryList.add(dto);
+						continue;
+					}
+					OtherInfoDTO summaryDTO = OtherInfoDTO.getByOrderNo(summaryList, dto.getOrderNo());
+					if(summaryDTO == null){
+						summaryDTO = new OtherInfoDTO();
+						summaryDTO.setName(dto.getName());
+						summaryDTO.setBizday(dto.getBizday());
+						summaryDTO.setOperator(dto.getOperator());
+						summaryDTO.setDate(dto.getDate());
+						summaryDTO.setOrderNo(dto.getOrderNo());
+						summaryDTO.setMoney(BigDecimal.ZERO);
+						summaryList.add(summaryDTO);
+					}
+					OtherInfoDTO.OtherInfoDetailDTO detailDTO = new OtherInfoDTO.OtherInfoDetailDTO();
+					BeanUtils.copyProperties(dto, detailDTO);
+					summaryDTO.getDetails().add(detailDTO);
+					if(summaryDTO.getDetails().size() == 2){
+						summaryDTO.setName(summaryDTO.getName().concat("..."));
+					}
+					summaryDTO.setMoney(summaryDTO.getMoney().add(dto.getMoney()));
+				}
+				list = summaryList;
+
 			}
 		}
 		return list;

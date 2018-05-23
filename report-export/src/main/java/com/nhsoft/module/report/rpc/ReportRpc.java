@@ -1017,6 +1017,8 @@ public interface ReportRpc {
 	 */
 	List<CustomerAnalysisDay> findCusotmerAnalysisBranchs(String systemBookCode, Date dateFrom, Date dateTo, List<Integer> branchNums, String saleType);
 
+	List<CustomerAnalysisDay> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType);
+
 	/**
 	 * 查询批发客户未销售但是有库存的商品
 	 * @param systemBookCode

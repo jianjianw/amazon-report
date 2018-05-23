@@ -81,6 +81,8 @@ public class Report2RpcImpl implements Report2Rpc {
 	private MobileAppV2Service mobileAppV2Service;
 	@Autowired
 	private PosOrderRpc posOrderRpc;
+	@Autowired
+	private StallService stallService;
 
 	
 	@Override
@@ -1333,6 +1335,72 @@ public class Report2RpcImpl implements Report2Rpc {
 	@Override
 	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, String infoType) {
 		return mobileAppV2Service.findOtherInfoDetails(systemBookCode, branchNum, dateFrom, dateTo, infoType);
+	}
+
+	@Override
+	public List<OtherInfoSummaryDTO> findOtherInfos(String systemBookCode, Integer branchNum, List<Integer> stallNums, Date dateFrom, Date dateTo) {
+		if(stallNums == null || stallNums.size() == 0) {
+			return new ArrayList<>();
+		}
+		List<Stall> stalls = stallService.find(stallNums);
+		List<OtherInfoSummaryDTO> list = new ArrayList<>();
+		for(Integer stallNum : stallNums) {
+			List<NameAndValueDTO> dtos = mobileAppV2Service.findOtherInfos(systemBookCode, branchNum, Collections.singletonList(stallNum), dateFrom, dateTo);
+			OtherInfoSummaryDTO otherInfoSummaryDTO = new OtherInfoSummaryDTO();
+			otherInfoSummaryDTO.setStallNum(stallNum);
+			stalls.stream().filter(s -> s.getStallNum().equals(stallNum)).findAny().ifPresent(s -> {
+				otherInfoSummaryDTO.setStallCode(s.getStallCode());
+				otherInfoSummaryDTO.setStallName(s.getStallName());
+			});
+			for(NameAndValueDTO dto : dtos) {
+
+				switch (dto.getName()) {
+					case "删除":
+						otherInfoSummaryDTO.setDeleteCount(dto.getIntValue());
+						otherInfoSummaryDTO.setDeleteMoney(dto.getValue());
+						break;
+					case "退货":
+						otherInfoSummaryDTO.setReturnCount(dto.getIntValue());
+						otherInfoSummaryDTO.setReturnMoney(dto.getValue());
+						break;
+					case "整单取消":
+						otherInfoSummaryDTO.setOrderCancelCount(dto.getIntValue());
+						otherInfoSummaryDTO.setOrderCancelMoney(dto.getValue());
+						break;
+					case "挂单":
+						otherInfoSummaryDTO.setHangOrderCount(dto.getIntValue());
+						otherInfoSummaryDTO.setHangOrderMoney(dto.getValue());
+						break;
+					case "修改价格":
+						otherInfoSummaryDTO.setChangePriceCount(dto.getIntValue());
+						otherInfoSummaryDTO.setChangePriceMoney(dto.getValue());
+						break;
+					case "打开钱箱":
+						otherInfoSummaryDTO.setCashBoxOpenCount(dto.getIntValue());
+						break;
+					case "反结账":
+						otherInfoSummaryDTO.setAntiOrderCount(dto.getIntValue());
+						otherInfoSummaryDTO.setAntiOrderMoney(dto.getValue());
+						break;
+					case "经理折扣":
+						otherInfoSummaryDTO.setMgrDiscountCount(dto.getIntValue());
+						otherInfoSummaryDTO.setMgrDiscountMoney(dto.getValue());
+						break;
+					case "赠送":
+						otherInfoSummaryDTO.setPresentCount(dto.getIntValue());
+						otherInfoSummaryDTO.setPresentMoney(dto.getValue());
+						break;
+				}
+			}
+			list.add(otherInfoSummaryDTO);
+
+		}
+		return list;
+	}
+
+	@Override
+	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode, Integer branchNum, Integer stallNum, Date dateFrom, Date dateTo, String infoType) {
+		return mobileAppV2Service.findOtherInfoDetails(systemBookCode, branchNum, stallNum, dateFrom, dateTo, infoType);
 	}
 
 	@Override
