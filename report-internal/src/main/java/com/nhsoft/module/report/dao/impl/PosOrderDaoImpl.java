@@ -1283,6 +1283,28 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
+	public Object[] findRepayCountAndMoney(String systemBookCode, Integer branchNum, List<Integer> stallNums, Date dateFrom, Date dateTo) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select count(order_no) as amount, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " and stall_num is not null ");
+		if (stallNums != null && stallNums.size() > 0) {
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
+		}
+		if (dateFrom != null) {
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+		}
+		if (dateTo != null) {
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		sb.append("and order_state_code = 9  ");
+
+		SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+		sqlQuery.setString("systemBookCode", systemBookCode);
+		return (Object[]) sqlQuery.uniqueResult();
+	}
+
+	@Override
 	public Object[] sumBusiDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select sum(case when client_fid is not null and order_card_user_num = 0 and order_discount_money > 0 then 1 end) as clientDiscountAmount, ");
@@ -1292,6 +1314,26 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("from pos_order with(nolock) where system_book_code = :systemBookCode ");
 		if (branchNums != null && branchNums.size() > 0) {
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and shift_table_bizday between :bizFrom and :bizTo ");
+		sb.append("and order_state_code in (5, 7)");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		query.setString("bizFrom", DateUtil.getDateShortStr(dtFrom));
+		query.setString("bizTo", DateUtil.getDateShortStr(dtTo));
+		return (Object[])query.uniqueResult();
+	}
+
+	@Override
+	public Object[] sumBusiDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, Integer branchNum, List<Integer> stallNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select sum(case when client_fid is not null and order_card_user_num = 0 and order_discount_money > 0 then 1 end) as clientDiscountAmount, ");
+		sb.append("sum(case when client_fid is not null and order_card_user_num = 0 then order_discount_money end) as clientDiscount, ");
+		sb.append("sum(case when order_mgr_discount_money > 0 then 1 end) as mgrDiscountAmount, ");
+		sb.append("sum(order_mgr_discount_money) as mgrDiscountMoney ");
+		sb.append("from pos_order with(nolock) where system_book_code = :systemBookCode and branch_num = " + branchNum + " and stall_num is not null ");
+		if (stallNums != null && stallNums.size() > 0) {
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
 		}
 		sb.append("and shift_table_bizday between :bizFrom and :bizTo ");
 		sb.append("and order_state_code in (5, 7)");
@@ -1376,7 +1418,27 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sqlQuery.list();
 	}
 
-	@Override
+    @Override
+    public List<Object[]> findRepayDetail(String systemBookCode, Integer branchNum, Integer stallNum, Date dateFrom, Date dateTo) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("select order_no as amount, (order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
+        sb.append("order_operator, shift_table_bizday, order_time ");
+        sb.append("from pos_order with(nolock) ");
+        sb.append("where system_book_code = :systemBookCode and branch_num = " + branchNum + " and stall_num = " + stallNum + " ");
+        if (dateFrom != null) {
+            sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+        }
+        if (dateTo != null) {
+            sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+        }
+        sb.append("and order_state_code = 9  order by order_time desc ");
+
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.setString("systemBookCode", systemBookCode);
+        return sqlQuery.list();
+    }
+
+    @Override
 	public List<Object[]> findClientDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select order_no, order_payment_money, order_discount_money, order_operator, shift_table_bizday, order_time ");
@@ -1397,8 +1459,24 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sqlQuery.list();
 	}
 
+    @Override
+    public List<Object[]> findClientDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, Integer branchNum, Integer stallNum) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("select order_no, order_payment_money, order_discount_money, order_operator, shift_table_bizday, order_time ");
+        sb.append("from pos_order with(nolock) ");
+        sb.append("where system_book_code = :systemBookCode and client_fid is not null and order_card_user_num = 0 and order_discount_money > 0 and branch_num = " + branchNum + " and stall_num = " + stallNum + " ");
+        if (dtFrom != null) {
+            sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dtFrom) + "' ");
+        }
+        if (dtTo != null) {
+            sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dtTo) + "' ");
+        }
+        sb.append("and order_state_code in (5,7)  order by order_time desc ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.setString("systemBookCode", systemBookCode);
+        return sqlQuery.list();    }
 
-	@Override
+    @Override
 	public List<Object[]> findMgrDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select order_no, order_payment_money, order_mgr_discount_money, order_operator, shift_table_bizday, order_time ");
@@ -1419,7 +1497,25 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return sqlQuery.list();
 	}
 
-	@Override
+    @Override
+    public List<Object[]> findMgrDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, Integer branchNum, Integer stallNum) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("select order_no, order_payment_money, order_mgr_discount_money, order_operator, shift_table_bizday, order_time ");
+        sb.append("from pos_order with(nolock) ");
+        sb.append("where system_book_code = :systemBookCode and order_mgr_discount_money > 0 and branch_num = " + branchNum + " and stall_num = " + stallNum + " ");
+        if (dtFrom != null) {
+            sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dtFrom) + "' ");
+        }
+        if (dtTo != null) {
+            sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dtTo) + "' ");
+        }
+        sb.append("and order_state_code in (5,7)  order by order_time desc ");
+        SQLQuery sqlQuery = currentSession().createSQLQuery(sb.toString());
+        sqlQuery.setString("systemBookCode", systemBookCode);
+        return sqlQuery.list();
+    }
+
+    @Override
 	public List<Object[]> findMoneyBranchSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, boolean isMember) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
