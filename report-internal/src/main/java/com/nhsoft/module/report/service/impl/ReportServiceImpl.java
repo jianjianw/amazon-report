@@ -4153,25 +4153,11 @@ public class ReportServiceImpl implements ReportService {
 				data.setClientCode(posClient.getClientCode());
 				data.setClientName(posClient.getClientName());
 			}
-
-			BigDecimal rate;
-			switch (unitType){
-				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
-				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
-				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
-				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
-				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
-				default: rate = posItem.getItemWholesaleRate();
-			}
-			if (rate.compareTo(BigDecimal.ZERO) != 0) {
-				data.setWholesaleNum(qty.divide(rate, 4, BigDecimal.ROUND_HALF_UP));
-			}
-
 			data.setPosItemCode(itemCode);
 			data.setPosItemName(itemName);
 			data.setSpec(itemSpec);
 			data.setUnit(useUnit);
-			//data.setWholesaleNum(useQty);
+			data.setWholesaleNum(useQty);
 			data.setWholesaleMoney(money);
 			data.setWholesaleCost(qty.multiply(cost));
 			data.setWholesaleUnitPrice(usePrice);
@@ -4243,24 +4229,11 @@ public class ReportServiceImpl implements ReportService {
 			PosClient posClient = readPosClient(posClients, clientFid);
 			data.setClientCode(posClient.getClientCode());
 			data.setClientName(posClient.getClientName());
-
-			BigDecimal rate;
-			switch (unitType){
-				case AppConstants.UNIT_PIFA:rate = posItem.getItemWholesaleRate();break;
-				case AppConstants.UNIT_SOTRE:rate = posItem.getItemInventoryRate();break;
-				case AppConstants.UNIT_PURCHASE:rate = posItem.getItemPurchaseRate();break;
-				case AppConstants.UNIT_TRANFER:rate = posItem.getItemTransferRate();break;
-				case AppConstants.UNIT_BASIC:rate = BigDecimal.ONE;break;
-				default: rate = posItem.getItemWholesaleRate();
-			}
-			if (rate.compareTo(BigDecimal.ZERO) != 0) {
-				data.setWholesaleNum((qty.divide(rate, 4, BigDecimal.ROUND_HALF_UP)).negate());
-			}
 			data.setPosItemCode(itemCode);
 			data.setPosItemName(itemName);
 			data.setSpec(itemSpec);
 			data.setUnit(useUnit);
-			//data.setWholesaleNum(useQty.negate());
+			data.setWholesaleNum(useQty.negate());
 			data.setWholesaleMoney(money.negate());
 			data.setWholesaleCost(qty.multiply(cost).negate());
 			data.setWholesaleUnitPrice(usePrice);
@@ -4761,9 +4734,7 @@ public class ReportServiceImpl implements ReportService {
 			}
 			data.setSaleCease(posItem.getItemSaleCeaseFlag());
 			data.setRate(posItem.getItemInventoryRate());
-			if (branchNums.size() > 1) {
-				data.setInventoryDate(initDate);
-			}
+			data.setInventoryDate(initDate);
 			data.setItemUnit(posItem.getItemUnit());
 			map.put(data.getItemNum(), data);
 		}
