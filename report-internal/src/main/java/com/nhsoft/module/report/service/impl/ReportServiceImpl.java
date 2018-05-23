@@ -9671,7 +9671,7 @@ public class ReportServiceImpl implements ReportService {
 						alipayLogTypes));
 			}
 		} else if (type.equals("POS消费")) {
-			list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes).stream().filter("POS消费"::equals).collect(Collectors.toList()));
+			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null, alipayLogTypes).stream().filter("POS消费"::equals).collect(Collectors.toList()));
 			if(queryAll){
 				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "POS",
 						alipayLogTypes));
@@ -12981,11 +12981,8 @@ public class ReportServiceImpl implements ReportService {
 		if (StringUtils.isEmpty(type)) {
 
 			if(alipayDetailQuery.getOrderState() == null || alipayDetailQuery.getOrderState()){
-				list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
-				list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "member",
-						alipayLogTypes));
-				list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP",
-						alipayLogTypes));
+				List<AlipayDetailDTO> tempList = alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null, alipayLogTypes).stream().filter(a -> !"微店消费".equals(a.getType())).collect(Collectors.toList());
+				list.addAll(tempList);
 				if(queryAll){
 					list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null,
 							alipayLogTypes));
@@ -13006,7 +13003,7 @@ public class ReportServiceImpl implements ReportService {
 		} else if (type.equals("POS消费")) {
 
 			if(alipayDetailQuery.getOrderState() == null || alipayDetailQuery.getOrderState()){
-				list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
+				list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null, alipayLogTypes).stream().filter("POS消费"::equals).collect(Collectors.toList()));
 				if(queryAll){
 					list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "POS",
 							alipayLogTypes));

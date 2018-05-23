@@ -2,7 +2,6 @@ package com.nhsoft.module.report.rpc.impl;
 
 
 import com.google.gson.Gson;
-import com.nhsoft.module.report.api.dto.BranchFinishRateTopDTO;
 import com.nhsoft.module.report.comparator.ComparatorBaseModelData;
 import com.nhsoft.module.report.comparator.ComparatorGroupModelData;
 import com.nhsoft.module.report.dto.*;
@@ -11,32 +10,34 @@ import com.nhsoft.module.report.param.CardUserType;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.queryBuilder.CardReportQuery;
+import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.queryBuilder.RequestOrderQuery;
 import com.nhsoft.module.report.queryBuilder.TransferProfitQuery;
 import com.nhsoft.module.report.rpc.*;
 import com.nhsoft.module.report.service.*;
-import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
-import com.nhsoft.report.utils.CopyUtil;
 import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.RedisUtil;
 import com.nhsoft.report.utils.ReportUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.secure.spi.IntegrationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@RestController
 public class ReportRpcImpl implements ReportRpc {
 	private static final Logger logger = LoggerFactory.getLogger(ReportRpcImpl.class);
 
@@ -5662,7 +5663,8 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
-	public List<PosItemRank> findPosItemRanks(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
+	@RequestMapping("/findPosItemRanks")
+	public List<PosItemRank> findPosItemRanks(@RequestParam("systemBookCode") String systemBookCode, @RequestParam(value = "branchNum", required = false) Integer branchNum, @RequestParam("dateFrom")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateFrom, @RequestParam("dateTo")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateTo) {
 		return reportService.findPosItemRanks(systemBookCode, branchNum, dateFrom, dateTo);
 	}
 
