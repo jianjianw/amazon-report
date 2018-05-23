@@ -3,6 +3,7 @@ package com.nhsoft.module.report.model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class Stall implements Serializable {
@@ -90,4 +91,14 @@ public class Stall implements Serializable {
         this.branchNum = branchNum;
     }
 
+    public static Stall get(List<Stall> stalls, Integer stallNum) {
+        for(Stall stall : stalls){
+
+            if(stall.getStallNum().equals(stallNum)){
+                return stall;
+            }
+
+        }
+        return null;
+    }
 }
