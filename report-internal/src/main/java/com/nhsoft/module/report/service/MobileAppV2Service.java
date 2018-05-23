@@ -17,6 +17,17 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public MobileBusinessDTO getIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询首页营业汇总数据
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param stallNums
+	 * @return
+	 */
+	public MobileBusinessDTO getStallIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 查询异动信息
@@ -34,9 +45,10 @@ public interface MobileAppV2Service {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
+	 * @param stallNums
 	 * @return
 	 */
-	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 查询现金收入明细
@@ -119,6 +131,16 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public MobileBusinessPeriodDTO getMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询时段营业数据
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public MobileBusinessPeriodDTO getStallMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 查询卡汇总数据
@@ -330,4 +352,7 @@ public interface MobileAppV2Service {
 	public List<CardReportDTO> findCardReportByBranchBq(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 														Date dateTo, String sortField, Integer branchNum);
 
+	public List<NameAndValueDTO> findStallCashDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
+
+	public List<MobileBusinessDTO> findBusinessReceiptGroupByStall(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 }

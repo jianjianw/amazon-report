@@ -1172,18 +1172,33 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 	}
 
 	@Override
+	public MobileBusinessDTO getStallIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		return mobileAppV2Service.getStallIndexMobileBusinessDTO(systemBookCode,branchNums,dateFrom,dateTo, stallNums);
+	}
+
+	@Override
 	public List<NameAndValueDTO> findOtherInfos(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return mobileAppV2Service.findOtherInfos(systemBookCode,branchNums,dateFrom,dateTo);
 	}
 
 	@Override
 	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		return mobileAppV2Service.findDiscountDetails(systemBookCode,branchNums,dateFrom,dateTo);
+		return mobileAppV2Service.findDiscountDetails(systemBookCode,branchNums,dateFrom,dateTo, null);
+	}
+
+	@Override
+	public List<NameAndValueDTO> findStallDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		return mobileAppV2Service.findDiscountDetails(systemBookCode,branchNums,dateFrom,dateTo, stallNums);
 	}
 
 	@Override
 	public List<NameAndValueDTO> findCashDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return mobileAppV2Service.findCashDetails(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public List<NameAndValueDTO> findStallCashDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		return mobileAppV2Service.findStallCashDetails(systemBookCode,branchNums,dateFrom,dateTo, stallNums);
 	}
 
 	@Override
@@ -1209,6 +1224,11 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 	@Override
 	public MobileBusinessPeriodDTO getMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return mobileAppV2Service.getMobileBusinessPeriodDTO(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	public MobileBusinessPeriodDTO getStallMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		return mobileAppV2Service.getStallMobileBusinessPeriodDTO(systemBookCode,branchNums,dateFrom,dateTo, stallNums);
 	}
 
 	@Override
@@ -1323,6 +1343,12 @@ public class MobileAppV2RpcImpl implements MobileAppV2Rpc {
 	@Cacheable(value = "serviceCache")
 	public List<MobileBusinessDTO> findBusinessReceiptGroupByShop(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
 		return mobileAppV2Service.findBusinessReceiptGroupByShop(systemBookCode,branchNums,dateFrom,dateTo);
+	}
+
+	@Override
+	@Cacheable(value = "serviceCache")
+	public List<MobileBusinessDTO> findBusinessReceiptGroupByStall(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		return mobileAppV2Service.findBusinessReceiptGroupByStall(systemBookCode,branchNums,dateFrom,dateTo, stallNums);
 	}
 
 	@Override

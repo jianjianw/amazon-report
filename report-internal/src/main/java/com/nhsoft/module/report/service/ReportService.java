@@ -718,7 +718,7 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode,
-                                                    List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
+                                                    List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType, List<Integer> stallNums);
 
 	/**
 	 * 按时间类型查询收货单数量和金额
