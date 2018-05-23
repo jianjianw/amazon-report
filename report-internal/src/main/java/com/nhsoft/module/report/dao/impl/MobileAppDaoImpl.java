@@ -148,7 +148,7 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 	}
 
 	@Override
-	public List<Object[]> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public List<Object[]> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select payment_pay_by, sum(payment_money) ");
 		sb.append("from payment with(nolock) where system_book_code = '" + systemBookCode + "' ");
@@ -161,6 +161,9 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 		}
 		if (dateTo != null) {
 			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		if(stallNums != null && !stallNums.isEmpty()){
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
 		}
 		sb.append("group by payment_pay_by order by payment_pay_by ");
 		Query query = currentSession().createSQLQuery(sb.toString());
@@ -193,7 +196,7 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 
 	@Override
 	public List<MobileSalesRank> findProductRank(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                             Date dateTo, String categoryCode, String var, Integer rankFrom, Integer rankTo, String sortField) {
+												 Date dateTo, String categoryCode, String var, List<Integer> stallNums, Integer rankFrom, Integer rankTo, String sortField) {
 		StringBuffer queryStr = new StringBuffer();
 		queryStr.append(" select sum(case when t.order_detail_state_code = 4 then -t.order_detail_amount else order_detail_amount end) as amount,");
 		queryStr.append(" sum(case when t.order_detail_state_code = 1 then t.order_detail_payment_money when t.order_detail_state_code = 4 then -t.order_detail_payment_money end) as money,");
@@ -211,6 +214,9 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 		if (StringUtils.isNotEmpty(var)) {
 			queryStr.append(" and (p.item_name like '%" + var + "%' or p.item_code like '%" + var
 					+ "%' or p.store_item_pinyin like '%" + var.toUpperCase() + "%') ");
+		}
+		if(stallNums != null && !stallNums.isEmpty()){
+			queryStr.append("and t.stall_num in " + AppUtil.getIntegerParmeList(stallNums));
 		}
 		queryStr.append(" group by p.item_name, p.item_code, p.item_num");
 		if (StringUtils.isEmpty(sortField)) {

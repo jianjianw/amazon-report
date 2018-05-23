@@ -195,6 +195,16 @@ public interface MobileAppV2Rpc {
 	 */
 	public List<NameAndValueDTO> findPaymentDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
+    /**
+     * 按支付方式汇总前台收入明细
+     * @param systemBookCode
+     * @param branchNums
+     * @param dateFrom
+     * @param dateTo
+     * @return
+     */
+    public List<NameAndValueDTO> findStallPaymentDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
+
 	/**
 	 * 按支付方式汇总存款金额
 	 * @param systemBookCode
@@ -217,6 +227,20 @@ public interface MobileAppV2Rpc {
 	 * @return
 	 */
 	public List<NameAndTwoValueDTO> findItemRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, Integer rankFrom, Integer rankTo, String sortField);
+
+    /**
+     * 查询商品排行
+     * @param systemBookCode
+     * @param branchNums
+     * @param dateFrom
+     * @param dateTo
+     * @param rankFrom 查询起始位
+     * @param rankTo 查询页大小
+     * @param sortField 排序方式 amount or money
+     * @return
+     */
+    public List<NameAndTwoValueDTO> findStallItemRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums,
+                                                      Integer rankFrom, Integer rankTo, String sortField);
 
 	/**
 	 * 查询商品类别排行
@@ -346,6 +370,18 @@ public interface MobileAppV2Rpc {
 	 * @return
 	 */
 	public List<NameAndTwoValueDTO> findBranchPosSummary(String systemBookCode, List<Integer> branchNums, Integer itemNum, Date dateFrom, Date dateTo);
+
+    /**
+     * 按档口汇总单品前台销售数量、金额
+     * @param systemBookCode
+     * @param branchNums
+     * @param itemNum
+     * @param dateFrom
+     * @param dateTo
+     * @param stallNums
+     * @return
+     */
+    public List<NameAndTwoValueDTO> findStallPosSummary(String systemBookCode, List<Integer> branchNums, Integer itemNum, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 商品折让统计

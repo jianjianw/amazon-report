@@ -61,9 +61,10 @@ public interface MobileAppDao {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
+	 * @param stallNums
 	 * @return
 	 */
-	public List<Object[]> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 按门店汇总收款
@@ -82,12 +83,13 @@ public interface MobileAppDao {
 	 * @param dateTo
 	 * @param categoryCode
 	 * @param var
+	 * @param stallNums
 	 * @param rankFrom
 	 * @param rankTo
 	 * @param sortField
 	 * @return
 	 */
-	public List<MobileSalesRank> findProductRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String categoryCode, String var, Integer rankFrom, Integer rankTo, String sortField);
+	public List<MobileSalesRank> findProductRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String categoryCode, String var, List<Integer> stallNums, Integer rankFrom, Integer rankTo, String sortField);
 	
 	/**
 	 * 商品类别销售排行

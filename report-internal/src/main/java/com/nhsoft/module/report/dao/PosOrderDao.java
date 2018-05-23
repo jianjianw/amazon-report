@@ -1293,5 +1293,5 @@ public interface PosOrderDao {
 	public List<PosOrderMatrix> findMatrixs(PosOrderQuery posOrderQuery);
 
 
-
+	public List<Object[]> findStallItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, List<Integer> stallNums);
 }

@@ -7095,6 +7095,40 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		return query.list();
 	}
 
+	@Override
+	public List<Object[]> findStallItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, List<Integer> stallNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select detail.stall_num, detail.item_num, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_amount else order_detail_amount end) as amount,");
+		sb.append("sum(case when detail.order_detail_state_code = 1 then detail.order_detail_payment_money when detail.order_detail_state_code = 4 then -detail.order_detail_payment_money end) as money, ");
+		sb.append("sum(case when detail.order_detail_state_code = 4 then -detail.order_detail_gross_profit else detail.order_detail_gross_profit end) as profit, ");
+		sb.append("count(detail.item_num) as saleCount ");
+
+		sb.append("from pos_order_detail as detail with(nolock) ");
+		sb.append("where detail.order_detail_book_code = :systemBookCode ");
+		if (branchNums != null && branchNums.size() > 0) {
+			sb.append("and detail.order_detail_branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		}
+		sb.append("and detail.order_detail_bizday between :dateFrom and :dateTo ");
+		sb.append("and detail.order_detail_order_state in (5, 7) ");
+		sb.append("and detail.order_detail_state_code != 8 ");
+		sb.append("and detail.item_num is not null ");
+
+		if (itemNums != null && !itemNums.isEmpty()) {
+			sb.append("and detail.item_num in " + AppUtil.getIntegerParmeList(itemNums));
+		}
+		if(stallNums != null && !stallNums.isEmpty()){
+			sb.append("and detail.stall_num in " + AppUtil.getIntegerParmeList(stallNums));
+		}
+		sb.append("group by detail.stall_num, detail.item_num");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		query.setString("systemBookCode", systemBookCode);
+		query.setString("dateFrom", DateUtil.getDateShortStr(dateFrom));
+		query.setString("dateTo", DateUtil.getDateShortStr(dateTo));
+		return query.list();
+
+	}
+
 
 	private String createPromotion(PolicyAllowPriftQuery policyAllowPriftQuery){
 

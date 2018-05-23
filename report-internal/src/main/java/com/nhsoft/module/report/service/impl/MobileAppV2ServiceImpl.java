@@ -262,8 +262,8 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 
 	@Override
 	public List<NameAndValueDTO> findPaymentDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-			Date dateTo) {
-		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo);
+													Date dateTo, List<Integer> stallNums) {
+		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo, stallNums);
 		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
 
 		Object[] object = null;
@@ -318,8 +318,8 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 
 	@Override
 	public List<NameAndTwoValueDTO> findItemRank(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                             Date dateTo, Integer rankFrom, Integer rankTo, String sortField) {
-		List<MobileSalesRank> mobileSalesRanks = mobileAppDao.findProductRank(systemBookCode, branchNums, dateFrom, dateTo, null, null, rankFrom, rankTo,
+												 Date dateTo, List<Integer> stallNums, Integer rankFrom, Integer rankTo, String sortField) {
+		List<MobileSalesRank> mobileSalesRanks = mobileAppDao.findProductRank(systemBookCode, branchNums, dateFrom, dateTo, null, null, stallNums, rankFrom, rankTo,
 				sortField);
 		List<NameAndTwoValueDTO> list = new ArrayList<NameAndTwoValueDTO>();
 		
@@ -977,6 +977,32 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	}
 
 	@Override
+	public List<NameAndTwoValueDTO> findStallPosSummary(String systemBookCode, List<Integer> branchNums, Integer itemNum, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		List<Integer> itemNums = new ArrayList<Integer>();
+		itemNums.add(itemNum);
+		List<Object[]> objects = posOrderDao.findStallItemSummary(systemBookCode, branchNums, dateFrom, dateTo, itemNums, stallNums);
+		List<NameAndTwoValueDTO> list = new ArrayList<NameAndTwoValueDTO>();
+		if(objects.size() == 0){
+			return list;
+		}
+		Integer stallNum = null;
+		Object[] object = null;
+		List<Stall> stalls = stallDao.find(stallNums);
+		for(int i = 0;i < objects.size();i++){
+			object = objects.get(i);
+
+			NameAndTwoValueDTO dto = new NameAndTwoValueDTO();
+			stallNum = (Integer) object[0];
+			Stall stall = Stall.get(stalls, stallNum);
+			dto.setName(stall.getStallName());
+			dto.setValue(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+			dto.setValue2(object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3]);
+			list.add(dto);
+		}
+		return list;
+	}
+
+	@Override
 	public List<SalesDiscountDTO> findSalesDiscount(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo, Integer rankFrom, Integer rankTo, String sortType) {
 		List<SalesDiscount> salesDiscounts = mobileAppDao.findItemDiscount(systemBookCode, branchNums, dateFrom, dateTo, rankFrom, rankTo, sortType);
@@ -1046,7 +1072,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	@Override
 	public List<MobileBusinessDetailDTO> findPaymentSummary(String systemBookCode, List<Integer> branchNums,
                                                             Date dateFrom, Date dateTo){
-		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo, null);
 		List<MobileBusinessDetailDTO> list = new ArrayList<MobileBusinessDetailDTO>();
 		boolean hasCouponType = false;
 		for (int i = 0; i < objects.size(); i++) {
