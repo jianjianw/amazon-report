@@ -1304,7 +1304,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	@Override
 	public List<Object[]> findBusiDiscountAnalysisBranchs(String systemBookCode, Date dtFrom, Date dtTo,
-														  List<Integer> branchNums) {
+														  List<Integer> branchNums, List<Integer> stallNums) {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("select branch_num, sum(case when client_fid is not null and order_card_user_num = 0 then order_discount_money end) as clientDiscount, ");
@@ -1315,14 +1315,17 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		sb.append("sum(order_round) as orderRound, ");
 		sb.append("sum(case when order_card_user_num = 0 and client_fid is null then order_promotion_discount_money end) as policyDiscount, ");
 		sb.append("sum(order_online_discount) as onlineDiscount ");
-		sb.append("from pos_order with(nolock) where system_book_code = :systemBookCode ");
-		if (branchNums != null && branchNums.size() > 0) {
+		sb.append("from pos_order with(nolock) where system_book_code = '" + systemBookCode + "' ");
+		if (branchNums != null && !branchNums.isEmpty()) {
 			sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
 		}
+		if(stallNums != null && !stallNums.isEmpty()){
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
+		}
+
 		sb.append("and shift_table_bizday between :bizFrom and :bizTo ");
 		sb.append("and order_state_code in (5, 7) group by branch_num");
 		Query query = currentSession().createSQLQuery(sb.toString());
-		query.setString("systemBookCode", systemBookCode);
 		query.setString("bizFrom", DateUtil.getDateShortStr(dtFrom));
 		query.setString("bizTo", DateUtil.getDateShortStr(dtTo));
 		return query.list();

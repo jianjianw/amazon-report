@@ -45,9 +45,10 @@ public interface MobileAppV2Service {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
+	 * @param stallNums
 	 * @return
 	 */
-	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 查询现金收入明细
@@ -351,4 +352,7 @@ public interface MobileAppV2Service {
 	public List<CardReportDTO> findCardReportByBranchBq(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 														Date dateTo, String sortField, Integer branchNum);
 
+	public List<NameAndValueDTO> findStallCashDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
+
+	public List<MobileBusinessDTO> findBusinessReceiptGroupByStall(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 }

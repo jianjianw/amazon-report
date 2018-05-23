@@ -333,9 +333,10 @@ public interface PosOrderDao {
 	 * @param dtFrom
 	 * @param dtTo
 	 * @param branchNums
+	 * @param stallNums
 	 * @return
 	 */
-	public List<Object[]> findBusiDiscountAnalysisBranchs(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
+	public List<Object[]> findBusiDiscountAnalysisBranchs(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, List<Integer> stallNums);
 
 	/**
 	 * 按门店汇总前台现金收入

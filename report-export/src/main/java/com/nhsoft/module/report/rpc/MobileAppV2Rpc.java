@@ -156,6 +156,16 @@ public interface MobileAppV2Rpc {
 	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
+	 * 查询折扣分类明细
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<NameAndValueDTO> findStallDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
+
+	/**
 	 * 查询现金收入明细
 	 * @param systemBookCode
 	 * @param branchNums
@@ -164,6 +174,16 @@ public interface MobileAppV2Rpc {
 	 * @return
 	 */
 	public List<NameAndValueDTO> findCashDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询现金收入明细
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<NameAndValueDTO> findStallCashDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 按支付方式汇总前台收入明细
@@ -399,6 +419,9 @@ public interface MobileAppV2Rpc {
 
 	public List<MobileBusinessDTO> findBusinessReceiptGroupByShop(String systemBookCode, List<Integer> branchNums,
 																  Date dateFrom, Date dateTo);
+
+	public List<MobileBusinessDTO> findBusinessReceiptGroupByStall(String systemBookCode, List<Integer> branchNums,
+																  Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	public List<MobileBusinessDetailDTO> findCashSummaryGroupByShop(String systemBookCode, List<Integer> branchNums,
 																	Date dateFrom, Date dateTo, String cashType);
