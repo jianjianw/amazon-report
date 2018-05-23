@@ -36,6 +36,16 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findShopReceipt(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 档口营业收款 开单数 开单均价
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param stallNums
+	 * @return
+	 */
+	public List<Object[]> findStallReceipt(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 分店折扣金额

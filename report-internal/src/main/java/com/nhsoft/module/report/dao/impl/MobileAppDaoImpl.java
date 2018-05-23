@@ -103,6 +103,29 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 	}
 
 	@Override
+	public List<Object[]> findStallReceipt(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select stall_num, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as paymentMoney, count(order_no) as orderNums, ");
+		sb.append("sum(case when order_card_user_num > 0 then (order_payment_money - order_mgr_discount_money + order_coupon_total_money) end) as cardMoney, ");
+		sb.append("count(case when order_card_user_num > 0 then order_no end) as cardAmount ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' and branch_num in "
+				+ AppUtil.getIntegerParmeList(branchNums) + " ");
+		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and '"
+				+ DateUtil.getDateShortStr(dateTo) + "' ");
+		sb.append("and order_state_code in (5, 7) ");
+		if(stallNums != null && !stallNums.isEmpty()){
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
+		}
+
+		sb.append("group by stall_num ");
+
+		Query query = currentSession().createSQLQuery(sb.toString());
+		List<Object[]> objects = query.list();
+		return objects;
+	}
+
+	@Override
 	public List<Object[]> findShopDiscountMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo) {
 		String hql = " select branch_num, sum(order_discount_money + order_mgr_discount_money + order_round) as discount"

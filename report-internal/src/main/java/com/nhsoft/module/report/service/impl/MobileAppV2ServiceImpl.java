@@ -6,6 +6,7 @@ import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.GroupCustomer;
 import com.nhsoft.module.report.model.RetailPosLog;
+import com.nhsoft.module.report.model.Stall;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.util.AppConstants;
@@ -62,6 +63,8 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	private ShipOrderDao shipOrderDao;
 	@Autowired
 	private CardUserLogDao cardUserLogDao;
+	@Autowired
+	private StallDao stallDao;
 
 	@Override
 	public MobileBusinessDTO getIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom,
@@ -1939,26 +1942,31 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	@Override
 	public List<MobileBusinessDTO> findBusinessReceiptGroupByStall(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
 		List<MobileBusinessDTO> list = new ArrayList<MobileBusinessDTO>();
-		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		for (int i = 0; i < branchNums.size(); i++) {
-			Integer branchNum = branchNums.get(i);
+		if(stallNums == null || stallNums.isEmpty()){
+			return list;
+		}
+		List<Stall> stalls = stallDao.find(stallNums);
+		for (int i = 0; i < stallNums.size(); i++) {
+
 			MobileBusinessDTO mobileBusiness = new MobileBusinessDTO();
-			mobileBusiness.setBranchNum(branchNum);
-			Branch branch = AppUtil.getBranch(branchs, branchNum);
-			if (branch != null) {
-				mobileBusiness.setBranchName(branch.getBranchName());
+			mobileBusiness.setBranchNum(stallNums.get(i));
+
+			Stall stall = Stall.get(stalls, stallNums.get(i));
+			if(stall != null){
+				mobileBusiness.setBranchName(stall.getStallName());
+
 			}
 			list.add(mobileBusiness);
 		}
-		List<Object[]> objects = mobileAppDao.findShopReceipt(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = mobileAppDao.findStallReceipt(systemBookCode, branchNums, dateFrom, dateTo, stallNums);
 		for (int i = 0; i < objects.size(); i++) {
 			Object[] object = objects.get(i);
-			Integer branchNum = (Integer) object[0];
+			Integer stallNum = (Integer) object[0];
 			BigDecimal receiptMoney = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
 			Integer receiptCount = object[2] == null ? 0 : (Integer) object[2];
 			for (int j = 0; j < list.size(); j++) {
 				MobileBusinessDTO mobileBusiness = list.get(j);
-				if (mobileBusiness.getBranchNum().equals(branchNum)) {
+				if (mobileBusiness.getBranchNum().equals(stallNum)) {
 					mobileBusiness.setBusinessMoney(receiptMoney);
 					mobileBusiness.setReceiptCount(receiptCount);
 					if (receiptCount == 0) {
