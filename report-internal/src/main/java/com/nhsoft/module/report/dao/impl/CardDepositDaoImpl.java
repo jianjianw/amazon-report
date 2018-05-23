@@ -313,6 +313,9 @@ public class CardDepositDaoImpl extends  DaoImpl implements CardDepositDao {
 		if(StringUtils.isNotEmpty(type)){
 			sql = sql + "and deposit_payment_type_name = '" + type + "' ";
 		}
+//		if(stallNums != null && !stallNums.isEmpty()){
+//			sql = sql +  "and stall_num in " + AppUtil.getIntegerParmeList(stallNums);
+//		}
 		Query query = currentSession().createSQLQuery(sql);
 		Object object = query.uniqueResult();
 		return object == null?BigDecimal.ZERO:(BigDecimal)object;

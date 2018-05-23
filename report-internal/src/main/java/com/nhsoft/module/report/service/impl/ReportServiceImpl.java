@@ -27,11 +27,15 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 public class ReportServiceImpl implements ReportService {
 
 	@Autowired
 	public ReportDao reportDao;
+	@Autowired
+	private StallDao stallDao;
 	@Autowired
 	public BookResourceService bookResourceService;
 	@Autowired
@@ -7453,7 +7457,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-			Date dateTo, String dateType) {
+			Date dateTo, String dateType, List<Integer> stallNums) {
 
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
@@ -7477,11 +7481,14 @@ public class ReportServiceImpl implements ReportService {
 		if (dateType.equals(AppConstants.BUSINESS_DATE_YEAR)) {
 			queryMonth = true;
 		}
+		if(stallNums != null && !stallNums.isEmpty()){
+			systemBook.setBookReadDpc(false);
+		}
 		if (systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && !dateType.equals(AppConstants.BUSINESS_DATE_DAY)) {
 			Date dpcLimitTime = DateUtil.addDay(now, -2);
 
 			if (dpcLimitTime.compareTo(dateFrom) <= 0) {
-				return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
+				return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType, null);
 			} else if (dpcLimitTime.compareTo(dateTo) > 0) {
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -7541,7 +7548,7 @@ public class ReportServiceImpl implements ReportService {
 					returnList.add(objects);
 				}
 				List<Object[]> localObjects = posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums,
-						dpcLimitTime, dateTo, dateType);
+						dpcLimitTime, dateTo, dateType, null);
 				Object[] objects = null;
 				boolean find = false;
 				for (int i = 0,len = localObjects.size(); i < len; i++) {
@@ -7564,7 +7571,7 @@ public class ReportServiceImpl implements ReportService {
 				return returnList;
 			}
 		} else {
-			return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
+			return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType, stallNums);
 		}
 	}
 
@@ -8871,6 +8878,49 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
+	public List<CustomerAnalysisDay> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType) {
+		List<Object[]> objects = posOrderDao.findCustomerAnalysisStalls(systemBookCode, dateFrom, dateTo, branchNum, stallNums,
+				saleType);
+		List<Stall> stalls = stallDao.find(objects.stream().map(o -> (Integer)o[1]).collect(Collectors.toList()));
+		int size = objects.size();
+		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>(size);
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			BigDecimal couponMoney = object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3];
+			BigDecimal mgrDiscount = object[4] == null ? BigDecimal.ZERO : (BigDecimal) object[4];
+
+			CustomerAnalysisDay data = new CustomerAnalysisDay();
+			data.setStallNum((Integer) object[0]);
+			stalls.stream().filter(s -> s.getStallNum().equals(data.getStallNum())).findAny().ifPresent(s -> {
+				data.setStallCode(s.getStallCode());
+				data.setStallName(s.getStallName());
+			});
+			data.setTotalMoney(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
+			data.setTotalMoney(data.getTotalMoney().add(couponMoney).subtract(mgrDiscount));
+			data.setCustomerNums(BigDecimal.valueOf((Long) object[2]));
+			data.setCustomerItemRelatRate(object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
+			data.setCustomerItemCount(data.getCustomerItemRelatRate());
+			data.setCustomerAvePrice(BigDecimal.ZERO);
+			if (data.getCustomerNums().compareTo(BigDecimal.ZERO) > 0) {
+				data.setCustomerAvePrice(data.getTotalMoney().divide(data.getCustomerNums(), 4,
+						BigDecimal.ROUND_HALF_UP));
+			}
+
+			data.setCusotmerVipNums(object[7] == null ? BigDecimal.ZERO : BigDecimal.valueOf((Integer) object[7]));
+			data.setCustomerVipMoney(object[8] == null ? BigDecimal.ZERO : (BigDecimal) object[8]);
+			data.setCustomerValidNums(object[9] == null ? BigDecimal.ZERO : (BigDecimal) object[9]);
+			if (data.getCustomerValidNums().compareTo(BigDecimal.ZERO) > 0) {
+
+				data.setCustomerItemRelatRate(data.getCustomerItemRelatRate().divide(data.getCustomerValidNums(), 4,
+						BigDecimal.ROUND_HALF_UP));
+			}
+
+			list.add(data);
+		}
+		return list;
+	}
+
+	@Override
 	public List<WholesaleAnalysisDTO> findClientUnSaleItems(String systemBookCode, Integer branchNum, String clientFid) {
 		List<Object[]> objects = inventoryDao.findCenterStore(systemBookCode, branchNum, null);
 		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
@@ -9630,17 +9680,14 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		if (StringUtils.isEmpty(type)) {
-			list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
-			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "member",
-					alipayLogTypes));
-			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP",
-					alipayLogTypes));
+			List<AlipayDetailDTO> tempList = alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null, alipayLogTypes).stream().filter(a -> !"微店消费".equals(a.getType())).collect(Collectors.toList());
+			list.addAll(tempList);
 			if(queryAll){
 				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null,
 						alipayLogTypes));
 			}
 		} else if (type.equals("POS消费")) {
-			list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
+			list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null, alipayLogTypes).stream().filter("POS消费"::equals).collect(Collectors.toList()));
 			if(queryAll){
 				list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "POS",
 						alipayLogTypes));
@@ -12950,11 +12997,8 @@ public class ReportServiceImpl implements ReportService {
 		if (StringUtils.isEmpty(type)) {
 
 			if(alipayDetailQuery.getOrderState() == null || alipayDetailQuery.getOrderState()){
-				list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
-				list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "member",
-						alipayLogTypes));
-				list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "DEP",
-						alipayLogTypes));
+				List<AlipayDetailDTO> tempList = alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null, alipayLogTypes).stream().filter(a -> !"微店消费".equals(a.getType())).collect(Collectors.toList());
+				list.addAll(tempList);
 				if(queryAll){
 					list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null,
 							alipayLogTypes));
@@ -12975,7 +13019,7 @@ public class ReportServiceImpl implements ReportService {
 		} else if (type.equals("POS消费")) {
 
 			if(alipayDetailQuery.getOrderState() == null || alipayDetailQuery.getOrderState()){
-				list.addAll(reportDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, paymentTypes));
+				list.addAll(alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null, alipayLogTypes).stream().filter("POS消费"::equals).collect(Collectors.toList()));
 				if(queryAll){
 					list.addAll(alipayLogDao.findCancelAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, "POS",
 							alipayLogTypes));

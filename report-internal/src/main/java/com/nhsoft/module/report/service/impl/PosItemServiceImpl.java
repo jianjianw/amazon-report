@@ -14,7 +14,6 @@ import com.nhsoft.module.report.queryBuilder.PosItemQuery;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.BaseManager;
-import com.nhsoft.report.utils.RedisUtil;
 import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +66,44 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 		return posItemKits;
 	}
 
+	public List<PosItemKit> findPosItemKits(String systemBookCode) {
+		List<PosItemKit> posItemKits = posItemDao.findPosItemKits(systemBookCode);
+		int size = posItemKits.size();
+		if (size > 0) {
+			List<Integer> itemNums = new ArrayList<Integer>(size);
+			PosItem posItem;
+			for (int i = 0; i < size; i++) {
+				posItem = posItemKits.get(i).getPosItem();
+				if (posItem == null) {
+					continue;
+				}
+				if (!itemNums.contains(posItem.getItemNum())) {
+					itemNums.add(posItem.getItemNum());
+				}
+				posItem.setPosItemKits(new ArrayList<PosItemKit>(0));
+			}
+			if (itemNums.size() > 0) {
+				List<ItemBar> itemBars = posItemDao.findItemBars(itemNums);
+				List<ItemMatrix> itemMatrixs = posItemDao.findItemMatrixs(itemNums);
+				for (int i = 0; i < size; i++) {
+					posItem = posItemKits.get(i).getPosItem();
+					if (posItem == null) {
+						continue;
+					}
+					posItem.setItemBars(ItemBar.find(itemBars, posItem.getItemNum()));
+					if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_MATRIX) {
+						posItem.setItemMatrixs(ItemMatrix.find(itemMatrixs, posItem.getItemNum()));
+
+					} else {
+						posItem.setItemMatrixs(new ArrayList<ItemMatrix>(0));
+					}
+				}
+			}
+
+		}
+		return posItemKits;
+	}
+
 	@Override
 	public List<Integer> findItemNumsByPosItemQuery(PosItemQuery posItemQuery, int offset, int limit) {
 		return posItemDao.findItemNumsByPosItemQuery(posItemQuery, offset, limit);
@@ -115,7 +152,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 						return (List<PosItem>) element.getObjectValue();
 					}
 					long begin = System.currentTimeMillis();
-					List<PosItem> posItems = findAllWithDetails(systemBookCode);
+					List<PosItem> posItems = findAllWithKits(systemBookCode);
 					logger.debug(String.format(
 							"帐套[%s]商品缓存过期，从数据库读取记录[%d]条, 耗时 %s 秒",
 							systemBookCode,
@@ -141,7 +178,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 
 	private List<PosItem> findAllWithDetails(String systemBookCode) {
 		List<PosItem> posItems = posItemDao.findAll(systemBookCode);
-		findItemDetailSummary(posItems);
+		findItemDetails(posItems);
 		return posItems;
 	}
 
@@ -151,8 +188,8 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 	 * @param posItems
 	 */
 	@Override
-	public void findItemDetailSummary(List<PosItem> posItems) {
-		if (posItems.size() == 0) {
+	public void findItemDetails(List<PosItem> posItems) {
+		if (posItems.isEmpty()) {
 			return;
 		}
 		List<ItemBar> itemBars;
@@ -185,6 +222,18 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 		}
 	}
 
+	private List<PosItem> findAllWithKits(String systemBookCode) {
+		List<PosItem> posItems = posItemDao.findAll(systemBookCode);
+		List<PosItemKit> posItemKits = findPosItemKits(systemBookCode);
+		for (int i = 0; i < posItems.size(); i++) {
+			PosItem posItem = posItems.get(i);
+			posItem.setPosItemKits(PosItemKit.find(posItemKits, posItem.getItemNum()));
+
+		}
+		findItemDetails(posItems);
+		return posItems;
+	}
+
 	@Override
 	public List<PosItem> findByItemNumsWithoutDetails(List<Integer> itemNums) {
 
@@ -194,7 +243,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 	@Override
 	public List<PosItem> find(String systemBookCode) {
 		List<PosItem> posItems = posItemDao.find(systemBookCode);
-		findItemDetailSummary(posItems);
+		findItemDetails(posItems);
 		return posItems;
 	}
 
@@ -265,7 +314,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 		}
 
 		List<PosItem> posItems = posItemDao.findByItemNums(itemNums);
-		findItemDetailSummary(posItems);
+		findItemDetails(posItems);
 		return posItems;
 	}
 	
@@ -274,7 +323,7 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 											int count) {
 		List<PosItem> posItems = posItemDao.findByPosItemQuery(posItemQuery, sortField, sortName, first, count);
 		if(posItemQuery.getQueryProperties() == null || posItemQuery.getQueryProperties().isEmpty()){
-			findItemDetailSummary(posItems);
+			findItemDetails(posItems);
 
 		}
 		return posItems;

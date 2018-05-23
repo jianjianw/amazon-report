@@ -36,6 +36,16 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findShopReceipt(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 档口营业收款 开单数 开单均价
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param stallNums
+	 * @return
+	 */
+	public List<Object[]> findStallReceipt(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 分店折扣金额
@@ -51,9 +61,10 @@ public interface MobileAppDao {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
+	 * @param stallNums
 	 * @return
 	 */
-	public List<Object[]> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<Object[]> findPaymentSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 按门店汇总收款
@@ -72,12 +83,13 @@ public interface MobileAppDao {
 	 * @param dateTo
 	 * @param categoryCode
 	 * @param var
+	 * @param stallNums
 	 * @param rankFrom
 	 * @param rankTo
 	 * @param sortField
 	 * @return
 	 */
-	public List<MobileSalesRank> findProductRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String categoryCode, String var, Integer rankFrom, Integer rankTo, String sortField);
+	public List<MobileSalesRank> findProductRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String categoryCode, String var, List<Integer> stallNums, Integer rankFrom, Integer rankTo, String sortField);
 	
 	/**
 	 * 商品类别销售排行
@@ -126,7 +138,7 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findShopTimeAnalysis(String systemBookCode,
-                                               List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                               List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 按帐套、门店和时间段查询时段分析（每个门店一个时间段，按门店列表返回）
@@ -218,10 +230,11 @@ public interface MobileAppDao {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
+	 * @pram stallNums
 	 * @return
 	 */
 	public MobileBusinessDTO findMobileAppBusinessDTO(String systemBookCode, List<Integer> branchNums,
-                                                      Date dateFrom, Date dateTo);
+                                                      Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 新版老板查询卡数据汇总

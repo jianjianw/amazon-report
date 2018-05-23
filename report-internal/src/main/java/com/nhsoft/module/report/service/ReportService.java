@@ -718,7 +718,7 @@ public interface ReportService {
 	 * @return
 	 */
 	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode,
-                                                    List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
+                                                    List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType, List<Integer> stallNums);
 
 	/**
 	 * 按时间类型查询收货单数量和金额
@@ -972,6 +972,10 @@ public interface ReportService {
 	 */
 	public List<CustomerAnalysisDay> findCusotmerAnalysisBranchs(String systemBookCode, Date dateFrom, Date dateTo,
                                                                  List<Integer> branchNums, String saleType);
+
+
+	List<CustomerAnalysisDay> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType);
+
 
 	/**
 	 * 查询批发客户未销售但是有库存的商品

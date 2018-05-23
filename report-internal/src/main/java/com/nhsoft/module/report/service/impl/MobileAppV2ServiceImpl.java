@@ -6,6 +6,7 @@ import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.Branch;
 import com.nhsoft.module.report.model.GroupCustomer;
 import com.nhsoft.module.report.model.RetailPosLog;
+import com.nhsoft.module.report.model.Stall;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.util.AppConstants;
@@ -62,15 +63,17 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	private ShipOrderDao shipOrderDao;
 	@Autowired
 	private CardUserLogDao cardUserLogDao;
+	@Autowired
+	private StallDao stallDao;
 
 	@Override
 	public MobileBusinessDTO getIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom,
                                                        Date dateTo) {
 		
 		MobileBusinessDTO dto = mobileAppDao
-				.findMobileAppBusinessDTO(systemBookCode, branchNums, dateFrom, dateTo);		
+				.findMobileAppBusinessDTO(systemBookCode, branchNums, dateFrom, dateTo, null);
 			dto.setCashTotal(dto.getCashTotal().add(
-				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo)));
+				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, null)));
 		dto.setCashTotal(dto.getCashTotal().add(
 				cardDepositDao.getCashMoney(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.PAYMENT_CASH)));
 		dto.setCashTotal(dto.getCashTotal().add(
@@ -81,6 +84,15 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 				otherInoutDao.getCashMoney(systemBookCode, branchNums, dateFrom, dateTo)));
 		dto.setCardDeposit(cardDepositDao.getCashMoney(systemBookCode, branchNums, dateFrom, dateTo, null));
 		dto.setCardAddedCount(cardUserDao.findTotalCardCount(systemBookCode, branchNums, dateFrom, dateTo, null));
+		return dto;
+	}
+
+	@Override
+	public MobileBusinessDTO getStallIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		MobileBusinessDTO dto = mobileAppDao
+				.findMobileAppBusinessDTO(systemBookCode, branchNums, dateFrom, dateTo, stallNums);
+		dto.setCashTotal(dto.getCashTotal().add(
+				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, stallNums)));
 		return dto;
 	}
 
@@ -129,8 +141,51 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	}
 
 	@Override
+	public List<NameAndValueDTO> findOtherInfos(String systemBookCode, Integer branchNum, List<Integer> stallNums, Date dateFrom, Date dateTo) {
+		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
+
+		List<Object[]> objects = retailPosLogDao.findTypeCountAndMoney(systemBookCode, branchNum, stallNums, dateFrom, dateTo, null);
+		String typeName;
+		int count;
+		BigDecimal money;
+		NameAndValueDTO nameAndValueDTO;
+		for(int i = 0;i < objects.size();i++){
+			Object[] object = objects.get(i);
+
+			typeName = (String)object[0];
+			count = object[1] == null?0:(Integer)object[1];
+			money = object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2];
+
+			nameAndValueDTO = new NameAndValueDTO();
+			nameAndValueDTO.setName(typeName);
+			nameAndValueDTO.setIntValue(count);
+			nameAndValueDTO.setValue(money);
+			list.add(nameAndValueDTO);
+		}
+
+		Object[] object = posOrderDao.findRepayCountAndMoney(systemBookCode, branchNum, stallNums, dateFrom, dateTo);
+		nameAndValueDTO = new NameAndValueDTO();
+		nameAndValueDTO.setName("反结账");
+		nameAndValueDTO.setIntValue(object[0] == null?0:(Integer)object[0]);
+		nameAndValueDTO.setValue(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+		list.add(nameAndValueDTO);
+		object = posOrderDao.sumBusiDiscountAnalysisAmountAndMoney(systemBookCode, dateFrom, dateTo, branchNum, stallNums);
+		nameAndValueDTO = new NameAndValueDTO();
+		nameAndValueDTO.setName("客户折扣");
+		nameAndValueDTO.setIntValue(object[0] == null?0:(Integer)object[0]);
+		nameAndValueDTO.setValue(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+		list.add(nameAndValueDTO);
+		nameAndValueDTO = new NameAndValueDTO();
+		nameAndValueDTO.setName("经理折扣");
+		nameAndValueDTO.setIntValue(object[2] == null?0:(Integer)object[2]);
+		nameAndValueDTO.setValue(object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3]);
+		list.add(nameAndValueDTO);
+		return list;
+	}
+
+	@Override
 	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-			Date dateTo) {
+													 Date dateTo, List<Integer> stallNums) {
 		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
 
 		List<BranchDTO> branchs = CopyUtil.toList(branchService.findInCache(systemBookCode),BranchDTO.class);
@@ -172,7 +227,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		nameAndValueDTO.createDetails(branchNums, branchs);
 		list.add(nameAndValueDTO);
 		
-		List<Object[]> objects = posOrderDao.findBusiDiscountAnalysisBranchs(systemBookCode, dateFrom, dateTo, branchNums);
+		List<Object[]> objects = posOrderDao.findBusiDiscountAnalysisBranchs(systemBookCode, dateFrom, dateTo, branchNums, stallNums);
 		for(int i = 0;i < objects.size();i++){
 			Object[] object = objects.get(i);
 			
@@ -180,33 +235,33 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 						
 			nameAndValueDTO = NameAndValueDTO.get(list, "客户折扣");
 			NameAndValueDTO.NameAndValueDetailDTO nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
-			nameAndValueDetailDTO.setDetailValue((BigDecimal) object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
+			nameAndValueDetailDTO.setDetailValue(object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1]);
 			nameAndValueDTO.setValue(nameAndValueDTO.getValue().add(nameAndValueDetailDTO.getDetailValue()));
 			
 			nameAndValueDTO = NameAndValueDTO.get(list, "会员折扣");
 			nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
-			nameAndValueDetailDTO.setDetailValue((BigDecimal) object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
+			nameAndValueDetailDTO.setDetailValue(object[2] == null ? BigDecimal.ZERO : (BigDecimal) object[2]);
 			nameAndValueDTO.setValue(nameAndValueDTO.getValue().add(nameAndValueDetailDTO.getDetailValue()));
 						
 			nameAndValueDTO = NameAndValueDTO.get(list, "经理折扣");
 			nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
-			nameAndValueDetailDTO.setDetailValue((BigDecimal) object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
+			nameAndValueDetailDTO.setDetailValue(object[5] == null ? BigDecimal.ZERO : (BigDecimal) object[5]);
 			nameAndValueDTO.setValue(nameAndValueDTO.getValue().add(nameAndValueDetailDTO.getDetailValue()));
 			
 			nameAndValueDTO = NameAndValueDTO.get(list, "四舍五入");
 			nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
-			nameAndValueDetailDTO.setDetailValue((BigDecimal) object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
+			nameAndValueDetailDTO.setDetailValue(object[6] == null ? BigDecimal.ZERO : (BigDecimal) object[6]);
 			nameAndValueDTO.setValue(nameAndValueDTO.getValue().add(nameAndValueDetailDTO.getDetailValue()));
 			
 			nameAndValueDTO = NameAndValueDTO.get(list, "促销折扣");
 			nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
-			BigDecimal policyMoney = (BigDecimal) object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
+			BigDecimal policyMoney = object[7] == null ? BigDecimal.ZERO : (BigDecimal) object[7];
 			nameAndValueDetailDTO.setDetailValue(policyMoney);
 			nameAndValueDTO.setValue(nameAndValueDTO.getValue().add(nameAndValueDetailDTO.getDetailValue()));
 			
 			nameAndValueDTO = NameAndValueDTO.get(list, "其他折扣");
 			nameAndValueDetailDTO = nameAndValueDTO.getDetail(branchNum);
-			nameAndValueDetailDTO.setDetailValue((BigDecimal) object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
+			nameAndValueDetailDTO.setDetailValue(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
 			nameAndValueDetailDTO.setDetailValue(nameAndValueDetailDTO.getDetailValue().subtract(policyMoney));
 			nameAndValueDTO.setValue(nameAndValueDTO.getValue().add(nameAndValueDetailDTO.getDetailValue()));
 			
@@ -222,7 +277,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		
 		NameAndValueDTO nameAndValueDTO = null;
 		nameAndValueDTO = new NameAndValueDTO();
-		nameAndValueDTO.setValue(posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo));
+		nameAndValueDTO.setValue(posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, null));
 		nameAndValueDTO.setName("POS收入");
 		list.add(nameAndValueDTO);
 		
@@ -250,8 +305,8 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 
 	@Override
 	public List<NameAndValueDTO> findPaymentDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-			Date dateTo) {
-		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo);
+													Date dateTo, List<Integer> stallNums) {
+		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo, stallNums);
 		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
 
 		Object[] object = null;
@@ -281,7 +336,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 
 	@Override
 	public List<NameAndValueDTO> findCardDepositDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-			Date dateTo) {
+														Date dateTo) {
 		List<Object[]> objects = cardDepositDao.findMoneyByType(systemBookCode, branchNums, dateFrom, dateTo);
 		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
 
@@ -306,8 +361,8 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 
 	@Override
 	public List<NameAndTwoValueDTO> findItemRank(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                             Date dateTo, Integer rankFrom, Integer rankTo, String sortField) {
-		List<MobileSalesRank> mobileSalesRanks = mobileAppDao.findProductRank(systemBookCode, branchNums, dateFrom, dateTo, null, null, rankFrom, rankTo,
+												 Date dateTo, List<Integer> stallNums, Integer rankFrom, Integer rankTo, String sortField) {
+		List<MobileSalesRank> mobileSalesRanks = mobileAppDao.findProductRank(systemBookCode, branchNums, dateFrom, dateTo, null, null, stallNums, rankFrom, rankTo,
 				sortField);
 		List<NameAndTwoValueDTO> list = new ArrayList<NameAndTwoValueDTO>();
 		
@@ -566,7 +621,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	@Override
 	public MobileBusinessPeriodDTO getMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums,
                                                               Date dateFrom, Date dateTo) {
-		List<Object[]> objects = mobileAppDao.findShopTimeAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = mobileAppDao.findShopTimeAnalysis(systemBookCode, branchNums, dateFrom, dateTo, null);
 		MobileBusinessPeriodDTO dto = new MobileBusinessPeriodDTO();
 		
 		Object[] object;
@@ -599,6 +654,44 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 			dto.setCustomerAvgPrice(BigDecimal.ZERO);
 		}
 		
+		return dto;
+	}
+
+	@Override
+	public MobileBusinessPeriodDTO getStallMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		List<Object[]> objects = mobileAppDao.findShopTimeAnalysis(systemBookCode, branchNums, dateFrom, dateTo, stallNums);
+		MobileBusinessPeriodDTO dto = new MobileBusinessPeriodDTO();
+
+		Object[] object;
+		Integer hour;
+		BigDecimal money;
+		Integer receiptCount;
+		NameAndValueDTO nameAndValueDTO;
+		for(int i = 0;i < objects.size();i++){
+			object = objects.get(i);
+			hour = (Integer) object[0];
+			money = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
+			receiptCount = object[2] == null?0:(Integer) object[2];
+
+			nameAndValueDTO = dto.getBusinessMoneyList().get(hour.intValue());
+			nameAndValueDTO.setValue(money);
+
+			nameAndValueDTO = dto.getReceiptCountList().get(hour.intValue());
+			nameAndValueDTO.setValue(BigDecimal.valueOf(receiptCount));
+
+			dto.setBusinessMoney(dto.getBusinessMoney().add(money));
+			dto.setReceiptCount(dto.getReceiptCount() + receiptCount);
+
+
+		}
+
+		if(dto.getReceiptCount() > 0){
+			dto.setCustomerAvgPrice(dto.getBusinessMoney().divide(BigDecimal.valueOf(dto.getReceiptCount()), 2, BigDecimal.ROUND_HALF_UP));
+
+		} else {
+			dto.setCustomerAvgPrice(BigDecimal.ZERO);
+		}
+
 		return dto;
 	}
 
@@ -927,6 +1020,32 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	}
 
 	@Override
+	public List<NameAndTwoValueDTO> findStallPosSummary(String systemBookCode, List<Integer> branchNums, Integer itemNum, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		List<Integer> itemNums = new ArrayList<Integer>();
+		itemNums.add(itemNum);
+		List<Object[]> objects = posOrderDao.findStallItemSummary(systemBookCode, branchNums, dateFrom, dateTo, itemNums, stallNums);
+		List<NameAndTwoValueDTO> list = new ArrayList<NameAndTwoValueDTO>();
+		if(objects.size() == 0){
+			return list;
+		}
+		Integer stallNum = null;
+		Object[] object = null;
+		List<Stall> stalls = stallDao.find(stallNums);
+		for(int i = 0;i < objects.size();i++){
+			object = objects.get(i);
+
+			NameAndTwoValueDTO dto = new NameAndTwoValueDTO();
+			stallNum = (Integer) object[0];
+			Stall stall = Stall.get(stalls, stallNum);
+			dto.setName(stall.getStallName());
+			dto.setValue(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+			dto.setValue2(object[3] == null?BigDecimal.ZERO:(BigDecimal)object[3]);
+			list.add(dto);
+		}
+		return list;
+	}
+
+	@Override
 	public List<SalesDiscountDTO> findSalesDiscount(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 			Date dateTo, Integer rankFrom, Integer rankTo, String sortType) {
 		List<SalesDiscount> salesDiscounts = mobileAppDao.findItemDiscount(systemBookCode, branchNums, dateFrom, dateTo, rankFrom, rankTo, sortType);
@@ -979,7 +1098,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		mobileBusinessDTO.setReceiptAvgMoney(mobileBusiness.getReceiptAvgMoney());
 		
 		mobileBusinessDTO.setCashTotal(mobileBusinessDTO.getCashTotal().add(
-				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo)));
+				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, null)));
 		mobileBusinessDTO.setCashTotal(mobileBusinessDTO.getCashTotal().add(
 				cardDepositDao.getCashMoney(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.PAYMENT_CASH)));
 		mobileBusinessDTO.setCashTotal(mobileBusinessDTO.getCashTotal().add(
@@ -996,7 +1115,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	@Override
 	public List<MobileBusinessDetailDTO> findPaymentSummary(String systemBookCode, List<Integer> branchNums,
                                                             Date dateFrom, Date dateTo){
-		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = mobileAppDao.findPaymentSummary(systemBookCode, branchNums, dateFrom, dateTo, null);
 		List<MobileBusinessDetailDTO> list = new ArrayList<MobileBusinessDetailDTO>();
 		boolean hasCouponType = false;
 		for (int i = 0; i < objects.size(); i++) {
@@ -1089,7 +1208,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		nameAndValueDTO.createDetails(branchNums, branchs);
 		list.add(nameAndValueDTO);
 		
-		List<Object[]> objects = posOrderDao.findBusiDiscountAnalysisBranchs(systemBookCode, dateFrom, dateTo, branchNums);
+		List<Object[]> objects = posOrderDao.findBusiDiscountAnalysisBranchs(systemBookCode, dateFrom, dateTo, branchNums, branchNums);
 		for(int i = 0;i < objects.size();i++){
 			Object[] object = objects.get(i);
 			
@@ -1403,7 +1522,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 
 		MobileBusinessDetailDTO detail = new MobileBusinessDetailDTO();
 		detail.setDetailType(AppConstants.CASH_TYPE_POS);
-		detail.setDetailValue(posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo));
+		detail.setDetailValue(posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, null));
 		cashTotal = cashTotal.add(detail.getDetailValue());
 		list.add(detail);
 
@@ -1569,6 +1688,134 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 				}
 				list = summaryList;
 				
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode, Integer branchNum, Integer stallNum, Date dateFrom, Date dateTo, String infoType) {
+		List<OtherInfoDTO> list = new ArrayList<OtherInfoDTO>();
+		if(infoType.equals("反结账")){
+			List<Object[]> objects = posOrderDao.findRepayDetail(systemBookCode, branchNum, stallNum, dateFrom, dateTo);
+			Object[] object = null;
+			for(int i = 0;i < objects.size();i++){
+				object = objects.get(i);
+
+				OtherInfoDTO dto = new OtherInfoDTO();
+				dto.setName((String) object[0]);
+				dto.setMoney(object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1]);
+				dto.setOperator((String) object[2]);
+				dto.setBizday((String) object[3]);
+				dto.setDate((Date) object[4]);
+				list.add(dto);
+			}
+		}
+		else if(infoType.equals("客户折扣")) {
+			List<Object[]> objects = posOrderDao.findClientDiscountAnalysisAmountAndMoney(systemBookCode, dateFrom, dateTo, branchNum, stallNum);
+			Object[] object = null;
+			for(int i = 0;i < objects.size();i++){
+				object = objects.get(i);
+
+				OtherInfoDTO dto = new OtherInfoDTO();
+				dto.setName((String) object[0]);
+				dto.setPaymentMoney(AppUtil.getValue(object[1], BigDecimal.class));
+				dto.setMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+				dto.setOperator((String) object[3]);
+				dto.setBizday((String) object[4]);
+				dto.setDate((Date) object[5]);
+				list.add(dto);
+			}
+		}
+		else if(infoType.equals("经理折扣")) {
+			List<Integer> branchNums = new ArrayList<Integer>();
+			branchNums.add(branchNum);
+
+			List<Object[]> objects = posOrderDao.findMgrDiscountAnalysisAmountAndMoney(systemBookCode, dateFrom, dateTo, branchNums);
+			Object[] object = null;
+			for(int i = 0;i < objects.size();i++){
+				object = objects.get(i);
+
+				OtherInfoDTO dto = new OtherInfoDTO();
+				dto.setName((String) object[0]);
+				dto.setPaymentMoney(AppUtil.getValue(object[1], BigDecimal.class));
+				dto.setMoney(object[2] == null?BigDecimal.ZERO:(BigDecimal)object[2]);
+				dto.setOperator((String) object[3]);
+				dto.setBizday((String) object[4]);
+				dto.setDate((Date) object[5]);
+				list.add(dto);
+			}
+		}
+		else {
+			LogQuery logQuery = new LogQuery();
+			logQuery.setSystemBookCode(systemBookCode);
+			logQuery.setDateFrom(dateFrom);
+			logQuery.setDateTo(dateTo);
+			logQuery.setOperateType(infoType);
+			logQuery.setPaging(false);
+			logQuery.setSortField("retail_pos_log_time");
+			logQuery.setSortType("DESC");
+			List<RetailPosLog> retailPosLogs = retailPosLogDao.findByQuery(systemBookCode, branchNum, stallNum, logQuery, 0, 0);
+			for(int i = 0;i < retailPosLogs.size();i++){
+				RetailPosLog retailPosLog = retailPosLogs.get(i);
+
+				OtherInfoDTO dto = new OtherInfoDTO();
+				dto.setName(retailPosLog.getRetailPosLogItemName());
+				dto.setBizday(retailPosLog.getRetailPosLogBizday());
+				dto.setMoney(retailPosLog.getRetailPosLogMoney());
+				if(dto.getMoney() == null){
+					dto.setMoney(BigDecimal.ZERO);
+				}
+				dto.setOperator(retailPosLog.getRetailPosLogOperator());
+				dto.setDate(retailPosLog.getRetailPosLogTime());
+				dto.setOrderNo(retailPosLog.getRetailPosLogOrderNo() == null?"":retailPosLog.getRetailPosLogOrderNo());
+				list.add(dto);
+			}
+
+			if(infoType.equals(AppConstants.RETAIL_POS_LOG_ALL_CANCLE)){
+				Collections.sort(list, new Comparator<OtherInfoDTO>() {
+
+					@Override
+					public int compare(OtherInfoDTO o1, OtherInfoDTO o2) {
+						if(o1.getBizday().equals(o2.getBizday())){
+							return -o1.getMoney().compareTo(o2.getMoney());
+
+						} else {
+							return o1.getBizday().compareTo(o2.getBizday());
+						}
+					}
+				});
+			}
+			if(infoType.equals(AppConstants.RETAIL_POS_LOG_DEL)){
+				List<OtherInfoDTO> summaryList = new ArrayList<OtherInfoDTO>();
+				OtherInfoDTO dto;
+				for(int i = 0;i < list.size();i++){
+					dto = list.get(i);
+					if(StringUtils.isEmpty(dto.getOrderNo())){
+						summaryList.add(dto);
+						continue;
+					}
+					OtherInfoDTO summaryDTO = OtherInfoDTO.getByOrderNo(summaryList, dto.getOrderNo());
+					if(summaryDTO == null){
+						summaryDTO = new OtherInfoDTO();
+						summaryDTO.setName(dto.getName());
+						summaryDTO.setBizday(dto.getBizday());
+						summaryDTO.setOperator(dto.getOperator());
+						summaryDTO.setDate(dto.getDate());
+						summaryDTO.setOrderNo(dto.getOrderNo());
+						summaryDTO.setMoney(BigDecimal.ZERO);
+						summaryList.add(summaryDTO);
+					}
+					OtherInfoDTO.OtherInfoDetailDTO detailDTO = new OtherInfoDTO.OtherInfoDetailDTO();
+					BeanUtils.copyProperties(dto, detailDTO);
+					summaryDTO.getDetails().add(detailDTO);
+					if(summaryDTO.getDetails().size() == 2){
+						summaryDTO.setName(summaryDTO.getName().concat("..."));
+					}
+					summaryDTO.setMoney(summaryDTO.getMoney().add(dto.getMoney()));
+				}
+				list = summaryList;
+
 			}
 		}
 		return list;
@@ -1875,6 +2122,78 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 
 		}
 		return cardReportDTOs;
+	}
+
+	@Override
+	public List<NameAndValueDTO> findStallCashDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		List<NameAndValueDTO> list = new ArrayList<NameAndValueDTO>();
+
+		NameAndValueDTO nameAndValueDTO = null;
+		nameAndValueDTO = new NameAndValueDTO();
+		nameAndValueDTO.setValue(posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, stallNums));
+		nameAndValueDTO.setName("POS收入");
+		list.add(nameAndValueDTO);
+		return list;
+	}
+
+	@Override
+	public List<MobileBusinessDTO> findBusinessReceiptGroupByStall(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		List<MobileBusinessDTO> list = new ArrayList<MobileBusinessDTO>();
+		if(stallNums == null || stallNums.isEmpty()){
+			return list;
+		}
+		List<Stall> stalls = stallDao.find(stallNums);
+		for (int i = 0; i < stallNums.size(); i++) {
+
+			MobileBusinessDTO mobileBusiness = new MobileBusinessDTO();
+			mobileBusiness.setBranchNum(stallNums.get(i));
+
+			Stall stall = Stall.get(stalls, stallNums.get(i));
+			if(stall != null){
+				mobileBusiness.setBranchName(stall.getStallName());
+
+			}
+			list.add(mobileBusiness);
+		}
+		List<Object[]> objects = mobileAppDao.findStallReceipt(systemBookCode, branchNums, dateFrom, dateTo, stallNums);
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer stallNum = (Integer) object[0];
+			BigDecimal receiptMoney = object[1] == null ? BigDecimal.ZERO : (BigDecimal) object[1];
+			Integer receiptCount = object[2] == null ? 0 : (Integer) object[2];
+			for (int j = 0; j < list.size(); j++) {
+				MobileBusinessDTO mobileBusiness = list.get(j);
+				if (mobileBusiness.getBranchNum().equals(stallNum)) {
+					mobileBusiness.setBusinessMoney(receiptMoney);
+					mobileBusiness.setReceiptCount(receiptCount);
+					if (receiptCount == 0) {
+						mobileBusiness.setReceiptAvgMoney(BigDecimal.ZERO);
+					} else {
+						mobileBusiness.setReceiptAvgMoney(receiptMoney
+								.divide(BigDecimal.valueOf(receiptCount), 2, BigDecimal.ROUND_HALF_UP));
+					}
+					mobileBusiness.setBusinessCardMoney(object[3] == null ? BigDecimal.ZERO : (BigDecimal) object[3]);
+					mobileBusiness.setReceiptCardCount(object[4] == null ? 0 : (Integer) object[4]);
+					mobileBusiness.setReceiptUnCardCount(receiptCount - mobileBusiness.getReceiptCardCount());
+
+					if (mobileBusiness.getReceiptCardCount() == 0) {
+						mobileBusiness.setReceiptCardAvgMoney(BigDecimal.ZERO);
+					} else {
+						mobileBusiness.setReceiptCardAvgMoney(mobileBusiness.getBusinessCardMoney()
+								.divide(BigDecimal.valueOf(mobileBusiness.getReceiptCardCount()), 2, BigDecimal.ROUND_HALF_UP));
+					}
+
+					if (mobileBusiness.getReceiptUnCardCount() == 0) {
+						mobileBusiness.setReceiptUnCardAvgMoney(BigDecimal.ZERO);
+					} else {
+						mobileBusiness.setReceiptUnCardAvgMoney((receiptMoney.subtract(mobileBusiness.getBusinessCardMoney()))
+								.divide(BigDecimal.valueOf(mobileBusiness.getReceiptUnCardCount()), 2, BigDecimal.ROUND_HALF_UP));
+					}
+					break;
+				}
+			}
+		}
+		return list;
 	}
 
 }

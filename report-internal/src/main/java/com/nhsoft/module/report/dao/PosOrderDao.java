@@ -305,7 +305,7 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public BigDecimal getPosCash(String systemBookCode,
-                                 List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                 List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 查询反结账单据数量和金额
@@ -318,6 +318,16 @@ public interface PosOrderDao {
 	public Object[] findRepayCountAndMoney(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
+	 * 查询反结账单据数量和金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public Object[] findRepayCountAndMoney(String systemBookCode, Integer branchNum, List<Integer> stallNums, Date dateFrom, Date dateTo);
+
+	/**
 	 * 营业折扣汇总
 	 * @param systemBookCode
 	 * @param dtFrom
@@ -328,14 +338,25 @@ public interface PosOrderDao {
 	public Object[] sumBusiDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
 
 	/**
-	 * 营业折扣汇总 根据分店
+	 * 营业折扣汇总
 	 * @param systemBookCode
 	 * @param dtFrom
 	 * @param dtTo
 	 * @param branchNums
 	 * @return
 	 */
-	public List<Object[]> findBusiDiscountAnalysisBranchs(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
+	public Object[] sumBusiDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, Integer branchNum, List<Integer> stallNums);
+
+	/**
+	 * 营业折扣汇总 根据分店
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @param stallNums
+	 * @return
+	 */
+	public List<Object[]> findBusiDiscountAnalysisBranchs(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums, List<Integer> stallNums);
 
 	/**
 	 * 按门店汇总前台现金收入
@@ -359,6 +380,16 @@ public interface PosOrderDao {
 	public List<Object[]> findRepayDetail(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
 
 	/**
+	 * 查询反结账明细
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public List<Object[]> findRepayDetail(String systemBookCode, Integer branchNum, Integer stallNum, Date dateFrom, Date dateTo);
+
+	/**
 	 * 营业折扣明细
 	 * @param systemBookCode
 	 * @param dtFrom
@@ -367,6 +398,17 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public List<Object[]> findClientDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
+
+
+	/**
+	 * 营业折扣明细
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findClientDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, Integer branchNum, Integer stallNum);
 
 	/**
 	 * 营业折扣明细
@@ -377,6 +419,16 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public List<Object[]> findMgrDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, List<Integer> branchNums);
+
+	/**
+	 * 营业折扣明细
+	 * @param systemBookCode
+	 * @param dtFrom
+	 * @param dtTo
+	 * @param branchNums
+	 * @return
+	 */
+	public List<Object[]> findMgrDiscountAnalysisAmountAndMoney(String systemBookCode, Date dtFrom, Date dtTo, Integer branchNum, Integer stallNum);
 
 	/**
 	 * 按分店查询营业额
@@ -624,6 +676,8 @@ public interface PosOrderDao {
 	public List<Object[]> findCustomerAnalysisBranch(String systemBookCode,
                                                      Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
 
+	List<Object[]> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType);
+
 
 	/**
 	 * 客单分析 时段分析
@@ -748,11 +802,11 @@ public interface PosOrderDao {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
-	 * @param type
+	 * @param dateType
 	 * @return
 	 */
 	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode,
-                                                    List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
+                                                    List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType, List<Integer> stallNums);
 
 	/**
 	 * 卡消费 收入汇总
@@ -1292,5 +1346,5 @@ public interface PosOrderDao {
 	public List<PosOrderMatrix> findMatrixs(PosOrderQuery posOrderQuery);
 
 
-
+	public List<Object[]> findStallItemSummary(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> itemNums, List<Integer> stallNums);
 }

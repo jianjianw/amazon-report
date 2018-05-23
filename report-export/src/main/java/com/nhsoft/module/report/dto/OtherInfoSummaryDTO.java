@@ -29,6 +29,10 @@ public class OtherInfoSummaryDTO implements Serializable {
     private Integer presentCount = 0; //赠送
     private BigDecimal presentMoney = BigDecimal.ZERO;
 
+    private Integer stallNum;
+    private String stallCode;
+    private String stallName;
+
     public Integer getPresentCount() {
         return presentCount;
     }
@@ -179,5 +183,29 @@ public class OtherInfoSummaryDTO implements Serializable {
 
     public void setMgrDiscountMoney(BigDecimal mgrDiscountMoney) {
         this.mgrDiscountMoney = mgrDiscountMoney;
+    }
+
+    public Integer getStallNum() {
+        return stallNum;
+    }
+
+    public void setStallNum(Integer stallNum) {
+        this.stallNum = stallNum;
+    }
+
+    public String getStallCode() {
+        return stallCode;
+    }
+
+    public void setStallCode(String stallCode) {
+        this.stallCode = stallCode;
+    }
+
+    public String getStallName() {
+        return stallName;
+    }
+
+    public void setStallName(String stallName) {
+        this.stallName = stallName;
     }
 }

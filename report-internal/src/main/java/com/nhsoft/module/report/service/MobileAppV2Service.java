@@ -17,6 +17,17 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public MobileBusinessDTO getIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询首页营业汇总数据
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param stallNums
+	 * @return
+	 */
+	public MobileBusinessDTO getStallIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 查询异动信息
@@ -27,16 +38,27 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public List<NameAndValueDTO> findOtherInfos(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
-	
+
 	/**
-	 * 查询折扣分类明细
+	 * 查询异动信息
 	 * @param systemBookCode
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
 	 * @return
 	 */
-	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<NameAndValueDTO> findOtherInfos(String systemBookCode, Integer branchNum, List<Integer> stallNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询折扣分类明细
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param stallNums
+	 * @return
+	 */
+	public List<NameAndValueDTO> findDiscountDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 查询现金收入明细
@@ -54,9 +76,10 @@ public interface MobileAppV2Service {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
+	 * @param stallNums
 	 * @return
 	 */
-	public List<NameAndValueDTO> findPaymentDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+	public List<NameAndValueDTO> findPaymentDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 按支付方式汇总存款金额
@@ -74,13 +97,14 @@ public interface MobileAppV2Service {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
-	 * @param rankFrom 查询起始位 
-	 * @param rankTo 查询页大小 
+	 * @param stallNums
+	 * @param rankFrom 查询起始位
+	 * @param rankTo 查询页大小
 	 * @param sortField 排序方式 amount or money
 	 * @return
 	 */
 	public List<NameAndTwoValueDTO> findItemRank(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo,
-                                                 Integer rankFrom, Integer rankTo, String sortField);
+												 List<Integer> stallNums, Integer rankFrom, Integer rankTo, String sortField);
 	
 	/**
 	 * 查询商品类别排行
@@ -119,6 +143,16 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public MobileBusinessPeriodDTO getMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询时段营业数据
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public MobileBusinessPeriodDTO getStallMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 查询卡汇总数据
@@ -216,6 +250,18 @@ public interface MobileAppV2Service {
 	 */
 	public List<NameAndTwoValueDTO> findBranchPosSummary(String systemBookCode, List<Integer> branchNums,
                                                          Integer itemNum, Date dateFrom, Date dateTo);
+
+	/**
+	 * 按档口汇总单品前台销售数量、金额
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param itemNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param stallNums
+	 * @return
+	 */
+	public List<NameAndTwoValueDTO> findStallPosSummary(String systemBookCode, List<Integer> branchNums, Integer itemNum, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 商品折让统计
@@ -286,6 +332,19 @@ public interface MobileAppV2Service {
 	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode,
                                                    Integer branchNum,
                                                    Date dateFrom, Date dateTo, String infoType);
+
+	/**
+	 * 异动明细
+	 * @param systemBookCode
+	 * @param branchNum
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param infoType
+	 * @return
+	 */
+	public List<OtherInfoDTO> findOtherInfoDetails(String systemBookCode,
+												   Integer branchNum, Integer stallNum,
+												   Date dateFrom, Date dateTo, String infoType);
 	
 	public List<ShipOrderDTO> findShipOrders(String systemBookCode,
                                              Integer centerBranchNum,
@@ -330,4 +389,7 @@ public interface MobileAppV2Service {
 	public List<CardReportDTO> findCardReportByBranchBq(String systemBookCode, List<Integer> branchNums, Date dateFrom,
 														Date dateTo, String sortField, Integer branchNum);
 
+	public List<NameAndValueDTO> findStallCashDetails(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
+
+	public List<MobileBusinessDTO> findBusinessReceiptGroupByStall(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 }

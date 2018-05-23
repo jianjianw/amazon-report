@@ -29,6 +29,10 @@ public class CustomerAnalysisDay implements Serializable {
 	private Date shiftTableStart;//接班时间
 	private Date shiftTableEnd;//交班时间
 
+	private Integer stallNum;
+	private String stallCode;
+	private String stallName;
+
 	public BigDecimal getCustomerValidNums() {
 		return customerValidNums;
 	}
@@ -165,4 +169,27 @@ public class CustomerAnalysisDay implements Serializable {
 		this.shiftTableEnd = shiftTableEnd;
 	}
 
+	public Integer getStallNum() {
+		return stallNum;
+	}
+
+	public void setStallNum(Integer stallNum) {
+		this.stallNum = stallNum;
+	}
+
+	public String getStallCode() {
+		return stallCode;
+	}
+
+	public void setStallCode(String stallCode) {
+		this.stallCode = stallCode;
+	}
+
+	public String getStallName() {
+		return stallName;
+	}
+
+	public void setStallName(String stallName) {
+		this.stallName = stallName;
+	}
 }
