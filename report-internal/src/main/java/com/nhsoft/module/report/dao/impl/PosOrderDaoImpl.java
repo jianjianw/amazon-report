@@ -2773,8 +2773,48 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
         return query.list();
     }
 
+	@Override
+	public List<Object[]> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select stall_num as stallNum, sum(order_payment_money) as paymentMoney, count(order_no) as orderNo, ");
+		sb.append("sum(order_coupon_total_money) as conponMoney, sum(order_mgr_discount_money) as mgrDiscount, ");
+		sb.append("sum(order_gross_profit) as grossProfit, sum(order_detail_item_count) as itemCount, ");
+		sb.append("count(case when order_card_user_num > 0 then order_no end) as userAmount, ");
+		sb.append("sum(case when order_card_user_num > 0 then (order_payment_money - order_mgr_discount_money + order_coupon_total_money) end) as userMoney, ");
+		sb.append("sum(case when order_detail_item_count > 0 then 1 when order_detail_item_count is null then 1 else 0 end) as validOrderNo ");
+		sb.append("from pos_order with(nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' and branch_num = " + branchNum + " and stall_num is not null ");
+		if(stallNums != null && stallNums.size() > 0) {
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
+		}
+		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		sb.append("and order_state_code in " + AppUtil.getIntegerParmeList(AppUtil.getNormalPosOrderState()));
 
-    @Override
+		if (StringUtils.isNotEmpty(saleType)) {
+			List<String> weixinSources = AppUtil.getPosOrderOnlineSource();
+			if(saleType.equals(AppConstants.POS_ORDER_SALE_TYPE_BRANCH)){
+				sb.append("and (order_source is null or order_source not in " + AppUtil.getStringParmeList(weixinSources) + ") ");
+			} else {
+				sb.append("and order_source = '" + saleType + "' ");
+			}
+		}
+		sb.append("group by stallNum ");
+		SQLQuery query = currentSession().createSQLQuery(sb.toString());
+		query.addScalar("stallNum", StandardBasicTypes.INTEGER)
+				.addScalar("paymentMoney", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("orderNo", StandardBasicTypes.LONG)
+				.addScalar("conponMoney", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("mgrDiscount", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("grossProfit", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("itemCount", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("userAmount", StandardBasicTypes.INTEGER)
+				.addScalar("userMoney", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("validOrderNo", StandardBasicTypes.BIG_DECIMAL)
+		;
+		return query.list();
+	}
+
+	@Override
     public List<Object[]> findCustomerAnalysisTimePeriods(String systemBookCode, Date dtFrom, Date dtTo,
                                                           List<Integer> branchNums, Integer space, String saleType) {
         if(space == null){

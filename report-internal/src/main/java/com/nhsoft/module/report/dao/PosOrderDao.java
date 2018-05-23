@@ -625,6 +625,8 @@ public interface PosOrderDao {
 	public List<Object[]> findCustomerAnalysisBranch(String systemBookCode,
                                                      Date dtFrom, Date dtTo, List<Integer> branchNums, String saleType);
 
+	List<Object[]> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType);
+
 
 	/**
 	 * 客单分析 时段分析

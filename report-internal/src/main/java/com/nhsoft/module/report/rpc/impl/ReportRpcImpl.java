@@ -3766,6 +3766,11 @@ public class ReportRpcImpl implements ReportRpc {
 	}
 
 	@Override
+	public List<CustomerAnalysisDay> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType) {
+		return reportService.findCustomerAnalysisStalls(systemBookCode,dateFrom,dateTo,branchNum, stallNums,saleType);
+	}
+
+	@Override
 	public List<WholesaleAnalysisDTO> findClientUnSaleItems(String systemBookCode, Integer branchNum, String clientFid) {
 		return reportService.findClientUnSaleItems(systemBookCode,branchNum,clientFid);
 	}
