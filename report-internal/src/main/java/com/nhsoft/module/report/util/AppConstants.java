@@ -3,6 +3,10 @@ package com.nhsoft.module.report.util;
 
 import com.nhsoft.module.report.query.State;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class AppConstants {
 	/**
 	 * payment 中默认支付方式
@@ -591,6 +595,9 @@ public class AppConstants {
 
 	//单据状态
 	public static final State POS_ORDER_REPAY = new State(1 << 3, "反结账");
+
+	//在线订单
+	public static final List<String> ONLINE_SOURCES = Stream.of("有赞", "京东到家", "饿了么外卖", "美团外卖", "饿百零售", "蜂巢微商城", "蜂巢拼团").collect(Collectors.toList());
 
 
 

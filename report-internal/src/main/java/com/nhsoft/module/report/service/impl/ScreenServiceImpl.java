@@ -3,6 +3,7 @@ package com.nhsoft.module.report.service.impl;
 import com.nhsoft.module.report.dao.ScreenDao;
 import com.nhsoft.module.report.dto.ScreenCategoryDTO;
 import com.nhsoft.module.report.dto.ScreenItemSaleDTO;
+import com.nhsoft.module.report.dto.ScreenPlatformSaleDTO;
 import com.nhsoft.module.report.service.ScreenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,25 @@ public class ScreenServiceImpl implements ScreenService {
     @Override
     public List<Object[]> findMerchantSales(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo) {
         return screenDao.findMerchantSales(systemBookCode, branchNum, dateFrom, dateTo);
+    }
+
+    @Override
+    public Integer readCardUsers(String systemBookCode, Integer branchNum, Boolean isNew) {
+        return screenDao.readCardUsers(systemBookCode, branchNum, isNew);
+    }
+
+    @Override
+    public Integer[] readOrderCounts(String systemBookCode, Integer branchNum) {
+        return screenDao.readOrderCounts(systemBookCode, branchNum);
+    }
+
+    @Override
+    public BigDecimal[] readOrderMoney(String systemBookCode, Integer branchNum) {
+        return screenDao.readOrderMoney(systemBookCode, branchNum);
+    }
+
+    @Override
+    public List<ScreenPlatformSaleDTO> findPlatformSales(String systemBookCode, Integer branchNum) {
+        return screenDao.findPlatformSales(systemBookCode, branchNum);
     }
 }

@@ -1,10 +1,10 @@
 package com.nhsoft.module.report.rpc;
 
-import com.nhsoft.module.report.dto.ScreenCategoryDTO;
-import com.nhsoft.module.report.dto.ScreenItemSaleDTO;
-import com.nhsoft.module.report.dto.ScreenMerchantDTO;
+import com.nhsoft.module.report.dto.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface ScreenRpc {
 
@@ -14,6 +14,16 @@ public interface ScreenRpc {
 
     List<ScreenMerchantDTO> findMerchantSales(String systemBookCode, Integer branchNum);
 
+    List<Map<String, BigDecimal>> readSaleMoney(String systemBookCode, Integer branchNum);
 
+    List<Map<String, Integer>> readCardUsers(String systemBookCode, Integer branchNum, Boolean isNew);
+
+    List<ScreenPieData> readOrderCounts(String systemBookCode, Integer branchNum);
+
+    List<ScreenPieData> readOrderMoney(String systemBookCode, Integer branchNum);
+
+    List<ScreenPlatformSaleDTO> findPlatformSales(String systemBookCode, Integer branchNum);
+
+    List<Map<String, Integer>> readOnlineOrderCounts(String systemBookCode, Integer branchNum);
 
 }

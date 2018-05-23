@@ -1,12 +1,8 @@
 package com.nhsoft.module.report.rpc.impl;
 
-import com.nhsoft.module.report.dto.ScreenCategoryDTO;
-import com.nhsoft.module.report.dto.ScreenItemSaleDTO;
-import com.nhsoft.module.report.dto.ScreenMerchantDTO;
+import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.Merchant;
 import com.nhsoft.module.report.model.MerchantContract;
-import com.nhsoft.module.report.rpc.PosOrderRpc;
-import com.nhsoft.module.report.rpc.ReportRpc;
 import com.nhsoft.module.report.rpc.ScreenRpc;
 import com.nhsoft.module.report.service.MerchantContractService;
 import com.nhsoft.module.report.service.MerchantService;
@@ -14,7 +10,6 @@ import com.nhsoft.module.report.service.ScreenService;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.ReportUtil;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,7 +31,7 @@ public class ScreenRpcImpl implements ScreenRpc {
 
     @Override
     @RequestMapping("/findItemSales")
-    public List<ScreenItemSaleDTO> findItemSales(@RequestParam("systemBookCode") String systemBookCode, @RequestParam("branchNum") Integer branchNum) {
+    public List<ScreenItemSaleDTO> findItemSales(String systemBookCode, Integer branchNum) {
         return screenService.findItemSales(systemBookCode, branchNum);
     }
 
@@ -85,5 +80,55 @@ public class ScreenRpcImpl implements ScreenRpc {
         dtos = dtos.stream().filter(m -> merchantNums.contains(m.getMerchantNum())).peek(d -> merchants.stream().filter(m -> d.getMerchantNum().equals(m.getMerchantNum())).findAny().ifPresent(m -> d.setMerchantName(m.getMerchantName()))).collect(Collectors.toList());
         dtos.sort(Comparator.comparing(ScreenMerchantDTO::getTodaySaleMoney).reversed());
         return dtos;
+    }
+
+    @Override
+    @RequestMapping("/readSaleMoney")
+    public List<Map<String, BigDecimal>> readSaleMoney(String systemBookCode, Integer branchNum) {
+        Map<String, BigDecimal> map = new HashMap<>();
+        map.put("value", screenService.readOrderMoney(systemBookCode, branchNum)[0]);
+        return Collections.singletonList(map);
+    }
+
+    @Override
+    @RequestMapping("/readCardUsers")
+    public List<Map<String, Integer>> readCardUsers(String systemBookCode, Integer branchNum, @RequestParam(value = "isNew", required = false) Boolean isNew) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("value", screenService.readCardUsers(systemBookCode, branchNum, isNew));
+        return Collections.singletonList(map);
+    }
+
+    @Override
+    @RequestMapping("/readOrderCounts")
+    public List<ScreenPieData> readOrderCounts(String systemBookCode, Integer branchNum) {
+        Integer[] orderCounts = screenService.readOrderCounts(systemBookCode, branchNum);
+        List<ScreenPieData> datas = new ArrayList<>(2);
+        datas.add(new ScreenPieData("member", orderCounts[1]));
+        datas.add(new ScreenPieData("normal", orderCounts[0]-orderCounts[1]));
+        return datas;
+    }
+
+    @Override
+    @RequestMapping("/readOrderMoney")
+    public List<ScreenPieData> readOrderMoney(String systemBookCode, Integer branchNum) {
+        BigDecimal[] orderMoney = screenService.readOrderMoney(systemBookCode, branchNum);
+        List<ScreenPieData> datas = new ArrayList<>(2);
+        datas.add(new ScreenPieData("member", orderMoney[1]));
+        datas.add(new ScreenPieData("normal", orderMoney[0].subtract(orderMoney[1])));
+        return datas;
+    }
+
+    @Override
+    @RequestMapping("/findPlatformSales")
+    public List<ScreenPlatformSaleDTO> findPlatformSales(String systemBookCode, Integer branchNum) {
+        return screenService.findPlatformSales(systemBookCode, branchNum);
+    }
+
+    @Override
+    @RequestMapping("/readOnlineOrderCounts")
+    public List<Map<String, Integer>> readOnlineOrderCounts(String systemBookCode, Integer branchNum) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("value", screenService.readOrderCounts(systemBookCode, branchNum)[2]);
+        return Collections.singletonList(map);
     }
 }
