@@ -7482,7 +7482,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-			Date dateTo, String dateType) {
+			Date dateTo, String dateType, List<Integer> stallNums) {
 
 		SystemBook systemBook = systemBookService.readInCache(systemBookCode);
 		Date now = Calendar.getInstance().getTime();
@@ -7506,11 +7506,14 @@ public class ReportServiceImpl implements ReportService {
 		if (dateType.equals(AppConstants.BUSINESS_DATE_YEAR)) {
 			queryMonth = true;
 		}
+		if(stallNums != null && !stallNums.isEmpty()){
+			systemBook.setBookReadDpc(false);
+		}
 		if (systemBook.getBookReadDpc() != null && systemBook.getBookReadDpc() && !dateType.equals(AppConstants.BUSINESS_DATE_DAY)) {
 			Date dpcLimitTime = DateUtil.addDay(now, -2);
 
 			if (dpcLimitTime.compareTo(dateFrom) <= 0) {
-				return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
+				return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType, null);
 			} else if (dpcLimitTime.compareTo(dateTo) > 0) {
 				OrderQueryDTO orderQueryDTO = new OrderQueryDTO();
 				orderQueryDTO.setSystemBookCode(systemBookCode);
@@ -7570,7 +7573,7 @@ public class ReportServiceImpl implements ReportService {
 					returnList.add(objects);
 				}
 				List<Object[]> localObjects = posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums,
-						dpcLimitTime, dateTo, dateType);
+						dpcLimitTime, dateTo, dateType, null);
 				Object[] objects = null;
 				boolean find = false;
 				for (int i = 0,len = localObjects.size(); i < len; i++) {
@@ -7593,7 +7596,7 @@ public class ReportServiceImpl implements ReportService {
 				return returnList;
 			}
 		} else {
-			return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
+			return posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType, stallNums);
 		}
 	}
 

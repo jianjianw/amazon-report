@@ -712,13 +712,17 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 
 	@Override
 	public List<Object[]> findShopTimeAnalysis(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-			Date dateTo) {
+			Date dateTo, List<Integer> stallNums) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select datepart(hh,order_time), sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, count(order_no) as amount ");
 		sb.append("from pos_order with(nolock) where system_book_code = '" + systemBookCode + "' ");
 		sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums) + " ");
 		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and '"
 				+ DateUtil.getDateShortStr(dateTo) + "' and order_state_code in (5, 7) ");
+		if(stallNums != null && !stallNums.isEmpty()){
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
+		}
+
 		sb.append("group by datepart(hh,order_time) order by datepart(hh,order_time)");
 		Query query = currentSession().createSQLQuery(sb.toString());
 		return query.list();
@@ -901,7 +905,7 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 
 	@Override
 	public MobileBusinessDTO findMobileAppBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-	                                                  Date dateTo) {
+	                                                  Date dateTo, List<Integer> stallNums) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as paymentMoney, count(order_no) as orderNums, ");
 		sb.append("sum(case when order_card_user_num > 0 then (order_payment_money - order_mgr_discount_money + order_coupon_total_money) end) as cardMoney, ");
@@ -915,6 +919,9 @@ public class MobileAppDaoImpl extends DaoImpl implements MobileAppDao {
 		sb.append("and shift_table_bizday between '" + DateUtil.getDateShortStr(dateFrom) + "' and '"
 				+ DateUtil.getDateShortStr(dateTo) + "' ");
 		sb.append("and order_state_code in (5, 7) ");
+		if(stallNums != null && !stallNums.isEmpty()){
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
+		}
 
 		MobileBusinessDTO dto = new MobileBusinessDTO();
 		Query query = currentSession().createSQLQuery(sb.toString());

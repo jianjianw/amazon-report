@@ -126,7 +126,7 @@ public interface MobileAppDao {
 	 * @return
 	 */
 	public List<Object[]> findShopTimeAnalysis(String systemBookCode,
-                                               List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                               List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 按帐套、门店和时间段查询时段分析（每个门店一个时间段，按门店列表返回）
@@ -218,10 +218,11 @@ public interface MobileAppDao {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
+	 * @pram stallNums
 	 * @return
 	 */
 	public MobileBusinessDTO findMobileAppBusinessDTO(String systemBookCode, List<Integer> branchNums,
-                                                      Date dateFrom, Date dateTo);
+                                                      Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 新版老板查询卡数据汇总

@@ -1236,7 +1236,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	}
 
 	@Override
-	public BigDecimal getPosCash(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+	public BigDecimal getPosCash(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("select sum(payment_money) ");
@@ -1251,6 +1251,9 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		}
 		if (dateTo != null) {
 			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		}
+		if(stallNums != null && !stallNums.isEmpty()){
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
 		}
 		Query query = currentSession().createSQLQuery(sb.toString());
 		Object object = query.uniqueResult();
@@ -3877,7 +3880,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 
 	@Override
 	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom,
-													Date dateTo, String dateType) {
+													Date dateTo, String dateType, List<Integer> stallNums) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select %s, sum(order_payment_money + order_coupon_total_money - order_mgr_discount_money) as money, ");
 		sb.append("count(order_no) as amount ");
@@ -3892,6 +3895,10 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 		if (dateTo != null) {
 			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
+		if(stallNums != null && !stallNums.isEmpty()){
+			sb.append("and stall_num in " + AppUtil.getIntegerParmeList(stallNums));
+		}
+
 		sb.append("and order_state_code in (5, 7) ");
 		sb.append("group by %s order by %s asc");
 		String sql = sb.toString();

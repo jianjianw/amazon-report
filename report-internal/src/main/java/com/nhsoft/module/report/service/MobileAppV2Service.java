@@ -17,6 +17,17 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public MobileBusinessDTO getIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询首页营业汇总数据
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param stallNums
+	 * @return
+	 */
+	public MobileBusinessDTO getStallIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 	
 	/**
 	 * 查询异动信息
@@ -119,6 +130,16 @@ public interface MobileAppV2Service {
 	 * @return
 	 */
 	public MobileBusinessPeriodDTO getMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	/**
+	 * 查询时段营业数据
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public MobileBusinessPeriodDTO getStallMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 查询卡汇总数据

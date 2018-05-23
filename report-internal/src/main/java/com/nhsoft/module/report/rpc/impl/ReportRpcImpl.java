@@ -525,7 +525,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		objects = reportService.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo,
-				AppConstants.BUSINESS_DATE_MONTH);
+				AppConstants.BUSINESS_DATE_MONTH, null);
 		for (int i = 0; i < objects.size(); i++) {
 			object = objects.get(i);
 
@@ -3311,7 +3311,27 @@ public class ReportRpcImpl implements ReportRpc {
 	@Override
 	public List<PosOrderMoneyByBizDaySummary> findPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType) {
 
-		List<Object[]> objects = reportService.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType);
+		List<Object[]> objects = reportService.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType, null);
+		int size = objects.size();
+		List<PosOrderMoneyByBizDaySummary> list = new ArrayList<PosOrderMoneyByBizDaySummary>(size);
+		if(objects.isEmpty()){
+			return list;
+		}
+		for (int i = 0; i <size ; i++) {
+			Object[] object = objects.get(i);
+			PosOrderMoneyByBizDaySummary posOrderMoneyByBizDaySummary = new PosOrderMoneyByBizDaySummary();
+			posOrderMoneyByBizDaySummary.setBizday((String) object[0]);
+			posOrderMoneyByBizDaySummary.setMoney((BigDecimal) object[1]);
+			posOrderMoneyByBizDaySummary.setAmount((Integer) object[2]);
+			list.add(posOrderMoneyByBizDaySummary);
+		}
+
+		return list;
+	}
+
+	@Override
+	public List<PosOrderMoneyByBizDaySummary> findStallPosOrderMoneyByBizDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType, List<Integer> stallNums) {
+		List<Object[]> objects = reportService.findPosOrderMoneyByBizDay(systemBookCode, branchNums, dateFrom, dateTo, dateType, stallNums);
 		int size = objects.size();
 		List<PosOrderMoneyByBizDaySummary> list = new ArrayList<PosOrderMoneyByBizDaySummary>(size);
 		if(objects.isEmpty()){

@@ -68,9 +68,9 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
                                                        Date dateTo) {
 		
 		MobileBusinessDTO dto = mobileAppDao
-				.findMobileAppBusinessDTO(systemBookCode, branchNums, dateFrom, dateTo);		
+				.findMobileAppBusinessDTO(systemBookCode, branchNums, dateFrom, dateTo, null);
 			dto.setCashTotal(dto.getCashTotal().add(
-				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo)));
+				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, null)));
 		dto.setCashTotal(dto.getCashTotal().add(
 				cardDepositDao.getCashMoney(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.PAYMENT_CASH)));
 		dto.setCashTotal(dto.getCashTotal().add(
@@ -81,6 +81,15 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 				otherInoutDao.getCashMoney(systemBookCode, branchNums, dateFrom, dateTo)));
 		dto.setCardDeposit(cardDepositDao.getCashMoney(systemBookCode, branchNums, dateFrom, dateTo, null));
 		dto.setCardAddedCount(cardUserDao.findTotalCardCount(systemBookCode, branchNums, dateFrom, dateTo, null));
+		return dto;
+	}
+
+	@Override
+	public MobileBusinessDTO getStallIndexMobileBusinessDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		MobileBusinessDTO dto = mobileAppDao
+				.findMobileAppBusinessDTO(systemBookCode, branchNums, dateFrom, dateTo, stallNums);
+		dto.setCashTotal(dto.getCashTotal().add(
+				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, stallNums)));
 		return dto;
 	}
 
@@ -222,7 +231,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		
 		NameAndValueDTO nameAndValueDTO = null;
 		nameAndValueDTO = new NameAndValueDTO();
-		nameAndValueDTO.setValue(posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo));
+		nameAndValueDTO.setValue(posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, null));
 		nameAndValueDTO.setName("POS收入");
 		list.add(nameAndValueDTO);
 		
@@ -566,7 +575,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 	@Override
 	public MobileBusinessPeriodDTO getMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums,
                                                               Date dateFrom, Date dateTo) {
-		List<Object[]> objects = mobileAppDao.findShopTimeAnalysis(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> objects = mobileAppDao.findShopTimeAnalysis(systemBookCode, branchNums, dateFrom, dateTo, null);
 		MobileBusinessPeriodDTO dto = new MobileBusinessPeriodDTO();
 		
 		Object[] object;
@@ -599,6 +608,44 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 			dto.setCustomerAvgPrice(BigDecimal.ZERO);
 		}
 		
+		return dto;
+	}
+
+	@Override
+	public MobileBusinessPeriodDTO getStallMobileBusinessPeriodDTO(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums) {
+		List<Object[]> objects = mobileAppDao.findShopTimeAnalysis(systemBookCode, branchNums, dateFrom, dateTo, stallNums);
+		MobileBusinessPeriodDTO dto = new MobileBusinessPeriodDTO();
+
+		Object[] object;
+		Integer hour;
+		BigDecimal money;
+		Integer receiptCount;
+		NameAndValueDTO nameAndValueDTO;
+		for(int i = 0;i < objects.size();i++){
+			object = objects.get(i);
+			hour = (Integer) object[0];
+			money = object[1] == null?BigDecimal.ZERO:(BigDecimal)object[1];
+			receiptCount = object[2] == null?0:(Integer) object[2];
+
+			nameAndValueDTO = dto.getBusinessMoneyList().get(hour.intValue());
+			nameAndValueDTO.setValue(money);
+
+			nameAndValueDTO = dto.getReceiptCountList().get(hour.intValue());
+			nameAndValueDTO.setValue(BigDecimal.valueOf(receiptCount));
+
+			dto.setBusinessMoney(dto.getBusinessMoney().add(money));
+			dto.setReceiptCount(dto.getReceiptCount() + receiptCount);
+
+
+		}
+
+		if(dto.getReceiptCount() > 0){
+			dto.setCustomerAvgPrice(dto.getBusinessMoney().divide(BigDecimal.valueOf(dto.getReceiptCount()), 2, BigDecimal.ROUND_HALF_UP));
+
+		} else {
+			dto.setCustomerAvgPrice(BigDecimal.ZERO);
+		}
+
 		return dto;
 	}
 
@@ -979,7 +1026,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 		mobileBusinessDTO.setReceiptAvgMoney(mobileBusiness.getReceiptAvgMoney());
 		
 		mobileBusinessDTO.setCashTotal(mobileBusinessDTO.getCashTotal().add(
-				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo)));
+				posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, null)));
 		mobileBusinessDTO.setCashTotal(mobileBusinessDTO.getCashTotal().add(
 				cardDepositDao.getCashMoney(systemBookCode, branchNums, dateFrom, dateTo, AppConstants.PAYMENT_CASH)));
 		mobileBusinessDTO.setCashTotal(mobileBusinessDTO.getCashTotal().add(
@@ -1403,7 +1450,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 
 		MobileBusinessDetailDTO detail = new MobileBusinessDetailDTO();
 		detail.setDetailType(AppConstants.CASH_TYPE_POS);
-		detail.setDetailValue(posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo));
+		detail.setDetailValue(posOrderDao.getPosCash(systemBookCode, branchNums, dateFrom, dateTo, null));
 		cashTotal = cashTotal.add(detail.getDetailValue());
 		list.add(detail);
 

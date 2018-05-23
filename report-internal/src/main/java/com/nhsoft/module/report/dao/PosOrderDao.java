@@ -305,7 +305,7 @@ public interface PosOrderDao {
 	 * @return
 	 */
 	public BigDecimal getPosCash(String systemBookCode,
-                                 List<Integer> branchNums, Date dateFrom, Date dateTo);
+                                 List<Integer> branchNums, Date dateFrom, Date dateTo, List<Integer> stallNums);
 
 	/**
 	 * 查询反结账单据数量和金额
@@ -748,11 +748,11 @@ public interface PosOrderDao {
 	 * @param branchNums
 	 * @param dateFrom
 	 * @param dateTo
-	 * @param type
+	 * @param dateType
 	 * @return
 	 */
 	public List<Object[]> findPosOrderMoneyByBizDay(String systemBookCode,
-                                                    List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType);
+                                                    List<Integer> branchNums, Date dateFrom, Date dateTo, String dateType, List<Integer> stallNums);
 
 	/**
 	 * 卡消费 收入汇总
