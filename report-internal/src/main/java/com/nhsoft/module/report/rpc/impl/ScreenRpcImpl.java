@@ -36,6 +36,11 @@ public class ScreenRpcImpl implements ScreenRpc {
     }
 
     @Override
+    public List<ScreenItemSaleDTO> findItemSaleCounts(String systemBookCode, Integer branchNum) {
+        return screenService.findItemSaleCounts(systemBookCode, branchNum);
+    }
+
+    @Override
     @RequestMapping("/findCategorySales")
     public List<ScreenCategoryDTO> findCategorySales(String systemBookCode, Integer branchNum) {
         return screenService.findCategorySales(systemBookCode, branchNum);
@@ -129,6 +134,23 @@ public class ScreenRpcImpl implements ScreenRpc {
     public List<Map<String, Integer>> readOnlineOrderCounts(String systemBookCode, Integer branchNum) {
         Map<String, Integer> map = new HashMap<>();
         map.put("value", screenService.readOrderCounts(systemBookCode, branchNum)[2]);
+        return Collections.singletonList(map);
+    }
+
+    @Override
+    @RequestMapping("/readTotalOrderCounts")
+    public List<Map<String, Integer>> readTotalOrderCounts(String systemBookCode, Integer branchNum) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("value", screenService.readOrderCounts(systemBookCode, branchNum)[0]);
+        return Collections.singletonList(map);
+    }
+
+    @Override
+    @RequestMapping("/readMemberOrderPercent")
+    public List<Map<String, Integer>> readMemberOrderPercent(String systemBookCode, Integer branchNum) {
+        Integer[] counts = screenService.readOrderCounts(systemBookCode, branchNum);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("value", counts[0] == 0?0:BigDecimal.valueOf(counts[1]*100).divide(BigDecimal.valueOf(counts[0]), 0, BigDecimal.ROUND_HALF_UP).intValue());
         return Collections.singletonList(map);
     }
 }

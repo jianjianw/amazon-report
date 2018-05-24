@@ -14,6 +14,8 @@ public interface ScreenService {
 
     List<ScreenItemSaleDTO> findItemSales(String systemBookCode, Integer branchNum);
 
+    List<ScreenItemSaleDTO> findItemSaleCounts(String systemBookCode, Integer branchNum);
+
     List<ScreenCategoryDTO> findCategorySales(String systemBookCode, Integer branchNum);
 
     List<Object[]> findMerchantSales(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo);

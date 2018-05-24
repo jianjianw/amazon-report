@@ -10,6 +10,8 @@ public interface ScreenRpc {
 
     List<ScreenItemSaleDTO> findItemSales(String systemBookCode, Integer branchNum);
 
+    List<ScreenItemSaleDTO> findItemSaleCounts(String systemBookCode, Integer branchNum);
+
     List<ScreenCategoryDTO> findCategorySales(String systemBookCode, Integer branchNum);
 
     List<ScreenMerchantDTO> findMerchantSales(String systemBookCode, Integer branchNum);
@@ -25,5 +27,12 @@ public interface ScreenRpc {
     List<ScreenPlatformSaleDTO> findPlatformSales(String systemBookCode, Integer branchNum);
 
     List<Map<String, Integer>> readOnlineOrderCounts(String systemBookCode, Integer branchNum);
+
+    List<Map<String, Integer>> readTotalOrderCounts(String systemBookCode, Integer branchNum);
+
+    List<Map<String, Integer>> readMemberOrderPercent(String systemBookCode, Integer branchNum);
+
+
+//    List<ScreenMerchantStallInfoDTO> find
 
 }

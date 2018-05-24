@@ -27,6 +27,11 @@ public class ScreenServiceImpl implements ScreenService {
     }
 
     @Override
+    public List<ScreenItemSaleDTO> findItemSaleCounts(String systemBookCode, Integer branchNum) {
+        return screenDao.findItemSaleCounts(systemBookCode, branchNum);
+    }
+
+    @Override
     public List<ScreenCategoryDTO> findCategorySales(String systemBookCode, Integer branchNum) {
         return screenDao.findCategorySales(systemBookCode, branchNum);
     }

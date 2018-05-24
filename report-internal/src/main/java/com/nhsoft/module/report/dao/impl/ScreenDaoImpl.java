@@ -30,6 +30,16 @@ public class ScreenDaoImpl extends DaoImpl implements ScreenDao {
     }
 
     @Override
+    public List<ScreenItemSaleDTO> findItemSaleCounts(String systemBookCode, Integer branchNum) {
+        StringBuilder sb = new StringBuilder("select top(10) item_num as itemNum, max(order_detail_item) as itemName, sum(case when order_detail_state_code = 4 then -1 else 1 end) as saleCount ");
+        sb.append("from pos_order_detail with(nolock) where order_detail_book_code = '" + systemBookCode + "' and order_detail_branch_num = " + branchNum + " ");
+        sb.append("and order_detail_order_state in (5, 7) and order_detail_state_code != 8 and item_num is not null and order_detail_bizday = '" + DateUtil.getDateShortStr(Calendar.getInstance().getTime()) + "' ");
+        sb.append("group by item_num order by saleCount desc");
+        SQLQuery query = currentSession().createSQLQuery(sb.toString());
+        query.setResultTransformer(new AliasToBeanResultTransformer(ScreenItemSaleDTO.class));
+        return query.list();    }
+
+    @Override
     public List<ScreenCategoryDTO> findCategorySales(String systemBookCode, Integer branchNum) {
         StringBuilder sb = new StringBuilder("select item_category_code as categoryCode, max(item_category) as categoryName, sum(case order_detail_state_code when 4 then -order_detail_payment_money when 1 then order_detail_payment_money end) as saleMoney, ");
         sb.append("sum(case when order_detail_state_code = 4 then -order_detail_amount else order_detail_amount end) as saleAmount ");
