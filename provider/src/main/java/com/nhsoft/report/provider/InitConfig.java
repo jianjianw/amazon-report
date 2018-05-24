@@ -25,12 +25,21 @@ import redis.clients.jedis.JedisPoolConfig;
 @ImportResource({"classpath:config.xml", "classpath:dubbo.xml"})
 //@ImportResource({"classpath:config.xml"})
 public class InitConfig {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(InitConfig.class);
-	
+
+
+	private String serviceDeskUrl;
+
+	@Value("${redis.host}")
+	private String REDIS_HOST_NAME;
+
+	@Value("${redis.pass}")
+	private  String REDIS_PASS;
+
 	@Bean
 	public RestTemplate restTemplate() {
-		
+
 		HttpComponentsClientHttpRequestFactory factory =  new HttpComponentsClientHttpRequestFactory();
 		factory.setConnectTimeout(3000);
 		factory.setReadTimeout(10000);
@@ -39,15 +48,38 @@ public class InitConfig {
 	}
 
 	@Bean
+	public RedisTemplate redisTemplate() {
+		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+		jedisPoolConfig.setMinIdle(10);
+		jedisPoolConfig.setMaxIdle(200);
+		jedisPoolConfig.setMaxTotal(600);
+		jedisPoolConfig.setTestOnBorrow(true);
+
+		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+		jedisConnectionFactory.setHostName(REDIS_HOST_NAME);
+		jedisConnectionFactory.setPort(6379);
+		jedisConnectionFactory.setPassword(REDIS_PASS);
+		jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
+		jedisConnectionFactory.setTimeout(60000);
+		jedisConnectionFactory.afterPropertiesSet();		//Cannot get Jedis connection
+
+		RedisTemplate redisTemplate = new RedisTemplate();
+		redisTemplate.setConnectionFactory(jedisConnectionFactory);
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new MyJackson2JsonRedisSerializer());
+		return redisTemplate;
+	}
+
+	@Bean
 	public EhCacheManagerFactoryBean cacheManager() {
 		EhCacheManagerFactoryBean bean = new EhCacheManagerFactoryBean();
 		bean.setShared(true);
-		
+
 		Resource resource = new ClassPathResource("ehcache.xml");
 		bean.setConfigLocation(resource);
 		return bean;
 	}
-	
+
 	@Bean
 	public EhCacheFactoryBean shareDictionaryDataCache() {
 		EhCacheFactoryBean bean = new EhCacheFactoryBean();
@@ -55,7 +87,7 @@ public class InitConfig {
 		bean.setCacheName("com.amazonReport.application.SHARE_DICTIONARY_DATA");
 		return bean;
 	}
-	
-	
-	
+
+
+
 }
