@@ -32,6 +32,7 @@ public interface ScreenRpc {
 
     List<Map<String, Integer>> readMemberOrderPercent(String systemBookCode, Integer branchNum);
 
+    List<ScreenPromotionDTO> findScreenPromotions(String systemBookCode, Integer branchNum);
 
 //    List<ScreenMerchantStallInfoDTO> find
 

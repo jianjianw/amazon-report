@@ -1,15 +1,14 @@
 package com.nhsoft.module.report.rpc.impl;
 
 import com.nhsoft.module.report.dto.*;
-import com.nhsoft.module.report.model.Merchant;
-import com.nhsoft.module.report.model.MerchantContract;
+import com.nhsoft.module.report.model.*;
 import com.nhsoft.module.report.rpc.ScreenRpc;
-import com.nhsoft.module.report.service.MerchantContractService;
-import com.nhsoft.module.report.service.MerchantService;
-import com.nhsoft.module.report.service.ScreenService;
+import com.nhsoft.module.report.service.*;
+import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.ReportUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +27,12 @@ public class ScreenRpcImpl implements ScreenRpc {
     private MerchantContractService merchantContractService;
     @Autowired
     private MerchantService merchantService;
+    @Autowired
+    private StallPromotionService stallPromotionService;
+    @Autowired
+    private StallService stallService;
+    @Autowired
+    private PosItemService posItemService;
 
     @Override
     @RequestMapping("/findItemSales")
@@ -36,6 +41,7 @@ public class ScreenRpcImpl implements ScreenRpc {
     }
 
     @Override
+    @RequestMapping("/findItemSaleCounts")
     public List<ScreenItemSaleDTO> findItemSaleCounts(String systemBookCode, Integer branchNum) {
         return screenService.findItemSaleCounts(systemBookCode, branchNum);
     }
@@ -152,5 +158,43 @@ public class ScreenRpcImpl implements ScreenRpc {
         Map<String, Integer> map = new HashMap<>();
         map.put("value", counts[0] == 0?0:BigDecimal.valueOf(counts[1]*100).divide(BigDecimal.valueOf(counts[0]), 0, BigDecimal.ROUND_HALF_UP).intValue());
         return Collections.singletonList(map);
+    }
+
+    @Override
+    @RequestMapping("/findScreenPromotions")
+    public List<ScreenPromotionDTO> findScreenPromotions(String systemBookCode, Integer branchNum) {
+        StallPromotionCondition condition = new StallPromotionCondition();
+        condition.setSystemBookCode(systemBookCode);
+        condition.setBranchNum(branchNum);
+        condition.setDateType(AppConstants.POLICY_ORDER_TIME);
+        Date now = Calendar.getInstance().getTime();
+        condition.setDateStart(now);
+        condition.setDateEnd(now);
+        condition.setPage(false);
+        condition.setStates(Collections.singletonList(AppConstants.STATE_INIT_AUDIT_CODE));
+        condition.setQueryDetail(true);
+        List<StallPromotion> stallPromotions = stallPromotionService.find(condition);
+        if(stallPromotions.size() == 0) {
+            return new ArrayList<>(0);
+        }
+        List<Stall> stalls = stallService.find(stallPromotions.stream().map(StallPromotion::getStallNum).collect(Collectors.toList()));
+        List<PosItem> posItems = posItemService.findByItemNumsInCache(systemBookCode, stallPromotions.stream().flatMap(s -> s.getDetails().stream()).map(StallPromotionDetail::getItemNum).collect(Collectors.toList()));
+        return stallPromotions.stream().flatMap(s -> {
+            ScreenPromotionDTO dto = new ScreenPromotionDTO();
+            dto.setStallNum(s.getStallNum());
+            stalls.stream().filter(t -> t.getStallNum().equals(s.getStallNum())).findAny().ifPresent(t -> {
+                dto.setStallName(t.getStallName());
+            });
+            dto.setPolicyPromotionDate(DateUtil.getDateStr(s.getPolicyPromotionDateFrom())+"至"+DateUtil.getDateStr(s.getPolicyPromotionDateTo()));
+            return s.getDetails().stream().map(d -> {
+                ScreenPromotionDTO detailDTO = new ScreenPromotionDTO();
+                BeanUtils.copyProperties(dto, detailDTO);
+                detailDTO.setItemNum(d.getItemNum());
+                posItems.stream().filter(p -> p.getItemNum().equals(d.getItemNum())).findAny().ifPresent(p -> detailDTO.setItemName(p.getItemName()));
+                detailDTO.setPolicyPromotionDetailStdPrice(d.getPolicyPromotionDetailStdPrice());
+                detailDTO.setPolicyPromotionDetailSpecialPrice(d.getPolicyPromotionDetailSpecialPrice());
+                return detailDTO;
+            });
+        }).collect(Collectors.toList());
     }
 }
