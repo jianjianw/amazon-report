@@ -32,6 +32,8 @@ public class OtherInfoSummaryDTO implements Serializable {
     private Integer stallNum;
     private String stallCode;
     private String stallName;
+    private Integer merchantNum;
+    private String merchantName;
 
     public Integer getPresentCount() {
         return presentCount;
@@ -207,5 +209,21 @@ public class OtherInfoSummaryDTO implements Serializable {
 
     public void setStallName(String stallName) {
         this.stallName = stallName;
+    }
+
+    public Integer getMerchantNum() {
+        return merchantNum;
+    }
+
+    public void setMerchantNum(Integer merchantNum) {
+        this.merchantNum = merchantNum;
+    }
+
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
     }
 }

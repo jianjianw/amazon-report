@@ -1,9 +1,6 @@
 package com.nhsoft.module.report.dao;
 
-import com.nhsoft.module.report.dto.ScreenCategoryDTO;
-import com.nhsoft.module.report.dto.ScreenItemSaleDTO;
-import com.nhsoft.module.report.dto.ScreenMerchantDTO;
-import com.nhsoft.module.report.dto.ScreenPlatformSaleDTO;
+import com.nhsoft.module.report.dto.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,6 +10,8 @@ import java.util.Map;
 public interface ScreenDao {
 
     List<ScreenItemSaleDTO> findItemSales(String systemBookCode, Integer branchNum);
+
+    List<ScreenItemSaleDTO> findItemSaleCounts(String systemBookCode, Integer branchNum);
 
     List<ScreenCategoryDTO> findCategorySales(String systemBookCode, Integer branchNum);
 
@@ -26,5 +25,11 @@ public interface ScreenDao {
 
     List<ScreenPlatformSaleDTO> findPlatformSales(String systemBookCode, Integer branchNum);
 
+    List<ScreenTraceDTO> findScreenTraces(String systemBookCode, Integer branchNum);
 
+    List<ScreenItemDTO> findScreenItems(String systemBookCode, Integer branchNum);
+
+    List<ScreenMerchantStallInfoDTO> findScreenMerchantStallInfos(String systemBookCode, Integer branchNum);
+
+    List<ScreenMerchantStallInfoDTO> findMerchantStallSaleMoney(String systemBookCode, Integer branchNum);
 }

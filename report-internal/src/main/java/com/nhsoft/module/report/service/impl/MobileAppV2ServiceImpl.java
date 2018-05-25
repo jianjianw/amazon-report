@@ -1728,10 +1728,7 @@ public class MobileAppV2ServiceImpl implements MobileAppV2Service {
 			}
 		}
 		else if(infoType.equals("经理折扣")) {
-			List<Integer> branchNums = new ArrayList<Integer>();
-			branchNums.add(branchNum);
-
-			List<Object[]> objects = posOrderDao.findMgrDiscountAnalysisAmountAndMoney(systemBookCode, dateFrom, dateTo, branchNums);
+			List<Object[]> objects = posOrderDao.findMgrDiscountAnalysisAmountAndMoney(systemBookCode, dateFrom, dateTo, branchNum, stallNum);
 			Object[] object = null;
 			for(int i = 0;i < objects.size();i++){
 				object = objects.get(i);

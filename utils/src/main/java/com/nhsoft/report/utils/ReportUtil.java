@@ -73,29 +73,31 @@ public class ReportUtil<T> {
 						continue;
 					}
 					Object oldData = field.get(persistent);
-					if(oldData == null || infoFields.contains(field)) {
+					if(oldData == null) {
 						field.set(persistent, newData);
 					}
-					else if(oldData instanceof BigDecimal) {
-						field.set(persistent, ((BigDecimal)oldData).add((BigDecimal)newData));
-					}
-					else if(oldData instanceof Integer) {
-						field.set(persistent, (Integer)oldData+(Integer)newData);
-					}
-					else if(oldData instanceof Long) {
-						field.set(persistent, (Long)oldData+(Long)newData);
-					}
-					else if(oldData instanceof Float) {
-						field.set(persistent, (Float)oldData+(Float)newData);
-					}
-					else if(oldData instanceof Double) {
-						field.set(persistent, (Double)oldData+(Double)newData);
-					}
-					else if(oldData instanceof String) {
-						field.set(persistent, (String)oldData+","+(String)newData);
-					}
-					else {
-						field.set(persistent, newData);
+					else if(!infoFields.contains(field)) {
+						if(oldData instanceof BigDecimal) {
+							field.set(persistent, ((BigDecimal)oldData).add((BigDecimal)newData));
+						}
+						else if(oldData instanceof Integer) {
+							field.set(persistent, (Integer)oldData+(Integer)newData);
+						}
+						else if(oldData instanceof Long) {
+							field.set(persistent, (Long)oldData+(Long)newData);
+						}
+						else if(oldData instanceof Float) {
+							field.set(persistent, (Float)oldData+(Float)newData);
+						}
+						else if(oldData instanceof Double) {
+							field.set(persistent, (Double)oldData+(Double)newData);
+						}
+						else if(oldData instanceof String) {
+							field.set(persistent, (String)oldData+","+(String)newData);
+						}
+						else {
+							field.set(persistent, newData);
+						}
 					}
 					field.set(t, null);
 				}

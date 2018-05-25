@@ -40,6 +40,11 @@ public class MerchantContract implements Serializable {
     private Boolean merchantContractUseCategory;
     private String merchantContractPayPeriod;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    @JoinColumn(name = "merchantContractFid", updatable=false, insertable=false)
+    private List<MerchantContractStall> stalls;
+
     public String getMerchantContractFid() {
         return merchantContractFid;
     }
@@ -214,5 +219,13 @@ public class MerchantContract implements Serializable {
 
     public void setMerchantContractPayPeriod(String merchantContractPayPeriod) {
         this.merchantContractPayPeriod = merchantContractPayPeriod;
+    }
+
+    public List<MerchantContractStall> getStalls() {
+        return stalls;
+    }
+
+    public void setStalls(List<MerchantContractStall> stalls) {
+        this.stalls = stalls;
     }
 }

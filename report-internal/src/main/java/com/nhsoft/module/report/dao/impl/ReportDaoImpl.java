@@ -491,16 +491,16 @@ public class ReportDaoImpl extends DaoImpl implements ReportDao {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("select merchant_num, payment_pay_by, sum(payment_money) as money , sum(payment_balance) as balance ");
-		sb.append("from payment p with (nolock) inner join pos_order o with(nolock) on p.order_no = o.order_no ");
-		sb.append("where p.system_book_code = '" + systemBookCode + "' and p.branch_num = " + branchNum + " and o.merchant_num is not null ");
+		sb.append("from payment with (nolock) ");
+		sb.append("where system_book_code = '" + systemBookCode + "' and branch_num = " + branchNum + " and merchant_num is not null ");
 		if (merchantNum != null) {
 			sb.append("and merchant_num = " + merchantNum + " ");
 		}
 		if (dateFrom != null) {
-			sb.append("and p.shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
+			sb.append("and shift_table_bizday >= '" + DateUtil.getDateShortStr(dateFrom) + "' ");
 		}
 		if (dateTo != null) {
-			sb.append("and p.shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
+			sb.append("and shift_table_bizday <= '" + DateUtil.getDateShortStr(dateTo) + "' ");
 		}
 		sb.append("group by merchant_num, payment_pay_by order by merchant_num asc, payment_pay_by asc ");
 

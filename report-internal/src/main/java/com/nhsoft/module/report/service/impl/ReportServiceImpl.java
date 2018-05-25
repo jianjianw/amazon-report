@@ -8881,7 +8881,7 @@ public class ReportServiceImpl implements ReportService {
 	public List<CustomerAnalysisDay> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType) {
 		List<Object[]> objects = posOrderDao.findCustomerAnalysisStalls(systemBookCode, dateFrom, dateTo, branchNum, stallNums,
 				saleType);
-		List<Stall> stalls = stallDao.find(objects.stream().map(o -> (Integer)o[1]).collect(Collectors.toList()));
+		List<Stall> stalls = stallDao.find(objects.stream().map(o -> (Integer)o[0]).collect(Collectors.toList()));
 		int size = objects.size();
 		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>(size);
 		for (int i = 0; i < size; i++) {
