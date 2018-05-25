@@ -21,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 @Service
@@ -412,6 +409,80 @@ public class PosItemServiceImpl extends BaseManager implements PosItemService {
 			}
 		}
 		return posItemKits;
+	}
+
+	@Override
+	public List<PosItem> findProperties(String systemBookCode, List<Integer> itemNums, String... properties) {
+		List<String> list = new ArrayList<>(properties.length);
+		for(String property : properties){
+			list.add(property);
+		}
+		if(!list.contains("itemNum")){
+			list.add("itemNum");
+		}
+		return findProperties(systemBookCode, itemNums, list);
+	}
+
+	@Override
+	public List<PosItem> findProperties(String systemBookCode, List<Integer> itemNums, List<String> properties) {
+		PosItemQuery posItemQuery = new PosItemQuery();
+		posItemQuery.setSystemBookCode(systemBookCode);
+		if(itemNums != null && itemNums.size() > 10000){
+			itemNums = null;
+		}
+		posItemQuery.setItemNums(itemNums);
+		if(!properties.contains("itemNum")){
+			properties.add("itemNum");
+		}
+		boolean queryItemMatrixs = false;
+		if(properties.contains("itemMatrixs")){
+			properties.remove("itemMatrixs");
+			if(!properties.contains("itemType")){
+				properties.add("itemType");
+			}
+			queryItemMatrixs = true;
+		}
+		posItemQuery.setQueryProperties(properties);
+		posItemQuery.setPaging(false);
+		posItemQuery.setQueryAll(true);
+		List<PosItem> posItems = posItemDao.findByPosItemQuery(posItemQuery, null,null, 0, 0);
+		if(queryItemMatrixs){
+			assembleItemMatrixs(posItems);
+		}
+		return posItems;
+	}
+
+	public void assembleItemMatrixs(List<PosItem> posItems) {
+		int size = posItems.size();
+		if (size == 0) {
+			return;
+		}
+		List<ItemMatrix> itemMatrixs;
+		PosItem posItem;
+		if (size > 5000) {
+			String systemBookCode = posItems.get(0).getSystemBookCode();
+			itemMatrixs = posItemDao.findItemMatrixs(systemBookCode);
+
+		} else {
+			List<Integer> itemNums = new ArrayList<Integer>(size);
+			for (int i = 0; i < size; i++) {
+				posItem = posItems.get(i);
+				itemNums.add(posItem.getItemNum());
+			}
+			itemMatrixs = posItemDao.findItemMatrixs(itemNums);
+
+		}
+		for (int i = 0; i < size; i++) {
+			posItem = posItems.get(i);
+			posItem.setItemBars(Collections.emptyList());
+			if (posItem.getItemType() == AppConstants.C_ITEM_TYPE_MATRIX) {
+				posItem.setItemMatrixs(ItemMatrix.find(itemMatrixs, posItem.getItemNum()));
+
+			} else {
+				posItem.setItemMatrixs(Collections.emptyList());
+			}
+
+		}
 	}
 
 

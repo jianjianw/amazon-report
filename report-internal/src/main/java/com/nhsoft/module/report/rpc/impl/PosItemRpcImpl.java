@@ -37,4 +37,9 @@ public class PosItemRpcImpl implements PosItemRpc {
     public List<PosItemDTO> findByPosItemQuery(PosItemQuery posItemQuery, String sortField, String sortType, int offset, int limit) {
         return CopyUtil.toList(posItemService.findByPosItemQuery(posItemQuery,sortField,sortType,offset,limit),PosItemDTO.class);
     }
+
+    @Override
+    public List<PosItemDTO> findProperties(String systemBookCode, List<Integer> itemNums, String... properties) {
+        return CopyUtil.toList(posItemService.findProperties(systemBookCode, itemNums, properties), PosItemDTO.class);
+    }
 }
