@@ -27,7 +27,7 @@ import java.util.List;
  * Created by yangqin on 2017/9/20.
  */
 @Repository
-public class PosItemLogDaoImpl extends ShardingDaoImpl implements PosItemLogDao {
+public class PosItemLogDaoImpl extends DaoImpl implements PosItemLogDao {
 	@Override
 	public List<Integer> findItemNum(String systemBookCode, Integer branchNum, Date dateFrom, Date dateTo, Boolean inOut) {
 		Criteria criteria = currentSession().createCriteria(PosItemLog.class, "p")
