@@ -184,7 +184,7 @@ public class RetailPosLogDaoImpl extends DaoImpl implements RetailPosLogDao {
 	@Override
 	public List<Object[]> findTypeCountAndMoney(String systemBookCode, Integer branchNum, List<Integer> stallNums, Date dateFrom, Date dateTo, String logTypes) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("select retail_pos_log_type, merchant_num");
+		sb.append("select retail_pos_log_type, ");
 		//BMW-204
 		sb.append("sum(case when (retail_pos_log_type = '退货' and retail_pos_log_money < 0) then - 1 when (retail_pos_log_type = '整单取消' and retail_pos_log_money < 0) then 0 else 1 end) as amount, ");
 		sb.append("sum(case when (retail_pos_log_type != '整单取消' or (retail_pos_log_type = '整单取消' and retail_pos_log_money > 0)) then retail_pos_log_money end) as money ");
