@@ -2,12 +2,14 @@ package com.nhsoft.module.report.rpc.impl;
 
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
+import com.nhsoft.module.report.rpc.ReportRpc;
 import com.nhsoft.module.report.rpc.ScreenRpc;
 import com.nhsoft.module.report.service.*;
 import com.nhsoft.module.report.util.AppConstants;
 import com.nhsoft.module.report.util.AppUtil;
 import com.nhsoft.report.utils.DateUtil;
 import com.nhsoft.report.utils.ReportUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,10 @@ public class ScreenRpcImpl implements ScreenRpc {
     private StallService stallService;
     @Autowired
     private PosItemService posItemService;
+    @Autowired
+    private SupplierService supplierService;
+    @Autowired
+    private ReportRpc reportRpc;
 
     @Override
     @RequestMapping("/findItemSales")
@@ -190,11 +196,100 @@ public class ScreenRpcImpl implements ScreenRpc {
                 ScreenPromotionDTO detailDTO = new ScreenPromotionDTO();
                 BeanUtils.copyProperties(dto, detailDTO);
                 detailDTO.setItemNum(d.getItemNum());
-                posItems.stream().filter(p -> p.getItemNum().equals(d.getItemNum())).findAny().ifPresent(p -> detailDTO.setItemName(p.getItemName()));
+                posItems.stream().filter(p -> p.getItemNum().equals(d.getItemNum()) && "生鲜部".equals(p.getItemDepartment())).findAny().ifPresent(p -> detailDTO.setItemName(p.getItemName()));
                 detailDTO.setPolicyPromotionDetailStdPrice(d.getPolicyPromotionDetailStdPrice());
                 detailDTO.setPolicyPromotionDetailSpecialPrice(d.getPolicyPromotionDetailSpecialPrice());
                 return detailDTO;
             });
+        }).filter(d -> d.getItemName() != null).collect(Collectors.toList());
+    }
+
+    @Override
+    @RequestMapping("/findScreenTraces")
+    public List<ScreenTraceDTO> findScreenTraces(String systemBookCode, Integer branchNum) {
+        List<ScreenTraceDTO> dtos = screenService.findScreenTraces(systemBookCode, branchNum);
+        if(dtos.size() == 0) {
+            return new ArrayList<>(0);
+        }
+        List<Supplier> suppliers = supplierService.findInCache(systemBookCode);
+        List<PosItem> posItems = posItemService.findByItemNumsInCache(systemBookCode, dtos.stream().map(ScreenTraceDTO::getItemNum).collect(Collectors.toList()));
+        List<Stall> stalls = stallService.find(dtos.stream().map(ScreenTraceDTO::getStallNum).collect(Collectors.toList()));
+        dtos.forEach(d -> {
+            suppliers.stream().filter(s -> s.getSupplierNum().equals(d.getSupplierNum())).findAny().ifPresent(s -> d.setSupplierName(s.getSupplierName()));
+            posItems.stream().filter(p -> p.getItemNum().equals(d.getItemNum())).findAny().ifPresent(p -> d.setItemName(p.getItemName()));
+            stalls.stream().filter(s -> s.getStallNum().equals(d.getStallNum())).findAny().ifPresent(s -> d.setStallName(s.getStallName()));
+        });
+        return dtos;
+    }
+
+
+    @Override
+    @RequestMapping("/findScreenTraceTests")
+    public List<ScreenTraceDTO> findScreenTraceTests(String systemBookCode, Integer branchNum) {
+        List<ScreenTraceDTO> dtos = screenService.findScreenTraces(systemBookCode, branchNum);
+        if(dtos.size() == 0) {
+            return new ArrayList<>(0);
+        }
+        List<Merchant> merchants = merchantService.find(systemBookCode, branchNum);
+        List<PosItem> posItems = posItemService.findByItemNumsInCache(systemBookCode, dtos.stream().map(ScreenTraceDTO::getItemNum).collect(Collectors.toList()));
+        dtos = dtos.stream().filter(d -> StringUtils.isNotEmpty(d.getItemTraceLogCategory())).peek(d -> {
+            merchants.stream().filter(s -> s.getMerchantNum().equals(d.getMerchantNum())).findAny().ifPresent(s -> d.setMerchantName(s.getMerchantName()));
+            posItems.stream().filter(p -> p.getItemNum().equals(d.getItemNum())).findAny().ifPresent(p -> d.setItemName(p.getItemName()));
+            d.setItemTraceLogResult("合格");
         }).collect(Collectors.toList());
+        return dtos;
+    }
+
+    @Override
+    @RequestMapping("/findScreenItems")
+    public List<ScreenItemDTO> findScreenItems(String systemBookCode, Integer branchNum) {
+        List<ScreenItemDTO> items = screenService.findScreenItems(systemBookCode, branchNum);
+        if(items.size() == 0) {
+            return new ArrayList<>(0);
+        }
+        List<Merchant> merchants = merchantService.find(systemBookCode, branchNum);
+        List<Stall> stalls = stallService.find(items.stream().map(ScreenItemDTO::getStallNum).collect(Collectors.toList()));
+        items.forEach(i -> {
+            merchants.stream().filter(m -> m.getMerchantNum().equals(i.getMerchantNum())).findAny().ifPresent(m -> i.setMerchantName(m.getMerchantName()));
+            stalls.stream().filter(s -> s.getStallNum().equals(i.getStallNum())).findAny().ifPresent(s -> i.setStallName(s.getStallName()));
+        });
+        return items;
+    }
+
+    @Override
+    @RequestMapping("/findScreenMerchantStallInfos")
+    public List<ScreenMerchantStallInfoDTO> findScreenMerchantStallInfos(String systemBookCode, Integer branchNum) {
+        List<ScreenMerchantStallInfoDTO> infos = screenService.findScreenMerchantStallInfos(systemBookCode, branchNum);
+        List<Merchant> merchants = merchantService.find(systemBookCode, branchNum);
+        List<Stall> stalls = stallService.find(infos.stream().map(ScreenMerchantStallInfoDTO::getStallNum).collect(Collectors.toList()));
+        infos.forEach(i -> {
+            merchants.stream().filter(m -> m.getMerchantNum().equals(i.getMerchantNum())).findAny().ifPresent(m -> {
+                i.setMerchantName(m.getMerchantName());
+                i.setMerchantLinkman(m.getMerchantLinkman());
+                i.setMerchantPhone(m.getMerchantPhone());
+            });
+            stalls.stream().filter(s -> s.getStallNum().equals(i.getStallNum())).findAny().ifPresent(s -> i.setStallName(s.getStallName()));
+        });
+        ReportUtil<ScreenMerchantStallInfoDTO> reportUtil = new ReportUtil<>(ScreenMerchantStallInfoDTO.class);
+        infos.forEach(reportUtil::add);
+        infos = screenService.findMerchantStallSaleMoney(systemBookCode, branchNum);
+        String bizMonth = DateUtil.getDateStr(Calendar.getInstance().getTime(), "yyyyMM");
+        infos.forEach(i -> {
+            if(bizMonth.equals(i.getBizMonth())) {
+                i.setThisMonthSaleMoney(i.getSaleMoney());
+            } else {
+                i.setLastMonthSaleMoney(i.getSaleMoney());
+            }
+            reportUtil.add(i);
+        });
+        infos = new ArrayList<>(reportUtil.toList());
+        return infos.stream().filter(i -> i.getStallName() != null && i.getMerchantName() != null).collect(Collectors.toList());
+    }
+
+    @Override
+    @RequestMapping("/findCustomerAnalysisTimePeriods")
+    public List<CustomerAnalysisTimePeriod> findCustomerAnalysisTimePeriods(String systemBookCode, Integer branchNum) {
+        Date now = Calendar.getInstance().getTime();
+        return reportRpc.findCustomerAnalysisTimePeriods(systemBookCode, now, now, Collections.singletonList(branchNum), 60, null, null);
     }
 }

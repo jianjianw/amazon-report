@@ -1,9 +1,7 @@
 package com.nhsoft.module.report.service.impl;
 
 import com.nhsoft.module.report.dao.ScreenDao;
-import com.nhsoft.module.report.dto.ScreenCategoryDTO;
-import com.nhsoft.module.report.dto.ScreenItemSaleDTO;
-import com.nhsoft.module.report.dto.ScreenPlatformSaleDTO;
+import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.service.ScreenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,5 +57,25 @@ public class ScreenServiceImpl implements ScreenService {
     @Override
     public List<ScreenPlatformSaleDTO> findPlatformSales(String systemBookCode, Integer branchNum) {
         return screenDao.findPlatformSales(systemBookCode, branchNum);
+    }
+
+    @Override
+    public List<ScreenTraceDTO> findScreenTraces(String systemBookCode, Integer branchNum) {
+        return screenDao.findScreenTraces(systemBookCode, branchNum);
+    }
+
+    @Override
+    public List<ScreenItemDTO> findScreenItems(String systemBookCode, Integer branchNum) {
+        return screenDao.findScreenItems(systemBookCode, branchNum);
+    }
+
+    @Override
+    public List<ScreenMerchantStallInfoDTO> findScreenMerchantStallInfos(String systemBookCode, Integer branchNum) {
+        return screenDao.findScreenMerchantStallInfos(systemBookCode, branchNum);
+    }
+
+    @Override
+    public List<ScreenMerchantStallInfoDTO> findMerchantStallSaleMoney(String systemBookCode, Integer branchNum) {
+        return screenDao.findMerchantStallSaleMoney(systemBookCode, branchNum);
     }
 }

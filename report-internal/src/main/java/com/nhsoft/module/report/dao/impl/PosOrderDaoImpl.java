@@ -2894,7 +2894,7 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 				sb.append("and order_source = '" + saleType + "' ");
 			}
 		}
-		sb.append("group by stallNum ");
+		sb.append("group by stall_num ");
 		SQLQuery query = currentSession().createSQLQuery(sb.toString());
 		query.addScalar("stallNum", StandardBasicTypes.INTEGER)
 				.addScalar("paymentMoney", StandardBasicTypes.BIG_DECIMAL)

@@ -3,6 +3,7 @@ package com.nhsoft.module.report.rpc;
 import com.nhsoft.module.report.dto.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,13 @@ public interface ScreenRpc {
 
     List<ScreenPromotionDTO> findScreenPromotions(String systemBookCode, Integer branchNum);
 
-//    List<ScreenMerchantStallInfoDTO> find
+    List<ScreenTraceDTO> findScreenTraces(String systemBookCode, Integer branchNum);
 
+    List<ScreenTraceDTO> findScreenTraceTests(String systemBookCode, Integer branchNum);
+
+    List<ScreenItemDTO> findScreenItems(String systemBookCode, Integer branchNum);
+
+    List<ScreenMerchantStallInfoDTO> findScreenMerchantStallInfos(String systemBookCode, Integer branchNum);
+
+    List<CustomerAnalysisTimePeriod> findCustomerAnalysisTimePeriods(String systemBookCode, Integer branchNum);
 }

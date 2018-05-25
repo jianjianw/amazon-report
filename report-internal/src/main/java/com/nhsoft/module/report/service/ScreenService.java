@@ -1,9 +1,6 @@
 package com.nhsoft.module.report.service;
 
-import com.nhsoft.module.report.dto.ScreenCategoryDTO;
-import com.nhsoft.module.report.dto.ScreenItemSaleDTO;
-import com.nhsoft.module.report.dto.ScreenMerchantDTO;
-import com.nhsoft.module.report.dto.ScreenPlatformSaleDTO;
+import com.nhsoft.module.report.dto.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,6 +24,14 @@ public interface ScreenService {
     BigDecimal[] readOrderMoney(String systemBookCode, Integer branchNum);
 
     List<ScreenPlatformSaleDTO> findPlatformSales(String systemBookCode, Integer branchNum);
+
+    List<ScreenTraceDTO> findScreenTraces(String systemBookCode, Integer branchNum);
+
+    List<ScreenItemDTO> findScreenItems(String systemBookCode, Integer branchNum);
+
+    List<ScreenMerchantStallInfoDTO> findScreenMerchantStallInfos(String systemBookCode, Integer branchNum);
+
+    List<ScreenMerchantStallInfoDTO> findMerchantStallSaleMoney(String systemBookCode, Integer branchNum);
 
 
 }
