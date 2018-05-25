@@ -119,7 +119,7 @@ public class ScreenDaoImpl extends DaoImpl implements ScreenDao {
 
     @Override
     public List<ScreenItemDTO> findScreenItems(String systemBookCode, Integer branchNum) {
-        StringBuilder sb = new StringBuilder("select s.item_num itemNum, p.item_name itemName, s.merchant_num merchantNum, s.stall_num stallNum, s.stall_matrix_regular_price stallMatrixRegularPrice from stall_matrix s inner join pos_item p on s.item_num = p.item_num where s.system_book_code = '" + systemBookCode + "' and s.branch_num = " + branchNum + " and (p.item_del_tag is null or p.item_del_tag = 0) and (p.item_sale_cease_flag is null or p.item_sale_cease_flag = 0) ");
+        StringBuilder sb = new StringBuilder("select s.item_num itemNum, p.item_name itemName, s.merchant_num merchantNum, s.stall_num stallNum, s.stall_matrix_regular_price stallMatrixRegularPrice from stall_matrix s inner join pos_item p on s.item_num = p.item_num where s.system_book_code = '" + systemBookCode + "' and s.branch_num = " + branchNum + " and p.item_department = '生鲜部' and (p.item_del_tag is null or p.item_del_tag = 0) and (p.item_sale_cease_flag is null or p.item_sale_cease_flag = 0) ");
         SQLQuery query  = currentSession().createSQLQuery(sb.toString());
         query.setResultTransformer(new AliasToBeanResultTransformer(ScreenItemDTO.class));
         return query.list();
