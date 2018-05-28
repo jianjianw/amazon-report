@@ -38,6 +38,8 @@ public class BusinessCollection implements Serializable {
 	private BigDecimal cardRevokeMoney = BigDecimal.ZERO; //卡回收金额
 	private BigDecimal signInDiscountMoney = BigDecimal.ZERO;//签收优惠金额（客户结算折扣金额）
 	private BigDecimal cardChangeInMoney = BigDecimal.ZERO; //零钱包收入金额
+	private BigDecimal accountMoveMoney = BigDecimal.ZERO; //存入金额
+	private BigDecimal accountMoveDiffMoney = BigDecimal.ZERO; //差额=现金汇总-存入金额
 	// pos收入
 	private List<BusinessCollectionIncome> posIncomes = new ArrayList<BusinessCollectionIncome>();
 
@@ -351,5 +353,21 @@ public class BusinessCollection implements Serializable {
 
 	public void setPayMoney(BigDecimal payMoney) {
 		this.payMoney = payMoney;
+	}
+
+	public BigDecimal getAccountMoveMoney() {
+		return accountMoveMoney;
+	}
+
+	public void setAccountMoveMoney(BigDecimal accountMoveMoney) {
+		this.accountMoveMoney = accountMoveMoney;
+	}
+
+	public BigDecimal getAccountMoveDiffMoney() {
+		return accountMoveDiffMoney;
+	}
+
+	public void setAccountMoveDiffMoney(BigDecimal accountMoveDiffMoney) {
+		this.accountMoveDiffMoney = accountMoveDiffMoney;
 	}
 }
