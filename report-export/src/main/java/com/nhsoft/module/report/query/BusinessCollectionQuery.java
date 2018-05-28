@@ -1,9 +1,11 @@
 package com.nhsoft.module.report.query;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class BusinessCollectionQuery {
+public class BusinessCollectionQuery implements Serializable {
+    private static final long serialVersionUID = 6545890070797288363L;
     private List<Integer> branchNums;
     private Date dateFrom;
     private Date dateTo;
