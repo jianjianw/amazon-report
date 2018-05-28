@@ -3,6 +3,7 @@ package com.nhsoft.module.report.api;
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.AlipayLog;
 import com.nhsoft.module.report.model.Branch;
+import com.nhsoft.module.report.model.SystemBook;
 import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.query.*;
 import com.nhsoft.module.report.queryBuilder.PosOrderQuery;
@@ -64,6 +65,8 @@ public class APIBasic {
 	private BookResourceRpc bookResourceRpc;
 	@Autowired
 	private MobileAppV2Rpc mobileAppV2Rpc;
+	@Autowired
+	private PosItemRpc posItemRpc;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/clear")
 	public @ResponseBody String clearSystemBookProxy(@RequestParam("systemBookCode") String systemBookCode) {
@@ -2229,6 +2232,14 @@ public class APIBasic {
 
 		List<CardReportDTO> cardReportByBranch = mobileAppV2Rpc.findCardReportByBranch(systemBookCode,branchNums,dateFrom,dateTo);
 		return cardReportByBranch;
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/test119")
+	public List test119() throws Exception{
+		String systemBookCode = "4020";
+
+		List<PosItemDTO> properties = posItemRpc.findProperties(systemBookCode, null, "itemName", "itemCode", "itemBarcode", "itemStatus");
+		return properties;
 	}
 
 

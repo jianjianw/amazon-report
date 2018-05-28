@@ -1,6 +1,7 @@
 package com.nhsoft.module.report.service;
 
 
+import com.nhsoft.module.report.dto.PosItemDTO;
 import com.nhsoft.module.report.model.PosItem;
 import com.nhsoft.module.report.model.PosItemKit;
 import com.nhsoft.module.report.queryBuilder.PosItemQuery;
@@ -137,5 +138,11 @@ public interface PosItemService {
 	 * @return
 	 */
 	public List<PosItemKit> findPosItemKitsWithDetails(List<Integer> itemNums);
+
+
+	public List<PosItem> findProperties(String systemBookCode, List<Integer> itemNums, String... properties);
+
+
+	public List<PosItem> findProperties(String systemBookCode, List<Integer> itemNums, List<String> properties);
 
 }

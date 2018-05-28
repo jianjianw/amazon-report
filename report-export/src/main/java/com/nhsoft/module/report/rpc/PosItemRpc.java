@@ -42,4 +42,8 @@ public interface PosItemRpc {
      * @return
      */
     public List<PosItemDTO> findByPosItemQuery(PosItemQuery posItemQuery, String sortField, String sortType, int offset, int limit);
+
+
+
+    public List<PosItemDTO> findProperties(String systemBookCode, List<Integer> itemNums, String... properties);
 }
