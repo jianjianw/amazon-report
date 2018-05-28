@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -2242,5 +2243,67 @@ public class APIBasic {
 		return properties;
 	}
 
+
+
+	private String systemBookCode = "4020";
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private static Date dateFrom = null;
+	private static Date dateTo = null;
+	private static void getDate(){
+		try {
+			dateFrom = sdf.parse("2018-05-01");
+			dateTo = sdf.parse("2018-05-07");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	//以下是移除posItemService.findShortItems()方法的测试
+	@RequestMapping(method = RequestMethod.GET,value = "/test120")
+	public List test120(){
+		SaleAnalysisQueryData queryData = new SaleAnalysisQueryData();
+		queryData.setSystemBookCode(systemBookCode);
+		queryData.setDtFrom(dateFrom);
+		queryData.setDtTo(dateTo);
+		queryData.setBranchNums(getBranchNums(systemBookCode));
+		List<SalePurchaseProfitDTO> result = reportRpc.findSalePurchaseProfitDTOsByItem(queryData);
+		return result;
+	}
+
+	//findSalePurchaseProfitDTOsByCategory
+	@RequestMapping(method = RequestMethod.GET,value = "/test121")
+	public List test121(){
+		SaleAnalysisQueryData queryData = new SaleAnalysisQueryData();
+		queryData.setSystemBookCode(systemBookCode);
+		queryData.setDtFrom(dateFrom);
+		queryData.setDtTo(dateTo);
+		queryData.setBranchNums(getBranchNums(systemBookCode));
+		List<SalePurchaseProfitDTO> result = reportRpc.findSalePurchaseProfitDTOsByCategory(queryData);
+		return result;
+	}
+
+	//findSalePurchaseProfitDTOsByBranchCategory
+	@RequestMapping(method = RequestMethod.GET,value = "/test122")
+	public List test122(){
+		SaleAnalysisQueryData queryData = new SaleAnalysisQueryData();
+		queryData.setSystemBookCode(systemBookCode);
+		queryData.setDtFrom(dateFrom);
+		queryData.setDtTo(dateTo);
+		queryData.setBranchNums(getBranchNums(systemBookCode));
+		List<SalePurchaseProfitDTO> result = reportRpc.findSalePurchaseProfitDTOsByBranchCategory(queryData);
+		return result;
+	}
+
+	//test40   findOrderDetailCompareDatasByBranchItem
+
+	//test107
+
+	//test81
+
+	//test83
+
+	//test85
+
+	//test86
 
 }
