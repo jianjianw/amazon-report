@@ -126,7 +126,11 @@ public interface ReportRpc {
 	 * @param dateTo 营业日止
 	 * @return
 	 */
+	@Deprecated
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, BusinessCollectionQuery query);
+
 
 	/**
 	 *  营业收款统计  根据分店、营业日汇总
@@ -136,7 +140,11 @@ public interface ReportRpc {
 	 * @param dateTo
 	 * @return
 	 */
+	@Deprecated
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo);
+
+	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, BusinessCollectionQuery query);
+
 
 	/**
 	 *  营业收款统计  根据分店、营业日汇总

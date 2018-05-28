@@ -127,7 +127,8 @@ public class ReportRpcImpl implements ReportRpc {
 	private StoreMatrixService storeMatrixService;
 	@Autowired
 	private StoreItemSupplierService storeItemSupplierService;
-
+	@Autowired
+	private AccountMoveService accountMoveService;
 
 
 
@@ -1888,14 +1889,23 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-		List<BusinessCollection> list = reportService.findBusinessCollectionByBranch(systemBookCode, branchNums, dateFrom, dateTo);
+		BusinessCollectionQuery query = new BusinessCollectionQuery();
+		query.setBranchNums(branchNums);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		return findBusinessCollectionByBranch(systemBookCode, query);
+	}
+
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, BusinessCollectionQuery query) {
+		List<BusinessCollection> list = reportService.findBusinessCollectionByBranch(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
 		int size = list.size();
 		Map<Integer, BusinessCollection> map = new HashMap<Integer, BusinessCollection>(size);
 		for (int i = 0; i <size ; i++) {
 			BusinessCollection collection = list.get(i);
 			map.put(collection.getBranchNum(),collection);
 		}
-		List<Object[]> detailList = posOrderService.findBranchCouponSummary(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> detailList = posOrderService.findBranchCouponSummary(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
 
 		for (int i = 0,len = detailList.size(); i < len; i++) {
 			Object[] object = detailList.get(i);
@@ -1917,7 +1927,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		}
 
-		List<Object[]> posList = posOrderService.findBranchDiscountSummary(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> posList = posOrderService.findBranchDiscountSummary(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
 		for (int i = 0,len = posList.size(); i < len ; i++) {
 			Object[] object = posList.get(i);
 			Integer branchNum = (Integer) object[0];
@@ -1945,7 +1955,7 @@ public class ReportRpcImpl implements ReportRpc {
 		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
 		Object object = RedisUtil.hashGet(redisKey,AppConstants.MARKETACTION_SELF_ACTION);
 		if(object != null){
-			BigDecimal payMoney = marketActionOpenIdService.findPayMoneyByBranch(systemBookCode, dateFrom, dateTo);
+			BigDecimal payMoney = marketActionOpenIdService.findPayMoneyByBranch(systemBookCode, query.getDateFrom(), query.getDateTo());
 			Integer branchNum = 99;
 			BusinessCollection data = map.get(branchNum);
 			if(data == null){
@@ -1971,14 +1981,34 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 			}
 		}
-
+		if(query.isQueryAccountMove()) {
+			List<Object[]> objects = accountMoveService.findAccountMoveInMoneyByBranch(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
+			for(Object[] object2: objects) {
+				Integer branchNum = (Integer)object2[0];
+				BusinessCollection data = map.get(branchNum);
+				if(data == null){
+					data = new BusinessCollection();
+					data.setBranchNum(branchNum);
+					map.put(branchNum, data);
+				}
+				data.setAccountMoveMoney((BigDecimal)object2[2]);
+			}
+		}
 		return result;
 	}
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
+		BusinessCollectionQuery query = new BusinessCollectionQuery();
+		query.setBranchNums(branchNums);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		return findBusinessCollectionByBranchDay(systemBookCode, query);
+	}
 
-		List<BusinessCollection> list = reportService.findBusinessCollectionByBranchDay(systemBookCode, branchNums, dateFrom, dateTo);
+	@Override
+	public List<BusinessCollection> findBusinessCollectionByBranchDay(String systemBookCode, BusinessCollectionQuery query) {
+		List<BusinessCollection> list = reportService.findBusinessCollectionByBranchDay(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
 		int size = list.size();
 		Map<String, BusinessCollection> map = new HashMap<String, BusinessCollection>(size);
 		for (int i = 0; i < size ; i++) {
@@ -1988,7 +2018,7 @@ public class ReportRpcImpl implements ReportRpc {
 			map.put(key,collection);
 		}
 
-		List<Object[]> detailList = posOrderService.findBranchBizdayCouponSummary(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> detailList = posOrderService.findBranchBizdayCouponSummary(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
 		for (int i = 0,len = detailList.size(); i < len; i++) {
 			Object[] object = detailList.get(i);
 			Integer branchNum = (Integer) object[0];
@@ -2013,7 +2043,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		}
 
-		List<Object[]> postList = posOrderService.findBranchBizdayDiscountSummary(systemBookCode, branchNums, dateFrom, dateTo);
+		List<Object[]> postList = posOrderService.findBranchBizdayDiscountSummary(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
 		for (int i = 0,len = postList.size(); i < len; i++) {
 			Object[] object = postList.get(i);
 			Integer branchNum = (Integer) object[0];
@@ -2048,7 +2078,7 @@ public class ReportRpcImpl implements ReportRpc {
 		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
 		Object obj = RedisUtil.hashGet(redisKey,AppConstants.MARKETACTION_SELF_ACTION);
 		if(obj != null){
-			List<Object[]> payMoneyList = marketActionOpenIdService.findPayMoneyByBranchBizday(systemBookCode,dateFrom, dateTo);
+			List<Object[]> payMoneyList = marketActionOpenIdService.findPayMoneyByBranchBizday(systemBookCode, query.getDateFrom(), query.getDateTo());
 			for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
 				Object[] object = payMoneyList.get(i);
 				int branchNum = 99;
@@ -2066,9 +2096,24 @@ public class ReportRpcImpl implements ReportRpc {
 				data.setPayMoney(payMoney);
 			}
 		}
-
-
-		return new ArrayList<BusinessCollection>(map.values());
+		if(query.isQueryAccountMove()) {
+			List<Object[]> objects = accountMoveService.findAccountMoveInMoneyByBranchDay(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
+			for(Object[] object: objects) {
+				Integer branchNum = (Integer)object[0];
+				String bizday = (String)object[1];
+				StringBuilder sb = new StringBuilder();
+				String key = sb.append(branchNum).append(bizday).toString();
+				BusinessCollection data = map.get(key);
+				if(data == null){
+					data = new BusinessCollection();
+					data.setBranchNum(branchNum);
+					data.setShiftTableBizday(bizday);
+					map.put(key, data);
+				}
+				data.setAccountMoveMoney((BigDecimal)object[2]);
+			}
+		}
+		return new ArrayList<>(map.values());
 	}
 
 	@Override
