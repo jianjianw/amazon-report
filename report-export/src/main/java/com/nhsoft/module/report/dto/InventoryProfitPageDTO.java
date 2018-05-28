@@ -26,6 +26,20 @@ public class InventoryProfitPageDTO implements Serializable {
     private BigDecimal profitRateSum;
     private BigDecimal adjustMoneySum;
 
+
+    public InventoryProfitPageDTO() {
+        this.count = 0;
+        this.profitQtySum = BigDecimal.ZERO;
+        this.profitAssitQtySum = BigDecimal.ZERO;
+        this.profitMoneySum = BigDecimal.ZERO;
+        this.saleQtySum = BigDecimal.ZERO;
+        this.saleAssitQtySum = BigDecimal.ZERO;
+        this.saleMoneySum = BigDecimal.ZERO;
+        this.itemSaleMoneySum = BigDecimal.ZERO;
+        this.profitRateSum = BigDecimal.ZERO;
+        this.adjustMoneySum = BigDecimal.ZERO;
+    }
+
     public BigDecimal getAdjustMoneySum() {
         return adjustMoneySum;
     }
