@@ -1873,7 +1873,11 @@ public class ReportRpcImpl implements ReportRpc {
 
 	@Override
 	public List<BusinessCollection> findBusinessCollectionByBranch(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo) {
-
+		BusinessCollectionQuery query = new BusinessCollectionQuery();
+		query.setBranchNums(branchNums);
+		query.setDateFrom(dateFrom);
+		query.setDateTo(dateTo);
+		return findBusinessCollectionByBranch(systemBookCode, query);
 	}
 
 	@Override
