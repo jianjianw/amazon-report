@@ -6027,8 +6027,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public Object[] findCountByPrintNum(CardReportQuery cardReportQuery) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) as count_, sum(paymentMoney) as paymentMoney_ , sum(discount) as discount_ , sum(point) as point_ from ( ");
-		sb.append("select sum(p.order_payment_money) as paymentMoney, sum(p.order_discount_money) as discount, sum(p.order_point) as point ");
+		sb.append("select count(*) as count_, sum(paymentMoney) as paymentMoney_ , sum(discount) as discount_ , sum(point) as point_, sum(mgr) as mgr_ from ( ");
+		sb.append("select sum(p.order_payment_money) as paymentMoney, sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgr ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
 		sb.append(") as temp");
