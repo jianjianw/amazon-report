@@ -5930,6 +5930,18 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("(select 1 from retail_pos_log with(nolock) where system_book_code = '" + posOrderQuery.getSystemBookCode() + "' and retail_pos_log.branch_num = p.branch_num  ");
 			sb.append("and retail_pos_log.retail_pos_log_order_no = p.order_no and retail_pos_log_type = '挂单' and retail_pos_log_time > p.order_date) ");
 		}
+		if(posOrderQuery.getQueryException() != null && posOrderQuery.getQueryException()){
+
+            sb.append("and (exists ");
+            sb.append("(select 1 from retail_pos_log with(nolock) where system_book_code = '" + posOrderQuery.getSystemBookCode() + "' and retail_pos_log.branch_num = p.branch_num  ");
+            sb.append("and retail_pos_log.retail_pos_log_order_no = p.order_no and retail_pos_log_type = '挂单' and retail_pos_log_time > p.order_date) ");
+            sb.append("or ");
+            sb.append("exists (select 1 from pos_order_matrix as m with(nolock) where m.system_book_code = '" + posOrderQuery.getSystemBookCode() + "' and m.shift_table_bizday between '" + DateUtil.getDateShortStr(posOrderQuery.getDateFrom()) + "' ");
+            sb.append("and '" + DateUtil.getDateShortStr(posOrderQuery.getDateTo()) + "' ");
+            sb.append("and m.order_no = p.order_no) ");
+            sb.append(") ");
+
+        }
 		if(StringUtils.isNotEmpty(posOrderQuery.getOprateTimeType()) && posOrderQuery.getOprateTime() != null){
 			sb.append("and DATEDIFF(mi,p.order_date,p.order_time) " + posOrderQuery.getOprateTimeType() + " " + posOrderQuery.getOprateTime()+" ");
 		}

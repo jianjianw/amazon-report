@@ -39,6 +39,15 @@ public class PosOrderQuery extends QueryBuilder{
 	private BigDecimal oprateTime;
 	private Boolean queryMatrix;
 	private Boolean queryHangOrder;//是否查询挂单
+	private Boolean queryException; //是否查询异常单
+
+	public Boolean getQueryException() {
+		return queryException;
+	}
+
+	public void setQueryException(Boolean queryException) {
+		this.queryException = queryException;
+	}
 
 	public Boolean getQueryHangOrder() {
 		return queryHangOrder;
