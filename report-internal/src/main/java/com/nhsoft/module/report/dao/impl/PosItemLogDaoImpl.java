@@ -1810,5 +1810,19 @@ public class PosItemLogDaoImpl extends DaoImpl implements PosItemLogDao {
 		return list;
 	}
 
+	@Override
+	public List<Object[]> findItemLatestDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String posItemLogSummary) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select item_num, max(pos_item_log_date) from pos_item_log with(nolock) where system_book_code = '" + systemBookCode + "' ");
+		sb.append("and pos_item_log_date_index between '" + DateUtil.getDateShortStr(dateFrom) + "' and '" + DateUtil.getDateShortStr(dateTo) + "' ");
+		sb.append("and branch_num in " + AppUtil.getIntegerParmeList(branchNums));
+		if(StringUtils.isNotEmpty(posItemLogSummary)){
+			sb.append("and pos_item_log_summary = '" + posItemLogSummary + "' ");
+		}
+		sb.append("group by item_num ");
+		Query query = currentSession().createSQLQuery(sb.toString());
+		return query.list();
+	}
+
 
 }
