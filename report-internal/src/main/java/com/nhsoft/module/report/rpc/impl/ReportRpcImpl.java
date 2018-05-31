@@ -1975,7 +1975,7 @@ public class ReportRpcImpl implements ReportRpc {
 					data.setBranchNum(branchNum);
 					map.put(branchNum, data);
 				}
-				data.setAccountMoveMoney((BigDecimal)object2[2]);
+				data.setAccountMoveMoney((BigDecimal)object2[1]);
 			}
 		}
 		return result;
