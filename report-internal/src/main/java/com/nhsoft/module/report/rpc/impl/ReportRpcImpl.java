@@ -4012,7 +4012,7 @@ public class ReportRpcImpl implements ReportRpc {
 
 		BigDecimal hundred = BigDecimal.valueOf(100);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
+		List<PosItem> posItems = posItemService.findByItemNums(posItemNums);
 		for (int i = list.size()-1; i >= 0; i--) {
 			OrderDetailCompare orderDetailCompare = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(orderDetailCompare.getItemNum(), posItems);
