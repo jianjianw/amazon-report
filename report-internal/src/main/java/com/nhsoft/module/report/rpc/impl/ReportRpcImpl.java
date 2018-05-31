@@ -1967,7 +1967,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		if(query.isQueryAccountMove()) {
-			List<Object[]> objects = accountMoveService.findAccountMoveInMoneyByBranch(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
+		List<Object[]> objects = accountMoveService.findAccountMoveInMoneyByBranch(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
 			for(Object[] object2: objects) {
 				Integer branchNum = (Integer)object2[0];
 				BusinessCollection data = map.get(branchNum);
