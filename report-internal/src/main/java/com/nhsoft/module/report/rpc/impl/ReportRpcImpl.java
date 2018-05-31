@@ -1966,6 +1966,19 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setPayMoney(payMoney);
 		}
 
+		if(query.isQueryAccountMove()) {
+			List<Object[]> objects = accountMoveService.findAccountMoveInMoneyByBranch(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
+			for(Object[] object2: objects) {
+				Integer branchNum = (Integer)object2[0];
+				BusinessCollection data = map.get(branchNum);
+				if(data == null){
+					data = new BusinessCollection();
+					data.setBranchNum(branchNum);
+					map.put(branchNum, data);
+				}
+				data.setAccountMoveMoney((BigDecimal)object2[1]);
+			}
+		}
 
 		List<BusinessCollection> result = new ArrayList<>(map.values());
 
@@ -1981,19 +1994,7 @@ public class ReportRpcImpl implements ReportRpc {
 				}
 			}
 		}
-		if(query.isQueryAccountMove()) {
-			List<Object[]> objects = accountMoveService.findAccountMoveInMoneyByBranch(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
-			for(Object[] object2: objects) {
-				Integer branchNum = (Integer)object2[0];
-				BusinessCollection data = map.get(branchNum);
-				if(data == null){
-					data = new BusinessCollection();
-					data.setBranchNum(branchNum);
-					map.put(branchNum, data);
-				}
-				data.setAccountMoveMoney((BigDecimal)object2[1]);
-			}
-		}
+
 		return result;
 	}
 
