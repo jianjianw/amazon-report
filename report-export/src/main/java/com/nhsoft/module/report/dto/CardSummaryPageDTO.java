@@ -13,7 +13,15 @@ public class CardSummaryPageDTO implements Serializable{
     BigDecimal paymentMoneySum;
     BigDecimal discountMoneySum;
     BigDecimal pointSum;
+    BigDecimal mgrMoneySum;
 
+    public BigDecimal getMgrMoneySum() {
+        return mgrMoneySum;
+    }
+
+    public void setMgrMoneySum(BigDecimal mgrMoneySum) {
+        this.mgrMoneySum = mgrMoneySum;
+    }
 
     public Integer getCount() {
         return count;

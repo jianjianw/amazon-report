@@ -437,4 +437,14 @@ public interface PosItemLogDao {
 	 * */
 	public List<Object[]> test(StoreQueryCondition queryCondition);
 
+	/**
+	 * 查询最后进出库时间
+	 * @param systemBookCode
+	 * @param branchNums
+	 * @param dateFrom
+	 * @param dateTo
+	 * @param posItemLogSummary
+	 * @return
+	 */
+	public List<Object[]> findItemLatestDate(String systemBookCode, List<Integer> branchNums, Date dateFrom, Date dateTo, String posItemLogSummary);
 }

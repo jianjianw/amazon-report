@@ -1,5 +1,7 @@
 package com.nhsoft.module.report.dto;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -226,7 +228,7 @@ public class SalePurchaseProfitDTO implements Serializable {
 		SalePurchaseProfitDTO dto;
 		for(int i = 0;i < salePurchaseProfitDTOs.size();i++){
 			dto = salePurchaseProfitDTOs.get(i);
-			if(dto.getCategoryCode().equals(categoryCode)){
+			if(StringUtils.equals(dto.getCategoryCode(),categoryCode)){
 				return dto;
 			}
 		}
@@ -250,7 +252,7 @@ public class SalePurchaseProfitDTO implements Serializable {
 		SalePurchaseProfitDTO dto;
 		for(int i = 0;i < salePurchaseProfitDTOs.size();i++){
 			dto = salePurchaseProfitDTOs.get(i);
-			if(dto.getCategoryCode().equals(categoryCode) && dto.getBranchNum().equals(branchNum)){
+			if(StringUtils.equals(dto.getCategoryCode(),categoryCode) && dto.getBranchNum().equals(branchNum)){
 				return dto;
 			}
 		}

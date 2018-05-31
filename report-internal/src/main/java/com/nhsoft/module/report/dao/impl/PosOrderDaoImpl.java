@@ -5930,6 +5930,18 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 			sb.append("(select 1 from retail_pos_log with(nolock) where system_book_code = '" + posOrderQuery.getSystemBookCode() + "' and retail_pos_log.branch_num = p.branch_num  ");
 			sb.append("and retail_pos_log.retail_pos_log_order_no = p.order_no and retail_pos_log_type = '挂单' and retail_pos_log_time > p.order_date) ");
 		}
+		if(posOrderQuery.getQueryException() != null && posOrderQuery.getQueryException()){
+
+            sb.append("and (exists ");
+            sb.append("(select 1 from retail_pos_log with(nolock) where system_book_code = '" + posOrderQuery.getSystemBookCode() + "' and retail_pos_log.branch_num = p.branch_num  ");
+            sb.append("and retail_pos_log.retail_pos_log_order_no = p.order_no and retail_pos_log_type = '挂单' and retail_pos_log_time > p.order_date) ");
+            sb.append("or ");
+            sb.append("exists (select 1 from pos_order_matrix as m with(nolock) where m.system_book_code = '" + posOrderQuery.getSystemBookCode() + "' and m.shift_table_bizday between '" + DateUtil.getDateShortStr(posOrderQuery.getDateFrom()) + "' ");
+            sb.append("and '" + DateUtil.getDateShortStr(posOrderQuery.getDateTo()) + "' ");
+            sb.append("and m.order_no = p.order_no) ");
+            sb.append(") ");
+
+        }
 		if(StringUtils.isNotEmpty(posOrderQuery.getOprateTimeType()) && posOrderQuery.getOprateTime() != null){
 			sb.append("and DATEDIFF(mi,p.order_date,p.order_time) " + posOrderQuery.getOprateTimeType() + " " + posOrderQuery.getOprateTime()+" ");
 		}
@@ -6027,8 +6039,8 @@ public class PosOrderDaoImpl extends DaoImpl implements PosOrderDao {
 	public Object[] findCountByPrintNum(CardReportQuery cardReportQuery) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) as count_, sum(paymentMoney) as paymentMoney_ , sum(discount) as discount_ , sum(point) as point_ from ( ");
-		sb.append("select sum(p.order_payment_money) as paymentMoney, sum(p.order_discount_money) as discount, sum(p.order_point) as point ");
+		sb.append("select count(*) as count_, sum(paymentMoney) as paymentMoney_ , sum(discount) as discount_ , sum(point) as point_, sum(mgr) as mgr_ from ( ");
+		sb.append("select sum(p.order_payment_money) as paymentMoney, sum(p.order_discount_money) as discount, sum(p.order_point) as point, sum(p.order_mgr_discount_money) as mgr ");
 		sb.append(createByCardReportQuery(cardReportQuery));
 		sb.append("group by p.order_printed_num, p.order_card_user, p.order_card_type_desc, p.order_card_user_num ");
 		sb.append(") as temp");

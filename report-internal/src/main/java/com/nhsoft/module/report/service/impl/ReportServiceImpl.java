@@ -4702,10 +4702,8 @@ public class ReportServiceImpl implements ReportService {
 		Integer branchNum = inventoryExceptQuery.getBranchNum();
 		List<Integer> branchNums = inventoryExceptQuery.getBranchNums();
 		if(branchNums == null){
-			return new ArrayList<ExceptInventory>();
+			return Collections.emptyList();
 		}
-		Date dateFrom = inventoryExceptQuery.getDateFrom();
-		Date dateTo = inventoryExceptQuery.getDateTo();
 
 		Map<Integer, ExceptInventory> map = new HashMap<Integer, ExceptInventory>();
 		Date initDate = DateUtil.getDateTimeHMS(AppConstants.INIT_TIME);
@@ -4742,6 +4740,19 @@ public class ReportServiceImpl implements ReportService {
 			data.setItemUnit(posItem.getItemUnit());
 			map.put(data.getItemNum(), data);
 		}
+
+		List<Object[]> objects = posItemLogDao.findItemLatestDate(systemBookCode, branchNums, DateUtil.getDateStr("20170101"), Calendar.getInstance().getTime(),
+				inventoryExceptQuery.getPosItemLogSummary());
+		for (int i = 0; i < objects.size(); i++) {
+			Object[] object = objects.get(i);
+			Integer itemNum = (Integer) object[0];
+			Date logDate = (Date) object[1];
+			ExceptInventory data = map.get(itemNum);
+			if (data != null) {
+				data.setInventoryDate(logDate);
+			}
+		}
+
 		List<ExceptInventory> list = new ArrayList<ExceptInventory>(map.values());
 		// 过滤时间小于天数
 		for (int i = list.size() - 1; i >= 0; i--) {
@@ -4763,7 +4774,7 @@ public class ReportServiceImpl implements ReportService {
 
 			}
 		}
-		List<Object[]> objects = inventoryDao.findItemAmountByStorehouse(systemBookCode, branchNum, null,inventoryExceptQuery.getStorehouseNums());
+		objects = inventoryDao.findItemAmountByStorehouse(systemBookCode, branchNum, null,inventoryExceptQuery.getStorehouseNums());
 		for (int i = list.size() - 1; i >= 0; i--) {
 			ExceptInventory data = list.get(i);
 			Integer itemNum = data.getItemNum();

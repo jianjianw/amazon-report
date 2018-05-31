@@ -252,7 +252,12 @@ public class ReportRpcImpl implements ReportRpc {
 		if (size == 0) {
 			return list;
 		}
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+		List<Integer> posItemNums = new ArrayList<>();
+		for (int i = 0; i < size ; i++) {
+			SalePurchaseProfitDTO dto = list.get(i);
+			posItemNums.add(dto.getItemNum());
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
 		Branch branch;
 		PosItem posItem;
@@ -332,7 +337,12 @@ public class ReportRpcImpl implements ReportRpc {
 		if (size == 0) {
 			return list;
 		}
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+		List<Integer> posItemNums = new ArrayList<>();
+		for (int i = 0; i < size ; i++) {
+			SalePurchaseProfitDTO dto = list.get(i);
+			posItemNums.add(dto.getItemNum());
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
 		PosItem posItem;
 		SalePurchaseProfitDTO dto;
 		SalePurchaseProfitDTO categoryDto;
@@ -423,7 +433,13 @@ public class ReportRpcImpl implements ReportRpc {
 		if (size == 0) {
 			return list;
 		}
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+
+		List<Integer> posItemNums = new ArrayList<>();
+		for (int i = 0; i < size ; i++) {
+			SalePurchaseProfitDTO dto = list.get(i);
+			posItemNums.add(dto.getItemNum());
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
 		PosItem posItem;
 
 		SalePurchaseProfitDTO dto;
@@ -3987,10 +4003,15 @@ public class ReportRpcImpl implements ReportRpc {
 		if(list.isEmpty()){
 			return list;
 		}
+		List<Integer> posItemNums = new ArrayList<>();
+		for (int i = 0,len = list.size(); i < len; i++) {
+			OrderDetailCompare orderDetailCompare = list.get(i);
+			posItemNums.add(orderDetailCompare.getItemNum());
+		}
 
 		BigDecimal hundred = BigDecimal.valueOf(100);
 		List<Branch> branchs = branchService.findInCache(systemBookCode);
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
 		for (int i = list.size()-1; i >= 0; i--) {
 			OrderDetailCompare orderDetailCompare = list.get(i);
 			PosItem posItem = AppUtil.getPosItem(orderDetailCompare.getItemNum(), posItems);
@@ -4903,8 +4924,13 @@ public class ReportRpcImpl implements ReportRpc {
 					break;
 			}
 			if(flag){
-				List<PosItem> posItems = posItemService.findShortItems(profitAnalysisQueryData.getSystemBookCode());
 				List<ProfitByBranchAndItemSummary> profitAnalysis = findProfitAnalysisByBranchAndItem(profitAnalysisQueryData);
+				List<Integer> posItemNums = new ArrayList<>();
+				for (int i = 0,len = profitAnalysis.size(); i < len ; i++) {
+					ProfitByBranchAndItemSummary profitByBranchAndItemSummary = profitAnalysis.get(i);
+					posItemNums.add(profitByBranchAndItemSummary.getItemNum());
+				}
+				List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
 
 				BigDecimal profitSum = BigDecimal.ZERO;
 				BigDecimal costSum = BigDecimal.ZERO;
@@ -4986,7 +5012,12 @@ public class ReportRpcImpl implements ReportRpc {
 		BigDecimal costSum = BigDecimal.ZERO;
 		BigDecimal moneySum = BigDecimal.ZERO;
 		BigDecimal amountSum = BigDecimal.ZERO;
-		List<PosItem> posItems = posItemService.findShortItems(profitAnalysisQueryData.getSystemBookCode());
+		List<Integer> posItemNums = new ArrayList<>();
+		for (int i = 0; i < size; i++) {
+			Object[] object = objects.get(i);
+			posItemNums.add((Integer) object[1]);
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
 		for (int i = 0; i < size; i++) {
 			Object[] object = objects.get(i);
 			Integer itemNum = (Integer) object[1];
@@ -5978,7 +6009,13 @@ public class ReportRpcImpl implements ReportRpc {
 
 			List<BranchProfitDataDTO> list = new ArrayList<BranchProfitDataDTO>(map.values());
 			List<Branch> branchs = branchService.findInCache(systemBookCode);
-			List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+
+			List<Integer> itemNums = new ArrayList<>();
+			for (int i = 0,len = list.size(); i < len ; i++) {
+				BranchProfitDataDTO branchProfitDataDTO = list.get(i);
+				itemNums.add(branchProfitDataDTO.getItemNum());
+			}
+			List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(itemNums);
 			for (int i = list.size() - 1; i >= 0; i--) {
 				BranchProfitDataDTO data = list.get(i);
 				Branch branch = AppUtil.getBranch(branchs, data.getBranchNum());
@@ -6165,7 +6202,6 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 		}
 
-		List<PosItem> posItemDatas = posItemService.findShortItems(queryData.getSystemBookCode());
 		List<TransferProfitByPosItemDTO> list = new ArrayList<TransferProfitByPosItemDTO>();
 
 		List<Object[]> outObjects = transferOutOrderService.findProfitGroupByBranchAndItem(queryData);
@@ -6249,6 +6285,13 @@ public class ReportRpcImpl implements ReportRpc {
 			data.setInUseAmount(useAmount);
 		}
 		List<Branch> branchs = branchService.findInCache(queryData.getSystemBookCode());
+
+		List<Integer> posItemNums = new ArrayList<>();
+		for (int i = 0,len = list.size(); i < len ; i++) {
+			TransferProfitByPosItemDTO dto = list.get(i);
+			posItemNums.add(dto.getItemNum());
+		}
+		List<PosItem> posItemDatas = posItemService.findByItemNumsWithoutDetails(posItemNums);
 
 		BigDecimal basicQtySum = BigDecimal.ZERO;
 		BigDecimal basicQtyPrSum = BigDecimal.ZERO;
@@ -6775,7 +6818,6 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		Map<String, InventoryProfitDTO> map = new HashMap<String, InventoryProfitDTO>();
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 
 		if (StringUtils.isEmpty(checkType)) {
 			checkType = AppConstants.POS_ITEM_LOG_ADJUSTMENTORDER + "," + AppConstants.POS_ITEM_LOG_CHECKORDER
@@ -6875,6 +6917,18 @@ public class ReportRpcImpl implements ReportRpc {
 			}
 		}
 		List<InventoryProfitDTO> list = new ArrayList<InventoryProfitDTO>(map.values());
+		if(list.isEmpty()){
+			InventoryProfitPageDTO inventoryProfitPageDTO = new InventoryProfitPageDTO();
+			inventoryProfitPageDTO.setData(list);
+			return inventoryProfitPageDTO;
+		}
+		List<Integer> posItemNums = new ArrayList<>();
+		for (int i = 0,len = list.size(); i < len ; i++) {
+			InventoryProfitDTO inventoryProfitDTO = list.get(i);
+			posItemNums.add(inventoryProfitDTO.getItemNum());
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
+
 		BigDecimal profitQtySum = BigDecimal.ZERO;
 		BigDecimal profitAssitQtySum = BigDecimal.ZERO;
 		BigDecimal profitMoneySum = BigDecimal.ZERO;
@@ -7043,7 +7097,7 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 
 		Map<Integer, InventoryProfitDTO> map = new HashMap<Integer, InventoryProfitDTO>();
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
+
 
 		if (StringUtils.isEmpty(checkType)) {
 			checkType = AppConstants.POS_ITEM_LOG_ADJUSTMENTORDER + "," + AppConstants.POS_ITEM_LOG_CHECKORDER
@@ -7138,6 +7192,17 @@ public class ReportRpcImpl implements ReportRpc {
 		}
 		Map<String, InventoryProfitDTO> categoryMap = new HashMap<String, InventoryProfitDTO>();
 		List<InventoryProfitDTO> list = new ArrayList<InventoryProfitDTO>(map.values());
+		if(list.isEmpty()){
+			InventoryProfitPageDTO result = new InventoryProfitPageDTO();
+			result.setData(list);
+			return result;
+		}
+		List<Integer> posItemNums = new ArrayList<>();
+		for (int i = 0,len = list.size(); i < len ; i++) {
+			InventoryProfitDTO dto = list.get(i);
+			posItemNums.add(dto.getItemNum());
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
 		BigDecimal profitQtySum = BigDecimal.ZERO;
 		BigDecimal profitAssitQtySum = BigDecimal.ZERO;
 		BigDecimal profitMoneySum = BigDecimal.ZERO;
