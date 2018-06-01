@@ -6292,7 +6292,7 @@ public class ReportRpcImpl implements ReportRpc {
 			TransferProfitByPosItemDTO dto = list.get(i);
 			posItemNums.add(dto.getItemNum());
 		}
-		List<PosItem> posItemDatas = posItemService.findByItemNumsWithoutDetails(posItemNums);
+		List<PosItem> posItemDatas = posItemService.findByItemNums(posItemNums);
 
 		BigDecimal basicQtySum = BigDecimal.ZERO;
 		BigDecimal basicQtyPrSum = BigDecimal.ZERO;
@@ -6931,7 +6931,7 @@ public class ReportRpcImpl implements ReportRpc {
 			InventoryProfitDTO inventoryProfitDTO = list.get(i);
 			posItemNums.add(inventoryProfitDTO.getItemNum());
 		}
-		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
+		List<PosItem> posItems = posItemService.findByItemNums(posItemNums);
 
 		BigDecimal profitQtySum = BigDecimal.ZERO;
 		BigDecimal profitAssitQtySum = BigDecimal.ZERO;
