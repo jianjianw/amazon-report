@@ -739,7 +739,9 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 		if(posOrders.isEmpty()){
 			return posOrders;
 		}
-		if(posOrderQuery.getQueryMatrix() != null && posOrderQuery.getQueryMatrix()){
+		if((posOrderQuery.getQueryMatrix() != null && posOrderQuery.getQueryMatrix())
+				|| (posOrderQuery.getQueryException() != null && posOrderQuery.getQueryException())
+				|| (posOrderQuery.getQueryHangOrder() != null && posOrderQuery.getQueryHangOrder())){
 
 			List<PosOrderMatrix> posOrderMatrices;
 			if (!posOrderQuery.isPage()) {
@@ -806,6 +808,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			pageDTO.setDiscountMoneySum((BigDecimal) object[2]);
 			pageDTO.setPointSum((BigDecimal) object[3]);
 			pageDTO.setMgrMoneySum((BigDecimal)object[4]);
+			pageDTO.setCouponSum((BigDecimal)object[5]);
+
 		}
 		pageDTO.setData(list);
 		return pageDTO;
