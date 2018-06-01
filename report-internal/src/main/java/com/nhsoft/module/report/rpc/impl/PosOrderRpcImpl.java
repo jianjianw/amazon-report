@@ -808,6 +808,8 @@ public class PosOrderRpcImpl implements PosOrderRpc {
 			pageDTO.setDiscountMoneySum((BigDecimal) object[2]);
 			pageDTO.setPointSum((BigDecimal) object[3]);
 			pageDTO.setMgrMoneySum((BigDecimal)object[4]);
+			pageDTO.setCouponSum((BigDecimal)object[5]);
+
 		}
 		pageDTO.setData(list);
 		return pageDTO;

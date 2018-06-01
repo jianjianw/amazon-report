@@ -6435,8 +6435,11 @@ public class ReportRpcImpl implements ReportRpc {
 		BigDecimal outsMoneySum = BigDecimal.ZERO;
 		for (int i = list.size() - 1; i >= 0; i--) {
 			TransferProfitByPosItemDTO data = list.get(i);
-			data.setTotalAmount(data.getOutAmount().subtract(data.getInAmount()).add(data.getOutAmountPr()));
-			data.setTotalMoney(data.getOutMoney().subtract(data.getInMoney()).add(data.getOutAmountPrTranferMoney()));
+			/*data.setTotalAmount(data.getOutAmount().subtract(data.getInAmount()).add(data.getOutAmountPr()));
+			data.setTotalMoney(data.getOutMoney().subtract(data.getInMoney()).add(data.getOutAmountPrTranferMoney()));*/
+
+			data.setTotalAmount(data.getOutsAmount().subtract(data.getInAmount()).add(data.getOutAmountPr()));
+			data.setTotalMoney(data.getOutsMoney().subtract(data.getInMoney()).add(data.getOutAmountPrTranferMoney()));
 
 			outAmountSum = outAmountSum.add(data.getOutAmount());
 			outAmountPrSum = outAmountPrSum.add(data.getOutAmountPr());
