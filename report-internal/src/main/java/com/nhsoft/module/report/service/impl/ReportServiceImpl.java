@@ -11545,7 +11545,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 		objects = receiveOrderDao.findOperatorItemLotSummary(systemBookCode, branchNum, lotNumbers, employees);
 		if (objects.size() == 0) {
-			return list;
+			return new ArrayList<>(0);
 		}
 		Branch branch = branchService.readInCache(systemBookCode, branchNum);
 

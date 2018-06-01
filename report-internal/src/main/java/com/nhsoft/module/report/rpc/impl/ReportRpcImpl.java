@@ -1951,20 +1951,22 @@ public class ReportRpcImpl implements ReportRpc {
 			detail.setMoney(detail.getMoney().add(couponMoney));
 		}
 
-
-		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
-		Object object = RedisUtil.hashGet(redisKey,AppConstants.MARKETACTION_SELF_ACTION);
-		if(object != null){
-			BigDecimal payMoney = marketActionOpenIdService.findPayMoneyByBranch(systemBookCode, query.getDateFrom(), query.getDateTo());
-			Integer branchNum = 99;
-			BusinessCollection data = map.get(branchNum);
-			if(data == null){
-				data = new BusinessCollection();
-				data.setBranchNum(branchNum);
-				map.put(branchNum, data);
+		if (query.getBranchNums() == null || query.getBranchNums().size() == 0 || query.getBranchNums().contains(99)) {
+			String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
+			Object object = RedisUtil.hashGet(redisKey, AppConstants.MARKETACTION_SELF_ACTION);
+			if (object != null) {
+				BigDecimal payMoney = marketActionOpenIdService.findPayMoneyByBranch(systemBookCode, query.getDateFrom(), query.getDateTo());
+				Integer branchNum = 99;
+				BusinessCollection data = map.get(branchNum);
+				if (data == null) {
+					data = new BusinessCollection();
+					data.setBranchNum(branchNum);
+					map.put(branchNum, data);
+				}
+				data.setPayMoney(payMoney);
 			}
-			data.setPayMoney(payMoney);
 		}
+
 
 		if(query.isQueryAccountMove()) {
 		List<Object[]> objects = accountMoveService.findAccountMoveInMoneyByBranch(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
