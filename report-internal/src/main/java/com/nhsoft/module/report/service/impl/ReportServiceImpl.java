@@ -8892,6 +8892,9 @@ public class ReportServiceImpl implements ReportService {
 	public List<CustomerAnalysisDay> findCustomerAnalysisStalls(String systemBookCode, Date dateFrom, Date dateTo, Integer branchNum, List<Integer> stallNums, String saleType) {
 		List<Object[]> objects = posOrderDao.findCustomerAnalysisStalls(systemBookCode, dateFrom, dateTo, branchNum, stallNums,
 				saleType);
+		if(objects.size() == 0) {
+			return new ArrayList<>(0);
+		}
 		List<Stall> stalls = stallDao.find(objects.stream().map(o -> (Integer)o[0]).collect(Collectors.toList()));
 		int size = objects.size();
 		List<CustomerAnalysisDay> list = new ArrayList<CustomerAnalysisDay>(size);
@@ -9691,6 +9694,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		if (StringUtils.isEmpty(type)) {
+			reportDao.findAlipayDetailDTOs()
 			List<AlipayDetailDTO> tempList = alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null, alipayLogTypes).stream().filter(a -> !"微店消费".equals(a.getType())).collect(Collectors.toList());
 			list.addAll(tempList);
 			if(queryAll){
