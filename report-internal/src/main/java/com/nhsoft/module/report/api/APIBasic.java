@@ -2306,4 +2306,16 @@ public class APIBasic {
 
 	//test86
 
+	//findLatestReceiveDetail
+	@RequestMapping(method = RequestMethod.GET,value = "/test123")
+	public List test123(){
+		PurchaseOrderCollectQuery query = new PurchaseOrderCollectQuery();
+		query.setSystemBookCode(systemBookCode);
+		query.setDtFrom(dateFrom);
+		query.setDtTo(dateTo);
+		List<PurchaseOrderCollect> result = report2Rpc.findLatestReceiveDetail(query);
+		return result;
+	}
+
+
 }

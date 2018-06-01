@@ -628,11 +628,16 @@ public class Report2ServiceImpl implements Report2Service {
 		Date dateTo = purchaseOrderCollectQuery.getDtTo();
 		String operator = purchaseOrderCollectQuery.getOperator();
 
-		List<PosItem> posItems = posItemService.findShortItems(systemBookCode);
 		List<PurchaseOrderCollect> list = new ArrayList<PurchaseOrderCollect>();
-		
 		List<Object[]> receiveObjects = receiveOrderDao.findQueryDetails(systemBookCode, branchNums, dateFrom, dateTo,
 				itemNums, itemCategoryCodes, supplierNums, operator, null);
+
+		List<Integer> posItemNums = new ArrayList<>();
+		for (int i = 0,len = receiveObjects.size(); i < len ; i++) {
+			Object[] object = receiveObjects.get(i);
+			posItemNums.add((Integer) object[3]);
+		}
+		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
 		
 		Integer orderBranchNum = null;
 		Integer itemNum = null;
