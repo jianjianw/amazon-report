@@ -2075,30 +2075,30 @@ public class ReportRpcImpl implements ReportRpc {
 			detail.setMoney(detail.getMoney().add(couponTotal));
 		}
 
-
-
-
-		String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
-		Object obj = RedisUtil.hashGet(redisKey,AppConstants.MARKETACTION_SELF_ACTION);
-		if(obj != null){
-			List<Object[]> payMoneyList = marketActionOpenIdService.findPayMoneyByBranchBizday(systemBookCode, query.getDateFrom(), query.getDateTo());
-			for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
-				Object[] object = payMoneyList.get(i);
-				int branchNum = 99;
-				String  shiftTableBizday = (String)object[0];
-				BigDecimal payMoney = (BigDecimal)object[1];
-				StringBuilder sb = new StringBuilder();
-				String key = sb.append(branchNum).append(shiftTableBizday).toString();
-				BusinessCollection data = map.get(key);
-				if(data == null){
-					data = new BusinessCollection();
-					data.setBranchNum(branchNum);
-					data.setShiftTableBizday(shiftTableBizday);
-					map.put(key, data);
+		if(query.getBranchNums() == null || query.getBranchNums().size() == 0 || query.getBranchNums().contains(99)) {
+			String redisKey = AppConstants.REDIS_PRE_BOOK_FUNCTION + systemBookCode;
+			Object obj = RedisUtil.hashGet(redisKey,AppConstants.MARKETACTION_SELF_ACTION);
+			if(obj != null){
+				List<Object[]> payMoneyList = marketActionOpenIdService.findPayMoneyByBranchBizday(systemBookCode, query.getDateFrom(), query.getDateTo());
+				for (int i = 0,len = payMoneyList.size(); i < len ; i++) {
+					Object[] object = payMoneyList.get(i);
+					int branchNum = 99;
+					String  shiftTableBizday = (String)object[0];
+					BigDecimal payMoney = (BigDecimal)object[1];
+					StringBuilder sb = new StringBuilder();
+					String key = sb.append(branchNum).append(shiftTableBizday).toString();
+					BusinessCollection data = map.get(key);
+					if(data == null){
+						data = new BusinessCollection();
+						data.setBranchNum(branchNum);
+						data.setShiftTableBizday(shiftTableBizday);
+						map.put(key, data);
+					}
+					data.setPayMoney(payMoney);
 				}
-				data.setPayMoney(payMoney);
 			}
 		}
+
 		if(query.isQueryAccountMove()) {
 			List<Object[]> objects = accountMoveService.findAccountMoveInMoneyByBranchDay(systemBookCode, query.getBranchNums(), query.getDateFrom(), query.getDateTo());
 			for(Object[] object: objects) {
