@@ -28,21 +28,21 @@ public class TransferProfitByPosItemDTO implements Serializable {
     private Integer itemNum;
     private Integer itemMatrixNum;
     private BigDecimal basicQty;
-    private BigDecimal outAmount;
+    private BigDecimal outAmount;//配送数量
     private BigDecimal basicQtyPr;
     private BigDecimal outAmountPr;
     private BigDecimal outAmountPrTranferMoney;
     private BigDecimal outAmountPrCostMoney;
     private BigDecimal outCost;
-    private BigDecimal outMoney;
+    private BigDecimal outMoney;//配送数量
     private BigDecimal receiveTare;
     private BigDecimal totalAmount;
     private BigDecimal totalMoney;
     private BigDecimal inAmount;
     private BigDecimal inMoney;
     private BigDecimal saleMoney;
-    private BigDecimal outsAmount;
-	private BigDecimal outsMoney;
+    private BigDecimal outsAmount;//调出数量
+	private BigDecimal outsMoney;//调出金额
 	private BigDecimal inUseAmount;
 	private BigDecimal outUseAmount;
 
