@@ -7516,7 +7516,7 @@ public class ReportServiceImpl implements ReportService {
 				}
 				List<Object[]> returnList = new ArrayList<Object[]>();
 				for (int i = 0,len = list.size(); i < len; i++) {
-					Object[] objects = new Object[2];
+					Object[] objects = new Object[3];
 					if (queryMonth) {
 						objects[0] = list.get(i).getBizMonth();
 
@@ -7526,6 +7526,7 @@ public class ReportServiceImpl implements ReportService {
 					}
 					objects[1] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
 							.subtract(list.get(i).getMgrDiscount());
+					objects[2] = list.get(i).getOrderCount();
 					returnList.add(objects);
 				}
 				return returnList;
@@ -7546,7 +7547,7 @@ public class ReportServiceImpl implements ReportService {
 				}
 				List<Object[]> returnList = new ArrayList<Object[]>();
 				for (int i = 0,len = list.size(); i < len; i++) {
-					Object[] objects = new Object[2];
+					Object[] objects = new Object[3];
 					if (queryMonth) {
 						objects[0] = list.get(i).getBizMonth();
 
@@ -7556,6 +7557,7 @@ public class ReportServiceImpl implements ReportService {
 					}
 					objects[1] = list.get(i).getPaymentMoney().add(list.get(i).getCouponTotalMoney())
 							.subtract(list.get(i).getMgrDiscount());
+					objects[2] = list.get(i).getOrderCount();
 					returnList.add(objects);
 				}
 				List<Object[]> localObjects = posOrderDao.findPosOrderMoneyByBizDay(systemBookCode, branchNums,
@@ -7570,11 +7572,11 @@ public class ReportServiceImpl implements ReportService {
 						objects = returnList.get(j);
 						if (objects[0].equals(localObject[0])) {
 							objects[1] = ((BigDecimal) objects[1]).add((BigDecimal) localObject[1]);
+							objects[2] = (Integer) objects[2] + (Integer) localObject[2];
 							find = true;
 							break;
 						}
 					}
-
 					if (!find) {
 						returnList.add(localObject);
 					}
