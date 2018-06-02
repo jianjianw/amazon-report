@@ -637,8 +637,8 @@ public class Report2ServiceImpl implements Report2Service {
 			Object[] object = receiveObjects.get(i);
 			posItemNums.add((Integer) object[3]);
 		}
-		List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
-		
+		List<PosItem> posItems = posItemService.findByItemNums(posItemNums);
+
 		Integer orderBranchNum = null;
 		Integer itemNum = null;
 		Integer itemMatrixNum = null;
