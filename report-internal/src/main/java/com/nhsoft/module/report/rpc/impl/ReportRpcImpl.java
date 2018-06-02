@@ -4933,8 +4933,10 @@ public class ReportRpcImpl implements ReportRpc {
 					ProfitByBranchAndItemSummary profitByBranchAndItemSummary = profitAnalysis.get(i);
 					posItemNums.add(profitByBranchAndItemSummary.getItemNum());
 				}
-				List<PosItem> posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
-
+				List<PosItem> posItems = new ArrayList<>(0);
+				if(posItemNums.size() != 0) {
+					posItems = posItemService.findByItemNumsWithoutDetails(posItemNums);
+				}
 				BigDecimal profitSum = BigDecimal.ZERO;
 				BigDecimal costSum = BigDecimal.ZERO;
 				BigDecimal moneySum = BigDecimal.ZERO;

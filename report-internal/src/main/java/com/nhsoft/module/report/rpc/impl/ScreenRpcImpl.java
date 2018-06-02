@@ -2,6 +2,7 @@ package com.nhsoft.module.report.rpc.impl;
 
 import com.nhsoft.module.report.dto.*;
 import com.nhsoft.module.report.model.*;
+import com.nhsoft.module.report.param.PosItemTypeParam;
 import com.nhsoft.module.report.rpc.ReportRpc;
 import com.nhsoft.module.report.rpc.ScreenRpc;
 import com.nhsoft.module.report.service.*;
@@ -39,6 +40,8 @@ public class ScreenRpcImpl implements ScreenRpc {
     private SupplierService supplierService;
     @Autowired
     private ReportRpc reportRpc;
+    @Autowired
+    private BookResourceService bookResourceService;
 
     @Override
     @RequestMapping("/findItemSales")
@@ -55,8 +58,23 @@ public class ScreenRpcImpl implements ScreenRpc {
     @Override
     @RequestMapping("/findCategorySales")
     public List<ScreenCategoryDTO> findCategorySales(String systemBookCode, Integer branchNum) {
-        return screenService.findCategorySales(systemBookCode, branchNum);
+        List<ScreenCategoryDTO> dtos = screenService.findCategorySales(systemBookCode, branchNum);
+        List<PosItemTypeParam> params = bookResourceService.findPosItemTypeParamsInCache(systemBookCode);
+        dtos.forEach(d -> {
+            PosItemTypeParam param = AppUtil.getTopCategory(params, d.getCategoryCode());
+            if(param != null) {
+                d.setCategoryCode(param.getPosItemTypeCode());
+                d.setCategoryName(param.getPosItemTypeName());
+            }
+        });
+        return dtos.stream().collect(Collectors.groupingBy(ScreenCategoryDTO::getCategoryCode)).entrySet().stream().map(m -> m.getValue().stream().reduce((d1, d2) -> {
+            d1.setSaleAmount(d1.getSaleAmount().add(d2.getSaleAmount()));
+            d1.setSaleMoney(d1.getSaleMoney().add(d2.getSaleMoney()));
+            return d1;
+        }).orElse(null)).collect(Collectors.toList());
     }
+
+
 
     @Override
     @RequestMapping("/findMerchantSales")

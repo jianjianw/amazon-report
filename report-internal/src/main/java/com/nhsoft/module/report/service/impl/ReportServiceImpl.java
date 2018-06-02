@@ -9694,7 +9694,6 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		if (StringUtils.isEmpty(type)) {
-			reportDao.findAlipayDetailDTOs()
 			List<AlipayDetailDTO> tempList = alipayLogDao.findAlipayDetailDTOs(systemBookCode, branchNums, dateFrom, dateTo, null, alipayLogTypes).stream().filter(a -> !"微店消费".equals(a.getType())).collect(Collectors.toList());
 			list.addAll(tempList);
 			if(queryAll){
